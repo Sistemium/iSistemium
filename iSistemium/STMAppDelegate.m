@@ -1,8 +1,8 @@
 //
-//  STMAppDelegate.m
+//  STAppDelegate.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 05/06/14.
+//  Created by Maxim Grigoriev on 01/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -12,8 +12,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    
     return YES;
+    
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application

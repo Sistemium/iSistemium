@@ -12,15 +12,20 @@
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
 		2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2C8EF5A71940859F0021D202 /* InfoPlist.strings */; };
 		2C8EF5AB1940859F0021D202 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5AA1940859F0021D202 /* main.m */; };
-		2C8EF5AF1940859F0021D202 /* STMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5AE1940859F0021D202 /* STMAppDelegate.m */; };
-		2C8EF5B21940859F0021D202 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8EF5B01940859F0021D202 /* Main.storyboard */; };
-		2C8EF5B51940859F0021D202 /* STMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5B41940859F0021D202 /* STMViewController.m */; };
 		2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C8EF5B61940859F0021D202 /* Images.xcassets */; };
 		2C8EF5BE1940859F0021D202 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5BD1940859F0021D202 /* XCTest.framework */; };
 		2C8EF5BF1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5C01940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
 		2C8EF5C81940859F0021D202 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2C8EF5C61940859F0021D202 /* InfoPlist.strings */; };
 		2C8EF5CA1940859F0021D202 /* iSistemiumTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5C91940859F0021D202 /* iSistemiumTests.m */; };
+		2C8EF5DD1940860A0021D202 /* STMAuthVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5D81940860A0021D202 /* STMAuthVC.m */; };
+		2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5DA1940860A0021D202 /* STMAuthController.m */; };
+		2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5DC1940860A0021D202 /* STMFunctions.m */; };
+		2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2C8EF5EF194086E10021D202 /* Localizable.strings */; };
+		2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5F21940872E0021D202 /* STMAppDelegate.m */; };
+		2C8EF5F5194087520021D202 /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8EF5F4194087520021D202 /* iPad.storyboard */; };
+		2C8EF5F7194089E10021D202 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5F6194089E10021D202 /* Security.framework */; };
+		CEAB4F59717C484083629622 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6311C3BED44E4D598636BF2C /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,17 +47,28 @@
 		2C8EF5A81940859F0021D202 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2C8EF5AA1940859F0021D202 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2C8EF5AC1940859F0021D202 /* iSistemium-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iSistemium-Prefix.pch"; sourceTree = "<group>"; };
-		2C8EF5AD1940859F0021D202 /* STMAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMAppDelegate.h; sourceTree = "<group>"; };
-		2C8EF5AE1940859F0021D202 /* STMAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STMAppDelegate.m; sourceTree = "<group>"; };
-		2C8EF5B11940859F0021D202 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		2C8EF5B31940859F0021D202 /* STMViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMViewController.h; sourceTree = "<group>"; };
-		2C8EF5B41940859F0021D202 /* STMViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STMViewController.m; sourceTree = "<group>"; };
 		2C8EF5B61940859F0021D202 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2C8EF5BC1940859F0021D202 /* iSistemiumTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iSistemiumTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF5BD1940859F0021D202 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		2C8EF5C51940859F0021D202 /* iSistemiumTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iSistemiumTests-Info.plist"; sourceTree = "<group>"; };
 		2C8EF5C71940859F0021D202 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2C8EF5C91940859F0021D202 /* iSistemiumTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iSistemiumTests.m; sourceTree = "<group>"; };
+		2C8EF5D5194085D50021D202 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2C8EF5D6194085D50021D202 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2C8EF5D71940860A0021D202 /* STMAuthVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthVC.h; sourceTree = "<group>"; };
+		2C8EF5D81940860A0021D202 /* STMAuthVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthVC.m; sourceTree = "<group>"; };
+		2C8EF5D91940860A0021D202 /* STMAuthController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthController.h; sourceTree = "<group>"; };
+		2C8EF5DA1940860A0021D202 /* STMAuthController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthController.m; sourceTree = "<group>"; };
+		2C8EF5DB1940860A0021D202 /* STMFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMFunctions.h; sourceTree = "<group>"; };
+		2C8EF5DC1940860A0021D202 /* STMFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMFunctions.m; sourceTree = "<group>"; };
+		2C8EF5EE194086E10021D202 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2C8EF5F0194086E20021D202 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2C8EF5F11940872E0021D202 /* STMAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAppDelegate.h; sourceTree = "<group>"; };
+		2C8EF5F21940872E0021D202 /* STMAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAppDelegate.m; sourceTree = "<group>"; };
+		2C8EF5F4194087520021D202 /* iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPad.storyboard; sourceTree = "<group>"; };
+		2C8EF5F6194089E10021D202 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8B7BD87EDED486BA6D4F962 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,9 +76,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C8EF5F7194089E10021D202 /* Security.framework in Frameworks */,
 				2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */,
 				2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */,
 				2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */,
+				CEAB4F59717C484083629622 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +104,7 @@
 				2C8EF5C31940859F0021D202 /* iSistemiumTests */,
 				2C8EF59D1940859F0021D202 /* Frameworks */,
 				2C8EF59C1940859F0021D202 /* Products */,
+				E8B7BD87EDED486BA6D4F962 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,10 +120,12 @@
 		2C8EF59D1940859F0021D202 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C8EF5F6194089E10021D202 /* Security.framework */,
 				2C8EF59E1940859F0021D202 /* Foundation.framework */,
 				2C8EF5A01940859F0021D202 /* CoreGraphics.framework */,
 				2C8EF5A21940859F0021D202 /* UIKit.framework */,
 				2C8EF5BD1940859F0021D202 /* XCTest.framework */,
+				6311C3BED44E4D598636BF2C /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -112,11 +133,11 @@
 		2C8EF5A41940859F0021D202 /* iSistemium */ = {
 			isa = PBXGroup;
 			children = (
-				2C8EF5AD1940859F0021D202 /* STMAppDelegate.h */,
-				2C8EF5AE1940859F0021D202 /* STMAppDelegate.m */,
-				2C8EF5B01940859F0021D202 /* Main.storyboard */,
-				2C8EF5B31940859F0021D202 /* STMViewController.h */,
-				2C8EF5B41940859F0021D202 /* STMViewController.m */,
+				2C8EF5D3194085B70021D202 /* Classes */,
+				2C8EF5E0194086450021D202 /* Resources */,
+				2C8EF5F4194087520021D202 /* iPad.storyboard */,
+				2C8EF5F11940872E0021D202 /* STMAppDelegate.h */,
+				2C8EF5F21940872E0021D202 /* STMAppDelegate.m */,
 				2C8EF5B61940859F0021D202 /* Images.xcassets */,
 				2C8EF5A51940859F0021D202 /* Supporting Files */,
 			);
@@ -152,6 +173,27 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		2C8EF5D3194085B70021D202 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				2C8EF5D71940860A0021D202 /* STMAuthVC.h */,
+				2C8EF5D81940860A0021D202 /* STMAuthVC.m */,
+				2C8EF5D91940860A0021D202 /* STMAuthController.h */,
+				2C8EF5DA1940860A0021D202 /* STMAuthController.m */,
+				2C8EF5DB1940860A0021D202 /* STMFunctions.h */,
+				2C8EF5DC1940860A0021D202 /* STMFunctions.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		2C8EF5E0194086450021D202 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2C8EF5EF194086E10021D202 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -159,9 +201,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2C8EF5CD1940859F0021D202 /* Build configuration list for PBXNativeTarget "iSistemium" */;
 			buildPhases = (
+				8CB93573B6F54ED2AEF808D8 /* Check Pods Manifest.lock */,
 				2C8EF5971940859F0021D202 /* Sources */,
 				2C8EF5981940859F0021D202 /* Frameworks */,
 				2C8EF5991940859F0021D202 /* Resources */,
+				18CFE10A922847BD8A0454E0 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -200,6 +244,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Sistemium UAB";
 				TargetAttributes = {
+					2C8EF59A1940859F0021D202 = {
+						DevelopmentTeam = DP58H3X45C;
+					};
 					2C8EF5BB1940859F0021D202 = {
 						TestTargetID = 2C8EF59A1940859F0021D202;
 					};
@@ -212,6 +259,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 2C8EF5921940859F0021D202;
 			productRefGroup = 2C8EF59C1940859F0021D202 /* Products */;
@@ -229,9 +277,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C8EF5F5194087520021D202 /* iPad.storyboard in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
+				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */,
-				2C8EF5B21940859F0021D202 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,14 +294,49 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		18CFE10A922847BD8A0454E0 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8CB93573B6F54ED2AEF808D8 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2C8EF5971940859F0021D202 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
-				2C8EF5B51940859F0021D202 /* STMViewController.m in Sources */,
-				2C8EF5AF1940859F0021D202 /* STMAppDelegate.m in Sources */,
+				2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */,
+				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
+				2C8EF5DD1940860A0021D202 /* STMAuthVC.m in Sources */,
+				2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,24 +363,27 @@
 			isa = PBXVariantGroup;
 			children = (
 				2C8EF5A81940859F0021D202 /* en */,
+				2C8EF5D5194085D50021D202 /* ru */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		2C8EF5B01940859F0021D202 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2C8EF5B11940859F0021D202 /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 		2C8EF5C61940859F0021D202 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2C8EF5C71940859F0021D202 /* en */,
+				2C8EF5D6194085D50021D202 /* ru */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2C8EF5EF194086E10021D202 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2C8EF5EE194086E10021D202 /* en */,
+				2C8EF5F0194086E20021D202 /* ru */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -376,9 +463,11 @@
 		};
 		2C8EF5CE1940859F0021D202 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E8B7BD87EDED486BA6D4F962 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
@@ -389,9 +478,11 @@
 		};
 		2C8EF5CF1940859F0021D202 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E8B7BD87EDED486BA6D4F962 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
@@ -459,6 +550,7 @@
 				2C8EF5CF1940859F0021D202 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2C8EF5D01940859F0021D202 /* Build configuration list for PBXNativeTarget "iSistemiumTests" */ = {
 			isa = XCConfigurationList;
@@ -467,6 +559,7 @@
 				2C8EF5D21940859F0021D202 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

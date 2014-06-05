@@ -1,5 +1,5 @@
 //
-//  STAppDelegate.h
+//  STViewController.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 01/06/14.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMAppDelegate : UIResponder <UIApplicationDelegate>
-
-@property (strong, nonatomic) UIWindow *window;
+@interface STMAuthVC : UIViewController
 
 @end
