@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *requestSMSCodeButton;
 @property (weak, nonatomic) IBOutlet UILabel *phoneInfoLabel;
 @property (weak, nonatomic) IBOutlet UIButton *changePhoneNumberButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *mainViewBarButton;
 
 @property (nonatomic) STAuthState viewState;
 @property (nonatomic, strong) STMAuthController *authController;
@@ -53,6 +54,7 @@
     } else if (self.viewState == STAuthSuccess) {
         
         [self showAuthInfo];
+        [self mainViewBarButtonPressed:self.mainViewBarButton];
         
     }
 
@@ -61,6 +63,8 @@
 - (void)prepareForEnterPhoneNumber {
     
     [self.spinner stopAnimating];
+    
+    self.mainViewBarButton.enabled = NO;
     
     self.titleLabel.text = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
     
@@ -152,12 +156,19 @@
 
 }
 
+- (IBAction)mainViewBarButtonPressed:(id)sender {
+    
+    [self performSegueWithIdentifier:@"showMainView" sender:self];
+    
+}
 
 - (void)showAuthInfo {
 
     self.titleLabel.text = NSLocalizedString(@"SISTEMIUM", nil);
 
     [self.spinner stopAnimating];
+    
+    self.mainViewBarButton.enabled = YES;
     
     self.phoneInfoLabel.text = self.authController.phoneNumber;
     
@@ -292,6 +303,8 @@
     
     [self.changePhoneNumberButton setTitle:NSLocalizedString(@"CHANGE", nil) forState:UIControlStateNormal];
     [self.requestSMSCodeButton setTitle:NSLocalizedString(@"NEW SMS CODE", nil) forState:UIControlStateNormal];
+    [self.mainViewBarButton setTitle:NSLocalizedString(@"MAIN VIEW BUTTON TITLE", nil)];
+    
     
     self.viewState = self.authController.controllerState;
     

@@ -11,7 +11,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "STMSessionManagement.h"
 
-@interface STMLocationTVC : NSObject <UITableViewDataSource, UITableViewDelegate>
+@interface STMLocationTVC : NSObject //<UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) id <STMSession> session;
 

@@ -103,11 +103,18 @@
                             <constraint firstItem="cvo-fa-28h" firstAttribute="centerX" secondItem="VNg-5P-d8V" secondAttribute="centerX" id="zzE-yd-Ev1"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="UbV-9i-r2d"/>
+                    <navigationItem key="navigationItem" id="UbV-9i-r2d">
+                        <barButtonItem key="rightBarButtonItem" title="Main view" id="s5j-Hu-wYx">
+                            <connections>
+                                <action selector="mainViewBarButtonPressed:" destination="8Wf-3F-l61" id="8Mr-zT-Mni"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="authInfoLabel" destination="rrg-Nz-Kcq" id="JGb-ZD-OIm"/>
                         <outlet property="authInfoTextField" destination="Uqi-jq-WRd" id="pll-S1-p0t"/>
                         <outlet property="changePhoneNumberButton" destination="f7d-nk-9pI" id="DxM-aE-ccE"/>
+                        <outlet property="mainViewBarButton" destination="s5j-Hu-wYx" id="Mtg-el-kMF"/>
                         <outlet property="phoneInfoLabel" destination="cMO-ZM-ANu" id="r9s-Eh-Pbq"/>
                         <outlet property="requestSMSCodeButton" destination="7hE-AO-Lyl" id="rvl-m5-5ad"/>
                         <outlet property="sendButton" destination="ofV-8f-NZh" id="Lny-Qy-NaK"/>

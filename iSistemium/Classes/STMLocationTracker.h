@@ -7,6 +7,8 @@
 //
 
 #import "STMTracker.h"
+#import "STMLocation.h"
+#import "STMTrack+dayAsString.h"
 
 @interface STMLocationTracker : STMTracker
 

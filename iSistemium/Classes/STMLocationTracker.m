@@ -7,8 +7,6 @@
 //
 
 #import "STMLocationTracker.h"
-#import "STMLocation.h"
-#import "STMTrack+dayAsString.h"
 
 @interface STMLocationTracker() <CLLocationManagerDelegate>
 

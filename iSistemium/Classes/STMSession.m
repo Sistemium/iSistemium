@@ -136,7 +136,8 @@
         self.logger = [[STMLogger alloc] init];
         self.logger.session = self;
 
-        [self.logger saveLogMessageWithText:[NSString stringWithFormat:@"document ready: %@", notification.object] type:nil];
+//        [self.logger saveLogMessageWithText:[NSString stringWithFormat:@"document ready: %@", notification.object] type:nil];
+        [self.logger saveLogMessageWithText:@"document ready" type:nil];
         
         self.settingsController.startSettings = [self.startSettings mutableCopy];
         self.settingsController.session = self;

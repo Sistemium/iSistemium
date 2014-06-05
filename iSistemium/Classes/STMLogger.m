@@ -47,7 +47,8 @@
     logMessage.text = text;
     logMessage.type = type;
     
-    NSLog(@"%@ %@", NSStringFromClass([STMLogMessage class]),  text);
+//    NSLog(@"%@ %@", NSStringFromClass([STMLogMessage class]),  text);
+    NSLog(@"Log: %@", text);
     
     [self.document saveDocument:^(BOOL success) {
         
