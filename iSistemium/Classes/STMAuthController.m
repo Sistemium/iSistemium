@@ -53,7 +53,8 @@
     
     if (self) {
         
-        [self.phoneNumber boolValue] ? [self checkAccessToken] : [self.keychainItem resetKeychainItem];
+        NSString *keychainPhoneNumber = [self.keychainItem objectForKey:(__bridge id)kSecAttrLabel];
+        [self.phoneNumber isEqualToString:keychainPhoneNumber] ? [self checkAccessToken] : [self.keychainItem resetKeychainItem];
         
     }
     
@@ -89,6 +90,8 @@
         [defaults setObject:phoneNumber forKey:@"phoneNumber"];
         [defaults synchronize];
 
+        [self.keychainItem setObject:phoneNumber forKey:(__bridge id)kSecAttrLabel];
+        
         _phoneNumber = phoneNumber;
         
     }
