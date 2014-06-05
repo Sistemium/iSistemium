@@ -1,5 +1,5 @@
 //
-//  STAppDelegate.h
+//  STMAppDelegate.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 01/06/14.

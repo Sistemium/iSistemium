@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="STMBatteryStatus" representedClassName="STMBatteryStatus" parentEntity="STMComment" syncable="YES">
+        <attribute name="batteryLevel" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="batteryState" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMComment" representedClassName="STMComment" parentEntity="STMDatum" syncable="YES">
+        <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="owner" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STMDatum" inverseName="comments" inverseEntity="STMDatum" syncable="YES"/>
+    </entity>
+    <entity name="STMDatum" representedClassName="STMDatum" isAbstract="YES" syncable="YES">
+        <attribute name="cts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="ts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="xid" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMComment" inverseName="owner" inverseEntity="STMComment" syncable="YES"/>
+    </entity>
+    <entity name="STMLocation" representedClassName="STMLocation" parentEntity="STMComment" syncable="YES">
+        <attribute name="altitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="course" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="horizontalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="speed" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="verticalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="track" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMTrack" inverseName="locations" inverseEntity="STMTrack" syncable="YES"/>
+    </entity>
+    <entity name="STMLogMessage" representedClassName="STMLogMessage" parentEntity="STMComment" syncable="YES">
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMSettings" representedClassName="STMSettings" parentEntity="STMComment" syncable="YES">
+        <attribute name="group" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMTrack" representedClassName="STMTrack" parentEntity="STMComment" syncable="YES">
+        <attribute name="finishTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMLocation" inverseName="track" inverseEntity="STMLocation" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="STMBatteryStatus" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="STMComment" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="STMDatum" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="STMLocation" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="STMLogMessage" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="STMTrack" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="STMSettings" positionX="0" positionY="0" width="0" height="0"/>
+    </elements>
+</model>

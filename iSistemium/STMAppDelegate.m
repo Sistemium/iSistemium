@@ -1,5 +1,5 @@
 //
-//  STAppDelegate.m
+//  STMAppDelegate.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 01/06/14.
@@ -7,12 +7,14 @@
 //
 
 #import "STMAppDelegate.h"
+#import "STMAuthController.h"
 
 @implementation STMAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     
+    [STMAuthController authController];
     return YES;
     
 }

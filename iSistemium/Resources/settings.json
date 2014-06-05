@@ -1,0 +1,173 @@
+{
+  "defaultSettings":
+  [
+    {
+      "group": "general",
+      "data":
+      [
+        {
+          "name": "localAccessToSettings",
+          "value": true,
+          "control": "switch"
+        }
+      ]
+    },
+    {
+      "group": "location",
+      "data":
+      [
+        {
+          "name": "desiredAccuracy",
+          "value": -2,
+          "control": "slider",
+          "min": 0,
+          "max": 5,
+          "step": 1
+        },
+        {
+          "name": "requiredAccuracy",
+          "value": 10,
+          "control": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 10
+        },
+        {
+          "name": "distanceFilter",
+          "value": -1,
+          "control": "slider",
+          "min": -1,
+          "max": 200,
+          "step": 10
+        },
+        {
+          "name": "timeFilter",
+          "value": 0,
+          "control": "slider",
+          "min": 1,
+          "max": 60,
+          "step": 5
+        },
+        {
+          "name": "trackDetectionTime",
+          "value": 300,
+          "control": "slider",
+          "min": 0,
+          "max": 600,
+          "step": 30
+        },
+        {
+          "name": "trackSeparationDistance",
+          "value": 0,
+          "control": "slider",
+          "min": 100,
+          "max": 1000,
+          "step": 100
+        },
+        {
+          "name": "locationTrackerAutoStart",
+          "value": false,
+          "control": "switch"
+        },
+        {
+          "name": "locationTrackerStartTime",
+          "value": 8,
+          "control": "slider",
+          "min": 0,
+          "max": 24,
+          "step": 0.5
+        },
+        {
+            "name": "locationTrackerFinishTime",
+            "value": 20,
+            "control": "slider",
+            "min": 0,
+            "max": 24,
+            "step": 0.5
+        },
+        {
+           "name": "getLocationsWithNegativeSpeed",
+           "value": true,
+           "control": "switch"
+        },
+        {
+           "name": "maxSpeedThreshold",
+           "value": 20,
+           "control": "slider",
+           "min": 0,
+           "max": 120,
+           "step": 20
+        }
+      ]
+    },
+    {
+      "group": "battery",
+      "data":
+      [
+        {
+          "name": "batteryTrackerAutoStart",
+          "value": false,
+          "control": "switch"
+        },
+        {
+          "name": "batteryTrackerStartTime",
+          "value": 8,
+          "control": "slider",
+          "min": 0,
+          "max": 24,
+          "step": 0.5
+        },
+        {
+          "name": "batteryTrackerFinishTime",
+          "value": 20,
+          "control": "slider",
+          "min": 0,
+          "max": 24,
+          "step": 0.5
+        }
+      ]
+    },
+    {
+      "group": "syncer",
+      "data":
+      [
+        {
+          "name": "fetchLimit",
+          "value": 20,
+          "control": "slider",
+          "min": 10,
+          "max": 200,
+          "step": 10
+        },
+        {
+          "name": "syncInterval",
+          "value": 240,
+          "control": "slider",
+          "min": 10,
+          "max": 3600,
+          "step": 60
+        },
+        {
+          "name": "restServerURI",
+          "value": "https://system.unact.ru/iproxy/rest",
+          "control": "textField"
+        },
+        {
+          "name": "recieveDataServerURI",
+          "value": "https://system.unact.ru/iproxy/news/megaport",
+          "control": "textField"
+        },
+        {
+          "name": "sendDataServerURI",
+          "value": "https://system.unact.ru/iproxy/chest/test",
+          "control": "textField"
+        },
+        {
+          "name": "xmlNamespace",
+          "value": "https://github.com/sys-team/ASA.chest",
+          "control": "textField"
+        }
+      ]
+    }
+  ]
+}

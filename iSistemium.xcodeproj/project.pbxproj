@@ -7,6 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
+		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
+		2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B88D19409E71002298A5 /* STMSessionManager.m */; };
+		2C53B89F19409E71002298A5 /* STMSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B88F19409E71002298A5 /* STMSession.m */; };
+		2C53B8A019409E71002298A5 /* STMDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B89119409E71002298A5 /* STMDocument.m */; };
+		2C53B8A119409E71002298A5 /* STMLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B89319409E71002298A5 /* STMLogger.m */; };
+		2C53B8A219409E71002298A5 /* STMTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B89519409E71002298A5 /* STMTracker.m */; };
+		2C53B8A319409E71002298A5 /* STMBatteryTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B89719409E71002298A5 /* STMBatteryTracker.m */; };
+		2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B89919409E71002298A5 /* STMLocationTracker.m */; };
+		2C53B8A519409E71002298A5 /* STMSettingsData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B89B19409E71002298A5 /* STMSettingsData.m */; };
+		2C53B8A619409E71002298A5 /* STMSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B89D19409E71002298A5 /* STMSettingsController.m */; };
+		2C53B8AB19409E83002298A5 /* STMLocationTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8A819409E83002298A5 /* STMLocationTVC.m */; };
+		2C53B8AC19409E83002298A5 /* STMSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8AA19409E83002298A5 /* STMSettingsTVC.m */; };
+		2C53B8C61940A0C0002298A5 /* STMLogMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8B21940A0C0002298A5 /* STMLogMessage.m */; };
+		2C53B8C71940A0C0002298A5 /* STMComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8B41940A0C0002298A5 /* STMComment.m */; };
+		2C53B8C81940A0C0002298A5 /* STMBatteryStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8B61940A0C0002298A5 /* STMBatteryStatus.m */; };
+		2C53B8C91940A0C0002298A5 /* STMTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8B81940A0C0002298A5 /* STMTrack.m */; };
+		2C53B8CA1940A0C0002298A5 /* STMDatum.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8BA1940A0C0002298A5 /* STMDatum.m */; };
+		2C53B8CB1940A0C0002298A5 /* STMLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8BC1940A0C0002298A5 /* STMLocation.m */; };
+		2C53B8CC1940A0C0002298A5 /* STMSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8BE1940A0C0002298A5 /* STMSettings.m */; };
+		2C53B8D11940A0DC002298A5 /* STMDataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D01940A0DC002298A5 /* STMDataModel.xcdatamodel */; };
+		2C53B8D81940A1B8002298A5 /* STMDatum+Init.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D31940A1B8002298A5 /* STMDatum+Init.m */; };
+		2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D51940A1B8002298A5 /* STMLogMessage+dayAsString.m */; };
+		2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -39,6 +63,54 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
+		2C53B88919409E42002298A5 /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
+		2C53B88C19409E71002298A5 /* STMSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSessionManager.h; sourceTree = "<group>"; };
+		2C53B88D19409E71002298A5 /* STMSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSessionManager.m; sourceTree = "<group>"; };
+		2C53B88E19409E71002298A5 /* STMSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSession.h; sourceTree = "<group>"; };
+		2C53B88F19409E71002298A5 /* STMSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSession.m; sourceTree = "<group>"; };
+		2C53B89019409E71002298A5 /* STMDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDocument.h; sourceTree = "<group>"; };
+		2C53B89119409E71002298A5 /* STMDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDocument.m; sourceTree = "<group>"; };
+		2C53B89219409E71002298A5 /* STMLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLogger.h; sourceTree = "<group>"; };
+		2C53B89319409E71002298A5 /* STMLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLogger.m; sourceTree = "<group>"; };
+		2C53B89419409E71002298A5 /* STMTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMTracker.h; sourceTree = "<group>"; };
+		2C53B89519409E71002298A5 /* STMTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMTracker.m; sourceTree = "<group>"; };
+		2C53B89619409E71002298A5 /* STMBatteryTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMBatteryTracker.h; sourceTree = "<group>"; };
+		2C53B89719409E71002298A5 /* STMBatteryTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMBatteryTracker.m; sourceTree = "<group>"; };
+		2C53B89819409E71002298A5 /* STMLocationTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLocationTracker.h; sourceTree = "<group>"; };
+		2C53B89919409E71002298A5 /* STMLocationTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLocationTracker.m; sourceTree = "<group>"; };
+		2C53B89A19409E71002298A5 /* STMSettingsData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingsData.h; sourceTree = "<group>"; };
+		2C53B89B19409E71002298A5 /* STMSettingsData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSettingsData.m; sourceTree = "<group>"; };
+		2C53B89C19409E71002298A5 /* STMSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingsController.h; sourceTree = "<group>"; };
+		2C53B89D19409E71002298A5 /* STMSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSettingsController.m; sourceTree = "<group>"; };
+		2C53B8A719409E83002298A5 /* STMLocationTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLocationTVC.h; sourceTree = "<group>"; };
+		2C53B8A819409E83002298A5 /* STMLocationTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLocationTVC.m; sourceTree = "<group>"; };
+		2C53B8A919409E83002298A5 /* STMSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingsTVC.h; sourceTree = "<group>"; };
+		2C53B8AA19409E83002298A5 /* STMSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSettingsTVC.m; sourceTree = "<group>"; };
+		2C53B8AD1940A092002298A5 /* STMRequestAuthenticatable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRequestAuthenticatable.h; sourceTree = "<group>"; };
+		2C53B8AE1940A092002298A5 /* STMSessionManagement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSessionManagement.h; sourceTree = "<group>"; };
+		2C53B8B11940A0C0002298A5 /* STMLogMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLogMessage.h; sourceTree = "<group>"; };
+		2C53B8B21940A0C0002298A5 /* STMLogMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLogMessage.m; sourceTree = "<group>"; };
+		2C53B8B31940A0C0002298A5 /* STMComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMComment.h; sourceTree = "<group>"; };
+		2C53B8B41940A0C0002298A5 /* STMComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMComment.m; sourceTree = "<group>"; };
+		2C53B8B51940A0C0002298A5 /* STMBatteryStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMBatteryStatus.h; sourceTree = "<group>"; };
+		2C53B8B61940A0C0002298A5 /* STMBatteryStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMBatteryStatus.m; sourceTree = "<group>"; };
+		2C53B8B71940A0C0002298A5 /* STMTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMTrack.h; sourceTree = "<group>"; };
+		2C53B8B81940A0C0002298A5 /* STMTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMTrack.m; sourceTree = "<group>"; };
+		2C53B8B91940A0C0002298A5 /* STMDatum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDatum.h; sourceTree = "<group>"; };
+		2C53B8BA1940A0C0002298A5 /* STMDatum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDatum.m; sourceTree = "<group>"; };
+		2C53B8BB1940A0C0002298A5 /* STMLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLocation.h; sourceTree = "<group>"; };
+		2C53B8BC1940A0C0002298A5 /* STMLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLocation.m; sourceTree = "<group>"; };
+		2C53B8BD1940A0C0002298A5 /* STMSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettings.h; sourceTree = "<group>"; };
+		2C53B8BE1940A0C0002298A5 /* STMSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSettings.m; sourceTree = "<group>"; };
+		2C53B8D01940A0DC002298A5 /* STMDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = STMDataModel.xcdatamodel; sourceTree = "<group>"; };
+		2C53B8D21940A1B8002298A5 /* STMDatum+Init.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMDatum+Init.h"; sourceTree = "<group>"; };
+		2C53B8D31940A1B8002298A5 /* STMDatum+Init.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMDatum+Init.m"; sourceTree = "<group>"; };
+		2C53B8D41940A1B8002298A5 /* STMLogMessage+dayAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMLogMessage+dayAsString.h"; sourceTree = "<group>"; };
+		2C53B8D51940A1B8002298A5 /* STMLogMessage+dayAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMLogMessage+dayAsString.m"; sourceTree = "<group>"; };
+		2C53B8D61940A1B8002298A5 /* STMTrack+dayAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMTrack+dayAsString.h"; sourceTree = "<group>"; };
+		2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMTrack+dayAsString.m"; sourceTree = "<group>"; };
+		2C53B8DB1940A515002298A5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -97,6 +169,56 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2C53B88419409D64002298A5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2C53B8A719409E83002298A5 /* STMLocationTVC.h */,
+				2C53B8A819409E83002298A5 /* STMLocationTVC.m */,
+				2C53B8A919409E83002298A5 /* STMSettingsTVC.h */,
+				2C53B8AA19409E83002298A5 /* STMSettingsTVC.m */,
+				2C8EF5D71940860A0021D202 /* STMAuthVC.h */,
+				2C8EF5D81940860A0021D202 /* STMAuthVC.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2C53B88519409DC4002298A5 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				2C53B8AD1940A092002298A5 /* STMRequestAuthenticatable.h */,
+				2C53B8AE1940A092002298A5 /* STMSessionManagement.h */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		2C53B8AF1940A0A3002298A5 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				2C53B8D01940A0DC002298A5 /* STMDataModel.xcdatamodel */,
+				2C53B8B11940A0C0002298A5 /* STMLogMessage.h */,
+				2C53B8B21940A0C0002298A5 /* STMLogMessage.m */,
+				2C53B8B31940A0C0002298A5 /* STMComment.h */,
+				2C53B8B41940A0C0002298A5 /* STMComment.m */,
+				2C53B8B51940A0C0002298A5 /* STMBatteryStatus.h */,
+				2C53B8B61940A0C0002298A5 /* STMBatteryStatus.m */,
+				2C53B8B71940A0C0002298A5 /* STMTrack.h */,
+				2C53B8B81940A0C0002298A5 /* STMTrack.m */,
+				2C53B8B91940A0C0002298A5 /* STMDatum.h */,
+				2C53B8BA1940A0C0002298A5 /* STMDatum.m */,
+				2C53B8BB1940A0C0002298A5 /* STMLocation.h */,
+				2C53B8BC1940A0C0002298A5 /* STMLocation.m */,
+				2C53B8BD1940A0C0002298A5 /* STMSettings.h */,
+				2C53B8BE1940A0C0002298A5 /* STMSettings.m */,
+				2C53B8D21940A1B8002298A5 /* STMDatum+Init.h */,
+				2C53B8D31940A1B8002298A5 /* STMDatum+Init.m */,
+				2C53B8D41940A1B8002298A5 /* STMLogMessage+dayAsString.h */,
+				2C53B8D51940A1B8002298A5 /* STMLogMessage+dayAsString.m */,
+				2C53B8D61940A1B8002298A5 /* STMTrack+dayAsString.h */,
+				2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */,
+			);
+			path = DataModel;
+			sourceTree = "<group>";
+		};
 		2C8EF5921940859F0021D202 = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +242,7 @@
 		2C8EF59D1940859F0021D202 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C53B8DB1940A515002298A5 /* SystemConfiguration.framework */,
 				2C8EF5F6194089E10021D202 /* Security.framework */,
 				2C8EF59E1940859F0021D202 /* Foundation.framework */,
 				2C8EF5A01940859F0021D202 /* CoreGraphics.framework */,
@@ -133,6 +256,8 @@
 		2C8EF5A41940859F0021D202 /* iSistemium */ = {
 			isa = PBXGroup;
 			children = (
+				2C53B8AF1940A0A3002298A5 /* DataModel */,
+				2C53B88519409DC4002298A5 /* Protocols */,
 				2C8EF5D3194085B70021D202 /* Classes */,
 				2C8EF5E0194086450021D202 /* Resources */,
 				2C8EF5F4194087520021D202 /* iPad.storyboard */,
@@ -176,8 +301,25 @@
 		2C8EF5D3194085B70021D202 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				2C8EF5D71940860A0021D202 /* STMAuthVC.h */,
-				2C8EF5D81940860A0021D202 /* STMAuthVC.m */,
+				2C53B88C19409E71002298A5 /* STMSessionManager.h */,
+				2C53B88D19409E71002298A5 /* STMSessionManager.m */,
+				2C53B88E19409E71002298A5 /* STMSession.h */,
+				2C53B88F19409E71002298A5 /* STMSession.m */,
+				2C53B89019409E71002298A5 /* STMDocument.h */,
+				2C53B89119409E71002298A5 /* STMDocument.m */,
+				2C53B89219409E71002298A5 /* STMLogger.h */,
+				2C53B89319409E71002298A5 /* STMLogger.m */,
+				2C53B89419409E71002298A5 /* STMTracker.h */,
+				2C53B89519409E71002298A5 /* STMTracker.m */,
+				2C53B89619409E71002298A5 /* STMBatteryTracker.h */,
+				2C53B89719409E71002298A5 /* STMBatteryTracker.m */,
+				2C53B89819409E71002298A5 /* STMLocationTracker.h */,
+				2C53B89919409E71002298A5 /* STMLocationTracker.m */,
+				2C53B89A19409E71002298A5 /* STMSettingsData.h */,
+				2C53B89B19409E71002298A5 /* STMSettingsData.m */,
+				2C53B89C19409E71002298A5 /* STMSettingsController.h */,
+				2C53B89D19409E71002298A5 /* STMSettingsController.m */,
+				2C53B88419409D64002298A5 /* Views */,
 				2C8EF5D91940860A0021D202 /* STMAuthController.h */,
 				2C8EF5DA1940860A0021D202 /* STMAuthController.m */,
 				2C8EF5DB1940860A0021D202 /* STMFunctions.h */,
@@ -189,6 +331,8 @@
 		2C8EF5E0194086450021D202 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2C53B88819409E42002298A5 /* settings_schema.json */,
+				2C53B88919409E42002298A5 /* settings.json */,
 				2C8EF5EF194086E10021D202 /* Localizable.strings */,
 			);
 			path = Resources;
@@ -277,8 +421,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C53B88B19409E42002298A5 /* settings.json in Resources */,
 				2C8EF5F5194087520021D202 /* iPad.storyboard in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
+				2C53B88A19409E42002298A5 /* settings_schema.json in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */,
 			);
@@ -332,11 +478,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */,
+				2C53B89F19409E71002298A5 /* STMSession.m in Sources */,
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
+				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
 				2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */,
+				2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */,
 				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
+				2C53B8D11940A0DC002298A5 /* STMDataModel.xcdatamodel in Sources */,
+				2C53B8CB1940A0C0002298A5 /* STMLocation.m in Sources */,
+				2C53B8C71940A0C0002298A5 /* STMComment.m in Sources */,
+				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,
+				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,
+				2C53B8CA1940A0C0002298A5 /* STMDatum.m in Sources */,
+				2C53B8A619409E71002298A5 /* STMSettingsController.m in Sources */,
+				2C53B8A319409E71002298A5 /* STMBatteryTracker.m in Sources */,
+				2C53B8D81940A1B8002298A5 /* STMDatum+Init.m in Sources */,
 				2C8EF5DD1940860A0021D202 /* STMAuthVC.m in Sources */,
+				2C53B8C61940A0C0002298A5 /* STMLogMessage.m in Sources */,
+				2C53B8CC1940A0C0002298A5 /* STMSettings.m in Sources */,
+				2C53B8AB19409E83002298A5 /* STMLocationTVC.m in Sources */,
 				2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */,
+				2C53B8A519409E71002298A5 /* STMSettingsData.m in Sources */,
+				2C53B8A119409E71002298A5 /* STMLogger.m in Sources */,
+				2C53B8A219409E71002298A5 /* STMTracker.m in Sources */,
+				2C53B8C91940A0C0002298A5 /* STMTrack.m in Sources */,
+				2C53B8C81940A0C0002298A5 /* STMBatteryStatus.m in Sources */,
+				2C53B8AC19409E83002298A5 /* STMSettingsTVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
