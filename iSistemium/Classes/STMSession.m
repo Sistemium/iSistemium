@@ -47,7 +47,7 @@
         NSString *dataModelName = [startSettings valueForKey:@"dataModelName"];
         
         if (!dataModelName) {
-            dataModelName = @"STDataModel";
+            dataModelName = @"STMDataModel";
         }
 
         session.document = [STMDocument documentWithUID:session.uid dataModelName:dataModelName prefix:prefix];

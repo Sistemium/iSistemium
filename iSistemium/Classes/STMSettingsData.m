@@ -69,7 +69,7 @@
                     
                     [settingsControlsGroup addObject:@[itemControlType, itemMinValue, itemMaxValue, itemStepValue, itemName]];
                     
-                    NSLog(@"%@", itemName);
+//                    NSLog(@"%@", itemName);
                     
                 }
                 

@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "STMRequestAuthenticatable.h"
 
-@interface STMAuthController : NSObject
+@interface STMAuthController : NSObject <STMRequestAuthenticatable>
 
 typedef enum STAuthState {
     STAuthEnterPhoneNumber,
@@ -29,5 +30,8 @@ typedef enum STAuthState {
 - (void)sendSMSCode:(NSString *)SMSCode;
 - (void)requestNewSMSCode;
 - (void)logout;
+
+- (NSURLRequest *) authenticateRequest:(NSURLRequest *)request;
+
 
 @end

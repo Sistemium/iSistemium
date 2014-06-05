@@ -10,6 +10,7 @@
 #import "STMFunctions.h"
 #import <Security/Security.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
+#import "STMSessionManager.h"
 
 #define AUTH_URL @"https://sistemium.com/auth.php"
 
@@ -99,6 +100,10 @@
 }
 
 - (void)setControllerState:(STAuthState)controllerState {
+    
+    if (controllerState == STAuthSuccess) {
+        [self startSession];
+    }
     
     _controllerState = controllerState;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged" object:self];
@@ -198,10 +203,33 @@
 
 - (void)logout {
     
+    [[STMSessionManager sharedManager] stopSessionForUID:self.userID];
     self.userID = nil;
     self.accessToken = nil;
     [self.keychainItem resetKeychainItem];
     self.controllerState = STAuthEnterPhoneNumber;
+    
+}
+
+- (void)startSession {
+    
+    NSArray *trackers = [NSArray arrayWithObjects:@"battery", @"location", nil];
+    
+    NSDictionary *startSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   self.serviceUri, @"restServerURI",
+                                   @"STMDataModel", @"dataModelName",
+                                   nil];
+    
+    [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
+
+}
+
+
+#pragma mark - STMRequestAuthenticatable
+
+- (NSURLRequest *) authenticateRequest:(NSURLRequest *)request {
+    
+    return nil;
     
 }
 
@@ -300,7 +328,7 @@
     id responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
     
 //    NSLog(@"responseData %@", responseData);
-    NSLog(@"responseJSON %@", responseJSON);
+//    NSLog(@"responseJSON %@", responseJSON);
 
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
         

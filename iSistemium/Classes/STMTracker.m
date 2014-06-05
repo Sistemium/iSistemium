@@ -312,10 +312,13 @@
 
 - (void)stopTracking {
     
-//    NSLog(@"%@ stopTracking %@", self.group, [NSDate date]);
-    [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStop", self.group] object:self];
-    self.tracking = NO;
-    [[(STMSession *)self.session logger] saveLogMessageWithText:[NSString stringWithFormat:@"Stop tracking %@", self.group] type:nil];
+    if (self.tracking) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStop", self.group] object:self];
+        self.tracking = NO;
+        [[(STMSession *)self.session logger] saveLogMessageWithText:[NSString stringWithFormat:@"Stop tracking %@", self.group] type:nil];
+
+    }
     
 }
 
