@@ -31,6 +31,7 @@
 		2C53B8D81940A1B8002298A5 /* STMDatum+Init.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D31940A1B8002298A5 /* STMDatum+Init.m */; };
 		2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D51940A1B8002298A5 /* STMLogMessage+dayAsString.m */; };
 		2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */; };
+		2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8EA1941C147002298A5 /* STMSyncer.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -111,6 +112,8 @@
 		2C53B8D61940A1B8002298A5 /* STMTrack+dayAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMTrack+dayAsString.h"; sourceTree = "<group>"; };
 		2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMTrack+dayAsString.m"; sourceTree = "<group>"; };
 		2C53B8DB1940A515002298A5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		2C53B8E91941C147002298A5 /* STMSyncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSyncer.h; sourceTree = "<group>"; };
+		2C53B8EA1941C147002298A5 /* STMSyncer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSyncer.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -319,6 +322,8 @@
 				2C53B89B19409E71002298A5 /* STMSettingsData.m */,
 				2C53B89C19409E71002298A5 /* STMSettingsController.h */,
 				2C53B89D19409E71002298A5 /* STMSettingsController.m */,
+				2C53B8E91941C147002298A5 /* STMSyncer.h */,
+				2C53B8EA1941C147002298A5 /* STMSyncer.m */,
 				2C53B88419409D64002298A5 /* Views */,
 				2C8EF5D91940860A0021D202 /* STMAuthController.h */,
 				2C8EF5DA1940860A0021D202 /* STMAuthController.m */,
@@ -496,6 +501,7 @@
 				2C53B8D81940A1B8002298A5 /* STMDatum+Init.m in Sources */,
 				2C8EF5DD1940860A0021D202 /* STMAuthVC.m in Sources */,
 				2C53B8C61940A0C0002298A5 /* STMLogMessage.m in Sources */,
+				2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */,
 				2C53B8CC1940A0C0002298A5 /* STMSettings.m in Sources */,
 				2C53B8AB19409E83002298A5 /* STMLocationTVC.m in Sources */,
 				2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */,

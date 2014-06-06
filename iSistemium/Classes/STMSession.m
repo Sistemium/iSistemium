@@ -25,8 +25,9 @@
         session.uid = uid;
         session.startSettings = startSettings;
         session.authDelegate = authDelegate;
-        session.settingsController = [[STMSettingsController alloc] init];
+        session.settingsController = [STMSettingsController initWithSettings:startSettings];
         session.trackers = [NSMutableDictionary dictionary];
+        session.syncer = [[STMSyncer alloc] init];
 
         if ([trackers containsObject:@"location"]) {
             
@@ -135,12 +136,10 @@
         
         self.logger = [[STMLogger alloc] init];
         self.logger.session = self;
+        self.settingsController.session = self;
 
 //        [self.logger saveLogMessageWithText:[NSString stringWithFormat:@"document ready: %@", notification.object] type:nil];
         [self.logger saveLogMessageWithText:@"document ready" type:nil];
-        
-        self.settingsController.startSettings = [self.startSettings mutableCopy];
-        self.settingsController.session = self;
 
     }
     
@@ -159,8 +158,8 @@
 //    NSLog(@"currentSettings %@", [self.settingsController currentSettings]);
     self.locationTracker.session = self;
     self.batteryTracker.session = self;
-//    self.syncer.authDelegate = self.authDelegate;
-//    self.syncer.session = self;
+    self.syncer.session = self;
+    self.syncer.authDelegate = self.authDelegate;
     self.status = @"running";
     
 }

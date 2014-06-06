@@ -153,16 +153,6 @@
           "control": "textField"
         },
         {
-          "name": "recieveDataServerURI",
-          "value": "https://system.unact.ru/iproxy/news/megaport",
-          "control": "textField"
-        },
-        {
-          "name": "sendDataServerURI",
-          "value": "https://system.unact.ru/iproxy/chest/test",
-          "control": "textField"
-        },
-        {
           "name": "xmlNamespace",
           "value": "https://github.com/sys-team/ASA.chest",
           "control": "textField"

@@ -23,9 +23,11 @@
 #pragma mark - class methods
 
 + (STMSettingsController *)initWithSettings:(NSDictionary *)startSettings {
+    
     STMSettingsController *settingsController = [[STMSettingsController alloc] init];
     settingsController.startSettings = [startSettings mutableCopy];
     return settingsController;
+    
 }
 
 - (NSDictionary *)defaultSettings {
@@ -123,14 +125,16 @@
 #pragma mark - instance methods
 
 - (void)setSession:(id<STMSession>)session {
+    
     _session = session;
 
     NSError *error;
     if (![self.fetchedSettingsResultController performFetch:&error]) {
-        NSLog(@"performFetch error %@", error);
+        NSLog(@"settingsController performFetch error %@", error);
     } else {
         [self checkSettings];
     }
+    
 }
 
 - (NSFetchedResultsController *)fetchedSettingsResultController {
@@ -161,6 +165,8 @@
     for (STMSettings *setting in groupSettings) {
         [settingsDictionary setValue:setting.value forKey:setting.name];
     }
+    
+//    NSLog(@"settings for %@: %@", group, settingsDictionary);
     
     return settingsDictionary;
     
@@ -206,6 +212,7 @@
                 newSetting.value = settingValue;
                 [newSetting addObserver:self forKeyPath:@"value" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
                 
+//                NSLog(@"newSetting %@", newSetting);
 
             } else {
                 
@@ -224,8 +231,12 @@
         
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"settingsLoadComplete" object:self];
-    
+    [[(STMSession *)self.session document] saveDocument:^(BOOL success) {
+        if (success) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"settingsLoadComplete" object:self];
+        }
+    }];
+
 }
 
 - (NSString *)setNewSettings:(NSDictionary *)newSettings forGroup:(NSString *)group {

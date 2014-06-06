@@ -14,6 +14,7 @@
 #import "STMSettingsController.h"
 #import "STMLocationTracker.h"
 #import "STMBatteryTracker.h"
+#import "STMSyncer.h"
 
 @interface STMSession : NSObject <STMSession>
 
@@ -29,6 +30,7 @@
 @property (nonatomic, strong) NSMutableDictionary *trackers;
 @property (nonatomic, strong) NSDictionary *settingsControls;
 @property (nonatomic, strong) NSDictionary *defaultSettings;
+@property (nonatomic, strong) STMSyncer *syncer;
 
 
 + (STMSession *)initWithUID:(NSString *)uid
