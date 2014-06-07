@@ -226,39 +226,54 @@
     if (!self.syncing) {
         
         self.syncing = YES;
-        
-        NSURL *requestURL = [NSURL URLWithString:self.restServerURI];
-        
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
-        request.HTTPShouldHandleCookies = NO;
-        request = [[self.authDelegate authenticateRequest:request] mutableCopy];
-        
-//        NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
-        
-        if ([request valueForHTTPHeaderField:@"Authorization"]) {
-        
-            NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-            
-            if (!connection) {
-                
-                [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
-                self.syncing = NO;
-                
-            } else {
-                
-                [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
-                
-            }
-            
-        } else {
-            
-            [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
-            [self notAuthorized];
-
-        }
+        [self startConnectionWithURL:self.restServerURI pageNumber:nil];
         
     }
     
+}
+
+- (void)startConnectionWithURL:(NSString *)URLString pageNumber:(NSString *)pageNumber {
+    
+    NSURL *requestURL = [NSURL URLWithString:URLString];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+    request.HTTPShouldHandleCookies = NO;
+    request = [[self.authDelegate authenticateRequest:request] mutableCopy];
+    
+    if (pageNumber) {
+        
+        [request setHTTPMethod:@"POST"];
+        NSString *parameters = [NSString stringWithFormat:@"page-number:=%@", pageNumber];
+        [request setHTTPBody:[parameters dataUsingEncoding:NSUTF8StringEncoding]];
+
+//        [request addValue:pageNumber forHTTPHeaderField:@"page-number"];
+        
+    }
+    
+    NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
+    
+    if ([request valueForHTTPHeaderField:@"Authorization"]) {
+        
+        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        
+        if (!connection) {
+            
+            [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
+            self.syncing = NO;
+            
+        } else {
+            
+            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+            
+        }
+        
+    } else {
+        
+        [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
+        [self notAuthorized];
+        
+    }
+
 }
 
 - (void)notAuthorized {
@@ -299,15 +314,48 @@
 
 - (void)parseResponse:(NSData *)responseData fromConnection:(NSURLConnection *)connection {
     
+//    NSLog(@"connection URL %@", connection.currentRequest.URL);
+    
     NSError *error;
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
 
     NSString *errorString = [responseJSON objectForKey:@"error"];
     
     if (!errorString) {
+
+        int pageSize = [[responseJSON objectForKey:@"pageSize"] intValue];
+        int pageRowCount = [[responseJSON objectForKey:@"pageRowCount"] intValue];
         
+        if (pageRowCount >= pageSize) {
+            
+            int pageNumber = [[responseJSON objectForKey:@"pageNumber"] intValue] + 1;
+            
+            [self startConnectionWithURL:connection.currentRequest.URL.absoluteString pageNumber:[NSString stringWithFormat:@"%d", pageNumber]];
+            
+        }
+
+        NSArray *dataArray = [responseJSON objectForKey:@"data"];
+//        NSLog(@"dataArray %@", dataArray);
         
-        
+        for (NSDictionary *datum in dataArray) {
+            
+            NSDictionary *entityProperties = [datum objectForKey:@"properties"];
+//            NSLog(@"entityProperties %@", entityProperties);
+
+            if ([[datum objectForKey:@"name"] isEqualToString:@"stc.entity"]) {
+                
+                NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
+                NSString *entityURLString = [entityProperties objectForKey:@"url"];
+                NSLog(@"%@ %@", entityName, entityURLString);
+                
+                if ([entityName isEqualToString:@"STMPartner"]) {
+                    [self startConnectionWithURL:entityURLString pageNumber:nil];
+                }
+
+            }
+            
+        }
+
     } else {
         
         [self.session.logger saveLogMessageWithText:errorString type:@"error"];
