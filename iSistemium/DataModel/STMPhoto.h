@@ -1,5 +1,5 @@
 //
-//  STMLogMessage.h
+//  STMPhoto.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 07/06/14.
@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "STMComment.h"
+#import "STMPicture.h"
 
+@class STMPhotoReport;
 
-@interface STMLogMessage : STMComment
+@interface STMPhoto : STMPicture
 
-@property (nonatomic, retain) NSString * text;
-@property (nonatomic, retain) NSString * type;
+@property (nonatomic, retain) STMPhotoReport *photoReport;
 
 @end

@@ -1,18 +1,17 @@
 //
-//  STMComment.m
+//  STMArticlePicture.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 07/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMComment.h"
-#import "STMDatum.h"
+#import "STMArticlePicture.h"
+#import "STMArticle.h"
 
 
-@implementation STMComment
+@implementation STMArticlePicture
 
-@dynamic commentText;
-@dynamic owner;
+@dynamic articles;
 
 @end

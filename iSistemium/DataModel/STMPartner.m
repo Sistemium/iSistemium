@@ -1,18 +1,18 @@
 //
-//  STMComment.m
+//  STMPartner.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 07/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMComment.h"
-#import "STMDatum.h"
+#import "STMPartner.h"
+#import "STMOutlet.h"
 
 
-@implementation STMComment
+@implementation STMPartner
 
-@dynamic commentText;
-@dynamic owner;
+@dynamic name;
+@dynamic outlets;
 
 @end

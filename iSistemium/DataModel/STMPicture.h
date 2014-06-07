@@ -1,5 +1,5 @@
 //
-//  STMLogMessage.h
+//  STMPicture.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 07/06/14.
@@ -11,9 +11,10 @@
 #import "STMComment.h"
 
 
-@interface STMLogMessage : STMComment
+@interface STMPicture : STMComment
 
-@property (nonatomic, retain) NSString * text;
-@property (nonatomic, retain) NSString * type;
+@property (nonatomic, retain) NSData * image;
+@property (nonatomic, retain) NSString * imageFormat;
+@property (nonatomic, retain) NSString * name;
 
 @end

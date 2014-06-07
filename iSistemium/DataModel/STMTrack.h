@@ -2,7 +2,7 @@
 //  STMTrack.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 12/05/14.
+//  Created by Maxim Grigoriev on 07/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -14,8 +14,8 @@
 
 @interface STMTrack : STMComment
 
-@property (nonatomic, retain) NSDate * startTime;
 @property (nonatomic, retain) NSDate * finishTime;
+@property (nonatomic, retain) NSDate * startTime;
 @property (nonatomic, retain) NSSet *locations;
 @end
 
