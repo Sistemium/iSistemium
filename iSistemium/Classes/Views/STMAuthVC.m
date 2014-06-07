@@ -9,6 +9,7 @@
 #import "STMAuthVC.h"
 #import "STMAuthController.h"
 #import "STMFunctions.h"
+#import "STMMainTVC.h"
 
 @interface STMAuthVC () <UITextFieldDelegate>
 
@@ -31,6 +32,9 @@
 
 @implementation STMAuthVC
 
+
+#pragma mark - variables setters & getters
+
 @synthesize viewState = _viewState;
 
 - (STMAuthController *)authController {
@@ -42,6 +46,8 @@
 - (void)setViewState:(STAuthState)viewState {
     
     _viewState = viewState;
+    
+//    NSLog(@"_viewState %d", _viewState);
 
     if (_viewState == STAuthEnterPhoneNumber) {
 
@@ -60,6 +66,9 @@
 
 }
 
+
+#pragma mark - view layout
+
 - (void)prepareForEnterPhoneNumber {
     
     [self.spinner stopAnimating];
@@ -76,6 +85,8 @@
     
     [self.sendButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
     self.sendButton.hidden = NO;
+
+    NSLog(@"sendButton.titleLabel.textColor %@", self.sendButton.titleLabel.textColor);
     
     self.authInfoLabel.text = NSLocalizedString(@"ENTER PHONE NUMBER", nil);
     self.authInfoLabel.hidden = NO;
@@ -88,7 +99,7 @@
         self.authInfoTextField.text = self.authController.phoneNumber;
         [self textFieldDidChange:self.authInfoTextField];
     }
-
+    
 }
 
 - (void)prepareForEnterSMSCode {
@@ -98,6 +109,7 @@
     self.phoneInfoLabel.text = self.authController.phoneNumber;
     self.phoneInfoLabel.hidden = NO;
     
+    [self.changePhoneNumberButton setTitle:NSLocalizedString(@"CHANGE", nil) forState:UIControlStateNormal];
     self.changePhoneNumberButton.enabled = YES;
     self.changePhoneNumberButton.hidden = NO;
 
@@ -111,6 +123,33 @@
     [self.authInfoTextField becomeFirstResponder];
 
 }
+
+- (void)showAuthInfo {
+    
+    self.titleLabel.text = NSLocalizedString(@"SISTEMIUM", nil);
+    
+    [self.spinner stopAnimating];
+    
+    self.mainViewBarButton.enabled = YES;
+    
+    self.phoneInfoLabel.text = self.authController.phoneNumber;
+    
+    [self.changePhoneNumberButton setTitle:NSLocalizedString(@"LOGOUT", nil) forState:UIControlStateNormal];
+    self.changePhoneNumberButton.enabled = YES;
+    
+    self.authInfoLabel.hidden = YES;
+    
+    self.requestSMSCodeButton.hidden = YES;
+    
+    self.authInfoTextField.hidden = YES;
+    [self.authInfoTextField resignFirstResponder];
+    
+    self.sendButton.hidden = YES;
+    
+}
+
+
+#pragma mark - buttons
 
 - (IBAction)sendButtonPressed:(id)sender {
 
@@ -159,45 +198,7 @@
 - (IBAction)mainViewBarButtonPressed:(id)sender {
     
     [self performSegueWithIdentifier:@"showMainView" sender:self];
-    
-}
 
-- (void)showAuthInfo {
-
-    self.titleLabel.text = NSLocalizedString(@"SISTEMIUM", nil);
-
-    [self.spinner stopAnimating];
-    
-    self.mainViewBarButton.enabled = YES;
-    
-    self.phoneInfoLabel.text = self.authController.phoneNumber;
-    
-    [self.changePhoneNumberButton setTitle:NSLocalizedString(@"LOGOUT", nil) forState:UIControlStateNormal];
-    self.changePhoneNumberButton.enabled = YES;
-    
-    self.authInfoLabel.hidden = YES;
-    
-    self.requestSMSCodeButton.hidden = YES;
-    
-    self.authInfoTextField.hidden = YES;
-    [self.authInfoTextField resignFirstResponder];
-    
-    self.sendButton.hidden = YES;
-
-}
-
-- (void)textFieldDidChange:(UITextField *)textField {
-    
-    if (self.viewState == STAuthEnterPhoneNumber) {
-        
-        self.sendButton.enabled = [STMFunctions isCorrectPhoneNumber:textField.text];
-        
-    } else if (self.viewState == STAuthEnterSMSCode) {
-        
-        self.sendButton.enabled = [STMFunctions isCorrectSMSCode:textField.text];
-
-    }
-    
 }
 
 
@@ -273,6 +274,19 @@
     return YES;
 }
 
+- (void)textFieldDidChange:(UITextField *)textField {
+    
+    if (self.viewState == STAuthEnterPhoneNumber) {
+        
+        self.sendButton.enabled = [STMFunctions isCorrectPhoneNumber:textField.text];
+        
+    } else if (self.viewState == STAuthEnterSMSCode) {
+        
+        self.sendButton.enabled = [STMFunctions isCorrectSMSCode:textField.text];
+        
+    }
+    
+}
 
 
 #pragma mark - view lifecycle
@@ -301,7 +315,8 @@
 
     self.spinner.hidesWhenStopped = YES;
     
-    [self.changePhoneNumberButton setTitle:NSLocalizedString(@"CHANGE", nil) forState:UIControlStateNormal];
+    [self.sendButton setTitleColor:self.sendButton.tintColor forState:UIControlStateNormal];
+    
     [self.requestSMSCodeButton setTitle:NSLocalizedString(@"NEW SMS CODE", nil) forState:UIControlStateNormal];
     [self.mainViewBarButton setTitle:NSLocalizedString(@"MAIN VIEW BUTTON TITLE", nil)];
     
@@ -315,6 +330,16 @@
     [super viewDidLoad];
     [self customInit];
 
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (!self.authInfoTextField.hidden) {
+        [self.authInfoTextField becomeFirstResponder];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {

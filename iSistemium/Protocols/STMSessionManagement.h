@@ -9,11 +9,19 @@
 #import <Foundation/Foundation.h>
 #import "STMRequestAuthenticatable.h"
 
+
 @protocol STMLogger <NSObject, UITableViewDataSource, UITableViewDelegate>
 
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
 
 @property (nonatomic, weak) UITableView *tableView;
+
+@end
+
+
+@protocol STMSyncer <NSObject>
+
+- (void)syncData;
 
 @end
 
@@ -27,7 +35,6 @@
 @end
 
 
-
 @protocol STMSession <NSObject>
 
 + (id <STMSession>)initWithUID:(NSString *)uid authDelegate:(id <STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings documentPrefix:(NSString *)prefix;
@@ -39,9 +46,9 @@
 @property (nonatomic, strong) NSDictionary *settingsControls;
 @property (nonatomic, strong) NSDictionary *defaultSettings;
 @property (nonatomic, strong) id <STMLogger> logger;
+@property (nonatomic, strong) id <STMSyncer> syncer;
 
 @end
-
 
 
 @protocol STMSessionManager <NSObject>

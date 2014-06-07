@@ -127,10 +127,10 @@
             </objects>
             <point key="canvasLocation" x="1023" y="-115"/>
         </scene>
-        <!--Table View Controller-->
+        <!--MainTVC-->
         <scene sceneID="LWx-1x-VIF">
             <objects>
-                <tableViewController id="Mt4-IC-jHY" sceneMemberID="viewController">
+                <tableViewController id="Mt4-IC-jHY" customClass="STMMainTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="3Br-Mc-oQh">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -159,7 +159,7 @@
         <!--Navigation Controller-->
         <scene sceneID="qY4-R3-FZV">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ta8-jj-Vw1" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ta8-jj-Vw1" customClass="STMNavigationController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="LCY-Za-kIJ">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>

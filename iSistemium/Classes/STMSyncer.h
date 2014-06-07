@@ -10,9 +10,11 @@
 #import "STMSessionManagement.h"
 #import "STMRequestAuthenticatable.h"
 
-@interface STMSyncer : NSObject
+@interface STMSyncer : NSObject <STMSyncer>
 
 @property (nonatomic, strong) id <STMSession> session;
 @property (nonatomic, strong) id <STMRequestAuthenticatable> authDelegate;
+
+- (void)syncData;
 
 @end

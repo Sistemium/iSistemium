@@ -15,12 +15,13 @@
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic) double syncInterval;
 @property (nonatomic) int fetchLimit;
-@property (nonatomic, strong) NSString *syncServerURI;
+@property (nonatomic, strong) NSString *restServerURI;
 @property (nonatomic, strong) NSString *xmlNamespace;
 @property (nonatomic, strong) NSTimer *syncTimer;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) NSMutableDictionary *settings;
 @property (nonatomic) BOOL syncing;
+@property (nonatomic, strong) NSMutableData *responseData;
 
 @end
 
@@ -99,11 +100,11 @@
     }
 }
 
-- (NSString *)syncServerURI {
-    if (!_syncServerURI) {
-        _syncServerURI = [self.settings valueForKey:@"syncServerURI"];
+- (NSString *)restServerURI {
+    if (!_restServerURI) {
+        _restServerURI = [self.settings valueForKey:@"restServerURI"];
     }
-    return _syncServerURI;
+    return _restServerURI;
 }
 
 - (NSString *)xmlNamespace {
@@ -174,9 +175,106 @@
 }
 
 - (void)onTimerTick:(NSTimer *)timer {
-    //    NSLog(@"syncTimer tick at %@", [NSDate date]);
-//    [self syncData];
+    NSLog(@"syncTimer tick at %@", [NSDate date]);
+    [self syncData];
 }
 
+
+#pragma mark - syncing
+
+- (void)syncData {
+    
+    if (!self.syncing) {
+        
+        self.syncing = YES;
+        
+        NSURL *requestURL = [NSURL URLWithString:self.restServerURI];
+        
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+        request.HTTPShouldHandleCookies = NO;
+//        request = [[self.authDelegate authenticateRequest:request] mutableCopy];
+        
+//        NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
+        
+        if ([request valueForHTTPHeaderField:@"Authorization"]) {
+        
+            NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+            
+            if (!connection) {
+                
+                [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
+                self.syncing = NO;
+                
+            } else {
+                
+                [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+                
+            }
+            
+        } else {
+            
+            [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
+            [self notAuthorized];
+
+        }
+        
+    }
+    
+}
+
+- (void)notAuthorized {
+
+    self.syncing = NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"notAuthorized" object:self];
+
+}
+
+#pragma mark - NSURLConnectionDataDelegate
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    self.syncing = NO;
+    NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error];
+    [self.session.logger saveLogMessageWithText:errorMessage type:@"error"];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    self.responseData = [NSMutableData data];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self.responseData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    
+//    NSString *dataPath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"];
+//    self.responseData = [NSData dataWithContentsOfFile:dataPath];
+
+    NSString *responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
+    NSLog(@"connectionDidFinishLoading responseData %@", responseString);
+    
+    [self parseResponse:self.responseData fromConnection:connection];
+    
+}
+
+- (void)parseResponse:(NSData *)responseData fromConnection:(NSURLConnection *)connection {
+    
+    NSError *error;
+    NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+
+    NSString *errorString = [responseJSON objectForKey:@"error"];
+    
+    if (!errorString) {
+        
+        
+        
+    } else {
+        
+        [self.session.logger saveLogMessageWithText:errorString type:@"error"];
+        [self notAuthorized];
+        
+    }
+    
+}
 
 @end

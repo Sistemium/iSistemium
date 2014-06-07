@@ -102,8 +102,11 @@
 - (void)setControllerState:(STAuthState)controllerState {
     
     if (controllerState == STAuthSuccess) {
+        NSLog(@"login");
         [self startSession];
     }
+    
+//    NSLog(@"authControllerState %d", controllerState);
     
     _controllerState = controllerState;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged" object:self];
@@ -196,18 +199,28 @@
 
 - (void)checkAccessToken {
 
+    NSLog(@"userID %@", self.userID);
+    NSLog(@"accessToken %@", self.accessToken);
+
     BOOL checkValue = ![self.accessToken isEqualToString:@""] && ![self.userID isEqualToString:@""];
+    
+    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
+    
     self.controllerState = checkValue ? STAuthSuccess : STAuthEnterPhoneNumber;
 
 }
 
 - (void)logout {
     
-    [[STMSessionManager sharedManager] stopSessionForUID:self.userID];
+    NSLog(@"logout");
+
     self.userID = nil;
     self.accessToken = nil;
     [self.keychainItem resetKeychainItem];
     self.controllerState = STAuthEnterPhoneNumber;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notAuthorized" object:[STMSessionManager sharedManager].currentSession.logger];
+    [[STMSessionManager sharedManager] stopSessionForUID:self.userID];
     
 }
 
@@ -222,14 +235,28 @@
     
     [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionNotAuthorized) name:@"notAuthorized" object:[STMSessionManager sharedManager].currentSession.syncer];
+    
 }
 
+- (void)sessionNotAuthorized {
+    
+    [self logout];
+    
+}
 
 #pragma mark - STMRequestAuthenticatable
 
 - (NSURLRequest *) authenticateRequest:(NSURLRequest *)request {
     
-    return nil;
+    NSMutableURLRequest *resultingRequest = nil;
+    
+    if (self.accessToken) {
+        resultingRequest = [request mutableCopy];
+        [resultingRequest addValue:self.accessToken forHTTPHeaderField:@"Authorization"];
+    }
+    
+    return resultingRequest;
     
 }
 

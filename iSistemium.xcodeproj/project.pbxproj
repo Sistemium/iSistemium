@@ -32,6 +32,8 @@
 		2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D51940A1B8002298A5 /* STMLogMessage+dayAsString.m */; };
 		2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */; };
 		2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8EA1941C147002298A5 /* STMSyncer.m */; };
+		2C53B8EE1941E28A002298A5 /* STMMainTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8ED1941E28A002298A5 /* STMMainTVC.m */; };
+		2C53B93B19431AA5002298A5 /* STMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B93A19431AA5002298A5 /* STMNavigationController.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -114,6 +116,10 @@
 		2C53B8DB1940A515002298A5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2C53B8E91941C147002298A5 /* STMSyncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSyncer.h; sourceTree = "<group>"; };
 		2C53B8EA1941C147002298A5 /* STMSyncer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSyncer.m; sourceTree = "<group>"; };
+		2C53B8EC1941E28A002298A5 /* STMMainTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMainTVC.h; sourceTree = "<group>"; };
+		2C53B8ED1941E28A002298A5 /* STMMainTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMainTVC.m; sourceTree = "<group>"; };
+		2C53B93919431AA5002298A5 /* STMNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMNavigationController.h; sourceTree = "<group>"; };
+		2C53B93A19431AA5002298A5 /* STMNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMNavigationController.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -181,6 +187,10 @@
 				2C53B8AA19409E83002298A5 /* STMSettingsTVC.m */,
 				2C8EF5D71940860A0021D202 /* STMAuthVC.h */,
 				2C8EF5D81940860A0021D202 /* STMAuthVC.m */,
+				2C53B8EC1941E28A002298A5 /* STMMainTVC.h */,
+				2C53B8ED1941E28A002298A5 /* STMMainTVC.m */,
+				2C53B93919431AA5002298A5 /* STMNavigationController.h */,
+				2C53B93A19431AA5002298A5 /* STMNavigationController.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -324,11 +334,11 @@
 				2C53B89D19409E71002298A5 /* STMSettingsController.m */,
 				2C53B8E91941C147002298A5 /* STMSyncer.h */,
 				2C53B8EA1941C147002298A5 /* STMSyncer.m */,
-				2C53B88419409D64002298A5 /* Views */,
 				2C8EF5D91940860A0021D202 /* STMAuthController.h */,
 				2C8EF5DA1940860A0021D202 /* STMAuthController.m */,
 				2C8EF5DB1940860A0021D202 /* STMFunctions.h */,
 				2C8EF5DC1940860A0021D202 /* STMFunctions.m */,
+				2C53B88419409D64002298A5 /* Views */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -485,11 +495,13 @@
 			files = (
 				2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */,
 				2C53B89F19409E71002298A5 /* STMSession.m in Sources */,
+				2C53B93B19431AA5002298A5 /* STMNavigationController.m in Sources */,
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
 				2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */,
 				2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */,
 				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
+				2C53B8EE1941E28A002298A5 /* STMMainTVC.m in Sources */,
 				2C53B8D11940A0DC002298A5 /* STMDataModel.xcdatamodel in Sources */,
 				2C53B8CB1940A0C0002298A5 /* STMLocation.m in Sources */,
 				2C53B8C71940A0C0002298A5 /* STMComment.m in Sources */,
