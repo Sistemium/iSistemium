@@ -100,6 +100,7 @@
                     for (STMTracker *tracker in self.trackers.allValues) {
                         [tracker prepareToDestroy];
                     }
+                    [self.syncer prepareToDestroy];
                     [self.document.managedObjectContext reset];
                     [self.manager removeSessionForUID:self.uid];
                     

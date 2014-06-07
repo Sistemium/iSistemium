@@ -85,8 +85,6 @@
     
     [self.sendButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
     self.sendButton.hidden = NO;
-
-    NSLog(@"sendButton.titleLabel.textColor %@", self.sendButton.titleLabel.textColor);
     
     self.authInfoLabel.text = NSLocalizedString(@"ENTER PHONE NUMBER", nil);
     self.authInfoLabel.hidden = NO;

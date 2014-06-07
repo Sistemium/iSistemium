@@ -16,5 +16,6 @@
 @property (nonatomic, strong) id <STMRequestAuthenticatable> authDelegate;
 
 - (void)syncData;
+- (void)prepareToDestroy;
 
 @end

@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) NSMutableDictionary *settings;
 @property (nonatomic) BOOL syncing;
+@property (nonatomic) BOOL running;
 @property (nonatomic, strong) NSMutableData *responseData;
 
 @end
@@ -127,24 +128,62 @@
 #pragma mark - syncer methods
 
 - (void)startSyncer {
-    [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
-    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerSettingsChanged:) name:[NSString stringWithFormat:@"%@SettingsChanged", @"syncer"] object:[(id <STMSession>)self.session settingsController]];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenReceived:) name:@"tokenReceived" object: self.authDelegate];
-    [self initTimer];
-//    self.running = YES;
+    
+    if (!self.running) {
+        
+        self.running = YES;
+        [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
+        [self initTimer];
+        [self addObservers];
+
+    }
+    
 }
 
 - (void)stopSyncer {
-    [self.session.logger saveLogMessageWithText:@"Syncer stop" type:@""];
-//    self.running = NO;
-//    self.syncing = NO;
-    [self releaseTimer];
-    self.resultsController = nil;
-    self.settings = nil;
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"tokenReceived" object:self.authDelegate];
+    
+    if (self.running) {
+        
+        [self.session.logger saveLogMessageWithText:@"Syncer stop" type:@""];
+        //    self.syncing = NO;
+        [self releaseTimer];
+        self.resultsController = nil;
+        self.settings = nil;
+        self.running = NO;
+
+    }
 }
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
+    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerSettingsChanged:) name:[NSString stringWithFormat:@"%@SettingsChanged", @"syncer"] object:[(id <STMSession>)self.session settingsController]];
+    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenReceived:) name:@"tokenReceived" object: self.authDelegate];
+
+}
+
+- (void)removeObservers {
+    
+    //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"tokenReceived" object:self.authDelegate];
+
+}
+
+- (void)sessionStatusChanged:(NSNotification *)notification {
+    
+    if ([[(id <STMSession>)notification.object status] isEqualToString:@"finishing"]) {
+        [self stopSyncer];
+    } else if ([[(id <STMSession>)notification.object status] isEqualToString:@"running"]) {
+        [self startSyncer];
+    }
+    
+}
+
+- (void)prepareToDestroy {
+    
+    [self removeObservers];
+    [self stopSyncer];
+    
+}
 
 #pragma mark - timer
 
@@ -175,7 +214,7 @@
 }
 
 - (void)onTimerTick:(NSTimer *)timer {
-    NSLog(@"syncTimer tick at %@", [NSDate date]);
+//    NSLog(@"syncTimer tick at %@", [NSDate date]);
     [self syncData];
 }
 
@@ -192,7 +231,7 @@
         
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
         request.HTTPShouldHandleCookies = NO;
-//        request = [[self.authDelegate authenticateRequest:request] mutableCopy];
+        request = [[self.authDelegate authenticateRequest:request] mutableCopy];
         
 //        NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
         
@@ -225,6 +264,7 @@
 - (void)notAuthorized {
 
     self.syncing = NO;
+    [self stopSyncer];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"notAuthorized" object:self];
 
 }
