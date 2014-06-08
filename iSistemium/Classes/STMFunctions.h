@@ -12,5 +12,6 @@
 
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString;
 + (BOOL)isCorrectSMSCode:(NSString *)SMSCode;
++ (NSData *)dataFromString:(NSString *)string;
 
 @end

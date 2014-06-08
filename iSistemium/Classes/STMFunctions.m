@@ -42,4 +42,25 @@
     
 }
 
++ (NSData *)dataFromString:(NSString *)string {
+    
+    NSMutableData *data = [NSMutableData data];
+    int i;
+    
+    for (i = 0; i+2 <= string.length; i+=2) {
+        
+        NSRange range = NSMakeRange(i, 2);
+        NSString* hexString = [string substringWithRange:range];
+        NSScanner* scanner = [NSScanner scannerWithString:hexString];
+        unsigned int intValue;
+        [scanner scanHexInt:&intValue];
+        [data appendBytes:&intValue length:1];
+        
+    }
+    
+    return data;
+    
+}
+
+
 @end

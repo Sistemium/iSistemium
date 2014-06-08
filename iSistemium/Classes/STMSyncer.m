@@ -8,7 +8,7 @@
 
 #import "STMSyncer.h"
 #import "STMDocument.h"
-
+#import "STMObjectsController.h"
 
 @interface STMSyncer()
 
@@ -239,18 +239,16 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
     request.HTTPShouldHandleCookies = NO;
     request = [[self.authDelegate authenticateRequest:request] mutableCopy];
-    
-    if (pageNumber) {
-        
-        [request setHTTPMethod:@"POST"];
-        NSString *parameters = [NSString stringWithFormat:@"page-number:=%@", pageNumber];
-        [request setHTTPBody:[parameters dataUsingEncoding:NSUTF8StringEncoding]];
 
-//        [request addValue:pageNumber forHTTPHeaderField:@"page-number"];
-        
-    }
+    [request setHTTPMethod:@"POST"];
     
-    NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
+    NSString *parameters = pageNumber ? [NSString stringWithFormat:@"page-number:=%@&page-size:=%d", pageNumber, self.fetchLimit] : [NSString stringWithFormat:@"page-size:=%d", self.fetchLimit];
+
+    [request setHTTPBody:[parameters dataUsingEncoding:NSUTF8StringEncoding]];
+    
+//        [request addValue:pageNumber forHTTPHeaderField:@"page-number"];
+    
+//    NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
     
     if ([request valueForHTTPHeaderField:@"Authorization"]) {
         
@@ -305,8 +303,8 @@
 //    NSString *dataPath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"];
 //    self.responseData = [NSData dataWithContentsOfFile:dataPath];
 
-    NSString *responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
-    NSLog(@"connectionDidFinishLoading responseData %@", responseString);
+//    NSString *responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
+//    NSLog(@"connectionDidFinishLoading responseData %@", responseString);
     
     [self parseResponse:self.responseData fromConnection:connection];
     
@@ -325,6 +323,9 @@
 
         int pageSize = [[responseJSON objectForKey:@"pageSize"] intValue];
         int pageRowCount = [[responseJSON objectForKey:@"pageRowCount"] intValue];
+        
+//        NSLog(@"pageSize %d", pageSize);
+//        NSLog(@"pageRowCount %d", pageRowCount);
         
         if (pageRowCount >= pageSize) {
             
@@ -346,12 +347,16 @@
                 
                 NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
                 NSString *entityURLString = [entityProperties objectForKey:@"url"];
-                NSLog(@"%@ %@", entityName, entityURLString);
+//                NSLog(@"%@ %@", entityName, entityURLString);
                 
-                if ([entityName isEqualToString:@"STMPartner"]) {
+                if ([entityName isEqualToString:@"STMOutlet"]) {
                     [self startConnectionWithURL:entityURLString pageNumber:nil];
                 }
 
+            } else {
+                
+                [STMObjectsController insertObjectFromDictionary:datum];
+                
             }
             
         }
