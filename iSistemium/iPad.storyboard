@@ -120,41 +120,41 @@
                         <outlet property="sendButton" destination="ofV-8f-NZh" id="Lny-Qy-NaK"/>
                         <outlet property="spinner" destination="VNg-5P-d8V" id="6bU-Vf-mAz"/>
                         <outlet property="titleLabel" destination="cvo-fa-28h" id="QUK-EV-qQx"/>
-                        <segue destination="Mt4-IC-jHY" kind="push" identifier="showMainView" id="qth-P0-b8F"/>
+                        <segue destination="xRy-tt-Cp3" kind="push" identifier="showCampaignTVC" id="lGC-P9-hyq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wwy-HN-TlX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1023" y="-115"/>
         </scene>
-        <!--MainTVC-->
-        <scene sceneID="LWx-1x-VIF">
+        <!--CampaignTVC-->
+        <scene sceneID="Bga-zf-8gC">
             <objects>
-                <tableViewController id="Mt4-IC-jHY" customClass="STMMainTVC" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="3Br-Mc-oQh">
+                <tableViewController id="xRy-tt-Cp3" customClass="STMCampaignTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="n55-UO-ISm">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="GST-0M-ztV">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="campaignCell" id="Kj3-pI-BEA">
                                 <rect key="frame" x="0.0" y="86" width="768" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GST-0M-ztV" id="g0h-xR-VhH">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Kj3-pI-BEA" id="NBb-Mg-cEB">
                                     <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="Mt4-IC-jHY" id="8C8-XT-8BJ"/>
-                            <outlet property="delegate" destination="Mt4-IC-jHY" id="i8T-cl-doG"/>
+                            <outlet property="dataSource" destination="xRy-tt-Cp3" id="NAA-8e-F5U"/>
+                            <outlet property="delegate" destination="xRy-tt-Cp3" id="XkN-6c-r65"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="0d5-Kt-iWH"/>
+                    <navigationItem key="navigationItem" id="TSc-xk-eHO"/>
                 </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="bIZ-WH-asY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3qu-VK-7vu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1964" y="-115"/>
+            <point key="canvasLocation" x="2011" y="-115"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="qY4-R3-FZV">

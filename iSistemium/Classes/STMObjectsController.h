@@ -12,4 +12,6 @@
 
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary;
 
++ (void)setRelationshipFromDictionary:(NSDictionary *)dictionary;
+
 @end

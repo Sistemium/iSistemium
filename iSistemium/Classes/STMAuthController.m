@@ -99,9 +99,9 @@
     
 }
 
-- (void)setControllerState:(STAuthState)controllerState {
+- (void)setControllerState:(STMAuthState)controllerState {
     
-    if (controllerState == STAuthSuccess) {
+    if (controllerState == STMAuthSuccess) {
         NSLog(@"login");
         [self startSession];
     }
@@ -206,7 +206,7 @@
     
     checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
     
-    self.controllerState = checkValue ? STAuthSuccess : STAuthEnterPhoneNumber;
+    self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
 
 }
 
@@ -220,7 +220,7 @@
     self.userID = nil;
     self.accessToken = nil;
     [self.keychainItem resetKeychainItem];
-    self.controllerState = STAuthEnterPhoneNumber;
+    self.controllerState = STMAuthEnterPhoneNumber;
 
 }
 
@@ -295,7 +295,7 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:[NSDictionary dictionaryWithObject:NSLocalizedString(@"NO CONNECTION", nil) forKey:@"error"]];
 
-            self.controllerState = STAuthEnterPhoneNumber;
+            self.controllerState = STMAuthEnterPhoneNumber;
 
         }
 
@@ -305,7 +305,7 @@
 
 - (void)requestNewSMSCode {
     
-    self.controllerState = STAuthNewSMSCode;
+    self.controllerState = STMAuthNewSMSCode;
     [self sendPhoneNumber:self.phoneNumber];
     
 }
@@ -328,7 +328,7 @@
     NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error];
     NSLog(@"%@", errorMessage);
     
-    self.controllerState = STAuthEnterPhoneNumber;
+    self.controllerState = STMAuthEnterPhoneNumber;
 
 }
 
@@ -359,17 +359,17 @@
 
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
         
-        if (self.controllerState == STAuthEnterPhoneNumber || self.controllerState == STAuthNewSMSCode) {
+        if (self.controllerState == STMAuthEnterPhoneNumber || self.controllerState == STMAuthNewSMSCode) {
             
             self.requestID = [responseJSON objectForKey:@"ID"];
-            self.controllerState = STAuthEnterSMSCode;
+            self.controllerState = STMAuthEnterSMSCode;
 
-        } else if (self.controllerState == STAuthEnterSMSCode) {
+        } else if (self.controllerState == STMAuthEnterSMSCode) {
             
             self.serviceUri = [responseJSON objectForKey:@"redirectUri"];
             self.userID = [responseJSON objectForKey:@"ID"];
             self.accessToken = [responseJSON objectForKey:@"accessToken"];
-            self.controllerState = STAuthSuccess;
+            self.controllerState = STMAuthSuccess;
             
         }
         
@@ -377,15 +377,15 @@
         
         NSString *error;
         
-        if (self.controllerState == STAuthEnterPhoneNumber) {
+        if (self.controllerState == STMAuthEnterPhoneNumber) {
 
             error = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
-            self.controllerState = STAuthEnterPhoneNumber;
+            self.controllerState = STMAuthEnterPhoneNumber;
             
-        } else if (self.controllerState == STAuthEnterSMSCode) {
+        } else if (self.controllerState == STMAuthEnterSMSCode) {
             
             error = NSLocalizedString(@"WRONG SMS CODE", nil);
-            self.controllerState = STAuthEnterSMSCode;
+            self.controllerState = STMAuthEnterSMSCode;
 
         }
         

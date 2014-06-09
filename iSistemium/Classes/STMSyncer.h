@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) id <STMSession> session;
 @property (nonatomic, strong) id <STMRequestAuthenticatable> authDelegate;
+@property (nonatomic, strong) NSMutableDictionary *serverDataModel;
 
 - (void)syncData;
 - (void)prepareToDestroy;

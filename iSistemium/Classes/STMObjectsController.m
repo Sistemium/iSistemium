@@ -32,7 +32,7 @@
 
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary {
     
-    NSLog(@"%@", dictionary);
+//    NSLog(@"%@", dictionary);
     
     NSString *name = [dictionary objectForKey:@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
@@ -71,10 +71,14 @@
         
     }
     
-    NSLog(@"object %@", object);
+//    NSLog(@"object %@", object);
     
 //    return object;
 
+    
+}
+
++ (void)setRelationshipFromDictionary:(NSDictionary *)dictionary {
     
 }
 

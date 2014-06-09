@@ -12,6 +12,12 @@
 
 @interface STMSyncer()
 
+//typedef enum STMResponseType {
+//    STMEntityType,
+//    STMObjectType,
+//    STMRelationshipType
+//} STMResponseType;
+
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic) double syncInterval;
 @property (nonatomic) int fetchLimit;
@@ -122,6 +128,16 @@
         NSString *status = _syncing ? @"start" : @"stop";
         [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@ syncing", status] type:@""];
     }
+}
+
+- (NSMutableDictionary *)serverDataModel {
+    
+    if (!_serverDataModel) {
+        _serverDataModel = [NSMutableDictionary dictionary];
+    }
+    
+    return _serverDataModel;
+    
 }
 
 
@@ -317,6 +333,8 @@
     NSError *error;
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
 
+    NSLog(@"responseJSON %@", responseJSON);
+    
     NSString *errorString = [responseJSON objectForKey:@"error"];
     
     if (!errorString) {
@@ -324,8 +342,10 @@
         int pageSize = [[responseJSON objectForKey:@"pageSize"] intValue];
         int pageRowCount = [[responseJSON objectForKey:@"pageRowCount"] intValue];
         
+//        NSString *entityName = [responseJSON objectForKey:@"entityName"];
 //        NSLog(@"pageSize %d", pageSize);
 //        NSLog(@"pageRowCount %d", pageRowCount);
+//        NSLog(@"entityName %@", entityName);
         
         if (pageRowCount >= pageSize) {
             
@@ -334,7 +354,7 @@
             [self startConnectionWithURL:connection.currentRequest.URL.absoluteString pageNumber:[NSString stringWithFormat:@"%d", pageNumber]];
             
         }
-
+        
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
 //        NSLog(@"dataArray %@", dataArray);
         
@@ -347,15 +367,30 @@
                 
                 NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
                 NSString *entityURLString = [entityProperties objectForKey:@"url"];
-//                NSLog(@"%@ %@", entityName, entityURLString);
                 
-                if ([entityName isEqualToString:@"STMOutlet"]) {
+                [self.serverDataModel setObject:entityProperties forKey:entityName];
+                
+                if ([entityName isEqualToString:@"STMCampaignArticle"]) {
                     [self startConnectionWithURL:entityURLString pageNumber:nil];
                 }
 
             } else {
+
+                NSString *name = [datum objectForKey:@"name"];
+                NSArray *nameExplode = [name componentsSeparatedByString:@"."];
+                NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
+
+                NSDictionary *entityModel = [self.serverDataModel objectForKey:entityName];
                 
-                [STMObjectsController insertObjectFromDictionary:datum];
+                if ([entityModel objectForKey:@"roleName"]) {
+                    
+                    [STMObjectsController setRelationshipFromDictionary:datum];
+                    
+                } else {
+                    
+                    [STMObjectsController insertObjectFromDictionary:datum];
+
+                }
                 
             }
             

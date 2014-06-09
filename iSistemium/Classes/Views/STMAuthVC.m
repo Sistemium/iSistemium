@@ -9,7 +9,6 @@
 #import "STMAuthVC.h"
 #import "STMAuthController.h"
 #import "STMFunctions.h"
-#import "STMMainTVC.h"
 
 @interface STMAuthVC () <UITextFieldDelegate>
 
@@ -23,7 +22,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *changePhoneNumberButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *mainViewBarButton;
 
-@property (nonatomic) STAuthState viewState;
+@property (nonatomic) STMAuthState viewState;
 @property (nonatomic, strong) STMAuthController *authController;
 
 
@@ -43,21 +42,21 @@
     
 }
 
-- (void)setViewState:(STAuthState)viewState {
+- (void)setViewState:(STMAuthState)viewState {
     
     _viewState = viewState;
     
 //    NSLog(@"_viewState %d", _viewState);
 
-    if (_viewState == STAuthEnterPhoneNumber) {
+    if (_viewState == STMAuthEnterPhoneNumber) {
 
         [self prepareForEnterPhoneNumber];
         
-    } else if (_viewState == STAuthEnterSMSCode) {
+    } else if (_viewState == STMAuthEnterSMSCode) {
         
         [self prepareForEnterSMSCode];
         
-    } else if (self.viewState == STAuthSuccess) {
+    } else if (self.viewState == STMAuthSuccess) {
         
         [self showAuthInfo];
         [self mainViewBarButtonPressed:self.mainViewBarButton];
@@ -154,11 +153,11 @@
     self.sendButton.enabled = NO;
     [self.spinner startAnimating];
 
-    if (self.viewState == STAuthEnterPhoneNumber) {
+    if (self.viewState == STMAuthEnterPhoneNumber) {
         
         [self.authController sendPhoneNumber:self.authInfoTextField.text];
         
-    } else if (self.viewState == STAuthEnterSMSCode) {
+    } else if (self.viewState == STMAuthEnterSMSCode) {
         
         self.changePhoneNumberButton.enabled = NO;
         self.requestSMSCodeButton.enabled = NO;
@@ -171,7 +170,7 @@
 
 - (IBAction)changePhoneNumberButtonPressed:(id)sender {
     
-    if (self.viewState == STAuthSuccess) {
+    if (self.viewState == STMAuthSuccess) {
         
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil) message:NSLocalizedString(@"R U SURE TO LOGOUT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         alertView.tag = 2;
@@ -179,7 +178,7 @@
         
     } else {
         
-        self.authController.controllerState = STAuthEnterPhoneNumber;
+        self.authController.controllerState = STMAuthEnterPhoneNumber;
         
     }
     
@@ -195,7 +194,7 @@
 
 - (IBAction)mainViewBarButtonPressed:(id)sender {
     
-    [self performSegueWithIdentifier:@"showMainView" sender:self];
+    [self performSegueWithIdentifier:@"showCampaignTVC" sender:self];
 
 }
 
@@ -274,11 +273,11 @@
 
 - (void)textFieldDidChange:(UITextField *)textField {
     
-    if (self.viewState == STAuthEnterPhoneNumber) {
+    if (self.viewState == STMAuthEnterPhoneNumber) {
         
         self.sendButton.enabled = [STMFunctions isCorrectPhoneNumber:textField.text];
         
-    } else if (self.viewState == STAuthEnterSMSCode) {
+    } else if (self.viewState == STMAuthEnterSMSCode) {
         
         self.sendButton.enabled = [STMFunctions isCorrectSMSCode:textField.text];
         
