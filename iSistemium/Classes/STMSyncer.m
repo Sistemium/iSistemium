@@ -282,7 +282,7 @@
 
     [request setHTTPBody:[parameters dataUsingEncoding:NSUTF8StringEncoding]];
     
-//        [request addValue:pageNumber forHTTPHeaderField:@"page-number"];
+//    [request addValue:pageNumber forHTTPHeaderField:@"If-Modified-Since"];
     
 //    NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
     
@@ -327,7 +327,24 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    self.responseData = [NSMutableData data];
+    
+    NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+    NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
+    
+    if (statusCode == 200) {
+        
+        self.responseData = [NSMutableData data];
+        NSString *lastModified = [headers objectForKey:@"Last-Modified"];
+        if (lastModified) {
+            NSLog(@"lastModified %@", lastModified);
+        }
+        
+    } else if (statusCode == 304) {
+        
+        NSLog(@"304 Not Modified");
+        
+    }
+    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
