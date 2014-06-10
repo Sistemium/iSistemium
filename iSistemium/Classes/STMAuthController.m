@@ -231,6 +231,7 @@
     NSDictionary *startSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                    self.serviceUri, @"restServerURI",
                                    @"STMDataModel", @"dataModelName",
+                                   @"10", @"fetchLimit",
                                    nil];
     
     [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];

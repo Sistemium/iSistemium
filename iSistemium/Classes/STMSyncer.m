@@ -333,7 +333,7 @@
     NSError *error;
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
 
-    NSLog(@"responseJSON %@", responseJSON);
+//    NSLog(@"responseJSON %@", responseJSON);
     
     NSString *errorString = [responseJSON objectForKey:@"error"];
     
@@ -370,9 +370,9 @@
                 
                 [self.serverDataModel setObject:entityProperties forKey:entityName];
                 
-                if ([entityName isEqualToString:@"STMCampaignArticle"]) {
+//                if ([entityName isEqualToString:@"STMCampaignArticle"]) {
                     [self startConnectionWithURL:entityURLString pageNumber:nil];
-                }
+//                }
 
             } else {
 
@@ -389,7 +389,7 @@
                 } else {
                     
                     [STMObjectsController insertObjectFromDictionary:datum];
-
+                    
                 }
                 
             }
@@ -398,8 +398,20 @@
 
     } else {
         
+        if ([errorString isEqualToString:@"Not authorized"]) {
+            
+            [self notAuthorized];
+            
+        } else {
+
+            NSString *requestBody = [[NSString alloc] initWithData:connection.originalRequest.HTTPBody encoding:NSUTF8StringEncoding];
+            NSLog(@"originalRequest %@", connection.originalRequest);
+            NSLog(@"requestBody %@", requestBody);
+            NSLog(@"responseJSON %@", responseJSON);
+
+        }
+
         [self.session.logger saveLogMessageWithText:errorString type:@"error"];
-        [self notAuthorized];
         
     }
     

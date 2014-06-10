@@ -10,6 +10,7 @@
 #import "STMSessionManager.h"
 #import "STMDocument.h"
 #import "STMFunctions.h"
+#import "STMSyncer.h"
 
 #import "STMPartner.h"
 #import "STMOutlet.h"
@@ -39,76 +40,134 @@
     NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
 //    NSLog(@"entityName %@", entityName);
     
-    NSString *xid = [dictionary objectForKey:@"xid"];
-//    NSLog(@"xid %@", xid);
-
-    NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
+    NSArray *dataModelEntityNames = [self dataModelEntityNames];
     
-    NSDictionary *properties = [dictionary objectForKey:@"properties"];
-    
-    NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
-    
-    for (NSString *key in ownObjectKeys) {
+    if ([dataModelEntityNames containsObject:entityName]) {
         
-        id value = [properties objectForKey:key];
-        [object setValue:value forKey:key];
+        NSString *xid = [dictionary objectForKey:@"xid"];
+        //    NSLog(@"xid %@", xid);
         
-    }
-    
-    NSDictionary *ownObjectRelationships = [self ownObjectRelationshipsForEntityName:entityName];
-    
-    for (NSString *relationship in [ownObjectRelationships allKeys]) {
+        NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
         
-        NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
-        NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
+        NSDictionary *properties = [dictionary objectForKey:@"properties"];
         
-        if (destinationObjectXid) {
+        NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
+        
+        for (NSString *key in ownObjectKeys) {
             
-            NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
-            [object setValue:destinationObject forKey:relationship];
+            id value = [properties objectForKey:key];
+            [object setValue:value forKey:key];
             
         }
         
-    }
-    
+        NSDictionary *ownObjectRelationships = [self ownObjectRelationshipsForEntityName:entityName];
+        
+        for (NSString *relationship in [ownObjectRelationships allKeys]) {
+            
+            NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
+            NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
+            
+            if (destinationObjectXid) {
+                
+                NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
+                [object setValue:destinationObject forKey:relationship];
+                
+            }
+            
+        }
+        
 //    NSLog(@"object %@", object);
-    
-//    return object;
 
+    }
     
 }
 
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary {
     
+//    NSLog(@"relationship %@", dictionary);
+    
+    NSString *name = [dictionary objectForKey:@"name"];
+    NSArray *nameExplode = [name componentsSeparatedByString:@"."];
+    NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
+
+    NSDictionary *serverDataModel = [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer serverDataModel];
+    
+    if ([[serverDataModel allKeys] containsObject:entityName]) {
+        
+        NSDictionary *modelProperties = [serverDataModel objectForKey:entityName];
+//        NSLog(@"modelProperties %@", modelProperties);
+        
+        NSString *roleOwner = [modelProperties objectForKey:@"roleOwner"];
+        NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
+        NSString *roleName = [modelProperties objectForKey:@"roleName"];
+//        NSLog(@"roleOwner %@, roleName %@", roleOwner, roleName);
+        
+        NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
+//        NSLog(@"ownerRelationships %@", ownerRelationships);
+        
+        NSString *destinationEntityName = [ownerRelationships objectForKey:roleName];
+//        NSLog(@"destinationEntityName %@", destinationEntityName);
+        
+        NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
+        
+        NSDictionary *properties = [dictionary objectForKey:@"properties"];
+        NSDictionary *ownerData = [properties objectForKey:roleOwner];
+        NSDictionary *destinationData = [properties objectForKey:destination];
+//        NSLog(@"ownerData %@, destinationData %@", ownerData, destinationData);
+        
+        NSString *ownerXid = [ownerData objectForKey:@"xid"];
+        NSString *destinationXid = [destinationData objectForKey:@"xid"];
+//        NSLog(@"ownerXid %@, destinationXid %@", ownerXid, destinationXid);
+        
+        NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
+        NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
+        
+        NSMutableSet *ownerSet = [ownerObject valueForKey:roleName];
+        [ownerSet addObject:destinationObject];
+        [ownerObject setValue:ownerSet forKey:roleName];
+//        NSLog(@"ownerObject %@, destinationObject %@", ownerObject, destinationObject);
+        
+    }
+    
 }
 
 + (NSManagedObject *)objectForEntityName:(NSString *)entityName andXid:(NSString *)xid {
     
-    xid = [xid stringByReplacingOccurrencesOfString:@"-" withString:@""];
-
-    NSData *xidData = [STMFunctions dataFromString:xid];
+    NSArray *dataModelEntityNames = [self dataModelEntityNames];
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
-    
-    NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
-    NSManagedObject *object;
-    
-    if ([fetchResult lastObject]) {
+    if ([dataModelEntityNames containsObject:entityName]) {
         
-        object = [fetchResult lastObject];
+        xid = [xid stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        
+        NSData *xidData = [STMFunctions dataFromString:xid];
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
+        
+        NSError *error;
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+        NSManagedObject *object;
+        
+        if ([fetchResult lastObject]) {
+            
+            object = [fetchResult lastObject];
+            
+        } else {
+            
+            object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            [object setValue:xidData forKey:@"xid"];
+            
+        }
+        
+        return object;
         
     } else {
         
-        object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-        [object setValue:xidData forKey:@"xid"];
+        return nil;
         
     }
-
-    return object;
     
 }
 
@@ -148,6 +207,12 @@
 //    NSLog(@"objectRelationships %@", objectRelationships);
     
     return objectRelationships;
+    
+}
+
++ (NSArray *)dataModelEntityNames {
+    
+    return [[self document].managedObjectModel.entitiesByName allKeys];
     
 }
 
