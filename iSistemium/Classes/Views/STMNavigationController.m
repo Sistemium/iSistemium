@@ -7,6 +7,7 @@
 //
 
 #import "STMNavigationController.h"
+#import "STMAuthController.h"
 
 @interface STMNavigationController () <UIAlertViewDelegate>
 
@@ -33,7 +34,7 @@
 
 - (void)showAuthAlert {
     
-    if (!self.authAlert.visible) {
+    if (!self.authAlert.visible && [STMAuthController authController].controllerState == STMAuthSuccess) {
         [self.authAlert show];
     }
     
