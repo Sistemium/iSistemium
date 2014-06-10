@@ -77,6 +77,8 @@
         }
         
 //    NSLog(@"object %@", object);
+        
+        [[self document] saveDocument:^(BOOL success) {}];
 
     }
     
@@ -122,10 +124,10 @@
         NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
         NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
         
-        NSMutableSet *ownerSet = [ownerObject valueForKey:roleName];
-        [ownerSet addObject:destinationObject];
-        [ownerObject setValue:ownerSet forKey:roleName];
+        [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
 //        NSLog(@"ownerObject %@, destinationObject %@", ownerObject, destinationObject);
+        
+        [[self document] saveDocument:^(BOOL success) {}];
         
     }
     

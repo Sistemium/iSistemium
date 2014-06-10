@@ -49,6 +49,8 @@
 
 - (void)saveDocument:(void (^)(BOOL success))completionHandler {
     
+    NSLog(@"saveDocument");
+    
     if (!self.saving) {
 
         if (self.documentState == UIDocumentStateNormal) {
@@ -58,7 +60,7 @@
             [self saveToURL:self.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
                 
                 if (success) {
-//                    NSLog(@"UIDocumentSaveForOverwriting success");
+                    NSLog(@"UIDocumentSaveForOverwriting success");
                     completionHandler(YES);
                 } else {
                     NSLog(@"UIDocumentSaveForOverwriting not success");
@@ -72,6 +74,10 @@
             NSLog(@"documentState is %u", (int)self.documentState);
         }
 
+    } else {
+        
+        NSLog(@"Document is in saving state currently");
+        
     }
 
 }

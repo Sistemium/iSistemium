@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMCampaignTVC : UITableViewController
+@interface STMCampaignsTVC : UITableViewController
 
 @end

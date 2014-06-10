@@ -398,6 +398,8 @@
 
     } else {
         
+        [self.session.logger saveLogMessageWithText:errorString type:@"error"];
+
         if ([errorString isEqualToString:@"Not authorized"]) {
             
             [self notAuthorized];
@@ -410,8 +412,6 @@
             NSLog(@"responseJSON %@", responseJSON);
 
         }
-
-        [self.session.logger saveLogMessageWithText:errorString type:@"error"];
         
     }
     

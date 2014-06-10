@@ -6,19 +6,21 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMCampaignTVC.h"
+#import "STMCampaignsTVC.h"
 #import <CoreData/CoreData.h>
 #import "STMSessionManager.h"
 #import "STMDocument.h"
+#import "STMCampaign.h"
+#import "STMArticlesTVC.h"
 
-@interface STMCampaignTVC () <NSFetchedResultsControllerDelegate>
+@interface STMCampaignsTVC () <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
 
 @end
 
-@implementation STMCampaignTVC
+@implementation STMCampaignsTVC
 
 
 - (STMDocument *)document {
@@ -37,12 +39,12 @@
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"STMCampaign"];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         _resultsController.delegate = self;
     
-        NSLog(@"_resultsController %@", _resultsController);
+//        NSLog(@"_resultsController %@", _resultsController);
 
     }
     
@@ -106,14 +108,15 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-
-    return 1;
+    
+    return self.resultsController.sections.count;
     
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    return 20;
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
+    return [sectionInfo numberOfObjects];
     
 }
 
@@ -121,9 +124,33 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"campaignCell" forIndexPath:indexPath];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row];
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
+    STMCampaign *campaign = sectionInfo.objects[indexPath.row];
+
+    cell.textLabel.text = campaign.name;
+    
+    NSString *gain = campaign.gain ? campaign.gain : NSLocalizedString(@"NO GAIN", nil);
+    NSString *goal = campaign.goal ? campaign.goal : NSLocalizedString(@"NO GOAL", nil);
+    
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ / %@ — %lu", gain, goal, (unsigned long)campaign.articles.count];
     
     return cell;
+    
+}
+
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
+    STMCampaign *campaign = sectionInfo.objects[indexPath.row];
+    NSLog(@"campaign %@", campaign);
+
+    STMArticlesTVC *articlesTVC = [[STMArticlesTVC alloc] init];
+    articlesTVC.articles = campaign.articles;
+    
+    [self.navigationController pushViewController:articlesTVC animated:YES];
+    
+    return indexPath;
     
 }
 
@@ -169,33 +196,41 @@
 #pragma mark - NSFetchedResultsController delegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+
     NSLog(@"controllerWillChangeContent");
-//    [self.tableView beginUpdates];
+    [self.tableView beginUpdates];
+    
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
     NSLog(@"controllerDidChangeContent");
-//    [self.tableView endUpdates];
+    [self.tableView endUpdates];
+    [self.document saveDocument:^(BOOL success) {}];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
     //    NSLog(@"controller didChangeObject");
+//    NSLog(@"anObject %@", anObject);
     
     if (type == NSFetchedResultsChangeDelete) {
         
-        NSLog(@"NSFetchedResultsChangeDelete");
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        NSLog(@"NSFetchedResultsChangeDelete");
         
     } else if (type == NSFetchedResultsChangeInsert) {
         
-        NSLog(@"NSFetchedResultsChangeInsert");
-//        [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
         //        [self.tableView scrollToRowAtIndexPath:newIndexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+//        NSLog(@"NSFetchedResultsChangeInsert");
         
         
     } else if (type == NSFetchedResultsChangeUpdate) {
         
-        NSLog(@"NSFetchedResultsChangeUpdate");
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        NSLog(@"NSFetchedResultsChangeUpdate");
         
     }
     
