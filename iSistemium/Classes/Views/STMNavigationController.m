@@ -33,8 +33,8 @@
 }
 
 - (void)showAuthAlert {
-    
-    if (!self.authAlert.visible && [STMAuthController authController].controllerState == STMAuthSuccess) {
+
+    if (!self.authAlert.visible && [STMAuthController authController].controllerState != STMAuthEnterPhoneNumber) {
         [self.authAlert show];
     }
     

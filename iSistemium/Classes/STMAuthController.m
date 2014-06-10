@@ -214,13 +214,13 @@
     
     NSLog(@"logout");
 
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notAuthorized" object:[STMSessionManager sharedManager].currentSession.syncer];
-    [[STMSessionManager sharedManager] stopSessionForUID:self.userID];
-
+    self.controllerState = STMAuthEnterPhoneNumber;
     self.userID = nil;
     self.accessToken = nil;
     [self.keychainItem resetKeychainItem];
-    self.controllerState = STMAuthEnterPhoneNumber;
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notAuthorized" object:[STMSessionManager sharedManager].currentSession.syncer];
+    [[STMSessionManager sharedManager] stopSessionForUID:self.userID];
 
 }
 
