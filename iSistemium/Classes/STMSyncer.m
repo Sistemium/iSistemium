@@ -267,7 +267,7 @@
 //    NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
     
     if ([request valueForHTTPHeaderField:@"Authorization"]) {
-        
+    
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         
         if (!connection) {
@@ -414,7 +414,7 @@
         }
         
     }
-    
+
 }
 
 @end

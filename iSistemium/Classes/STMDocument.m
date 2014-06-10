@@ -49,7 +49,7 @@
 
 - (void)saveDocument:(void (^)(BOOL success))completionHandler {
     
-    NSLog(@"saveDocument");
+//    NSLog(@"saveDocument");
     
     if (!self.saving) {
 
@@ -76,7 +76,7 @@
 
     } else {
         
-        NSLog(@"Document is in saving state currently");
+//        NSLog(@"Document is in saving state currently");
         
     }
 

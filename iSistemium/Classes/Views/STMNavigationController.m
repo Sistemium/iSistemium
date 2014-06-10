@@ -10,6 +10,8 @@
 
 @interface STMNavigationController () <UIAlertViewDelegate>
 
+@property (nonatomic, strong) UIAlertView *authAlert;
+
 @end
 
 @implementation STMNavigationController
@@ -17,10 +19,23 @@
 
 #pragma mark - alertView & delegate
 
+- (UIAlertView *)authAlert {
+    
+    if (!_authAlert) {
+        
+        _authAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"U R NOT AUTH", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        
+    }
+    
+    return _authAlert;
+    
+}
+
 - (void)showAuthAlert {
     
-    UIAlertView *authAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"U R NOT AUTH", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
-    [authAlert show];
+    if (!self.authAlert.visible) {
+        [self.authAlert show];
+    }
     
 }
 
