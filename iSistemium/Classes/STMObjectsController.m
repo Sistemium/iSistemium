@@ -126,7 +126,7 @@
         if (!ownerXid || [ownerXid isEqualToString:@""] || !destinationXid || [destinationXid isEqualToString:@""]) {
             
             ok = NO;
-//            NSLog(@"dictionary %@", dictionary);
+            NSLog(@"dictionary %@", dictionary);
             
         }
         

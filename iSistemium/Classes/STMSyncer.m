@@ -186,6 +186,8 @@
 
 - (void)sessionStatusChanged:(NSNotification *)notification {
     
+//    NSLog(@"session status %@", [(id <STMSession>)notification.object status]);
+    
     if ([[(id <STMSession>)notification.object status] isEqualToString:@"finishing"]) {
         [self stopSyncer];
     } else if ([[(id <STMSession>)notification.object status] isEqualToString:@"running"]) {
@@ -204,40 +206,58 @@
 #pragma mark - timer
 
 - (NSTimer *)syncTimer {
+    
     if (!_syncTimer) {
+        
         if (!self.syncInterval) {
+            
             _syncTimer = [[NSTimer alloc] initWithFireDate:[NSDate date] interval:0 target:self selector:@selector(onTimerTick:) userInfo:nil repeats:NO];
+            
         } else {
+            
             _syncTimer = [[NSTimer alloc] initWithFireDate:[NSDate date] interval:self.syncInterval target:self selector:@selector(onTimerTick:) userInfo:nil repeats:YES];
+            
         }
+        
     }
+    
     return _syncTimer;
+    
 }
 
 - (void)initTimer {
+    
     UIBackgroundTaskIdentifier bgTask = 0;
     UIApplication  *app = [UIApplication sharedApplication];
+    
     bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
         [app endBackgroundTask:bgTask];
     }];
     
     [[NSRunLoop currentRunLoop] addTimer:self.syncTimer forMode:NSRunLoopCommonModes];
+    
 }
 
 - (void)releaseTimer {
+    
     [self.syncTimer invalidate];
     self.syncTimer = nil;
+    
 }
 
 - (void)onTimerTick:(NSTimer *)timer {
+    
 //    NSLog(@"syncTimer tick at %@", [NSDate date]);
     [self syncData];
+    
 }
 
 
 #pragma mark - syncing
 
 - (void)syncData {
+    
+//    NSLog(@"self.syncing %d", self.syncing);
     
     if (!self.syncing) {
         
