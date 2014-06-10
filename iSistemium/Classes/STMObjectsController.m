@@ -121,13 +121,26 @@
         NSString *destinationXid = [destinationData objectForKey:@"xid"];
 //        NSLog(@"ownerXid %@, destinationXid %@", ownerXid, destinationXid);
         
-        NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
-        NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
+        BOOL ok = YES;
         
-        [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
-//        NSLog(@"ownerObject %@, destinationObject %@", ownerObject, destinationObject);
+        if (!ownerXid || [ownerXid isEqualToString:@""] || !destinationXid || [destinationXid isEqualToString:@""]) {
+            
+            ok = NO;
+//            NSLog(@"dictionary %@", dictionary);
+            
+        }
         
-        [[self document] saveDocument:^(BOOL success) {}];
+        if (ok) {
+            
+            NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
+            NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
+            
+            [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
+            //        NSLog(@"ownerObject %@, destinationObject %@", ownerObject, destinationObject);
+            
+            [[self document] saveDocument:^(BOOL success) {}];
+            
+        }
         
     }
     

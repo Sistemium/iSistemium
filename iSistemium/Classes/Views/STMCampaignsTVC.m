@@ -197,16 +197,16 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 
-    NSLog(@"controllerWillChangeContent");
+//    NSLog(@"controllerWillChangeContent");
     [self.tableView beginUpdates];
     
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    NSLog(@"controllerDidChangeContent");
+//    NSLog(@"controllerDidChangeContent");
     [self.tableView endUpdates];
-    [self.document saveDocument:^(BOOL success) {}];
+//    [self.document saveDocument:^(BOOL success) {}];
     
 }
 
