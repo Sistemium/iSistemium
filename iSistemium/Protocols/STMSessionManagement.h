@@ -21,7 +21,7 @@
 
 @protocol STMSyncer <NSObject>
 
-- (void)syncData;
+//- (void)syncData;
 
 @end
 

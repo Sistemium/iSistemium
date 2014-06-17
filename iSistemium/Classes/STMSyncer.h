@@ -12,11 +12,18 @@
 
 @interface STMSyncer : NSObject <STMSyncer>
 
+typedef enum {
+    STMSyncerIdle,
+    STMSyncerSendData,
+    STMSyncerRecieveData
+} STMSyncerState;
+
 @property (nonatomic, strong) id <STMSession> session;
 @property (nonatomic, strong) id <STMRequestAuthenticatable> authDelegate;
-@property (nonatomic, strong) NSMutableDictionary *serverDataModel;
+@property (nonatomic, strong) NSMutableDictionary *entitySyncInfo;
+@property (nonatomic) STMSyncerState syncerState;
 
-- (void)syncData;
+//- (void)syncData;
 - (void)prepareToDestroy;
 
 @end

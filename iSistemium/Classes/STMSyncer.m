@@ -12,12 +12,6 @@
 
 @interface STMSyncer()
 
-//typedef enum STMResponseType {
-//    STMEntityType,
-//    STMObjectType,
-//    STMRelationshipType
-//} STMResponseType;
-
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic) double syncInterval;
 @property (nonatomic) int fetchLimit;
@@ -35,6 +29,8 @@
 @implementation STMSyncer
 
 @synthesize syncInterval = _syncInterval;
+@synthesize entitySyncInfo = _entitySyncInfo;
+@synthesize syncerState = _syncerState;
 
 
 - (id)init {
@@ -130,13 +126,82 @@
     }
 }
 
-- (NSMutableDictionary *)serverDataModel {
+- (NSMutableDictionary *)entitySyncInfo {
     
-    if (!_serverDataModel) {
-        _serverDataModel = [NSMutableDictionary dictionary];
+    if (!_entitySyncInfo) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        id serverDataModel = [defaults objectForKey:@"serverDataModel"];
+
+        if (!serverDataModel) {
+            
+            serverDataModel = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.restServerURI, @"url", nil], @"STMEntity", nil];
+            [defaults setObject:serverDataModel forKey:@"serverDataModel"];
+            [defaults synchronize];
+
+        }
+        
+        _entitySyncInfo = serverDataModel;
+        
     }
     
-    return _serverDataModel;
+//    NSLog(@"_serverDataModel %@", _serverDataModel);
+    
+    return _entitySyncInfo;
+    
+}
+
+- (void)setEntitySyncInfo:(NSMutableDictionary *)serverDataModel {
+    
+    if (serverDataModel != _entitySyncInfo) {
+    
+        _entitySyncInfo = serverDataModel;
+        [self saveServerDataModel];
+        
+    }
+    
+}
+
+- (void)saveServerDataModel {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:self.entitySyncInfo forKey:@"serverDataModel"];
+    [defaults synchronize];
+    
+}
+
+- (STMSyncerState)syncerState {
+    
+    if (!_syncerState) {
+        _syncerState = STMSyncerIdle;
+    }
+    
+    return _syncerState;
+    
+}
+
+- (void)setSyncerState:(STMSyncerState)syncerState {
+    
+    if (syncerState != _syncerState) {
+        
+        _syncerState = syncerState;
+        
+        switch (syncerState) {
+                
+            case STMSyncerSendData:
+                [self sendData];
+                break;
+                
+            case STMSyncerRecieveData:
+                [self recieveData];
+                break;
+                
+            default:
+                break;
+                
+        }
+        
+    }
     
 }
 
@@ -248,26 +313,102 @@
 - (void)onTimerTick:(NSTimer *)timer {
     
 //    NSLog(@"syncTimer tick at %@", [NSDate date]);
-    [self syncData];
+    self.syncerState = STMSyncerSendData;
     
 }
 
 
 #pragma mark - syncing
 
-- (void)syncData {
+- (void)sendData {
     
-//    NSLog(@"self.syncing %d", self.syncing);
+    NSLog(@"sendData");
+    
+    self.syncerState = STMSyncerRecieveData;
+    
+}
+
+- (void)recieveData {
+    
+    NSLog(@"recieveData");
     
     if (!self.syncing) {
-        
+
         self.syncing = YES;
-        [self startConnectionWithURL:self.restServerURI pageNumber:nil];
+        [self startConnectionForRecieveEntitiesWithName:@"STMEntity"];
+//        [self startConnectionWithURL:self.restServerURI pageNumber:nil];
+        
+    }
+    
+//    self.syncerState = STMSyncerIdle;
+    
+}
+
+//- (void)syncData {
+//    
+////    NSLog(@"self.syncing %d", self.syncing);
+//    
+//    switch (self.syncerState) {
+//            
+//        case STMSyncerSendData:
+//            [self sendData];
+//            break;
+//            
+//        case STMSyncerRecieveData:
+//            [self recieveData];
+//            break;
+//            
+//        default:
+//            break;
+//            
+//    }
+//
+//}
+
+- (void)startConnectionForRecieveEntitiesWithName:(NSString *)entityName {
+    
+    NSDictionary *entity = [self.entitySyncInfo objectForKey:entityName];
+    NSString *url = [entity objectForKey:@"url"];
+    NSString *eTag = [entity objectForKey:@"eTag"];
+    eTag = eTag ? eTag : @"*";
+    NSLog(@"entityName %@, eTag %@", entityName, eTag);
+    
+    NSURL *requestURL = [NSURL URLWithString:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+    request = [[self.authDelegate authenticateRequest:request] mutableCopy];
+    
+    if ([request valueForHTTPHeaderField:@"Authorization"]) {
+        
+        request.HTTPShouldHandleCookies = NO;
+//        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+        [request setHTTPMethod:@"GET"];
+        
+        [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
+        [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
+    
+        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        
+        if (!connection) {
+            
+            [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
+            self.syncing = NO;
+            
+        } else {
+            
+            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+            
+        }
+
+    } else {
+        
+        [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
+        [self notAuthorized];
         
     }
     
 }
 
+/*
 - (void)startConnectionWithURL:(NSString *)URLString pageNumber:(NSString *)pageNumber {
     
     NSURL *requestURL = [NSURL URLWithString:URLString];
@@ -309,12 +450,48 @@
     }
 
 }
+*/
 
 - (void)notAuthorized {
 
     self.syncing = NO;
     [self stopSyncer];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"notAuthorized" object:self];
+
+}
+
+- (NSString *)entityNameForConnection:(NSURLConnection *)connection {
+    
+    NSString *entityName = nil;
+    
+    for (NSString *name in self.entitySyncInfo.allKeys) {
+        
+        NSDictionary *entityDic = [self.entitySyncInfo objectForKey:name];
+        
+        if ([[entityDic objectForKey:@"url"] isEqualToString:connection.currentRequest.URL.absoluteString]) {
+            
+            entityName = name;
+            
+        }
+        
+    }
+    
+    return entityName;
+
+    
+    // 2nd option to get entity name — require headers from NSURLResponse
+    /*
+     NSString *entityName = [headers objectForKey:@"Title"];
+     NSArray *nameExplode = [entityName componentsSeparatedByString:@"."];
+     entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
+     
+     NSString *capString = [[entityName substringToIndex:4] uppercaseString];
+     entityName = [entityName stringByReplacingCharactersInRange:NSMakeRange(0,4) withString:capString];
+     
+     [[self.serverDataModel objectForKey:entityName] setValue:eTag forKey:@"eTag"];
+     [self saveServerDataModel];
+     */
+    // end of 2nd option
 
 }
 
@@ -330,18 +507,43 @@
     
     NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
     NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
+//    NSLog(@"headers %@", headers);
+    
+    NSString *entityName = [self entityNameForConnection:connection];
     
     if (statusCode == 200) {
         
         self.responseData = [NSMutableData data];
-        NSString *lastModified = [headers objectForKey:@"Last-Modified"];
-        if (lastModified) {
-            NSLog(@"lastModified %@", lastModified);
+        
+        NSString *eTag = [headers objectForKey:@"eTag"];
+//        NSLog(@"eTag %@", eTag);
+        
+        if (eTag && entityName) {
+        
+            [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
+            [self saveServerDataModel];
+            [self startConnectionForRecieveEntitiesWithName:entityName];
+            
         }
         
     } else if (statusCode == 304) {
         
         NSLog(@"304 Not Modified");
+        
+    }  else if (statusCode == 204) {
+        
+        NSLog(@"%@: 204 No Content", entityName);
+        
+        if ([entityName isEqualToString:@"STMEntity"]) {
+            
+            NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
+            [entityNames removeObject:entityName];
+            
+            for (NSString *name in entityNames) {
+                [self startConnectionForRecieveEntitiesWithName:name];
+            }
+            
+        }
         
     }
     
@@ -355,11 +557,13 @@
     
 //    NSString *dataPath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"];
 //    self.responseData = [NSData dataWithContentsOfFile:dataPath];
-
+//
 //    NSString *responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
 //    NSLog(@"connectionDidFinishLoading responseData %@", responseString);
     
-    [self parseResponse:self.responseData fromConnection:connection];
+    if (self.responseData) {
+        [self parseResponse:self.responseData fromConnection:connection];
+    }
     
 }
 
@@ -376,58 +580,62 @@
     
     if (!errorString) {
 
-        int pageSize = [[responseJSON objectForKey:@"pageSize"] intValue];
-        int pageRowCount = [[responseJSON objectForKey:@"pageRowCount"] intValue];
-        
+//        int pageSize = [[responseJSON objectForKey:@"pageSize"] intValue];
+//        int pageRowCount = [[responseJSON objectForKey:@"pageRowCount"] intValue];
+//        
 //        NSString *entityName = [responseJSON objectForKey:@"entityName"];
 //        NSLog(@"pageSize %d", pageSize);
 //        NSLog(@"pageRowCount %d", pageRowCount);
 //        NSLog(@"entityName %@", entityName);
-        
-        if (pageRowCount >= pageSize) {
-            
-            int pageNumber = [[responseJSON objectForKey:@"pageNumber"] intValue] + 1;
-            
-            [self startConnectionWithURL:connection.currentRequest.URL.absoluteString pageNumber:[NSString stringWithFormat:@"%d", pageNumber]];
-            
-        }
+//        
+//        if (pageRowCount >= pageSize) {
+//            
+//            int pageNumber = [[responseJSON objectForKey:@"pageNumber"] intValue] + 1;
+//            
+//            [self startConnectionWithURL:connection.currentRequest.URL.absoluteString pageNumber:[NSString stringWithFormat:@"%d", pageNumber]];
+//            
+//        }
         
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
 //        NSLog(@"dataArray %@", dataArray);
         
         for (NSDictionary *datum in dataArray) {
             
-            NSDictionary *entityProperties = [datum objectForKey:@"properties"];
+            NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
 //            NSLog(@"entityProperties %@", entityProperties);
 
-            if ([[datum objectForKey:@"name"] isEqualToString:@"stc.entity"]) {
+            NSString *connectionEntityName = [self entityNameForConnection:connection];
+            
+            if ([connectionEntityName isEqualToString:@"STMEntity"]) {
                 
                 NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
-                NSString *entityURLString = [entityProperties objectForKey:@"url"];
+//                NSString *entityURLString = [entityProperties objectForKey:@"url"];
                 
-                [self.serverDataModel setObject:entityProperties forKey:entityName];
+                [self.entitySyncInfo setObject:entityProperties forKey:entityName];
+                [self saveServerDataModel];
+                NSLog(@"self.serverDataModel %@", self.entitySyncInfo);
                 
 //                if ([entityName isEqualToString:@"STMCampaignArticle"]) {
-                    [self startConnectionWithURL:entityURLString pageNumber:nil];
+//                    [self startConnectionWithURL:entityURLString pageNumber:nil];
 //                }
 
             } else {
 
-                NSString *name = [datum objectForKey:@"name"];
-                NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-                NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
-
-                NSDictionary *entityModel = [self.serverDataModel objectForKey:entityName];
-                
-                if ([entityModel objectForKey:@"roleName"]) {
-                    
-                    [STMObjectsController setRelationshipFromDictionary:datum];
-                    
-                } else {
-                    
-                    [STMObjectsController insertObjectFromDictionary:datum];
-                    
-                }
+//                NSString *name = [datum objectForKey:@"name"];
+//                NSArray *nameExplode = [name componentsSeparatedByString:@"."];
+//                NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
+//
+//                NSDictionary *entityModel = [self.entitySyncInfo objectForKey:entityName];
+//                
+//                if ([entityModel objectForKey:@"roleName"]) {
+//                    
+//                    [STMObjectsController setRelationshipFromDictionary:datum];
+//                    
+//                } else {
+//                    
+//                    [STMObjectsController insertObjectFromDictionary:datum];
+//                    
+//                }
                 
             }
             
