@@ -204,7 +204,7 @@
 
     BOOL checkValue = ![self.accessToken isEqualToString:@""] && ![self.userID isEqualToString:@""];
     
-    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
+//    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
     
     self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
 
