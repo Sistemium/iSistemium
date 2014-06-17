@@ -143,7 +143,7 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
     STMCampaign *campaign = sectionInfo.objects[indexPath.row];
-    NSLog(@"campaign %@", campaign);
+//    NSLog(@"campaign %@", campaign);
 
     STMArticlesTVC *articlesTVC = [[STMArticlesTVC alloc] init];
     articlesTVC.articles = campaign.articles;

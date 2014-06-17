@@ -46,7 +46,7 @@
     
     [self addObservers];
     if (self.articles.count > 0) {
-        NSLog(@"article %@", self.sortedArticles[0]);
+//        NSLog(@"article %@", self.sortedArticles[0]);
     }
     
 }

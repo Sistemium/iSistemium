@@ -20,9 +20,10 @@
 @property (nonatomic, strong) NSTimer *syncTimer;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) NSMutableDictionary *settings;
-@property (nonatomic) BOOL syncing;
+//@property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL running;
 @property (nonatomic, strong) NSMutableData *responseData;
+@property (nonatomic) NSUInteger entityCount;
 
 @end
 
@@ -117,14 +118,14 @@
     return _xmlNamespace;
 }
 
-- (void)setSyncing:(BOOL)syncing {
-    if (_syncing != syncing) {
-        _syncing = syncing;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
-        NSString *status = _syncing ? @"start" : @"stop";
-        [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@ syncing", status] type:@""];
-    }
-}
+//- (void)setSyncing:(BOOL)syncing {
+//    if (_syncing != syncing) {
+//        _syncing = syncing;
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
+//        NSString *status = _syncing ? @"start" : @"stop";
+//        [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@ syncing", status] type:@""];
+//    }
+//}
 
 - (NSMutableDictionary *)entitySyncInfo {
     
@@ -185,6 +186,10 @@
     if (syncerState != _syncerState) {
         
         _syncerState = syncerState;
+
+        NSArray *syncStates = @[@"idle", @"sendData", @"recieveData"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
+        [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]] type:@""];
         
         switch (syncerState) {
                 
@@ -226,7 +231,7 @@
     if (self.running) {
         
         [self.session.logger saveLogMessageWithText:@"Syncer stop" type:@""];
-        //    self.syncing = NO;
+        self.syncerState = STMSyncerIdle;
         [self releaseTimer];
         self.resultsController = nil;
         self.settings = nil;
@@ -321,24 +326,33 @@
 #pragma mark - syncing
 
 - (void)sendData {
-    
-    NSLog(@"sendData");
-    
-    self.syncerState = STMSyncerRecieveData;
-    
+
+    if (self.syncerState == STMSyncerSendData) {
+//        NSLog(@"sendData");
+        self.syncerState = STMSyncerRecieveData;
+    }
+
 }
 
 - (void)recieveData {
-    
-    NSLog(@"recieveData");
-    
-    if (!self.syncing) {
 
-        self.syncing = YES;
+    if (self.syncerState == STMSyncerRecieveData) {
+
+//        NSLog(@"recieveData");
         [self startConnectionForRecieveEntitiesWithName:@"STMEntity"];
-//        [self startConnectionWithURL:self.restServerURI pageNumber:nil];
         
     }
+    
+    
+//    if (!self.syncing) {
+//
+//        self.syncing = YES;
+
+//        [self startConnectionForRecieveEntitiesWithName:@"STMEntity"];
+    
+//        [self startConnectionWithURL:self.restServerURI pageNumber:nil];
+        
+//    }
     
 //    self.syncerState = STMSyncerIdle;
     
@@ -367,43 +381,48 @@
 
 - (void)startConnectionForRecieveEntitiesWithName:(NSString *)entityName {
     
-    NSDictionary *entity = [self.entitySyncInfo objectForKey:entityName];
-    NSString *url = [entity objectForKey:@"url"];
-    NSString *eTag = [entity objectForKey:@"eTag"];
-    eTag = eTag ? eTag : @"*";
-    NSLog(@"entityName %@, eTag %@", entityName, eTag);
-    
-    NSURL *requestURL = [NSURL URLWithString:url];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
-    request = [[self.authDelegate authenticateRequest:request] mutableCopy];
-    
-    if ([request valueForHTTPHeaderField:@"Authorization"]) {
+    if (self.syncerState != STMSyncerIdle) {
         
-        request.HTTPShouldHandleCookies = NO;
-//        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-        [request setHTTPMethod:@"GET"];
+        NSDictionary *entity = [self.entitySyncInfo objectForKey:entityName];
+        NSString *url = [entity objectForKey:@"url"];
+        NSString *eTag = [entity objectForKey:@"eTag"];
+        eTag = eTag ? eTag : @"*";
+        //    NSLog(@"entityName %@, eTag %@", entityName, eTag);
         
-        [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
-        [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
-    
-        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        NSURL *requestURL = [NSURL URLWithString:url];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+        request = [[self.authDelegate authenticateRequest:request] mutableCopy];
         
-        if (!connection) {
+        if ([request valueForHTTPHeaderField:@"Authorization"]) {
             
-            [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
-            self.syncing = NO;
+            request.HTTPShouldHandleCookies = NO;
+            //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+            [request setHTTPMethod:@"GET"];
+            
+            [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
+            [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
+            
+            NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+            
+            if (!connection) {
+                
+                [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
+                //            self.syncing = NO;
+                self.syncerState = STMSyncerIdle;
+                
+            } else {
+                
+                //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+                
+            }
             
         } else {
             
-            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+            [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
+            [self notAuthorized];
             
         }
 
-    } else {
-        
-        [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
-        [self notAuthorized];
-        
     }
     
 }
@@ -454,7 +473,6 @@
 
 - (void)notAuthorized {
 
-    self.syncing = NO;
     [self stopSyncer];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"notAuthorized" object:self];
 
@@ -498,9 +516,11 @@
 #pragma mark - NSURLConnectionDataDelegate
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    self.syncing = NO;
+    
+    self.syncerState = STMSyncerIdle;
     NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error];
     [self.session.logger saveLogMessageWithText:errorMessage type:@"error"];
+    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -518,7 +538,7 @@
         NSString *eTag = [headers objectForKey:@"eTag"];
 //        NSLog(@"eTag %@", eTag);
         
-        if (eTag && entityName) {
+        if (eTag && entityName && self.syncerState != STMSyncerIdle) {
         
             [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
             [self saveServerDataModel];
@@ -536,11 +556,23 @@
         
         if ([entityName isEqualToString:@"STMEntity"]) {
             
+            self.entityCount = self.entitySyncInfo.allKeys.count - 1;
+
+            self.responseData = nil;
+            
             NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             [entityNames removeObject:entityName];
             
             for (NSString *name in entityNames) {
                 [self startConnectionForRecieveEntitiesWithName:name];
+            }
+            
+        } else {
+
+            self.entityCount -= 1;
+            
+            if (self.entityCount == 0) {
+                self.syncerState = STMSyncerIdle;
             }
             
         }
@@ -573,28 +605,11 @@
     
     NSError *error;
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-
 //    NSLog(@"responseJSON %@", responseJSON);
     
     NSString *errorString = [responseJSON objectForKey:@"error"];
     
     if (!errorString) {
-
-//        int pageSize = [[responseJSON objectForKey:@"pageSize"] intValue];
-//        int pageRowCount = [[responseJSON objectForKey:@"pageRowCount"] intValue];
-//        
-//        NSString *entityName = [responseJSON objectForKey:@"entityName"];
-//        NSLog(@"pageSize %d", pageSize);
-//        NSLog(@"pageRowCount %d", pageRowCount);
-//        NSLog(@"entityName %@", entityName);
-//        
-//        if (pageRowCount >= pageSize) {
-//            
-//            int pageNumber = [[responseJSON objectForKey:@"pageNumber"] intValue] + 1;
-//            
-//            [self startConnectionWithURL:connection.currentRequest.URL.absoluteString pageNumber:[NSString stringWithFormat:@"%d", pageNumber]];
-//            
-//        }
         
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
 //        NSLog(@"dataArray %@", dataArray);
@@ -609,33 +624,23 @@
             if ([connectionEntityName isEqualToString:@"STMEntity"]) {
                 
                 NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
-//                NSString *entityURLString = [entityProperties objectForKey:@"url"];
-                
                 [self.entitySyncInfo setObject:entityProperties forKey:entityName];
                 [self saveServerDataModel];
-                NSLog(@"self.serverDataModel %@", self.entitySyncInfo);
+//                NSLog(@"self.serverDataModel %@", self.entitySyncInfo);
                 
-//                if ([entityName isEqualToString:@"STMCampaignArticle"]) {
-//                    [self startConnectionWithURL:entityURLString pageNumber:nil];
-//                }
-
             } else {
 
-//                NSString *name = [datum objectForKey:@"name"];
-//                NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-//                NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
-//
-//                NSDictionary *entityModel = [self.entitySyncInfo objectForKey:entityName];
-//                
-//                if ([entityModel objectForKey:@"roleName"]) {
-//                    
-//                    [STMObjectsController setRelationshipFromDictionary:datum];
-//                    
-//                } else {
-//                    
-//                    [STMObjectsController insertObjectFromDictionary:datum];
-//                    
-//                }
+                NSDictionary *entityModel = [self.entitySyncInfo objectForKey:connectionEntityName];
+                
+                if ([entityModel objectForKey:@"roleName"]) {
+                    
+                    [STMObjectsController setRelationshipFromDictionary:datum];
+                    
+                } else {
+                    
+                    [STMObjectsController insertObjectFromDictionary:datum];
+                    
+                }
                 
             }
             

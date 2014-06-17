@@ -402,9 +402,9 @@
 				2C8EF5DA1940860A0021D202 /* STMAuthController.m */,
 				2C8EF5DB1940860A0021D202 /* STMFunctions.h */,
 				2C8EF5DC1940860A0021D202 /* STMFunctions.m */,
-				2C53B88419409D64002298A5 /* Views */,
 				2C53B9AE19434E1E002298A5 /* STMObjectsController.h */,
 				2C53B9AF19434E1E002298A5 /* STMObjectsController.m */,
+				2C53B88419409D64002298A5 /* Views */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
