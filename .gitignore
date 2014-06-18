@@ -4,3 +4,5 @@ xcuserdata
 *.lock
 
 /Pods/*
+
+*.xcuserstate
