@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="8pP-dU-lge">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <scenes>
+        <!--AuthVC-->
+        <scene sceneID="Z9z-CZ-p33">
+            <objects>
+                <viewController id="8pP-dU-lge" customClass="STMAuthVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="W7k-Qn-gQ9"/>
+                        <viewControllerLayoutGuide type="bottom" id="wFW-wt-Plx"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="vYD-Y9-dVy">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SFU-eb-RbN">
+                                <rect key="frame" x="478" y="497" width="86" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Send Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="sendButtonPressed:" destination="8pP-dU-lge" eventType="touchUpInside" id="xde-vf-jiq"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Enter to Sistemium" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wlO-9f-ncL">
+                                <rect key="frame" x="269" y="125" width="230" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="230" id="pp8-CY-jmi"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter phone number" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qCj-xH-PTT">
+                                <rect key="frame" x="306" y="448" width="157" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="89091234567" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WC2-5l-jGZ">
+                                <rect key="frame" x="299" y="497" width="171" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="171" id="Tcj-tE-1B0"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="xKf-H0-a1L">
+                                <rect key="frame" x="374" y="182" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KJN-VA-Fj3">
+                                <rect key="frame" x="128" y="497" width="163" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="New SMS code request">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="requestSMSCodeButtonPressed:" destination="8pP-dU-lge" eventType="touchUpInside" id="Uhn-Wl-jI2"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eJ7-29-O0v">
+                                <rect key="frame" x="418" y="397" width="54" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Change">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="changePhoneNumberButtonPressed:" destination="8pP-dU-lge" eventType="touchUpInside" id="0l7-8b-VCN"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phone number" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hMQ-8O-GEh">
+                                <rect key="frame" x="297" y="401" width="113" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="WC2-5l-jGZ" firstAttribute="leading" secondItem="KJN-VA-Fj3" secondAttribute="trailing" constant="8" symbolic="YES" id="2Bq-yz-sAa"/>
+                            <constraint firstItem="xKf-H0-a1L" firstAttribute="top" secondItem="wlO-9f-ncL" secondAttribute="bottom" constant="36" id="3MP-cE-uYP"/>
+                            <constraint firstItem="WC2-5l-jGZ" firstAttribute="top" secondItem="SFU-eb-RbN" secondAttribute="top" id="54g-8C-g0u"/>
+                            <constraint firstItem="hMQ-8O-GEh" firstAttribute="centerY" secondItem="eJ7-29-O0v" secondAttribute="centerY" constant="-0.5" id="6mM-WA-GXY"/>
+                            <constraint firstItem="WC2-5l-jGZ" firstAttribute="centerY" secondItem="vYD-Y9-dVy" secondAttribute="centerY" id="C1c-Dt-Rnb"/>
+                            <constraint firstItem="qCj-xH-PTT" firstAttribute="top" secondItem="hMQ-8O-GEh" secondAttribute="bottom" constant="26" id="CPe-qz-fk1"/>
+                            <constraint firstItem="wlO-9f-ncL" firstAttribute="centerX" secondItem="xKf-H0-a1L" secondAttribute="centerX" id="DAd-eY-SUH"/>
+                            <constraint firstItem="WC2-5l-jGZ" firstAttribute="top" secondItem="KJN-VA-Fj3" secondAttribute="top" id="IO6-70-kNS"/>
+                            <constraint firstItem="hMQ-8O-GEh" firstAttribute="centerX" secondItem="qCj-xH-PTT" secondAttribute="centerX" constant="-31" id="Qvp-6U-GQJ"/>
+                            <constraint firstItem="WC2-5l-jGZ" firstAttribute="centerX" secondItem="xKf-H0-a1L" secondAttribute="centerX" id="W4g-47-3HQ"/>
+                            <constraint firstItem="xKf-H0-a1L" firstAttribute="top" secondItem="vYD-Y9-dVy" secondAttribute="top" constant="182" id="bRA-rU-Stg"/>
+                            <constraint firstItem="WC2-5l-jGZ" firstAttribute="centerX" secondItem="qCj-xH-PTT" secondAttribute="centerX" id="gpx-PN-R2f"/>
+                            <constraint firstItem="wlO-9f-ncL" firstAttribute="centerX" secondItem="vYD-Y9-dVy" secondAttribute="centerX" id="m9a-JJ-jZF"/>
+                            <constraint firstItem="wlO-9f-ncL" firstAttribute="top" secondItem="W7k-Qn-gQ9" secondAttribute="bottom" constant="61" id="mHt-P2-VGz"/>
+                            <constraint firstItem="WC2-5l-jGZ" firstAttribute="top" secondItem="qCj-xH-PTT" secondAttribute="bottom" constant="28" id="oQU-Pv-6OL"/>
+                            <constraint firstItem="eJ7-29-O0v" firstAttribute="leading" secondItem="hMQ-8O-GEh" secondAttribute="trailing" constant="8" id="zXq-4f-tp2"/>
+                            <constraint firstItem="SFU-eb-RbN" firstAttribute="leading" secondItem="WC2-5l-jGZ" secondAttribute="trailing" constant="8" symbolic="YES" id="zfQ-lD-hr3"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="1io-Rh-mK0">
+                        <barButtonItem key="rightBarButtonItem" title="Main view" id="vVS-Ph-8sn">
+                            <connections>
+                                <action selector="mainViewBarButtonPressed:" destination="8pP-dU-lge" id="l2e-bX-esp"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="authInfoLabel" destination="qCj-xH-PTT" id="aMX-aG-Swy"/>
+                        <outlet property="authInfoTextField" destination="WC2-5l-jGZ" id="iep-9j-EGA"/>
+                        <outlet property="changePhoneNumberButton" destination="eJ7-29-O0v" id="GEH-mz-uVm"/>
+                        <outlet property="mainViewBarButton" destination="vVS-Ph-8sn" id="8a5-dN-gS0"/>
+                        <outlet property="phoneInfoLabel" destination="hMQ-8O-GEh" id="Umo-f7-t8f"/>
+                        <outlet property="requestSMSCodeButton" destination="KJN-VA-Fj3" id="q4l-CJ-YaI"/>
+                        <outlet property="sendButton" destination="SFU-eb-RbN" id="yQU-Zj-eDL"/>
+                        <outlet property="spinner" destination="xKf-H0-a1L" id="c0k-DJ-dKC"/>
+                        <outlet property="titleLabel" destination="wlO-9f-ncL" id="DsX-r5-blP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mX6-yk-mTc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1023" y="-115"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
+</document>

@@ -65,6 +65,9 @@
 		2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5F21940872E0021D202 /* STMAppDelegate.m */; };
 		2C8EF5F5194087520021D202 /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8EF5F4194087520021D202 /* iPad.storyboard */; };
 		2C8EF5F7194089E10021D202 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5F6194089E10021D202 /* Security.framework */; };
+		2CE8B515195475F400C84A6D /* STMRootVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B514195475F400C84A6D /* STMRootVC.m */; };
+		2CE8B51A19547AF100C84A6D /* STMAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51819547AF100C84A6D /* STMAuth.storyboard */; };
+		2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */; };
 		CEAB4F59717C484083629622 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6311C3BED44E4D598636BF2C /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -188,6 +191,10 @@
 		2C8EF5F21940872E0021D202 /* STMAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAppDelegate.m; sourceTree = "<group>"; };
 		2C8EF5F4194087520021D202 /* iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPad.storyboard; sourceTree = "<group>"; };
 		2C8EF5F6194089E10021D202 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		2CE8B513195475F400C84A6D /* STMRootVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRootVC.h; sourceTree = "<group>"; };
+		2CE8B514195475F400C84A6D /* STMRootVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRootVC.m; sourceTree = "<group>"; };
+		2CE8B51819547AF100C84A6D /* STMAuth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMAuth.storyboard; sourceTree = "<group>"; };
+		2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMCampaigns.storyboard; sourceTree = "<group>"; };
 		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8B7BD87EDED486BA6D4F962 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -221,6 +228,8 @@
 		2C53B88419409D64002298A5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2CE8B513195475F400C84A6D /* STMRootVC.h */,
+				2CE8B514195475F400C84A6D /* STMRootVC.m */,
 				2C53B8A719409E83002298A5 /* STMLocationTVC.h */,
 				2C53B8A819409E83002298A5 /* STMLocationTVC.m */,
 				2C53B8A919409E83002298A5 /* STMSettingsTVC.h */,
@@ -331,11 +340,11 @@
 		2C8EF5A41940859F0021D202 /* iSistemium */ = {
 			isa = PBXGroup;
 			children = (
+				2CE8B51719547A7900C84A6D /* Storyboards */,
 				2C53B8AF1940A0A3002298A5 /* DataModel */,
 				2C53B88519409DC4002298A5 /* Protocols */,
 				2C8EF5D3194085B70021D202 /* Classes */,
 				2C8EF5E0194086450021D202 /* Resources */,
-				2C8EF5F4194087520021D202 /* iPad.storyboard */,
 				2C8EF5F11940872E0021D202 /* STMAppDelegate.h */,
 				2C8EF5F21940872E0021D202 /* STMAppDelegate.m */,
 				2C8EF5B61940859F0021D202 /* Images.xcassets */,
@@ -417,6 +426,16 @@
 				2C8EF5EF194086E10021D202 /* Localizable.strings */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		2CE8B51719547A7900C84A6D /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				2C8EF5F4194087520021D202 /* iPad.storyboard */,
+				2CE8B51819547AF100C84A6D /* STMAuth.storyboard */,
+				2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */,
+			);
+			path = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -502,10 +521,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CE8B51A19547AF100C84A6D /* STMAuth.storyboard in Resources */,
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
 				2C8EF5F5194087520021D202 /* iPad.storyboard in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
 				2C53B88A19409E42002298A5 /* settings_schema.json in Resources */,
+				2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */,
 			);
@@ -570,6 +591,7 @@
 				2C53B99119433872002298A5 /* STMPhotoReport.m in Sources */,
 				2C53B93B19431AA5002298A5 /* STMNavigationController.m in Sources */,
 				2C53B9B019434E1E002298A5 /* STMObjectsController.m in Sources */,
+				2CE8B515195475F400C84A6D /* STMRootVC.m in Sources */,
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
 				2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */,

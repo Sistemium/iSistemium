@@ -9,6 +9,7 @@
 #import "STMAuthVC.h"
 #import "STMAuthController.h"
 #import "STMFunctions.h"
+#import "STMRootVC.h"
 
 @interface STMAuthVC () <UITextFieldDelegate>
 
@@ -59,7 +60,8 @@
     } else if (self.viewState == STMAuthSuccess) {
         
         [self showAuthInfo];
-        [self mainViewBarButtonPressed:self.mainViewBarButton];
+//        [self mainViewBarButtonPressed:self.mainViewBarButton];
+        [(STMRootVC *)self.tabBarController showTabWithName:@"STMCampaigns"];
         
     }
 
