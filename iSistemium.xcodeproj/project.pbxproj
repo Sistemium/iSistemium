@@ -68,6 +68,9 @@
 		2CE8B515195475F400C84A6D /* STMRootVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B514195475F400C84A6D /* STMRootVC.m */; };
 		2CE8B51A19547AF100C84A6D /* STMAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51819547AF100C84A6D /* STMAuth.storyboard */; };
 		2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */; };
+		2CE8B51E19548D3900C84A6D /* STMAuthTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B51D19548D3900C84A6D /* STMAuthTVC.m */; };
+		2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51F19556E0400C84A6D /* STMAuthTVC.storyboard */; };
+		2CE8B52319556F0700C84A6D /* STMAuthTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B52219556F0700C84A6D /* STMAuthTableVC.m */; };
 		CEAB4F59717C484083629622 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6311C3BED44E4D598636BF2C /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -195,6 +198,11 @@
 		2CE8B514195475F400C84A6D /* STMRootVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRootVC.m; sourceTree = "<group>"; };
 		2CE8B51819547AF100C84A6D /* STMAuth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMAuth.storyboard; sourceTree = "<group>"; };
 		2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMCampaigns.storyboard; sourceTree = "<group>"; };
+		2CE8B51C19548D3900C84A6D /* STMAuthTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthTVC.h; sourceTree = "<group>"; };
+		2CE8B51D19548D3900C84A6D /* STMAuthTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthTVC.m; sourceTree = "<group>"; };
+		2CE8B51F19556E0400C84A6D /* STMAuthTVC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMAuthTVC.storyboard; sourceTree = "<group>"; };
+		2CE8B52119556F0700C84A6D /* STMAuthTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthTableVC.h; sourceTree = "<group>"; };
+		2CE8B52219556F0700C84A6D /* STMAuthTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthTableVC.m; sourceTree = "<group>"; };
 		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8B7BD87EDED486BA6D4F962 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -230,6 +238,10 @@
 			children = (
 				2CE8B513195475F400C84A6D /* STMRootVC.h */,
 				2CE8B514195475F400C84A6D /* STMRootVC.m */,
+				2CE8B52119556F0700C84A6D /* STMAuthTableVC.h */,
+				2CE8B52219556F0700C84A6D /* STMAuthTableVC.m */,
+				2CE8B51C19548D3900C84A6D /* STMAuthTVC.h */,
+				2CE8B51D19548D3900C84A6D /* STMAuthTVC.m */,
 				2C53B8A719409E83002298A5 /* STMLocationTVC.h */,
 				2C53B8A819409E83002298A5 /* STMLocationTVC.m */,
 				2C53B8A919409E83002298A5 /* STMSettingsTVC.h */,
@@ -433,6 +445,7 @@
 			children = (
 				2C8EF5F4194087520021D202 /* iPad.storyboard */,
 				2CE8B51819547AF100C84A6D /* STMAuth.storyboard */,
+				2CE8B51F19556E0400C84A6D /* STMAuthTVC.storyboard */,
 				2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */,
 			);
 			path = Storyboards;
@@ -522,6 +535,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CE8B51A19547AF100C84A6D /* STMAuth.storyboard in Resources */,
+				2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */,
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
 				2C8EF5F5194087520021D202 /* iPad.storyboard in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
@@ -584,6 +598,7 @@
 				2C53B97919433872002298A5 /* STMSalesman.m in Sources */,
 				2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */,
 				2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */,
+				2CE8B52319556F0700C84A6D /* STMAuthTableVC.m in Sources */,
 				2C53B89F19409E71002298A5 /* STMSession.m in Sources */,
 				2C53B99A19433872002298A5 /* STMCampaign.m in Sources */,
 				2C53B97619433871002298A5 /* STMPhoto.m in Sources */,
@@ -600,6 +615,7 @@
 				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
 				2C53B98819433872002298A5 /* STMLogMessage.m in Sources */,
 				2C53B98E19433872002298A5 /* STMArticle.m in Sources */,
+				2CE8B51E19548D3900C84A6D /* STMAuthTVC.m in Sources */,
 				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,
 				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,
 				2C53B8A619409E71002298A5 /* STMSettingsController.m in Sources */,

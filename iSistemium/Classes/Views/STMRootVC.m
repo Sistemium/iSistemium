@@ -8,6 +8,7 @@
 
 #import "STMRootVC.h"
 #import "STMAuthController.h"
+#import "STMAuthTVC.h"
 
 @interface STMRootVC () <UITabBarControllerDelegate>
 
@@ -48,14 +49,24 @@
     
     self.delegate = self;
     
-    NSArray *storyboardnames = @[@"STMAuth",@"STMCampaigns"];
+    NSArray *storyboardnames = @[@"STMAuthTVC",@"STMCampaigns"];
     
     for (NSString *name in storyboardnames) {
         
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
-        UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = name;
-        [self.tabs setObject:vc forKey:name];
+        if ([name isEqualToString:@"STMAuth"]) {
+            
+            STMAuthTVC *authTVC = [[STMAuthTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            authTVC.title = name;
+            [self.tabs setObject:authTVC forKey:name];
+            
+        } else {
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
+            UIViewController *vc = [storyboard instantiateInitialViewController];
+            vc.title = name;
+            [self.tabs setObject:vc forKey:name];
+            
+        }
         
     }
     
@@ -115,7 +126,7 @@
     [super viewDidAppear:animated];
     
     if ([STMAuthController authController].controllerState == STMAuthSuccess) {
-        [self showTabWithName:@"STMCampaigns"];
+//        [self showTabWithName:@"STMCampaigns"];
     } else {
         [self showTabWithName:@"STMAuth"];
     }
