@@ -12,15 +12,42 @@
 #import "STMDocument.h"
 #import "STMCampaign.h"
 #import "STMArticlesTVC.h"
+#import "STMRootVC.h"
 
 @interface STMCampaignsTVC () <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, strong) UIBarButtonItem *homeButton;
 
 @end
 
 @implementation STMCampaignsTVC
+
+- (UIBarButtonItem *)homeButton {
+    
+    if (!_homeButton) {
+        
+//        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(homeButtonPressed)];
+        
+        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HOME", nil) style:UIBarButtonItemStylePlain target:self action:@selector(homeButtonPressed)];
+        
+        _homeButton = button;
+        
+    }
+    
+    return _homeButton;
+    
+}
+
+- (void)homeButtonPressed {
+    
+    NSLog(@"homeButtonPressed");
+    [[STMRootVC sharedRootVC] showTabWithName:@"STMAuthTVC"];
+    
+    
+}
+
 
 
 - (STMDocument *)document {
@@ -65,6 +92,8 @@
 - (void)customInit {
     
     [self addObservers];
+    
+    self.navigationItem.rightBarButtonItem = self.homeButton;
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {

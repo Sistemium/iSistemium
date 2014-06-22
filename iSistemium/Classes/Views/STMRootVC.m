@@ -12,6 +12,7 @@
 
 @interface STMRootVC () <UITabBarControllerDelegate>
 
+@property (nonatomic, strong) NSArray *storyboardnames;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 
 @end
@@ -49,9 +50,9 @@
     
     self.delegate = self;
     
-    NSArray *storyboardnames = @[@"STMAuthTVC",@"STMCampaigns"];
+    self.storyboardnames = @[@"STMAuthTVC",@"STMCampaigns"];
     
-    for (NSString *name in storyboardnames) {
+    for (NSString *name in self.storyboardnames) {
         
 //        if ([name isEqualToString:@"STMAuth"]) {
 //            
@@ -98,6 +99,17 @@
     
 }
 
+- (void)showTabAtIndex:(NSUInteger)index {
+    
+    UIViewController *vc = [self.tabs objectForKey:self.storyboardnames[index]];
+    
+    if (vc) {
+        
+        [self setSelectedViewController:vc];
+        
+    }
+
+}
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     return YES;

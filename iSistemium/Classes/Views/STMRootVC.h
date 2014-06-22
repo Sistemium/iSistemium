@@ -13,6 +13,6 @@
 + (STMRootVC *)sharedRootVC;
 
 - (void)showTabWithName:(NSString *)tabName;
-
+- (void)showTabAtIndex:(NSUInteger)index;
 
 @end

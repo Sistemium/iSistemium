@@ -9,6 +9,7 @@
 #import "STMAuthTVC.h"
 #import "STMAuthController.h"
 #import "STMFunctions.h"
+#import "STMRootVC.h"
 
 @interface STMAuthTVC () <UITextFieldDelegate>
 
@@ -574,6 +575,8 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    NSLog(@"select cell section %d, row %d", indexPath.section, indexPath.row);
+    
     NSIndexPath *sendButtonIndexPath = [self.tableView indexPathForCell:self.authSendCell];
     
     if ([sendButtonIndexPath compare:indexPath] == NSOrderedSame) {
@@ -581,6 +584,12 @@
         if (self.authSendCell.textLabel.textColor == self.activeButtonColor) {
             [self sendButtonPressed];
         }
+        
+    }
+    
+    if ([STMAuthController authController].controllerState == STMAuthSuccess && indexPath.section == 1) {
+        
+        [[STMRootVC sharedRootVC] showTabAtIndex:indexPath.row+1];
         
     }
 
