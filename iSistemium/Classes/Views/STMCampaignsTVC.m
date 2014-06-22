@@ -12,7 +12,7 @@
 #import "STMDocument.h"
 #import "STMCampaign.h"
 #import "STMArticlesTVC.h"
-#import "STMRootVC.h"
+#import "STMRootTBC.h"
 
 @interface STMCampaignsTVC () <NSFetchedResultsControllerDelegate>
 
@@ -43,7 +43,7 @@
 - (void)homeButtonPressed {
     
     NSLog(@"homeButtonPressed");
-    [[STMRootVC sharedRootVC] showTabWithName:@"STMAuthTVC"];
+    [[STMRootTBC sharedRootVC] showTabWithName:@"STMAuthTVC"];
     
     
 }

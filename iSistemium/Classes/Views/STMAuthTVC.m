@@ -9,7 +9,7 @@
 #import "STMAuthTVC.h"
 #import "STMAuthController.h"
 #import "STMFunctions.h"
-#import "STMRootVC.h"
+#import "STMRootTBC.h"
 
 @interface STMAuthTVC () <UITextFieldDelegate>
 
@@ -19,6 +19,24 @@
 @property (nonatomic, strong) UITableViewCell *authInfoEnterCell;
 @property (nonatomic, strong) UIColor *activeButtonColor;
 @property (nonatomic, strong) UIButton *phoneButton;
+
+@end
+
+@interface STMAuthTVCell : UITableViewCell
+
+@end
+
+@implementation STMAuthTVCell
+
+- (void)prepareForReuse {
+    
+    [super prepareForReuse];
+    
+    for (UIView *view in self.contentView.subviews) {
+        [view removeFromSuperview];
+    }
+    
+}
 
 @end
 
@@ -127,9 +145,9 @@
     
 }
 
-- (UITableViewCell *)authPhoneNumberCell {
+- (STMAuthTVCell *)authPhoneNumberCell {
     
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"authPhoneNumberCell"];
+    STMAuthTVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"authPhoneNumberCell"];
     
     for (UIView *view in cell.contentView.subviews) {
         
@@ -589,7 +607,7 @@
     
     if ([STMAuthController authController].controllerState == STMAuthSuccess && indexPath.section == 1) {
         
-        [[STMRootVC sharedRootVC] showTabAtIndex:indexPath.row+1];
+        [[STMRootTBC sharedRootVC] showTabAtIndex:indexPath.row+1];
         
     }
 

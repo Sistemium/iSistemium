@@ -6,20 +6,20 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMRootVC.h"
+#import "STMRootTBC.h"
 #import "STMAuthController.h"
 #import "STMAuthTVC.h"
 
-@interface STMRootVC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning>
+@interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning>
 
 @property (nonatomic, strong) NSArray *storyboardnames;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 
 @end
 
-@implementation STMRootVC
+@implementation STMRootTBC
 
-+ (STMRootVC *)sharedRootVC {
++ (STMRootTBC *)sharedRootVC {
     
     static dispatch_once_t pred = 0;
     __strong static id _sharedRootVC = nil;

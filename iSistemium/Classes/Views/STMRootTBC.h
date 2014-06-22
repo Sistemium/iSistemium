@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMRootVC : UITabBarController
+@interface STMRootTBC : UITabBarController
 
-+ (STMRootVC *)sharedRootVC;
++ (STMRootTBC *)sharedRootVC;
 
 - (void)showTabWithName:(NSString *)tabName;
 - (void)showTabAtIndex:(NSUInteger)index;
