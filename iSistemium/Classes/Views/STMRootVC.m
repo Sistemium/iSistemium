@@ -10,7 +10,7 @@
 #import "STMAuthController.h"
 #import "STMAuthTVC.h"
 
-@interface STMRootVC () <UITabBarControllerDelegate>
+@interface STMRootVC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning>
 
 @property (nonatomic, strong) NSArray *storyboardnames;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
@@ -115,6 +115,34 @@
     return YES;
 }
 
+- (id <UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
+    
+    return self;
+    
+}
+
+- (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
+    
+    return 0.5;
+    
+}
+
+- (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
+    
+    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    toViewController.view.frame = [transitionContext finalFrameForViewController:toViewController];
+    [toViewController.view layoutIfNeeded];
+    
+    [UIView transitionFromView:fromViewController.view
+                        toView:toViewController.view
+                      duration:[self transitionDuration:transitionContext]
+                       options:UIViewAnimationOptionTransitionFlipFromLeft
+                    completion:^(BOOL finished) {
+                        [transitionContext completeTransition:YES];
+                    }];
+
+}
 
 #pragma mark - view lifecycle
 
@@ -137,11 +165,11 @@
     
     [super viewDidAppear:animated];
     
-    if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+//    if ([STMAuthController authController].controllerState == STMAuthSuccess) {
 //        [self showTabWithName:@"STMCampaigns"];
-    } else {
-        [self showTabWithName:@"STMAuth"];
-    }
+//    } else {
+//        [self showTabWithName:@"STMAuthTVC"];
+//    }
 
 }
 
