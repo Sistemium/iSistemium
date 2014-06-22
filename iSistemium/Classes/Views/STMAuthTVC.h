@@ -1,8 +1,8 @@
 //
-//  STMAuthTVC.h
+//  STMAuthTableVC.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 20/06/14.
+//  Created by Maxim Grigoriev on 21/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 

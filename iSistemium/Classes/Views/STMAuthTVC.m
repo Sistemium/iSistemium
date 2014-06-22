@@ -1,8 +1,8 @@
 //
-//  STMAuthTVC.m
+//  STMAuthTableVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 20/06/14.
+//  Created by Maxim Grigoriev on 21/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -10,118 +10,240 @@
 #import "STMAuthController.h"
 #import "STMFunctions.h"
 
-#define PHONE_PLACEHOLDER @"89091234567"
-
 @interface STMAuthTVC () <UITextFieldDelegate>
+
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) UITextField *inputField;
+@property (nonatomic, strong) UITableViewCell *authSendCell;
+@property (nonatomic, strong) UITableViewCell *authInfoEnterCell;
+@property (nonatomic, strong) UIColor *activeButtonColor;
+@property (nonatomic, strong) UIButton *phoneButton;
 
 @end
 
 @implementation STMAuthTVC
 
 
-#pragma mark - cell create
+#pragma mark - cell creation
 
-- (UITableViewCell *)defaultCell {
+- (UITableViewCell *)emptyCell {
+
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"emptyCell"];
+    return cell;
+
+}
+
+- (UITableViewCell *)authTitleCell {
     
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:@"defaultCell"];
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"authTitleCell"];
     
-    cell.textLabel.text = @"text";
-    cell.detailTextLabel.text = @"detailedText";
+    if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+        
+        cell.textLabel.text = NSLocalizedString(@"SISTEMIUM", nil);
+
+    } else {
+        cell.textLabel.text = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
+    }
     
     return cell;
 
 }
 
-- (UITableViewCell *)titleCell {
-    
-    static NSString *cellIdentifier = @"titleCell";
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-    
-    cell.textLabel.text = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
-    cell.textLabel.font = [UIFont boldSystemFontOfSize:22];
-    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+- (UITableViewCell *)authSpinnerCell {
 
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"authSpinnerCell"];
+    
+    for (UIView *view in cell.contentView.subviews) {
+        if ([view isKindOfClass:[UIActivityIndicatorView class]]) {
+            self.spinner = (UIActivityIndicatorView *)view;
+        }
+    }
+
+    self.spinner.hidden = YES;
+    
     return cell;
     
 }
 
-- (UITableViewCell *)phoneNumberCell {
-
-    static NSString *cellIdentifier = @"phoneNumberCell";
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+- (UITableViewCell *)authInfoEnterCell {
     
-    UITextField *textField = [self phoneNumberTextField];
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"authInfoEnterCell"];
     
-    [cell.contentView addSubview:textField];
-    [cell.contentView addSubview:[self phoneNumberButton]];
+    for (UIView *view in cell.contentView.subviews) {
+        if ([view isKindOfClass:[UITextField class]]) {
+            self.inputField = (UITextField *)view;
+        }
+    }
     
-    [self textFieldDidChange:textField];
-    
-    return cell;
-
-}
-
-- (UITextField *)phoneNumberTextField {
-    
-    UIFont *font = [UIFont systemFontOfSize:22];
-    
-    NSDictionary *attributes = @{NSFontAttributeName: font};
-    
-    CGRect frame;
-    frame.size = [PHONE_PLACEHOLDER sizeWithAttributes:attributes];
-    frame.origin = CGPointMake(160, 10);
-    
-    UITextField *phoneField = [[UITextField alloc] initWithFrame:frame];
-    phoneField.font = font;
-    phoneField.placeholder = PHONE_PLACEHOLDER;
-    phoneField.delegate = self;
-    phoneField.keyboardType = UIKeyboardTypeNumberPad;
-    [phoneField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [phoneField becomeFirstResponder];
-    
-    return phoneField;
-    
-}
-
-- (UIButton *)phoneNumberButton {
-    
-    NSString *title = NSLocalizedString(@"SEND", nil);
-
-    UIFont *font = [UIFont systemFontOfSize:22];
-    
-    NSDictionary *attributes = @{NSFontAttributeName: font};
-    
-    CGRect frame;
-    frame.size = [title sizeWithAttributes:attributes];
-    frame.origin = CGPointMake(320, 10);
-
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.frame = frame;
-    [button setTitle:title forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(phoneNumberButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    
-    return button;
-    
-}
-
-- (void)phoneNumberButtonPressed {
+    self.inputField.font = [UIFont systemFontOfSize:22];
     
     if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
-        NSLog(@"send phone number");
+        
+        self.inputField.placeholder = @"89091234567";
+        if ([STMAuthController authController].phoneNumber) {
+            self.inputField.text = [STMAuthController authController].phoneNumber;
+            [self textFieldDidChange:self.inputField];
+        }
+        
+    } else if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
+        
+        self.inputField.placeholder = @"XXXX";
+        self.inputField.text = nil;
+        
+    }
+    
+    self.inputField.keyboardType = UIKeyboardTypeNumberPad;
+    self.inputField.borderStyle = UITextBorderStyleNone;
+    self.inputField.textAlignment = NSTextAlignmentCenter;
+    
+    self.inputField.delegate = self;
+    [self.inputField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.inputField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
+    
+    return cell;
+    
+}
+
+- (UITableViewCell *)authSendCell {
+    
+    if (!_authSendCell) {
+        
+        UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"authSendCell"];
+        
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
+        cell.textLabel.text = NSLocalizedString(@"SEND", nil);
+        
+        self.activeButtonColor = cell.textLabel.textColor;
+
+        cell.textLabel.textColor = [STMFunctions isCorrectPhoneNumber:self.inputField.text] ? self.activeButtonColor : [UIColor lightGrayColor];
+
+        _authSendCell = cell;
+
+    }
+    
+    return _authSendCell;
+    
+}
+
+- (UITableViewCell *)authPhoneNumberCell {
+    
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"authPhoneNumberCell"];
+    
+    for (UIView *view in cell.contentView.subviews) {
+        
+        if ([view isKindOfClass:[UILabel class]]) {
+            
+            [(UILabel *)view setText:[STMAuthController authController].phoneNumber];
+            
+        } else if ([view isKindOfClass:[UIButton class]]) {
+            
+            self.phoneButton = (UIButton *)view;
+            [self.phoneButton addTarget:self action:@selector(phoneButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+            
+            if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
+                
+                [self.phoneButton setTitle:NSLocalizedString(@"CHANGE", nil) forState:UIControlStateNormal];
+                
+            } else if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+                
+                [self.phoneButton setTitle:NSLocalizedString(@"LOGOUT", nil) forState:UIControlStateNormal];
+
+            }
+            
+        }
+        
+    }
+    
+    return cell;
+    
+}
+
+- (void)phoneButtonPressed {
+
+    if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
+        
+        [STMAuthController authController].controllerState = STMAuthEnterPhoneNumber;
+        
+    } else if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil) message:NSLocalizedString(@"R U SURE TO LOGOUT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        alertView.tag = 2;
+        [alertView show];
+        
     }
     
 }
+
+- (UITableViewCell *)tabSelectCell {
+    
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"tabSelectCell"];
+    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+    cell.textLabel.text = NSLocalizedString(@"AD CAMPAIGNS", nil);
+    
+    self.activeButtonColor = cell.textLabel.textColor;
+    cell.textLabel.textColor = ([STMAuthController authController].controllerState == STMAuthSuccess) ? self.activeButtonColor : [UIColor lightGrayColor];
+    
+    return cell;
+    
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+            
+        case 0:
+//            [self.authInfoTextField becomeFirstResponder];
+            break;
+            
+        case 1:
+//            if (buttonIndex == 1) {
+//                self.changePhoneNumberButton.enabled = NO;
+//                self.requestSMSCodeButton.enabled = NO;
+//                [self.authController requestNewSMSCode];
+//            }
+            break;
+            
+        case 2:
+            if (buttonIndex == 1) {
+//                [self.changePhoneNumberButton setTitle:NSLocalizedString(@"CHANGE", nil) forState:UIControlStateNormal];
+                [[STMAuthController authController] logout];
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
 
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    if ([textField.placeholder isEqualToString:PHONE_PLACEHOLDER]) {
+    if (textField == self.inputField) {
         
-        if ([STMFunctions isCorrectPhoneNumber:textField.text]) {
+        if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
             
-            [self phoneNumberButtonPressed];
+            if ([STMFunctions isCorrectPhoneNumber:textField.text]) {
+                
+                [self sendButtonPressed];
+                
+            }
+
+        } else if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
             
+            if ([STMFunctions isCorrectSMSCode:textField.text]) {
+                
+                [self sendButtonPressed];
+                
+            }
+
         }
         
         return NO;
@@ -133,33 +255,94 @@
 
 - (void)textFieldDidChange:(UITextField *)textField {
     
-    UIView *superview = textField.superview.superview.superview;
-    UITableViewCell *cell = [superview isKindOfClass:[UITableViewCell class]] ? (UITableViewCell *)superview : nil;
-
-    UIButton *button;
-    
-    for (UIView *view in cell.contentView.subviews) {
-        
-        if ([view isKindOfClass:[UIButton class]]) {
-            button = (UIButton *)view;
-        }
-        
-    }
-    
     if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
-        
-        button.enabled = [STMFunctions isCorrectPhoneNumber:textField.text];
+
+        if ([STMFunctions isCorrectPhoneNumber:textField.text]) {
+            
+            self.authSendCell.textLabel.textColor = self.activeButtonColor;
+            
+        } else {
+            
+            self.authSendCell.textLabel.textColor = [UIColor lightGrayColor];
+            
+        }
+
         
     } else if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
-        
-        button.enabled = [STMFunctions isCorrectSMSCode:textField.text];
+
+        if ([STMFunctions isCorrectSMSCode:textField.text]) {
+            
+            self.authSendCell.textLabel.textColor = self.activeButtonColor;
+            
+        } else {
+            
+            self.authSendCell.textLabel.textColor = [UIColor lightGrayColor];
+            
+        }
         
     }
     
 }
 
+- (void)sendButtonPressed {
+    
+    self.authSendCell.textLabel.textColor = [UIColor lightGrayColor];
+    [self.spinner startAnimating];
+    self.spinner.hidden = NO;
+    
+    if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
+        
+        [[STMAuthController authController] sendPhoneNumber:self.inputField.text];
+        
+    } else if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
+        
+        [[STMAuthController authController] sendSMSCode:self.inputField.text];
+        
+    }
+    
+}
+
+#pragma mark - notifications
+
+- (void)authControllerError:(NSNotification *)notification {
+    
+    [self.inputField resignFirstResponder];
+    
+    NSString *error = [[notification userInfo] objectForKey:@"error"];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    alertView.tag = 0;
+    [alertView show];
+
+}
+
+- (void)authControllerStateChanged {
+    
+    [self.tableView reloadData];
+    
+}
 
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerError" object:[STMAuthController authController]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerStateChanged" object:[STMAuthController authController]];
+    
+}
+
+- (void)customInit {
+    
+    [self addObservers];
+    
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -170,9 +353,10 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
+    [self customInit];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -187,11 +371,10 @@
     // Dispose of any resources that can be recreated.
 }
 
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
+
     return 2;
     
 }
@@ -199,122 +382,210 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     switch (section) {
-            
         case 0:
-            return 1;
+            if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
+                
+                return 2;
+                
+            } else if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
+                
+                return 3;
+                
+            } else if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+                
+                return 3;
+                
+            } else {
+                
+                return 0;
+                
+            }
             break;
             
         case 1:
-            
-            if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
+
+            if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+                
                 return 1;
+                
             } else {
+                
                 return 2;
+                
             }
             break;
             
         default:
             return 0;
             break;
-            
     }
-
+    
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
     switch (section) {
-        case 0:
-            return nil;
-            break;
-            
         case 1:
-            return NSLocalizedString(@"ENTER PHONE NUMBER", nil);
+            
+            if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
+                
+                return NSLocalizedString(@"ENTER PHONE NUMBER", nil);
+                
+            } else if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
+                
+                return NSLocalizedString(@"ENTER SMS CODE", nil);
+                
+            } else {
+                
+                return nil;
+                
+            }
+            
             break;
             
         default:
             return nil;
             break;
+            
     }
-    
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    
-    return nil;
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
+        
+        return [self cellForEnterPhoneLayoutAtIndexPath:indexPath];
+        
+    } else if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
+        
+        return [self cellForEnterSMSCodeLayoutAtIndexPath:indexPath];
+        
+    } else if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+        
+        return [self cellForAuthSuccessLayoutAtIndexPath:indexPath];
+        
+    }
+    
+    return [self emptyCell];
+
+}
+
+
+- (UITableViewCell *)cellForEnterPhoneLayoutAtIndexPath:(NSIndexPath *)indexPath {
     
     switch (indexPath.section) {
             
         case 0:
-            
-            return [self titleCell];
-            break;
+            switch (indexPath.row) {
+                    
+                case 0:
+                    return [self authTitleCell];
+                    
+                case 1:
+                    return [self authSpinnerCell];
+                    
+            }
             
         case 1:
-            
-            return [self phoneNumberCell];
-            break;
-            
-        default:
-
-            return [self defaultCell];
-            break;
+            switch (indexPath.row) {
+                    
+                case 0:
+                    return [self authInfoEnterCell];
+                    
+                case 1:
+                    self.authSendCell = nil;
+                    return self.authSendCell;
+                    
+            }
             
     }
     
+    return [self emptyCell];
+
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (UITableViewCell *)cellForEnterSMSCodeLayoutAtIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+            
+        case 0:
+            switch (indexPath.row) {
+                    
+                case 0:
+                    return [self authTitleCell];
+                    
+                case 1:
+                    return [self authSpinnerCell];
+                
+                case 2:
+                    return [self authPhoneNumberCell];
+                    
+            }
+            
+        case 1:
+            switch (indexPath.row) {
+                    
+                case 0:
+                    return [self authInfoEnterCell];
+                    
+                case 1:
+                    return self.authSendCell;
+                    
+            }
+            
+    }
+    
+    return [self emptyCell];
+    
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+- (UITableViewCell *)cellForAuthSuccessLayoutAtIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+            
+        case 0:
+            switch (indexPath.row) {
+                    
+                case 0:
+                    return [self authTitleCell];
+                    
+                case 1:
+                    return [self authPhoneNumberCell];
+                    
+                case 2:
+                    return [self authSpinnerCell];
+                    
+            }
+            
+        case 1:
+            switch (indexPath.row) {
+                    
+                case 0:
+                    return [self tabSelectCell];
+                    
+            }
+            
+    }
+    
+    return [self emptyCell];
+    
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    NSIndexPath *sendButtonIndexPath = [self.tableView indexPathForCell:self.authSendCell];
+    
+    if ([sendButtonIndexPath compare:indexPath] == NSOrderedSame) {
+        
+        if (self.authSendCell.textLabel.textColor == self.activeButtonColor) {
+            [self sendButtonPressed];
+        }
+        
+    }
+
+    return indexPath;
+    
 }
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

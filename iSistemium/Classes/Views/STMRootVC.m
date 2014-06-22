@@ -53,20 +53,20 @@
     
     for (NSString *name in storyboardnames) {
         
-        if ([name isEqualToString:@"STMAuth"]) {
-            
-            STMAuthTVC *authTVC = [[STMAuthTVC alloc] initWithStyle:UITableViewStyleGrouped];
-            authTVC.title = name;
-            [self.tabs setObject:authTVC forKey:name];
-            
-        } else {
-            
+//        if ([name isEqualToString:@"STMAuth"]) {
+//            
+//            STMAuthTVC *authTVC = [[STMAuthTVC alloc] initWithStyle:UITableViewStyleGrouped];
+//            authTVC.title = name;
+//            [self.tabs setObject:authTVC forKey:name];
+//            
+//        } else {
+        
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
             UIViewController *vc = [storyboard instantiateInitialViewController];
             vc.title = name;
             [self.tabs setObject:vc forKey:name];
             
-        }
+//        }
         
     }
     
