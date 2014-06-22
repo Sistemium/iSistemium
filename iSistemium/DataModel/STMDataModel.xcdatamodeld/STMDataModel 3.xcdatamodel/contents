@@ -91,7 +91,7 @@
         <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMLocation" inverseName="track" inverseEntity="STMLocation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="STMArticle" positionX="7" positionY="-324" width="128" height="88"/>
+        <element name="STMArticle" positionX="36" positionY="-333" width="128" height="88"/>
         <element name="STMBatteryStatus" positionX="-108" positionY="540" width="128" height="75"/>
         <element name="STMCampaign" positionX="-182" positionY="-270" width="128" height="148"/>
         <element name="STMComment" positionX="-180" positionY="321" width="128" height="75"/>
@@ -102,7 +102,7 @@
         <element name="STMPartner" positionX="-432" positionY="-340" width="128" height="73"/>
         <element name="STMPhoto" positionX="151" positionY="140" width="128" height="58"/>
         <element name="STMPhotoReport" positionX="-200" positionY="9" width="128" height="103"/>
-        <element name="STMPicture" positionX="27" positionY="-94" width="128" height="133"/>
+        <element name="STMPicture" positionX="61" positionY="-117" width="128" height="133"/>
         <element name="STMSalesman" positionX="-425" positionY="74" width="128" height="88"/>
         <element name="STMSettings" positionX="-423" positionY="396" width="128" height="90"/>
         <element name="STMTrack" positionX="-423" positionY="513" width="128" height="90"/>

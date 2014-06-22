@@ -21,6 +21,7 @@
 #import "STMPhoto.h"
 #import "STMArticle.h"
 #import "STMArticlePicture.h"
+#import "STMSettings.h"
 
 
 @implementation STMObjectsController
@@ -241,10 +242,35 @@
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
-//    request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
 
+    NSError *error;
+    NSArray *datumFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+
+//    NSLog(@"datumFetchResult.count %d", datumFetchResult.count);
     
-//    [self document].managedObjectContext
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSettings class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    
+    NSArray *settingsFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+
+//    NSLog(@"settingsFetchResult.count %d", settingsFetchResult.count);
+
+    NSMutableSet *datumSet = [NSMutableSet setWithArray:datumFetchResult];
+    NSSet *settingsSet = [NSSet setWithArray:settingsFetchResult];
+
+    [datumSet minusSet:settingsSet];
+    
+//    NSLog(@"datumSet.count %d", datumSet.count);
+    
+    for (id datum in datumSet) {
+        
+        [[self document].managedObjectContext deleteObject:datum];
+        
+    }
+    
+    STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
+    [syncer flushEntitySyncInfo];
+    syncer.syncerState = STMSyncerRecieveData;
     
 }
 

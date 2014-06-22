@@ -164,6 +164,15 @@
     
 }
 
+- (void)flushEntitySyncInfo {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:@"serverDataModel"];
+    [defaults synchronize];
+    self.entitySyncInfo = nil;
+    
+}
+
 - (void)saveServerDataModel {
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -396,7 +405,7 @@
         NSString *url = [entity objectForKey:@"url"];
         NSString *eTag = [entity objectForKey:@"eTag"];
         eTag = eTag ? eTag : @"*";
-        //    NSLog(@"entityName %@, eTag %@", entityName, eTag);
+        NSLog(@"entityName %@, eTag %@", entityName, eTag);
         
         NSURL *requestURL = [NSURL URLWithString:url];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];

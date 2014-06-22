@@ -25,5 +25,6 @@ typedef enum {
 
 //- (void)syncData;
 - (void)prepareToDestroy;
+- (void)flushEntitySyncInfo;
 
 @end

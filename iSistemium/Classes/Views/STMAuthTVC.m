@@ -10,6 +10,7 @@
 #import "STMAuthController.h"
 #import "STMFunctions.h"
 #import "STMRootTBC.h"
+#import "STMObjectsController.h"
 
 @interface STMAuthTVC () <UITextFieldDelegate>
 
@@ -226,6 +227,7 @@
 - (void)reloadData {
  
     NSLog(@"reloadData");
+    [STMObjectsController removeAllObjects];
     
 }
 
