@@ -75,6 +75,7 @@
         
         if ([phoneNumber isKindOfClass:[NSString class]]) {
             _phoneNumber = phoneNumber;
+            NSLog(@"phoneNumber %@", phoneNumber);
         }
 
     }
@@ -106,7 +107,7 @@
         [self startSession];
     }
     
-//    NSLog(@"authControllerState %d", controllerState);
+    NSLog(@"authControllerState %d", controllerState);
     
     _controllerState = controllerState;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged" object:self];
@@ -199,8 +200,16 @@
 
 - (void)checkAccessToken {
 
-    NSLog(@"userID %@", self.userID);
-    NSLog(@"accessToken %@", self.accessToken);
+    if (self.userID) {
+        NSLog(@"userID %d", self.userID);
+    } else {
+        NSLog(@"No userID");
+    }
+    if (self.accessToken) {
+        NSLog(@"accessToken %@", self.accessToken);
+    } else {
+        NSLog(@"No accessToken");
+    }
 
     BOOL checkValue = ![self.accessToken isEqualToString:@""] && ![self.userID isEqualToString:@""];
     
@@ -233,6 +242,7 @@
                                    self.serviceUri, @"restServerURI",
                                    @"STMDataModel", @"dataModelName",
                                    @"10", @"fetchLimit",
+                                   @"600", @"syncInterval",
                                    nil];
     
     [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];

@@ -8,13 +8,18 @@
 
 #import "STMAppDelegate.h"
 #import "STMAuthController.h"
+#import "STMRootTBC.h"
 
 @implementation STMAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
     [STMAuthController authController];
+
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.rootViewController = [STMRootTBC sharedRootVC];
+    [self.window makeKeyAndVisible];
+    
     return YES;
     
 }
