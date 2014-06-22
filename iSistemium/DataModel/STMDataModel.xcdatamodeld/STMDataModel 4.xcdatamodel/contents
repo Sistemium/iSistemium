@@ -3,10 +3,7 @@
     <entity name="STMArticle" representedClassName="STMArticle" parentEntity="STMComment" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="articles" inverseEntity="STMCampaign" syncable="YES"/>
-        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticlePicture" inverseName="articles" inverseEntity="STMArticlePicture" syncable="YES"/>
-    </entity>
-    <entity name="STMArticlePicture" representedClassName="STMArticlePicture" parentEntity="STMPicture" syncable="YES">
-        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="pictures" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPicture" inverseName="articles" inverseEntity="STMPicture" syncable="YES"/>
     </entity>
     <entity name="STMBatteryStatus" representedClassName="STMBatteryStatus" parentEntity="STMComment" syncable="YES">
         <attribute name="batteryLevel" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -19,10 +16,7 @@
         <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="campaigns" inverseEntity="STMArticle" syncable="YES"/>
         <relationship name="outlets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="campaigns" inverseEntity="STMOutlet" syncable="YES"/>
         <relationship name="photoReports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPhotoReport" inverseName="campaign" inverseEntity="STMPhotoReport" syncable="YES"/>
-        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaignPicture" inverseName="campaigns" inverseEntity="STMCampaignPicture" syncable="YES"/>
-    </entity>
-    <entity name="STMCampaignPicture" representedClassName="STMCampaignPicture" parentEntity="STMPicture" syncable="YES">
-        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="pictures" inverseEntity="STMCampaign" syncable="YES"/>
+        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPicture" inverseName="campaigns" inverseEntity="STMPicture" syncable="YES"/>
     </entity>
     <entity name="STMComment" representedClassName="STMComment" parentEntity="STMDatum" syncable="YES">
         <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
@@ -78,6 +72,8 @@
         <attribute name="imageFormat" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="pictures" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="pictures" inverseEntity="STMCampaign" syncable="YES"/>
     </entity>
     <entity name="STMSalesman" representedClassName="STMSalesman" parentEntity="STMComment" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
@@ -96,10 +92,8 @@
     </entity>
     <elements>
         <element name="STMArticle" positionX="7" positionY="-324" width="128" height="88"/>
-        <element name="STMArticlePicture" positionX="187" positionY="-198" width="128" height="58"/>
         <element name="STMBatteryStatus" positionX="-108" positionY="540" width="128" height="75"/>
         <element name="STMCampaign" positionX="-182" positionY="-270" width="128" height="148"/>
-        <element name="STMCampaignPicture" positionX="34" positionY="-126" width="128" height="58"/>
         <element name="STMComment" positionX="-180" positionY="321" width="128" height="75"/>
         <element name="STMDatum" positionX="52" positionY="294" width="128" height="165"/>
         <element name="STMLocation" positionX="-261" positionY="540" width="128" height="180"/>
@@ -108,7 +102,7 @@
         <element name="STMPartner" positionX="-432" positionY="-340" width="128" height="73"/>
         <element name="STMPhoto" positionX="151" positionY="140" width="128" height="58"/>
         <element name="STMPhotoReport" positionX="-200" positionY="9" width="128" height="103"/>
-        <element name="STMPicture" positionX="63" positionY="-25" width="128" height="103"/>
+        <element name="STMPicture" positionX="27" positionY="-94" width="128" height="133"/>
         <element name="STMSalesman" positionX="-425" positionY="74" width="128" height="88"/>
         <element name="STMSettings" positionX="-423" positionY="396" width="128" height="90"/>
         <element name="STMTrack" positionX="-423" positionY="513" width="128" height="90"/>

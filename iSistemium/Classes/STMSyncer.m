@@ -22,7 +22,8 @@
 @property (nonatomic, strong) NSMutableDictionary *settings;
 //@property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL running;
-@property (nonatomic, strong) NSMutableData *responseData;
+//@property (nonatomic, strong) NSMutableData *responseData;
+@property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic) NSUInteger entityCount;
 
 @end
@@ -210,6 +211,14 @@
     
 }
 
+- (NSMutableDictionary *)responses {
+    
+    if (!_responses) {
+        _responses = [NSMutableDictionary dictionary];
+    }
+    return _responses;
+    
+}
 
 #pragma mark - syncer methods
 
@@ -533,7 +542,9 @@
     
     if (statusCode == 200) {
         
-        self.responseData = [NSMutableData data];
+        [self.responses setObject:[NSMutableData data] forKey:entityName];
+        
+//        self.responseData = [NSMutableData data];
         
         NSString *eTag = [headers objectForKey:@"eTag"];
 //        NSLog(@"eTag %@", eTag);
@@ -558,7 +569,7 @@
             
             self.entityCount = self.entitySyncInfo.allKeys.count - 1;
 
-            self.responseData = nil;
+//            self.responseData = nil;
             
             NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             [entityNames removeObject:entityName];
@@ -582,7 +593,11 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [self.responseData appendData:data];
+    
+    NSString *entityName = [self entityNameForConnection:connection];
+    NSMutableData *responseData = [self.responses objectForKey:entityName];
+    [responseData appendData:data];
+    
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
@@ -593,8 +608,11 @@
 //    NSString *responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
 //    NSLog(@"connectionDidFinishLoading responseData %@", responseString);
     
-    if (self.responseData) {
-        [self parseResponse:self.responseData fromConnection:connection];
+    NSString *entityName = [self entityNameForConnection:connection];
+    NSMutableData *responseData = [self.responses objectForKey:entityName];
+
+    if (responseData) {
+        [self parseResponse:responseData fromConnection:connection];
     }
     
 }
@@ -605,7 +623,10 @@
     
     NSError *error;
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-//    NSLog(@"responseJSON %@", responseJSON);
+    
+//    if ([[self entityNameForConnection:connection] isEqualToString:@"STMCampaignPictureCampaign"]) {
+//        NSLog(@"responseJSON %@", responseJSON);
+//    }
     
     NSString *errorString = [responseJSON objectForKey:@"error"];
     
@@ -634,6 +655,7 @@
                 
                 if ([entityModel objectForKey:@"roleName"]) {
                     
+//                    NSLog(@"roleName %@", [entityModel objectForKey:@"roleName"]);
                     [STMObjectsController setRelationshipFromDictionary:datum];
                     
                 } else {

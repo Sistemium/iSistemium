@@ -94,6 +94,12 @@
 
     NSDictionary *serverDataModel = [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer entitySyncInfo];
     
+    if ([entityName isEqualToString:@"STMCampaignPictureCampaign"]) {
+        
+        
+        
+    }
+    
     if ([[serverDataModel allKeys] containsObject:entityName]) {
         
         NSDictionary *modelProperties = [serverDataModel objectForKey:entityName];
@@ -228,6 +234,17 @@
 + (NSArray *)dataModelEntityNames {
     
     return [[self document].managedObjectModel.entitiesByName allKeys];
+    
+}
+
++ (void)removeAllObjects {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+//    request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
+
+    
+//    [self document].managedObjectContext
     
 }
 
