@@ -10,10 +10,11 @@
 #import "STMAuthController.h"
 #import "STMAuthTVC.h"
 
-@interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning>
+@interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSArray *storyboardnames;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
+@property (nonatomic, strong) UIAlertView *authAlert;
 
 @end
 
@@ -48,6 +49,8 @@
 
 - (void)customInit {
     
+    [self addObservers];
+
     self.delegate = self;
     
     self.storyboardnames = @[@"STMAuthTVC",@"STMCampaigns"];
@@ -142,6 +145,49 @@
                         [transitionContext completeTransition:YES];
                     }];
 
+}
+
+
+#pragma mark - alertView & delegate
+
+- (UIAlertView *)authAlert {
+    
+    if (!_authAlert) {
+        
+        _authAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"U R NOT AUTH", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        
+    }
+    
+    return _authAlert;
+    
+}
+
+- (void)showAuthAlert {
+    
+    if (!self.authAlert.visible && [STMAuthController authController].controllerState != STMAuthEnterPhoneNumber) {
+        [self.authAlert show];
+        [self showTabWithName:@"STMAuthTVC"];
+    }
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    
+}
+
+#pragma mark - notifications
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAuthAlert) name:@"notAuthorized" object:nil];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notAuthorized" object:nil];
+    
 }
 
 #pragma mark - view lifecycle

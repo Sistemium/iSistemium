@@ -25,7 +25,6 @@
 		2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D51940A1B8002298A5 /* STMLogMessage+dayAsString.m */; };
 		2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */; };
 		2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8EA1941C147002298A5 /* STMSyncer.m */; };
-		2C53B93B19431AA5002298A5 /* STMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B93A19431AA5002298A5 /* STMNavigationController.m */; };
 		2C53B97619433871002298A5 /* STMPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B97519433871002298A5 /* STMPhoto.m */; };
 		2C53B97919433872002298A5 /* STMSalesman.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B97819433872002298A5 /* STMSalesman.m */; };
 		2C53B97C19433872002298A5 /* STMOutlet.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B97B19433872002298A5 /* STMOutlet.m */; };
@@ -47,6 +46,8 @@
 		2C53B9B019434E1E002298A5 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B9AF19434E1E002298A5 /* STMObjectsController.m */; };
 		2C53B9B91944AB01002298A5 /* STMCampaignsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B9B81944AB01002298A5 /* STMCampaignsTVC.m */; };
 		2C53B9BC19472D28002298A5 /* STMArticlesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */; };
+		2C65283F19571966008605D9 /* STMCampaignDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */; };
+		2C65284219571C4B008605D9 /* STMCampaignsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65284119571C4B008605D9 /* STMCampaignsSVC.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -118,8 +119,6 @@
 		2C53B8DB1940A515002298A5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2C53B8E91941C147002298A5 /* STMSyncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSyncer.h; sourceTree = "<group>"; };
 		2C53B8EA1941C147002298A5 /* STMSyncer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSyncer.m; sourceTree = "<group>"; };
-		2C53B93919431AA5002298A5 /* STMNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMNavigationController.h; sourceTree = "<group>"; };
-		2C53B93A19431AA5002298A5 /* STMNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMNavigationController.m; sourceTree = "<group>"; };
 		2C53B97419433871002298A5 /* STMPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhoto.h; sourceTree = "<group>"; };
 		2C53B97519433871002298A5 /* STMPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhoto.m; sourceTree = "<group>"; };
 		2C53B97719433872002298A5 /* STMSalesman.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSalesman.h; sourceTree = "<group>"; };
@@ -162,6 +161,10 @@
 		2C53B9B81944AB01002298A5 /* STMCampaignsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignsTVC.m; sourceTree = "<group>"; };
 		2C53B9BA19472D28002298A5 /* STMArticlesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticlesTVC.h; sourceTree = "<group>"; };
 		2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMArticlesTVC.m; sourceTree = "<group>"; };
+		2C65283D19571966008605D9 /* STMCampaignDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignDetailsVC.h; sourceTree = "<group>"; };
+		2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignDetailsVC.m; sourceTree = "<group>"; };
+		2C65284019571C4B008605D9 /* STMCampaignsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignsSVC.h; sourceTree = "<group>"; };
+		2C65284119571C4B008605D9 /* STMCampaignsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignsSVC.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -234,10 +237,12 @@
 				2C53B8A819409E83002298A5 /* STMLocationTVC.m */,
 				2C53B8A919409E83002298A5 /* STMSettingsTVC.h */,
 				2C53B8AA19409E83002298A5 /* STMSettingsTVC.m */,
-				2C53B93919431AA5002298A5 /* STMNavigationController.h */,
-				2C53B93A19431AA5002298A5 /* STMNavigationController.m */,
+				2C65284019571C4B008605D9 /* STMCampaignsSVC.h */,
+				2C65284119571C4B008605D9 /* STMCampaignsSVC.m */,
 				2C53B9B71944AB01002298A5 /* STMCampaignsTVC.h */,
 				2C53B9B81944AB01002298A5 /* STMCampaignsTVC.m */,
+				2C65283D19571966008605D9 /* STMCampaignDetailsVC.h */,
+				2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */,
 				2C53B9BA19472D28002298A5 /* STMArticlesTVC.h */,
 				2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */,
 			);
@@ -586,10 +591,10 @@
 				2C53B97619433871002298A5 /* STMPhoto.m in Sources */,
 				2C53B99719433872002298A5 /* STMSettings.m in Sources */,
 				2C53B99119433872002298A5 /* STMPhotoReport.m in Sources */,
-				2C53B93B19431AA5002298A5 /* STMNavigationController.m in Sources */,
 				2C53B9B019434E1E002298A5 /* STMObjectsController.m in Sources */,
 				2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */,
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
+				2C65284219571C4B008605D9 /* STMCampaignsSVC.m in Sources */,
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
 				2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */,
 				2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */,
@@ -597,6 +602,7 @@
 				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
 				2C53B98819433872002298A5 /* STMLogMessage.m in Sources */,
 				2C53B98E19433872002298A5 /* STMArticle.m in Sources */,
+				2C65283F19571966008605D9 /* STMCampaignDetailsVC.m in Sources */,
 				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,
 				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,
 				2C53B8A619409E71002298A5 /* STMSettingsController.m in Sources */,

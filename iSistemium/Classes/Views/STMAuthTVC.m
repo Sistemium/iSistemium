@@ -593,7 +593,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    NSLog(@"select cell section %d, row %d", indexPath.section, indexPath.row);
+//    NSLog(@"select cell section %d, row %d", indexPath.section, indexPath.row);
     
     NSIndexPath *sendButtonIndexPath = [self.tableView indexPathForCell:self.authSendCell];
     
