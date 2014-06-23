@@ -7,15 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
 @interface STMObjectsController : NSObject
 
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary;
-
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary;
-
 + (void)removeAllObjects;
-
 + (void)totalNumberOfObjects;
++ (void)hrefProcessingForObject:(NSManagedObject *)object;
 
 @end
