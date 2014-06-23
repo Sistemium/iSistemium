@@ -13,15 +13,31 @@
 #import "STMCampaign.h"
 #import "STMArticlesTVC.h"
 #import "STMRootTBC.h"
+#import "STMCampaignsSVC.h"
 
 @interface STMCampaignsTVC () <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, strong) STMCampaignsSVC *splitVC;
 
 @end
 
 @implementation STMCampaignsTVC
+
+- (STMCampaignsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMCampaignsSVC class]]) {
+            _splitVC = (STMCampaignsSVC *)self.splitViewController;
+        }
+        
+    }
+    
+    return _splitVC;
+    
+}
 
 - (STMDocument *)document {
     
@@ -147,9 +163,7 @@
     STMCampaign *campaign = sectionInfo.objects[indexPath.row];
     NSLog(@"campaign.pictures.count %d", campaign.pictures.count);
 
-//    for (STMCampaignPicture *picture in campaign.pictures) {
-//        NSLog(@"picture %@", picture);
-//    }
+    self.splitVC.detailVC.campaign = campaign;
     
     return indexPath;
     

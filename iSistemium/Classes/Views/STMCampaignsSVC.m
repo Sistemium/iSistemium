@@ -14,6 +14,34 @@
 
 @implementation STMCampaignsSVC
 
+
+- (STMCampaignDetailsVC *)detailVC {
+    
+    if (!_detailVC) {
+        
+        UINavigationController *navController = (UINavigationController *)self.viewControllers[1];
+        UIViewController *vc = navController.viewControllers[0];
+        if ([vc isKindOfClass:[STMCampaignDetailsVC class]]) {
+            _detailVC = (STMCampaignDetailsVC *)vc;
+        }
+        
+    }
+    
+    return _detailVC;
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    if ([self.detailVC conformsToProtocol:@protocol(UISplitViewControllerDelegate)]) {
+        self.delegate = (id <UISplitViewControllerDelegate>)self.detailVC;
+    }
+
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -23,15 +51,11 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
+    [self customInit];
     
-    UINavigationController *navController = (UINavigationController *)self.viewControllers[1];
-    
-    self.delegate = navController.viewControllers[0];
-    
-    // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning

@@ -8,15 +8,51 @@
 
 #import "STMCampaignDetailsVC.h"
 #import "STMRootTBC.h"
+#import "STMCampaignPicture.h"
 
-@interface STMCampaignDetailsVC ()
+@interface STMCampaignDetailsVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UIBarButtonItem *homeButton;
+@property (weak, nonatomic) IBOutlet UICollectionView *campiagnPicturesCV;
+@property (nonatomic, strong) NSArray *campaignPictures;
 
 @end
 
 
 @implementation STMCampaignDetailsVC
+
+- (NSArray *)campaignPictures {
+    
+    if (!_campaignPictures) {
+        
+        NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+        _campaignPictures = [self.campaign.pictures sortedArrayUsingDescriptors:sortDescriptors];
+        
+    }
+    
+    return _campaignPictures;
+    
+}
+
+- (void)setCampaign:(STMCampaign *)campaign {
+    
+    if (campaign != _campaign) {
+        
+        _campaign = campaign;
+        self.campaignPictures = nil;
+        [self reloadView];
+        
+    }
+    
+}
+
+
+- (void)reloadView {
+    
+    self.title = self.campaign.name;
+    [self.campiagnPicturesCV reloadData];
+    
+}
 
 
 - (UIBarButtonItem *)homeButton {
@@ -44,6 +80,52 @@
 }
 
 
+
+#pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+
+    return 1;
+
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+
+    return self.campaign.pictures.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSString *cellIdentifier = @"campaignPictureCell";
+    
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    [[cell.contentView viewWithTag:1] removeFromSuperview];
+    
+    STMCampaignPicture *picture = self.campaignPictures[indexPath.row];
+    NSLog(@"picture %@", picture);
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 150, cell.contentView.frame.size.width, 50)];
+    label.text = picture.name;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.numberOfLines = 0;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.tag = 1;
+    [cell.contentView addSubview:label];
+    
+//    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height)];
+//    imageView.image = [UIImage imageWithData:[[spotProperty valueForKey:@"image"] valueForKey:@"imageData"]];
+//    imageView.tag = 1;
+//    [cell.contentView addSubview:imageView];
+    
+    cell.backgroundColor = [UIColor blueColor];
+    
+    return cell;
+    
+}
+
+
+
 #pragma mark - UISplitViewControllerDelegate
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
@@ -65,6 +147,9 @@
 - (void)customInit {
     
     self.navigationItem.rightBarButtonItem = self.homeButton;
+    self.campiagnPicturesCV.dataSource = self;
+    self.campiagnPicturesCV.delegate = self;
+    
 
 }
 
