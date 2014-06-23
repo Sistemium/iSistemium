@@ -2,7 +2,7 @@
 //  STMPicture.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 07/06/14.
+//  Created by Maxim Grigoriev on 23/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -11,6 +11,7 @@
 
 @implementation STMPicture
 
+@dynamic href;
 @dynamic image;
 @dynamic imageFormat;
 @dynamic name;

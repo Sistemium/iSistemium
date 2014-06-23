@@ -14,4 +14,8 @@
 
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary;
 
++ (void)removeAllObjects;
+
++ (void)totalNumberOfObjects;
+
 @end

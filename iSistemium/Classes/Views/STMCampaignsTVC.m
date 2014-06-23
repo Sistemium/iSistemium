@@ -18,37 +18,10 @@
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
-@property (nonatomic, strong) UIBarButtonItem *homeButton;
 
 @end
 
 @implementation STMCampaignsTVC
-
-- (UIBarButtonItem *)homeButton {
-    
-    if (!_homeButton) {
-        
-//        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(homeButtonPressed)];
-        
-        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HOME", nil) style:UIBarButtonItemStylePlain target:self action:@selector(homeButtonPressed)];
-        
-        _homeButton = button;
-        
-    }
-    
-    return _homeButton;
-    
-}
-
-- (void)homeButtonPressed {
-    
-    NSLog(@"homeButtonPressed");
-    [[STMRootTBC sharedRootVC] showTabWithName:@"STMAuthTVC"];
-    
-    
-}
-
-
 
 - (STMDocument *)document {
     
@@ -92,13 +65,13 @@
 - (void)customInit {
     
     [self addObservers];
-    
-    self.navigationItem.rightBarButtonItem = self.homeButton;
-    
+
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
         NSLog(@"performFetch error %@", error);
     }
+    
+    self.title = NSLocalizedString(@"AD CAMPAIGNS", nil);
     
 }
 
@@ -172,12 +145,11 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
     STMCampaign *campaign = sectionInfo.objects[indexPath.row];
-//    NSLog(@"campaign %@", campaign);
+    NSLog(@"campaign.pictures.count %d", campaign.pictures.count);
 
-    STMArticlesTVC *articlesTVC = [[STMArticlesTVC alloc] init];
-    articlesTVC.articles = campaign.articles;
-    
-    [self.navigationController pushViewController:articlesTVC animated:YES];
+//    for (STMCampaignPicture *picture in campaign.pictures) {
+//        NSLog(@"picture %@", picture);
+//    }
     
     return indexPath;
     

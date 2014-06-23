@@ -10,6 +10,7 @@
 #import "STMAuthController.h"
 #import "STMFunctions.h"
 #import "STMRootTBC.h"
+#import "STMObjectsController.h"
 
 @interface STMAuthTVC () <UITextFieldDelegate>
 
@@ -209,6 +210,27 @@
     
 }
 
+- (UITableViewCell *)reloadDataCell {
+    
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"reloadDataCell"];
+    
+    cell.textLabel.text = NSLocalizedString(@"RELOAD DATA", nil);
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reloadData)];
+    
+    [cell addGestureRecognizer:tap];
+    
+    return cell;
+    
+}
+
+- (void)reloadData {
+ 
+    NSLog(@"reloadData");
+    [STMObjectsController removeAllObjects];
+    
+}
+
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -394,7 +416,15 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 
-    return 2;
+    if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+        
+        return 3;
+        
+    } else {
+        
+        return 2;
+        
+    }
     
 }
 
@@ -419,7 +449,6 @@
                 return 0;
                 
             }
-            break;
             
         case 1:
 
@@ -432,11 +461,14 @@
                 return 2;
                 
             }
-            break;
+            
+        case 2:
+            
+            return 1;
             
         default:
             return 0;
-            break;
+
     }
     
 }
@@ -460,11 +492,8 @@
                 
             }
             
-            break;
-            
         default:
             return nil;
-            break;
             
     }
     
@@ -585,6 +614,9 @@
                     
             }
             
+        case 2:
+            return [self reloadDataCell];
+            
     }
     
     return [self emptyCell];
@@ -593,7 +625,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    NSLog(@"select cell section %d, row %d", indexPath.section, indexPath.row);
+//    NSLog(@"select cell section %d, row %d", indexPath.section, indexPath.row);
     
     NSIndexPath *sendButtonIndexPath = [self.tableView indexPathForCell:self.authSendCell];
     

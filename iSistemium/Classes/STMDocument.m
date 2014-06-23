@@ -51,9 +51,13 @@
     
 //    NSLog(@"saveDocument");
     
+//    NSLog(@"self.saving %d", self.saving);
+
     if (!self.saving) {
 
         if (self.documentState == UIDocumentStateNormal) {
+            
+//            NSLog(@"documentState == UIDocumentStateNormal");
             
             self.saving = YES;
             
@@ -136,6 +140,8 @@
 }
 
 + (void)document:(STMDocument *)document readyWithUID:(NSString *)uid {
+
+//    NSLog(@"document %@", document);
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"documentReady" object:document userInfo:[NSDictionary dictionaryWithObject:uid forKey:@"uid"]];
 

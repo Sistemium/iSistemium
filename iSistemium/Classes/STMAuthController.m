@@ -201,7 +201,7 @@
 - (void)checkAccessToken {
 
     if (self.userID) {
-        NSLog(@"userID %d", self.userID);
+        NSLog(@"userID %@", self.userID);
     } else {
         NSLog(@"No userID");
     }
@@ -241,7 +241,7 @@
     NSDictionary *startSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                    self.serviceUri, @"restServerURI",
                                    @"STMDataModel", @"dataModelName",
-                                   @"10", @"fetchLimit",
+                                   @"50", @"fetchLimit",
                                    @"600", @"syncInterval",
                                    nil];
     

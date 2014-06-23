@@ -22,7 +22,8 @@
 @property (nonatomic, strong) NSMutableDictionary *settings;
 //@property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL running;
-@property (nonatomic, strong) NSMutableData *responseData;
+//@property (nonatomic, strong) NSMutableData *responseData;
+@property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic) NSUInteger entityCount;
 
 @end
@@ -163,6 +164,15 @@
     
 }
 
+- (void)flushEntitySyncInfo {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:@"serverDataModel"];
+    [defaults synchronize];
+    self.entitySyncInfo = nil;
+    
+}
+
 - (void)saveServerDataModel {
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -201,15 +211,27 @@
                 [self recieveData];
                 break;
                 
+            case STMSyncerIdle:
+                [STMObjectsController totalNumberOfObjects];
+                break;
+                
             default:
                 break;
                 
         }
         
     }
-    
+
 }
 
+- (NSMutableDictionary *)responses {
+    
+    if (!_responses) {
+        _responses = [NSMutableDictionary dictionary];
+    }
+    return _responses;
+    
+}
 
 #pragma mark - syncer methods
 
@@ -387,7 +409,12 @@
         NSString *url = [entity objectForKey:@"url"];
         NSString *eTag = [entity objectForKey:@"eTag"];
         eTag = eTag ? eTag : @"*";
-        //    NSLog(@"entityName %@, eTag %@", entityName, eTag);
+        
+//        if ([entityName isEqualToString:@"STMCampaignPictureCampaign"]) {
+//            NSLog(@"STMCampaignPictureCampaign request eTag %@", eTag);
+//        }
+
+//        NSLog(@"entityName %@, eTag %@", entityName, eTag);
         
         NSURL *requestURL = [NSURL URLWithString:url];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
@@ -533,9 +560,16 @@
     
     if (statusCode == 200) {
         
-        self.responseData = [NSMutableData data];
+        [self.responses setObject:[NSMutableData data] forKey:entityName];
+        
+//        self.responseData = [NSMutableData data];
         
         NSString *eTag = [headers objectForKey:@"eTag"];
+        
+//        if ([entityName isEqualToString:@"STMCampaignPictureCampaign"]) {
+//            NSLog(@"STMCampaignPictureCampaign response eTag %@", eTag);
+//        }
+        
 //        NSLog(@"eTag %@", eTag);
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) {
@@ -554,14 +588,19 @@
         
         NSLog(@"%@: 204 No Content", entityName);
         
+        [self.responses removeObjectForKey:entityName];
+
         if ([entityName isEqualToString:@"STMEntity"]) {
             
             self.entityCount = self.entitySyncInfo.allKeys.count - 1;
 
-            self.responseData = nil;
+//            self.responseData = nil;
             
             NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             [entityNames removeObject:entityName];
+
+//            NSLog(@"%@", entityNames[7]);
+//            [self startConnectionForRecieveEntitiesWithName:entityNames[7]];
             
             for (NSString *name in entityNames) {
                 [self startConnectionForRecieveEntitiesWithName:name];
@@ -570,6 +609,7 @@
         } else {
 
             self.entityCount -= 1;
+//            self.entityCount = 0;
             
             if (self.entityCount == 0) {
                 self.syncerState = STMSyncerIdle;
@@ -582,7 +622,11 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [self.responseData appendData:data];
+    
+    NSString *entityName = [self entityNameForConnection:connection];
+    NSMutableData *responseData = [self.responses objectForKey:entityName];
+    [responseData appendData:data];
+    
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
@@ -593,8 +637,11 @@
 //    NSString *responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
 //    NSLog(@"connectionDidFinishLoading responseData %@", responseString);
     
-    if (self.responseData) {
-        [self parseResponse:self.responseData fromConnection:connection];
+    NSString *entityName = [self entityNameForConnection:connection];
+    NSMutableData *responseData = [self.responses objectForKey:entityName];
+
+    if (responseData) {
+        [self parseResponse:responseData fromConnection:connection];
     }
     
 }
@@ -605,7 +652,10 @@
     
     NSError *error;
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-//    NSLog(@"responseJSON %@", responseJSON);
+    
+//    if ([[self entityNameForConnection:connection] isEqualToString:@"STMCampaignPictureCampaign"]) {
+//        NSLog(@"responseJSON %@", responseJSON);
+//    }
     
     NSString *errorString = [responseJSON objectForKey:@"error"];
     
@@ -613,6 +663,8 @@
         
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
 //        NSLog(@"dataArray %@", dataArray);
+        
+//        int counter = 0;
         
         for (NSDictionary *datum in dataArray) {
             
@@ -634,11 +686,14 @@
                 
                 if ([entityModel objectForKey:@"roleName"]) {
                     
+//                    NSLog(@"roleName %@", [entityModel objectForKey:@"roleName"]);
                     [STMObjectsController setRelationshipFromDictionary:datum];
                     
                 } else {
-                    
-                    [STMObjectsController insertObjectFromDictionary:datum];
+//                    if (counter < 1) {
+                        [STMObjectsController insertObjectFromDictionary:datum];
+//                        counter += 1;
+//                    }
                     
                 }
                 
