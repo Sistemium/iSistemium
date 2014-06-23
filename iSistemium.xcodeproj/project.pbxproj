@@ -48,6 +48,7 @@
 		2C65291F19576895008605D9 /* STMSalesman.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65291E19576895008605D9 /* STMSalesman.m */; };
 		2C65292219576895008605D9 /* STMTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65292119576895008605D9 /* STMTrack.m */; };
 		2C65292819582BE4008605D9 /* STMPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65292719582BE4008605D9 /* STMPicture.m */; };
+		2C65292B195877BA008605D9 /* STMCampaignPictureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -165,6 +166,8 @@
 		2C65292119576895008605D9 /* STMTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMTrack.m; sourceTree = "<group>"; };
 		2C65292619582BE4008605D9 /* STMPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicture.h; sourceTree = "<group>"; };
 		2C65292719582BE4008605D9 /* STMPicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPicture.m; sourceTree = "<group>"; };
+		2C652929195877BA008605D9 /* STMCampaignPictureVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPictureVC.h; sourceTree = "<group>"; };
+		2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignPictureVC.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -245,6 +248,8 @@
 				2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */,
 				2C53B9BA19472D28002298A5 /* STMArticlesTVC.h */,
 				2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */,
+				2C652929195877BA008605D9 /* STMCampaignPictureVC.h */,
+				2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -585,6 +590,7 @@
 				2C65290A19576895008605D9 /* STMPhotoReport.m in Sources */,
 				2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */,
 				2C65292219576895008605D9 /* STMTrack.m in Sources */,
+				2C65292B195877BA008605D9 /* STMCampaignPictureVC.m in Sources */,
 				2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */,
 				2C6528FE19576894008605D9 /* STMSettings.m in Sources */,
 				2CE8B52319556F0700C84A6D /* STMAuthTVC.m in Sources */,

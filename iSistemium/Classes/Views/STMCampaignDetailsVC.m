@@ -12,6 +12,7 @@
 #import "STMSessionManager.h"
 #import "STMDocument.h"
 #import "STMObjectsController.h"
+#import "STMCampaignPictureVC.h"
 
 @interface STMCampaignDetailsVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
@@ -165,7 +166,13 @@
     
 }
 
-
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self performSegueWithIdentifier:@"showCampaignPicture" sender:self.resultsController.fetchedObjects[indexPath.row]];
+    
+    return YES;
+    
+}
 
 #pragma mark - UISplitViewControllerDelegate
 
@@ -260,15 +267,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:@"showCampaignPicture"] && [segue.destinationViewController isKindOfClass:[STMCampaignPictureVC class]]) {
+        
+        [(STMCampaignPictureVC *)segue.destinationViewController setPicture:sender];
+        
+    }
+    
+    
 }
-*/
+
 
 @end
