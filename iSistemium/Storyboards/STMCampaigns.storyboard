@@ -51,7 +51,7 @@
                     <navigationItem key="navigationItem" id="5S7-EO-mJ1"/>
                     <connections>
                         <outlet property="campiagnPicturesCV" destination="8Z1-jR-utA" id="yg3-bx-roh"/>
-                        <segue destination="qLK-Df-1on" kind="push" identifier="showCampaignPicture" id="b74-YD-nga"/>
+                        <segue destination="Yyv-Tq-7qC" kind="push" identifier="showCampaignPicture" id="eBL-sS-UZP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IFI-I8-G3G" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -61,7 +61,7 @@
         <!--Campaign PictureVC-->
         <scene sceneID="Z9x-cv-hyV">
             <objects>
-                <viewController id="qLK-Df-1on" customClass="STMCampaignPictureVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="campaignPictureVC" id="qLK-Df-1on" customClass="STMCampaignPictureVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="7p0-Rn-sC9"/>
                         <viewControllerLayoutGuide type="bottom" id="Jcr-Yb-T2Q"/>
@@ -89,7 +89,15 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NFU-sx-sFx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3012" y="-1017"/>
+            <point key="canvasLocation" x="4064" y="-1017"/>
+        </scene>
+        <!--Campaign PicturePVC-->
+        <scene sceneID="4ge-mm-Yiz">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="Yyv-Tq-7qC" customClass="STMCampaignPicturePVC" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VwF-sk-KnV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3070" y="-1017"/>
         </scene>
         <!--CampaignsTVC - Root View Controller-->
         <scene sceneID="trc-ZN-9Z8">

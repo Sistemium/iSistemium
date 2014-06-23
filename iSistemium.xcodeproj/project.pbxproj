@@ -49,6 +49,7 @@
 		2C65292219576895008605D9 /* STMTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65292119576895008605D9 /* STMTrack.m */; };
 		2C65292819582BE4008605D9 /* STMPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65292719582BE4008605D9 /* STMPicture.m */; };
 		2C65292B195877BA008605D9 /* STMCampaignPictureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */; };
+		2C65292E1958A77A008605D9 /* STMCampaignPicturePVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65292D1958A77A008605D9 /* STMCampaignPicturePVC.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -168,6 +169,8 @@
 		2C65292719582BE4008605D9 /* STMPicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPicture.m; sourceTree = "<group>"; };
 		2C652929195877BA008605D9 /* STMCampaignPictureVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPictureVC.h; sourceTree = "<group>"; };
 		2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignPictureVC.m; sourceTree = "<group>"; };
+		2C65292C1958A77A008605D9 /* STMCampaignPicturePVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPicturePVC.h; sourceTree = "<group>"; };
+		2C65292D1958A77A008605D9 /* STMCampaignPicturePVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignPicturePVC.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -240,16 +243,18 @@
 				2C53B8A819409E83002298A5 /* STMLocationTVC.m */,
 				2C53B8A919409E83002298A5 /* STMSettingsTVC.h */,
 				2C53B8AA19409E83002298A5 /* STMSettingsTVC.m */,
+				2C53B9BA19472D28002298A5 /* STMArticlesTVC.h */,
+				2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */,
 				2C65284019571C4B008605D9 /* STMCampaignsSVC.h */,
 				2C65284119571C4B008605D9 /* STMCampaignsSVC.m */,
 				2C53B9B71944AB01002298A5 /* STMCampaignsTVC.h */,
 				2C53B9B81944AB01002298A5 /* STMCampaignsTVC.m */,
 				2C65283D19571966008605D9 /* STMCampaignDetailsVC.h */,
 				2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */,
-				2C53B9BA19472D28002298A5 /* STMArticlesTVC.h */,
-				2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */,
 				2C652929195877BA008605D9 /* STMCampaignPictureVC.h */,
 				2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */,
+				2C65292C1958A77A008605D9 /* STMCampaignPicturePVC.h */,
+				2C65292D1958A77A008605D9 /* STMCampaignPicturePVC.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -628,6 +633,7 @@
 				2C53B9BC19472D28002298A5 /* STMArticlesTVC.m in Sources */,
 				2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */,
 				2C65291F19576895008605D9 /* STMSalesman.m in Sources */,
+				2C65292E1958A77A008605D9 /* STMCampaignPicturePVC.m in Sources */,
 				2C65290119576895008605D9 /* STMBatteryStatus.m in Sources */,
 				2C53B8A119409E71002298A5 /* STMLogger.m in Sources */,
 				2C53B8A219409E71002298A5 /* STMTracker.m in Sources */,

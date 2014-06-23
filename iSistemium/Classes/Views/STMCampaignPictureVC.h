@@ -12,5 +12,6 @@
 @interface STMCampaignPictureVC : UIViewController
 
 @property (nonatomic, strong) STMCampaignPicture *picture;
+@property (nonatomic) NSUInteger index;
 
 @end

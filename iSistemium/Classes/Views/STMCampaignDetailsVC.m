@@ -12,7 +12,7 @@
 #import "STMSessionManager.h"
 #import "STMDocument.h"
 #import "STMObjectsController.h"
-#import "STMCampaignPictureVC.h"
+#import "STMCampaignPicturePVC.h"
 
 @interface STMCampaignDetailsVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
@@ -168,7 +168,7 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self performSegueWithIdentifier:@"showCampaignPicture" sender:self.resultsController.fetchedObjects[indexPath.row]];
+    [self performSegueWithIdentifier:@"showCampaignPicture" sender:indexPath];
     
     return YES;
     
@@ -272,9 +272,10 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 
-    if ([segue.identifier isEqualToString:@"showCampaignPicture"] && [segue.destinationViewController isKindOfClass:[STMCampaignPictureVC class]]) {
+    if ([segue.identifier isEqualToString:@"showCampaignPicture"] && [segue.destinationViewController isKindOfClass:[STMCampaignPicturePVC class]]) {
         
-        [(STMCampaignPictureVC *)segue.destinationViewController setPicture:sender];
+        [(STMCampaignPicturePVC *)segue.destinationViewController setCampaign:self.campaign];
+        [(STMCampaignPicturePVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
         
     }
     
