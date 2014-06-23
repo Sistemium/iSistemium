@@ -1,44 +1,43 @@
 //
-//  STMCampaignsSVC.m
+//  STMCampaignPictureVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
+//  Created by Maxim Grigoriev on 23/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMCampaignsSVC.h"
+#import "STMCampaignPictureVC.h"
 
-@interface STMCampaignsSVC ()
+@interface STMCampaignPictureVC ()
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 
 @end
 
-@implementation STMCampaignsSVC
+@implementation STMCampaignPictureVC
 
 
-- (STMCampaignDetailsVC *)detailVC {
+- (void)setPicture:(STMCampaignPicture *)picture {
     
-    if (!_detailVC) {
-        
-        UINavigationController *navController = (UINavigationController *)self.viewControllers[1];
-        UIViewController *vc = navController.viewControllers[0];
-        if ([vc isKindOfClass:[STMCampaignDetailsVC class]]) {
-            _detailVC = (STMCampaignDetailsVC *)vc;
-        }
-        
+    if (picture != _picture) {
+        _picture = picture;
     }
-    
-    return _detailVC;
     
 }
 
+- (void)showImage {
+
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.imageView.image = [UIImage imageWithData:self.picture.image];
+    [self.imageView setNeedsDisplay];
+    
+}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    if ([self.detailVC conformsToProtocol:@protocol(UISplitViewControllerDelegate)]) {
-        self.delegate = (id <UISplitViewControllerDelegate>)self.detailVC;
-    }
+    self.title = self.picture.name;
+    [self showImage];
 
 }
 
@@ -55,6 +54,12 @@
     
     [super viewDidLoad];
     [self customInit];
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
     
 }
 

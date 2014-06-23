@@ -15,14 +15,81 @@
                     <view key="view" contentMode="scaleToFill" id="6am-3Z-HV1">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="8Z1-jR-utA">
+                                <rect key="frame" x="20" y="20" width="728" height="984"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="NxS-5B-XEU">
+                                    <size key="itemSize" width="150" height="200"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="10" minY="10" maxX="10" maxY="10"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="campaignPictureCell" id="s6z-17-ykq">
+                                        <rect key="frame" x="10" y="74" width="150" height="200"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="150" height="200"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="e99-Dj-F0c" firstAttribute="top" secondItem="8Z1-jR-utA" secondAttribute="bottom" constant="20" id="4Kd-0U-Mm1"/>
+                            <constraint firstItem="8Z1-jR-utA" firstAttribute="leading" secondItem="6am-3Z-HV1" secondAttribute="leading" constant="20" id="Ngy-1D-AL0"/>
+                            <constraint firstItem="8Z1-jR-utA" firstAttribute="top" secondItem="Qnk-IO-PqO" secondAttribute="bottom" constant="-44" id="hqY-YZ-FCw"/>
+                            <constraint firstAttribute="trailing" secondItem="8Z1-jR-utA" secondAttribute="trailing" constant="20" id="ypO-Ne-Shg"/>
+                        </constraints>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="5S7-EO-mJ1"/>
+                    <connections>
+                        <outlet property="campiagnPicturesCV" destination="8Z1-jR-utA" id="yg3-bx-roh"/>
+                        <segue destination="qLK-Df-1on" kind="push" identifier="showCampaignPicture" id="b74-YD-nga"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IFI-I8-G3G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2081" y="-1017"/>
+        </scene>
+        <!--Campaign PictureVC-->
+        <scene sceneID="Z9x-cv-hyV">
+            <objects>
+                <viewController id="qLK-Df-1on" customClass="STMCampaignPictureVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7p0-Rn-sC9"/>
+                        <viewControllerLayoutGuide type="bottom" id="Jcr-Yb-T2Q"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3rP-Xe-Lsi">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cft-5K-2NA">
+                                <rect key="frame" x="20" y="20" width="728" height="984"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Cft-5K-2NA" firstAttribute="top" secondItem="7p0-Rn-sC9" secondAttribute="bottom" constant="-44" id="IBQ-9H-OPN"/>
+                            <constraint firstAttribute="trailing" secondItem="Cft-5K-2NA" secondAttribute="trailing" constant="20" id="rGB-cz-Vi9"/>
+                            <constraint firstItem="Jcr-Yb-T2Q" firstAttribute="top" secondItem="Cft-5K-2NA" secondAttribute="bottom" constant="20" id="rYV-6B-bPj"/>
+                            <constraint firstItem="Cft-5K-2NA" firstAttribute="leading" secondItem="3rP-Xe-Lsi" secondAttribute="leading" constant="20" id="x95-AB-sbt"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="Cft-5K-2NA" id="V2Y-a6-j3Z"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NFU-sx-sFx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3012" y="-1017"/>
         </scene>
         <!--CampaignsTVC - Root View Controller-->
         <scene sceneID="trc-ZN-9Z8">

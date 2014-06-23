@@ -8,16 +8,91 @@
 
 #import "STMCampaignDetailsVC.h"
 #import "STMRootTBC.h"
+#import "STMCampaignPicture.h"
+#import "STMSessionManager.h"
+#import "STMDocument.h"
+#import "STMObjectsController.h"
+#import "STMCampaignPictureVC.h"
 
-@interface STMCampaignDetailsVC ()
+@interface STMCampaignDetailsVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *homeButton;
+@property (weak, nonatomic) IBOutlet UICollectionView *campiagnPicturesCV;
+@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+@property (nonatomic, strong) STMDocument *document;
 
 @end
 
 
 @implementation STMCampaignDetailsVC
 
+- (STMDocument *)document {
+    
+    if (!_document) {
+        
+        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
+        
+    }
+    
+    return _document;
+    
+}
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaignPicture class])];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"ANY campaigns == %@", self.campaign];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController.delegate = self;
+        
+//        NSLog(@"_resultsController %@", _resultsController);
+        
+    }
+    
+    return _resultsController;
+    
+}
+
+- (void)setCampaign:(STMCampaign *)campaign {
+    
+    if (campaign != _campaign) {
+        
+        self.title = campaign.name;
+        
+        _campaign = campaign;
+        
+        self.resultsController = nil;
+        [self fetchPictures];
+        
+    }
+    
+}
+
+- (void)fetchPictures {
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+
+        NSLog(@"performFetch error %@", error);
+        
+    } else {
+        
+        for (STMCampaignPicture *picture in self.resultsController.fetchedObjects) {
+            
+            if (!picture.image) {
+//                NSLog(@"no image");
+                [STMObjectsController hrefProcessingForObject:picture];
+            }
+            
+        }
+        [self.campiagnPicturesCV reloadData];
+        
+    }
+    
+}
 
 - (UIBarButtonItem *)homeButton {
     
@@ -44,6 +119,61 @@
 }
 
 
+
+#pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+
+    return 1;
+
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+
+//    NSLog(@"fetchedObjects.count %d", self.resultsController.fetchedObjects.count);
+    return self.resultsController.fetchedObjects.count;
+    
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSString *cellIdentifier = @"campaignPictureCell";
+    
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    [[cell.contentView viewWithTag:1] removeFromSuperview];
+    [[cell.contentView viewWithTag:2] removeFromSuperview];
+    
+    STMCampaignPicture *picture = self.resultsController.fetchedObjects[indexPath.row];
+//    NSLog(@"picture %@", picture);
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 150, cell.contentView.frame.size.width, 50)];
+    label.text = picture.name;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.numberOfLines = 0;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.tag = 1;
+    [cell.contentView addSubview:label];
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 150)];
+    imageView.image = [UIImage imageWithData:picture.image];
+    imageView.tag = 2;
+    [cell.contentView addSubview:imageView];
+    
+//    cell.backgroundColor = [UIColor blueColor];
+    
+    return cell;
+    
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self performSegueWithIdentifier:@"showCampaignPicture" sender:self.resultsController.fetchedObjects[indexPath.row]];
+    
+    return YES;
+    
+}
+
 #pragma mark - UISplitViewControllerDelegate
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
@@ -59,12 +189,59 @@
     
 }
 
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
+    //    NSLog(@"controllerWillChangeContent");
+    
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    //    NSLog(@"controllerDidChangeContent");
+    [self.document saveDocument:^(BOOL success) {
+        if (success) {
+            
+        }
+    }];
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    //    NSLog(@"controller didChangeObject");
+    //    NSLog(@"anObject %@", anObject);
+    
+    if (type == NSFetchedResultsChangeDelete) {
+        
+        [self.campiagnPicturesCV deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
+        NSLog(@"NSFetchedResultsChangeDelete");
+        
+    } else if (type == NSFetchedResultsChangeInsert) {
+        
+        [self.campiagnPicturesCV insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
+        NSLog(@"NSFetchedResultsChangeInsert");
+        
+        
+    } else if (type == NSFetchedResultsChangeUpdate) {
+        
+        [self.campiagnPicturesCV reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+        NSLog(@"NSFetchedResultsChangeUpdate");
+        
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     self.navigationItem.rightBarButtonItem = self.homeButton;
+    self.campiagnPicturesCV.dataSource = self;
+    self.campiagnPicturesCV.delegate = self;
+    
 
 }
 
@@ -90,15 +267,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:@"showCampaignPicture"] && [segue.destinationViewController isKindOfClass:[STMCampaignPictureVC class]]) {
+        
+        [(STMCampaignPictureVC *)segue.destinationViewController setPicture:sender];
+        
+    }
+    
+    
 }
-*/
+
 
 @end

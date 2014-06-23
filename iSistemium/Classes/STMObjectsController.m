@@ -60,8 +60,14 @@
             
             id value = [properties objectForKey:key];
             if (value) {
+                
                 [object setValue:value forKey:key];
 //                NSLog(@"%@ %@", key, value);
+                
+                if ([key isEqualToString:@"href"]) {
+                    [self hrefProcessingForObject:object];
+                }
+                
             }
             
         }
@@ -330,6 +336,36 @@
     
 }
 
++ (void)hrefProcessingForObject:(NSManagedObject *)object {
+    
+    NSString *href = [object valueForKey:@"href"];
+    
+    if (href) {
+        
+        if ([object isKindOfClass:[STMPicture class]]) {
+            
+            NSURL *url = [NSURL URLWithString:href];
+            NSURLSession *session = [NSURLSession sharedSession];
+            [[session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                
+                if (error) {
+                    
+                    NSLog(@"error %@", error.description);
+                    
+                } else {
+                    
+                    [object setValue:data forKeyPath:@"image"];
+                    
+                }
+                
+            }] resume];
+            
+        }
+        
+    }
+    
+}
+
 + (void)totalNumberOfObjects {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
@@ -338,47 +374,47 @@
     NSError *error;
     NSArray *datumFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     
-    NSLog(@"datumFetchResult.count %d", datumFetchResult.count);
+    NSLog(@"total objects count %d", datumFetchResult.count);
     
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSettings class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *settingsFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSLog(@"settingsFetchResult.count %d", settingsFetchResult.count);
+    NSLog(@"settings count %d", settingsFetchResult.count);
 
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLogMessage class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *logMessageFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSLog(@"logMessageFetchResult.count %d", logMessageFetchResult.count);
+    NSLog(@"logMessage count %d", logMessageFetchResult.count);
 
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPartner class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *partnerFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSLog(@"partnerFetchResult.count %d", partnerFetchResult.count);
+    NSLog(@"partner count %d", partnerFetchResult.count);
 
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *campaignFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSLog(@"campaignFetchResult.count %d", campaignFetchResult.count);
+    NSLog(@"campaign count %d", campaignFetchResult.count);
 
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *articleFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSLog(@"articleFetchResult.count %d", articleFetchResult.count);
+    NSLog(@"article count %d", articleFetchResult.count);
 
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaignPicture class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *campaignPictureFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSLog(@"campaignPictureFetchResult.count %d", campaignPictureFetchResult.count);
+    NSLog(@"campaignPicture count %d", campaignPictureFetchResult.count);
 
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSalesman class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *salesmanPictureFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSLog(@"salesmanPictureFetchResult.count %d", salesmanPictureFetchResult.count);
+    NSLog(@"salesman count %d", salesmanPictureFetchResult.count);
 
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *outletPictureFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSLog(@"outletPictureFetchResult.count %d", outletPictureFetchResult.count);
+    NSLog(@"outlet count %d", outletPictureFetchResult.count);
 
     NSLog(@"unknown count %d", datumFetchResult.count - settingsFetchResult.count - logMessageFetchResult.count - partnerFetchResult.count - campaignFetchResult.count - articleFetchResult.count - campaignPictureFetchResult.count - salesmanPictureFetchResult.count - outletPictureFetchResult.count);
 
