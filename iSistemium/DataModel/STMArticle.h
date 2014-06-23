@@ -2,7 +2,7 @@
 //  STMArticle.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 07/06/14.
+//  Created by Maxim Grigoriev on 22/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 

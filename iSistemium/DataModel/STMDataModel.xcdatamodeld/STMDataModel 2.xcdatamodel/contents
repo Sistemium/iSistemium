@@ -74,10 +74,10 @@
         <relationship name="salesman" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="photoreports" inverseEntity="STMSalesman" syncable="YES"/>
     </entity>
     <entity name="STMPicture" representedClassName="STMPicture" parentEntity="STMComment" syncable="YES">
+        <attribute name="href" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="image" attributeType="Binary" allowsExternalBinaryDataStorage="YES" storedInTruthFile="YES" syncable="YES"/>
         <attribute name="imageFormat" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="STMSalesman" representedClassName="STMSalesman" parentEntity="STMComment" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>

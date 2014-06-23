@@ -201,7 +201,7 @@
 - (void)checkAccessToken {
 
     if (self.userID) {
-        NSLog(@"userID %d", self.userID);
+        NSLog(@"userID %@", self.userID);
     } else {
         NSLog(@"No userID");
     }

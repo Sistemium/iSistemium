@@ -137,6 +137,8 @@
 
 + (void)document:(STMDocument *)document readyWithUID:(NSString *)uid {
 
+//    NSLog(@"document %@", document);
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"documentReady" object:document userInfo:[NSDictionary dictionaryWithObject:uid forKey:@"uid"]];
 
 }

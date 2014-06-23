@@ -145,12 +145,11 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
     STMCampaign *campaign = sectionInfo.objects[indexPath.row];
-    NSLog(@"campaign %@", campaign);
+    NSLog(@"campaign.pictures.count %d", campaign.pictures.count);
 
-//    STMArticlesTVC *articlesTVC = [[STMArticlesTVC alloc] init];
-//    articlesTVC.articles = campaign.articles;
-//    
-//    [self.navigationController pushViewController:articlesTVC animated:YES];
+    for (STMCampaignPicture *picture in campaign.pictures) {
+        NSLog(@"picture %@", picture);
+    }
     
     return indexPath;
     

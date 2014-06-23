@@ -16,4 +16,6 @@
 
 + (void)removeAllObjects;
 
++ (void)totalNumberOfObjects;
+
 @end

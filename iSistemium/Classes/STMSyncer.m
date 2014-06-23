@@ -218,6 +218,8 @@
         
     }
     
+    [STMObjectsController totalNumberOfObjects];
+    
 }
 
 - (NSMutableDictionary *)responses {
@@ -405,7 +407,12 @@
         NSString *url = [entity objectForKey:@"url"];
         NSString *eTag = [entity objectForKey:@"eTag"];
         eTag = eTag ? eTag : @"*";
-        NSLog(@"entityName %@, eTag %@", entityName, eTag);
+        
+//        if ([entityName isEqualToString:@"STMCampaignPictureCampaign"]) {
+//            NSLog(@"STMCampaignPictureCampaign request eTag %@", eTag);
+//        }
+
+//        NSLog(@"entityName %@, eTag %@", entityName, eTag);
         
         NSURL *requestURL = [NSURL URLWithString:url];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
@@ -556,6 +563,11 @@
 //        self.responseData = [NSMutableData data];
         
         NSString *eTag = [headers objectForKey:@"eTag"];
+        
+//        if ([entityName isEqualToString:@"STMCampaignPictureCampaign"]) {
+//            NSLog(@"STMCampaignPictureCampaign response eTag %@", eTag);
+//        }
+        
 //        NSLog(@"eTag %@", eTag);
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) {
@@ -574,6 +586,8 @@
         
         NSLog(@"%@: 204 No Content", entityName);
         
+        [self.responses removeObjectForKey:entityName];
+
         if ([entityName isEqualToString:@"STMEntity"]) {
             
             self.entityCount = self.entitySyncInfo.allKeys.count - 1;
@@ -592,6 +606,11 @@
             self.entityCount -= 1;
             
             if (self.entityCount == 0) {
+                [self.document saveDocument:^(BOOL success) {
+                    if (success) {
+                        NSLog(@"document success");
+                    }
+                }];
                 self.syncerState = STMSyncerIdle;
             }
             

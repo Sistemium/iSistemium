@@ -88,19 +88,14 @@
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary {
     
 //    NSLog(@"relationship %@", dictionary);
+
     
     NSString *name = [dictionary objectForKey:@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
 
     NSDictionary *serverDataModel = [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer entitySyncInfo];
-    
-    if ([entityName isEqualToString:@"STMCampaignPictureCampaign"]) {
-        
-        
-        
-    }
-    
+
     if ([[serverDataModel allKeys] containsObject:entityName]) {
         
         NSDictionary *modelProperties = [serverDataModel objectForKey:entityName];
@@ -133,7 +128,7 @@
         if (!ownerXid || [ownerXid isEqualToString:@""] || !destinationXid || [destinationXid isEqualToString:@""]) {
             
             ok = NO;
-            NSLog(@"dictionary %@", dictionary);
+            NSLog(@"Not ok relationship dictionary %@", dictionary);
             
         }
         
@@ -141,11 +136,26 @@
             
             NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
             NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
+
+            NSString *xid = [ownerXid stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
+//                NSLog(@"destinationEntityName %@, destinationXid %@", destinationEntityName, destinationXid);
+            }
             
-            [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
-            //        NSLog(@"ownerObject %@, destinationObject %@", ownerObject, destinationObject);
+            NSSet *destinationSet = [ownerObject valueForKey:roleName];
             
-            [[self document] saveDocument:^(BOOL success) {}];
+            if ([destinationSet containsObject:destinationObject] && [destinationEntityName isEqualToString:@"STMCampaignPicture"]) {
+                NSLog(@"already in set: %@, %@, %@", roleOwnerEntityName, destinationEntityName, destinationXid);
+            } else {
+                //            NSLog(@"BEFORE ownerObject %@, destinationObject %@", ownerObject, destinationObject);
+                [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
+                //            NSLog(@"AFTER ownerObject %@, destinationObject %@", ownerObject, destinationObject);
+                //            NSLog(@"roleOwnerEntityName %@, destinationEntityName %@, roleName %@", roleOwnerEntityName, destinationEntityName, roleName);
+                
+                [[self document] saveDocument:^(BOOL success) {}];
+
+            }
+            
             
         }
         
@@ -176,10 +186,18 @@
             
             object = [fetchResult lastObject];
             
+//            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
+//                NSLog(@"get object %@", object);
+//            }
+            
         } else {
             
             object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
             [object setValue:xidData forKey:@"xid"];
+
+//            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
+//                NSLog(@"insert object %@", object);
+//            }
             
         }
         
@@ -274,5 +292,16 @@
     
 }
 
++ (void)totalNumberOfObjects {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    
+    NSError *error;
+    NSArray *datumFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    
+    NSLog(@"datumFetchResult.count %d", datumFetchResult.count);
+
+}
 
 @end
