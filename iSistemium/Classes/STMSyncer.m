@@ -211,15 +211,17 @@
                 [self recieveData];
                 break;
                 
+            case STMSyncerIdle:
+                [STMObjectsController totalNumberOfObjects];
+                break;
+                
             default:
                 break;
                 
         }
         
     }
-    
-    [STMObjectsController totalNumberOfObjects];
-    
+
 }
 
 - (NSMutableDictionary *)responses {
@@ -596,6 +598,9 @@
             
             NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             [entityNames removeObject:entityName];
+
+//            NSLog(@"%@", entityNames[7]);
+//            [self startConnectionForRecieveEntitiesWithName:entityNames[7]];
             
             for (NSString *name in entityNames) {
                 [self startConnectionForRecieveEntitiesWithName:name];
@@ -604,13 +609,9 @@
         } else {
 
             self.entityCount -= 1;
+//            self.entityCount = 0;
             
             if (self.entityCount == 0) {
-                [self.document saveDocument:^(BOOL success) {
-                    if (success) {
-                        NSLog(@"document success");
-                    }
-                }];
                 self.syncerState = STMSyncerIdle;
             }
             
@@ -663,6 +664,8 @@
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
 //        NSLog(@"dataArray %@", dataArray);
         
+//        int counter = 0;
+        
         for (NSDictionary *datum in dataArray) {
             
             NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
@@ -687,8 +690,10 @@
                     [STMObjectsController setRelationshipFromDictionary:datum];
                     
                 } else {
-                    
-                    [STMObjectsController insertObjectFromDictionary:datum];
+//                    if (counter < 1) {
+                        [STMObjectsController insertObjectFromDictionary:datum];
+//                        counter += 1;
+//                    }
                     
                 }
                 

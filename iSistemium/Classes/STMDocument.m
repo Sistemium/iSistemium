@@ -51,9 +51,13 @@
     
 //    NSLog(@"saveDocument");
     
+//    NSLog(@"self.saving %d", self.saving);
+
     if (!self.saving) {
 
         if (self.documentState == UIDocumentStateNormal) {
+            
+//            NSLog(@"documentState == UIDocumentStateNormal");
             
             self.saving = YES;
             

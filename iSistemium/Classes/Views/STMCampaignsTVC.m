@@ -147,9 +147,9 @@
     STMCampaign *campaign = sectionInfo.objects[indexPath.row];
     NSLog(@"campaign.pictures.count %d", campaign.pictures.count);
 
-    for (STMCampaignPicture *picture in campaign.pictures) {
-        NSLog(@"picture %@", picture);
-    }
+//    for (STMCampaignPicture *picture in campaign.pictures) {
+//        NSLog(@"picture %@", picture);
+//    }
     
     return indexPath;
     

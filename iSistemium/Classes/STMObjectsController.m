@@ -22,6 +22,7 @@
 #import "STMArticle.h"
 #import "STMArticlePicture.h"
 #import "STMSettings.h"
+#import "STMLogMessage.h"
 
 
 @implementation STMObjectsController
@@ -46,38 +47,50 @@
     if ([dataModelEntityNames containsObject:entityName]) {
         
         NSString *xid = [dictionary objectForKey:@"xid"];
-        //    NSLog(@"xid %@", xid);
+//        NSLog(@"xid %@", xid);
         
         NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
         
         NSDictionary *properties = [dictionary objectForKey:@"properties"];
         
         NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
-        
+//        NSLog(@"ownObjectKeys %@", ownObjectKeys);
+
         for (NSString *key in ownObjectKeys) {
             
             id value = [properties objectForKey:key];
-            [object setValue:value forKey:key];
+            if (value) {
+                [object setValue:value forKey:key];
+//                NSLog(@"%@ %@", key, value);
+            }
             
         }
-        
+
         NSDictionary *ownObjectRelationships = [self ownObjectRelationshipsForEntityName:entityName];
+        
+//        NSLog(@"ownObjectRelationships %@", ownObjectRelationships);
         
         for (NSString *relationship in [ownObjectRelationships allKeys]) {
             
+//            NSLog(@"relationship %@", relationship);
+            
             NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
             NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
+            
+//            NSLog(@"relationshipDictionary %@, destinationObjectXid %@", relationshipDictionary, destinationObjectXid);
             
             if (destinationObjectXid) {
                 
                 NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
                 [object setValue:destinationObject forKey:relationship];
                 
+//                NSLog(@"relationship %@, destinationObject %@", relationship, destinationObject)
+                
             }
             
         }
         
-//    NSLog(@"object %@", object);
+//        NSLog(@"object %@", object);
         
         [[self document] saveDocument:^(BOOL success) {}];
 
@@ -172,15 +185,34 @@
         xid = [xid stringByReplacingOccurrencesOfString:@"-" withString:@""];
         
         NSData *xidData = [STMFunctions dataFromString:xid];
+
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
-        
+
         NSError *error;
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
         NSManagedObject *object;
+        
+        if ([fetchResult lastObject]) {
+        
+            object = [fetchResult lastObject];
+            if (![object.entity.name isEqualToString:entityName]) {
+                NSLog(@"object.entity.name %@, entityName %@", object.entity.name, entityName);
+            }
+        
+        }
+
+        
+        request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
+        
+        fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+//        NSManagedObject *object;
         
         if ([fetchResult lastObject]) {
             
@@ -189,6 +221,8 @@
 //            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
 //                NSLog(@"get object %@", object);
 //            }
+            
+//            NSLog(@"object exist");
             
         } else {
             
@@ -199,7 +233,11 @@
 //                NSLog(@"insert object %@", object);
 //            }
             
+//            NSLog(@"new object");
+            
         }
+        
+//        NSLog(@"object %@", object);
         
         return object;
         
@@ -258,28 +296,28 @@
 
 + (void)removeAllObjects {
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:@"reload data" type:nil];
 
     NSError *error;
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *datumFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-
-//    NSLog(@"datumFetchResult.count %d", datumFetchResult.count);
     
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSettings class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
-    
     NSArray *settingsFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
 
-//    NSLog(@"settingsFetchResult.count %d", settingsFetchResult.count);
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLogMessage class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *logMessageFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
 
     NSMutableSet *datumSet = [NSMutableSet setWithArray:datumFetchResult];
     NSSet *settingsSet = [NSSet setWithArray:settingsFetchResult];
+    NSSet *logMessagesSet = [NSSet setWithArray:logMessageFetchResult];
 
     [datumSet minusSet:settingsSet];
-    
-//    NSLog(@"datumSet.count %d", datumSet.count);
-    
+    [datumSet minusSet:logMessagesSet];
+        
     for (id datum in datumSet) {
         
         [[self document].managedObjectContext deleteObject:datum];
@@ -301,6 +339,48 @@
     NSArray *datumFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     
     NSLog(@"datumFetchResult.count %d", datumFetchResult.count);
+    
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSettings class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *settingsFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSLog(@"settingsFetchResult.count %d", settingsFetchResult.count);
+
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLogMessage class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *logMessageFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSLog(@"logMessageFetchResult.count %d", logMessageFetchResult.count);
+
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPartner class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *partnerFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSLog(@"partnerFetchResult.count %d", partnerFetchResult.count);
+
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *campaignFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSLog(@"campaignFetchResult.count %d", campaignFetchResult.count);
+
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *articleFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSLog(@"articleFetchResult.count %d", articleFetchResult.count);
+
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaignPicture class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *campaignPictureFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSLog(@"campaignPictureFetchResult.count %d", campaignPictureFetchResult.count);
+
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSalesman class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *salesmanPictureFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSLog(@"salesmanPictureFetchResult.count %d", salesmanPictureFetchResult.count);
+
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    NSArray *outletPictureFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSLog(@"outletPictureFetchResult.count %d", outletPictureFetchResult.count);
+
+    NSLog(@"unknown count %d", datumFetchResult.count - settingsFetchResult.count - logMessageFetchResult.count - partnerFetchResult.count - campaignFetchResult.count - articleFetchResult.count - campaignPictureFetchResult.count - salesmanPictureFetchResult.count - outletPictureFetchResult.count);
 
 }
 
