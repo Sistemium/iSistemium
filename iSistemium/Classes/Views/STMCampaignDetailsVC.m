@@ -66,6 +66,7 @@
         
         self.resultsController = nil;
         [self fetchPictures];
+        [self.navigationController popToRootViewControllerAnimated:YES];
         
     }
     

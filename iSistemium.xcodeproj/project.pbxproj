@@ -251,10 +251,10 @@
 				2C53B9B81944AB01002298A5 /* STMCampaignsTVC.m */,
 				2C65283D19571966008605D9 /* STMCampaignDetailsVC.h */,
 				2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */,
-				2C652929195877BA008605D9 /* STMCampaignPictureVC.h */,
-				2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */,
 				2C65292C1958A77A008605D9 /* STMCampaignPicturePVC.h */,
 				2C65292D1958A77A008605D9 /* STMCampaignPicturePVC.m */,
+				2C652929195877BA008605D9 /* STMCampaignPictureVC.h */,
+				2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
