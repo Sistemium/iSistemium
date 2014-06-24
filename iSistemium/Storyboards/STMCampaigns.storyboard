@@ -94,7 +94,7 @@
         <!--Campaign PicturePVC-->
         <scene sceneID="4ge-mm-Yiz">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="Yyv-Tq-7qC" customClass="STMCampaignPicturePVC" sceneMemberID="viewController"/>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="vertical" spineLocation="min" id="Yyv-Tq-7qC" customClass="STMCampaignPicturePVC" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VwF-sk-KnV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3070" y="-1017"/>
