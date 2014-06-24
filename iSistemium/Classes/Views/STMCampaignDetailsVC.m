@@ -17,9 +17,16 @@
 @interface STMCampaignDetailsVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *homeButton;
+@property (nonatomic, strong) STMDocument *document;
+
 @property (weak, nonatomic) IBOutlet UICollectionView *campiagnPicturesCV;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
-@property (nonatomic, strong) STMDocument *document;
+
+@property (weak, nonatomic) IBOutlet UICollectionView *photoReportsCV;
+
+
+@property (weak, nonatomic) IBOutlet UIView *separationView;
+
 
 @end
 
@@ -240,9 +247,19 @@
 - (void)customInit {
     
     self.navigationItem.rightBarButtonItem = self.homeButton;
+    
     self.campiagnPicturesCV.dataSource = self;
     self.campiagnPicturesCV.delegate = self;
+    self.campiagnPicturesCV.backgroundColor = [UIColor whiteColor];
     
+    self.photoReportsCV.backgroundColor = [UIColor whiteColor];
+    
+    self.separationView.backgroundColor = [UIColor whiteColor];
+    CGFloat y = self.separationView.frame.size.height / 2;
+    CGFloat width = self.separationView.frame.size.width;
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, y, width, 2)];
+    lineView.backgroundColor = [UIColor lightGrayColor];
+    [self.separationView addSubview:lineView];
 
 }
 

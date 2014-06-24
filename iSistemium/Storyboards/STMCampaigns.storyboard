@@ -17,9 +17,9 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="8Z1-jR-utA">
-                                <rect key="frame" x="20" y="20" width="728" height="984"/>
+                                <rect key="frame" x="20" y="20" width="728" height="474"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="NxS-5B-XEU">
                                     <size key="itemSize" width="150" height="200"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -38,19 +38,59 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="AoZ-ZF-Uvw">
+                                <rect key="frame" x="20" y="530" width="728" height="474"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="5Tn-pI-qRg">
+                                    <size key="itemSize" width="150" height="150"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="10" minY="10" maxX="10" maxY="10"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="photoReportCell" id="T7p-8P-Lgi">
+                                        <rect key="frame" x="10" y="10" width="150" height="150"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kI8-IG-sEb">
+                                <rect key="frame" x="20" y="502" width="728" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="x1T-JO-wOn"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="e99-Dj-F0c" firstAttribute="top" secondItem="8Z1-jR-utA" secondAttribute="bottom" constant="20" id="4Kd-0U-Mm1"/>
-                            <constraint firstItem="8Z1-jR-utA" firstAttribute="leading" secondItem="6am-3Z-HV1" secondAttribute="leading" constant="20" id="Ngy-1D-AL0"/>
-                            <constraint firstItem="8Z1-jR-utA" firstAttribute="top" secondItem="Qnk-IO-PqO" secondAttribute="bottom" constant="-44" id="hqY-YZ-FCw"/>
-                            <constraint firstAttribute="trailing" secondItem="8Z1-jR-utA" secondAttribute="trailing" constant="20" id="ypO-Ne-Shg"/>
+                            <constraint firstItem="e99-Dj-F0c" firstAttribute="bottom" secondItem="AoZ-ZF-Uvw" secondAttribute="bottom" constant="20" id="4dt-nX-g2q"/>
+                            <constraint firstAttribute="centerX" secondItem="kI8-IG-sEb" secondAttribute="centerX" id="B8X-1U-bbc"/>
+                            <constraint firstItem="AoZ-ZF-Uvw" firstAttribute="top" secondItem="kI8-IG-sEb" secondAttribute="bottom" constant="8" id="CcG-AW-DeH"/>
+                            <constraint firstItem="kI8-IG-sEb" firstAttribute="top" secondItem="8Z1-jR-utA" secondAttribute="bottom" constant="8" id="F6H-Uy-zeF"/>
+                            <constraint firstItem="AoZ-ZF-Uvw" firstAttribute="leading" secondItem="6am-3Z-HV1" secondAttribute="leading" constant="20" id="GlX-np-GMo"/>
+                            <constraint firstAttribute="trailing" secondItem="kI8-IG-sEb" secondAttribute="trailing" constant="20" id="HZu-iL-zTE"/>
+                            <constraint firstAttribute="trailing" secondItem="8Z1-jR-utA" secondAttribute="trailing" constant="20" symbolic="YES" id="N7Y-rH-7it"/>
+                            <constraint firstAttribute="trailing" secondItem="AoZ-ZF-Uvw" secondAttribute="trailing" constant="20" id="W75-le-RFp"/>
+                            <constraint firstItem="8Z1-jR-utA" firstAttribute="top" secondItem="6am-3Z-HV1" secondAttribute="top" constant="20" symbolic="YES" id="io7-pj-3HF"/>
+                            <constraint firstItem="kI8-IG-sEb" firstAttribute="leading" secondItem="6am-3Z-HV1" secondAttribute="leading" constant="20" id="jSQ-5q-k5v"/>
+                            <constraint firstItem="8Z1-jR-utA" firstAttribute="leading" secondItem="6am-3Z-HV1" secondAttribute="leading" constant="20" symbolic="YES" id="w3c-vD-GJM"/>
+                            <constraint firstAttribute="centerY" secondItem="kI8-IG-sEb" secondAttribute="centerY" id="wvx-i2-Blm"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="5S7-EO-mJ1"/>
                     <connections>
                         <outlet property="campiagnPicturesCV" destination="8Z1-jR-utA" id="yg3-bx-roh"/>
+                        <outlet property="photoReportsCV" destination="AoZ-ZF-Uvw" id="ZOp-Rz-DKa"/>
+                        <outlet property="separationView" destination="kI8-IG-sEb" id="T7u-K0-Shy"/>
                         <segue destination="Yyv-Tq-7qC" kind="push" identifier="showCampaignPicture" id="eBL-sS-UZP"/>
                     </connections>
                 </viewController>
