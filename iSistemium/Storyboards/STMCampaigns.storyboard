@@ -88,8 +88,8 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="5S7-EO-mJ1"/>
                     <connections>
-                        <outlet property="campiagnPicturesCV" destination="8Z1-jR-utA" id="yg3-bx-roh"/>
-                        <outlet property="photoReportsCV" destination="AoZ-ZF-Uvw" id="ZOp-Rz-DKa"/>
+                        <outlet property="campaignPicturesCV" destination="8Z1-jR-utA" id="OZf-u7-o82"/>
+                        <outlet property="photoReportsPicturesCV" destination="AoZ-ZF-Uvw" id="EJb-nU-IdY"/>
                         <outlet property="separationView" destination="kI8-IG-sEb" id="T7u-K0-Shy"/>
                         <segue destination="Yyv-Tq-7qC" kind="push" identifier="showCampaignPicture" id="eBL-sS-UZP"/>
                     </connections>
