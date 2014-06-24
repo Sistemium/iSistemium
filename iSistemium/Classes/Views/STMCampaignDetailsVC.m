@@ -237,6 +237,36 @@
     
 }
 
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+//    if ([collectionView isEqual:self.photoReportsPicturesCV]) {
+//        
+//    }
+//    
+//    if (kind == UICollectionElementKindSectionHeader) {
+//        
+//    }
+    
+    UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"outletHeader" forIndexPath:indexPath];
+    
+    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
+
+    UILabel *label;
+
+    for (UIView *view in headerView.subviews) {
+        if ([view isKindOfClass:[UILabel class]]) {
+            label = (UILabel *)view;
+        }
+    }
+    
+    label.text = outlet.name;
+    label.textColor = [UIColor grayColor];
+    
+    return headerView;
+    
+}
+
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     if ([collectionView isEqual:self.campaignPicturesCV]) {
@@ -278,8 +308,8 @@
         STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
         STMPhotoReport *photoReport = outlet.photoReports.anyObject;
         
-        NSLog(@"outlet %@", outlet);
-        NSLog(@"photoReport %@", photoReport);
+//        NSLog(@"outlet %@", outlet);
+//        NSLog(@"photoReport %@", photoReport);
         
 //        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.photoReportPicturesResultsController sections] objectAtIndex:indexPath.section];
 
