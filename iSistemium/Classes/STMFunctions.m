@@ -62,5 +62,51 @@
     
 }
 
++ (NSString *)pluralTypeForCount:(NSUInteger)count {
+    
+    NSString *result;
+    
+    if (count == 0) {
+        
+        result = @"0";
+        
+    } else {
+
+        int testNumber = count % 100;
+        
+        if (testNumber >= 11 && testNumber <= 19) {
+            
+            result = @"5";
+            
+        } else {
+            
+            int switchNumber = testNumber % 10;
+            
+            switch (switchNumber) {
+                    
+                case 1:
+                    result = @"1";
+                    break;
+                    
+                case 2:
+                case 3:
+                case 4:
+                    result = @"2";
+                    break;
+                    
+                default:
+                    result = @"5";
+                    break;
+                    
+            }
+            
+        }
+
+    }
+    
+    return result;
+    
+}
+
 
 @end

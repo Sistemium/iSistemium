@@ -77,10 +77,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Cft-5K-2NA" firstAttribute="top" secondItem="7p0-Rn-sC9" secondAttribute="bottom" constant="-44" id="IBQ-9H-OPN"/>
-                            <constraint firstAttribute="trailing" secondItem="Cft-5K-2NA" secondAttribute="trailing" constant="20" id="rGB-cz-Vi9"/>
-                            <constraint firstItem="Jcr-Yb-T2Q" firstAttribute="top" secondItem="Cft-5K-2NA" secondAttribute="bottom" constant="20" id="rYV-6B-bPj"/>
-                            <constraint firstItem="Cft-5K-2NA" firstAttribute="leading" secondItem="3rP-Xe-Lsi" secondAttribute="leading" constant="20" id="x95-AB-sbt"/>
+                            <constraint firstAttribute="trailing" secondItem="Cft-5K-2NA" secondAttribute="trailing" constant="20" symbolic="YES" id="DdK-Cg-iIq"/>
+                            <constraint firstAttribute="bottom" secondItem="Cft-5K-2NA" secondAttribute="bottom" constant="20" symbolic="YES" id="JqN-W8-rAW"/>
+                            <constraint firstItem="Cft-5K-2NA" firstAttribute="leading" secondItem="3rP-Xe-Lsi" secondAttribute="leading" constant="20" symbolic="YES" id="Z7T-cy-sKD"/>
+                            <constraint firstItem="Cft-5K-2NA" firstAttribute="top" secondItem="3rP-Xe-Lsi" secondAttribute="top" constant="20" symbolic="YES" id="wUc-GQ-SVP"/>
                         </constraints>
                     </view>
                     <connections>

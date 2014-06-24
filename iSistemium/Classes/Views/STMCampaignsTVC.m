@@ -14,6 +14,7 @@
 #import "STMArticlesTVC.h"
 #import "STMRootTBC.h"
 #import "STMCampaignsSVC.h"
+#import "STMFunctions.h"
 
 @interface STMCampaignsTVC () <NSFetchedResultsControllerDelegate>
 
@@ -147,11 +148,26 @@
 
     cell.textLabel.text = campaign.name;
     
-    NSString *gain = campaign.gain ? campaign.gain : NSLocalizedString(@"NO GAIN", nil);
-    NSString *goal = campaign.goal ? campaign.goal : NSLocalizedString(@"NO GOAL", nil);
+    int articlesCount = (int)campaign.articles.count;
+    int picturesCount = (int)campaign.pictures.count;
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ / %@ — %lu", gain, goal, (unsigned long)campaign.articles.count];
+    NSString *articlesString = NSLocalizedString([[STMFunctions pluralTypeForCount:articlesCount] stringByAppendingString:@"ARTICLES"], nil);
+    NSString *picturesString = NSLocalizedString([[STMFunctions pluralTypeForCount:picturesCount] stringByAppendingString:@"PICTURES"], nil);
     
+    if (articlesCount != 0) {
+        articlesString = [NSString stringWithFormat:@"%d %@", articlesCount, articlesString];
+    }
+    
+    if (picturesCount != 0) {
+        picturesString = [NSString stringWithFormat:@"%d %@", picturesCount, picturesString];
+    }
+    
+//    NSString *gain = campaign.gain ? campaign.gain : NSLocalizedString(@"NO GAIN", nil);
+//    NSString *goal = campaign.goal ? campaign.goal : NSLocalizedString(@"NO GOAL", nil);    
+//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ / %@ — %lu", gain, goal, (unsigned long)campaign.articles.count];
+    
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ / %@", articlesString, picturesString];
+
     return cell;
     
 }

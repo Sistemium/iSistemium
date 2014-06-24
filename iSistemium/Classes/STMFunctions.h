@@ -13,5 +13,6 @@
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString;
 + (BOOL)isCorrectSMSCode:(NSString *)SMSCode;
 + (NSData *)dataFromString:(NSString *)string;
++ (NSString *)pluralTypeForCount:(NSUInteger)count;
 
 @end
