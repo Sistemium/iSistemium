@@ -352,7 +352,20 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self performSegueWithIdentifier:@"showCampaignPicture" sender:indexPath];
+    if ([collectionView isEqual:self.campaignPicturesCV]) {
+        
+        [self performSegueWithIdentifier:@"showCampaignPicture" sender:indexPath];
+
+    } else if ([collectionView isEqual:self.photoReportsPicturesCV]) {
+        
+        STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
+        STMPhotoReport *photoReport = outlet.photoReports.anyObject;
+
+        if (indexPath.row == photoReport.photos.count) {
+            NSLog(@"Start Photo");
+        }
+        
+    }
     
     return YES;
     
