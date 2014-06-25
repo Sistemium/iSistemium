@@ -132,7 +132,7 @@
         <!--Campaign DetailsPVC-->
         <scene sceneID="IBp-CG-UUT">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="iDU-ih-CIx" customClass="STMCampaignDetailsPVC" sceneMemberID="viewController">
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="iDU-ih-CIx" customClass="STMCampaignDetailsPVC" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="F7c-ku-BQV"/>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vm5-aG-2yj" userLabel="First Responder" sceneMemberID="firstResponder"/>
