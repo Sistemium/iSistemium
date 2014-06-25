@@ -10,11 +10,16 @@
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMRootTBC.h"
+#import "STMCampaignPageCVC.h"
 
-@interface STMCampaignDetailsPVC ()
+@interface STMCampaignDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *homeButton;
 @property (nonatomic, strong) STMDocument *document;
+
+@property (nonatomic) NSUInteger currentIndex;
+@property (nonatomic) NSUInteger nextIndex;
+
 
 
 @end
@@ -40,13 +45,13 @@
         
         self.title = campaign.name;
         
+        for (STMCampaignPageCVC *view in self.viewControllers) {
+            view.campaign = campaign;
+        }
+        
         _campaign = campaign;
         
-//        self.campaignPicturesResultsController = nil;
-//        self.photoReportPicturesResultsController = nil;
-//        [self fetchPictures];
-//        [self fetchPhotoReport];
-        [self.navigationController popToRootViewControllerAnimated:YES];
+//        [self.navigationController popToRootViewControllerAnimated:YES];
         
     }
     
@@ -74,6 +79,68 @@
     
 }
 
+- (STMCampaignPageCVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
+    
+    STMCampaignPageCVC *vc = nil;
+    
+    switch (index) {
+            
+        case 0:
+            vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPictureCVC"];
+            break;
+            
+        case 1:
+            vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPhotoReportCVC"];
+            break;
+            
+        default:
+            break;
+            
+    }
+    
+    vc.index = index;
+    vc.campaign = self.campaign;
+    
+    return vc;
+    
+}
+
+
+#pragma mark - Page View Controller Data Source
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
+    
+    return [self viewControllerAtIndex:self.currentIndex-1 storyboard:self.storyboard];
+    
+}
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
+    
+    return [self viewControllerAtIndex:self.currentIndex+1 storyboard:self.storyboard];
+    
+}
+
+#pragma mark - Page View Controller Delegate
+
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
+    
+    STMCampaignPageCVC *pendingVC = pendingViewControllers[0];
+    self.nextIndex = pendingVC.index;
+    
+    NSLog(@"self.nextIndex %d", self.nextIndex);
+    
+}
+
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+    if (completed) {
+        
+        self.currentIndex = self.nextIndex;
+        
+        NSLog(@"self.currentIndex %d", self.currentIndex);
+        
+    }
+}
+
 #pragma mark - UISplitViewControllerDelegate
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
@@ -94,6 +161,16 @@
 - (void)customInit {
     
     self.navigationItem.rightBarButtonItem = self.homeButton;
+
+    self.dataSource = self;
+    self.delegate = self;
+    
+    self.currentIndex = 0;
+    
+    STMCampaignPageCVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
+    NSArray *viewControllers = @[vc];
+    [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
+
     
 }
 
