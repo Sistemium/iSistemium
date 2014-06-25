@@ -51,7 +51,7 @@
         
         _campaign = campaign;
         
-//        [self.navigationController popToRootViewControllerAnimated:YES];
+        [self.navigationController popToRootViewControllerAnimated:YES];
         
     }
     
@@ -127,16 +127,12 @@
     STMCampaignPageCVC *pendingVC = pendingViewControllers[0];
     self.nextIndex = pendingVC.index;
     
-    NSLog(@"self.nextIndex %d", self.nextIndex);
-    
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
     if (completed) {
         
         self.currentIndex = self.nextIndex;
-        
-        NSLog(@"self.currentIndex %d", self.currentIndex);
         
     }
 }

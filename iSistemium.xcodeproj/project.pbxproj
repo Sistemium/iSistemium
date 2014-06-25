@@ -28,7 +28,6 @@
 		2C53B9B019434E1E002298A5 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B9AF19434E1E002298A5 /* STMObjectsController.m */; };
 		2C53B9B91944AB01002298A5 /* STMCampaignsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B9B81944AB01002298A5 /* STMCampaignsTVC.m */; };
 		2C53B9BC19472D28002298A5 /* STMArticlesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */; };
-		2C65283F19571966008605D9 /* STMCampaignDetailsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */; };
 		2C65284219571C4B008605D9 /* STMCampaignsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65284119571C4B008605D9 /* STMCampaignsSVC.m */; };
 		2C6528AA19576355008605D9 /* STMDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528A719576355008605D9 /* STMDataModel.xcdatamodeld */; };
 		2C6528F219576894008605D9 /* STMPartner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F119576894008605D9 /* STMPartner.m */; };
@@ -131,8 +130,6 @@
 		2C53B9B81944AB01002298A5 /* STMCampaignsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignsTVC.m; sourceTree = "<group>"; };
 		2C53B9BA19472D28002298A5 /* STMArticlesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticlesTVC.h; sourceTree = "<group>"; };
 		2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMArticlesTVC.m; sourceTree = "<group>"; };
-		2C65283D19571966008605D9 /* STMCampaignDetailsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignDetailsVC.h; sourceTree = "<group>"; };
-		2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignDetailsVC.m; sourceTree = "<group>"; };
 		2C65284019571C4B008605D9 /* STMCampaignsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignsSVC.h; sourceTree = "<group>"; };
 		2C65284119571C4B008605D9 /* STMCampaignsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignsSVC.m; sourceTree = "<group>"; };
 		2C6528A819576355008605D9 /* STMDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -269,8 +266,6 @@
 				2CD443E7195AB23B004ADE58 /* STMCampaignPictureCVC.m */,
 				2CD443E9195AB26A004ADE58 /* STMCampaignPhotoReportCVC.h */,
 				2CD443EA195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m */,
-				2C65283D19571966008605D9 /* STMCampaignDetailsVC.h */,
-				2C65283E19571966008605D9 /* STMCampaignDetailsVC.m */,
 				2C65292C1958A77A008605D9 /* STMCampaignPicturePVC.h */,
 				2C65292D1958A77A008605D9 /* STMCampaignPicturePVC.m */,
 				2C652929195877BA008605D9 /* STMCampaignPictureVC.h */,
@@ -633,7 +628,6 @@
 				2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */,
 				2C65290719576895008605D9 /* STMLocation.m in Sources */,
 				2CD443E5195AAD72004ADE58 /* STMCampaignDetailsPVC.m in Sources */,
-				2C65283F19571966008605D9 /* STMCampaignDetailsVC.m in Sources */,
 				2C6528AA19576355008605D9 /* STMDataModel.xcdatamodeld in Sources */,
 				2CD443EE195AB4D6004ADE58 /* STMCampaignPageCVC.m in Sources */,
 				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,

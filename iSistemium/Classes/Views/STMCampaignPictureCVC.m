@@ -11,6 +11,7 @@
 #import "STMSessionManager.h"
 #import "STMCampaignPicture.h"
 #import "STMObjectsController.h"
+#import "STMCampaignPicturePVC.h"
 
 @interface STMCampaignPictureCVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
@@ -139,7 +140,7 @@
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     
-//    [self performSegueWithIdentifier:@"showCampaignPicture" sender:indexPath];
+    [self performSegueWithIdentifier:@"showCampaignPicture" sender:indexPath];
     
     return YES;
     
@@ -218,15 +219,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showCampaignPicture"] && [segue.destinationViewController isKindOfClass:[STMCampaignPicturePVC class]]) {
+        
+        [(STMCampaignPicturePVC *)segue.destinationViewController setCampaign:self.campaign];
+        [(STMCampaignPicturePVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
+        
+    }
+    
+    
 }
-*/
 
 @end
