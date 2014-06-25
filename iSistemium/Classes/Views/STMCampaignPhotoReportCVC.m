@@ -105,6 +105,14 @@
     
 }
 
+- (void)photoButtonPressed:(UIButton *)button {
+    
+    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[button.tag];
+    STMPhotoReport *photoReport = outlet.photoReports.anyObject;
+    
+    NSLog(@"Start Photo");
+    
+}
 
 #pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
 
@@ -139,15 +147,38 @@
     STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
     
     UILabel *label;
+    UIButton *photoButton;
     
     for (UIView *view in headerView.subviews) {
+        
         if ([view isKindOfClass:[UILabel class]]) {
+            
             label = (UILabel *)view;
+            
+            label.text = outlet.name;
+            label.textColor = [UIColor grayColor];
+            
+        } else if ([view isKindOfClass:[UIButton class]]) {
+            
+            photoButton = (UIButton *)view;
+            
+            [[photoButton viewWithTag:1] removeFromSuperview];
+        
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, photoButton.frame.size.width, photoButton.frame.size.height)];
+            imageView.image = [UIImage imageNamed:@"photo-icon.png"];
+            imageView.tag = 1;
+            [photoButton addSubview:imageView];
+            
+            [photoButton setTitle:@"" forState:UIControlStateNormal];
+            
+            photoButton.tag = indexPath.section;
+            
+            [photoButton addTarget:self action:@selector(photoButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
         }
+        
     }
     
-    label.text = outlet.name;
-    label.textColor = [UIColor grayColor];
     
     return headerView;
     
@@ -202,13 +233,6 @@
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
-    STMPhotoReport *photoReport = outlet.photoReports.anyObject;
-    
-    if (indexPath.row == photoReport.photos.count) {
-        NSLog(@"Start Photo");
-    }
     
     return YES;
     
