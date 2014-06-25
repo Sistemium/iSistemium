@@ -65,10 +65,13 @@
 		2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2C8EF5EF194086E10021D202 /* Localizable.strings */; };
 		2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5F21940872E0021D202 /* STMAppDelegate.m */; };
 		2C8EF5F7194089E10021D202 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5F6194089E10021D202 /* Security.framework */; };
+		2CA4527C195AF68C00D93CA2 /* STMPhotoReportPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA4527B195AF68C00D93CA2 /* STMPhotoReportPVC.m */; };
+		2CA4527F195AF6BC00D93CA2 /* STMPhotoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA4527E195AF6BC00D93CA2 /* STMPhotoVC.m */; };
 		2CD443E5195AAD72004ADE58 /* STMCampaignDetailsPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD443E4195AAD72004ADE58 /* STMCampaignDetailsPVC.m */; };
 		2CD443E8195AB23B004ADE58 /* STMCampaignPictureCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD443E7195AB23B004ADE58 /* STMCampaignPictureCVC.m */; };
 		2CD443EB195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD443EA195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m */; };
 		2CD443EE195AB4D6004ADE58 /* STMCampaignPageCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD443ED195AB4D6004ADE58 /* STMCampaignPageCVC.m */; };
+		2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CD443F0195AD76E004ADE58 /* photo-icon.png */; };
 		2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B514195475F400C84A6D /* STMRootTBC.m */; };
 		2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */; };
 		2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51F19556E0400C84A6D /* STMAuthTVC.storyboard */; };
@@ -197,6 +200,10 @@
 		2C8EF5F11940872E0021D202 /* STMAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAppDelegate.h; sourceTree = "<group>"; };
 		2C8EF5F21940872E0021D202 /* STMAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAppDelegate.m; sourceTree = "<group>"; };
 		2C8EF5F6194089E10021D202 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		2CA4527A195AF68C00D93CA2 /* STMPhotoReportPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportPVC.h; sourceTree = "<group>"; };
+		2CA4527B195AF68C00D93CA2 /* STMPhotoReportPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportPVC.m; sourceTree = "<group>"; };
+		2CA4527D195AF6BC00D93CA2 /* STMPhotoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoVC.h; sourceTree = "<group>"; };
+		2CA4527E195AF6BC00D93CA2 /* STMPhotoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoVC.m; sourceTree = "<group>"; };
 		2CD443E3195AAD72004ADE58 /* STMCampaignDetailsPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignDetailsPVC.h; sourceTree = "<group>"; };
 		2CD443E4195AAD72004ADE58 /* STMCampaignDetailsPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignDetailsPVC.m; sourceTree = "<group>"; };
 		2CD443E6195AB23B004ADE58 /* STMCampaignPictureCVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPictureCVC.h; sourceTree = "<group>"; };
@@ -205,6 +212,7 @@
 		2CD443EA195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignPhotoReportCVC.m; sourceTree = "<group>"; };
 		2CD443EC195AB4D6004ADE58 /* STMCampaignPageCVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPageCVC.h; sourceTree = "<group>"; };
 		2CD443ED195AB4D6004ADE58 /* STMCampaignPageCVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignPageCVC.m; sourceTree = "<group>"; };
+		2CD443F0195AD76E004ADE58 /* photo-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo-icon.png"; sourceTree = "<group>"; };
 		2CE8B513195475F400C84A6D /* STMRootTBC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRootTBC.h; sourceTree = "<group>"; };
 		2CE8B514195475F400C84A6D /* STMRootTBC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRootTBC.m; sourceTree = "<group>"; };
 		2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMCampaigns.storyboard; sourceTree = "<group>"; };
@@ -264,12 +272,16 @@
 				2CD443ED195AB4D6004ADE58 /* STMCampaignPageCVC.m */,
 				2CD443E6195AB23B004ADE58 /* STMCampaignPictureCVC.h */,
 				2CD443E7195AB23B004ADE58 /* STMCampaignPictureCVC.m */,
-				2CD443E9195AB26A004ADE58 /* STMCampaignPhotoReportCVC.h */,
-				2CD443EA195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m */,
 				2C65292C1958A77A008605D9 /* STMCampaignPicturePVC.h */,
 				2C65292D1958A77A008605D9 /* STMCampaignPicturePVC.m */,
 				2C652929195877BA008605D9 /* STMCampaignPictureVC.h */,
 				2C65292A195877BA008605D9 /* STMCampaignPictureVC.m */,
+				2CD443E9195AB26A004ADE58 /* STMCampaignPhotoReportCVC.h */,
+				2CD443EA195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m */,
+				2CA4527A195AF68C00D93CA2 /* STMPhotoReportPVC.h */,
+				2CA4527B195AF68C00D93CA2 /* STMPhotoReportPVC.m */,
+				2CA4527D195AF6BC00D93CA2 /* STMPhotoVC.h */,
+				2CA4527E195AF6BC00D93CA2 /* STMPhotoVC.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -449,11 +461,20 @@
 		2C8EF5E0194086450021D202 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2CD443EF195AD741004ADE58 /* Images */,
 				2C53B88819409E42002298A5 /* settings_schema.json */,
 				2C53B88919409E42002298A5 /* settings.json */,
 				2C8EF5EF194086E10021D202 /* Localizable.strings */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		2CD443EF195AD741004ADE58 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				2CD443F0195AD76E004ADE58 /* photo-icon.png */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		2CE8B51719547A7900C84A6D /* Storyboards */ = {
@@ -516,7 +537,7 @@
 				ORGANIZATIONNAME = "Sistemium UAB";
 				TargetAttributes = {
 					2C8EF59A1940859F0021D202 = {
-						DevelopmentTeam = DP58H3X45C;
+						DevelopmentTeam = HZMMGDCLPA;
 					};
 					2C8EF5BB1940859F0021D202 = {
 						TestTargetID = 2C8EF59A1940859F0021D202;
@@ -549,6 +570,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */,
+				2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */,
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
 				2C53B88A19409E42002298A5 /* settings_schema.json in Resources */,
@@ -612,6 +634,7 @@
 				2C65292219576895008605D9 /* STMTrack.m in Sources */,
 				2C65292B195877BA008605D9 /* STMCampaignPictureVC.m in Sources */,
 				2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */,
+				2CA4527F195AF6BC00D93CA2 /* STMPhotoVC.m in Sources */,
 				2C6528FE19576894008605D9 /* STMSettings.m in Sources */,
 				2CE8B52319556F0700C84A6D /* STMAuthTVC.m in Sources */,
 				2C53B89F19409E71002298A5 /* STMSession.m in Sources */,
@@ -647,6 +670,7 @@
 				2C53B8AB19409E83002298A5 /* STMLocationTVC.m in Sources */,
 				2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */,
 				2C53B8A519409E71002298A5 /* STMSettingsData.m in Sources */,
+				2CA4527C195AF68C00D93CA2 /* STMPhotoReportPVC.m in Sources */,
 				2C53B9BC19472D28002298A5 /* STMArticlesTVC.m in Sources */,
 				2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */,
 				2CD443E8195AB23B004ADE58 /* STMCampaignPictureCVC.m in Sources */,
@@ -724,6 +748,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -742,6 +767,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "4DFABC9F-CB92-44F4-8D04-B5A3A8474A79";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -763,6 +789,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -774,6 +801,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PROVISIONING_PROFILE = "4DFABC9F-CB92-44F4-8D04-B5A3A8474A79";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -786,11 +814,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "4DFABC9F-CB92-44F4-8D04-B5A3A8474A79";
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -801,11 +832,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "4DFABC9F-CB92-44F4-8D04-B5A3A8474A79";
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

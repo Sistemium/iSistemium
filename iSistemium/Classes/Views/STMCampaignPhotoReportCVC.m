@@ -12,12 +12,14 @@
 #import "STMSessionManager.h"
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
+#import "STMPhotoReportPVC.h"
 
-@interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
+@interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
-
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
+@property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
+@property (nonatomic) NSUInteger currentSection;
 
 @end
 
@@ -105,6 +107,59 @@
     
 }
 
+- (void)photoButtonPressed:(UIButton *)sender {
+    
+    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[sender.tag];
+    self.selectedPhotoReport = outlet.photoReports.anyObject;
+    self.currentSection = sender.tag;
+    
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    
+}
+
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
+        
+        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        imagePickerController.sourceType = imageSourceType;
+        [self presentViewController:imagePickerController animated:YES completion:^{
+            NSLog(@"presentViewController:UIImagePickerController");
+        }];
+        
+    }
+    
+}
+
+- (void)saveImage:(UIImage *)image {
+    
+    STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
+    photo.image = UIImagePNGRepresentation(image);
+    [self.selectedPhotoReport addPhotosObject:photo];
+    
+    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:self.currentSection]];
+    
+    [[self document] saveDocument:^(BOOL success) {
+        NSLog(@"spotImage UIDocumentSaveForOverwriting success");
+    }];
+    
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
+        NSLog(@"dismiss UIImagePickerController");
+        
+    }];
+    
+}
+
 
 #pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
 
@@ -124,7 +179,7 @@
     //        NSLog(@"outlet.name %@", outlet.name);
     //        NSLog(@"outlet.photoReports.count %d", outlet.photoReports.count);
     //        NSLog(@"photoReport.photos.count %d", photoReport.photos.count);
-    return photoReport.photos.count + 1;
+    return photoReport.photos.count;
     
 }
 
@@ -139,15 +194,46 @@
     STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
     
     UILabel *label;
+    UIButton *photoButton;
     
     for (UIView *view in headerView.subviews) {
+        
         if ([view isKindOfClass:[UILabel class]]) {
+            
             label = (UILabel *)view;
+            
+            label.text = outlet.name;
+            label.textColor = [UIColor grayColor];
+            
+        } else if ([view isKindOfClass:[UIButton class]]) {
+            
+            photoButton = (UIButton *)view;
+            
+            for (UIView *subview in photoButton.subviews) {
+                if ([subview isKindOfClass:[UIImageView class]]) {
+                    [subview removeFromSuperview];
+                }
+            }
+            
+            UIImage *image = [UIImage imageNamed:@"photo-icon.png"];
+            CGFloat k = 0.666;
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, image.size.width * k, image.size.height * k)];
+            imageView.image = image;
+            [photoButton addSubview:imageView];
+            
+            [photoButton setTitle:@"" forState:UIControlStateNormal];
+            
+            photoButton.tag = indexPath.section;
+            
+            [photoButton addTarget:self action:@selector(photoButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
         }
+        
     }
     
-    label.text = outlet.name;
-    label.textColor = [UIColor grayColor];
+    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, headerView.frame.size.height-1, headerView.frame.size.width, 1)];
+    line.backgroundColor = [UIColor lightGrayColor];
+    [headerView addSubview:line];
     
     return headerView;
     
@@ -172,20 +258,20 @@
     
     CGRect frame = CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height);
     
-    if (indexPath.row == photoReport.photos.count) {
-        
-        UILabel *label = [[UILabel alloc] initWithFrame:frame];
-        label.text = NSLocalizedString(@"ADD PHOTO", nil);
-        label.lineBreakMode = NSLineBreakByWordWrapping;
-        label.numberOfLines = 0;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.layer.borderColor = [UIColor lightGrayColor].CGColor;
-        label.layer.borderWidth = 1.0;
-        label.tag = 1;
-        [cell.contentView addSubview:label];
-        
-    } else {
-        
+//    if (indexPath.row == photoReport.photos.count) {
+//        
+//        UILabel *label = [[UILabel alloc] initWithFrame:frame];
+//        label.text = NSLocalizedString(@"ADD PHOTO", nil);
+//        label.lineBreakMode = NSLineBreakByWordWrapping;
+//        label.numberOfLines = 0;
+//        label.textAlignment = NSTextAlignmentCenter;
+//        label.layer.borderColor = [UIColor lightGrayColor].CGColor;
+//        label.layer.borderWidth = 1.0;
+//        label.tag = 1;
+//        [cell.contentView addSubview:label];
+//        
+//    } else {
+    
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
         
         //            STMPhoto *photo = [[sectionInfo objects] objectAtIndex:indexPath.row];
@@ -194,7 +280,7 @@
         imageView.tag = 1;
         [cell.contentView addSubview:imageView];
         
-    }
+//    }
     
     
     return cell;
@@ -204,11 +290,9 @@
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
-    STMPhotoReport *photoReport = outlet.photoReports.anyObject;
-    
-    if (indexPath.row == photoReport.photos.count) {
-        NSLog(@"Start Photo");
-    }
+    self.selectedPhotoReport = outlet.photoReports.anyObject;
+
+    [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
     
     return YES;
     
@@ -283,15 +367,18 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:@"showPhotoReport"] && [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]]) {
+        
+        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoReport:self.selectedPhotoReport];
+        [(STMPhotoReportPVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
+        
+    }
+
 }
-*/
 
 @end
