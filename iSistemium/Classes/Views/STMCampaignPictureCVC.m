@@ -12,6 +12,7 @@
 #import "STMCampaignPicture.h"
 #import "STMObjectsController.h"
 #import "STMCampaignPicturePVC.h"
+#import "STMFunctions.h"
 
 @interface STMCampaignPictureCVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
@@ -121,7 +122,13 @@
     //    NSLog(@"picture %@", picture);
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 150)];
-    imageView.image = [UIImage imageWithData:picture.image];
+    
+    if (!picture.imageThumbnail) {
+        UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:picture.image] toSize:CGSizeMake(150, 150)];
+        picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
+    }
+    
+    imageView.image = [UIImage imageWithData:picture.imageThumbnail];
     imageView.tag = 1;
     [cell.contentView addSubview:imageView];
     
@@ -173,18 +180,22 @@
     if (type == NSFetchedResultsChangeDelete) {
         
         [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-//        NSLog(@"NSFetchedResultsChangeDelete");
+        //        NSLog(@"NSFetchedResultsChangeDelete");
         
     } else if (type == NSFetchedResultsChangeInsert) {
         
         [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-//        NSLog(@"NSFetchedResultsChangeInsert");
+        //        NSLog(@"NSFetchedResultsChangeInsert");
         
         
     } else if (type == NSFetchedResultsChangeUpdate) {
+
+        STMCampaignPicture *object = anObject;
         
-        [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
-//        NSLog(@"NSFetchedResultsChangeUpdate");
+        if (object.imageThumbnail) {
+            [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+        }
+        //        NSLog(@"NSFetchedResultsChangeUpdate");
         
     }
     

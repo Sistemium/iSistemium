@@ -216,17 +216,18 @@
     
     cell.textLabel.text = NSLocalizedString(@"RELOAD DATA", nil);
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reloadData)];
-    
-    [cell addGestureRecognizer:tap];
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(flushData)];
+//    
+//    [cell addGestureRecognizer:tap];
     
     return cell;
     
 }
 
-- (void)reloadData {
+- (void)flushData {
  
-    NSLog(@"reloadData");
+    NSLog(@"flushData");
+    [[STMRootTBC sharedRootVC] flushTabs];
     [STMObjectsController removeAllObjects];
     
 }

@@ -14,5 +14,6 @@
 + (BOOL)isCorrectSMSCode:(NSString *)SMSCode;
 + (NSData *)dataFromString:(NSString *)string;
 + (NSString *)pluralTypeForCount:(NSUInteger)count;
++ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
 
 @end

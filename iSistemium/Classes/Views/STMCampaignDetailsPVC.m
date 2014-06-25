@@ -125,6 +125,7 @@
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
     
     STMCampaignPageCVC *pendingVC = pendingViewControllers[0];
+    pendingVC.campaign = self.campaign;
     self.nextIndex = pendingVC.index;
     
 }
@@ -132,6 +133,8 @@
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
     if (completed) {
         
+        STMCampaignPageCVC *previousVC = previousViewControllers[0];
+        previousVC.campaign = self.campaign;
         self.currentIndex = self.nextIndex;
         
     }

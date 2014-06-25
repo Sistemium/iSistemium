@@ -90,6 +90,12 @@
     
 }
 
+- (void)flushTabs {
+    
+    [self customInit];
+    
+}
+
 - (void)showTabWithName:(NSString *)tabName {
     
     UIViewController *vc = [self.tabs objectForKey:tabName];

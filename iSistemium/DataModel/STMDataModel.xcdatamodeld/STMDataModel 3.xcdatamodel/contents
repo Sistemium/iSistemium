@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="STMArticle" representedClassName="STMArticle" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="articles" inverseEntity="STMCampaign" syncable="YES"/>
+        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticlePicture" inverseName="articles" inverseEntity="STMArticlePicture" syncable="YES"/>
+    </entity>
+    <entity name="STMArticlePicture" representedClassName="STMArticlePicture" parentEntity="STMPicture" syncable="YES">
+        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="pictures" inverseEntity="STMArticle" syncable="YES"/>
+    </entity>
+    <entity name="STMBatteryStatus" representedClassName="STMBatteryStatus" parentEntity="STMComment" syncable="YES">
+        <attribute name="batteryLevel" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="batteryState" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMCampaign" representedClassName="STMCampaign" parentEntity="STMComment" syncable="YES">
+        <attribute name="gain" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="goal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="campaigns" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="outlets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="campaigns" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="photoReports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPhotoReport" inverseName="campaign" inverseEntity="STMPhotoReport" syncable="YES"/>
+        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaignPicture" inverseName="campaigns" inverseEntity="STMCampaignPicture" syncable="YES"/>
+    </entity>
+    <entity name="STMCampaignPicture" representedClassName="STMCampaignPicture" parentEntity="STMPicture" syncable="YES">
+        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="pictures" inverseEntity="STMCampaign" syncable="YES"/>
+    </entity>
+    <entity name="STMComment" representedClassName="STMComment" parentEntity="STMDatum" syncable="YES">
+        <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="owner" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STMDatum" inverseName="comments" inverseEntity="STMDatum" syncable="YES"/>
+    </entity>
+    <entity name="STMDatum" representedClassName="STMDatum" isAbstract="YES" syncable="YES">
+        <attribute name="cts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="ts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="xid" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMComment" inverseName="owner" inverseEntity="STMComment" syncable="YES"/>
+    </entity>
+    <entity name="STMLocation" representedClassName="STMLocation" parentEntity="STMComment" syncable="YES">
+        <attribute name="altitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="course" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="horizontalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="speed" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="verticalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="track" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMTrack" inverseName="locations" inverseEntity="STMTrack" syncable="YES"/>
+    </entity>
+    <entity name="STMLogMessage" representedClassName="STMLogMessage" parentEntity="STMComment" syncable="YES">
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMOutlet" representedClassName="STMOutlet" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="outlets" inverseEntity="STMCampaign" syncable="YES"/>
+        <relationship name="partner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPartner" inverseName="outlets" inverseEntity="STMPartner" syncable="YES"/>
+        <relationship name="photoReports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPhotoReport" inverseName="outlet" inverseEntity="STMPhotoReport" syncable="YES"/>
+        <relationship name="salesmans" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="outlets" inverseEntity="STMSalesman" syncable="YES"/>
+    </entity>
+    <entity name="STMPartner" representedClassName="STMPartner" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="outlets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="partner" inverseEntity="STMOutlet" syncable="YES"/>
+    </entity>
+    <entity name="STMPhoto" representedClassName="STMPhoto" parentEntity="STMPicture" syncable="YES">
+        <relationship name="photoReport" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPhotoReport" inverseName="photos" inverseEntity="STMPhotoReport" syncable="YES"/>
+    </entity>
+    <entity name="STMPhotoReport" representedClassName="STMPhotoReport" parentEntity="STMComment" syncable="YES">
+        <relationship name="campaign" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="photoReports" inverseEntity="STMCampaign" syncable="YES"/>
+        <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="photoReports" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="photos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPhoto" inverseName="photoReport" inverseEntity="STMPhoto" syncable="YES"/>
+        <relationship name="salesman" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="photoreports" inverseEntity="STMSalesman" syncable="YES"/>
+    </entity>
+    <entity name="STMPicture" representedClassName="STMPicture" parentEntity="STMComment" syncable="YES">
+        <attribute name="href" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" storedInTruthFile="YES" syncable="YES"/>
+        <attribute name="imageFormat" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageThumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" storedInTruthFile="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMSalesman" representedClassName="STMSalesman" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="outlets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="salesmans" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="photoreports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPhotoReport" inverseName="salesman" inverseEntity="STMPhotoReport" syncable="YES"/>
+    </entity>
+    <entity name="STMSettings" representedClassName="STMSettings" parentEntity="STMComment" syncable="YES">
+        <attribute name="group" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMTrack" representedClassName="STMTrack" parentEntity="STMComment" syncable="YES">
+        <attribute name="finishTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMLocation" inverseName="track" inverseEntity="STMLocation" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="STMArticle" positionX="7" positionY="-324" width="128" height="88"/>
+        <element name="STMArticlePicture" positionX="187" positionY="-198" width="128" height="58"/>
+        <element name="STMBatteryStatus" positionX="-108" positionY="540" width="128" height="75"/>
+        <element name="STMCampaign" positionX="-182" positionY="-270" width="128" height="148"/>
+        <element name="STMCampaignPicture" positionX="34" positionY="-126" width="128" height="58"/>
+        <element name="STMComment" positionX="-180" positionY="321" width="128" height="75"/>
+        <element name="STMDatum" positionX="52" positionY="294" width="128" height="165"/>
+        <element name="STMLocation" positionX="-261" positionY="540" width="128" height="180"/>
+        <element name="STMLogMessage" positionX="-423" positionY="303" width="128" height="75"/>
+        <element name="STMOutlet" positionX="-441" positionY="-180" width="128" height="118"/>
+        <element name="STMPartner" positionX="-432" positionY="-340" width="128" height="73"/>
+        <element name="STMPhoto" positionX="151" positionY="140" width="128" height="58"/>
+        <element name="STMPhotoReport" positionX="-200" positionY="9" width="128" height="103"/>
+        <element name="STMPicture" positionX="63" positionY="-25" width="128" height="118"/>
+        <element name="STMSalesman" positionX="-425" positionY="74" width="128" height="88"/>
+        <element name="STMSettings" positionX="-423" positionY="396" width="128" height="90"/>
+        <element name="STMTrack" positionX="-423" positionY="513" width="128" height="90"/>
+    </elements>
+</model>

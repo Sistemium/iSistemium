@@ -13,6 +13,7 @@
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
 #import "STMPhotoReportPVC.h"
+#import "STMFunctions.h"
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -137,6 +138,10 @@
     
     STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
     photo.image = UIImagePNGRepresentation(image);
+    
+    UIImage *imageThumbnail = [STMFunctions resizeImage:image toSize:CGSizeMake(150, 150)];
+    photo.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
+    
     [self.selectedPhotoReport addPhotosObject:photo];
     
     [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:self.currentSection]];
@@ -276,7 +281,7 @@
         
         //            STMPhoto *photo = [[sectionInfo objects] objectAtIndex:indexPath.row];
         STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES]]][indexPath.row];
-        imageView.image = [UIImage imageWithData:photo.image];
+        imageView.image = [UIImage imageWithData:photo.imageThumbnail];
         imageView.tag = 1;
         [cell.contentView addSubview:imageView];
         

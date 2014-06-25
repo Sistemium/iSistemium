@@ -356,6 +356,9 @@
                     
                     [object setValue:data forKeyPath:@"image"];
                     
+                    UIImage *thumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
+                    [object setValue:UIImagePNGRepresentation(thumbnail) forKey:@"imageThumbnail"];
+                    
                 }
                 
             }] resume];

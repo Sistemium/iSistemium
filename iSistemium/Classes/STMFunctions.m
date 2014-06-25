@@ -108,5 +108,30 @@
     
 }
 
++ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
+    
+    CGFloat width = size.width;
+    CGFloat height = size.height;
+    
+    if (image.size.width >= image.size.height) {
+        
+        height = width * image.size.height / image.size.width;
+        
+    } else {
+        
+        width = height * image.size.width / image.size.height;
+        
+    }
+    
+    UIGraphicsBeginImageContext(CGSizeMake(width ,height));
+    [image drawInRect:CGRectMake(0, 0, width, height)];
+    UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return resultImage;
+    
+}
+
+
 
 @end
