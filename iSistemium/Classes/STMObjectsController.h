@@ -14,7 +14,7 @@
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary;
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary;
 + (void)removeAllObjects;
-+ (void)totalNumberOfObjects;
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
++ (void)dataLoadingFinished;
 
 @end

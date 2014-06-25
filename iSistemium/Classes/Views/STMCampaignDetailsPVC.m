@@ -100,7 +100,7 @@
     
     vc.index = index;
     vc.campaign = self.campaign;
-    
+        
     return vc;
     
 }

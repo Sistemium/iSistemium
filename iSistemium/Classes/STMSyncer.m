@@ -212,7 +212,7 @@
                 break;
                 
             case STMSyncerIdle:
-                [STMObjectsController totalNumberOfObjects];
+                [STMObjectsController dataLoadingFinished];
                 break;
                 
             default:

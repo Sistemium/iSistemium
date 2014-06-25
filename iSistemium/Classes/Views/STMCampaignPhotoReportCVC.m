@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
 @property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
 @property (nonatomic) NSUInteger currentSection;
+@property (nonatomic, strong) NSArray *outlets;
 
 @end
 
@@ -44,20 +45,10 @@
     
     if (!_photoReportPicturesResultsController) {
         
-        //        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
-        //        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
-        //        request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", self.campaign];
-        //        _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"photoReport.outlet.name" cacheName:nil];
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
-        //        request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", self.campaign];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
         _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-
-//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
-//        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
-//        request.predicate = [NSPredicate predicateWithFormat:@"SELF == %@", self.campaign];
-//        _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 
     }
     
@@ -78,6 +69,23 @@
     
 }
 
+- (NSArray *)outlets {
+    
+    if (!_outlets) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
+        //        request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", self.campaign];
+        
+        NSError *error;
+        _outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+        
+    }
+    
+    return _outlets;
+    
+}
+
 - (void)fetchPhotoReport {
     
     NSError *error;
@@ -87,54 +95,40 @@
         
     } else {
         
-        //        for (STMCampaignPicture *picture in self.campaignPicturesResultsController.fetchedObjects) {
-        //
-        //            if (!picture.image) {
-        //                //                NSLog(@"no image");
-        //                [STMObjectsController hrefProcessingForObject:picture];
-        //            }
-        //
-        //        }
-
-        for (STMOutlet *outlet in self.photoReportPicturesResultsController.fetchedObjects) {
-
-//            if (![outlet.campaigns containsObject:self.campaign]) {
-//                [outlet addCampaignsObject:self.campaign];
-//            }
-            
-            NSArray *photoReports = [self photoReportsInOutlet:outlet];
-            
-            if (photoReports.count == 0) {
-                
-                STMPhotoReport *photoReport = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
-                photoReport.outlet = outlet;
-                photoReport.campaign = self.campaign;
-                
-            }
-            
-        }
-        
         [self.collectionView reloadData];
         
     }
     
 }
 
-- (NSArray *)photoReportsInOutlet:(STMOutlet *)outlet {
+- (NSArray *)photoReportInOutlet:(STMOutlet *)outlet {
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@ AND outlet == %@", self.campaign, outlet];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"outlet == %@", outlet];
+    return [self.photoReportPicturesResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
     
-    NSError *error;
-    return [self.document.managedObjectContext executeFetchRequest:request error:&error];
-
 }
 
 - (void)photoButtonPressed:(UIButton *)sender {
     
-    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[sender.tag];
-    self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
+    STMOutlet *outlet = self.outlets[sender.tag];
+    self.selectedPhotoReport = [self photoReportInOutlet:outlet].lastObject;
+    
+    if (!self.selectedPhotoReport) {
+        
+        STMPhotoReport *photoReport = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
+        photoReport.outlet = outlet;
+        photoReport.campaign = self.campaign;
+        
+        [self.document saveDocument:^(BOOL success) {
+            if (success) {
+                NSLog(@"create new photoReport");
+            }
+        }];
+        
+        self.selectedPhotoReport = photoReport;
+
+    }
+
     self.currentSection = sender.tag;
     
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
@@ -150,7 +144,7 @@
         imagePickerController.delegate = self;
         imagePickerController.sourceType = imageSourceType;
         [self presentViewController:imagePickerController animated:YES completion:^{
-            NSLog(@"presentViewController:UIImagePickerController");
+//            NSLog(@"presentViewController:UIImagePickerController");
         }];
         
     }
@@ -167,10 +161,14 @@
     
     [self.selectedPhotoReport addPhotosObject:photo];
     
-    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:self.currentSection]];
-    
+    self.photoReportPicturesResultsController = nil;
+    [self fetchPhotoReport];
+
     [[self document] saveDocument:^(BOOL success) {
-        NSLog(@"spotImage UIDocumentSaveForOverwriting success");
+        if (success) {
+//            NSLog(@"photo UIDocumentSaveForOverwriting success");
+//            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:self.currentSection]];
+        }
     }];
     
 }
@@ -182,7 +180,7 @@
     [picker dismissViewControllerAnimated:YES completion:^{
         
         [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
-        NSLog(@"dismiss UIImagePickerController");
+//        NSLog(@"dismiss UIImagePickerController");
         
     }];
     
@@ -192,21 +190,17 @@
 #pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    
-    return self.photoReportPicturesResultsController.fetchedObjects.count;
+  
+    return self.outlets.count;
+//    return self.photoReportPicturesResultsController.fetchedObjects.count;
     
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    //        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.photoReportPicturesResultsController sections] objectAtIndex:section];
-    //        return [sectionInfo numberOfObjects] + 1;
+    STMOutlet *outlet = self.outlets[section];
+    STMPhotoReport *photoReport = [self photoReportInOutlet:outlet].lastObject;
     
-    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[section];
-    STMPhotoReport *photoReport = [self photoReportsInOutlet:outlet].lastObject;
-    //        NSLog(@"outlet.name %@", outlet.name);
-    //        NSLog(@"outlet.photoReports.count %d", outlet.photoReports.count);
-    //        NSLog(@"photoReport.photos.count %d", photoReport.photos.count);
     return photoReport.photos.count;
 
 }
@@ -219,7 +213,7 @@
     
     UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"outletHeader" forIndexPath:indexPath];
     
-    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
+    STMOutlet *outlet = self.outlets[indexPath.section];
     
     UILabel *label;
     UIButton *photoButton;
@@ -259,7 +253,7 @@
         
     }
     
-    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, headerView.frame.size.height-1, headerView.frame.size.width, 1)];
+    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 1)];
     line.backgroundColor = [UIColor lightGrayColor];
     [headerView addSubview:line];
     
@@ -276,40 +270,17 @@
     
     [[cell.contentView viewWithTag:1] removeFromSuperview];
     
-    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
-    STMPhotoReport *photoReport = [self photoReportsInOutlet:outlet].lastObject;
-    
-    //        NSLog(@"outlet %@", outlet);
-    //        NSLog(@"photoReport %@", photoReport);
-    
-    //        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.photoReportPicturesResultsController sections] objectAtIndex:indexPath.section];
+    STMOutlet *outlet = self.outlets[indexPath.section];
+    STMPhotoReport *photoReport = [self photoReportInOutlet:outlet].lastObject;
     
     CGRect frame = CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height);
     
-//    if (indexPath.row == photoReport.photos.count) {
-//        
-//        UILabel *label = [[UILabel alloc] initWithFrame:frame];
-//        label.text = NSLocalizedString(@"ADD PHOTO", nil);
-//        label.lineBreakMode = NSLineBreakByWordWrapping;
-//        label.numberOfLines = 0;
-//        label.textAlignment = NSTextAlignmentCenter;
-//        label.layer.borderColor = [UIColor lightGrayColor].CGColor;
-//        label.layer.borderWidth = 1.0;
-//        label.tag = 1;
-//        [cell.contentView addSubview:label];
-//        
-//    } else {
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
     
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
-        
-        //            STMPhoto *photo = [[sectionInfo objects] objectAtIndex:indexPath.row];
-        STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES]]][indexPath.row];
-        imageView.image = [UIImage imageWithData:photo.imageThumbnail];
-        imageView.tag = 1;
-        [cell.contentView addSubview:imageView];
-        
-//    }
-    
+    STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES]]][indexPath.row];
+    imageView.image = [UIImage imageWithData:photo.imageThumbnail];
+    imageView.tag = 1;
+    [cell.contentView addSubview:imageView];
     
     return cell;
     
@@ -317,8 +288,8 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
-    self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
+    STMOutlet *outlet = self.outlets[indexPath.section];
+    self.selectedPhotoReport = [self photoReportInOutlet:outlet].lastObject;
 
     [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
     
@@ -330,44 +301,51 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     
-    //    NSLog(@"controllerWillChangeContent");
+    NSLog(@"controllerWillChangeContent");
     
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    //    NSLog(@"controllerDidChangeContent");
-    [self.document saveDocument:^(BOOL success) {
-        if (success) {
-            
-        }
-    }];
+    NSLog(@"controllerDidChangeContent");
+//    [self.document saveDocument:^(BOOL success) {
+//        if (success) {
+//            
+//        }
+//    }];
     
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    //    NSLog(@"controller didChangeObject");
+    NSLog(@"controller didChangeObject");
     //    NSLog(@"anObject %@", anObject);
-    
+
+    if ([anObject isKindOfClass:[STMPhotoReport class]]) {
+        
+        STMPhotoReport *photoReport = anObject;
+        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:[self.outlets indexOfObject:photoReport.outlet]]];
+        
+    }
+
     if (type == NSFetchedResultsChangeDelete) {
         
-        [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
+//        [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
         NSLog(@"NSFetchedResultsChangeDelete");
         
     } else if (type == NSFetchedResultsChangeInsert) {
         
-        [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
+//        [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
         NSLog(@"NSFetchedResultsChangeInsert");
         
         
     } else if (type == NSFetchedResultsChangeUpdate) {
         
-        [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+//        [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
         NSLog(@"NSFetchedResultsChangeUpdate");
         
     }
-    
+ 
 }
 
 
