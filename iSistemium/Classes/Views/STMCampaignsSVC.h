@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMCampaignDetailsVC.h"
+#import "STMCampaignDetailsPVC.h"
 
 @interface STMCampaignsSVC : UISplitViewController
 
-@property (nonatomic, strong) STMCampaignDetailsVC *detailVC;
+@property (nonatomic, strong) STMCampaignDetailsPVC *detailVC;
 
 @end

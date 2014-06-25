@@ -15,14 +15,14 @@
 @implementation STMCampaignsSVC
 
 
-- (STMCampaignDetailsVC *)detailVC {
+- (STMCampaignDetailsPVC *)detailVC {
     
     if (!_detailVC) {
         
         UINavigationController *navController = (UINavigationController *)self.viewControllers[1];
         UIViewController *vc = navController.viewControllers[0];
-        if ([vc isKindOfClass:[STMCampaignDetailsVC class]]) {
-            _detailVC = (STMCampaignDetailsVC *)vc;
+        if ([vc isKindOfClass:[STMCampaignDetailsPVC class]]) {
+            _detailVC = (STMCampaignDetailsPVC *)vc;
         }
         
     }
