@@ -228,7 +228,7 @@
         <!--Campaign PicturePVC-->
         <scene sceneID="lSY-p7-GQZ">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="vertical" spineLocation="min" id="M7r-8z-Vcv" customClass="STMCampaignPicturePVC" sceneMemberID="viewController">
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="M7r-8z-Vcv" customClass="STMCampaignPicturePVC" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="FA8-36-5KI"/>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DiV-tj-J6O" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -36,7 +36,9 @@
 
 - (void)customInit {
     
-    self.title = self.picture.name;
+//    self.title = self.picture.name;
+//    NSLog(@"picture.name %@", self.picture.name);
+//    NSLog(@"self.title %@", self.title);
     [self showImage];
 
 }

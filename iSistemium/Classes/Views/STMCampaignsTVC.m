@@ -177,7 +177,7 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
     STMCampaign *campaign = sectionInfo.objects[indexPath.row];
-    NSLog(@"campaign.pictures.count %d", campaign.pictures.count);
+//    NSLog(@"campaign.pictures.count %d", campaign.pictures.count);
 
     self.splitVC.detailVC.campaign = campaign;
     
