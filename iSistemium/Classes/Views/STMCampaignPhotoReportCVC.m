@@ -12,6 +12,7 @@
 #import "STMSessionManager.h"
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
+#import "STMPhotoReportPVC.h"
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -288,6 +289,11 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
+    STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[indexPath.section];
+    self.selectedPhotoReport = outlet.photoReports.anyObject;
+
+    [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
+    
     return YES;
     
 }
@@ -361,15 +367,18 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:@"showPhotoReport"] && [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]]) {
+        
+        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoReport:self.selectedPhotoReport];
+        [(STMPhotoReportPVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
+        
+    }
+
 }
-*/
 
 @end

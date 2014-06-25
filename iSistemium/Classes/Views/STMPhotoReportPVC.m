@@ -1,99 +1,81 @@
 //
-//  STMCampaignPicturePVC.m
+//  STMPhotoReportPVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 23/06/14.
+//  Created by Maxim Grigoriev on 25/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMCampaignPicturePVC.h"
-#import "STMCampaignPicture.h"
-#import "STMCampaignPictureVC.h"
+#import "STMPhotoReportPVC.h"
+#import "STMPhotoVC.h"
 
-@interface STMCampaignPicturePVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+@interface STMPhotoReportPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic) NSUInteger nextIndex;
-@property (nonatomic, strong) NSArray *picturesArray;
+@property (nonatomic, strong) NSArray *photoArray;
 
 @end
 
-@implementation STMCampaignPicturePVC
+@implementation STMPhotoReportPVC
 
-- (NSArray *)picturesArray {
+- (NSArray *)photoArray {
     
-    if (!_picturesArray) {
+    if (!_photoArray) {
         
-        _picturesArray = [self.campaign.pictures sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]]];
+        _photoArray = [self.photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]]];
         
     }
     
-    return _picturesArray;
+    return _photoArray;
     
 }
 
-//- (void)createVCs {
-//    
-//    NSMutableArray *vcs = [NSMutableArray array];
-//    
-//    for (int i = 0; i < self.picturesArray.count; i++) {
-//        
-//        STMCampaignPictureVC *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"campaignPictureVC"];
-//        
-//        vc.picture = self.picturesArray[i];
-//        vc.index = i;
-//
-//        [vcs insertObject:vc atIndex:i];
-//        
-//    }
-//
-//}
-
-- (STMCampaignPictureVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
+- (STMPhotoVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
-    if ((self.campaign.pictures.count == 0) || (index >= self.campaign.pictures.count)) {
-
+    if ((self.photoReport.photos.count == 0) || (index >= self.photoReport.photos.count)) {
+        
         return nil;
-
+        
     } else {
-    
-        STMCampaignPictureVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPictureVC"];
-
-        vc.picture = self.picturesArray[index];
+        
+        STMPhotoVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"photoVC"];
+        
+        vc.photo = self.photoArray[index];
         vc.index = index;
         
         return vc;
         
     }
-
+    
 }
 
 - (void)refreshTitle {
     
-    self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
+//    self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
     
 }
 
 #pragma mark - Page View Controller Data Source
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
-
+    
     return [self viewControllerAtIndex:self.currentIndex-1 storyboard:self.storyboard];
-//    return self.viewControllers[self.currentIndex-1];
-
+    //    return self.viewControllers[self.currentIndex-1];
+    
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
-
+    
     return [self viewControllerAtIndex:self.currentIndex+1 storyboard:self.storyboard];
-//    return self.viewControllers[self.currentIndex+1];
-
+    //    return self.viewControllers[self.currentIndex+1];
+    
 }
 
 #pragma mark - Page View Controller Delegate
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
     
-    STMCampaignPictureVC *pendingVC = pendingViewControllers[0];
+    STMPhotoVC *pendingVC = pendingViewControllers[0];
     self.nextIndex = pendingVC.index;
     
 }
@@ -102,13 +84,14 @@
     if (completed) {
         
         self.currentIndex = self.nextIndex;
-//        self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
+        //        self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
         [self refreshTitle];
         
     }
 }
 
 #pragma mark - view lifecycle
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -122,17 +105,15 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
+
     self.dataSource = self;
     self.delegate = self;
-
-//    [self createVCs];
     
-    STMCampaignPictureVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
+    STMPhotoVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
     [self refreshTitle];
-    
+
 }
 
 - (void)didReceiveMemoryWarning
