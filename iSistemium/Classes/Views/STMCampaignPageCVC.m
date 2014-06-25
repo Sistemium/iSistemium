@@ -1,46 +1,23 @@
 //
-//  STMCampaignsSVC.m
+//  STMCampaignPageVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
+//  Created by Maxim Grigoriev on 25/06/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMCampaignsSVC.h"
+#import "STMCampaignPageCVC.h"
 
-@interface STMCampaignsSVC ()
+@interface STMCampaignPageCVC ()
 
 @end
 
-@implementation STMCampaignsSVC
-
-
-- (STMCampaignDetailsPVC *)detailVC {
-    
-    if (!_detailVC) {
-        
-        UINavigationController *navController = (UINavigationController *)self.viewControllers[1];
-        UIViewController *vc = navController.viewControllers[0];
-        if ([vc isKindOfClass:[STMCampaignDetailsPVC class]]) {
-            _detailVC = (STMCampaignDetailsPVC *)vc;
-        }
-        
-    }
-    
-    return _detailVC;
-    
-}
-
-
-#pragma mark - view lifecycle
+@implementation STMCampaignPageCVC
 
 - (void)customInit {
     
-    if ([self.detailVC conformsToProtocol:@protocol(UISplitViewControllerDelegate)]) {
-        self.delegate = (id <UISplitViewControllerDelegate>)self.detailVC;
-    }
-
 }
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -55,6 +32,18 @@
     
     [super viewDidLoad];
     [self customInit];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+//    CGFloat navBarHeight = self.navigationController.navigationBar.frame.size.height;
+    
+//    if (navBarHeight == 0) {
+        [self.collectionView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+//    }
     
 }
 

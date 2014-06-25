@@ -67,6 +67,11 @@
 
 }
 
+- (void)refreshTitle {
+    
+    self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
+    
+}
 
 #pragma mark - Page View Controller Data Source
 
@@ -91,17 +96,14 @@
     STMCampaignPictureVC *pendingVC = pendingViewControllers[0];
     self.nextIndex = pendingVC.index;
     
-//    NSLog(@"pendingVC %@", pendingVC);
-    
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
     if (completed) {
         
         self.currentIndex = self.nextIndex;
-        self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
-        
-//        NSLog(@"previousViewControllers %@", previousViewControllers);
+//        self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
+        [self refreshTitle];
         
     }
 }
@@ -129,7 +131,7 @@
     STMCampaignPictureVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
-
+    [self refreshTitle];
     
 }
 
