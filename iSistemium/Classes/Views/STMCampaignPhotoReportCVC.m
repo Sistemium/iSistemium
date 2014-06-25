@@ -18,6 +18,7 @@
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
 @property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
+@property (nonatomic) NSUInteger currentSection;
 
 @end
 
@@ -109,6 +110,7 @@
     
     STMOutlet *outlet = self.photoReportPicturesResultsController.fetchedObjects[sender.tag];
     self.selectedPhotoReport = outlet.photoReports.anyObject;
+    self.currentSection = sender.tag;
     
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
 //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
@@ -132,8 +134,12 @@
 
 - (void)saveImage:(UIImage *)image {
     
-    STMPicture *picture = (STMPicture *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPicture class]) inManagedObjectContext:[self document].managedObjectContext];
-    picture.image = UIImagePNGRepresentation(image);
+    STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
+    photo.image = UIImagePNGRepresentation(image);
+    [self.selectedPhotoReport addPhotosObject:photo];
+    
+    [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:self.currentSection]];
+    
     [[self document] saveDocument:^(BOOL success) {
         NSLog(@"spotImage UIDocumentSaveForOverwriting success");
     }];
