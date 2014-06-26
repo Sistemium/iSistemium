@@ -122,18 +122,6 @@
         
     } else {
         
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//            
-//            sleep(5);
-//            
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self.spinnerView removeFromSuperview];
-//                [self.collectionView reloadData];
-//            });
-//            
-//        });
-
-        [self.spinnerView removeFromSuperview];
         [self.collectionView reloadData];
         
     }
@@ -195,23 +183,32 @@
 
 - (void)saveImage:(UIImage *)image {
     
-    STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
-    photo.image = UIImagePNGRepresentation(image);
-    
-    UIImage *imageThumbnail = [STMFunctions resizeImage:image toSize:CGSizeMake(150, 150)];
-    photo.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
-    
-    [self.selectedPhotoReport addPhotosObject:photo];
-    
-    self.photoReportPicturesResultsController = nil;
-    [self fetchPhotoReport];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 
-    [[self document] saveDocument:^(BOOL success) {
-        if (success) {
-//            NSLog(@"photo UIDocumentSaveForOverwriting success");
-//            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:self.currentSection]];
-        }
-    }];
+        STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
+        photo.image = UIImagePNGRepresentation(image);
+        
+        UIImage *imageThumbnail = [STMFunctions resizeImage:image toSize:CGSizeMake(150, 150)];
+        photo.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
+        
+        [self.selectedPhotoReport addPhotosObject:photo];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            self.photoReportPicturesResultsController = nil;
+            [self fetchPhotoReport];
+            [self.spinnerView removeFromSuperview];
+            
+        });
+
+        [[self document] saveDocument:^(BOOL success) {
+            if (success) {
+//                NSLog(@"photo UIDocumentSaveForOverwriting success");
+//                [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:self.currentSection]];
+            }
+        }];
+
+    });
     
 }
 
@@ -329,7 +326,7 @@
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
     
-    STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES]]][indexPath.row];
+    STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO]]][indexPath.row];
     imageView.image = [UIImage imageWithData:photo.imageThumbnail];
     imageView.tag = 1;
     [cell.contentView addSubview:imageView];
