@@ -274,7 +274,7 @@
             label = (UILabel *)view;
             
             label.text = outlet.name;
-            label.textColor = [UIColor grayColor];
+            label.textColor = [UIColor blackColor];
             
         } else if ([view isKindOfClass:[UIButton class]]) {
             
