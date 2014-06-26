@@ -15,6 +15,9 @@
 #import "STMRootTBC.h"
 #import "STMCampaignsSVC.h"
 #import "STMFunctions.h"
+#import "STMOutlet.h"
+#import "STMPhotoReport.h"
+#import "STMPhoto.h"
 
 @interface STMCampaignsTVC () <NSFetchedResultsControllerDelegate>
 
@@ -151,22 +154,42 @@
     int articlesCount = (int)campaign.articles.count;
     int picturesCount = (int)campaign.pictures.count;
     
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", campaign];
+    NSError *error;
+    NSArray *campaignPhotos = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+
+    int photosCount = (int)campaignPhotos.count;
+    
+    
     NSString *articlesString = NSLocalizedString([[STMFunctions pluralTypeForCount:articlesCount] stringByAppendingString:@"ARTICLES"], nil);
     NSString *picturesString = NSLocalizedString([[STMFunctions pluralTypeForCount:picturesCount] stringByAppendingString:@"PICTURES"], nil);
     
+    NSMutableArray *detailTextArray = [NSMutableArray array];
+    
     if (articlesCount != 0) {
+        
         articlesString = [NSString stringWithFormat:@"%d %@", articlesCount, articlesString];
+        [detailTextArray addObject:articlesString];
+        
     }
     
     if (picturesCount != 0) {
+        
         picturesString = [NSString stringWithFormat:@"%d %@", picturesCount, picturesString];
+        [detailTextArray addObject:picturesString];
+        
     }
     
-//    NSString *gain = campaign.gain ? campaign.gain : NSLocalizedString(@"NO GAIN", nil);
-//    NSString *goal = campaign.goal ? campaign.goal : NSLocalizedString(@"NO GOAL", nil);    
-//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ / %@ — %lu", gain, goal, (unsigned long)campaign.articles.count];
+    if (photosCount != 0) {
+        
+        NSString *photosString = [NSString stringWithFormat:@"%d %@", photosCount, NSLocalizedString(@"PHOTO", nil)];
+        [detailTextArray addObject:photosString];
+        
+    }
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ / %@", articlesString, picturesString];
+    cell.detailTextLabel.text = [detailTextArray componentsJoinedByString:@" / "];
 
     return cell;
     
