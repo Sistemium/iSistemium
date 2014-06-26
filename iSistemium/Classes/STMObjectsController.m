@@ -156,10 +156,11 @@
             NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
             NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
 
-            NSString *xid = [ownerXid stringByReplacingOccurrencesOfString:@"-" withString:@""];
-            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
+//            NSString *xid = [ownerXid stringByReplacingOccurrencesOfString:@"-" withString:@""];
+
+//            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
 //                NSLog(@"destinationEntityName %@, destinationXid %@", destinationEntityName, destinationXid);
-            }
+//            }
             
             NSSet *destinationSet = [ownerObject valueForKey:roleName];
             

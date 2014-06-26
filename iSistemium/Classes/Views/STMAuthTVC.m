@@ -11,13 +11,15 @@
 #import "STMFunctions.h"
 #import "STMRootTBC.h"
 #import "STMObjectsController.h"
+#import "STMSessionManager.h"
+#import "STMSyncer.h"
 
 @interface STMAuthTVC () <UITextFieldDelegate>
 
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UITextField *inputField;
 @property (nonatomic, strong) UITableViewCell *authSendCell;
-@property (nonatomic, strong) UITableViewCell *authInfoEnterCell;
+@property (nonatomic, strong) UITableViewCell *campaignsCell;
 @property (nonatomic, strong) UIColor *activeButtonColor;
 @property (nonatomic, strong) UIButton *phoneButton;
 
@@ -195,18 +197,45 @@
     
 }
 
-- (UITableViewCell *)tabSelectCell {
+//- (UITableViewCell *)tabSelectCell {
+//    
+//    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"tabSelectCell"];
+//    
+//    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//    
+//    cell.textLabel.text = NSLocalizedString(@"AD CAMPAIGNS", nil);
+//    
+//    self.activeButtonColor = cell.textLabel.textColor;
+//    cell.textLabel.textColor = ([STMAuthController authController].controllerState == STMAuthSuccess) ? self.activeButtonColor : [UIColor lightGrayColor];
+//    
+//    return cell;
+//    
+//}
+
+- (UITableViewCell *)campaignsCell {
     
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"tabSelectCell"];
+    if (!_campaignsCell) {
+        
+        UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"tabSelectCell"];
+        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        cell.textLabel.text = NSLocalizedString(@"AD CAMPAIGNS", nil);
+        
+        self.activeButtonColor = cell.textLabel.textColor;
+        
+        STMSyncer *syncer = (STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer];
+        STMAuthController *authController = [STMAuthController authController];
+        
+        BOOL textColorSelector = (syncer.syncerState == STMSyncerIdle && authController.controllerState == STMAuthSuccess);
+        
+        cell.textLabel.textColor = (textColorSelector) ? self.activeButtonColor : [UIColor lightGrayColor];
+        
+        _campaignsCell = cell;
+        
+    }
     
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-    cell.textLabel.text = NSLocalizedString(@"AD CAMPAIGNS", nil);
-    
-    self.activeButtonColor = cell.textLabel.textColor;
-    cell.textLabel.textColor = ([STMAuthController authController].controllerState == STMAuthSuccess) ? self.activeButtonColor : [UIColor lightGrayColor];
-    
-    return cell;
+    return _campaignsCell;
     
 }
 
@@ -364,12 +393,25 @@
     
 }
 
+- (void)syncerStatusChanged:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMSyncer class]]) {
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:self.campaignsCell];
+        self.campaignsCell = nil;
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerStatusChanged:) name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
     
 }
 
@@ -377,7 +419,8 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerError" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerStateChanged" object:[STMAuthController authController]];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
+
 }
 
 - (void)customInit {
@@ -419,7 +462,7 @@
 
     if ([STMAuthController authController].controllerState == STMAuthSuccess) {
         
-        return 3;
+        return 2; // set to 3 to show reloadDataCell
         
     } else {
         
@@ -611,7 +654,7 @@
             switch (indexPath.row) {
                     
                 case 0:
-                    return [self tabSelectCell];
+                    return self.campaignsCell;
                     
             }
             
