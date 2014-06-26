@@ -121,7 +121,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tabSelectCell" textLabel="ByD-23-KdC" style="IBUITableViewCellStyleDefault" id="zZh-5V-ldg">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tabSelectCell" textLabel="ByD-23-KdC" style="IBUITableViewCellStyleDefault" id="zZh-5V-ldg">
                                 <rect key="frame" x="0.0" y="275" width="768" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zZh-5V-ldg" id="zfu-c8-J3W">

@@ -20,9 +20,7 @@
 @property (nonatomic, strong) NSTimer *syncTimer;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) NSMutableDictionary *settings;
-//@property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL running;
-//@property (nonatomic, strong) NSMutableData *responseData;
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic) NSUInteger entityCount;
 
@@ -222,6 +220,14 @@
         
     }
 
+}
+
+- (void)setEntityCount:(NSUInteger)entityCount {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"entityCountdownChange" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:entityCount] forKey:@"countdownValue"]];
+    
+    _entityCount = entityCount;
+    
 }
 
 - (NSMutableDictionary *)responses {

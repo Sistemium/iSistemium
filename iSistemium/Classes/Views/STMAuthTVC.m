@@ -208,6 +208,7 @@
         
             self.progressBar = (UIProgressView *)view;
             self.progressBar.progress = 0.0;
+            self.progressBar.hidden = YES;
         
         }
         
@@ -245,12 +246,7 @@
         
         self.activeButtonColor = cell.textLabel.textColor;
         
-        STMSyncer *syncer = (STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer];
-        STMAuthController *authController = [STMAuthController authController];
-        
-        BOOL textColorSelector = (syncer.syncerState == STMSyncerIdle && authController.controllerState == STMAuthSuccess);
-        
-        cell.textLabel.textColor = (textColorSelector) ? self.activeButtonColor : [UIColor lightGrayColor];
+        cell.textLabel.textColor = [UIColor lightGrayColor];
         
         _campaignsCell = cell;
         
@@ -410,7 +406,6 @@
 
 - (void)authControllerStateChanged {
     
-    self.campaignsCell = nil;
     [self.tableView reloadData];
     
 }
@@ -419,10 +414,48 @@
     
     if ([notification.object isKindOfClass:[STMSyncer class]]) {
         
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:self.campaignsCell];
-        self.campaignsCell = nil;
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        STMSyncer *syncer = notification.object;
+        
+        if (syncer.syncerState == STMSyncerIdle) {
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                
+                sleep(1);
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+            
+                    self.progressBar.hidden = YES;
+                    
+                });
+                
+            });
+            
+        } else {
+            
+            self.progressBar.hidden = NO;
+            
+        }
+        
+        STMAuthController *authController = [STMAuthController authController];
+        
+        BOOL textColorSelector = (syncer.syncerState == STMSyncerIdle && authController.controllerState == STMAuthSuccess);
+        self.campaignsCell.textLabel.textColor = (textColorSelector) ? self.activeButtonColor : [UIColor lightGrayColor];
 
+    }
+    
+}
+
+- (void)entityCountdownChange:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMSyncer class]]) {
+        
+        STMSyncer *syncer = notification.object;
+        
+        float totalCount = (float)syncer.entitySyncInfo.allKeys.count;
+        float countdownValue = [[notification.userInfo objectForKey:@"countdownValue"] floatValue];
+        
+        self.progressBar.progress = (totalCount - countdownValue) / totalCount;
+        
     }
     
 }
@@ -434,6 +467,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerStatusChanged:) name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(entityCountdownChange:) name:@"entityCountdownChange" object:[[STMSessionManager sharedManager].currentSession syncer]];
+
     
 }
 
@@ -705,7 +740,9 @@
     
     if ([STMAuthController authController].controllerState == STMAuthSuccess && indexPath.section == 1) {
         
-        [[STMRootTBC sharedRootVC] showTabAtIndex:indexPath.row+1];
+        if ([(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncerState] == STMSyncerIdle) {
+            [[STMRootTBC sharedRootVC] showTabAtIndex:indexPath.row+1];
+        }
         
     }
 
