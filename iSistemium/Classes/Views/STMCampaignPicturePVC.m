@@ -23,7 +23,7 @@
     
     if (!_picturesArray) {
         
-        _picturesArray = [self.campaign.pictures sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]]];
+        _picturesArray = [self.campaign.pictures sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]]];
         
     }
     
