@@ -22,12 +22,17 @@
 @property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
 @property (nonatomic) NSUInteger currentSection;
 @property (nonatomic, strong) NSArray *outlets;
+@property (nonatomic) BOOL isTakingPhoto;
+@property (nonatomic, strong) UIView *spinnerView;
 
 @end
 
 @implementation STMCampaignPhotoReportCVC
 
 @synthesize campaign = _campaign;
+
+
+#pragma mark - variables setters & getters
 
 - (STMDocument *)document {
     
@@ -86,6 +91,28 @@
     
 }
 
+- (UIView *)spinnerView {
+    
+    if (!_spinnerView) {
+        
+        UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
+        view.backgroundColor = [UIColor grayColor];
+        view.alpha = 0.75;
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        spinner.center = view.center;
+        [spinner startAnimating];
+        [view addSubview:spinner];
+ 
+        _spinnerView = view;
+        
+    }
+    
+    return _spinnerView;
+    
+}
+
+#pragma mark - methods
+
 - (void)fetchPhotoReport {
     
     NSError *error;
@@ -95,6 +122,18 @@
         
     } else {
         
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//            
+//            sleep(5);
+//            
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self.spinnerView removeFromSuperview];
+//                [self.collectionView reloadData];
+//            });
+//            
+//        });
+
+        [self.spinnerView removeFromSuperview];
         [self.collectionView reloadData];
         
     }
@@ -132,7 +171,6 @@
     self.currentSection = sender.tag;
     
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     
 }
 
@@ -143,8 +181,12 @@
         UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
         imagePickerController.delegate = self;
         imagePickerController.sourceType = imageSourceType;
+        
         [self presentViewController:imagePickerController animated:YES completion:^{
+            
+            [self.view addSubview:self.spinnerView];
 //            NSLog(@"presentViewController:UIImagePickerController");
+            
         }];
         
     }
@@ -177,7 +219,7 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    [picker dismissViewControllerAnimated:YES completion:^{
+    [picker dismissViewControllerAnimated:NO completion:^{
         
         [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
 //        NSLog(@"dismiss UIImagePickerController");
@@ -186,6 +228,16 @@
     
 }
 
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:NO completion:^{
+        
+        [self.spinnerView removeFromSuperview];
+//        NSLog(@"imagePickerControllerDidCancel");
+        
+    }];
+    
+}
 
 #pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
 
@@ -351,6 +403,32 @@
 
 #pragma mark - view lifecycle
 
+- (void)addSpinner {
+    
+    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    
+    activity.hidesWhenStopped = YES;
+    
+    activity.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin |
+    UIViewAutoresizingFlexibleHeight |
+    UIViewAutoresizingFlexibleLeftMargin |
+    UIViewAutoresizingFlexibleRightMargin |
+    UIViewAutoresizingFlexibleTopMargin |
+    UIViewAutoresizingFlexibleWidth;
+    
+    [self.collectionView addSubview:activity];
+    
+    [activity startAnimating];
+    
+    [activity performSelector:@selector(stopAnimating) withObject:nil afterDelay:0.5];
+    
+}
+
+- (void)customInit {
+
+    [self addSpinner];
+    
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -364,7 +442,8 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-
+    [self customInit];
+    
 }
 
 - (void)didReceiveMemoryWarning
