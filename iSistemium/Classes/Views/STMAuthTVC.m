@@ -22,6 +22,7 @@
 @property (nonatomic, strong) UITableViewCell *campaignsCell;
 @property (nonatomic, strong) UIColor *activeButtonColor;
 @property (nonatomic, strong) UIButton *phoneButton;
+@property (nonatomic, strong) UIProgressView *progressBar;
 
 @end
 
@@ -196,6 +197,26 @@
     }
     
 }
+
+- (UITableViewCell *)progressBarCell {
+    
+    STMAuthTVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"progressBarCell"];
+    
+    for (UIView *view in cell.contentView.subviews) {
+        
+        if ([view isKindOfClass:[UIProgressView class]]) {
+        
+            self.progressBar = (UIProgressView *)view;
+            self.progressBar.progress = 0.0;
+        
+        }
+        
+    }
+    
+    return cell;
+
+}
+
 
 //- (UITableViewCell *)tabSelectCell {
 //    
@@ -389,6 +410,7 @@
 
 - (void)authControllerStateChanged {
     
+    self.campaignsCell = nil;
     [self.tableView reloadData];
     
 }
@@ -646,7 +668,7 @@
                     return [self authPhoneNumberCell];
                     
                 case 2:
-                    return [self authSpinnerCell];
+                    return [self progressBarCell];
                     
             }
             
