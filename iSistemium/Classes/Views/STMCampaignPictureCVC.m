@@ -122,7 +122,8 @@
     //    NSLog(@"picture %@", picture);
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 150)];
-    
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+
     if (!picture.imageThumbnail) {
         UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:picture.image] toSize:CGSizeMake(150, 150)];
         picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);

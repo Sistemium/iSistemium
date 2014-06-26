@@ -325,7 +325,8 @@
     CGRect frame = CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height);
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
-    
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+
     STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO]]][indexPath.row];
     imageView.image = [UIImage imageWithData:photo.imageThumbnail];
     imageView.tag = 1;
