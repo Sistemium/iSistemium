@@ -31,23 +31,6 @@
     
 }
 
-//- (void)createVCs {
-//    
-//    NSMutableArray *vcs = [NSMutableArray array];
-//    
-//    for (int i = 0; i < self.picturesArray.count; i++) {
-//        
-//        STMCampaignPictureVC *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"campaignPictureVC"];
-//        
-//        vc.picture = self.picturesArray[i];
-//        vc.index = i;
-//
-//        [vcs insertObject:vc atIndex:i];
-//        
-//    }
-//
-//}
-
 - (STMCampaignPictureVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
     if ((self.campaign.pictures.count == 0) || (index >= self.campaign.pictures.count)) {
@@ -73,21 +56,42 @@
     
 }
 
+- (void)dismissView {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
+}
+
+
 #pragma mark - Page View Controller Data Source
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
 
     return [self viewControllerAtIndex:self.currentIndex-1 storyboard:self.storyboard];
-//    return self.viewControllers[self.currentIndex-1];
 
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
 
     return [self viewControllerAtIndex:self.currentIndex+1 storyboard:self.storyboard];
-//    return self.viewControllers[self.currentIndex+1];
 
 }
+
+- (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
+    
+    return self.picturesArray.count;
+    
+}
+
+- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
+
+    return self.currentIndex;
+    
+}
+
+
 
 #pragma mark - Page View Controller Delegate
 
@@ -102,13 +106,29 @@
     if (completed) {
         
         self.currentIndex = self.nextIndex;
-//        self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
         [self refreshTitle];
         
     }
 }
 
+
 #pragma mark - view lifecycle
+
+
+- (void)customInit {
+    
+    self.dataSource = self;
+    self.delegate = self;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissView)];
+    [self.view addGestureRecognizer:tap];
+    
+    STMCampaignPictureVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
+    NSArray *viewControllers = @[vc];
+    [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
+    [self refreshTitle];
+    
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -122,16 +142,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
-    self.dataSource = self;
-    self.delegate = self;
-
-//    [self createVCs];
-    
-    STMCampaignPictureVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
-    NSArray *viewControllers = @[vc];
-    [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
-    [self refreshTitle];
+    [self customInit];
     
 }
 

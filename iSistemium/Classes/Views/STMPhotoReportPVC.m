@@ -55,6 +55,15 @@
     
 }
 
+- (void)dismissView {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
+}
+
+
 #pragma mark - Page View Controller Data Source
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
@@ -70,6 +79,19 @@
     //    return self.viewControllers[self.currentIndex+1];
     
 }
+
+- (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
+    
+    return self.photoArray.count;
+    
+}
+
+- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
+    
+    return self.currentIndex;
+    
+}
+
 
 #pragma mark - Page View Controller Delegate
 
@@ -90,8 +112,23 @@
     }
 }
 
+
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    
+    self.dataSource = self;
+    self.delegate = self;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissView)];
+    [self.view addGestureRecognizer:tap];
+
+    STMPhotoVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
+    NSArray *viewControllers = @[vc];
+    [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
+    [self refreshTitle];
+
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -105,14 +142,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-
-    self.dataSource = self;
-    self.delegate = self;
-    
-    STMPhotoVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
-    NSArray *viewControllers = @[vc];
-    [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
-    [self refreshTitle];
+    [self customInit];
 
 }
 

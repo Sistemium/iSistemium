@@ -170,7 +170,7 @@
                         </connections>
                     </collectionView>
                     <connections>
-                        <segue destination="M7r-8z-Vcv" kind="push" identifier="showCampaignPicture" id="SQp-eq-NZ4"/>
+                        <segue destination="M7r-8z-Vcv" kind="modal" identifier="showCampaignPicture" modalTransitionStyle="crossDissolve" id="SQp-eq-NZ4"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a9O-CE-q0c" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -239,7 +239,7 @@
                     </collectionView>
                     <navigationItem key="navigationItem" id="wwB-Ae-mj2"/>
                     <connections>
-                        <segue destination="kiG-2K-eVD" kind="push" identifier="showPhotoReport" id="H6a-y8-0ii"/>
+                        <segue destination="kiG-2K-eVD" kind="modal" identifier="showPhotoReport" modalTransitionStyle="crossDissolve" id="H6a-y8-0ii"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zxp-y8-AkU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -273,7 +273,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="sq4-jP-x0t" firstAttribute="leading" secondItem="JIf-HU-7F3" secondAttribute="leading" constant="20" symbolic="YES" id="ezC-8x-84k"/>
                             <constraint firstAttribute="trailing" secondItem="sq4-jP-x0t" secondAttribute="trailing" constant="20" symbolic="YES" id="w2d-OX-FV0"/>
