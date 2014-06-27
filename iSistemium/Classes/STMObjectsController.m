@@ -201,50 +201,23 @@
         NSError *error;
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
-        NSManagedObject *object;
+        NSManagedObject *object = [fetchResult lastObject];
         
-        if ([fetchResult lastObject]) {
+        if (object) {
         
-            object = [fetchResult lastObject];
             if (![object.entity.name isEqualToString:entityName]) {
-                NSLog(@"object.entity.name %@, entityName %@", object.entity.name, entityName);
+                
+                NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
+                object = nil;
+                
             }
         
-        }
-
-        
-        request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
-        request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
-        
-        fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-        
-//        NSManagedObject *object;
-        
-        if ([fetchResult lastObject]) {
-            
-            object = [fetchResult lastObject];
-            
-//            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
-//                NSLog(@"get object %@", object);
-//            }
-            
-//            NSLog(@"object exist");
-            
         } else {
             
             object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
             [object setValue:xidData forKey:@"xid"];
-
-//            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
-//                NSLog(@"insert object %@", object);
-//            }
-            
-//            NSLog(@"new object");
             
         }
-        
-//        NSLog(@"object %@", object);
         
         return object;
         
@@ -360,8 +333,6 @@
                     [self setImagesFromData:data forPicture:(STMPicture *)object];
                     
                 }
-                
-                data = nil;
                 
             }] resume];
             
