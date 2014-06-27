@@ -64,9 +64,9 @@
                 [object setValue:value forKey:key];
 //                NSLog(@"%@ %@", key, value);
                 
-                if ([key isEqualToString:@"href"]) {
-                    [self hrefProcessingForObject:object];
-                }
+//                if ([key isEqualToString:@"href"]) {
+//                    [self hrefProcessingForObject:object];
+//                }
                 
             }
             
@@ -351,23 +351,17 @@
                 
                 if (error) {
                     
-                    NSLog(@"error %@", error.description);
+//                    NSLog(@"error %@", error.description);
+                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
                     
                 } else {
                     
-                    [object setValue:data forKeyPath:@"image"];
+                    NSLog(@"%@ load successefully", href);
+                    [self setImagesFromData:data forPicture:(STMPicture *)object];
                     
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                        
-                        UIImage *thumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
-                        [object setValue:UIImagePNGRepresentation(thumbnail) forKey:@"imageThumbnail"];
-                        
-                        UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
-                        [object setValue:UIImagePNGRepresentation(imageResized) forKey:@"imageResized"];
-                    
-                    });
-
                 }
+                
+                data = nil;
                 
             }] resume];
             
@@ -375,6 +369,21 @@
         
     }
     
+}
+
++ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+        UIImage *thumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
+        UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
+        
+        picture.imageThumbnail = UIImagePNGRepresentation(thumbnail);
+        picture.imageResized = UIImagePNGRepresentation(imageResized);
+        picture.image = data;
+
+    });
+
 }
 
 + (void)dataLoadingFinished {

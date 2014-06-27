@@ -80,14 +80,15 @@
         
     } else {
         
-        for (STMCampaignPicture *picture in self.campaignPicturesResultsController.fetchedObjects) {
-            
-            if (!picture.image) {
-                //                NSLog(@"no image");
-                [STMObjectsController hrefProcessingForObject:picture];
-            }
-            
-        }
+//        for (STMCampaignPicture *picture in self.campaignPicturesResultsController.fetchedObjects) {
+//            
+//            if (!picture.image) {
+//                //                NSLog(@"no image");
+//                [STMObjectsController hrefProcessingForObject:picture];
+//            }
+//            
+//        }
+        
         [self.collectionView reloadData];
         
     }
@@ -119,27 +120,34 @@
     
     
     STMCampaignPicture *picture = self.campaignPicturesResultsController.fetchedObjects[indexPath.row];
-    //    NSLog(@"picture %@", picture);
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 150)];
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    imageView.tag = 1;
 
     if (!picture.imageThumbnail) {
-        UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:picture.image] toSize:CGSizeMake(150, 150)];
-        picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
+
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        spinner.center = imageView.center;
+        [spinner startAnimating];
+        [imageView addSubview:spinner];
+        
+        imageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        imageView.layer.borderWidth = 1.0f;
+
+        if (picture.image) {
+            [STMObjectsController setImagesFromData:picture.image forPicture:picture];
+        } else {
+            [STMObjectsController hrefProcessingForObject:picture];
+        }
+
+        
+    } else {
+    
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        imageView.image = [UIImage imageWithData:picture.imageThumbnail];
+        
     }
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        
-        if (!picture.imageResized) {
-            UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:picture.image] toSize:CGSizeMake(1024, 1024)];
-            picture.imageResized = UIImagePNGRepresentation(imageResized);
-        }
-        
-    });
-    
-    imageView.image = [UIImage imageWithData:picture.imageThumbnail];
-    imageView.tag = 1;
     [cell.contentView addSubview:imageView];
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 150, cell.contentView.frame.size.width, 50)];
@@ -184,28 +192,30 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    //    NSLog(@"controller didChangeObject");
-    //    NSLog(@"anObject %@", anObject);
+    NSLog(@"controller didChangeObject");
+    NSLog(@"anObject %@", anObject);
+    NSLog(@"indexPath %@", indexPath);
+    NSLog(@"newIndexPath %@", newIndexPath);
+    NSLog(@"campaign.name %@", self.campaign.name);
     
     if (type == NSFetchedResultsChangeDelete) {
         
+        NSLog(@"NSFetchedResultsChangeDelete");
         [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-        //        NSLog(@"NSFetchedResultsChangeDelete");
         
     } else if (type == NSFetchedResultsChangeInsert) {
-        
+
+        NSLog(@"NSFetchedResultsChangeInsert");
         [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-        //        NSLog(@"NSFetchedResultsChangeInsert");
-        
         
     } else if (type == NSFetchedResultsChangeUpdate) {
 
+        NSLog(@"NSFetchedResultsChangeUpdate");
+
         STMCampaignPicture *object = anObject;
-        
         if (object.imageThumbnail) {
             [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
         }
-        //        NSLog(@"NSFetchedResultsChangeUpdate");
         
     }
     

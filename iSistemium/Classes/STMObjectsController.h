@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "STMPicture.h"
 
 @interface STMObjectsController : NSObject
 
@@ -16,5 +17,6 @@
 + (void)removeAllObjects;
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)dataLoadingFinished;
++ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 
 @end
