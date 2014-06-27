@@ -40,9 +40,12 @@
         
         STMPhotoVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"photoVC"];
         
-        vc.photo = self.photoArray[index];
+//        vc.photo = self.photoArray[index];
         vc.index = index;
         
+        STMPhoto *photo = self.photoArray[index];
+        vc.image = [UIImage imageWithData:photo.imageResized];
+
         return vc;
         
     }

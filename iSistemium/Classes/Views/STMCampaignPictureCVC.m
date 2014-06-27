@@ -129,6 +129,15 @@
         picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
     }
     
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        if (!picture.imageResized) {
+            UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:picture.image] toSize:CGSizeMake(1024, 1024)];
+            picture.imageResized = UIImagePNGRepresentation(imageResized);
+        }
+        
+    });
+    
     imageView.image = [UIImage imageWithData:picture.imageThumbnail];
     imageView.tag = 1;
     [cell.contentView addSubview:imageView];

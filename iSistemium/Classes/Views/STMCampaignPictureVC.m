@@ -9,6 +9,7 @@
 #import "STMCampaignPictureVC.h"
 
 @interface STMCampaignPictureVC ()
+
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 
 @end
@@ -27,8 +28,10 @@
 - (void)showImage {
 
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.imageView.image = [UIImage imageWithData:self.picture.image];
-    [self.imageView setNeedsDisplay];
+    self.imageView.image = self.image;
+    
+//    self.imageView.image = [UIImage imageWithData:self.picture.imageResized];
+//    [self.imageView setNeedsDisplay];
     
 }
 
@@ -40,7 +43,7 @@
 //    NSLog(@"picture.name %@", self.picture.name);
 //    NSLog(@"self.title %@", self.title);
     [self showImage];
-
+    
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

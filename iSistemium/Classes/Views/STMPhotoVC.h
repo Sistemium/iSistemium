@@ -14,4 +14,6 @@
 @property (nonatomic, strong) STMPhoto *photo;
 @property (nonatomic) NSUInteger index;
 
+@property (nonatomic, strong) UIImage *image;
+
 @end

@@ -13,5 +13,6 @@
 
 @property (nonatomic, strong) STMCampaignPicture *picture;
 @property (nonatomic) NSUInteger index;
+@property (nonatomic, strong) UIImage *image;
 
 @end

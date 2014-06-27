@@ -191,6 +191,9 @@
         UIImage *imageThumbnail = [STMFunctions resizeImage:image toSize:CGSizeMake(150, 150)];
         photo.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
         
+        UIImage *imageResized = [STMFunctions resizeImage:image toSize:CGSizeMake(1024, 1024)];
+        photo.imageResized = UIImagePNGRepresentation(imageResized);
+
         [self.selectedPhotoReport addPhotosObject:photo];
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -328,6 +331,16 @@
     imageView.contentMode = UIViewContentModeScaleAspectFit;
 
     STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO]]][indexPath.row];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    
+        if (!photo.imageResized) {
+            UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:photo.image] toSize:CGSizeMake(1024, 1024)];
+            photo.imageResized = UIImagePNGRepresentation(imageResized);
+        }
+    
+    });
+    
     imageView.image = [UIImage imageWithData:photo.imageThumbnail];
     imageView.tag = 1;
     [cell.contentView addSubview:imageView];

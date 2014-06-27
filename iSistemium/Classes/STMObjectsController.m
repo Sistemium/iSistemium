@@ -357,9 +357,16 @@
                     
                     [object setValue:data forKeyPath:@"image"];
                     
-                    UIImage *thumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
-                    [object setValue:UIImagePNGRepresentation(thumbnail) forKey:@"imageThumbnail"];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                        
+                        UIImage *thumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
+                        [object setValue:UIImagePNGRepresentation(thumbnail) forKey:@"imageThumbnail"];
+                        
+                        UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
+                        [object setValue:UIImagePNGRepresentation(imageResized) forKey:@"imageResized"];
                     
+                    });
+
                 }
                 
             }] resume];

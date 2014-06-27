@@ -26,7 +26,8 @@
 - (void)showImage {
     
     self.photoView.contentMode = UIViewContentModeScaleAspectFit;
-    self.photoView.image = [UIImage imageWithData:self.photo.image];
+    self.photoView.image = self.image;
+//    self.photoView.image = [UIImage imageWithData:self.photo.imageResized];
 //    [self.photoView setNeedsDisplay];
     
 }
