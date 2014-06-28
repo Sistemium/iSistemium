@@ -318,13 +318,10 @@
         
         if ([object isKindOfClass:[STMPicture class]]) {
             
-            NSURL *url = [NSURL URLWithString:href];
-            NSURLSession *session = [NSURLSession sharedSession];
-            [[session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                 
                 if (error) {
                     
-//                    NSLog(@"error %@", error.description);
                     NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
                     
                 } else {
@@ -343,16 +340,62 @@
 }
 
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
+
+    NSString *fileName = nil;
+    NSString *fileType = nil;
+    
+    BOOL pngType;
+
+    if ([picture isKindOfClass:[STMCampaignPicture class]]) {
+
+        fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
+        fileType = [[[fileName componentsSeparatedByString:@"."] lastObject] lowercaseString];
+        
+        pngType = [fileType isEqualToString:@"png"];
+
+    } else if ([picture isKindOfClass:[STMPhoto class]]) {
+        
+        fileName = [[[NSUUID UUID] UUIDString] stringByAppendingString:@".png"];
+        pngType = YES;
+        NSLog(@"fileName %@", fileName);
+        
+    }
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+    NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 
-        UIImage *thumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
-        UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
+        UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
         
-        picture.imageThumbnail = UIImagePNGRepresentation(thumbnail);
-        picture.imageResized = UIImagePNGRepresentation(imageResized);
-        picture.image = data;
+        dispatch_async(dispatch_get_main_queue(), ^{
 
+            picture.imagePath = imagePath;
+            picture.resizedImagePath = resizedImagePath;
+
+            if (pngType) {
+                picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
+            } else {
+                picture.imageThumbnail = UIImageJPEGRepresentation(imageThumbnail, 0);
+            }
+            
+        
+        });
+
+        [data writeToFile:imagePath atomically:YES];
+
+        UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
+        NSData *resizedImageData = nil;
+        
+        if (pngType) {
+            resizedImageData = UIImagePNGRepresentation(resizedImage);
+        } else {
+            resizedImageData = UIImageJPEGRepresentation(resizedImage, 1);
+        }
+        [resizedImageData writeToFile:resizedImagePath atomically:YES];
+        
     });
 
 }

@@ -64,18 +64,25 @@
             [self saveToURL:self.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
                 
                 if (success) {
+                    
                     NSLog(@"UIDocumentSaveForOverwriting success");
                     completionHandler(YES);
+                    
                 } else {
+                    
                     NSLog(@"UIDocumentSaveForOverwriting not success");
+                    
                 }
+                
                 self.saving = NO;
                 
             }];
             
         } else {
+            
             NSLog(@"documentState != UIDocumentStateNormal for document: %@", self);
             NSLog(@"documentState is %u", (int)self.documentState);
+            
         }
 
     } else {

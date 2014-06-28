@@ -14,6 +14,7 @@
 #import "STMPhoto.h"
 #import "STMPhotoReportPVC.h"
 #import "STMFunctions.h"
+#import "STMObjectsController.h"
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -182,36 +183,22 @@
 }
 
 - (void)saveImage:(UIImage *)image {
+
+    STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
+
+    [STMObjectsController setImagesFromData:UIImagePNGRepresentation(image) forPicture:photo];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    [self.selectedPhotoReport addPhotosObject:photo];
 
-        STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
-        photo.image = UIImagePNGRepresentation(image);
-        
-        UIImage *imageThumbnail = [STMFunctions resizeImage:image toSize:CGSizeMake(150, 150)];
-        photo.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
-        
-        UIImage *imageResized = [STMFunctions resizeImage:image toSize:CGSizeMake(1024, 1024)];
-        photo.imageResized = UIImagePNGRepresentation(imageResized);
+    self.photoReportPicturesResultsController = nil;
+    [self fetchPhotoReport];
+    [self.spinnerView removeFromSuperview];
 
-        [self.selectedPhotoReport addPhotosObject:photo];
+    [[self document] saveDocument:^(BOOL success) {
+        if (success) {
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-
-            self.photoReportPicturesResultsController = nil;
-            [self fetchPhotoReport];
-            [self.spinnerView removeFromSuperview];
-            
-        });
-
-        [[self document] saveDocument:^(BOOL success) {
-            if (success) {
-//                NSLog(@"photo UIDocumentSaveForOverwriting success");
-//                [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:self.currentSection]];
-            }
-        }];
-
-    });
+        }
+    }];
     
 }
 
@@ -332,14 +319,14 @@
 
     STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO]]][indexPath.row];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-    
-        if (!photo.imageResized) {
-            UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:photo.image] toSize:CGSizeMake(1024, 1024)];
-            photo.imageResized = UIImagePNGRepresentation(imageResized);
-        }
-    
-    });
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//    
+//        if (!photo.imageResized) {
+//            UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:photo.image] toSize:CGSizeMake(1024, 1024)];
+//            photo.imageResized = UIImagePNGRepresentation(imageResized);
+//        }
+//    
+//    });
     
     imageView.image = [UIImage imageWithData:photo.imageThumbnail];
     imageView.tag = 1;

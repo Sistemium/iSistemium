@@ -57,13 +57,15 @@
     
 }
 
+
 - (void)setCampaign:(STMCampaign *)campaign {
     
     if (campaign != _campaign) {
         
         _campaign = campaign;
         
-        self.campaignPicturesResultsController = nil;
+//        NSLog(@"set campaign %@", _campaign.name);
+        
         [self fetchPictures];
         
     }
@@ -72,6 +74,8 @@
 
 
 - (void)fetchPictures {
+
+    self.campaignPicturesResultsController = nil;
     
     NSError *error;
     if (![self.campaignPicturesResultsController performFetch:&error]) {
@@ -79,16 +83,7 @@
         NSLog(@"performFetch error %@", error);
         
     } else {
-        
-//        for (STMCampaignPicture *picture in self.campaignPicturesResultsController.fetchedObjects) {
-//            
-//            if (!picture.image) {
-//                //                NSLog(@"no image");
-//                [STMObjectsController hrefProcessingForObject:picture];
-//            }
-//            
-//        }
-        
+
         [self.collectionView reloadData];
         
     }
@@ -104,6 +99,8 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    
+//    NSLog(@"fetchedObjects.count %d", self.campaignPicturesResultsController.fetchedObjects.count);
     
     return self.campaignPicturesResultsController.fetchedObjects.count;
     
@@ -126,6 +123,8 @@
 
     if (!picture.imageThumbnail) {
 
+        [STMObjectsController hrefProcessingForObject:picture];
+
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         spinner.center = imageView.center;
         [spinner startAnimating];
@@ -134,15 +133,20 @@
         imageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
         imageView.layer.borderWidth = 1.0f;
 
-        if (picture.image) {
-            [STMObjectsController setImagesFromData:picture.image forPicture:picture];
-        } else {
-            [STMObjectsController hrefProcessingForObject:picture];
-        }
+//        if (picture.image) {
+//            [STMObjectsController setImagesFromData:picture.image forPicture:picture];
+//        } else {
+//            
+////            NSLog(@"picture.href %@", picture.href);
+//            [STMObjectsController hrefProcessingForObject:picture];
+//
+//        }
 
         
     } else {
     
+//        NSLog(@"self.campaign.name %@, picture.href %@", self.campaign.name, picture.href);
+        
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.image = [UIImage imageWithData:picture.imageThumbnail];
         
@@ -157,6 +161,8 @@
     label.textAlignment = NSTextAlignmentCenter;
     label.tag = 2;
     [cell.contentView addSubview:label];
+    
+//    NSLog(@"cell %@, indexPath %@", cell, indexPath);
     
     return cell;
     
@@ -192,31 +198,45 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    NSLog(@"controller didChangeObject");
-    NSLog(@"anObject %@", anObject);
-    NSLog(@"indexPath %@", indexPath);
-    NSLog(@"newIndexPath %@", newIndexPath);
-    NSLog(@"campaign.name %@", self.campaign.name);
-    
-    if (type == NSFetchedResultsChangeDelete) {
-        
-        NSLog(@"NSFetchedResultsChangeDelete");
-        [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-        
-    } else if (type == NSFetchedResultsChangeInsert) {
+//    NSLog(@"controller didChangeObject");
+//    
+//    for (STMCampaign *campaign in [anObject valueForKey:@"campaigns"]) {
+//        
+//        NSLog(@"name %@", campaign.name);
+//        
+//    }
+//    
+//    NSLog(@"indexPath %@", indexPath);
+//    NSLog(@"newIndexPath %@", newIndexPath);
+//    NSLog(@"campaign.name %@", self.campaign.name);
 
-        NSLog(@"NSFetchedResultsChangeInsert");
-        [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
+    if ([[anObject valueForKey:@"campaigns"] containsObject:self.campaign]) {
         
-    } else if (type == NSFetchedResultsChangeUpdate) {
+        [self.collectionView performBatchUpdates:^{
+            
+            if (type == NSFetchedResultsChangeDelete) {
+                
+//                NSLog(@"NSFetchedResultsChangeDelete");
+                [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
+                
+            } else if (type == NSFetchedResultsChangeInsert) {
+                
+//                NSLog(@"NSFetchedResultsChangeInsert");
+                [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
+                
+            } else if (type == NSFetchedResultsChangeUpdate) {
+                
+//                NSLog(@"NSFetchedResultsChangeUpdate");
+                [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+                
+            }
+            
+        } completion:^(BOOL finished) {
+            if (finished) {
+//                NSLog(@"batch update finished");
+            }
+        }];
 
-        NSLog(@"NSFetchedResultsChangeUpdate");
-
-        STMCampaignPicture *object = anObject;
-        if (object.imageThumbnail) {
-            [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
-        }
-        
     }
     
 }

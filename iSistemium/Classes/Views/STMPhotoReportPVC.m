@@ -44,7 +44,7 @@
         vc.index = index;
         
         STMPhoto *photo = self.photoArray[index];
-        vc.image = [UIImage imageWithData:photo.imageResized];
+        vc.image = [UIImage imageWithContentsOfFile:photo.resizedImagePath];
 
         return vc;
         
