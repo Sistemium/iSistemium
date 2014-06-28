@@ -44,8 +44,8 @@
 //        vc.picture = self.picturesArray[index];
         vc.index = index;
         
-        STMCampaignPicture *picture = self.picturesArray[index];
-        vc.image = [UIImage imageWithContentsOfFile:picture.resizedImagePath];
+        vc.picture = self.picturesArray[index];
+//        vc.image = [UIImage imageWithContentsOfFile:picture.resizedImagePath];
 
         return vc;
         

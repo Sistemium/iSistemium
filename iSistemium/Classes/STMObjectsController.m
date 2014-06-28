@@ -64,9 +64,9 @@
                 [object setValue:value forKey:key];
 //                NSLog(@"%@ %@", key, value);
                 
-//                if ([key isEqualToString:@"href"]) {
-//                    [self hrefProcessingForObject:object];
-//                }
+                if ([key isEqualToString:@"href"]) {
+                    [self hrefProcessingForObject:object];
+                }
                 
             }
             
@@ -155,23 +155,16 @@
             
             NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
             NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
-
-//            NSString *xid = [ownerXid stringByReplacingOccurrencesOfString:@"-" withString:@""];
-
-//            if ([xid isEqualToString:@"9e4addcaea4011e3944d005056851d41"]) {
-//                NSLog(@"destinationEntityName %@, destinationXid %@", destinationEntityName, destinationXid);
-//            }
             
             NSSet *destinationSet = [ownerObject valueForKey:roleName];
             
             if ([destinationSet containsObject:destinationObject] && [destinationEntityName isEqualToString:@"STMCampaignPicture"]) {
+
                 NSLog(@"already in set: %@, %@, %@", roleOwnerEntityName, destinationEntityName, destinationXid);
-            } else {
-                //            NSLog(@"BEFORE ownerObject %@, destinationObject %@", ownerObject, destinationObject);
-                [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
-                //            NSLog(@"AFTER ownerObject %@, destinationObject %@", ownerObject, destinationObject);
-                //            NSLog(@"roleOwnerEntityName %@, destinationEntityName %@, roleName %@", roleOwnerEntityName, destinationEntityName, roleName);
                 
+            } else {
+
+                [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
                 [[self document] saveDocument:^(BOOL success) {}];
 
             }
@@ -326,7 +319,7 @@
                     
                 } else {
                     
-                    NSLog(@"%@ load successefully", href);
+//                    NSLog(@"%@ load successefully", href);
                     [self setImagesFromData:data forPicture:(STMPicture *)object];
                     
                 }
@@ -357,7 +350,7 @@
         
         fileName = [[[NSUUID UUID] UUIDString] stringByAppendingString:@".png"];
         pngType = YES;
-        NSLog(@"fileName %@", fileName);
+//        NSLog(@"fileName %@", fileName);
         
     }
     
@@ -371,9 +364,6 @@
         UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-
-            picture.imagePath = imagePath;
-            picture.resizedImagePath = resizedImagePath;
 
             if (pngType) {
                 picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
@@ -394,7 +384,15 @@
         } else {
             resizedImageData = UIImageJPEGRepresentation(resizedImage, 1);
         }
+        
         [resizedImageData writeToFile:resizedImagePath atomically:YES];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            picture.imagePath = imagePath;
+            picture.resizedImagePath = resizedImagePath;
+            
+        });
         
     });
 

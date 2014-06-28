@@ -110,27 +110,35 @@
 
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
     
-    CGFloat width = size.width;
-    CGFloat height = size.height;
-    
-    if (image.size.width >= image.size.height) {
+    if (image.size.height > 0 && image.size.width > 0) {
         
-        height = width * image.size.height / image.size.width;
+        CGFloat width = size.width;
+        CGFloat height = size.height;
         
+        if (image.size.width >= image.size.height) {
+            
+            height = width * image.size.height / image.size.width;
+            
+        } else {
+            
+            width = height * image.size.width / image.size.height;
+            
+        }
+        
+        // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+        // Pass 1.0 to force exact pixel size.
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, 1.0);
+        [image drawInRect:CGRectMake(0, 0, width, height)];
+        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        return resultImage;
+
     } else {
         
-        width = height * image.size.width / image.size.height;
+        return nil;
         
     }
-    
-    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
-    // Pass 1.0 to force exact pixel size.
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, 1.0);
-    [image drawInRect:CGRectMake(0, 0, width, height)];
-    UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    return resultImage;
     
 }
 

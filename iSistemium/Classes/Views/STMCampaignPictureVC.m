@@ -11,6 +11,8 @@
 @interface STMCampaignPictureVC ()
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) UIImage *image;
 
 @end
 
@@ -26,22 +28,35 @@
 }
 
 - (void)showImage {
+    
+    if (!self.image) {
+        
+        [self.spinner startAnimating];
+        
+    } else {
 
-    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.imageView.image = self.image;
-    
-//    self.imageView.image = [UIImage imageWithData:self.picture.imageResized];
-//    [self.imageView setNeedsDisplay];
-    
+        [self.picture removeObserver:self forKeyPath:@"resizedImagePath"];
+        [self.spinner stopAnimating];
+        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        self.imageView.image = self.image;
+
+    }
+
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+
+    self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
+    [self showImage];
+
 }
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
-//    self.title = self.picture.name;
-//    NSLog(@"picture.name %@", self.picture.name);
-//    NSLog(@"self.title %@", self.title);
+
+    [self.picture addObserver:self forKeyPath:@"resizedImagePath" options:NSKeyValueObservingOptionNew context:nil];
+    self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
     [self showImage];
     
 }
