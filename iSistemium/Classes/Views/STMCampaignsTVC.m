@@ -84,6 +84,8 @@
 
 - (void)customInit {
     
+    self.clearsSelectionOnViewWillAppear = NO;
+    
     [self addObservers];
 
     NSError *error;
