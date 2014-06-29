@@ -20,14 +20,36 @@
     if (!_detailVC) {
         
         UINavigationController *navController = (UINavigationController *)self.viewControllers[1];
-        UIViewController *vc = navController.viewControllers[0];
-        if ([vc isKindOfClass:[STMCampaignDetailsPVC class]]) {
-            _detailVC = (STMCampaignDetailsPVC *)vc;
+        
+        UIViewController *detailVC = navController.viewControllers[0];
+        
+        if ([detailVC isKindOfClass:[STMCampaignDetailsPVC class]]) {
+            _detailVC = (STMCampaignDetailsPVC *)detailVC;
         }
         
     }
     
     return _detailVC;
+    
+}
+
+- (STMCampaignsTVC *)masterVC {
+    
+    if (!_masterVC) {
+
+        UINavigationController *navController = (UINavigationController *)self.viewControllers[0];
+        
+        UIViewController *masterVC = navController.viewControllers[0];
+        
+        if ([masterVC isKindOfClass:[STMCampaignsTVC class]]) {
+            
+            _masterVC = (STMCampaignsTVC *)masterVC;
+            
+        }
+        
+    }
+    
+    return _masterVC;
     
 }
 
@@ -39,7 +61,7 @@
     if ([self.detailVC conformsToProtocol:@protocol(UISplitViewControllerDelegate)]) {
         self.delegate = (id <UISplitViewControllerDelegate>)self.detailVC;
     }
-
+    
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

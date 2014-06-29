@@ -13,5 +13,4 @@
 
 @property (nonatomic, strong) STMCampaign *campaign;
 
-
 @end

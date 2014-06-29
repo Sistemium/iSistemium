@@ -20,7 +20,7 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
-
+@property (nonatomic, strong) UIPopoverController *popover;
 
 @end
 
@@ -51,7 +51,7 @@
         
         _campaign = campaign;
         
-        [self.navigationController popToRootViewControllerAnimated:YES];
+        [self.popover dismissPopoverAnimated:YES];
         
     }
     
@@ -147,13 +147,23 @@
     barButtonItem.title = NSLocalizedString(@"AD CAMPAIGNS", nil);
     self.navigationItem.leftBarButtonItem = barButtonItem;
     
+    self.popover = pc;
+    
 }
 
 - (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)button {
     
     self.navigationItem.leftBarButtonItem = nil;
     
+    self.popover = nil;
+    
 }
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+}
+
+
 
 #pragma mark - viewlifecycle
 
@@ -169,7 +179,6 @@
     STMCampaignPageCVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
-
     
 }
 
@@ -188,6 +197,20 @@
     [super viewDidLoad];
     [self customInit];
 
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
 
 - (void)didReceiveMemoryWarning
