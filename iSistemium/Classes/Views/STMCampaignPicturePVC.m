@@ -41,11 +41,9 @@
     
         STMCampaignPictureVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPictureVC"];
 
-//        vc.picture = self.picturesArray[index];
         vc.index = index;
         
         vc.picture = self.picturesArray[index];
-//        vc.image = [UIImage imageWithContentsOfFile:picture.resizedImagePath];
 
         return vc;
         

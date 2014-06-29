@@ -68,7 +68,6 @@
         
         _campaign = campaign;
         
-        self.photoReportPicturesResultsController = nil;
         [self fetchPhotoReport];
         
     }
@@ -78,13 +77,24 @@
 - (NSArray *)outlets {
     
     if (!_outlets) {
+
+        NSArray *outlets = [NSArray array];
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
+        
+        NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+        
+        request.sortDescriptors = [NSArray arrayWithObject:nameSortDescriptor];
         //        request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", self.campaign];
         
         NSError *error;
-        _outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+        outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+        
+        NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReports.@count" ascending:NO selector:@selector(compare:)];
+
+        outlets = [outlets sortedArrayUsingDescriptors:[NSArray arrayWithObject:photoReportsCountSortDescriptor]];
+        
+        _outlets = outlets;
         
     }
     
@@ -112,9 +122,27 @@
     
 }
 
+- (void)setCurrentSection:(NSUInteger)currentSection {
+    
+    if (currentSection != _currentSection) {
+        
+        NSUInteger previousSection = _currentSection;
+        
+        _currentSection = currentSection;
+        
+        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:previousSection]];
+        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:currentSection]];
+        
+    }
+    
+}
+
 #pragma mark - methods
 
 - (void)fetchPhotoReport {
+    
+    self.photoReportPicturesResultsController = nil;
+    self.outlets = nil;
     
     NSError *error;
     if (![self.photoReportPicturesResultsController performFetch:&error]) {
@@ -124,6 +152,14 @@
     } else {
         
         [self.collectionView reloadData];
+        
+        if (self.selectedPhotoReport) {
+
+            self.currentSection = [self.outlets indexOfObject:self.selectedPhotoReport.outlet];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection];
+            [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+            
+        }
         
     }
     
@@ -136,9 +172,11 @@
     
 }
 
-- (void)photoButtonPressed:(UIButton *)sender {
+- (void)photoButtonPressed:(id)sender {
     
-    STMOutlet *outlet = self.outlets[sender.tag];
+    NSInteger tag = [sender view].tag;
+    
+    STMOutlet *outlet = self.outlets[tag];
     self.selectedPhotoReport = [self photoReportInOutlet:outlet].lastObject;
     
     if (!self.selectedPhotoReport) {
@@ -157,7 +195,7 @@
 
     }
 
-    self.currentSection = sender.tag;
+    self.currentSection = tag;
     
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
     
@@ -187,18 +225,32 @@
     STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
 
     [STMObjectsController setImagesFromData:UIImagePNGRepresentation(image) forPicture:photo];
+
+    [photo addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
     
     [self.selectedPhotoReport addPhotosObject:photo];
-
-    self.photoReportPicturesResultsController = nil;
-    [self fetchPhotoReport];
-    [self.spinnerView removeFromSuperview];
+    
+//    [self fetchPhotoReport];
+//    [self.spinnerView removeFromSuperview];
 
     [[self document] saveDocument:^(BOOL success) {
         if (success) {
 
         }
     }];
+    
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    if ([object isKindOfClass:[STMPhoto class]]) {
+        
+        [self fetchPhotoReport];
+        [self.spinnerView removeFromSuperview];
+        
+        [object removeObserver:self forKeyPath:@"imageThumbnail" context:nil];
+        
+    }
     
 }
 
@@ -252,10 +304,21 @@
     
     UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"outletHeader" forIndexPath:indexPath];
     
+    headerView.tag = indexPath.section;
+    
+    if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
+
+        headerView.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:1 alpha:1.0];
+
+    } else {
+     
+        headerView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+
+    }
+    
     STMOutlet *outlet = self.outlets[indexPath.section];
     
     UILabel *label;
-    UIButton *photoButton;
     
     for (UIView *view in headerView.subviews) {
         
@@ -266,36 +329,17 @@
             label.text = outlet.name;
             label.textColor = [UIColor blackColor];
             
-        } else if ([view isKindOfClass:[UIButton class]]) {
-            
-            photoButton = (UIButton *)view;
-            
-            for (UIView *subview in photoButton.subviews) {
-                if ([subview isKindOfClass:[UIImageView class]]) {
-                    [subview removeFromSuperview];
-                }
-            }
-            
-            UIImage *image = [UIImage imageNamed:@"photo-icon.png"];
-            CGFloat k = 0.666;
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, image.size.width * k, image.size.height * k)];
-            imageView.image = image;
-            [photoButton addSubview:imageView];
-            
-            [photoButton setTitle:@"" forState:UIControlStateNormal];
-            
-            photoButton.tag = indexPath.section;
-            
-            [photoButton addTarget:self action:@selector(photoButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            
         }
         
     }
     
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 1)];
-    line.backgroundColor = [UIColor lightGrayColor];
+    line.backgroundColor = [UIColor grayColor];
     [headerView addSubview:line];
     
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
+    [headerView addGestureRecognizer:tap];
+
     return headerView;
     
 }
@@ -318,15 +362,6 @@
     imageView.contentMode = UIViewContentModeScaleAspectFit;
 
     STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO]]][indexPath.row];
-    
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-//    
-//        if (!photo.imageResized) {
-//            UIImage *imageResized = [STMFunctions resizeImage:[UIImage imageWithData:photo.image] toSize:CGSizeMake(1024, 1024)];
-//            photo.imageResized = UIImagePNGRepresentation(imageResized);
-//        }
-//    
-//    });
     
     imageView.image = [UIImage imageWithData:photo.imageThumbnail];
     imageView.tag = 1;
@@ -363,6 +398,8 @@
 //            
 //        }
 //    }];
+    
+//    [self fetchPhotoReport];
     
 }
 

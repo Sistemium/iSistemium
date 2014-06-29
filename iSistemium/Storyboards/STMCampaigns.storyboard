@@ -214,29 +214,16 @@
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PKb-F2-Afb">
-                                    <rect key="frame" x="20" y="14" width="678" height="21"/>
+                                    <rect key="frame" x="20" y="14" width="728" height="21"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7bY-8a-dmf">
-                                    <rect key="frame" x="706" y="9" width="42" height="32"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="32" id="WMx-MP-q8S"/>
-                                        <constraint firstAttribute="width" constant="42" id="oc6-7P-yZV"/>
-                                    </constraints>
-                                    <state key="normal" image="photo-icon.png">
-                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                    </state>
-                                </button>
                             </subviews>
                             <constraints>
                                 <constraint firstItem="PKb-F2-Afb" firstAttribute="leading" secondItem="foY-GL-7yN" secondAttribute="leading" constant="20" id="BY9-ei-nLy"/>
                                 <constraint firstAttribute="centerY" secondItem="PKb-F2-Afb" secondAttribute="centerY" constant="0.5" id="PIW-6V-rL9"/>
-                                <constraint firstAttribute="trailing" secondItem="7bY-8a-dmf" secondAttribute="trailing" constant="20" id="dW3-sY-tTd"/>
-                                <constraint firstAttribute="centerY" secondItem="7bY-8a-dmf" secondAttribute="centerY" id="ecv-hd-yhE"/>
-                                <constraint firstItem="7bY-8a-dmf" firstAttribute="leading" secondItem="PKb-F2-Afb" secondAttribute="trailing" constant="8" id="hee-10-BEv"/>
+                                <constraint firstAttribute="trailing" secondItem="PKb-F2-Afb" secondAttribute="trailing" constant="20" id="emd-2j-nqJ"/>
                             </constraints>
                         </collectionReusableView>
                         <connections>
@@ -307,9 +294,6 @@
             <point key="canvasLocation" x="3582" y="215"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="photo-icon.png" width="64" height="48"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

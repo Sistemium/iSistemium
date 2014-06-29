@@ -246,6 +246,8 @@
         
         self.activeButtonColor = cell.textLabel.textColor;
         
+//        NSLog(@"self.activeButtonColor %@", self.activeButtonColor);
+        
         cell.textLabel.textColor = [UIColor lightGrayColor];
         
         _campaignsCell = cell;

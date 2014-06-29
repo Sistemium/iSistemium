@@ -49,6 +49,8 @@
     self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
     [self showImage];
 
+    [object removeObserver:self forKeyPath:@"resizedImagePath" context:nil];
+    
 }
 
 #pragma mark - view lifecycle
