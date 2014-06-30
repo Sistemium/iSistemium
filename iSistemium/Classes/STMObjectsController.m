@@ -24,8 +24,25 @@
 #import "STMSettings.h"
 #import "STMLogMessage.h"
 
+@interface STMObjectsController()
+
+@end
+
 
 @implementation STMObjectsController
+
++ (NSOperationQueue *)downloadQueue {
+    
+    static dispatch_once_t pred = 0;
+    __strong static id _downloadQueue = nil;
+    
+    dispatch_once(&pred, ^{
+        _downloadQueue = [[NSOperationQueue alloc] init];
+    });
+    
+    return _downloadQueue;
+    
+}
 
 + (STMDocument *)document {
     
@@ -311,20 +328,28 @@
         
         if ([object isKindOfClass:[STMPicture class]]) {
             
-            [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            [[self downloadQueue] addOperationWithBlock:^{
+
+                NSLog(@"isMainThread %d", [NSThread isMainThread]);
+                NSLog(@"send request %@", href);
                 
-                if (error) {
+                [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     
-                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                    if (error) {
+                        
+                        NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                        
+                    } else {
+
+                        NSLog(@"isMainThread %d", [NSThread isMainThread]);
+                        NSLog(@"%@ load successefully", href);
+                        [self setImagesFromData:data forPicture:(STMPicture *)object];
+                        
+                    }
                     
-                } else {
-                    
-//                    NSLog(@"%@ load successefully", href);
-                    [self setImagesFromData:data forPicture:(STMPicture *)object];
-                    
-                }
-                
-            }] resume];
+                }] resume];
+
+            }];
             
         }
         
