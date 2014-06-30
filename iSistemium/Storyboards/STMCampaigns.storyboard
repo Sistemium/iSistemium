@@ -140,7 +140,20 @@
         <scene sceneID="IBp-CG-UUT">
             <objects>
                 <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="iDU-ih-CIx" customClass="STMCampaignDetailsPVC" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="F7c-ku-BQV"/>
+                    <navigationItem key="navigationItem" id="F7c-ku-BQV">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="D7E-H5-6ql">
+                            <rect key="frame" x="231" y="7" width="307" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="First"/>
+                                <segment title="Second"/>
+                            </segments>
+                        </segmentedControl>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="segmentedControl" destination="D7E-H5-6ql" id="waS-rm-kcm"/>
+                    </connections>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vm5-aG-2yj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

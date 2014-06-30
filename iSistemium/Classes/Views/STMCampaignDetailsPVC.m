@@ -14,6 +14,8 @@
 
 @interface STMCampaignDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+
 @property (nonatomic, strong) UIBarButtonItem *homeButton;
 @property (nonatomic, strong) STMDocument *document;
 
@@ -47,6 +49,10 @@
         
         for (STMCampaignPageCVC *view in self.viewControllers) {
             view.campaign = campaign;
+        }
+        
+        if (self.segmentedControl.numberOfSegments == 0) {
+            [self setupSegmentedControl];
         }
         
         _campaign = campaign;
@@ -137,6 +143,8 @@
         previousVC.campaign = self.campaign;
         self.currentIndex = self.nextIndex;
         
+        self.segmentedControl.selectedSegmentIndex = self.currentIndex;
+        
     }
 }
 
@@ -159,11 +167,45 @@
     
 }
 
+
+#pragma mark
+
 - (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
     
 }
 
+- (void)setupSegmentedControl {
+    
+    NSArray *titles = @[@"CAMPAIGNS", @"PHOTO REPORTS"];
+    
+    for (int i = 0; i < titles.count; i++) {
+        [self.segmentedControl insertSegmentWithTitle:NSLocalizedString(titles[i], nil) atIndex:i animated:YES];
+    }
+    
+    self.segmentedControl.selectedSegmentIndex = self.currentIndex;
+    
+    [self.segmentedControl addTarget:self action:@selector(selectSegmentedControlSegment) forControlEvents:UIControlEventValueChanged];
 
+}
+
+- (void)selectSegmentedControlSegment {
+    
+    NSLog(@"selectedSegmentIndex %d", self.segmentedControl.selectedSegmentIndex);
+    
+    STMCampaignPageCVC *vc = [self viewControllerAtIndex:self.segmentedControl.selectedSegmentIndex storyboard:self.storyboard];
+    NSArray *viewControllers = @[vc];
+    
+    UIPageViewControllerNavigationDirection direction;
+    
+    if (self.segmentedControl.selectedSegmentIndex > self.currentIndex) {
+        direction = UIPageViewControllerNavigationDirectionForward;
+    } else {
+        direction = UIPageViewControllerNavigationDirectionReverse;
+    }
+    
+    [self setViewControllers:viewControllers direction:direction animated:YES completion:NULL];
+    
+}
 
 #pragma mark - viewlifecycle
 
@@ -196,6 +238,8 @@
     
     [super viewDidLoad];
     [self customInit];
+    
+    [self.segmentedControl removeAllSegments];
 
 }
 
