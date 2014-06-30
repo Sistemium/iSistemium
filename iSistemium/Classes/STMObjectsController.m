@@ -26,19 +26,61 @@
 
 @interface STMObjectsController()
 
+@property (nonatomic, strong) NSOperationQueue *downloadQueue;
+@property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
+@property (nonatomic, strong) NSMutableArray *secondAttempt;
+
 @end
 
 
 @implementation STMObjectsController
 
-+ (NSOperationQueue *)downloadQueue {
++ (STMObjectsController *)sharedController {
     
     static dispatch_once_t pred = 0;
-    __strong static id _downloadQueue = nil;
+    __strong static id _sharedController = nil;
     
     dispatch_once(&pred, ^{
-        _downloadQueue = [[NSOperationQueue alloc] init];
+    
+        _sharedController = [[self alloc] init];
+    
     });
+    
+    return _sharedController;
+    
+}
+
+- (NSMutableDictionary *)hrefDictionary {
+    
+    if (!_hrefDictionary) {
+        
+        _hrefDictionary = [NSMutableDictionary dictionary];
+        
+    }
+    
+    return _hrefDictionary;
+    
+}
+
+- (NSMutableArray *)secondAttempt {
+    
+    if (!_secondAttempt) {
+        
+        _secondAttempt = [NSMutableArray array];
+        
+    }
+    
+    return _secondAttempt;
+    
+}
+
+- (NSOperationQueue *)downloadQueue {
+
+    if (!_downloadQueue) {
+        
+        _downloadQueue = [[NSOperationQueue alloc] init];
+
+    }
     
     return _downloadQueue;
     
@@ -327,34 +369,90 @@
     if (href) {
         
         if ([object isKindOfClass:[STMPicture class]]) {
-            
-            [[self downloadQueue] addOperationWithBlock:^{
 
-                NSLog(@"isMainThread %d", [NSThread isMainThread]);
-                NSLog(@"send request %@", href);
+            if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
-                [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                    
-                    if (error) {
-                        
-                        NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                        
-                    } else {
+                [[self sharedController].hrefDictionary setObject:object forKey:href];
+//                NSLog(@"hrefDictionary.allKeys1 %d", [self sharedController].hrefDictionary.allKeys.count);
 
-                        NSLog(@"isMainThread %d", [NSThread isMainThread]);
-                        NSLog(@"%@ load successefully", href);
-                        [self setImagesFromData:data forPicture:(STMPicture *)object];
-                        
-                    }
-                    
-                }] resume];
+                [[self sharedController] addOperationForObject:object];
 
-            }];
+            }
             
         }
         
     }
     
+}
+
+- (void)addOperationForObject:(NSManagedObject *)object {
+    
+    NSString *href = [object valueForKey:@"href"];
+    
+    if ([self.secondAttempt containsObject:href]) {
+//        NSLog(@"second attempt for %@", href);
+    }
+    
+    [self.downloadQueue addOperationWithBlock:^{
+        
+        [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            
+            if (error) {
+                
+                if (error.code == -1001) {
+                    
+                    NSLog(@"error code -1001 timeout for %@", href);
+                    
+                    if ([self.secondAttempt containsObject:href]) {
+                        
+                        NSLog(@"second load attempt fault for %@", href);
+                        
+                        [self.secondAttempt removeObject:href];
+                        [self.hrefDictionary removeObjectForKey:href];
+                        
+                    } else {
+                        
+                        [self.secondAttempt addObject:href];
+
+//                        double delayInSeconds = 2.0;
+//                        
+//                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+//                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//
+//                            [self addOperationForObject:object];
+//                            
+//                        });
+
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
+                        });
+
+//                        NSLog(@"secondAttempt.count %d", self.secondAttempt.count);
+                        
+                    }
+                    
+                } else {
+                    
+                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                    [self.hrefDictionary removeObjectForKey:href];
+                    
+                }
+                
+            } else {
+                
+//                NSLog(@"%@ load successefully", href);
+                
+                [self.hrefDictionary removeObjectForKey:href];
+                [[self class] setImagesFromData:data forPicture:(STMPicture *)object];
+                
+//                NSLog(@"hrefDictionary.allKeys2 %d", self.hrefDictionary.allKeys.count);
+                
+            }
+            
+        }] resume];
+        
+    }];
+
 }
 
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
