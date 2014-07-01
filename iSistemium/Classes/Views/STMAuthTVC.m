@@ -157,7 +157,15 @@
         
         if ([view isKindOfClass:[UILabel class]]) {
             
-            [(UILabel *)view setText:[STMAuthController authController].phoneNumber];
+            if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+                
+                [(UILabel *)view setText:[STMAuthController authController].userName];
+                
+            } else {
+                
+                [(UILabel *)view setText:[STMAuthController authController].phoneNumber];
+                
+            }
             
         } else if ([view isKindOfClass:[UIButton class]]) {
             

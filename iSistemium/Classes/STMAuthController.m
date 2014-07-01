@@ -30,6 +30,7 @@
 
 @synthesize phoneNumber = _phoneNumber;
 @synthesize userID = _userID;
+@synthesize userName = _userName;
 @synthesize accessToken = _accessToken;
 @synthesize serviceUri = _serviceUri;
 
@@ -96,6 +97,38 @@
         
         _phoneNumber = phoneNumber;
         
+    }
+    
+}
+
+- (NSString *)userName {
+    
+    if (!_userName) {
+
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        id userName = [defaults objectForKey:@"userName"];
+        
+        if ([userName isKindOfClass:[NSString class]]) {
+            _userName = userName;
+            NSLog(@"userName %@", userName);
+        }
+
+    }
+    
+    return _userName;
+    
+}
+
+- (void)setUserName:(NSString *)userName {
+    
+    if (userName != _userName) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:userName forKey:@"userName"];
+        [defaults synchronize];
+        
+        _userName = userName;
+
     }
     
 }
@@ -380,6 +413,7 @@
             
             self.serviceUri = [responseJSON objectForKey:@"redirectUri"];
             self.userID = [responseJSON objectForKey:@"ID"];
+            self.userName = [responseJSON objectForKey:@"name"];
             self.accessToken = [responseJSON objectForKey:@"accessToken"];
             self.controllerState = STMAuthSuccess;
             
