@@ -92,17 +92,25 @@
     
 }
 
-+ (void)insertObjectsFromArray:(NSArray *)array {
++ (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler {
+    
+    __block BOOL result = YES;
     
     for (NSDictionary *datum in array) {
         
-        [self insertObjectFromDictionary:datum];
+        [self insertObjectFromDictionary:datum withCompletionHandler:^(BOOL success) {
+            
+            result &= success;
+            
+        }];
         
     }
+    
+    completionHandler(result);
 
 }
 
-+ (void)insertObjectFromDictionary:(NSDictionary *)dictionary {
++ (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     NSString *name = [dictionary objectForKey:@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
@@ -152,19 +160,29 @@
 
     }
     
+    completionHandler(YES);
+    
 }
 
-+ (void)setRelationshipsFromArray:(NSArray *)array {
++ (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler {
+    
+    __block BOOL result = YES;
     
     for (NSDictionary *datum in array) {
         
-        [self setRelationshipFromDictionary:datum];
+        [self setRelationshipFromDictionary:datum withCompletionHandler:^(BOOL success) {
+            
+            result &= success;
+            
+        }];
         
     }
+    
+    completionHandler(YES);
 
 }
 
-+ (void)setRelationshipFromDictionary:(NSDictionary *)dictionary {
++ (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     NSString *name = [dictionary objectForKey:@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
@@ -217,6 +235,8 @@
         }
         
     }
+    
+    completionHandler(YES);
     
 }
 

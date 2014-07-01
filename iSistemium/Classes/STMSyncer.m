@@ -663,11 +663,23 @@
             
             if ([entityModel objectForKey:@"roleName"]) {
                 
-                [STMObjectsController setRelationshipsFromArray:dataArray];
+                [STMObjectsController setRelationshipsFromArray:dataArray withCompletionHandler:^(BOOL success) {
+                    
+                    if (success) {
+                        NSLog(@"%d relationships successefully added", dataArray.count);
+                    }
+                    
+                }];
                 
             } else {
                 
-                [STMObjectsController insertObjectsFromArray:dataArray];
+                [STMObjectsController insertObjectsFromArray:dataArray withCompletionHandler:^(BOOL success) {
+
+                    if (success) {
+                        NSLog(@"%d objects successefully added", dataArray.count);
+                    }
+
+                }];
                 
             }
 

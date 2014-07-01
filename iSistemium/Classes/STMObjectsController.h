@@ -12,10 +12,10 @@
 
 @interface STMObjectsController : NSObject
 
-+ (void)insertObjectsFromArray:(NSArray *)array;
-+ (void)insertObjectFromDictionary:(NSDictionary *)dictionary;
-+ (void)setRelationshipsFromArray:(NSArray *)array;
-+ (void)setRelationshipFromDictionary:(NSDictionary *)dictionary;
++ (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
++ (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
++ (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
++ (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)removeAllObjects;
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)dataLoadingFinished;
