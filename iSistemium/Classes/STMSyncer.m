@@ -567,16 +567,8 @@
     if (statusCode == 200) {
         
         [self.responses setObject:[NSMutableData data] forKey:entityName];
-        
-//        self.responseData = [NSMutableData data];
-        
+
         NSString *eTag = [headers objectForKey:@"eTag"];
-        
-//        if ([entityName isEqualToString:@"STMCampaignPictureCampaign"]) {
-//            NSLog(@"STMCampaignPictureCampaign response eTag %@", eTag);
-//        }
-        
-//        NSLog(@"eTag %@", eTag);
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) {
         
@@ -600,14 +592,9 @@
             
             self.entityCount = self.entitySyncInfo.allKeys.count - 1;
 
-//            self.responseData = nil;
-            
             NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             [entityNames removeObject:entityName];
 
-//            NSLog(@"%@", entityNames[7]);
-//            [self startConnectionForRecieveEntitiesWithName:entityNames[7]];
-            
             for (NSString *name in entityNames) {
                 [self startConnectionForRecieveEntitiesWithName:name];
             }
@@ -615,7 +602,6 @@
         } else {
 
             self.entityCount -= 1;
-//            self.entityCount = 0;
             
             if (self.entityCount == 0) {
                 self.syncerState = STMSyncerIdle;
@@ -637,12 +623,6 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-//    NSString *dataPath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"];
-//    self.responseData = [NSData dataWithContentsOfFile:dataPath];
-//
-//    NSString *responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
-//    NSLog(@"connectionDidFinishLoading responseData %@", responseString);
-    
     NSString *entityName = [self entityNameForConnection:connection];
     NSMutableData *responseData = [self.responses objectForKey:entityName];
 
@@ -653,38 +633,58 @@
 }
 
 - (void)parseResponse:(NSData *)responseData fromConnection:(NSURLConnection *)connection {
-    
-//    NSLog(@"connection URL %@", connection.currentRequest.URL);
-    
+
     NSError *error;
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
     
-//    if ([[self entityNameForConnection:connection] isEqualToString:@"STMCampaignPictureCampaign"]) {
-//        NSLog(@"responseJSON %@", responseJSON);
-//    }
+//    NSLog(@"responseJSON %@", responseJSON);
     
     NSString *errorString = [responseJSON objectForKey:@"error"];
     
     if (!errorString) {
-        
+
+        NSString *connectionEntityName = [self entityNameForConnection:connection];
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
-//        NSLog(@"dataArray %@", dataArray);
+
+        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
         
-//        int counter = 0;
+            for (NSDictionary *datum in dataArray) {
+
+                NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
+                NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
+                [self.entitySyncInfo setObject:entityProperties forKey:entityName];
+                [self saveServerDataModel];
+            
+            }
         
+        } else {
+            
+            NSDictionary *entityModel = [self.entitySyncInfo objectForKey:connectionEntityName];
+            
+            if ([entityModel objectForKey:@"roleName"]) {
+                
+                [STMObjectsController setRelationshipsFromArray:dataArray];
+                
+            } else {
+                
+                [STMObjectsController insertObjectsFromArray:dataArray];
+                
+            }
+
+            
+        }
+
+        
+/*
         for (NSDictionary *datum in dataArray) {
             
             NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
-//            NSLog(@"entityProperties %@", entityProperties);
-
-            NSString *connectionEntityName = [self entityNameForConnection:connection];
             
             if ([connectionEntityName isEqualToString:@"STMEntity"]) {
                 
                 NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
                 [self.entitySyncInfo setObject:entityProperties forKey:entityName];
                 [self saveServerDataModel];
-//                NSLog(@"self.serverDataModel %@", self.entitySyncInfo);
                 
             } else {
 
@@ -692,21 +692,20 @@
                 
                 if ([entityModel objectForKey:@"roleName"]) {
                     
-//                    NSLog(@"roleName %@", [entityModel objectForKey:@"roleName"]);
                     [STMObjectsController setRelationshipFromDictionary:datum];
                     
                 } else {
-//                    if (counter < 1) {
-                        [STMObjectsController insertObjectFromDictionary:datum];
-//                        counter += 1;
-//                    }
+                    
+                    [STMObjectsController insertObjectFromDictionary:datum];
                     
                 }
                 
             }
             
         }
-        
+  
+*/
+ 
     } else {
         
         [self.session.logger saveLogMessageWithText:errorString type:@"error"];

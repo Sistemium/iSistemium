@@ -12,7 +12,9 @@
 
 @interface STMObjectsController : NSObject
 
++ (void)insertObjectsFromArray:(NSArray *)array;
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary;
++ (void)setRelationshipsFromArray:(NSArray *)array;
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary;
 + (void)removeAllObjects;
 + (void)hrefProcessingForObject:(NSManagedObject *)object;

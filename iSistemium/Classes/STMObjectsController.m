@@ -92,28 +92,30 @@
     
 }
 
-+ (void)insertObjectFromDictionary:(NSDictionary *)dictionary {
++ (void)insertObjectsFromArray:(NSArray *)array {
     
-//    NSLog(@"%@", dictionary);
+    for (NSDictionary *datum in array) {
+        
+        [self insertObjectFromDictionary:datum];
+        
+    }
+
+}
+
++ (void)insertObjectFromDictionary:(NSDictionary *)dictionary {
     
     NSString *name = [dictionary objectForKey:@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
-//    NSLog(@"entityName %@", entityName);
     
     NSArray *dataModelEntityNames = [self dataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
         NSString *xid = [dictionary objectForKey:@"xid"];
-//        NSLog(@"xid %@", xid);
-        
         NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
-        
         NSDictionary *properties = [dictionary objectForKey:@"properties"];
-        
         NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
-//        NSLog(@"ownObjectKeys %@", ownObjectKeys);
 
         for (NSString *key in ownObjectKeys) {
             
@@ -121,7 +123,6 @@
             if (value) {
                 
                 [object setValue:value forKey:key];
-//                NSLog(@"%@ %@", key, value);
                 
                 if ([key isEqualToString:@"href"]) {
                     [self hrefProcessingForObject:object];
@@ -133,29 +134,19 @@
 
         NSDictionary *ownObjectRelationships = [self ownObjectRelationshipsForEntityName:entityName];
         
-//        NSLog(@"ownObjectRelationships %@", ownObjectRelationships);
-        
         for (NSString *relationship in [ownObjectRelationships allKeys]) {
-            
-//            NSLog(@"relationship %@", relationship);
             
             NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
             NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
-            
-//            NSLog(@"relationshipDictionary %@, destinationObjectXid %@", relationshipDictionary, destinationObjectXid);
             
             if (destinationObjectXid) {
                 
                 NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
                 [object setValue:destinationObject forKey:relationship];
                 
-//                NSLog(@"relationship %@, destinationObject %@", relationship, destinationObject)
-                
             }
             
         }
-        
-//        NSLog(@"object %@", object);
         
         [[self document] saveDocument:^(BOOL success) {}];
 
@@ -163,10 +154,17 @@
     
 }
 
-+ (void)setRelationshipFromDictionary:(NSDictionary *)dictionary {
++ (void)setRelationshipsFromArray:(NSArray *)array {
     
-//    NSLog(@"relationship %@", dictionary);
+    for (NSDictionary *datum in array) {
+        
+        [self setRelationshipFromDictionary:datum];
+        
+    }
 
+}
+
++ (void)setRelationshipFromDictionary:(NSDictionary *)dictionary {
     
     NSString *name = [dictionary objectForKey:@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
@@ -177,30 +175,17 @@
     if ([[serverDataModel allKeys] containsObject:entityName]) {
         
         NSDictionary *modelProperties = [serverDataModel objectForKey:entityName];
-//        NSLog(@"modelProperties %@", modelProperties);
-        
         NSString *roleOwner = [modelProperties objectForKey:@"roleOwner"];
         NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
         NSString *roleName = [modelProperties objectForKey:@"roleName"];
-//        NSLog(@"roleOwner %@, roleName %@", roleOwner, roleName);
-        
         NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
-//        NSLog(@"ownerRelationships %@", ownerRelationships);
-        
         NSString *destinationEntityName = [ownerRelationships objectForKey:roleName];
-//        NSLog(@"destinationEntityName %@", destinationEntityName);
-        
         NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
-        
         NSDictionary *properties = [dictionary objectForKey:@"properties"];
         NSDictionary *ownerData = [properties objectForKey:roleOwner];
         NSDictionary *destinationData = [properties objectForKey:destination];
-//        NSLog(@"ownerData %@, destinationData %@", ownerData, destinationData);
-        
         NSString *ownerXid = [ownerData objectForKey:@"xid"];
         NSString *destinationXid = [destinationData objectForKey:@"xid"];
-//        NSLog(@"ownerXid %@, destinationXid %@", ownerXid, destinationXid);
-        
         BOOL ok = YES;
         
         if (!ownerXid || [ownerXid isEqualToString:@""] || !destinationXid || [destinationXid isEqualToString:@""]) {
