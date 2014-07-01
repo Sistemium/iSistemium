@@ -180,7 +180,7 @@
 
 - (void)setupSegmentedControl {
     
-    NSArray *titles = @[@"CAMPAIGNS", @"PHOTO REPORTS"];
+    NSArray *titles = @[@"PICTURES", @"PHOTO REPORTS"];
     
     for (int i = 0; i < titles.count; i++) {
         [self.segmentedControl insertSegmentWithTitle:NSLocalizedString(titles[i], nil) atIndex:i animated:YES];
