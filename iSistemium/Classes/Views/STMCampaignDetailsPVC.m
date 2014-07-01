@@ -57,6 +57,7 @@
         
         _campaign = campaign;
         
+        self.navigationItem.leftBarButtonItem.title = self.campaign.name;
         [self.popover dismissPopoverAnimated:YES];
         
     }
@@ -152,7 +153,10 @@
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
     
-    barButtonItem.title = NSLocalizedString(@"AD CAMPAIGNS", nil);
+    NSString *barButtonTitle = self.campaign ? self.campaign.name : NSLocalizedString(@"AD CAMPAIGNS", nil);
+    barButtonItem.title = barButtonTitle;
+    
+//    barButtonItem.title = NSLocalizedString(@"AD CAMPAIGNS", nil);
     self.navigationItem.leftBarButtonItem = barButtonItem;
     
     self.popover = pc;
@@ -190,8 +194,6 @@
 
 - (void)selectSegmentedControlSegment {
     
-    NSLog(@"selectedSegmentIndex %d", self.segmentedControl.selectedSegmentIndex);
-    
     STMCampaignPageCVC *vc = [self viewControllerAtIndex:self.segmentedControl.selectedSegmentIndex storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     
@@ -202,6 +204,8 @@
     } else {
         direction = UIPageViewControllerNavigationDirectionReverse;
     }
+    
+    self.currentIndex = self.segmentedControl.selectedSegmentIndex;
     
     [self setViewControllers:viewControllers direction:direction animated:YES completion:NULL];
     
