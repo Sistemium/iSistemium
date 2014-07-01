@@ -106,8 +106,13 @@
         
     }
     
-    completionHandler(result);
+    [[self document] saveDocument:^(BOOL success) {
+    
+        result &= success;
+        completionHandler(result);
 
+    }];
+    
 }
 
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
@@ -156,7 +161,7 @@
             
         }
         
-        [[self document] saveDocument:^(BOOL success) {}];
+//        [[self document] saveDocument:^(BOOL success) {}];
 
     }
     
@@ -178,7 +183,12 @@
         
     }
     
-    completionHandler(YES);
+    [[self document] saveDocument:^(BOOL success) {
+        
+        result &= success;
+        completionHandler(YES);
+        
+    }];
 
 }
 
@@ -227,7 +237,7 @@
             } else {
 
                 [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
-                [[self document] saveDocument:^(BOOL success) {}];
+//                [[self document] saveDocument:^(BOOL success) {}];
 
             }
             

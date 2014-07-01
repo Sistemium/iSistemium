@@ -572,9 +572,8 @@
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) {
         
-            [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
+            [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"temporaryETag"];
             [self saveServerDataModel];
-            [self startConnectionForRecieveEntitiesWithName:entityName];
             
         }
         
@@ -656,6 +655,9 @@
                 [self saveServerDataModel];
             
             }
+            
+            [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+
         
         } else {
             
@@ -666,7 +668,10 @@
                 [STMObjectsController setRelationshipsFromArray:dataArray withCompletionHandler:^(BOOL success) {
                     
                     if (success) {
-                        NSLog(@"%d relationships successefully added", dataArray.count);
+
+//                        NSLog(@"%d relationships successefully added", dataArray.count);
+                        [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+
                     }
                     
                 }];
@@ -676,7 +681,10 @@
                 [STMObjectsController insertObjectsFromArray:dataArray withCompletionHandler:^(BOOL success) {
 
                     if (success) {
-                        NSLog(@"%d objects successefully added", dataArray.count);
+
+//                        NSLog(@"%d objects successefully added", dataArray.count);
+                        [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+
                     }
 
                 }];
@@ -686,38 +694,6 @@
             
         }
 
-        
-/*
-        for (NSDictionary *datum in dataArray) {
-            
-            NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
-            
-            if ([connectionEntityName isEqualToString:@"STMEntity"]) {
-                
-                NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
-                [self.entitySyncInfo setObject:entityProperties forKey:entityName];
-                [self saveServerDataModel];
-                
-            } else {
-
-                NSDictionary *entityModel = [self.entitySyncInfo objectForKey:connectionEntityName];
-                
-                if ([entityModel objectForKey:@"roleName"]) {
-                    
-                    [STMObjectsController setRelationshipFromDictionary:datum];
-                    
-                } else {
-                    
-                    [STMObjectsController insertObjectFromDictionary:datum];
-                    
-                }
-                
-            }
-            
-        }
-  
-*/
- 
     } else {
         
         [self.session.logger saveLogMessageWithText:errorString type:@"error"];
@@ -736,6 +712,15 @@
         }
         
     }
+
+}
+
+- (void)fillETagWithTemporaryValueForEntityName:(NSString *)entityName {
+ 
+    NSString *eTag = [[self.entitySyncInfo objectForKey:entityName] objectForKey:@"temporaryETag"];
+    [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
+    [self saveServerDataModel];
+    [self startConnectionForRecieveEntitiesWithName:entityName];
 
 }
 

@@ -71,6 +71,7 @@
                 } else {
                     
                     NSLog(@"UIDocumentSaveForOverwriting not success");
+                    completionHandler(NO);
                     
                 }
                 
@@ -83,12 +84,26 @@
             NSLog(@"documentState != UIDocumentStateNormal for document: %@", self);
             NSLog(@"documentState is %u", (int)self.documentState);
             
+            completionHandler(NO);
+            
         }
 
     } else {
         
 //        NSLog(@"Document is in saving state currently");
-        
+
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+
+            [self saveDocument:^(BOOL success) {
+                
+                completionHandler(success);
+                
+            }];
+            
+        });
+
     }
 
 }
