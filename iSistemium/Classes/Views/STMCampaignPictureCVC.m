@@ -127,9 +127,11 @@
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 150)];
     imageView.tag = 1;
 
-    if (!picture.imageThumbnail) {
-
+    if (!picture.resizedImagePath) {
         [STMObjectsController hrefProcessingForObject:picture];
+    }
+    
+    if (!picture.imageThumbnail) {
 
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         spinner.center = imageView.center;

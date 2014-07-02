@@ -25,6 +25,9 @@
 @property (nonatomic, strong) NSArray *outlets;
 @property (nonatomic) BOOL isTakingPhoto;
 @property (nonatomic, strong) UIView *spinnerView;
+@property (nonatomic, strong) NSBlockOperation *changeOperation;
+@property (nonatomic, strong) STMCampaign *updatingCampaign;
+@property (nonatomic) BOOL isUpdating;
 
 @end
 
@@ -68,6 +71,7 @@
         
         _campaign = campaign;
         
+        self.selectedPhotoReport = nil;
         [self fetchPhotoReport];
         
     }
@@ -151,13 +155,17 @@
         
     } else {
         
-        [self.collectionView reloadData];
-        
-        if (self.selectedPhotoReport) {
-
-            self.currentSection = [self.outlets indexOfObject:self.selectedPhotoReport.outlet];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection];
-            [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        if (!self.isUpdating) {
+            
+            [self.collectionView reloadData];
+            
+            if (self.selectedPhotoReport) {
+                
+                self.currentSection = [self.outlets indexOfObject:self.selectedPhotoReport.outlet];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection];
+                [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+                
+            }
             
         }
         
@@ -187,7 +195,7 @@
         
         [self.document saveDocument:^(BOOL success) {
             if (success) {
-                NSLog(@"create new photoReport");
+//                NSLog(@"create new photoReport");
             }
         }];
         
@@ -208,6 +216,16 @@
         UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
         imagePickerController.delegate = self;
         imagePickerController.sourceType = imageSourceType;
+//        imagePickerController.showsCameraControls = NO;
+//        
+//        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+//        button.frame = CGRectMake(0, 0, 100, 100);
+//        button.titleLabel.text = @"TEST";
+//        button.titleLabel.textColor = [UIColor blueColor];
+//        
+//        NSLog(@"button %@", button);
+//        
+//        [imagePickerController.cameraOverlayView addSubview:button];
         
         [self presentViewController:imagePickerController animated:YES completion:^{
             
@@ -258,6 +276,19 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
+//    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+//    button.frame = CGRectMake(0, 0, 100, 100);
+//    button.titleLabel.text = @"TEST2";
+//    button.titleLabel.textColor = [UIColor blueColor];
+//    
+//    NSLog(@"button %@", button);
+//
+//    [picker.cameraOverlayView addSubview:button];
+//    
+//    NSLog(@"cameraOverlayView %@", picker.cameraOverlayView);
+//    NSLog(@"cameraOverlayView.subviews %@", picker.cameraOverlayView.subviews);
+//
+    
     [picker dismissViewControllerAnimated:NO completion:^{
         
         [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
@@ -272,6 +303,12 @@
     [picker dismissViewControllerAnimated:NO completion:^{
         
         [self.spinnerView removeFromSuperview];
+        
+        if (self.selectedPhotoReport.photos.count == 0) {
+            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+//            NSLog(@"delete empty photoReport");
+        }
+        
 //        NSLog(@"imagePickerControllerDidCancel");
         
     }];
@@ -387,12 +424,54 @@
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     
     NSLog(@"controllerWillChangeContent");
-    
+    self.isUpdating = YES;
+    self.changeOperation = [[NSBlockOperation alloc] init];
+    self.updatingCampaign = self.campaign;
+
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    NSLog(@"controllerDidChangeContent");
+    //    NSLog(@"controllerDidChangeContent");
+    
+    self.isUpdating = NO;
+    
+    if (self.updatingCampaign != self.campaign) {
+        
+        //        NSLog(@"campaign changed before updating");
+        
+        [self.collectionView reloadData];
+        
+    } else {
+        
+        [self.collectionView performBatchUpdates:^{
+            
+            [self.changeOperation start];
+            
+        } completion:^(BOOL finished) {
+            
+            if (finished) {
+                
+                if (self.updatingCampaign != self.campaign) {
+                    
+                    //                    NSLog(@"campaign changed while updating");
+                    
+                    [self.collectionView reloadData];
+                    
+                }
+                
+                [self.document saveDocument:^(BOOL success) {
+                    if (success) {
+                        
+                    }
+                }];
+                
+            }
+            
+        }];
+        
+    }
+    
 //    [self.document saveDocument:^(BOOL success) {
 //        if (success) {
 //            
@@ -408,29 +487,40 @@
     NSLog(@"controller didChangeObject");
     //    NSLog(@"anObject %@", anObject);
 
-    if ([anObject isKindOfClass:[STMPhotoReport class]]) {
-        
-        STMPhotoReport *photoReport = anObject;
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:[self.outlets indexOfObject:photoReport.outlet]]];
-        
-    }
-
-    if (type == NSFetchedResultsChangeDelete) {
-        
-//        [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-        NSLog(@"NSFetchedResultsChangeDelete");
-        
-    } else if (type == NSFetchedResultsChangeInsert) {
-        
-//        [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-        NSLog(@"NSFetchedResultsChangeInsert");
-        
-        
-    } else if (type == NSFetchedResultsChangeUpdate) {
-        
-//        [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
-        NSLog(@"NSFetchedResultsChangeUpdate");
-        
+    __weak UICollectionView *collectionView = self.collectionView;
+    switch (type) {
+        case NSFetchedResultsChangeInsert: {
+            [self.changeOperation addExecutionBlock:^{
+                [collectionView insertSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] ];
+            }];
+            break;
+        }
+            
+        case NSFetchedResultsChangeDelete: {
+            [self.changeOperation addExecutionBlock:^{
+                [collectionView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]];
+            }];
+            break;
+        }
+            
+        case NSFetchedResultsChangeUpdate: {
+            [self.changeOperation addExecutionBlock:^{
+                [collectionView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"campaignPictureUpdate" object:anObject];
+            }];
+            break;
+        }
+            
+        case NSFetchedResultsChangeMove: {
+            [self.changeOperation addExecutionBlock:^{
+                [collectionView moveSection:indexPath.section toSection:newIndexPath.section];
+            }];
+            break;
+        }
+            
+        default:
+            break;
+            
     }
  
 }
