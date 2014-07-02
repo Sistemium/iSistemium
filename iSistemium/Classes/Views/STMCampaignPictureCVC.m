@@ -273,6 +273,7 @@
         case NSFetchedResultsChangeUpdate: {
             [self.changeOperation addExecutionBlock:^{
                 [collectionView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"campaignPictureUpdate" object:anObject];
             }];
             break;
         }

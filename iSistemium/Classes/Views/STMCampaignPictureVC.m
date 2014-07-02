@@ -35,7 +35,6 @@
         
     } else {
 
-        [self.picture removeObserver:self forKeyPath:@"resizedImagePath"];
         [self.spinner stopAnimating];
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         self.imageView.image = self.image;
@@ -44,22 +43,28 @@
 
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-
+- (void)updatePicture {
+    
     self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
     [self showImage];
-
-    [object removeObserver:self forKeyPath:@"resizedImagePath" context:nil];
     
 }
 
 #pragma mark - view lifecycle
 
-- (void)customInit {
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePicture) name:@"campaignPictureUpdate" object:self.picture];
+    
+}
 
-    [self.picture addObserver:self forKeyPath:@"resizedImagePath" options:NSKeyValueObservingOptionNew context:nil];
-    self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
-    [self showImage];
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"campaignPictureUpdate" object:self.picture];
+    
+}
+
+- (void)customInit {
     
 }
 
@@ -82,6 +87,19 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+
+    [self addObservers];
+    
+    self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
+    [self showImage];
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [self removeObservers];
     
 }
 
