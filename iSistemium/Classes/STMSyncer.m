@@ -371,41 +371,7 @@
         
     }
     
-    
-//    if (!self.syncing) {
-//
-//        self.syncing = YES;
-
-//        [self startConnectionForRecieveEntitiesWithName:@"STMEntity"];
-    
-//        [self startConnectionWithURL:self.restServerURI pageNumber:nil];
-        
-//    }
-    
-//    self.syncerState = STMSyncerIdle;
-    
 }
-
-//- (void)syncData {
-//    
-////    NSLog(@"self.syncing %d", self.syncing);
-//    
-//    switch (self.syncerState) {
-//            
-//        case STMSyncerSendData:
-//            [self sendData];
-//            break;
-//            
-//        case STMSyncerRecieveData:
-//            [self recieveData];
-//            break;
-//            
-//        default:
-//            break;
-//            
-//    }
-//
-//}
 
 - (void)startConnectionForRecieveEntitiesWithName:(NSString *)entityName {
     
@@ -416,14 +382,9 @@
         NSString *eTag = [entity objectForKey:@"eTag"];
         eTag = eTag ? eTag : @"*";
         
-//        if ([entityName isEqualToString:@"STMCampaignPictureCampaign"]) {
-//            NSLog(@"STMCampaignPictureCampaign request eTag %@", eTag);
-//        }
-
-//        NSLog(@"entityName %@, eTag %@", entityName, eTag);
-        
         NSURL *requestURL = [NSURL URLWithString:url];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+        
         request = [[self.authDelegate authenticateRequest:request] mutableCopy];
         
         if ([request valueForHTTPHeaderField:@"Authorization"]) {
@@ -459,50 +420,6 @@
     }
     
 }
-
-/*
-- (void)startConnectionWithURL:(NSString *)URLString pageNumber:(NSString *)pageNumber {
-    
-    NSURL *requestURL = [NSURL URLWithString:URLString];
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
-    request.HTTPShouldHandleCookies = NO;
-    request = [[self.authDelegate authenticateRequest:request] mutableCopy];
-
-    [request setHTTPMethod:@"POST"];
-    
-    NSString *parameters = pageNumber ? [NSString stringWithFormat:@"page-number:=%@&page-size:=%d", pageNumber, self.fetchLimit] : [NSString stringWithFormat:@"page-size:=%d", self.fetchLimit];
-
-    [request setHTTPBody:[parameters dataUsingEncoding:NSUTF8StringEncoding]];
-    
-//    [request addValue:pageNumber forHTTPHeaderField:@"If-Modified-Since"];
-    
-//    NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
-    
-    if ([request valueForHTTPHeaderField:@"Authorization"]) {
-    
-        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-        
-        if (!connection) {
-            
-            [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
-            self.syncing = NO;
-            
-        } else {
-            
-            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
-            
-        }
-        
-    } else {
-        
-        [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
-        [self notAuthorized];
-        
-    }
-
-}
-*/
 
 - (void)notAuthorized {
 

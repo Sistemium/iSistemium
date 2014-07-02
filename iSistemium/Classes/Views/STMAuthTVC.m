@@ -280,13 +280,13 @@
     
 }
 
-- (void)flushData {
- 
-    NSLog(@"flushData");
-    [[STMRootTBC sharedRootVC] flushTabs];
-    [STMObjectsController removeAllObjects];
-    
-}
+//- (void)flushData {
+// 
+//    NSLog(@"flushData");
+//    [[STMRootTBC sharedRootVC] flushTabs];
+//    [STMObjectsController removeAllObjects];
+//    
+//}
 
 #pragma mark - UIAlertViewDelegate
 

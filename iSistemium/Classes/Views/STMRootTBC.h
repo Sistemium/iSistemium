@@ -14,6 +14,6 @@
 
 - (void)showTabWithName:(NSString *)tabName;
 - (void)showTabAtIndex:(NSUInteger)index;
-- (void)flushTabs;
+//- (void)flushTabs;
 
 @end

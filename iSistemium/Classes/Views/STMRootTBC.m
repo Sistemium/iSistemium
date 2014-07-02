@@ -55,28 +55,9 @@
     
     self.storyboardnames = @[@"STMAuthTVC",@"STMCampaigns"];
     
-    for (NSString *name in self.storyboardnames) {
-        
-//        if ([name isEqualToString:@"STMAuth"]) {
-//            
-//            STMAuthTVC *authTVC = [[STMAuthTVC alloc] initWithStyle:UITableViewStyleGrouped];
-//            authTVC.title = name;
-//            [self.tabs setObject:authTVC forKey:name];
-//            
-//        } else {
-        
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
-            UIViewController *vc = [storyboard instantiateInitialViewController];
-            vc.title = name;
-            [self.tabs setObject:vc forKey:name];
-            
-//        }
-        
-    }
-    
-    self.viewControllers = [self.tabs allValues];
-    
     self.tabBar.hidden = YES;
+    
+    [self authControllerStateChanged];
     
 }
 
@@ -90,11 +71,41 @@
     
 }
 
-- (void)flushTabs {
+- (void)initAuthTab {
     
-    [self customInit];
+    self.tabs = nil;
     
+    NSString *authTabName = self.storyboardnames[0];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:authTabName bundle:nil];
+    UIViewController *vc = [storyboard instantiateInitialViewController];
+    vc.title = authTabName;
+    [self.tabs setObject:vc forKey:authTabName];
+    
+    self.viewControllers = [self.tabs allValues];
+
 }
+
+- (void)initAllTabs {
+    
+    for (NSString *name in self.storyboardnames) {
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
+        UIViewController *vc = [storyboard instantiateInitialViewController];
+        vc.title = name;
+        [self.tabs setObject:vc forKey:name];
+        
+    }
+    
+    self.viewControllers = [self.tabs allValues];
+
+}
+
+//- (void)flushTabs {
+//    
+//    [self customInit];
+//    
+//}
 
 - (void)showTabWithName:(NSString *)tabName {
     
@@ -182,17 +193,33 @@
     
 }
 
+- (void)authControllerStateChanged {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        
+        [self initAuthTab];
+        
+    } else {
+        
+        [self initAllTabs];
+        
+    }
+    
+}
+
 #pragma mark - notifications
 
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAuthAlert) name:@"notAuthorized" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     
 }
 
 - (void)removeObservers {
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notAuthorized" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notAuthorized" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 }
 
@@ -217,12 +244,6 @@
     
     [super viewDidAppear:animated];
     
-//    if ([STMAuthController authController].controllerState == STMAuthSuccess) {
-//        [self showTabWithName:@"STMCampaigns"];
-//    } else {
-//        [self showTabWithName:@"STMAuthTVC"];
-//    }
-
 }
 
 - (void)didReceiveMemoryWarning
