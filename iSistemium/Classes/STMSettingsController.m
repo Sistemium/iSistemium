@@ -7,7 +7,7 @@
 //
 
 #import "STMSettingsController.h"
-#import "STMSettings.h"
+#import "STMSetting.h"
 #import "STMSession.h"
 #import "STMSettingsData.h"
 
@@ -141,7 +141,7 @@
     
     if (!_fetchedSettingsResultController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSettings class])];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSetting class])];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"ts" ascending:NO selector:@selector(compare:)]];
         _fetchedSettingsResultController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.session.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         _fetchedSettingsResultController.delegate = self;
@@ -162,7 +162,7 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.group == %@", group];
     NSArray *groupSettings = [[self currentSettings] filteredArrayUsingPredicate:predicate];
     
-    for (STMSettings *setting in groupSettings) {
+    for (STMSetting *setting in groupSettings) {
         [settingsDictionary setValue:setting.value forKey:setting.name];
     }
     
@@ -186,7 +186,7 @@
             //                NSLog(@"setting %@ %@", settingName, [settingsGroup valueForKey:settingName]);
             
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name == %@", settingName];
-            STMSettings *settingToCheck = [[[self currentSettings] filteredArrayUsingPredicate:predicate] lastObject];
+            STMSetting *settingToCheck = [[[self currentSettings] filteredArrayUsingPredicate:predicate] lastObject];
 
             NSString *settingValue = [settingsGroup valueForKey:settingName];
             
@@ -206,7 +206,7 @@
             if (!settingToCheck) {
                 
 //                    NSLog(@"settingName %@", settingName);
-                STMSettings *newSetting = (STMSettings *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSettings class]) inManagedObjectContext:self.session.document.managedObjectContext];
+                STMSetting *newSetting = (STMSetting *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
                 newSetting.group = settingsGroupName;
                 newSetting.name = settingName;
                 newSetting.value = settingValue;
@@ -246,14 +246,14 @@
     for (NSString *settingName in [newSettings allKeys]) {
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.group == %@ && SELF.name == %@", group, settingName];
-        STMSettings *setting = [[[self currentSettings] filteredArrayUsingPredicate:predicate] lastObject];
+        STMSetting *setting = [[[self currentSettings] filteredArrayUsingPredicate:predicate] lastObject];
         value = [self normalizeValue:[newSettings valueForKey:settingName] forKey:settingName];
         
         if (value) {
             
             if (!setting) {
                 
-                setting = (STMSettings *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSettings class]) inManagedObjectContext:self.session.document.managedObjectContext];
+                setting = (STMSetting *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
                 setting.group = group;
                 setting.name = settingName;
                 
@@ -300,7 +300,7 @@
 //    NSLog(@"controller didChangeObject");
 //    NSLog(@"anObject %@", anObject);
     
-    if ([anObject isKindOfClass:[STMSettings class]]) {
+    if ([anObject isKindOfClass:[STMSetting class]]) {
        
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@SettingsChanged", [anObject valueForKey:@"group"]] object:self.session userInfo:[NSDictionary dictionaryWithObject:[anObject valueForKey:@"value"] forKey:[anObject valueForKey:@"name"]]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"settingsChanged" object:self.session userInfo:[NSDictionary dictionaryWithObject:anObject forKey:@"changedObject"]];

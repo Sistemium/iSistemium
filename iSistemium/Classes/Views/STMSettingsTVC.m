@@ -9,7 +9,7 @@
 #import "STMSettingsController.h"
 #import "STMSettingsTVC.h"
 #import "STMSession.h"
-#import "STMSettings.h"
+#import "STMSetting.h"
 #import "STMSettingsData.h"
 
 @interface STMSettingsTVC () <UITextFieldDelegate, NSFetchedResultsControllerDelegate>
@@ -66,7 +66,7 @@
     
 }
 
-- (STMSettings *)settingObjectForIndexPath:(NSIndexPath *)indexPath {
+- (STMSetting *)settingObjectForIndexPath:(NSIndexPath *)indexPath {
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.group == %@ && SELF.name == %@", [[self groupNames] objectAtIndex:indexPath.section], [self settingNameForIndexPath:indexPath]];
     return [[[self.session.settingsController currentSettings] filteredArrayUsingPredicate:predicate] lastObject];

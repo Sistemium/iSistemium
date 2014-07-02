@@ -21,7 +21,7 @@
 #import "STMPhoto.h"
 #import "STMArticle.h"
 #import "STMArticlePicture.h"
-#import "STMSettings.h"
+#import "STMSetting.h"
 #import "STMLogMessage.h"
 
 @interface STMObjectsController()
@@ -350,7 +350,7 @@
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *datumFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSettings class])];
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSetting class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
     NSArray *settingsFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
 
@@ -576,7 +576,7 @@
 + (void)totalNumberOfObjects {
     
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
-                             NSStringFromClass([STMSettings class]),
+                             NSStringFromClass([STMSetting class]),
                              NSStringFromClass([STMLogMessage class]),
                              NSStringFromClass([STMPartner class]),
                              NSStringFromClass([STMCampaign class]),

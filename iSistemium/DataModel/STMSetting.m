@@ -1,15 +1,15 @@
 //
-//  STMSettings.m
+//  STMSetting.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
+//  Created by Maxim Grigoriev on 03/07/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMSettings.h"
+#import "STMSetting.h"
 
 
-@implementation STMSettings
+@implementation STMSetting
 
 @dynamic group;
 @dynamic name;
