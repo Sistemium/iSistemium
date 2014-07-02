@@ -17,8 +17,10 @@
 @interface STMCampaignPictureCVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
-
 @property (nonatomic, strong) NSFetchedResultsController *campaignPicturesResultsController;
+@property (nonatomic, strong) NSBlockOperation *changeOperation;
+@property (nonatomic, strong) STMCampaign *updatingCampaign;
+@property (nonatomic) BOOL isUpdating;
 
 
 @end
@@ -84,7 +86,11 @@
         
     } else {
 
-        [self.collectionView reloadData];
+        if (!self.isUpdating) {
+            
+            [self.collectionView reloadData];
+            
+        }
         
     }
     
@@ -181,18 +187,54 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     
-    //    NSLog(@"controllerWillChangeContent");
+//    NSLog(@"controllerWillChangeContent");
+    self.isUpdating = YES;
+    self.changeOperation = [[NSBlockOperation alloc] init];
+    self.updatingCampaign = self.campaign;
     
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    //    NSLog(@"controllerDidChangeContent");
-    [self.document saveDocument:^(BOOL success) {
-        if (success) {
+//    NSLog(@"controllerDidChangeContent");
+    
+    self.isUpdating = NO;
+    
+    if (self.updatingCampaign != self.campaign) {
+        
+//        NSLog(@"campaign changed before updating");
+        
+        [self.collectionView reloadData];
+        
+    } else {
+
+        [self.collectionView performBatchUpdates:^{
             
-        }
-    }];
+            [self.changeOperation start];
+            
+        } completion:^(BOOL finished) {
+            
+            if (finished) {
+                
+                if (self.updatingCampaign != self.campaign) {
+                    
+//                    NSLog(@"campaign changed while updating");
+                    
+                    [self.collectionView reloadData];
+                    
+                }
+                
+                [self.document saveDocument:^(BOOL success) {
+                    if (success) {
+                        
+                    }
+                }];
+                
+            }
+            
+        }];
+
+    }
     
 }
 
@@ -210,34 +252,43 @@
 //    NSLog(@"newIndexPath %@", newIndexPath);
 //    NSLog(@"campaign.name %@", self.campaign.name);
 
-    if ([[anObject valueForKey:@"campaigns"] containsObject:self.campaign]) {
-        
-        [self.collectionView performBatchUpdates:^{
+//    NSLog(@"didChangeObject isMainThread %d", [NSThread isMainThread]); // double???
+
+    __weak UICollectionView *collectionView = self.collectionView;
+    switch (type) {
+        case NSFetchedResultsChangeInsert: {
+            [self.changeOperation addExecutionBlock:^{
+                [collectionView insertSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] ];
+            }];
+            break;
+        }
+    
+        case NSFetchedResultsChangeDelete: {
+            [self.changeOperation addExecutionBlock:^{
+                [collectionView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]];
+            }];
+            break;
+        }
             
-            if (type == NSFetchedResultsChangeDelete) {
-                
-//                NSLog(@"NSFetchedResultsChangeDelete");
-                [self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-                
-            } else if (type == NSFetchedResultsChangeInsert) {
-                
-//                NSLog(@"NSFetchedResultsChangeInsert");
-                [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]];
-                
-            } else if (type == NSFetchedResultsChangeUpdate) {
-                
-//                NSLog(@"NSFetchedResultsChangeUpdate");
-                [self.collectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
-                
-            }
+        case NSFetchedResultsChangeUpdate: {
+            [self.changeOperation addExecutionBlock:^{
+                [collectionView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]];
+            }];
+            break;
+        }
             
-        } completion:^(BOOL finished) {
-            if (finished) {
-//                NSLog(@"batch update finished");
-            }
-        }];
+        case NSFetchedResultsChangeMove: {
+            [self.changeOperation addExecutionBlock:^{
+                [collectionView moveSection:indexPath.section toSection:newIndexPath.section];
+            }];
+            break;
+        }
+            
+        default:
+            break;
 
     }
+
     
 }
 
@@ -245,6 +296,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    self.isUpdating = NO;
     
 }
 

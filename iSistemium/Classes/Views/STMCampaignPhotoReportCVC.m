@@ -312,7 +312,7 @@
 
     } else {
      
-        headerView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+        headerView.backgroundColor = [UIColor whiteColor];
 
     }
     
@@ -333,9 +333,9 @@
         
     }
     
-    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 1)];
-    line.backgroundColor = [UIColor grayColor];
-    [headerView addSubview:line];
+//    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 1)];
+//    line.backgroundColor = [UIColor grayColor];
+//    [headerView addSubview:line];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
     [headerView addGestureRecognizer:tap];
