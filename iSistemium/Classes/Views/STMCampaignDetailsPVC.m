@@ -50,12 +50,22 @@
         for (STMCampaignPageCVC *view in self.viewControllers) {
             view.campaign = campaign;
         }
+
+        BOOL isFirstAssign = NO;
         
-        if (self.segmentedControl.numberOfSegments == 0) {
+        if (!_campaign) {
+            
+            isFirstAssign = YES;
             [self setupSegmentedControl];
+            
         }
         
         _campaign = campaign;
+
+        if (isFirstAssign) {
+            self.dataSource = nil;
+            self.dataSource = self;
+        }
         
         self.navigationItem.leftBarButtonItem.title = self.campaign.name;
         [self.popover dismissPopoverAnimated:YES];
@@ -97,17 +107,19 @@
             break;
             
         case 1:
-            vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPhotoReportCVC"];
+            if (self.campaign) {
+                vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPhotoReportCVC"];
+            }
             break;
             
         default:
             break;
             
     }
-    
+        
     vc.index = index;
     vc.campaign = self.campaign;
-        
+    
     return vc;
     
 }
@@ -194,9 +206,6 @@
 
 - (void)selectSegmentedControlSegment {
     
-    STMCampaignPageCVC *vc = [self viewControllerAtIndex:self.segmentedControl.selectedSegmentIndex storyboard:self.storyboard];
-    NSArray *viewControllers = @[vc];
-    
     UIPageViewControllerNavigationDirection direction;
     
     if (self.segmentedControl.selectedSegmentIndex > self.currentIndex) {
@@ -206,9 +215,17 @@
     }
     
     self.currentIndex = self.segmentedControl.selectedSegmentIndex;
+
+    [self setVCAtIndex:self.currentIndex direction:direction];
     
+}
+
+- (void)setVCAtIndex:(NSUInteger)index direction:(UIPageViewControllerNavigationDirection)direction {
+
+    STMCampaignPageCVC *vc = [self viewControllerAtIndex:index storyboard:self.storyboard];
+    NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:direction animated:YES completion:NULL];
-    
+
 }
 
 #pragma mark - viewlifecycle
@@ -221,10 +238,7 @@
     self.delegate = self;
     
     self.currentIndex = 0;
-    
-    STMCampaignPageCVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
-    NSArray *viewControllers = @[vc];
-    [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
+    [self setVCAtIndex:self.currentIndex direction:UIPageViewControllerNavigationDirectionForward];
     
 }
 
