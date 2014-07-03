@@ -115,10 +115,12 @@
     if (!_spinnerView) {
         
         UIView *view = [[UIView alloc] initWithFrame:self.splitViewController.view.frame];
+        view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         view.backgroundColor = [UIColor grayColor];
         view.alpha = 0.75;
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         spinner.center = view.center;
+        spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
         [spinner startAnimating];
         [view addSubview:spinner];
  

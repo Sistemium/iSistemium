@@ -240,6 +240,8 @@
     self.currentIndex = 0;
     [self setVCAtIndex:self.currentIndex direction:UIPageViewControllerNavigationDirectionForward];
     
+    self.view.autoresizesSubviews = YES;
+    
 }
 
 
