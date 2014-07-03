@@ -29,6 +29,10 @@
 @property (nonatomic, strong) STMCampaign *updatingCampaign;
 @property (nonatomic) BOOL isUpdating;
 
+@property (nonatomic, strong) UIImagePickerController *imagePickerController;
+@property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
+
+
 @end
 
 @implementation STMCampaignPhotoReportCVC
@@ -110,7 +114,7 @@
     
     if (!_spinnerView) {
         
-        UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
+        UIView *view = [[UIView alloc] initWithFrame:self.splitViewController.view.frame];
         view.backgroundColor = [UIColor grayColor];
         view.alpha = 0.75;
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
@@ -140,6 +144,67 @@
     }
     
 }
+
+- (UIImagePickerController *)imagePickerController {
+    
+    if (!_imagePickerController) {
+        
+        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        
+        imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+        imagePickerController.showsCameraControls = NO;
+
+        [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
+        self.cameraOverlayView.backgroundColor = [UIColor clearColor];
+        self.cameraOverlayView.autoresizesSubviews = YES;
+        self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+        
+        imagePickerController.cameraOverlayView = self.cameraOverlayView;
+        
+        _imagePickerController = imagePickerController;
+        
+    }
+    
+    return _imagePickerController;
+    
+}
+
+- (IBAction)cameraButtonPressed:(id)sender {
+    
+    UIView *view = [[UIView alloc] initWithFrame:self.imagePickerController.cameraOverlayView.frame];
+    view.backgroundColor = [UIColor grayColor];
+    view.alpha = 0.75;
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    spinner.center = view.center;
+    [spinner startAnimating];
+    [view addSubview:spinner];
+
+    [self.imagePickerController.cameraOverlayView addSubview:view];
+    
+    [self.imagePickerController takePicture];
+    
+}
+
+- (IBAction)cancelButtonPressed:(id)sender {
+    
+    [self.imagePickerController dismissViewControllerAnimated:NO completion:^{
+        
+        [self.spinnerView removeFromSuperview];
+        
+        if (self.selectedPhotoReport.photos.count == 0) {
+            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+            //            NSLog(@"delete empty photoReport");
+        }
+
+        self.imagePickerController = nil;
+//        NSLog(@"cancel button pressed");
+        
+    }];
+    
+}
+
+
 
 #pragma mark - methods
 
@@ -180,7 +245,7 @@
     
 }
 
-- (void)photoButtonPressed:(id)sender {
+- (void)outletHeaderPressed:(id)sender {
     
     NSInteger tag = [sender view].tag;
     
@@ -213,23 +278,9 @@
     
     if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
         
-        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-        imagePickerController.delegate = self;
-        imagePickerController.sourceType = imageSourceType;
-//        imagePickerController.showsCameraControls = NO;
-//        
-//        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-//        button.frame = CGRectMake(0, 0, 100, 100);
-//        button.titleLabel.text = @"TEST";
-//        button.titleLabel.textColor = [UIColor blueColor];
-//        
-//        NSLog(@"button %@", button);
-//        
-//        [imagePickerController.cameraOverlayView addSubview:button];
-        
-        [self presentViewController:imagePickerController animated:YES completion:^{
+        [self.splitViewController presentViewController:self.imagePickerController animated:YES completion:^{
             
-            [self.view addSubview:self.spinnerView];
+            [self.splitViewController.view addSubview:self.spinnerView];
 //            NSLog(@"presentViewController:UIImagePickerController");
             
         }];
@@ -248,9 +299,6 @@
     
     [self.selectedPhotoReport addPhotosObject:photo];
     
-//    [self fetchPhotoReport];
-//    [self.spinnerView removeFromSuperview];
-
     [[self document] saveDocument:^(BOOL success) {
         if (success) {
 
@@ -265,6 +313,7 @@
         
         [self fetchPhotoReport];
         [self.spinnerView removeFromSuperview];
+        self.spinnerView = nil;
         
         [object removeObserver:self forKeyPath:@"imageThumbnail" context:nil];
         
@@ -276,44 +325,34 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-//    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-//    button.frame = CGRectMake(0, 0, 100, 100);
-//    button.titleLabel.text = @"TEST2";
-//    button.titleLabel.textColor = [UIColor blueColor];
-//    
-//    NSLog(@"button %@", button);
-//
-//    [picker.cameraOverlayView addSubview:button];
-//    
-//    NSLog(@"cameraOverlayView %@", picker.cameraOverlayView);
-//    NSLog(@"cameraOverlayView.subviews %@", picker.cameraOverlayView.subviews);
-//
+//    NSLog(@"picker didFinishPickingMediaWithInfo");
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
         [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
+        self.imagePickerController = nil;
 //        NSLog(@"dismiss UIImagePickerController");
         
     }];
     
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    
-    [picker dismissViewControllerAnimated:NO completion:^{
-        
-        [self.spinnerView removeFromSuperview];
-        
-        if (self.selectedPhotoReport.photos.count == 0) {
-            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
-//            NSLog(@"delete empty photoReport");
-        }
-        
+//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+//    
+//    [picker dismissViewControllerAnimated:NO completion:^{
+//        
+//        [self.spinnerView removeFromSuperview];
+//        
+//        if (self.selectedPhotoReport.photos.count == 0) {
+//            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+////            NSLog(@"delete empty photoReport");
+//        }
+//        
 //        NSLog(@"imagePickerControllerDidCancel");
-        
-    }];
-    
-}
+//        
+//    }];
+//    
+//}
 
 #pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
 
@@ -374,7 +413,7 @@
 //    line.backgroundColor = [UIColor grayColor];
 //    [headerView addSubview:line];
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(outletHeaderPressed:)];
     [headerView addGestureRecognizer:tap];
 
     return headerView;
