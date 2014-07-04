@@ -412,7 +412,7 @@
     }
     
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 1)];
-    line.backgroundColor = [UIColor grayColor];
+    line.backgroundColor = [UIColor colorWithRed:0.785 green:0.78 blue:0.8 alpha:1];
     [headerView addSubview:line];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(outletHeaderPressed:)];
