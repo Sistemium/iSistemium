@@ -130,9 +130,14 @@
 
     NSError *error;
     if (![self.fetchedSettingsResultController performFetch:&error]) {
+        
         NSLog(@"settingsController performFetch error %@", error);
+        
     } else {
+        
         [self checkSettings];
+//        [self NSLogSettings];
+        
     }
     
 }
@@ -149,6 +154,16 @@
     }
     
     return _fetchedSettingsResultController;
+    
+}
+
+- (void)NSLogSettings {
+    
+    for (STMSetting *setting in self.currentSettings) {
+        
+        NSLog(@"setting %@", setting);
+        
+    }
     
 }
 
