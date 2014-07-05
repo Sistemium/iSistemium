@@ -312,6 +312,8 @@
     
     if ([STMFunctions isCorrectPhoneNumber:phoneNumber]) {
         
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        
         self.phoneNumber = phoneNumber;
         
         NSString *urlString = [NSString stringWithFormat:@"%@?mobileNumber=%@", AUTH_URL, phoneNumber];
@@ -321,6 +323,8 @@
         if (!connection) {
 
             [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:[NSDictionary dictionaryWithObject:@"No connection" forKey:@"error"]];
+
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
         }
 
@@ -332,6 +336,8 @@
     
     if ([STMFunctions isCorrectSMSCode:SMSCode]) {
 
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+
         NSString *urlString = [NSString stringWithFormat:@"%@?smsCode=%@&ID=%@", AUTH_URL, SMSCode, self.requestID];
         NSURLRequest *request = [self requestForURL:urlString];
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
@@ -341,6 +347,8 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:[NSDictionary dictionaryWithObject:NSLocalizedString(@"NO CONNECTION", nil) forKey:@"error"]];
 
             self.controllerState = STMAuthEnterPhoneNumber;
+            
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
         }
 
@@ -375,6 +383,8 @@
     
     self.controllerState = STMAuthEnterPhoneNumber;
 
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -388,6 +398,8 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
     [self parseResponse:self.responseData fromConnection:connection];
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
 }
 

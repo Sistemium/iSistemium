@@ -402,17 +402,17 @@
 
 #pragma mark - notifications
 
-- (void)authControllerError:(NSNotification *)notification {
-    
-    [self.inputField resignFirstResponder];
-    
-    NSString *error = [[notification userInfo] objectForKey:@"error"];
-    
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    alertView.tag = 0;
-    [alertView show];
-
-}
+//- (void)authControllerError:(NSNotification *)notification {
+//    
+//    [self.inputField resignFirstResponder];
+//    
+//    NSString *error = [[notification userInfo] objectForKey:@"error"];
+//    
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//    alertView.tag = 0;
+//    [alertView show];
+//
+//}
 
 - (void)authControllerStateChanged {
     
@@ -474,7 +474,6 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerStatusChanged:) name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(entityCountdownChange:) name:@"entityCountdownChange" object:[[STMSessionManager sharedManager].currentSession syncer]];
@@ -484,10 +483,12 @@
 
 - (void)removeObservers {
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerError" object:[STMAuthController authController]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerStateChanged" object:[STMAuthController authController]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerError" object:[STMAuthController authController]];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerStateChanged" object:[STMAuthController authController]];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
 
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
 
 - (void)customInit {

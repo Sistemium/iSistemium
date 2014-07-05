@@ -202,14 +202,17 @@
         switch (syncerState) {
                 
             case STMSyncerSendData:
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 [self sendData];
                 break;
                 
             case STMSyncerRecieveData:
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 [self recieveData];
                 break;
                 
             case STMSyncerIdle:
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 [STMObjectsController dataLoadingFinished];
                 break;
                 

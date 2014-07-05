@@ -193,6 +193,16 @@
     
 }
 
+- (void)authControllerError:(NSNotification *)notification {
+        
+    NSString *error = [[notification userInfo] objectForKey:@"error"];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    alertView.tag = 0;
+    [alertView show];
+    
+}
+
 - (void)authControllerStateChanged {
     
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
@@ -212,6 +222,7 @@
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAuthAlert) name:@"notAuthorized" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     
 }
