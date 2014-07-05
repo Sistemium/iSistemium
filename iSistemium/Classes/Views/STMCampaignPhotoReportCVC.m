@@ -295,7 +295,8 @@
 
     STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
 
-    [STMObjectsController setImagesFromData:UIImagePNGRepresentation(image) forPicture:photo];
+//    [STMObjectsController setImagesFromData:UIImagePNGRepresentation(image) forPicture:photo];
+    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:photo];
 
     [photo addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
     

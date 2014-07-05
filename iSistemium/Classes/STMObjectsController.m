@@ -486,8 +486,12 @@
 
     } else if ([picture isKindOfClass:[STMPhoto class]]) {
         
-        fileName = [[[NSUUID UUID] UUIDString] stringByAppendingString:@".png"];
-        pngType = YES;
+        NSString *xid = [NSString stringWithFormat:@"%@", picture.xid];
+        NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
+        xid = [[xid stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+        fileName = [xid stringByAppendingString:@".jpg"];
+        pngType = NO;
 //        NSLog(@"fileName %@", fileName);
         
     }
@@ -506,7 +510,7 @@
             if (pngType) {
                 picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
             } else {
-                picture.imageThumbnail = UIImageJPEGRepresentation(imageThumbnail, 0);
+                picture.imageThumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
             }
             
         
@@ -520,7 +524,7 @@
         if (pngType) {
             resizedImageData = UIImagePNGRepresentation(resizedImage);
         } else {
-            resizedImageData = UIImageJPEGRepresentation(resizedImage, 1);
+            resizedImageData = UIImageJPEGRepresentation(resizedImage, 0.0);
         }
         
         [resizedImageData writeToFile:resizedImagePath atomically:YES];
