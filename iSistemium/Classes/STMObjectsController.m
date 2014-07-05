@@ -24,9 +24,16 @@
 #import "STMSetting.h"
 #import "STMLogMessage.h"
 
+#import <AWSiOSSDKv2/AWSCore.h>
+#import <AWSiOSSDKv2/S3.h>
+#import <objc/runtime.h>
+#import "AWXMLRequestSerializerFixed.h"
+
+
 @interface STMObjectsController()
 
 @property (nonatomic, strong) NSOperationQueue *downloadQueue;
+@property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
 @property (nonatomic, strong) NSMutableArray *secondAttempt;
 
@@ -43,11 +50,36 @@
     dispatch_once(&pred, ^{
     
         _sharedController = [[self alloc] init];
+        [self s3Init];
     
     });
     
     return _sharedController;
     
+}
+
++ (void)s3Init {
+    
+    NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name BEGINSWITH %@", @"S3"];
+    NSArray *s3Settings = [currentSettings filteredArrayUsingPredicate:predicate];
+
+    NSPredicate *secretKeyPredicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.SecretAccessKey"];
+    NSString *secretKey = [[[s3Settings filteredArrayUsingPredicate:secretKeyPredicate] lastObject] valueForKey:@"value"];
+
+    NSPredicate *accessKeyPredicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.AccessKeyID"];
+    NSString *accessKey = [[[s3Settings filteredArrayUsingPredicate:accessKeyPredicate] lastObject] valueForKey:@"value"];
+
+    AWSStaticCredentialsProvider *credentialsProvider = [AWSStaticCredentialsProvider credentialsWithAccessKey:accessKey secretKey:secretKey];
+    AWSServiceConfiguration *configuration = [AWSServiceConfiguration configurationWithRegion:AWSRegionEUWest1 credentialsProvider:credentialsProvider];
+    [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
+    
+    
+    // Get both the methods from the object by its selectors
+    Method originalMethod = class_getInstanceMethod(NSClassFromString(@"AWSS3RequestSerializer"), @selector(serializeRequest:headers:parameters:error:));
+    Method newMethod = class_getInstanceMethod([AWXMLRequestSerializerFixed class], @selector(__serializeRequest:headers:parameters:error:));
+    method_exchangeImplementations(originalMethod, newMethod);
+
 }
 
 - (NSMutableDictionary *)hrefDictionary {
@@ -83,6 +115,18 @@
     }
     
     return _downloadQueue;
+    
+}
+
+- (NSOperationQueue *)uploadQueue {
+    
+    if (!_uploadQueue) {
+        
+        _uploadQueue = [[NSOperationQueue alloc] init];
+        
+    }
+    
+    return _uploadQueue;
     
 }
 
@@ -470,6 +514,114 @@
 
 }
 
+- (void)addUploadOperationForPhoto:(STMPhoto *)photo withFileName:(NSString *)filename data:(NSData *)data {
+    
+    NSLog(@"filename %@", filename);
+    
+    NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name BEGINSWITH %@", @"S3"];
+    NSArray *s3Settings = [currentSettings filteredArrayUsingPredicate:predicate];
+    
+    predicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.IMGUploadBucket"];
+    NSString *bucket = [[[s3Settings filteredArrayUsingPredicate:predicate] lastObject] valueForKey:@"value"];
+
+    
+    [self.uploadQueue addOperationWithBlock:^{
+        
+        AWSS3 *transferManager = [[AWSS3 alloc] initWithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration];
+        AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
+        photoRequest.bucket = bucket;
+        photoRequest.key = filename;
+        photoRequest.contentType = @"image/jpeg";
+        photoRequest.body = data;
+        photoRequest.contentLength = [NSNumber numberWithInteger:data.length];
+        
+        [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
+            
+            if (task.error) {
+                
+                NSLog(@"Upload error: %@",task.error);
+                
+            } else {
+                
+                NSLog(@"%@ upload successefully", filename);
+                NSLog(@"Got here: %@", task.result);
+                
+                NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
+                NSString *href = [urlArray componentsJoinedByString:@"/"];
+                
+                photo.href = href;
+                
+                NSLog(@"photo %@", photo);
+                
+            }
+            
+            return nil;
+            
+        }];
+
+        
+/*
+        [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            
+            if (error) {
+                
+                if (error.code == -1001) {
+                    
+                    NSLog(@"error code -1001 timeout for %@", href);
+                    
+                    if ([self.secondAttempt containsObject:href]) {
+                        
+                        NSLog(@"second load attempt fault for %@", href);
+                        
+                        [self.secondAttempt removeObject:href];
+                        [self.hrefDictionary removeObjectForKey:href];
+                        
+                    } else {
+                        
+                        [self.secondAttempt addObject:href];
+                        
+                        //                        double delayInSeconds = 2.0;
+                        //
+                        //                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                        //                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        //
+                        //                            [self addOperationForObject:object];
+                        //
+                        //                        });
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
+                        });
+                        
+                        //                        NSLog(@"secondAttempt.count %d", self.secondAttempt.count);
+                        
+                    }
+                    
+                } else {
+                    
+                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                    [self.hrefDictionary removeObjectForKey:href];
+                    
+                }
+                
+            } else {
+                
+                //                NSLog(@"%@ load successefully", href);
+                
+                [self.hrefDictionary removeObjectForKey:href];
+                [[self class] setImagesFromData:data forPicture:(STMPicture *)object];
+                
+                //                NSLog(@"hrefDictionary.allKeys2 %d", self.hrefDictionary.allKeys.count);
+                
+            }
+            
+        }] resume];
+*/
+    }];
+    
+}
+
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
 
     NSString *fileName = nil;
@@ -493,6 +645,8 @@
         fileName = [xid stringByAppendingString:@".jpg"];
         pngType = NO;
 //        NSLog(@"fileName %@", fileName);
+        
+        [[self sharedController] addUploadOperationForPhoto:(STMPhoto *)picture withFileName:fileName data:data];
         
     }
     
