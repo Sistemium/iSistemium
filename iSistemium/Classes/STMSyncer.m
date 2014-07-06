@@ -249,6 +249,7 @@
     if (!self.running) {
         
         self.running = YES;
+        [STMObjectsController sharedController];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];

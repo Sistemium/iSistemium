@@ -49,8 +49,10 @@
     
     dispatch_once(&pred, ^{
     
+        NSLog(@"STMObjectsController init");
         _sharedController = [[self alloc] init];
         [self s3Init];
+        [self checkBrokenPhotos];
     
     });
     
@@ -80,6 +82,63 @@
     Method newMethod = class_getInstanceMethod([AWXMLRequestSerializerFixed class], @selector(__serializeRequest:headers:parameters:error:));
     method_exchangeImplementations(originalMethod, newMethod);
 
+}
+
++ (void)checkBrokenPhotos {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
+    
+    NSError *error;
+    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    
+    for (STMPhoto *photo in result) {
+        
+//        NSLog(@"broken photo %@", photo);
+
+        if (photo.imagePath) {
+            
+            NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
+            
+            if (photoData) {
+                
+                [self setImagesFromData:photoData forPicture:photo];
+                
+            } else {
+                
+                [self deletePhoto:photo];
+                
+            }
+            
+        } else {
+            
+            [self deletePhoto:photo];
+            
+        }
+        
+    }
+    
+}
+
++ (void)deletePhoto:(STMPhoto *)photo {
+    
+//    NSLog(@"delete photo %@", photo);
+    
+    STMPhotoReport *photoReport = photo.photoReport;
+    
+    [[self document].managedObjectContext deleteObject:photo];
+    
+    if (photoReport.photos.count == 0) {
+        
+        [[self document].managedObjectContext deleteObject:photoReport];
+        
+    }
+    
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+    
 }
 
 - (NSMutableDictionary *)hrefDictionary {

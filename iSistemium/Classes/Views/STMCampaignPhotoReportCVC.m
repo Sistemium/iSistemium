@@ -15,6 +15,8 @@
 #import "STMPhotoReportPVC.h"
 #import "STMFunctions.h"
 #import "STMObjectsController.h"
+#import "STMCampaignsSVC.h"
+
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -442,6 +444,8 @@
 
     STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO]]][indexPath.row];
     
+//    NSLog(@"photo %@", photo);
+    
     imageView.image = [UIImage imageWithData:photo.imageThumbnail];
     imageView.tag = 1;
     [cell.contentView addSubview:imageView];
@@ -477,6 +481,8 @@
     //    NSLog(@"controllerDidChangeContent");
     
     self.isUpdating = NO;
+    
+//    [[(STMCampaignsSVC *)self.splitViewController masterVC].tableView reloadData];
     
     if (self.updatingCampaign != self.campaign) {
         
