@@ -52,7 +52,6 @@
         NSLog(@"STMObjectsController init");
         _sharedController = [[self alloc] init];
         [self s3Init];
-        [self checkBrokenPhotos];
     
     });
     
@@ -82,6 +81,13 @@
     Method newMethod = class_getInstanceMethod([AWXMLRequestSerializerFixed class], @selector(__serializeRequest:headers:parameters:error:));
     method_exchangeImplementations(originalMethod, newMethod);
 
+}
+
++ (void)checkPhotos {
+    
+    [self checkBrokenPhotos];
+    [self checkUploadedPhotos];
+    
 }
 
 + (void)checkBrokenPhotos {
@@ -116,6 +122,31 @@
             [self deletePhoto:photo];
             
         }
+        
+    }
+    
+}
+
++ (void)checkUploadedPhotos {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
+    
+    NSError *error;
+    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+
+    for (STMPhoto *photo in result) {
+        
+        NSString *xid = [NSString stringWithFormat:@"%@", photo.xid];
+        NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
+        xid = [[xid stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
+        
+        NSString *fileName = [xid stringByAppendingString:@".jpg"];
+
+        NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
+        
+        [[self sharedController] addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
         
     }
     

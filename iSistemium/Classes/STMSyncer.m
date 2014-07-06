@@ -249,7 +249,7 @@
     if (!self.running) {
         
         self.running = YES;
-        [STMObjectsController sharedController];
+        [STMObjectsController checkPhotos];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];
