@@ -13,7 +13,6 @@
 @interface STMSyncer()
 
 @property (nonatomic, strong) STMDocument *document;
-@property (nonatomic) double syncInterval;
 @property (nonatomic) int fetchLimit;
 @property (nonatomic, strong) NSString *restServerURI;
 @property (nonatomic, strong) NSString *xmlNamespace;

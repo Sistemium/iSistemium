@@ -604,9 +604,29 @@
 
 }
 
+- (void)repeatUploadOperationForObject:(NSManagedObject *)object {
+    
+    if ([object isKindOfClass:[STMPhoto class]]) {
+        
+        STMPhoto *photo = (STMPhoto *)object;
+        
+        NSString *xid = [NSString stringWithFormat:@"%@", photo.xid];
+        NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
+        xid = [[xid stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
+        
+        NSString *fileName = [xid stringByAppendingString:@".jpg"];
+        
+        NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
+
+        [self addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
+        
+    }
+    
+}
+
 - (void)addUploadOperationForPhoto:(STMPhoto *)photo withFileName:(NSString *)filename data:(NSData *)data {
     
-    NSLog(@"filename %@", filename);
+//    NSLog(@"filename %@", filename);
     
     NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name BEGINSWITH %@", @"S3"];
@@ -631,10 +651,12 @@
             if (task.error) {
                 
                 NSLog(@"Upload error: %@",task.error);
+
+                NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
+                [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
                 
             } else {
                 
-                NSLog(@"%@ upload successefully", filename);
                 NSLog(@"Got here: %@", task.result);
                 
                 NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
@@ -642,7 +664,7 @@
                 
                 photo.href = href;
                 
-                NSLog(@"photo %@", photo);
+                NSLog(@"%@ upload successefully", href);
                 
             }
             
@@ -650,64 +672,6 @@
             
         }];
 
-        
-/*
-        [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            
-            if (error) {
-                
-                if (error.code == -1001) {
-                    
-                    NSLog(@"error code -1001 timeout for %@", href);
-                    
-                    if ([self.secondAttempt containsObject:href]) {
-                        
-                        NSLog(@"second load attempt fault for %@", href);
-                        
-                        [self.secondAttempt removeObject:href];
-                        [self.hrefDictionary removeObjectForKey:href];
-                        
-                    } else {
-                        
-                        [self.secondAttempt addObject:href];
-                        
-                        //                        double delayInSeconds = 2.0;
-                        //
-                        //                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                        //                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        //
-                        //                            [self addOperationForObject:object];
-                        //
-                        //                        });
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
-                        });
-                        
-                        //                        NSLog(@"secondAttempt.count %d", self.secondAttempt.count);
-                        
-                    }
-                    
-                } else {
-                    
-                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                    [self.hrefDictionary removeObjectForKey:href];
-                    
-                }
-                
-            } else {
-                
-                //                NSLog(@"%@ load successefully", href);
-                
-                [self.hrefDictionary removeObjectForKey:href];
-                [[self class] setImagesFromData:data forPicture:(STMPicture *)object];
-                
-                //                NSLog(@"hrefDictionary.allKeys2 %d", self.hrefDictionary.allKeys.count);
-                
-            }
-            
-        }] resume];
-*/
     }];
     
 }
