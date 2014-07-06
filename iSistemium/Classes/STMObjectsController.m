@@ -653,7 +653,10 @@
                 NSLog(@"Upload error: %@",task.error);
 
                 NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
-                [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+                });
                 
             } else {
                 
