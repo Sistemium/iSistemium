@@ -304,6 +304,8 @@
     
     [self.selectedPhotoReport addPhotosObject:photo];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:[NSDictionary dictionaryWithObject:self.campaign forKey:@"campaign"]];
+
     [[self document] saveDocument:^(BOOL success) {
         if (success) {
 
@@ -478,11 +480,9 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    //    NSLog(@"controllerDidChangeContent");
+//    NSLog(@"controllerDidChangeContent");
     
     self.isUpdating = NO;
-    
-//    [[(STMCampaignsSVC *)self.splitViewController masterVC].tableView reloadData];
     
     if (self.updatingCampaign != self.campaign) {
         
