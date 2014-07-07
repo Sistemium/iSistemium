@@ -73,13 +73,33 @@
 
 }
 
+- (void)photoReportsChanged:(NSNotification *)notification {
+    
+    STMCampaign *campaign = [[notification userInfo] objectForKey:@"campaign"];
+    
+    NSUInteger section = 0;
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
+    NSUInteger row = [sectionInfo.objects indexOfObject:campaign];
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+    
+//    NSLog(@"reload indexPath %@", indexPath);
+    
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoReportsChanged:) name:@"photoReportsChanged" object:self.splitVC];
+
 }
 
 - (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 }
 

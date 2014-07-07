@@ -21,6 +21,7 @@ typedef enum {
 @property (nonatomic, strong) id <STMSession> session;
 @property (nonatomic, strong) id <STMRequestAuthenticatable> authDelegate;
 @property (nonatomic, strong) NSMutableDictionary *entitySyncInfo;
+@property (nonatomic) double syncInterval;
 @property (nonatomic) STMSyncerState syncerState;
 
 //- (void)syncData;

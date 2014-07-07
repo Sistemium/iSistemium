@@ -13,7 +13,6 @@
 @interface STMSyncer()
 
 @property (nonatomic, strong) STMDocument *document;
-@property (nonatomic) double syncInterval;
 @property (nonatomic) int fetchLimit;
 @property (nonatomic, strong) NSString *restServerURI;
 @property (nonatomic, strong) NSString *xmlNamespace;
@@ -249,6 +248,7 @@
     if (!self.running) {
         
         self.running = YES;
+        [STMObjectsController checkPhotos];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];

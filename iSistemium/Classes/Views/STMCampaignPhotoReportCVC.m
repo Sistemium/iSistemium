@@ -15,6 +15,8 @@
 #import "STMPhotoReportPVC.h"
 #import "STMFunctions.h"
 #import "STMObjectsController.h"
+#import "STMCampaignsSVC.h"
+
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -302,6 +304,8 @@
     
     [self.selectedPhotoReport addPhotosObject:photo];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:[NSDictionary dictionaryWithObject:self.campaign forKey:@"campaign"]];
+
     [[self document] saveDocument:^(BOOL success) {
         if (success) {
 
@@ -442,6 +446,8 @@
 
     STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO]]][indexPath.row];
     
+//    NSLog(@"photo %@", photo);
+    
     imageView.image = [UIImage imageWithData:photo.imageThumbnail];
     imageView.tag = 1;
     [cell.contentView addSubview:imageView];
@@ -474,7 +480,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    //    NSLog(@"controllerDidChangeContent");
+//    NSLog(@"controllerDidChangeContent");
     
     self.isUpdating = NO;
     
