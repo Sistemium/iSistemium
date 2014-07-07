@@ -11,6 +11,8 @@
 #import "STMDocument.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
+#import <Security/Security.h>
+#import <KeychainItemWrapper/KeychainItemWrapper.h>
 
 #import "STMPartner.h"
 #import "STMOutlet.h"
@@ -36,11 +38,18 @@
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
 @property (nonatomic, strong) NSMutableArray *secondAttempt;
+@property (nonatomic, strong) KeychainItemWrapper *s3keychainItem;
+@property (nonatomic, strong) NSString *accessKey;
+@property (nonatomic, strong) NSString *secretKey;
+@property (nonatomic) BOOL s3Initialized;
 
 @end
 
 
 @implementation STMObjectsController
+
+@synthesize accessKey = _accessKey;
+@synthesize secretKey = _secretKey;
 
 + (STMObjectsController *)sharedController {
     
@@ -51,7 +60,6 @@
     
         NSLog(@"STMObjectsController init");
         _sharedController = [[self alloc] init];
-        [self s3Init];
     
     });
     
@@ -59,28 +67,26 @@
     
 }
 
-+ (void)s3Init {
+- (BOOL)s3Init {
     
-    NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name BEGINSWITH %@", @"S3"];
-    NSArray *s3Settings = [currentSettings filteredArrayUsingPredicate:predicate];
+    if (self.accessKey && self.secretKey && !self.s3Initialized) {
+        
+        AWSStaticCredentialsProvider *credentialsProvider = [AWSStaticCredentialsProvider credentialsWithAccessKey:self.accessKey secretKey:self.secretKey];
+        AWSServiceConfiguration *configuration = [AWSServiceConfiguration configurationWithRegion:AWSRegionEUWest1 credentialsProvider:credentialsProvider];
+        [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
+        
+        
+        // Get both the methods from the object by its selectors
+        Method originalMethod = class_getInstanceMethod(NSClassFromString(@"AWSS3RequestSerializer"), @selector(serializeRequest:headers:parameters:error:));
+        Method newMethod = class_getInstanceMethod([AWXMLRequestSerializerFixed class], @selector(__serializeRequest:headers:parameters:error:));
+        method_exchangeImplementations(originalMethod, newMethod);
+        
+        self.s3Initialized = YES;
+        
+    }
 
-    NSPredicate *secretKeyPredicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.SecretAccessKey"];
-    NSString *secretKey = [[[s3Settings filteredArrayUsingPredicate:secretKeyPredicate] lastObject] valueForKey:@"value"];
-
-    NSPredicate *accessKeyPredicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.AccessKeyID"];
-    NSString *accessKey = [[[s3Settings filteredArrayUsingPredicate:accessKeyPredicate] lastObject] valueForKey:@"value"];
-
-    AWSStaticCredentialsProvider *credentialsProvider = [AWSStaticCredentialsProvider credentialsWithAccessKey:accessKey secretKey:secretKey];
-    AWSServiceConfiguration *configuration = [AWSServiceConfiguration configurationWithRegion:AWSRegionEUWest1 credentialsProvider:credentialsProvider];
-    [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
+    return self.s3Initialized;
     
-    
-    // Get both the methods from the object by its selectors
-    Method originalMethod = class_getInstanceMethod(NSClassFromString(@"AWSS3RequestSerializer"), @selector(serializeRequest:headers:parameters:error:));
-    Method newMethod = class_getInstanceMethod([AWXMLRequestSerializerFixed class], @selector(__serializeRequest:headers:parameters:error:));
-    method_exchangeImplementations(originalMethod, newMethod);
-
 }
 
 + (void)checkPhotos {
@@ -172,6 +178,90 @@
     
 }
 
+- (KeychainItemWrapper *)s3keychainItem {
+    
+    if (!_s3keychainItem) {
+        
+        NSString *bundleIdentifier = [@"S3." stringByAppendingString:[[NSBundle mainBundle] bundleIdentifier]];
+        _s3keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
+        
+    }
+    
+    return _s3keychainItem;
+    
+}
+
+- (NSString *)accessKey {
+    
+    if (!_accessKey) {
+        
+        NSString *accessKey = [self.s3keychainItem objectForKey:(__bridge id)(kSecAttrAccount)];
+        
+        if (![accessKey boolValue]) {
+            
+            NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
+            NSPredicate *accessKeyPredicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.AccessKeyID"];
+            accessKey = [[[currentSettings filteredArrayUsingPredicate:accessKeyPredicate] lastObject] valueForKey:@"value"];
+            
+            [self.s3keychainItem setObject:accessKey forKey:(__bridge id)(kSecAttrAccount)];
+            
+        }
+        
+        _accessKey = accessKey;
+        
+    }
+    
+    return _accessKey;
+    
+}
+
+- (void)setAccessKey:(NSString *)accessKey {
+    
+    if (accessKey != _accessKey) {
+        
+        [self.s3keychainItem setObject:accessKey forKey:(__bridge id)(kSecAttrAccount)];
+        _accessKey = accessKey;
+        
+    }
+    
+}
+
+- (NSString *)secretKey {
+    
+    if (!_secretKey) {
+        
+        NSString *secretKey = [self.s3keychainItem objectForKey:(__bridge id)(kSecValueData)];
+        
+        if (![secretKey boolValue]) {
+            
+            NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
+            NSPredicate *secretKeyPredicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.SecretAccessKey"];
+            secretKey = [[[currentSettings filteredArrayUsingPredicate:secretKeyPredicate] lastObject] valueForKey:@"value"];
+
+            [self.s3keychainItem setObject:secretKey forKey:(__bridge id)(kSecValueData)];
+
+        }
+        
+        _secretKey = secretKey;
+        
+    }
+    
+    return _secretKey;
+    
+}
+
+- (void)setSecretKey:(NSString *)secretKey {
+    
+    if (secretKey != _secretKey) {
+        
+        [self.s3keychainItem setObject:secretKey forKey:(__bridge id)(kSecValueData)];
+        _secretKey = secretKey;
+        
+    }
+    
+}
+
+
 - (NSMutableDictionary *)hrefDictionary {
     
     if (!_hrefDictionary) {
@@ -258,12 +348,13 @@
     NSArray *dataModelEntityNames = [self dataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
+
+        NSDictionary *properties = [dictionary objectForKey:@"properties"];
         
         NSString *xid = [dictionary objectForKey:@"xid"];
         NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
-        NSDictionary *properties = [dictionary objectForKey:@"properties"];
         NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
-
+        
         for (NSString *key in ownObjectKeys) {
             
             id value = [properties objectForKey:key];
@@ -278,7 +369,7 @@
             }
             
         }
-
+        
         NSDictionary *ownObjectRelationships = [self ownObjectRelationshipsForEntityName:entityName];
         
         for (NSString *relationship in [ownObjectRelationships allKeys]) {
@@ -625,57 +716,64 @@
 }
 
 - (void)addUploadOperationForPhoto:(STMPhoto *)photo withFileName:(NSString *)filename data:(NSData *)data {
-    
-//    NSLog(@"filename %@", filename);
-    
-    NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name BEGINSWITH %@", @"S3"];
-    NSArray *s3Settings = [currentSettings filteredArrayUsingPredicate:predicate];
-    
-    predicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.IMGUploadBucket"];
-    NSString *bucket = [[[s3Settings filteredArrayUsingPredicate:predicate] lastObject] valueForKey:@"value"];
 
-    
-    [self.uploadQueue addOperationWithBlock:^{
+    if ([self s3Init]) {
         
-        AWSS3 *transferManager = [[AWSS3 alloc] initWithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration];
-        AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
-        photoRequest.bucket = bucket;
-        photoRequest.key = filename;
-        photoRequest.contentType = @"image/jpeg";
-        photoRequest.body = data;
-        photoRequest.contentLength = [NSNumber numberWithInteger:data.length];
+        NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.IMGUploadBucket"];
+        NSString *bucket = [[[currentSettings filteredArrayUsingPredicate:predicate] lastObject] valueForKey:@"value"];
         
-        [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
+        [self.uploadQueue addOperationWithBlock:^{
             
-            if (task.error) {
-                
-                NSLog(@"Upload error: %@",task.error);
-
-                NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
-
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
-                });
-                
-            } else {
-                
-                NSLog(@"Got here: %@", task.result);
-                
-                NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
-                NSString *href = [urlArray componentsJoinedByString:@"/"];
-                
-                photo.href = href;
-                
-                NSLog(@"%@ upload successefully", href);
-                
-            }
+            AWSS3 *transferManager = [[AWSS3 alloc] initWithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration];
+            AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
+            photoRequest.bucket = bucket;
+            photoRequest.key = filename;
+            photoRequest.contentType = @"image/jpeg";
+            photoRequest.body = data;
+            photoRequest.contentLength = [NSNumber numberWithInteger:data.length];
             
-            return nil;
+            [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
+                
+                if (task.error) {
+                    
+                    NSLog(@"Upload error: %@",task.error);
+                    
+                    NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+                    });
+                    
+                } else {
+                    
+//                    NSLog(@"Got here: %@", task.result);
+                    
+                    NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
+                    NSString *href = [urlArray componentsJoinedByString:@"/"];
+                    
+                    photo.href = href;
+                    
+                    NSLog(@"%@ upload successefully", href);
+                    
+                }
+                
+                return nil;
+                
+            }];
             
         }];
+        
+    } else {
+        
+        NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+        });
 
-    }];
+    }
+    
+
     
 }
 
