@@ -8,8 +8,11 @@
 
 #import "STMPhotoVC.h"
 
-@interface STMPhotoVC ()
+@interface STMPhotoVC () <UIAlertViewDelegate, UIGestureRecognizerDelegate>
+
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *deletePhotoButton;
 
 @end
 
@@ -23,22 +26,84 @@
     
 }
 
+- (IBAction)deleteButtonPressed:(id)sender {
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DELETE PHOTO", nil) message:NSLocalizedString(@"R U SURE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+    alertView.tag = 1;
+    [alertView show];
+    
+}
+
 - (void)showImage {
     
     self.photoView.contentMode = UIViewContentModeScaleAspectFit;
     self.photoView.image = self.image;
-//    self.photoView.image = [UIImage imageWithData:self.photo.imageResized];
-//    [self.photoView setNeedsDisplay];
+
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
+    tap.delegate = self;
+    [self.view addGestureRecognizer:tap];
     
 }
+
+- (void)photoViewTap {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoViewTap" object:self];
+    
+}
+
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    
+    if (touch.view != self.view) {
+        
+        return NO;
+
+    } else {
+        
+        return YES;
+        
+    }
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+            
+        case 0:
+            break;
+            
+        case 1:
+
+            if (buttonIndex == 1) {
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"deletePhoto" object:self userInfo:[NSDictionary dictionaryWithObject:self.photo forKey:@"photo2delete"]];
+                
+            }
+
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    //    self.title = self.picture.name;
-    //    NSLog(@"picture.name %@", self.picture.name);
-    //    NSLog(@"self.title %@", self.title);
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    [self.toolbar setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    [self.toolbar setShadowImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny];
+
     [self showImage];
     
 }
@@ -56,6 +121,20 @@
     
     [super viewDidLoad];
     [self customInit];
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+//    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+
+    [super viewWillDisappear:animated];
+//    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 
 }
 

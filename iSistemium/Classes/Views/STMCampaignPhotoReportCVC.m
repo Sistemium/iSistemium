@@ -141,9 +141,21 @@
         NSUInteger previousSection = _currentSection;
         
         _currentSection = currentSection;
-        
+
         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:previousSection]];
         [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:currentSection]];
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:currentSection];
+        
+//        if ([self.collectionView cellForItemAtIndexPath:indexPath]) {
+        
+//            [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        
+            UICollectionViewLayoutAttributes *headerAttribute = [self.collectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
+            [self.collectionView scrollRectToVisible:headerAttribute.frame animated:YES];
+
+        
+//        }
         
     }
     
@@ -217,6 +229,8 @@
     self.photoReportPicturesResultsController = nil;
     self.outlets = nil;
     
+    STMOutlet *selectedOutlet = self.selectedPhotoReport.outlet;
+    
     NSError *error;
     if (![self.photoReportPicturesResultsController performFetch:&error]) {
         
@@ -228,11 +242,9 @@
             
             [self.collectionView reloadData];
             
-            if (self.selectedPhotoReport) {
+            if (selectedOutlet) {
                 
-                self.currentSection = [self.outlets indexOfObject:self.selectedPhotoReport.outlet];
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection];
-                [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+                self.currentSection = [self.outlets indexOfObject:selectedOutlet];
                 
             }
             
@@ -327,6 +339,13 @@
     }
     
 }
+
+- (void)photosCountChanged {
+    
+    [self fetchPhotoReport];
+    
+}
+
 
 #pragma mark - UIImagePickerControllerDelegate
 
@@ -460,7 +479,8 @@
     
     STMOutlet *outlet = self.outlets[indexPath.section];
     self.selectedPhotoReport = [self photoReportInOutlet:outlet].lastObject;
-
+    self.currentSection = indexPath.section;
+    
     [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
     
     return YES;
@@ -505,6 +525,8 @@
                     //                    NSLog(@"campaign changed while updating");
                     
                     [self.collectionView reloadData];
+                    
+                } else {
                     
                 }
                 
@@ -573,7 +595,6 @@
  
 }
 
-
 #pragma mark - view lifecycle
 
 - (void)addSpinner {
@@ -599,6 +620,7 @@
 
 - (void)customInit {
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photosCountChanged) name:@"photosCountChanged" object:nil];
     [self addSpinner];
     
 }
@@ -634,6 +656,7 @@
         
         [(STMPhotoReportPVC *)segue.destinationViewController setPhotoReport:self.selectedPhotoReport];
         [(STMPhotoReportPVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
+
         
     }
 

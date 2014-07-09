@@ -163,6 +163,7 @@
 //    NSLog(@"delete photo %@", photo);
     
     STMPhotoReport *photoReport = photo.photoReport;
+    [photoReport removePhotosObject:photo];
     
     [[self document].managedObjectContext deleteObject:photo];
     

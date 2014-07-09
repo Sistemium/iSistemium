@@ -279,17 +279,38 @@
                                 <rect key="frame" x="20" y="20" width="728" height="984"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="YmK-Jk-y8N">
+                                <rect key="frame" x="0.0" y="20" width="768" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="cEW-p5-J1Z"/>
+                                    <barButtonItem systemItem="trash" id="bQZ-Zt-MGu">
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="deleteButtonPressed:" destination="pFO-of-WVz" id="t9U-ob-0Qj"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="YmK-Jk-y8N" secondAttribute="trailing" id="94c-Iw-eQw"/>
+                            <constraint firstItem="YmK-Jk-y8N" firstAttribute="top" secondItem="WEl-qU-VSE" secondAttribute="bottom" id="Otl-z8-diA"/>
+                            <constraint firstItem="YmK-Jk-y8N" firstAttribute="leading" secondItem="JIf-HU-7F3" secondAttribute="leading" id="VFJ-lD-3BB"/>
                             <constraint firstItem="sq4-jP-x0t" firstAttribute="leading" secondItem="JIf-HU-7F3" secondAttribute="leading" constant="20" symbolic="YES" id="ezC-8x-84k"/>
                             <constraint firstAttribute="trailing" secondItem="sq4-jP-x0t" secondAttribute="trailing" constant="20" symbolic="YES" id="w2d-OX-FV0"/>
                             <constraint firstAttribute="bottom" secondItem="sq4-jP-x0t" secondAttribute="bottom" constant="20" symbolic="YES" id="xoO-7v-9Pc"/>
                             <constraint firstItem="sq4-jP-x0t" firstAttribute="top" secondItem="JIf-HU-7F3" secondAttribute="top" constant="20" symbolic="YES" id="ynU-72-LIk"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="deletePhotoButton" destination="bQZ-Zt-MGu" id="lsu-Z5-7ni"/>
                         <outlet property="photoView" destination="sq4-jP-x0t" id="tWC-yJ-uWW"/>
+                        <outlet property="toolbar" destination="YmK-Jk-y8N" id="izD-jz-WpH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SYY-Hq-kje" userLabel="First Responder" sceneMemberID="firstResponder"/>

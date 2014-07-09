@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMCampaignsSVC *splitVC;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
@@ -83,17 +84,16 @@
 
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
     
-//    NSLog(@"reload indexPath %@", indexPath);
-    
     [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-
+    [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    
 }
 
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoReportsChanged:) name:@"photoReportsChanged" object:self.splitVC];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoReportsChanged:) name:@"photoReportsChanged" object:nil];
 
 }
 
@@ -223,7 +223,6 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
     STMCampaign *campaign = sectionInfo.objects[indexPath.row];
-//    NSLog(@"campaign.pictures.count %d", campaign.pictures.count);
 
     self.splitVC.detailVC.campaign = campaign;
     
@@ -274,7 +273,9 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 
-//    NSLog(@"controllerWillChangeContent");
+    //    NSLog(@"controllerWillChangeContent");
+
+    self.selectedIndexPath = [self.tableView indexPathForSelectedRow];
     [self.tableView beginUpdates];
     
 }
@@ -282,7 +283,10 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
 //    NSLog(@"controllerDidChangeContent");
+    
     [self.tableView endUpdates];
+    [self.tableView selectRowAtIndexPath:self.selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    
 //    [self.document saveDocument:^(BOOL success) {}];
     
 }
