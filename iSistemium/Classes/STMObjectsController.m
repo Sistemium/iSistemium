@@ -58,7 +58,7 @@
     
     dispatch_once(&pred, ^{
     
-        NSLog(@"STMObjectsController init");
+//        NSLog(@"STMObjectsController init");
         _sharedController = [[self alloc] init];
     
     });
@@ -636,6 +636,8 @@
     
     [self.downloadQueue addOperationWithBlock:^{
         
+//        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        
         [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             
             if (error) {
@@ -690,6 +692,8 @@
                 
             }
             
+//            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            
         }] resume];
         
     }];
@@ -726,6 +730,8 @@
         
         [self.uploadQueue addOperationWithBlock:^{
             
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            
             AWSS3 *transferManager = [[AWSS3 alloc] initWithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration];
             AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
             photoRequest.bucket = bucket;
@@ -759,6 +765,8 @@
                     
                 }
                 
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+
                 return nil;
                 
             }];
@@ -783,7 +791,7 @@
     NSString *fileName = nil;
     NSString *fileType = nil;
     
-    BOOL pngType;
+    __block BOOL pngType;
 
     if ([picture isKindOfClass:[STMCampaignPicture class]]) {
 
