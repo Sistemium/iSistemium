@@ -19,17 +19,17 @@
 
 @implementation STMPhotoReportPVC
 
-- (NSArray *)photoArray {
-    
-    if (!_photoArray) {
-        
-//        _photoArray = [self.photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]]];
-        
-    }
-    
-    return _photoArray;
-    
-}
+//- (NSArray *)photoArray {
+//    
+//    if (!_photoArray) {
+//        
+////        _photoArray = [self.photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]]];
+//        
+//    }
+//    
+//    return _photoArray;
+//    
+//}
 
 - (STMPhotoVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
@@ -66,13 +66,13 @@
 
 - (void)deletePhoto:(NSNotification *)notification {
     
-    STMPhoto *photo = [notification.userInfo objectForKey:@"photo2delete"];
-//    [self.photoReport removePhotosObject:photo];
-
-    [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photo];
+    STMPhotoReport *photoReport = [notification.userInfo objectForKey:@"photo2delete"];
+    STMCampaign *campaign = photoReport.campaign;
+    
+    [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photoReport];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged" object:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:[NSDictionary dictionaryWithObject:self.photoReport.campaign forKey:@"campaign"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:[NSDictionary dictionaryWithObject:campaign forKey:@"campaign"]];
 
 //    if (self.photoReport.photos.count == 0) {
 //        [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:self.photoReport];
@@ -103,7 +103,7 @@
             
         }
         
-        self.photoArray = nil;
+        [self.photoArray removeObject:photoReport];
         self.dataSource = self;
         
         STMPhotoVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];

@@ -906,8 +906,7 @@
                              NSStringFromClass([STMCampaignPicture class]),
                              NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMOutlet class]),
-                             NSStringFromClass([STMPhotoReport class]),
-                             NSStringFromClass([STMPhoto class])];
+                             NSStringFromClass([STMPhotoReport class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;
     NSLog(@"total count %d", totalCount);
