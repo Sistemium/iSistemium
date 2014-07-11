@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) STMPhotoReport *photoReport;
 @property (nonatomic) NSUInteger currentIndex;
+@property (nonatomic, strong) NSArray *photoArray;
 
 
 @end

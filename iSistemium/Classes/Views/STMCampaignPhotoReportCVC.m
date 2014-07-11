@@ -7,7 +7,7 @@
 //
 
 #import "STMCampaignPhotoReportCVC.h"
-#import "STMOutlet.h"
+#import "STMOutlet+photoReportsArePresent.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMPhotoReport.h"
@@ -98,7 +98,7 @@
         NSError *error;
         NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
         
-        NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReports.@count" ascending:NO selector:@selector(compare:)];
+        NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReportsArePresent" ascending:NO selector:@selector(compare:)];
 
         outlets = [outlets sortedArrayUsingDescriptors:[NSArray arrayWithObject:photoReportsCountSortDescriptor]];
         
@@ -653,7 +653,8 @@
 
     if ([segue.identifier isEqualToString:@"showPhotoReport"] && [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]]) {
         
-        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoReport:self.selectedPhotoReport];
+//        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoReport:self.selectedPhotoReport];
+        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoArray:[self photoReportsInOutlet:self.selectedPhotoReport.outlet]];
         [(STMPhotoReportPVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
 
         

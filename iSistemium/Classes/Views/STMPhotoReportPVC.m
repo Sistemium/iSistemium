@@ -14,7 +14,6 @@
 @interface STMPhotoReportPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic) NSUInteger nextIndex;
-@property (nonatomic, strong) NSArray *photoArray;
 
 @end
 
