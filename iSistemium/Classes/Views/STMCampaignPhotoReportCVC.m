@@ -413,6 +413,7 @@
     if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
 
         headerView.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:1 alpha:1.0];
+        headerView.backgroundColor = [UIColor yellowColor];
 
     } else {
      
