@@ -177,9 +177,9 @@
     int articlesCount = (int)campaign.articles.count;
     int picturesCount = (int)campaign.pictures.count;
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", campaign];
+    request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", campaign];
     NSError *error;
     NSArray *campaignPhotos = [self.document.managedObjectContext executeFetchRequest:request error:&error];
 

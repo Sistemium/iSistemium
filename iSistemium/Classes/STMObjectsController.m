@@ -162,16 +162,16 @@
     
 //    NSLog(@"delete photo %@", photo);
     
-    STMPhotoReport *photoReport = photo.photoReport;
-    [photoReport removePhotosObject:photo];
+//    STMPhotoReport *photoReport = photo.photoReport;
+//    [photoReport removePhotosObject:photo];
     
     [[self document].managedObjectContext deleteObject:photo];
     
-    if (photoReport.photos.count == 0) {
-        
-        [[self document].managedObjectContext deleteObject:photoReport];
-        
-    }
+//    if (photoReport.photos.count == 0) {
+//        
+//        [[self document].managedObjectContext deleteObject:photoReport];
+//        
+//    }
     
     [[self document] saveDocument:^(BOOL success) {
         
