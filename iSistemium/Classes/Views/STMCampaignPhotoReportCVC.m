@@ -87,8 +87,6 @@
 - (NSArray *)outlets {
     
     if (!_outlets) {
-
-        NSArray *outlets = [NSArray array];
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
         
@@ -98,7 +96,7 @@
         //        request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", self.campaign];
         
         NSError *error;
-        outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+        NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
         
         NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReports.@count" ascending:NO selector:@selector(compare:)];
 
@@ -266,14 +264,14 @@
     NSInteger tag = [sender view].tag;
     
     STMOutlet *outlet = self.outlets[tag];
-    self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
+//    self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
     
-    if (!self.selectedPhotoReport) {
-        
+//    if (!self.selectedPhotoReport) {
+    
         STMPhotoReport *photoReport = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
         photoReport.outlet = outlet;
-        photoReport.campaign = self.campaign;
-        
+//        photoReport.campaign = self.campaign;
+    
         [self.document saveDocument:^(BOOL success) {
             if (success) {
 //                NSLog(@"create new photoReport");
@@ -282,7 +280,7 @@
         
         self.selectedPhotoReport = photoReport;
 
-    }
+//    }
 
     self.currentSection = tag;
     
@@ -307,16 +305,18 @@
 
 - (void)saveImage:(UIImage *)image {
 
-    STMPhotoReport *photoReport = (STMPhotoReport *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:[self document].managedObjectContext];
+//    STMPhotoReport *photoReport = (STMPhotoReport *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:[self document].managedObjectContext];
 
 //    [STMObjectsController setImagesFromData:UIImagePNGRepresentation(image) forPicture:photo];
-    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:photoReport];
+    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.selectedPhotoReport];
 
-    [photoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+    [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
     
 //    [self.selectedPhotoReport addPhotosObject:photo];
     
-    self.selectedPhotoReport = photoReport;
+//    self.selectedPhotoReport = photoReport;
+  
+    self.selectedPhotoReport.campaign = self.campaign;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:[NSDictionary dictionaryWithObject:self.campaign forKey:@"campaign"]];
 
