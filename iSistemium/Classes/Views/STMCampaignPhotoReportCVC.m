@@ -91,16 +91,42 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
         
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
-        
-        request.sortDescriptors = [NSArray arrayWithObject:nameSortDescriptor];
-        //        request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", self.campaign];
+//
+//        request.sortDescriptors = [NSArray arrayWithObject:nameSortDescriptor];
         
         NSError *error;
         NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-        
-        NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReportsArePresent" ascending:NO selector:@selector(compare:)];
 
-        outlets = [outlets sortedArrayUsingDescriptors:[NSArray arrayWithObject:photoReportsCountSortDescriptor]];
+        NSMutableSet *outletsSet = [NSMutableSet setWithArray:outlets];
+        
+        NSMutableSet *outletsWithPhotoReports = [NSMutableSet set];
+        
+        for (STMOutlet *outlet in outlets) {
+            
+            NSMutableArray *campaigns = [NSMutableArray array];
+            
+            for (STMPhotoReport *photoReport in outlet.photoReports) {
+                [campaigns addObject:photoReport.campaign];
+            }
+            
+            if ([campaigns containsObject:self.campaign]) {
+                [outletsWithPhotoReports addObject:outlet];
+            }
+            
+        }
+        
+        [outletsSet minusSet:outletsWithPhotoReports];
+        NSSet *outletsWithOutPhotoReports = outletsSet;
+        
+        NSMutableArray *outletsWPR = [[outletsWithPhotoReports sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]] mutableCopy];
+        NSArray *outletsWOPR = [outletsWithOutPhotoReports sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]];
+        
+        [outletsWPR addObjectsFromArray:outletsWOPR];
+        outlets = outletsWPR;
+        
+//        NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReportsArePresent" ascending:NO selector:@selector(compare:)];
+
+//        outlets = [outlets sortedArrayUsingDescriptors:[NSArray arrayWithObject:photoReportsCountSortDescriptor]];
         
         _outlets = outlets;
         

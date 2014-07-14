@@ -430,7 +430,7 @@
     
     NSDictionary *dataDictionary = [NSDictionary dictionaryWithObject:syncDataArray forKey:@"data"];
     
-    NSLog(@"dataDictionary %@", dataDictionary);
+//    NSLog(@"dataDictionary %@", dataDictionary);
     
     NSError *error;
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
