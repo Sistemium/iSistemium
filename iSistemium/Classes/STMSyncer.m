@@ -9,8 +9,10 @@
 #import "STMSyncer.h"
 #import "STMDocument.h"
 #import "STMObjectsController.h"
+#import "STMPhotoReport.h"
+#import "STMFunctions.h"
 
-@interface STMSyncer()
+@interface STMSyncer() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic) int fetchLimit;
@@ -54,20 +56,20 @@
 #pragma mark - variables setters & getters
 
 - (void)setSession:(id <STMSession>)session {
-
+    
     if (session != _session) {
-
+        
         self.document = (STMDocument *)session.document;
         _session = session;
         
-//        NSError *error;
-//        if (![self.resultsController performFetch:&error]) {
-//            
-//        } else {
-//            
-//        }
+        //        NSError *error;
+        //        if (![self.resultsController performFetch:&error]) {
+        //
+        //        } else {
+        //
+        //        }
         [self startSyncer];
-
+        
     }
     
 }
@@ -131,20 +133,20 @@
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         id serverDataModel = [defaults objectForKey:@"serverDataModel"];
-
+        
         if (!serverDataModel) {
             
             serverDataModel = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.restServerURI, @"url", nil], @"STMEntity", nil];
             [defaults setObject:serverDataModel forKey:@"serverDataModel"];
             [defaults synchronize];
-
+            
         }
         
         _entitySyncInfo = serverDataModel;
         
     }
     
-//    NSLog(@"_serverDataModel %@", _serverDataModel);
+    //    NSLog(@"_serverDataModel %@", _serverDataModel);
     
     return _entitySyncInfo;
     
@@ -153,7 +155,7 @@
 - (void)setEntitySyncInfo:(NSMutableDictionary *)serverDataModel {
     
     if (serverDataModel != _entitySyncInfo) {
-    
+        
         _entitySyncInfo = serverDataModel;
         [self saveServerDataModel];
         
@@ -162,7 +164,7 @@
 }
 
 - (void)flushEntitySyncInfo {
-
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:@"serverDataModel"];
     [defaults synchronize];
@@ -193,7 +195,7 @@
     if (syncerState != _syncerState) {
         
         _syncerState = syncerState;
-
+        
         NSArray *syncStates = @[@"idle", @"sendData", @"recieveData"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
         [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]] type:@""];
@@ -221,7 +223,7 @@
         }
         
     }
-
+    
 }
 
 - (void)setEntityCount:(NSUInteger)entityCount {
@@ -252,7 +254,16 @@
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];
-
+        
+        NSError *error;
+        if (![self.resultsController performFetch:&error]) {
+            
+            NSLog(@"fetch error %@", error);
+            
+        } else {
+            
+        }
+        
     }
     
 }
@@ -267,7 +278,7 @@
         self.resultsController = nil;
         self.settings = nil;
         self.running = NO;
-
+        
     }
 }
 
@@ -276,18 +287,18 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerSettingsChanged:) name:[NSString stringWithFormat:@"%@SettingsChanged", @"syncer"] object:[(id <STMSession>)self.session settingsController]];
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenReceived:) name:@"tokenReceived" object: self.authDelegate];
-
+    
 }
 
 - (void)removeObservers {
     
     //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"tokenReceived" object:self.authDelegate];
-
+    
 }
 
 - (void)sessionStatusChanged:(NSNotification *)notification {
     
-//    NSLog(@"session status %@", [(id <STMSession>)notification.object status]);
+    //    NSLog(@"session status %@", [(id <STMSession>)notification.object status]);
     
     if ([[(id <STMSession>)notification.object status] isEqualToString:@"finishing"]) {
         [self stopSyncer];
@@ -348,28 +359,145 @@
 
 - (void)onTimerTick:(NSTimer *)timer {
     
-//    NSLog(@"syncTimer tick at %@", [NSDate date]);
+    //    NSLog(@"syncTimer tick at %@", [NSDate date]);
     self.syncerState = STMSyncerSendData;
     
 }
 
 
+#pragma mark - NSFetchedResultsController
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
+        [request setIncludesSubentities:YES];
+        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || ts > lts) && href != %@", nil, nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController.delegate = self;
+        
+    }
+    
+    return _resultsController;
+    
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    NSLog(@"controllerDidChangeContent count %d", self.resultsController.fetchedObjects.count);
+//    NSLog(@"controllerDidChangeContent %@", self.resultsController.fetchedObjects);
+    
+}
+
 #pragma mark - syncing
 
 - (void)sendData {
-
+    
     if (self.syncerState == STMSyncerSendData) {
+        
 //        NSLog(@"sendData");
-        self.syncerState = STMSyncerRecieveData;
-    }
+//        NSLog(@"resultsController.fetchedObjects %@", self.resultsController.fetchedObjects);
+        NSLog(@"fetchedObjects.count %d", self.resultsController.fetchedObjects.count);
+      
+        if (self.resultsController.fetchedObjects.count > 0) {
+            
+            [self startConnectionForSendData:[self JSONFrom:self.resultsController.fetchedObjects]];
 
+        }
+        
+        self.syncerState = STMSyncerRecieveData;
+        
+    }
+    
+}
+
+- (NSData *)JSONFrom:(NSArray *)dataForSyncing {
+    
+    NSMutableArray *syncDataArray = [NSMutableArray array];
+    
+    for (NSManagedObject *object in dataForSyncing) {
+
+        [object setPrimitiveValue:[NSDate date] forKey:@"sts"];
+        NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
+        NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+            
+        [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
+        [syncDataArray addObject:objectDictionary];
+
+    }
+    
+    NSDictionary *dataDictionary = [NSDictionary dictionaryWithObject:syncDataArray forKey:@"data"];
+    
+    NSLog(@"dataDictionary %@", dataDictionary);
+    
+    NSError *error;
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
+    
+    NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+    NSLog(@"JSONString %@", JSONString);
+    
+    return JSONData;
+}
+
+- (NSMutableDictionary *)dictionaryForObject:(NSManagedObject *)object {
+    
+    NSString *name = @"stc.PhotoReport";
+    NSString *xid = [STMFunctions xidStringFromXidData:[object valueForKey:@"xid"]];
+//    NSString *xid = [NSString stringWithFormat:@"%@", [object valueForKey:@"xid"]];
+//    NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
+//    xid = [[xid stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    return [NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name", xid, @"xid", nil];
+    
+}
+
+- (NSMutableDictionary *)propertiesDictionaryForObject:(NSManagedObject *)object {
+    
+    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
+    
+    for (NSString *key in object.entity.attributesByName.allKeys) {
+        
+        id value = [object valueForKey:key];
+        
+        if ([value isKindOfClass:[NSDate class]] || [key isEqual:@"href"]) {
+            
+            [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
+
+        }
+        
+    }
+    
+    for (NSString *key in object.entity.relationshipsByName.allKeys) {
+
+        if ([@[@"campaign", @"outlet"] containsObject:key]) {
+            
+            id value = [object valueForKey:key];
+            
+            NSString *xid = [STMFunctions xidStringFromXidData:[value valueForKey:@"xid"]];
+
+            [propertiesDictionary setValue:xid forKey:key];
+
+            
+        }
+        
+    }
+    
+    return propertiesDictionary;
+    
+}
+
+
+- (void)startConnectionForSendData:(NSData *)sendData {
+    
 }
 
 - (void)recieveData {
-
+    
     if (self.syncerState == STMSyncerRecieveData) {
-
-//        NSLog(@"recieveData");
+        
+        //        NSLog(@"recieveData");
         [self startConnectionForRecieveEntitiesWithName:@"STMEntity"];
         
     }
@@ -419,16 +547,16 @@
             [self notAuthorized];
             
         }
-
+        
     }
     
 }
 
 - (void)notAuthorized {
-
+    
     [self stopSyncer];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"notAuthorized" object:self];
-
+    
 }
 
 - (NSString *)entityNameForConnection:(NSURLConnection *)connection {
@@ -448,7 +576,7 @@
     }
     
     return entityName;
-
+    
     
     // 2nd option to get entity name — require headers from NSURLResponse
     /*
@@ -463,7 +591,7 @@
      [self saveServerDataModel];
      */
     // end of 2nd option
-
+    
 }
 
 #pragma mark - NSURLConnectionDataDelegate
@@ -480,18 +608,18 @@
     
     NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
     NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
-//    NSLog(@"headers %@", headers);
+    //    NSLog(@"headers %@", headers);
     
     NSString *entityName = [self entityNameForConnection:connection];
     
     if (statusCode == 200) {
         
         [self.responses setObject:[NSMutableData data] forKey:entityName];
-
+        
         NSString *eTag = [headers objectForKey:@"eTag"];
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) {
-        
+            
             [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"temporaryETag"];
             [self saveServerDataModel];
             
@@ -506,20 +634,20 @@
         NSLog(@"%@: 204 No Content", entityName);
         
         [self.responses removeObjectForKey:entityName];
-
+        
         if ([entityName isEqualToString:@"STMEntity"]) {
             
             self.entityCount = self.entitySyncInfo.allKeys.count - 1;
-
+            
             NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             [entityNames removeObject:entityName];
-
+            
             for (NSString *name in entityNames) {
                 [self startConnectionForRecieveEntitiesWithName:name];
             }
             
         } else {
-
+            
             self.entityCount -= 1;
             
             if (self.entityCount == 0) {
@@ -544,7 +672,7 @@
     
     NSString *entityName = [self entityNameForConnection:connection];
     NSMutableData *responseData = [self.responses objectForKey:entityName];
-
+    
     if (responseData) {
         [self parseResponse:responseData fromConnection:connection];
     }
@@ -552,33 +680,33 @@
 }
 
 - (void)parseResponse:(NSData *)responseData fromConnection:(NSURLConnection *)connection {
-
+    
     NSError *error;
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
     
-//    NSLog(@"responseJSON %@", responseJSON);
+    //    NSLog(@"responseJSON %@", responseJSON);
     
     NSString *errorString = [responseJSON objectForKey:@"error"];
     
     if (!errorString) {
-
+        
         NSString *connectionEntityName = [self entityNameForConnection:connection];
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
-
-        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
         
+        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
+            
             for (NSDictionary *datum in dataArray) {
-
+                
                 NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
                 NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
                 [self.entitySyncInfo setObject:entityProperties forKey:entityName];
                 [self saveServerDataModel];
-            
+                
             }
             
             [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
-
-        
+            
+            
         } else {
             
             NSDictionary *entityModel = [self.entitySyncInfo objectForKey:connectionEntityName];
@@ -588,10 +716,10 @@
                 [STMObjectsController setRelationshipsFromArray:dataArray withCompletionHandler:^(BOOL success) {
                     
                     if (success) {
-
-//                        NSLog(@"%d relationships successefully added", dataArray.count);
+                        
+                        //                        NSLog(@"%d relationships successefully added", dataArray.count);
                         [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
-
+                        
                     }
                     
                 }];
@@ -599,49 +727,49 @@
             } else {
                 
                 [STMObjectsController insertObjectsFromArray:dataArray withCompletionHandler:^(BOOL success) {
-
+                    
                     if (success) {
-
-//                        NSLog(@"%d objects successefully added", dataArray.count);
+                        
+                        //                        NSLog(@"%d objects successefully added", dataArray.count);
                         [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
-
+                        
                     }
-
+                    
                 }];
                 
             }
-
+            
             
         }
-
+        
     } else {
         
         [self.session.logger saveLogMessageWithText:errorString type:@"error"];
-
+        
         if ([errorString isEqualToString:@"Not authorized"]) {
             
             [self notAuthorized];
             
         } else {
-
+            
             NSString *requestBody = [[NSString alloc] initWithData:connection.originalRequest.HTTPBody encoding:NSUTF8StringEncoding];
             NSLog(@"originalRequest %@", connection.originalRequest);
             NSLog(@"requestBody %@", requestBody);
             NSLog(@"responseJSON %@", responseJSON);
-
+            
         }
         
     }
-
+    
 }
 
 - (void)fillETagWithTemporaryValueForEntityName:(NSString *)entityName {
- 
+    
     NSString *eTag = [[self.entitySyncInfo objectForKey:entityName] objectForKey:@"temporaryETag"];
     [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
     [self saveServerDataModel];
     [self startConnectionForRecieveEntitiesWithName:entityName];
-
+    
 }
 
 @end

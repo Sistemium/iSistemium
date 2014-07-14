@@ -12,7 +12,10 @@
 
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString;
 + (BOOL)isCorrectSMSCode:(NSString *)SMSCode;
+
 + (NSData *)dataFromString:(NSString *)string;
++ (NSString *)xidStringFromXidData:(NSData *)xidData;
+
 + (NSString *)pluralTypeForCount:(NSUInteger)count;
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
 

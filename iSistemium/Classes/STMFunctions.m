@@ -62,6 +62,16 @@
     
 }
 
++ (NSString *)xidStringFromXidData:(NSData *)xidData {
+    
+    NSString *xidString = [NSString stringWithFormat:@"%@", xidData];
+    NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
+    xidString = [[xidString stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+    return xidString;
+    
+}
+
 + (NSString *)pluralTypeForCount:(NSUInteger)count {
     
     NSString *result;
