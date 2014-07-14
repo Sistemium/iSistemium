@@ -144,12 +144,8 @@
 
     for (STMPhoto *photo in result) {
         
-        NSString *xid = [NSString stringWithFormat:@"%@", photo.xid];
-        NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
-        xid = [[xid stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
-        
+        NSString *xid = [STMFunctions xidStringFromXidData:photo.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-
         NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
         
         [[self sharedController] addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
