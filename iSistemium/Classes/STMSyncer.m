@@ -480,8 +480,7 @@
             
             NSString *xid = [STMFunctions xidStringFromXidData:[value valueForKey:@"xid"]];
 
-            [propertiesDictionary setValue:xid forKey:key];
-
+            [propertiesDictionary setValue:[NSDictionary dictionaryWithObject:xid forKey:@"xid"] forKey:key];
             
         }
         

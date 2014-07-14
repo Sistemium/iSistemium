@@ -702,12 +702,8 @@
         
         STMPhoto *photo = (STMPhoto *)object;
         
-        NSString *xid = [NSString stringWithFormat:@"%@", photo.xid];
-        NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
-        xid = [[xid stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
-        
+        NSString *xid = [STMFunctions xidStringFromXidData:photo.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        
         NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
 
         [self addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
@@ -798,10 +794,7 @@
 
     } else if ([picture isKindOfClass:[STMPhoto class]]) {
         
-        NSString *xid = [NSString stringWithFormat:@"%@", picture.xid];
-        NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
-        xid = [[xid stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
-
+        NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         fileName = [xid stringByAppendingString:@".jpg"];
         pngType = NO;
 //        NSLog(@"fileName %@", fileName);
