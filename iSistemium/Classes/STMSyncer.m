@@ -476,12 +476,19 @@
 
         if ([@[@"campaign", @"outlet"] containsObject:key]) {
             
-            id value = [object valueForKey:key];
+            NSManagedObject *relationshipObject = [object valueForKey:key];
             
-            NSString *xid = [STMFunctions xidStringFromXidData:[value valueForKey:@"xid"]];
+            if (relationshipObject) {
+                
+                NSString *xid = [STMFunctions xidStringFromXidData:[relationshipObject valueForKey:@"xid"]];
+                
+                NSMutableDictionary *entityProperties = [self.entitySyncInfo objectForKey:relationshipObject.entity.name];
+                NSString *entityName = [@"stc." stringByAppendingString:[entityProperties objectForKey:@"name"]];
+                
+                [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
+                
+            }
 
-            [propertiesDictionary setValue:[NSDictionary dictionaryWithObject:xid forKey:@"xid"] forKey:key];
-            
         }
         
     }
