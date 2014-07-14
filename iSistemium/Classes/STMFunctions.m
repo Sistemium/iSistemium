@@ -65,9 +65,13 @@
 + (NSString *)xidStringFromXidData:(NSData *)xidData {
     
     CFUUIDBytes uuidBytes;
-    [xidData getBytes:&uuidBytes];
+    [xidData getBytes:&uuidBytes length:xidData.length];
     
-    NSString *xidString = CFBridgingRelease(CFUUIDCreateString(nil, CFUUIDCreateFromUUIDBytes(nil, uuidBytes)));
+    CFUUIDRef CFXid = CFUUIDCreateFromUUIDBytes(kCFAllocatorDefault, uuidBytes);
+    CFStringRef CFXidString = CFUUIDCreateString(kCFAllocatorDefault, CFXid);
+    CFRelease(CFXid);
+    
+    NSString *xidString = (NSString *)CFBridgingRelease(CFXidString);
     
     return xidString;
     
