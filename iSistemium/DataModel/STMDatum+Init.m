@@ -15,6 +15,7 @@
     
     CFUUIDRef xid = CFUUIDCreate(nil);
     CFUUIDBytes xidBytes = CFUUIDGetUUIDBytes(xid);
+    CFRelease(xid);
     return [NSData dataWithBytes:&xidBytes length:sizeof(xidBytes)];
 
 }

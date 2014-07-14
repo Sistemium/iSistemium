@@ -1,15 +1,13 @@
 //
-//  STMPhoto.m
+//  STMOutlet+photoReportsArePresent.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 11/07/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMPhoto.h"
+#import "STMOutlet.h"
 
-
-@implementation STMPhoto
-
+@interface STMOutlet (photoReportsArePresent)
 
 @end

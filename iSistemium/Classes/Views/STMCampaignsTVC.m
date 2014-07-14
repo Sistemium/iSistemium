@@ -177,9 +177,9 @@
     int articlesCount = (int)campaign.articles.count;
     int picturesCount = (int)campaign.pictures.count;
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", campaign];
+    request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", campaign];
     NSError *error;
     NSArray *campaignPhotos = [self.document.managedObjectContext executeFetchRequest:request error:&error];
 
@@ -214,6 +214,17 @@
     
     cell.detailTextLabel.text = [detailTextArray componentsJoinedByString:@" / "];
 
+    
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
+    selectedBackgroundView.backgroundColor = [UIColor colorWithRed:0 green:0.48 blue:1 alpha:1];
+    
+    cell.selectedBackgroundView = selectedBackgroundView;
+    
+    UIColor *highlightedTextColor = [UIColor whiteColor];
+    
+    cell.textLabel.highlightedTextColor = highlightedTextColor;
+    cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
+    
     return cell;
     
 }

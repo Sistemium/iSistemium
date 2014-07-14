@@ -7,7 +7,7 @@
 //
 
 #import "STMCampaignPhotoReportCVC.h"
-#import "STMOutlet.h"
+#import "STMOutlet+photoReportsArePresent.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMPhotoReport.h"
@@ -87,22 +87,46 @@
 - (NSArray *)outlets {
     
     if (!_outlets) {
-
-        NSArray *outlets = [NSArray array];
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
         
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
-        
-        request.sortDescriptors = [NSArray arrayWithObject:nameSortDescriptor];
-        //        request.predicate = [NSPredicate predicateWithFormat:@"photoReport.campaign == %@", self.campaign];
+//
+//        request.sortDescriptors = [NSArray arrayWithObject:nameSortDescriptor];
         
         NSError *error;
-        outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-        
-        NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReports.@count" ascending:NO selector:@selector(compare:)];
+        NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
 
-        outlets = [outlets sortedArrayUsingDescriptors:[NSArray arrayWithObject:photoReportsCountSortDescriptor]];
+        NSMutableSet *outletsSet = [NSMutableSet setWithArray:outlets];
+        
+        NSMutableSet *outletsWithPhotoReports = [NSMutableSet set];
+        
+        for (STMOutlet *outlet in outlets) {
+            
+            NSMutableArray *campaigns = [NSMutableArray array];
+            
+            for (STMPhotoReport *photoReport in outlet.photoReports) {
+                [campaigns addObject:photoReport.campaign];
+            }
+            
+            if ([campaigns containsObject:self.campaign]) {
+                [outletsWithPhotoReports addObject:outlet];
+            }
+            
+        }
+        
+        [outletsSet minusSet:outletsWithPhotoReports];
+        NSSet *outletsWithOutPhotoReports = outletsSet;
+        
+        NSMutableArray *outletsWPR = [[outletsWithPhotoReports sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]] mutableCopy];
+        NSArray *outletsWOPR = [outletsWithOutPhotoReports sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]];
+        
+        [outletsWPR addObjectsFromArray:outletsWOPR];
+        outlets = outletsWPR;
+        
+//        NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReportsArePresent" ascending:NO selector:@selector(compare:)];
+
+//        outlets = [outlets sortedArrayUsingDescriptors:[NSArray arrayWithObject:photoReportsCountSortDescriptor]];
         
         _outlets = outlets;
         
@@ -208,10 +232,10 @@
         
         [self.spinnerView removeFromSuperview];
         
-        if (self.selectedPhotoReport.photos.count == 0) {
-            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
-            //            NSLog(@"delete empty photoReport");
-        }
+//        if (self.selectedPhotoReport.photos.count == 0) {
+//            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+//            //            NSLog(@"delete empty photoReport");
+//        }
 
         self.imagePickerController = nil;
 //        NSLog(@"cancel button pressed");
@@ -254,7 +278,7 @@
     
 }
 
-- (NSArray *)photoReportInOutlet:(STMOutlet *)outlet {
+- (NSArray *)photoReportsInOutlet:(STMOutlet *)outlet {
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"outlet == %@", outlet];
     return [self.photoReportPicturesResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
@@ -266,14 +290,14 @@
     NSInteger tag = [sender view].tag;
     
     STMOutlet *outlet = self.outlets[tag];
-    self.selectedPhotoReport = [self photoReportInOutlet:outlet].lastObject;
+//    self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
     
-    if (!self.selectedPhotoReport) {
-        
+//    if (!self.selectedPhotoReport) {
+    
         STMPhotoReport *photoReport = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
         photoReport.outlet = outlet;
-        photoReport.campaign = self.campaign;
-        
+//        photoReport.campaign = self.campaign;
+    
         [self.document saveDocument:^(BOOL success) {
             if (success) {
 //                NSLog(@"create new photoReport");
@@ -282,7 +306,7 @@
         
         self.selectedPhotoReport = photoReport;
 
-    }
+//    }
 
     self.currentSection = tag;
     
@@ -307,14 +331,18 @@
 
 - (void)saveImage:(UIImage *)image {
 
-    STMPhoto *photo = (STMPhoto *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhoto class]) inManagedObjectContext:[self document].managedObjectContext];
+//    STMPhotoReport *photoReport = (STMPhotoReport *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:[self document].managedObjectContext];
 
 //    [STMObjectsController setImagesFromData:UIImagePNGRepresentation(image) forPicture:photo];
-    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:photo];
+    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.selectedPhotoReport];
 
-    [photo addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+    [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
     
-    [self.selectedPhotoReport addPhotosObject:photo];
+//    [self.selectedPhotoReport addPhotosObject:photo];
+    
+//    self.selectedPhotoReport = photoReport;
+  
+    self.selectedPhotoReport.campaign = self.campaign;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:[NSDictionary dictionaryWithObject:self.campaign forKey:@"campaign"]];
 
@@ -392,9 +420,9 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
     STMOutlet *outlet = self.outlets[section];
-    STMPhotoReport *photoReport = [self photoReportInOutlet:outlet].lastObject;
+    NSArray *photoReports = [self photoReportsInOutlet:outlet];
     
-    return photoReport.photos.count;
+    return photoReports.count;
 
 }
 
@@ -411,6 +439,7 @@
     if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
 
         headerView.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:1 alpha:1.0];
+        headerView.backgroundColor = [UIColor yellowColor];
 
     } else {
      
@@ -456,18 +485,14 @@
     [[cell.contentView viewWithTag:1] removeFromSuperview];
     
     STMOutlet *outlet = self.outlets[indexPath.section];
-    STMPhotoReport *photoReport = [self photoReportInOutlet:outlet].lastObject;
+    STMPhotoReport *photoReport = [self photoReportsInOutlet:outlet][indexPath.row];
     
     CGRect frame = CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height);
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
-
-    STMPhoto *photo = [photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO]]][indexPath.row];
     
-//    NSLog(@"photo %@", photo);
-    
-    imageView.image = [UIImage imageWithData:photo.imageThumbnail];
+    imageView.image = [UIImage imageWithData:photoReport.imageThumbnail];
     imageView.tag = 1;
     [cell.contentView addSubview:imageView];
     
@@ -478,7 +503,7 @@
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     STMOutlet *outlet = self.outlets[indexPath.section];
-    self.selectedPhotoReport = [self photoReportInOutlet:outlet].lastObject;
+    self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
     self.currentSection = indexPath.section;
     
     [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
@@ -654,7 +679,8 @@
 
     if ([segue.identifier isEqualToString:@"showPhotoReport"] && [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]]) {
         
-        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoReport:self.selectedPhotoReport];
+//        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoReport:self.selectedPhotoReport];
+        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoArray:[[self photoReportsInOutlet:self.selectedPhotoReport.outlet] mutableCopy]];
         [(STMPhotoReportPVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
 
         

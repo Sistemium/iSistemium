@@ -144,12 +144,8 @@
 
     for (STMPhoto *photo in result) {
         
-        NSString *xid = [NSString stringWithFormat:@"%@", photo.xid];
-        NSCharacterSet *charsToRemove = [NSCharacterSet characterSetWithCharactersInString:@"< >"];
-        xid = [[xid stringByTrimmingCharactersInSet:charsToRemove] stringByReplacingOccurrencesOfString:@" " withString:@""];
-        
+        NSString *xid = [STMFunctions xidStringFromXidData:photo.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-
         NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
         
         [[self sharedController] addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
@@ -162,16 +158,16 @@
     
 //    NSLog(@"delete photo %@", photo);
     
-    STMPhotoReport *photoReport = photo.photoReport;
-    [photoReport removePhotosObject:photo];
+//    STMPhotoReport *photoReport = photo.photoReport;
+//    [photoReport removePhotosObject:photo];
     
     [[self document].managedObjectContext deleteObject:photo];
     
-    if (photoReport.photos.count == 0) {
-        
-        [[self document].managedObjectContext deleteObject:photoReport];
-        
-    }
+//    if (photoReport.photos.count == 0) {
+//        
+//        [[self document].managedObjectContext deleteObject:photoReport];
+//        
+//    }
     
     [[self document] saveDocument:^(BOOL success) {
         
@@ -906,8 +902,7 @@
                              NSStringFromClass([STMCampaignPicture class]),
                              NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMOutlet class]),
-                             NSStringFromClass([STMPhotoReport class]),
-                             NSStringFromClass([STMPhoto class])];
+                             NSStringFromClass([STMPhotoReport class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;
     NSLog(@"total count %d", totalCount);
