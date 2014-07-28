@@ -49,6 +49,7 @@
 		2C76A5CE196877B7004D6D80 /* AWXMLRequestSerializerFixed.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C76A5CD196877B7004D6D80 /* AWXMLRequestSerializerFixed.m */; };
 		2C8369521986538F00DA4316 /* STMOutlet.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8369511986538F00DA4316 /* STMOutlet.m */; };
 		2C8369551986539000DA4316 /* STMDebt.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8369541986539000DA4316 /* STMDebt.m */; };
+		2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8369561986714300DA4316 /* STMDebts.storyboard */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -181,6 +182,7 @@
 		2C8369511986538F00DA4316 /* STMOutlet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMOutlet.m; sourceTree = "<group>"; };
 		2C8369531986539000DA4316 /* STMDebt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebt.h; sourceTree = "<group>"; };
 		2C8369541986539000DA4316 /* STMDebt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebt.m; sourceTree = "<group>"; };
+		2C8369561986714300DA4316 /* STMDebts.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts.storyboard; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -506,6 +508,7 @@
 				2CE8B51F19556E0400C84A6D /* STMAuthTVC.storyboard */,
 				2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */,
 				2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */,
+				2C8369561986714300DA4316 /* STMDebts.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -593,6 +596,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */,
 				2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */,
 				2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */,
 				2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */,

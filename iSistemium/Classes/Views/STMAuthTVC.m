@@ -266,6 +266,27 @@
     
 }
 
+- (UITableViewCell *)tabSelectCellForIndex:(NSInteger)index {
+    
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"tabSelectCell"];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.activeButtonColor = cell.textLabel.textColor;
+    
+    NSString *title;
+    
+    if ([self.tabBarController isKindOfClass:[STMRootTBC class]]) {
+        
+        title = [(STMRootTBC *)self.tabBarController storyboardtitles][index + 1];
+        
+    }
+    
+    cell.textLabel.text = title;
+    cell.textLabel.textColor = [UIColor lightGrayColor];
+    
+    return cell;
+    
+}
+
 - (UITableViewCell *)reloadDataCell {
     
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"reloadDataCell"];
@@ -447,10 +468,23 @@
         }
         
         STMAuthController *authController = [STMAuthController authController];
-        
-        BOOL textColorSelector = (syncer.syncerState == STMSyncerIdle && authController.controllerState == STMAuthSuccess);
-        self.campaignsCell.textLabel.textColor = (textColorSelector) ? self.activeButtonColor : [UIColor lightGrayColor];
 
+        if (authController.controllerState == STMAuthSuccess) {
+            
+            BOOL textColorSelector = (syncer.syncerState == STMSyncerIdle && authController.controllerState == STMAuthSuccess);
+            //        self.campaignsCell.textLabel.textColor = (textColorSelector) ? self.activeButtonColor : [UIColor lightGrayColor];
+            
+            int section = 1;
+            
+            for (int row = 0; row < [self.tableView numberOfRowsInSection:section]; row++) {
+                
+                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+                cell.textLabel.textColor = (textColorSelector) ? self.activeButtonColor : [UIColor lightGrayColor];
+                
+            }
+
+        }
+        
     }
     
 }
@@ -566,7 +600,7 @@
 
             if ([STMAuthController authController].controllerState == STMAuthSuccess) {
                 
-                return 1;
+                return self.tabBarController.viewControllers.count - 1;
                 
             } else {
                 
@@ -719,12 +753,15 @@
             }
             
         case 1:
-            switch (indexPath.row) {
-                    
-                case 0:
-                    return self.campaignsCell;
-                    
-            }
+            
+//            switch (indexPath.row) {
+//                    
+//                case 0:
+//                    return self.campaignsCell;
+//                    
+//            }
+
+            return [self tabSelectCellForIndex:indexPath.row];
             
         case 2:
             return [self reloadDataCell];
