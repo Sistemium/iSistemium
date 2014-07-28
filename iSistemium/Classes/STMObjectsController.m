@@ -25,6 +25,7 @@
 #import "STMArticlePicture.h"
 #import "STMSetting.h"
 #import "STMLogMessage.h"
+#import "STMDebt.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -351,11 +352,29 @@
         NSString *xid = [dictionary objectForKey:@"xid"];
         NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
         NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
-        
+
+        NSEntityDescription *currentEntity = [object entity];
+        NSDictionary *entityAttributes = [currentEntity attributesByName];
+
         for (NSString *key in ownObjectKeys) {
             
             id value = [properties objectForKey:key];
+            
             if (value) {
+                
+                if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
+                    
+                    value = [NSDecimalNumber decimalNumberWithString:value];
+//                    NSLog(@"value %@", value);
+                    
+                } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+                    value = [dateFormatter dateFromString:value];
+//                    NSLog(@"value %@", value);
+                    
+                }
                 
                 [object setValue:value forKey:key];
                 
@@ -895,7 +914,8 @@
                              NSStringFromClass([STMCampaignPicture class]),
                              NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMOutlet class]),
-                             NSStringFromClass([STMPhotoReport class])];
+                             NSStringFromClass([STMPhotoReport class]),
+                             NSStringFromClass([STMDebt class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;
     NSLog(@"total count %d", totalCount);
