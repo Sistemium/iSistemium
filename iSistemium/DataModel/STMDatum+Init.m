@@ -28,7 +28,7 @@
         [self setPrimitiveValue:[self newXid] forKey:@"xid"];
         
         NSDate *ts = [NSDate date];
-        [self setPrimitiveValue:ts forKey:@"cts"];
+        [self setPrimitiveValue:ts forKey:@"deviceCts"];
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSNumber *largestId = [defaults objectForKey:@"largestId"];
@@ -52,8 +52,8 @@
     if (![[[self changedValues] allKeys] containsObject:@"lts"] && ![[[self changedValues] allKeys] containsObject:@"sts"]) {
         
         NSDate *ts = [NSDate date];
-        [self setPrimitiveValue:ts forKey:@"ts"];
-        NSDate *sqts = [self primitiveValueForKey:@"lts"] ? [self primitiveValueForKey:@"ts"] : [self primitiveValueForKey:@"cts"];
+        [self setPrimitiveValue:ts forKey:@"deviceTs"];
+        NSDate *sqts = [self primitiveValueForKey:@"lts"] ? [self primitiveValueForKey:@"deviceTs"] : [self primitiveValueForKey:@"deviceCts"];
         [self setPrimitiveValue:sqts forKey:@"sqts"];
         
     }
