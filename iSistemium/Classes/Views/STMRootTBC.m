@@ -53,9 +53,12 @@
 
     self.delegate = self;
     
-    self.storyboardnames = @[@"STMAuthTVC",@"STMCampaigns"];
+//    self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns", @"STMDebts"];
+    self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns"];
+    self.storyboardtitles = @[NSLocalizedString(@"AUTHORIZATION", nil), NSLocalizedString(@"AD CAMPAIGNS", nil), NSLocalizedString(@"DEBTS", nil)];
     
     self.tabBar.hidden = YES;
+//    self.tabBar.hidden = NO;
     
     [self authControllerStateChanged];
     
@@ -76,10 +79,12 @@
     self.tabs = nil;
     
     NSString *authTabName = self.storyboardnames[0];
+    NSString *authTabTitle = self.storyboardtitles[0];
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:authTabName bundle:nil];
     UIViewController *vc = [storyboard instantiateInitialViewController];
-    vc.title = authTabName;
+    vc.title = authTabTitle;
+    
     [self.tabs setObject:vc forKey:authTabName];
     
     self.viewControllers = [self.tabs allValues];
@@ -87,17 +92,22 @@
 }
 
 - (void)initAllTabs {
+
+    NSMutableArray *viewControllers = [NSMutableArray array];
     
     for (NSString *name in self.storyboardnames) {
         
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
+        
         UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = name;
+        vc.title = [self.storyboardtitles objectAtIndex:[self.storyboardnames indexOfObject:name]];
+        [viewControllers addObject:vc];
+
         [self.tabs setObject:vc forKey:name];
         
     }
     
-    self.viewControllers = [self.tabs allValues];
+    self.viewControllers = viewControllers;
 
 }
 

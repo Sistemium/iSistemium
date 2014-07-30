@@ -14,6 +14,7 @@
 
 - (void)showTabWithName:(NSString *)tabName;
 - (void)showTabAtIndex:(NSUInteger)index;
-//- (void)flushTabs;
+
+@property (nonatomic, strong) NSArray *storyboardtitles;
 
 @end
