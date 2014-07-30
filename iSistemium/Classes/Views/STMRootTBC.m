@@ -53,11 +53,12 @@
 
     self.delegate = self;
     
-    self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns", @"STMDebts"];
+//    self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns", @"STMDebts"];
+    self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns"];
     self.storyboardtitles = @[NSLocalizedString(@"AUTHORIZATION", nil), NSLocalizedString(@"AD CAMPAIGNS", nil), NSLocalizedString(@"DEBTS", nil)];
     
-//    self.tabBar.hidden = YES;
-    self.tabBar.hidden = NO;
+    self.tabBar.hidden = YES;
+//    self.tabBar.hidden = NO;
     
     [self authControllerStateChanged];
     
