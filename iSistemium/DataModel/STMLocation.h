@@ -2,7 +2,7 @@
 //  STMLocation.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
+//  Created by Maxim Grigoriev on 30/07/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMTrack;
+@class STMPhoto, STMTrack;
 
 @interface STMLocation : STMComment
 
@@ -23,5 +23,14 @@
 @property (nonatomic, retain) NSDate * timestamp;
 @property (nonatomic, retain) NSNumber * verticalAccuracy;
 @property (nonatomic, retain) STMTrack *track;
+@property (nonatomic, retain) NSSet *photos;
+@end
+
+@interface STMLocation (CoreDataGeneratedAccessors)
+
+- (void)addPhotosObject:(STMPhoto *)value;
+- (void)removePhotosObject:(STMPhoto *)value;
+- (void)addPhotos:(NSSet *)values;
+- (void)removePhotos:(NSSet *)values;
 
 @end

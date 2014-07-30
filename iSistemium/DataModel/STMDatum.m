@@ -2,7 +2,7 @@
 //  STMDatum.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
+//  Created by Maxim Grigoriev on 30/07/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -12,12 +12,12 @@
 
 @implementation STMDatum
 
-@dynamic cts;
+@dynamic deviceCts;
 @dynamic id;
 @dynamic lts;
 @dynamic sqts;
 @dynamic sts;
-@dynamic ts;
+@dynamic deviceTs;
 @dynamic xid;
 @dynamic comments;
 
