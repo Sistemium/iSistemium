@@ -47,6 +47,8 @@
 		2C80C7E5198904170044ADE4 /* STMPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7E4198904170044ADE4 /* STMPhoto.m */; };
 		2C80C7E8198904170044ADE4 /* STMLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7E7198904170044ADE4 /* STMLocation.m */; };
 		2C80C7EB198904170044ADE4 /* STMDatum.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7EA198904170044ADE4 /* STMDatum.m */; };
+		2C80C7EE198A38D60044ADE4 /* STMDebtsDetailsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7ED198A38D60044ADE4 /* STMDebtsDetailsTVC.m */; };
+		2C80C7F1198A3A690044ADE4 /* STMDebtsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7F0198A3A690044ADE4 /* STMDebtsSVC.m */; };
 		2C8369521986538F00DA4316 /* STMOutlet.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8369511986538F00DA4316 /* STMOutlet.m */; };
 		2C8369551986539000DA4316 /* STMDebt.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8369541986539000DA4316 /* STMDebt.m */; };
 		2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8369561986714300DA4316 /* STMDebts.storyboard */; };
@@ -179,6 +181,10 @@
 		2C80C7E7198904170044ADE4 /* STMLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLocation.m; sourceTree = "<group>"; };
 		2C80C7E9198904170044ADE4 /* STMDatum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDatum.h; sourceTree = "<group>"; };
 		2C80C7EA198904170044ADE4 /* STMDatum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDatum.m; sourceTree = "<group>"; };
+		2C80C7EC198A38D60044ADE4 /* STMDebtsDetailsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebtsDetailsTVC.h; sourceTree = "<group>"; };
+		2C80C7ED198A38D60044ADE4 /* STMDebtsDetailsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebtsDetailsTVC.m; sourceTree = "<group>"; };
+		2C80C7EF198A3A690044ADE4 /* STMDebtsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebtsSVC.h; sourceTree = "<group>"; };
+		2C80C7F0198A3A690044ADE4 /* STMDebtsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebtsSVC.m; sourceTree = "<group>"; };
 		2C836949198651D800DA4316 /* STMDataModel 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 8.xcdatamodel"; sourceTree = "<group>"; };
 		2C8369501986538F00DA4316 /* STMOutlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMOutlet.h; sourceTree = "<group>"; };
 		2C8369511986538F00DA4316 /* STMOutlet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMOutlet.m; sourceTree = "<group>"; };
@@ -305,8 +311,12 @@
 				2CA4527B195AF68C00D93CA2 /* STMPhotoReportPVC.m */,
 				2CA4527D195AF6BC00D93CA2 /* STMPhotoVC.h */,
 				2CA4527E195AF6BC00D93CA2 /* STMPhotoVC.m */,
+				2C80C7EF198A3A690044ADE4 /* STMDebtsSVC.h */,
+				2C80C7F0198A3A690044ADE4 /* STMDebtsSVC.m */,
 				2C8369581986809900DA4316 /* STMDebtsTVC.h */,
 				2C8369591986809900DA4316 /* STMDebtsTVC.m */,
+				2C80C7EC198A38D60044ADE4 /* STMDebtsDetailsTVC.h */,
+				2C80C7ED198A38D60044ADE4 /* STMDebtsDetailsTVC.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -680,6 +690,7 @@
 				2C6528F219576894008605D9 /* STMPartner.m in Sources */,
 				2C65284219571C4B008605D9 /* STMCampaignsSVC.m in Sources */,
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
+				2C80C7EE198A38D60044ADE4 /* STMDebtsDetailsTVC.m in Sources */,
 				2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */,
 				2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */,
 				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
@@ -700,6 +711,7 @@
 				2C65291619576895008605D9 /* STMArticlePicture.m in Sources */,
 				2C53B8D81940A1B8002298A5 /* STMDatum+Init.m in Sources */,
 				2C53B9B91944AB01002298A5 /* STMCampaignsTVC.m in Sources */,
+				2C80C7F1198A3A690044ADE4 /* STMDebtsSVC.m in Sources */,
 				2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */,
 				2C6528F819576894008605D9 /* STMCampaign.m in Sources */,
 				2C53B8AB19409E83002298A5 /* STMLocationTVC.m in Sources */,
