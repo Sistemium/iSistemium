@@ -108,7 +108,7 @@
 - (CLLocation *)lastLocation {
     if (!_lastLocation) {
         if (self.currentTrack.locations.count > 0) {
-            NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]];
+            NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
             STMLocation *lastLocation = [[self.currentTrack.locations sortedArrayUsingDescriptors:sortDescriptors] objectAtIndex:0];
             if (lastLocation) {
                 _lastLocation = [self locationFromLocationObject:lastLocation];
@@ -324,7 +324,7 @@
                                           verticalAccuracy:[locationObject.verticalAccuracy doubleValue]
                                                     course:[locationObject.course doubleValue]
                                                      speed:[locationObject.speed doubleValue]
-                                                 timestamp:locationObject.cts];
+                                                 timestamp:locationObject.deviceCts];
     return location;
     
 }
