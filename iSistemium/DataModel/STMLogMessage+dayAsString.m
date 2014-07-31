@@ -22,7 +22,7 @@
         
     });
     
-    return [formatter stringFromDate:self.cts];
+    return [formatter stringFromDate:self.deviceCts];
     
 }
 
