@@ -14,7 +14,7 @@
 
 @implementation STMDebtsSVC
 
-- (STMDebtsDetailsTVC *)detailVC {
+- (STMDebtsDetailsPVC *)detailVC {
     
     if (!_detailVC) {
         
@@ -22,8 +22,8 @@
         
         UIViewController *detailVC = navController.viewControllers[0];
         
-        if ([detailVC isKindOfClass:[STMDebtsDetailsTVC class]]) {
-            _detailVC = (STMDebtsDetailsTVC *)detailVC;
+        if ([detailVC isKindOfClass:[STMDebtsDetailsPVC class]]) {
+            _detailVC = (STMDebtsDetailsPVC *)detailVC;
         }
         
     }

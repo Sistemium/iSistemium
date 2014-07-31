@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "STMDebtsTVC.h"
-#import "STMDebtsDetailsTVC.h"
+#import "STMDebtsDetailsPVC.h"
 
 @interface STMDebtsSVC : UISplitViewController
 
 @property (nonatomic, strong) STMDebtsTVC *masterVC;
-@property (nonatomic, strong) STMDebtsDetailsTVC *detailVC;
+@property (nonatomic, strong) STMDebtsDetailsPVC *detailVC;
 
 @end

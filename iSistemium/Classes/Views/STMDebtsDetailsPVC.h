@@ -1,5 +1,5 @@
 //
-//  STMDebtsDetailsTVC.h
+//  STMDebtDetailsPVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 31/07/14.
@@ -9,10 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "STMOutlet.h"
 
-
-@interface STMDebtsDetailsTVC : UITableViewController
+@interface STMDebtsDetailsPVC : UIPageViewController <UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMOutlet *outlet;
-@property (nonatomic) NSUInteger index;
+
 
 @end
