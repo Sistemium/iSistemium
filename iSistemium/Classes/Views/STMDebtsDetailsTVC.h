@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMOutlet.h"
+
 
 @interface STMDebtsDetailsTVC : UITableViewController <UISplitViewControllerDelegate>
+
+@property (nonatomic, strong) STMOutlet *outlet;
+
 
 @end

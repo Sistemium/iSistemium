@@ -45,3 +45,4 @@
 "R U SURE" = "Are you sure?";
 "AUTHORIZATION" = "Authorization";
 "DEBTS" = "Debts";
+"DEBT DETAILS" = "For %@ of %@ by summ %@";

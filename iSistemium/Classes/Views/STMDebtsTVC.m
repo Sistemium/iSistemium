@@ -11,6 +11,7 @@
 
 #import "STMDocument.h"
 #import "STMSessionManager.h"
+#import "STMDebtsSVC.h"
 
 #import "STMOutlet.h"
 #import "STMDebt.h"
@@ -20,10 +21,27 @@
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, strong) STMDebtsSVC *splitVC;
 
 @end
 
 @implementation STMDebtsTVC
+
+
+- (STMDebtsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+            _splitVC = (STMDebtsSVC *)self.splitViewController;
+        }
+        
+    }
+    
+    return _splitVC;
+    
+}
+
 
 - (STMDocument *)document {
     
@@ -134,6 +152,18 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", debtSum];
     
     return cell;
+    
+}
+
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
+    STMOutlet *outlet = sectionInfo.objects[indexPath.row];
+    
+    self.splitVC.detailVC.outlet = outlet;
+    
+    return indexPath;
     
 }
 
