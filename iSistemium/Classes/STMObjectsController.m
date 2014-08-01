@@ -774,6 +774,8 @@
                     
                     NSLog(@"%@ upload successefully", href);
                     
+                    [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
+                    
                 }
                 
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
