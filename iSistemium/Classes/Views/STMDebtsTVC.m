@@ -61,7 +61,7 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]];
-//        request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
+        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"partner.name" cacheName:nil];
         _resultsController.delegate = self;
         
