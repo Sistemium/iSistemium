@@ -89,6 +89,10 @@
 		2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51F19556E0400C84A6D /* STMAuthTVC.storyboard */; };
 		2CE8B52319556F0700C84A6D /* STMAuthTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B52219556F0700C84A6D /* STMAuthTVC.m */; };
 		CEAB4F59717C484083629622 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6311C3BED44E4D598636BF2C /* libPods.a */; };
+		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
+		D94AC568198BC67D00D8CD63 /* cheap2-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC567198BC67D00D8CD63 /* cheap2-128.png */; };
+		D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */; };
+		D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC56B198BC6A300D8CD63 /* password2-128.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +266,10 @@
 		2CE8B52119556F0700C84A6D /* STMAuthTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthTVC.h; sourceTree = "<group>"; };
 		2CE8B52219556F0700C84A6D /* STMAuthTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthTVC.m; sourceTree = "<group>"; };
 		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
+		D94AC567198BC67D00D8CD63 /* cheap2-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cheap2-128.png"; sourceTree = "<group>"; };
+		D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "christmas_gift-128.png"; sourceTree = "<group>"; };
+		D94AC56B198BC6A300D8CD63 /* password2-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "password2-128.png"; sourceTree = "<group>"; };
 		E8B7BD87EDED486BA6D4F962 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -534,6 +542,10 @@
 		2CD443EF195AD741004ADE58 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				D94AC56B198BC6A300D8CD63 /* password2-128.png */,
+				D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */,
+				D94AC567198BC67D00D8CD63 /* cheap2-128.png */,
+				D94AC565198BC66700D8CD63 /* cash_receiving-128.png */,
 				2CD443F0195AD76E004ADE58 /* photo-icon.png */,
 			);
 			path = Images;
@@ -633,12 +645,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */,
 				2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */,
 				2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */,
 				2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */,
+				D94AC568198BC67D00D8CD63 /* cheap2-128.png in Resources */,
 				2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */,
+				D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */,
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
+				D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */,
 				2C53B88A19409E42002298A5 /* settings_schema.json in Resources */,
 				2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
