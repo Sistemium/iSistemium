@@ -154,6 +154,16 @@
     cell.textLabel.text = outlet.name;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", debtSum];
     
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
+    selectedBackgroundView.backgroundColor = [UIColor colorWithRed:0 green:0.48 blue:1 alpha:1];
+    
+    cell.selectedBackgroundView = selectedBackgroundView;
+    
+    UIColor *highlightedTextColor = [UIColor whiteColor];
+    
+    cell.textLabel.highlightedTextColor = highlightedTextColor;
+    cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
+    
     return cell;
     
 }
