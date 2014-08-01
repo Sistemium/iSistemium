@@ -1,23 +1,21 @@
 //
-//  STMDebt.m
+//  STMCashing.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 01/08/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMDebt.h"
 #import "STMCashing.h"
+#import "STMDebt.h"
 #import "STMOutlet.h"
 
 
-@implementation STMDebt
+@implementation STMCashing
 
-@dynamic date;
-@dynamic ndoc;
 @dynamic summ;
-@dynamic summOrigin;
+@dynamic date;
+@dynamic debt;
 @dynamic outlet;
-@dynamic cashings;
 
 @end

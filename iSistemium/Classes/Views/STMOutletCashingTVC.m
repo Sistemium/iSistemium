@@ -7,12 +7,84 @@
 //
 
 #import "STMOutletCashingTVC.h"
+#import "STMDocument.h"
+#import "STMSessionManager.h"
+#import "STMCashing.h"
 
-@interface STMOutletCashingTVC ()
+@interface STMOutletCashingTVC () <NSFetchedResultsControllerDelegate>
+
+@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+@property (nonatomic, strong) STMDocument *document;
+
+
 
 @end
 
 @implementation STMOutletCashingTVC
+
+@synthesize outlet = _outlet;
+
+
+- (void)setOutlet:(STMOutlet *)outlet {
+    
+    if (_outlet != outlet) {
+        
+        _outlet = outlet;
+        [self performFetch];
+        
+    }
+    
+}
+
+- (STMDocument *)document {
+    
+    if (!_document) {
+        
+        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
+        
+    }
+    
+    return _document;
+    
+}
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
+        
+        NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
+        NSSortDescriptor *ndocSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ndoc" ascending:YES selector:@selector(compare:)];
+        
+        request.sortDescriptors = @[dateSortDescriptor, ndocSortDescriptor];
+        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.outlet];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
+        _resultsController.delegate = self;
+        
+    }
+    
+    return _resultsController;
+    
+}
+
+- (void)performFetch {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+        NSLog(@"performFetch error %@", error);
+    } else {
+        [self.tableView reloadData];
+    }
+    
+}
+
+
+#pragma mark - view lifecycle
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

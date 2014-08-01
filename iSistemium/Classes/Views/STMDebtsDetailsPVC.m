@@ -66,7 +66,7 @@
             self.dataSource = self;
         }
         
-        self.navigationItem.leftBarButtonItem.title = self.outlet.name;
+//        self.navigationItem.leftBarButtonItem.title = self.outlet.name;
         [self.popover dismissPopoverAnimated:YES];
 
     }

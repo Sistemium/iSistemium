@@ -22,6 +22,7 @@
 
 @synthesize outlet = _outlet;
 
+
 - (void)setOutlet:(STMOutlet *)outlet {
     
     if (_outlet != outlet) {
