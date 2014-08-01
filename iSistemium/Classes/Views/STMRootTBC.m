@@ -9,10 +9,12 @@
 #import "STMRootTBC.h"
 #import "STMAuthController.h"
 #import "STMAuthTVC.h"
+#import "STMFunctions.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSArray *storyboardnames;
+@property (nonatomic, strong) NSArray *tabImages;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
 
@@ -56,9 +58,11 @@
     self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns", @"STMDebts"];
 //    self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns"];
     self.storyboardtitles = @[NSLocalizedString(@"AUTHORIZATION", nil), NSLocalizedString(@"AD CAMPAIGNS", nil), NSLocalizedString(@"DEBTS", nil)];
+    self.tabImages = @[[UIImage imageNamed:@"password2-128.png"], [UIImage imageNamed:@"christmas_gift-128.png"], [UIImage imageNamed:@"cash_receiving-128.png"]];
     
-    self.tabBar.hidden = YES;
-//    self.tabBar.hidden = NO;
+    
+//    self.tabBar.hidden = YES;
+    self.tabBar.hidden = NO;
     
     [self authControllerStateChanged];
     
@@ -99,8 +103,11 @@
         
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
         
+        NSUInteger index = [self.storyboardnames indexOfObject:name];
+        
         UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = [self.storyboardtitles objectAtIndex:[self.storyboardnames indexOfObject:name]];
+        vc.title = [self.storyboardtitles objectAtIndex:index];
+        vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[index] toSize:CGSizeMake(30, 30)];
         [viewControllers addObject:vc];
 
         [self.tabs setObject:vc forKey:name];
