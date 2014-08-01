@@ -77,12 +77,15 @@
 
 - (void)customInit {
     
+    self.clearsSelectionOnViewWillAppear = NO;
+
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
         NSLog(@"performFetch error %@", error);
     }
 
-    self.title = self.tabBarController.selectedViewController.title;
+//    self.title = self.tabBarController.selectedViewController.title;
+    self.title = NSLocalizedString(@"OUTLETS", nil);
     
 }
 

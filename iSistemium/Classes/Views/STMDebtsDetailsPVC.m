@@ -14,6 +14,8 @@
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+
 @property (nonatomic, strong) UIPopoverController *popover;
 @property (nonatomic, strong) UIBarButtonItem *homeButton;
 
@@ -55,7 +57,7 @@
         if (!_outlet) {
             
             isFirstAssign = YES;
-//            [self setupSegmentedControl];
+            [self setupSegmentedControl];
             
         }
         
@@ -66,7 +68,18 @@
             self.dataSource = self;
         }
         
-//        self.navigationItem.leftBarButtonItem.title = self.outlet.name;
+        NSUInteger maxLength = 36;
+        
+        if (self.outlet.name.length > maxLength) {
+            
+            self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%@…", [self.outlet.name substringToIndex:maxLength]];
+            
+        } else {
+            
+            self.navigationItem.leftBarButtonItem.title = self.outlet.name;
+            
+        }
+
         [self.popover dismissPopoverAnimated:YES];
 
     }
@@ -155,7 +168,7 @@
         previousVC.outlet = self.outlet;
         self.currentIndex = self.nextIndex;
         
-//        self.segmentedControl.selectedSegmentIndex = self.currentIndex;
+        self.segmentedControl.selectedSegmentIndex = self.currentIndex;
         
     }
 }
@@ -165,8 +178,16 @@
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
     
-    //    NSString *barButtonTitle = self.campaign ? self.campaign.name : NSLocalizedString(@"AD CAMPAIGNS", nil);
-    NSString *barButtonTitle = NSLocalizedString(@"DEBTS", nil);
+    NSString *barButtonTitle = self.outlet ? self.outlet.name : NSLocalizedString(@"OUTLETS", nil);
+    
+    NSUInteger maxLength = 36;
+    
+    if (barButtonTitle.length > maxLength) {
+        
+        barButtonTitle = [NSString stringWithFormat:@"%@…", [barButtonTitle substringToIndex:maxLength]];
+        
+    }
+    
     barButtonItem.title = barButtonTitle;
     
     //    barButtonItem.title = NSLocalizedString(@"AD CAMPAIGNS", nil);
@@ -184,6 +205,42 @@
     
 }
 
+
+#pragma mark
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+}
+
+- (void)setupSegmentedControl {
+    
+    NSArray *titles = @[@"DEBTS", @"CASHING"];
+    
+    for (int i = 0; i < titles.count; i++) {
+        [self.segmentedControl insertSegmentWithTitle:NSLocalizedString(titles[i], nil) atIndex:i animated:YES];
+    }
+    
+    self.segmentedControl.selectedSegmentIndex = self.currentIndex;
+    
+    [self.segmentedControl addTarget:self action:@selector(selectSegmentedControlSegment) forControlEvents:UIControlEventValueChanged];
+    
+}
+
+- (void)selectSegmentedControlSegment {
+    
+    UIPageViewControllerNavigationDirection direction;
+    
+    if (self.segmentedControl.selectedSegmentIndex > self.currentIndex) {
+        direction = UIPageViewControllerNavigationDirectionForward;
+    } else {
+        direction = UIPageViewControllerNavigationDirectionReverse;
+    }
+    
+    self.currentIndex = self.segmentedControl.selectedSegmentIndex;
+    
+    [self setVCAtIndex:self.currentIndex direction:direction];
+    
+}
 
 - (void)setVCAtIndex:(NSUInteger)index direction:(UIPageViewControllerNavigationDirection)direction {
     
@@ -223,6 +280,8 @@
     
     [super viewDidLoad];
     [self customInit];
+
+    [self.segmentedControl removeAllSegments];
 
 }
 

@@ -46,3 +46,5 @@
 "AUTHORIZATION" = "Authorization";
 "DEBTS" = "Debts";
 "DEBT DETAILS" = "For %@ of %@ by summ %@";
+"CASHING" = "Cashing";
+"OUTLETS" = "Outlets";

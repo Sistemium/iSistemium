@@ -46,3 +46,5 @@
 "AUTHORIZATION" = "Авторизация";
 "DEBTS" = "Долги";
 "DEBT DETAILS" = "За %@ от %@ на сумму %@";
+"CASHING" = "Выручка";
+"OUTLETS" = "Точки";
