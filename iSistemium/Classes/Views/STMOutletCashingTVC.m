@@ -10,6 +10,7 @@
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMCashing.h"
+#import "STMDebt.h"
 
 @interface STMOutletCashingTVC () <NSFetchedResultsControllerDelegate>
 
@@ -55,12 +56,11 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
         
         NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
-        NSSortDescriptor *ndocSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ndoc" ascending:YES selector:@selector(compare:)];
         
-        request.sortDescriptors = @[dateSortDescriptor, ndocSortDescriptor];
+        request.sortDescriptors = @[dateSortDescriptor];
         request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.outlet];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"date" cacheName:nil];
         
         _resultsController.delegate = self;
         
@@ -106,6 +106,72 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    
+    return self.resultsController.sections.count;
+    
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
+    return [sectionInfo numberOfObjects];
+    
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:section];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+
+    NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
+    
+    NSString *cashingDate = [dateFormatter stringFromDate:date];
+
+    NSDecimalNumber *summ = 0;
+    
+    for (STMCashing *cashing in sectionInfo.objects) {
+        
+        summ = [summ decimalNumberByAdding:cashing.summ];
+        
+    }
+    
+    NSString *title = [NSString stringWithFormat:@"%@ %@", cashingDate, summ];
+    
+    return title;
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cashingDetailsCell" forIndexPath:indexPath];
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
+    
+    STMCashing *cashing = sectionInfo.objects[indexPath.row];
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"%@", cashing.summ];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    
+    NSString *debtDate = [dateFormatter stringFromDate:cashing.debt.date];
+    
+    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, cashing.debt.summOrigin];
+    
+    return cell;
+    
+}
+
+
 
 /*
 #pragma mark - Navigation
