@@ -23,7 +23,10 @@
     
     if (!_picturesArray) {
         
-        _picturesArray = [self.campaign.pictures sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]]];
+        NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+        NSSortDescriptor *deviceCtsSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)];
+        
+        _picturesArray = [self.campaign.pictures sortedArrayUsingDescriptors:@[nameSortDescriptor, deviceCtsSortDescriptor]];
         
     }
     

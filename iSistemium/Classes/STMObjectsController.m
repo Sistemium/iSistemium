@@ -833,11 +833,11 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            if (pngType) {
-                picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
-            } else {
+//            if (pngType) {
+//                picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
+//            } else {
                 picture.imageThumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
-            }
+//            }
             
         
         });
@@ -847,11 +847,11 @@
         UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
         NSData *resizedImageData = nil;
         
-        if (pngType) {
-            resizedImageData = UIImagePNGRepresentation(resizedImage);
-        } else {
+//        if (pngType) {
+//            resizedImageData = UIImagePNGRepresentation(resizedImage);
+//        } else {
             resizedImageData = UIImageJPEGRepresentation(resizedImage, 0.0);
-        }
+//        }
         
         [resizedImageData writeToFile:resizedImagePath atomically:YES];
 
