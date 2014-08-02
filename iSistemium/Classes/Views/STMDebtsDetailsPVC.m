@@ -17,7 +17,7 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 
 @property (nonatomic, strong) UIPopoverController *popover;
-@property (nonatomic, strong) UIBarButtonItem *homeButton;
+//@property (nonatomic, strong) UIBarButtonItem *homeButton;
 
 @property (nonatomic, strong) STMDocument *document;
 
@@ -86,6 +86,7 @@
     
 }
 
+/*
 - (UIBarButtonItem *)homeButton {
     
     if (!_homeButton) {
@@ -99,6 +100,7 @@
     return _homeButton;
     
 }
+*/
 
 - (void)homeButtonPressed {
     
@@ -255,7 +257,7 @@
 
 - (void)customInit {
     
-    self.navigationItem.rightBarButtonItem = self.homeButton;
+//    self.navigationItem.rightBarButtonItem = self.homeButton;
     
     self.dataSource = self;
     self.delegate = self;
