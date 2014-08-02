@@ -1,27 +1,28 @@
 //
-//  STMOutletDebtsTVC.m
+//  STMOutletDebtsVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 31/07/14.
+//  Created by Maxim Grigoriev on 02/08/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMOutletDebtsTVC.h"
+#import "STMOutletDebtsVC.h"
 #import "STMDebt.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 
-@interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
+@interface STMOutletDebtsVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
 
 @end
 
-@implementation STMOutletDebtsTVC
+@implementation STMOutletDebtsVC
 
+@synthesize resultsController = _resultsController;
 @synthesize outlet = _outlet;
-
 
 - (void)setOutlet:(STMOutlet *)outlet {
     
@@ -29,6 +30,7 @@
         
         _outlet = outlet;
         [self performFetch];
+        [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
         
     }
     
@@ -43,6 +45,19 @@
     }
     
     return _document;
+    
+}
+
+- (void)performFetch {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+        NSLog(@"performFetch error %@", error);
+    } else {
+        [self.tableView reloadData];
+    }
     
 }
 
@@ -68,42 +83,6 @@
     
 }
 
-- (void)performFetch {
-    
-    self.resultsController = nil;
-    
-    NSError *error;
-    if (![self.resultsController performFetch:&error]) {
-        NSLog(@"performFetch error %@", error);
-    } else {
-        [self.tableView reloadData];
-    }
-    
-}
-
-
-#pragma mark - view lifecycle
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 #pragma mark - Table view data source
 
@@ -120,8 +99,8 @@
     
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtDetailsCell" forIndexPath:indexPath];
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
@@ -143,5 +122,47 @@
 }
 
 
+#pragma mark - view lifecycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad {
+    
+    [super viewDidLoad];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];    
+    
+}
+
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
 
 @end

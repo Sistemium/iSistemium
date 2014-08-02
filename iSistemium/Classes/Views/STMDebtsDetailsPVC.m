@@ -9,7 +9,7 @@
 #import "STMDebtsDetailsPVC.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
-#import "STMDebtsDetailsTVC.h"
+#import "STMDebtsDetailsVC.h"
 #import "STMRootTBC.h"
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
@@ -48,7 +48,7 @@
         
         self.title = outlet.name;
         
-        for (STMDebtsDetailsTVC *view in self.viewControllers) {
+        for (STMDebtsDetailsVC *view in self.viewControllers) {
             view.outlet = outlet;
         }
         
@@ -110,19 +110,19 @@
     
 }
 
-- (STMDebtsDetailsTVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
+- (STMDebtsDetailsVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
-    STMDebtsDetailsTVC *vc = nil;
+    STMDebtsDetailsVC *vc = nil;
     
     switch (index) {
             
         case 0:
-            vc = [storyboard instantiateViewControllerWithIdentifier:@"outletDebtsTVC"];
+            vc = [storyboard instantiateViewControllerWithIdentifier:@"outletDebtsVC"];
             break;
             
         case 1:
             if (self.outlet) {
-                vc = [storyboard instantiateViewControllerWithIdentifier:@"outletCashingTVC"];
+                vc = [storyboard instantiateViewControllerWithIdentifier:@"outletCashingVC"];
             }
             break;
             
@@ -157,7 +157,7 @@
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
     
-    STMDebtsDetailsTVC *pendingVC = pendingViewControllers[0];
+    STMDebtsDetailsVC *pendingVC = pendingViewControllers[0];
     pendingVC.outlet = self.outlet;
     self.nextIndex = pendingVC.index;
     
@@ -166,7 +166,7 @@
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
     if (completed) {
         
-        STMDebtsDetailsTVC *previousVC = previousViewControllers[0];
+        STMDebtsDetailsVC *previousVC = previousViewControllers[0];
         previousVC.outlet = self.outlet;
         self.currentIndex = self.nextIndex;
         
@@ -246,7 +246,7 @@
 
 - (void)setVCAtIndex:(NSUInteger)index direction:(UIPageViewControllerNavigationDirection)direction {
     
-    STMDebtsDetailsTVC *vc = [self viewControllerAtIndex:index storyboard:self.storyboard];
+    STMDebtsDetailsVC *vc = [self viewControllerAtIndex:index storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:direction animated:YES completion:NULL];
     
