@@ -2,7 +2,7 @@
 //  STMOutlet.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 01/08/14.
+//  Created by Maxim Grigoriev on 02/08/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -18,11 +18,13 @@
 @implementation STMOutlet
 
 @dynamic name;
+@dynamic address;
+@dynamic shortName;
 @dynamic campaigns;
+@dynamic cashings;
 @dynamic debts;
 @dynamic partner;
 @dynamic photoReports;
 @dynamic salesmans;
-@dynamic cashings;
 
 @end

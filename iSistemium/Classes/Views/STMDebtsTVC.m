@@ -151,7 +151,7 @@
 
     }
     
-    cell.textLabel.text = outlet.name;
+    cell.textLabel.text = outlet.shortName;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", debtSum];
     
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
