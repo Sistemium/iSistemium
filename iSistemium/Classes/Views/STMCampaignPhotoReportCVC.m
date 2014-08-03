@@ -106,7 +106,11 @@
             NSMutableArray *campaigns = [NSMutableArray array];
             
             for (STMPhotoReport *photoReport in outlet.photoReports) {
-                [campaigns addObject:photoReport.campaign];
+                
+                if (photoReport.campaign) {
+                    [campaigns addObject:photoReport.campaign];
+                }
+                
             }
             
             if ([campaigns containsObject:self.campaign]) {
@@ -290,25 +294,21 @@
     NSInteger tag = [sender view].tag;
     
     STMOutlet *outlet = self.outlets[tag];
-//    self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
     
-//    if (!self.selectedPhotoReport) {
-    
-        STMPhotoReport *photoReport = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
-        photoReport.outlet = outlet;
-//        photoReport.campaign = self.campaign;
-    
-        [self.document saveDocument:^(BOOL success) {
-            if (success) {
-//                NSLog(@"create new photoReport");
-            }
-        }];
-        
-        self.selectedPhotoReport = photoReport;
+    STMPhotoReport *photoReport = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
+    photoReport.outlet = outlet;
 
-//    }
+    [self.document saveDocument:^(BOOL success) {
+        if (success) {
+//                NSLog(@"create new photoReport");
+        }
+    }];
+    
+    self.selectedPhotoReport = photoReport;
 
     self.currentSection = tag;
+    
+    [(UIView *)[sender view] setBackgroundColor:[UIColor yellowColor]];
     
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
     
@@ -331,16 +331,9 @@
 
 - (void)saveImage:(UIImage *)image {
 
-//    STMPhotoReport *photoReport = (STMPhotoReport *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:[self document].managedObjectContext];
-
-//    [STMObjectsController setImagesFromData:UIImagePNGRepresentation(image) forPicture:photo];
     [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.selectedPhotoReport];
 
     [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
-    
-//    [self.selectedPhotoReport addPhotosObject:photo];
-    
-//    self.selectedPhotoReport = photoReport;
   
     self.selectedPhotoReport.campaign = self.campaign;
     
@@ -391,22 +384,17 @@
     
 }
 
-//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-//    
-//    [picker dismissViewControllerAnimated:NO completion:^{
-//        
-//        [self.spinnerView removeFromSuperview];
-//        
-//        if (self.selectedPhotoReport.photos.count == 0) {
-//            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
-////            NSLog(@"delete empty photoReport");
-//        }
-//        
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:NO completion:^{
+        
+    [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+        
 //        NSLog(@"imagePickerControllerDidCancel");
-//        
-//    }];
-//    
-//}
+        
+    }];
+    
+}
 
 #pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
 
@@ -438,7 +426,7 @@
     
     if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
 
-        headerView.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:1 alpha:1.0];
+//        headerView.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:1 alpha:1.0];
         headerView.backgroundColor = [UIColor yellowColor];
 
     } else {
