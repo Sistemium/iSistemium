@@ -1,27 +1,26 @@
 //
-//  STMOutletCashingTVC.m
+//  STMOutletCashingVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 31/07/14.
+//  Created by Maxim Grigoriev on 02/08/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMOutletCashingTVC.h"
+#import "STMOutletCashingVC.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMCashing.h"
 #import "STMDebt.h"
 
-@interface STMOutletCashingTVC () <NSFetchedResultsControllerDelegate>
+@interface STMOutletCashingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
-
-
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
 
-@implementation STMOutletCashingTVC
+@implementation STMOutletCashingVC
 
 @synthesize outlet = _outlet;
 
@@ -32,7 +31,8 @@
         
         _outlet = outlet;
         [self performFetch];
-        
+        [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+
     }
     
 }
@@ -84,30 +84,6 @@
 }
 
 
-#pragma mark - view lifecycle
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -130,11 +106,11 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
-
+    
     NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
     
     NSString *cashingDate = [dateFormatter stringFromDate:date];
-
+    
     NSDecimalNumber *summ = 0;
     
     for (STMCashing *cashing in sectionInfo.objects) {
@@ -172,6 +148,37 @@
 }
 
 
+#pragma mark - view lifecycle
+
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad {
+    
+    [super viewDidLoad];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 
 /*
 #pragma mark - Navigation
