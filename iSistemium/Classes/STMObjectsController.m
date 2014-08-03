@@ -774,7 +774,7 @@
                     
                     NSLog(@"%@ upload successefully", href);
                     
-                    [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
+//                    [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
                     
                 }
                 

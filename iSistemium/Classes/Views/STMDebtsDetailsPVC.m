@@ -117,7 +117,6 @@
     switch (index) {
             
         case 0:
-//            vc = [storyboard instantiateViewControllerWithIdentifier:@"outletDebtsVC"];
             vc = [storyboard instantiateViewControllerWithIdentifier:@"debtsCombineVC"];
             break;
             

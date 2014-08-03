@@ -13,9 +13,7 @@
 
 @property (nonatomic, strong) STMDebtsCombineVC *parentVC;
 
-@property (weak, nonatomic) IBOutlet UIView *controlsView;
-
-@property (nonatomic, strong) UIButton *takeCashingButton;
+@property (weak, nonatomic) IBOutlet UIButton *cashingButton;
 
 @end
 
@@ -38,22 +36,9 @@
     
 }
 
-- (UIButton *)takeCashingButton {
+- (IBAction)cashingButtonPressed:(id)sender {
     
-    if (!_takeCashingButton) {
-        
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button setTitle:@"NDNDNDNDNDNDNND" forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        button.frame = self.view.frame;
-        
-        NSLog(@"button %@", button);
-        
-        _takeCashingButton = button;
-        
-    }
-    
-    return _takeCashingButton;
+    NSLog(@"cashingButtonPressed");
     
 }
 
@@ -61,11 +46,7 @@
 
 - (void)customInit {
     
-    self.controlsView.hidden = NO;
-
-    NSLog(@"self.takeCashingButton %@", self.takeCashingButton);
-    
-    [self.controlsView addSubview:self.takeCashingButton];
+    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];
     
 }
 
