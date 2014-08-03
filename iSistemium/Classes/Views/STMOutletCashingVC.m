@@ -31,7 +31,7 @@
         
         _outlet = outlet;
         [self performFetch];
-        [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+//        [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
 
     }
     

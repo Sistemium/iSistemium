@@ -1,28 +1,35 @@
 //
-//  STMOutletDebtsVC.m
+//  STMOutletDebtsTVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 02/08/14.
+//  Created by Maxim Grigoriev on 03/08/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMOutletDebtsVC.h"
-#import "STMDebt.h"
+#import "STMOutletDebtsTVC.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
+#import "STMDebt.h"
+#import "STMDebtsCombineVC.h"
 
-@interface STMOutletDebtsVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+@interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
+
+@property (nonatomic, strong) STMDebtsCombineVC *parentVC;
+
 @property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+
 
 @end
 
-@implementation STMOutletDebtsVC
+@implementation STMOutletDebtsTVC
 
-@synthesize resultsController = _resultsController;
-@synthesize outlet = _outlet;
+- (STMDebtsCombineVC *)parentVC {
+    
+    return (STMDebtsCombineVC *)self.parentViewController;
+    
+}
 
 - (void)setOutlet:(STMOutlet *)outlet {
     
@@ -30,7 +37,6 @@
         
         _outlet = outlet;
         [self performFetch];
-        [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
         
     }
     
@@ -124,29 +130,32 @@
 
 #pragma mark - view lifecycle
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithStyle:(UITableViewStyle)style
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
     }
     return self;
 }
 
-- (void)viewDidLoad {
-    
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-
+    
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [super viewWillAppear:animated];    
-    
-}
+    [super viewWillAppear:animated];
+//    [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
 
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -154,15 +163,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
