@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
+@property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
 
 
 

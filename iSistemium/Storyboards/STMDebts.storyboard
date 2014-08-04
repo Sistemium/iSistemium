@@ -340,7 +340,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
 </mutableData>
                                         </timeZone>
                                     </datePicker>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summ" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qei-aZ-LsZ">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qei-aZ-LsZ">
                                         <rect key="frame" x="613" y="166" width="70" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="24"/>
@@ -353,6 +353,12 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Remainder" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v7I-mu-q6E">
+                                        <rect key="frame" x="599" y="137" width="84" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
@@ -363,6 +369,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <constraint firstAttribute="bottom" secondItem="Qhg-Ga-ozT" secondAttribute="bottom" constant="20" id="EXY-I7-t4S"/>
                                     <constraint firstAttribute="centerY" secondItem="fhH-4Y-Gt5" secondAttribute="centerY" id="KiK-aI-B01"/>
                                     <constraint firstAttribute="centerY" secondItem="G7u-b7-NyN" secondAttribute="centerY" id="MO7-9M-CZ9"/>
+                                    <constraint firstItem="ttz-JU-f1H" firstAttribute="leading" secondItem="v7I-mu-q6E" secondAttribute="trailing" constant="8" id="STV-ou-Bhs"/>
+                                    <constraint firstItem="qei-aZ-LsZ" firstAttribute="top" secondItem="v7I-mu-q6E" secondAttribute="bottom" constant="8" id="Yoq-kF-nq6"/>
                                     <constraint firstItem="ttz-JU-f1H" firstAttribute="leading" secondItem="qei-aZ-LsZ" secondAttribute="trailing" constant="8" id="c8a-MR-T9A"/>
                                     <constraint firstItem="G7u-b7-NyN" firstAttribute="leading" secondItem="yhP-p4-IJa" secondAttribute="leading" constant="20" id="qQN-Ve-yz4"/>
                                     <constraint firstAttribute="trailing" secondItem="ttz-JU-f1H" secondAttribute="trailing" constant="20" id="r0X-uO-TK8"/>
@@ -387,6 +395,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outlet property="datePicker" destination="G7u-b7-NyN" id="fV4-Ti-DQw"/>
                         <outlet property="debtSummTextField" destination="Qhg-Ga-ozT" id="ua5-6s-26I"/>
                         <outlet property="doneButton" destination="ttz-JU-f1H" id="8XV-8I-E4B"/>
+                        <outlet property="remainderLabel" destination="v7I-mu-q6E" id="oDc-7u-hGx"/>
                         <outlet property="summLabel" destination="qei-aZ-LsZ" id="tF9-O5-ySt"/>
                     </connections>
                 </viewController>
