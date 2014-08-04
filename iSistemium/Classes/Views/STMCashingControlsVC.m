@@ -8,11 +8,13 @@
 
 #import "STMCashingControlsVC.h"
 #import "STMDebtsCombineVC.h"
+#import "STMConstants.h"
 
 @interface STMCashingControlsVC ()
 
 @property (nonatomic, strong) STMDebtsCombineVC *parentVC;
 
+@property (weak, nonatomic) IBOutlet UIView *controlsView;
 @property (weak, nonatomic) IBOutlet UIButton *cashingButton;
 
 @end
@@ -32,24 +34,80 @@
         
         _outlet = outlet;
         
+        if (_outlet) {
+            [self showControls];
+        }
+        
     }
     
 }
 
-- (IBAction)cashingButtonPressed:(id)sender {
+/*
+- (UIButton *)cashingButton {
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    
+    NSString *title = NSLocalizedString(@"CASHING", nil);
+    UIFont *font = [UIFont boldSystemFontOfSize:24];
+    
+    [button setTitle:title forState:UIControlStateNormal];
+    [button setTitleColor:ACTIVE_BLUE_COLOR forState:UIControlStateNormal];
+    button.titleLabel.font = font;
+    
+    NSDictionary *attributes = @{NSFontAttributeName:font};
+    CGSize size = [title sizeWithAttributes:attributes];
+    
+    CGFloat x = self.controlsView.center.x - size.width / 2;
+    CGFloat y = self.controlsView.center.y - size.height / 2;
+    
+    button.frame = CGRectMake(x, y, size.width, size.height);
+    
+    [button addTarget:self action:@selector(cashingButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    return button;
+    
+}
+*/
+
+- (void)cashingButtonPressed:(id)sender {
     
     NSLog(@"cashingButtonPressed");
     
-    NSLog(@"self.cashingButton.titleLabel.textColor %@", self.cashingButton.titleLabel.textColor);
+}
+
+- (void)hideControls {
     
-    NSLog(@"yellowColor %@", [UIColor yellowColor]);
+    self.controlsView.hidden = YES;
+    
+}
+
+- (void)showControls {
+    
+    self.controlsView.hidden = NO;
+//    [self showCashingButton];
+    
+}
+
+/*
+- (void)showCashingButton {
+    
+    [self.controlsView addSubview:self.cashingButton];
+    
+}
+*/
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
+    
 }
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];
+    if (!self.outlet) {
+        [self hideControls];
+    }
+    
     
 }
 
