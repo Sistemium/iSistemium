@@ -16,7 +16,7 @@
 #import "STMFunctions.h"
 #import "STMObjectsController.h"
 #import "STMCampaignsSVC.h"
-
+#import "STMConstants.h"
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -308,7 +308,7 @@
 
     self.currentSection = tag;
     
-    [(UIView *)[sender view] setBackgroundColor:[UIColor yellowColor]];
+    [(UIView *)[sender view] setBackgroundColor:STM_YELLOW_COLOR];
     
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
     
@@ -427,7 +427,7 @@
     if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
 
 //        headerView.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:1 alpha:1.0];
-        headerView.backgroundColor = [UIColor yellowColor];
+        headerView.backgroundColor = STM_YELLOW_COLOR;
 
     } else {
      
@@ -453,7 +453,7 @@
     }
     
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerView.frame.size.width, 1)];
-    line.backgroundColor = [UIColor colorWithRed:0.785 green:0.78 blue:0.8 alpha:1];
+    line.backgroundColor = GREY_LINE_COLOR;
     [headerView addSubview:line];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(outletHeaderPressed:)];

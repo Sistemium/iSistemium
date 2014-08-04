@@ -40,6 +40,9 @@
     
     NSLog(@"cashingButtonPressed");
     
+    NSLog(@"self.cashingButton.titleLabel.textColor %@", self.cashingButton.titleLabel.textColor);
+    
+    NSLog(@"yellowColor %@", [UIColor yellowColor]);
 }
 
 #pragma mark - view lifecycle

@@ -213,6 +213,7 @@
 		2C80C822198E4D9A0044ADE4 /* STMDebtsCombineVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebtsCombineVC.m; sourceTree = "<group>"; };
 		2C80C824198E505F0044ADE4 /* STMCashingControlsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCashingControlsVC.h; sourceTree = "<group>"; };
 		2C80C825198E505F0044ADE4 /* STMCashingControlsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCashingControlsVC.m; sourceTree = "<group>"; };
+		2C80C829198FB03C0044ADE4 /* STMConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMConstants.h; sourceTree = "<group>"; };
 		2C836949198651D800DA4316 /* STMDataModel 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 8.xcdatamodel"; sourceTree = "<group>"; };
 		2C8369561986714300DA4316 /* STMDebts.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts.storyboard; sourceTree = "<group>"; };
 		2C8369581986809900DA4316 /* STMDebtsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebtsTVC.h; sourceTree = "<group>"; };
@@ -504,6 +505,7 @@
 		2C8EF5D3194085B70021D202 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				2C80C829198FB03C0044ADE4 /* STMConstants.h */,
 				2C297F9519507A01000D9485 /* STMExtendNSLog.h */,
 				2C297F9619507A01000D9485 /* STMExtendNSLog.m */,
 				2C53B88C19409E71002298A5 /* STMSessionManager.h */,

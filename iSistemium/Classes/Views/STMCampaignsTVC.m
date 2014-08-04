@@ -18,6 +18,7 @@
 #import "STMOutlet.h"
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
+#import "STMConstants.h"
 
 @interface STMCampaignsTVC () <NSFetchedResultsControllerDelegate>
 
@@ -216,7 +217,8 @@
 
     
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
-    selectedBackgroundView.backgroundColor = [UIColor colorWithRed:0 green:0.48 blue:1 alpha:1];
+//    selectedBackgroundView.backgroundColor = [UIColor colorWithRed:0 green:0.48 blue:1 alpha:1];
+    selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
     
     cell.selectedBackgroundView = selectedBackgroundView;
     

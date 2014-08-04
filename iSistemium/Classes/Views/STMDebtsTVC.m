@@ -16,6 +16,8 @@
 #import "STMOutlet.h"
 #import "STMDebt.h"
 
+#import "STMConstants.h"
+
 
 @interface STMDebtsTVC () <NSFetchedResultsControllerDelegate>
 
@@ -155,7 +157,7 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", debtSum];
     
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
-    selectedBackgroundView.backgroundColor = [UIColor colorWithRed:0 green:0.48 blue:1 alpha:1];
+    selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
     
     cell.selectedBackgroundView = selectedBackgroundView;
     
