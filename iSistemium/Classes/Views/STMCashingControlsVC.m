@@ -69,10 +69,10 @@
 }
 */
 
-- (void)cashingButtonPressed:(id)sender {
-    
+- (IBAction)cashingButtonPressed:(id)sender {
+
     NSLog(@"cashingButtonPressed");
-    
+
 }
 
 - (void)hideControls {
@@ -108,6 +108,7 @@
         [self hideControls];
     }
     
+    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];
     
 }
 
