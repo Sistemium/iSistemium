@@ -55,19 +55,20 @@
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    NSString * segueName = segue.identifier;
-
-    if ([segueName isEqualToString: @"tableVC"]) {
+    if ([segue.identifier isEqualToString: @"tableVC"]) {
         
         self.tableVC = (STMOutletDebtsTVC *)[segue destinationViewController];
         self.tableVC.outlet = self.outlet;
         
-    } else if ([segueName isEqualToString: @"controlsVC"]) {
+    } else if ([segue.identifier isEqualToString: @"controlsVC"]) {
      
         self.controlsVC = (STMCashingControlsVC *)[segue destinationViewController];
         self.controlsVC.outlet = self.outlet;
+        self.controlsVC.tableVC = self.tableVC;
         
     }
+    
+    NSLog(@"self %@", self);
     
 }
 

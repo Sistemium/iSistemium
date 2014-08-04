@@ -13,5 +13,6 @@
 
 @property (nonatomic, strong) STMOutlet *outlet;
 
+@property (nonatomic, strong) NSDecimalNumber *totalSum;
 
 @end

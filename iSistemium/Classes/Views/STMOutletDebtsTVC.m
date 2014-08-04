@@ -54,9 +54,32 @@
     
 }
 
+- (NSDecimalNumber *)totalSum {
+    
+    if (!_totalSum) {
+        
+        NSDecimalNumber *totalSum = [NSDecimalNumber decimalNumberWithString:@"0.0"];
+        
+        for (STMDebt *debt in self.resultsController.fetchedObjects) {
+            
+            totalSum = [totalSum decimalNumberByAdding:debt.summ];
+            
+        }
+        
+        NSLog(@"totalSum %@", totalSum);
+        
+        _totalSum = totalSum;
+        
+    }
+    
+    return _totalSum;
+    
+}
+
 - (void)performFetch {
     
     self.resultsController = nil;
+    self.totalSum = nil;
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
