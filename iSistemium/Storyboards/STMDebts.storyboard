@@ -297,6 +297,9 @@
                                         <state key="normal" title="Cancel">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="Bhj-cs-cfa" eventType="touchUpInside" id="9b7-zp-IiE"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ttz-JU-f1H">
                                         <rect key="frame" x="691" y="160" width="57" height="41"/>
@@ -305,6 +308,9 @@
                                         <state key="normal" title="Done">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="doneButtonPressed:" destination="Bhj-cs-cfa" eventType="touchUpInside" id="53f-hI-cgM"/>
+                                        </connections>
                                     </button>
                                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="G7u-b7-NyN">
                                         <rect key="frame" x="20" y="0.0" width="320" height="216"/>
@@ -334,13 +340,30 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
 </mutableData>
                                         </timeZone>
                                     </datePicker>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summ" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qei-aZ-LsZ">
+                                        <rect key="frame" x="613" y="166" width="70" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="0.00" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Qhg-Ga-ozT">
+                                        <rect key="frame" x="348" y="166" width="55" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="Qhg-Ga-ozT" firstAttribute="leading" secondItem="G7u-b7-NyN" secondAttribute="trailing" constant="8" id="3wA-rW-Q6u"/>
+                                    <constraint firstItem="ttz-JU-f1H" firstAttribute="centerY" secondItem="qei-aZ-LsZ" secondAttribute="centerY" id="63G-SK-giy"/>
                                     <constraint firstItem="39W-GY-tIJ" firstAttribute="top" secondItem="yhP-p4-IJa" secondAttribute="top" constant="20" id="6Cn-3x-0BR"/>
                                     <constraint firstAttribute="bottom" secondItem="ttz-JU-f1H" secondAttribute="bottom" constant="15" id="9Kb-Ma-XN1"/>
+                                    <constraint firstAttribute="bottom" secondItem="Qhg-Ga-ozT" secondAttribute="bottom" constant="20" id="EXY-I7-t4S"/>
                                     <constraint firstAttribute="centerY" secondItem="fhH-4Y-Gt5" secondAttribute="centerY" id="KiK-aI-B01"/>
                                     <constraint firstAttribute="centerY" secondItem="G7u-b7-NyN" secondAttribute="centerY" id="MO7-9M-CZ9"/>
+                                    <constraint firstItem="ttz-JU-f1H" firstAttribute="leading" secondItem="qei-aZ-LsZ" secondAttribute="trailing" constant="8" id="c8a-MR-T9A"/>
                                     <constraint firstItem="G7u-b7-NyN" firstAttribute="leading" secondItem="yhP-p4-IJa" secondAttribute="leading" constant="20" id="qQN-Ve-yz4"/>
                                     <constraint firstAttribute="trailing" secondItem="ttz-JU-f1H" secondAttribute="trailing" constant="20" id="r0X-uO-TK8"/>
                                     <constraint firstAttribute="trailing" secondItem="39W-GY-tIJ" secondAttribute="trailing" constant="20" id="sDy-c6-tfO"/>
@@ -358,8 +381,13 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     </view>
                     <toolbarItems/>
                     <connections>
+                        <outlet property="cancelButton" destination="39W-GY-tIJ" id="wRO-7u-Vyf"/>
                         <outlet property="cashingButton" destination="fhH-4Y-Gt5" id="Eeb-lv-brK"/>
                         <outlet property="controlsView" destination="yhP-p4-IJa" id="DAl-Ao-vVJ"/>
+                        <outlet property="datePicker" destination="G7u-b7-NyN" id="fV4-Ti-DQw"/>
+                        <outlet property="debtSummTextField" destination="Qhg-Ga-ozT" id="ua5-6s-26I"/>
+                        <outlet property="doneButton" destination="ttz-JU-f1H" id="8XV-8I-E4B"/>
+                        <outlet property="summLabel" destination="qei-aZ-LsZ" id="tF9-O5-ySt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Ca-q5-GNV" userLabel="First Responder" sceneMemberID="firstResponder"/>

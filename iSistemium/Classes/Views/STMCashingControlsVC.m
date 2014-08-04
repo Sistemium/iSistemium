@@ -16,6 +16,13 @@
 
 @property (weak, nonatomic) IBOutlet UIView *controlsView;
 @property (weak, nonatomic) IBOutlet UIButton *cashingButton;
+@property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
+@property (weak, nonatomic) IBOutlet UIButton *doneButton;
+@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+@property (weak, nonatomic) IBOutlet UILabel *summLabel;
+@property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
+
+
 
 @end
 
@@ -75,6 +82,12 @@
 
 }
 
+- (IBAction)cancelButtonPressed:(id)sender {
+}
+
+- (IBAction)doneButtonPressed:(id)sender {
+}
+
 - (void)hideControls {
     
     self.controlsView.hidden = YES;
@@ -109,6 +122,8 @@
     }
     
     [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];
+    [self.cancelButton setTitle:NSLocalizedString(@"CANCEL", nil) forState:UIControlStateNormal];
+    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     
 }
 
