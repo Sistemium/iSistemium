@@ -26,6 +26,17 @@
 
 @implementation STMCashingControlsVC
 
+- (NSMutableArray *)debtsArray {
+    
+    if (!_debtsArray) {
+        
+        _debtsArray = [NSMutableArray array];
+        
+    }
+    
+    return _debtsArray;
+    
+}
 
 - (void)setOutlet:(STMOutlet *)outlet {
     
@@ -57,10 +68,42 @@
         
         self.summLabel.text = [NSString stringWithFormat:@"%.2f", summ];
         
+        double remainderSumm = [self.remainderLabel.text doubleValue];
+        
+        remainderSumm -= [debt.summ doubleValue];
+        
+        self.remainderLabel.text = [NSString stringWithFormat:@"%.2f", remainderSumm];
+        
+        [self.debtsArray addObject:debt];
+        
         _debt = debt;
         
     }
 
+}
+
+- (void)removeCashing:(STMDebt *)debt {
+    
+    if (debt && [self.debtsArray containsObject:debt]) {
+        
+        self.debtSummTextField.text = @"0.00";
+
+        double summ = [self.summLabel.text doubleValue];
+        
+        summ -= [debt.summ doubleValue];
+        
+        self.summLabel.text = [NSString stringWithFormat:@"%.2f", summ];
+
+        double remainderSumm = [self.remainderLabel.text doubleValue];
+        
+        remainderSumm += [debt.summ doubleValue];
+        
+        self.remainderLabel.text = [NSString stringWithFormat:@"%.2f", remainderSumm];
+
+        [self.debtsArray removeObject:debt];
+        
+    }
+    
 }
 
 - (IBAction)cashingButtonPressed:(id)sender {
