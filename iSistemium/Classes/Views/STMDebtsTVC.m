@@ -15,6 +15,7 @@
 
 #import "STMOutlet.h"
 #import "STMDebt.h"
+#import "STMCashing.h"
 
 #import "STMConstants.h"
 
@@ -145,16 +146,8 @@
 
     STMOutlet *outlet = sectionInfo.objects[indexPath.row];
     
-    NSDecimalNumber *debtSum = [NSDecimalNumber decimalNumberWithString:@"0"];
-    
-    for (STMDebt *debt in outlet.debts) {
-        
-        debtSum = [debtSum decimalNumberByAdding:debt.summ];
-
-    }
-    
     cell.textLabel.text = outlet.shortName;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", debtSum];
+    cell.detailTextLabel.text = [self detailedTextForOutlet:outlet];
     
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
@@ -182,6 +175,37 @@
     
 }
 
+
+
+- (NSString *)detailedTextForOutlet:(STMOutlet *)outlet {
+    
+    NSDecimalNumber *debtSum = [NSDecimalNumber zero];
+    
+    for (STMDebt *debt in outlet.debts) {
+        
+        debtSum = [debtSum decimalNumberByAdding:debt.summ];
+        
+    }
+    
+    NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+    
+    for (STMCashing *cashing in outlet.cashings) {
+        
+        cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+        
+    }
+    
+    NSString *detailedText = nil;
+    
+    if ([cashingSum compare:[NSDecimalNumber zero]] == NSOrderedSame) {
+        detailedText = [NSString stringWithFormat:@"%@", debtSum];
+    } else {
+        detailedText = [NSString stringWithFormat:@"%@ (%@)", debtSum, cashingSum];
+    }
+
+    return detailedText;
+    
+}
 
 /*
 // Override to support conditional editing of the table view.

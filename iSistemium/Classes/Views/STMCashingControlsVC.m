@@ -222,7 +222,7 @@
 
     NSLog(@"debtSummTextField %f", [self.debtSummTextField.text doubleValue]);
     
-    NSScanner* scan = [NSScanner scannerWithString:self.debtSummTextField.text];
+    NSScanner *scan = [NSScanner scannerWithString:self.debtSummTextField.text];
     int val;
     return [scan scanInt:&val] && [scan isAtEnd];
     

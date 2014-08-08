@@ -16,7 +16,7 @@
         
         if (phoneNumberString.length == 11) {
             
-            NSScanner* scan = [NSScanner scannerWithString:phoneNumberString];
+            NSScanner *scan = [NSScanner scannerWithString:phoneNumberString];
             int val;
             return [scan scanInt:&val] && [scan isAtEnd];
             
@@ -32,7 +32,7 @@
     
     if (SMSCode.length == 4) {
 
-        NSScanner* scan = [NSScanner scannerWithString:SMSCode];
+        NSScanner *scan = [NSScanner scannerWithString:SMSCode];
         int val;
         return [scan scanInt:&val] && [scan isAtEnd];
 
@@ -50,8 +50,8 @@
     for (i = 0; i+2 <= string.length; i+=2) {
         
         NSRange range = NSMakeRange(i, 2);
-        NSString* hexString = [string substringWithRange:range];
-        NSScanner* scanner = [NSScanner scannerWithString:hexString];
+        NSString *hexString = [string substringWithRange:range];
+        NSScanner *scanner = [NSScanner scannerWithString:hexString];
         unsigned int intValue;
         [scanner scanHexInt:&intValue];
         [data appendBytes:&intValue length:1];
