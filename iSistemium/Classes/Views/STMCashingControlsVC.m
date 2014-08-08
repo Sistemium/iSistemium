@@ -37,6 +37,7 @@
             
             self.remainderLabel.text = [NSString stringWithFormat:@"%@", self.tableVC.totalSum];
             [self showControls];
+            [self.controlsView endEditing:YES];
             
         }
         
