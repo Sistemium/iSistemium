@@ -11,7 +11,7 @@
 #import "STMSessionManager.h"
 #import "STMDebt.h"
 #import "STMDebtsCombineVC.h"
-
+#import "STMConstants.h"
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
@@ -171,6 +171,12 @@
 
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    
+    [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+
+}
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -180,9 +186,11 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
+    
+    [self customInit];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
