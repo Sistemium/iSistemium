@@ -83,9 +83,15 @@
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
+        
         NSLog(@"performFetch error %@", error);
+        
     } else {
+        
+        [self.tableView setEditing:NO animated:YES];
+        [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
         [self.tableView reloadData];
+        
     }
     
 }
@@ -148,6 +154,12 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    if ([[self.parentVC.controlsVC.debtsDictionary allKeys] containsObject:debt.xid]) {
+        [cell setTintColor:ACTIVE_BLUE_COLOR];
+    } else {
+        [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+    }
+    
     return cell;
     
 }
@@ -181,7 +193,7 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
         STMDebt *debt = sectionInfo.objects[indexPath.row];
 
-        self.parentVC.controlsVC.debt = debt;
+        [self.parentVC.controlsVC addCashing:debt];
         
     }
     

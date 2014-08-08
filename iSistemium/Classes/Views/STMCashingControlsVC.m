@@ -20,21 +20,19 @@
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
 
-
-
 @end
 
 @implementation STMCashingControlsVC
 
-- (NSMutableArray *)debtsArray {
+- (NSMutableDictionary *)debtsDictionary {
     
-    if (!_debtsArray) {
+    if (!_debtsDictionary) {
         
-        _debtsArray = [NSMutableArray array];
+        _debtsDictionary = [NSMutableDictionary dictionary];
         
     }
     
-    return _debtsArray;
+    return _debtsDictionary;
     
 }
 
@@ -47,7 +45,8 @@
         if (_outlet) {
             
             self.remainderLabel.text = [NSString stringWithFormat:@"%@", self.tableVC.totalSum];
-            [self showControls];
+            self.debtsDictionary = nil;
+            [self showControlsView];
             [self.controlsView endEditing:YES];
             
         }
@@ -56,51 +55,27 @@
     
 }
 
-- (void)setDebt:(STMDebt *)debt {
+- (void)addCashing:(STMDebt *)debt {
     
-    if (_debt != debt) {
+    if (debt) {
         
         self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debt.summ];
-
-        double summ = [self.summLabel.text doubleValue];
         
-        summ += [debt.summ doubleValue];
-        
-        self.summLabel.text = [NSString stringWithFormat:@"%.2f", summ];
-        
-        double remainderSumm = [self.remainderLabel.text doubleValue];
-        
-        remainderSumm -= [debt.summ doubleValue];
-        
-        self.remainderLabel.text = [NSString stringWithFormat:@"%.2f", remainderSumm];
-        
-        [self.debtsArray addObject:debt];
-        
-        _debt = debt;
+        [self.debtsDictionary setObject:@[debt, debt.summ] forKey:debt.xid];
+        [self updateControlLabels];
         
     }
-
+    
 }
 
 - (void)removeCashing:(STMDebt *)debt {
     
-    if (debt && [self.debtsArray containsObject:debt]) {
+    if (debt && [[self.debtsDictionary allKeys] containsObject:debt.xid]) {
         
         self.debtSummTextField.text = @"0.00";
 
-        double summ = [self.summLabel.text doubleValue];
-        
-        summ -= [debt.summ doubleValue];
-        
-        self.summLabel.text = [NSString stringWithFormat:@"%.2f", summ];
-
-        double remainderSumm = [self.remainderLabel.text doubleValue];
-        
-        remainderSumm += [debt.summ doubleValue];
-        
-        self.remainderLabel.text = [NSString stringWithFormat:@"%.2f", remainderSumm];
-
-        [self.debtsArray removeObject:debt];
+        [self.debtsDictionary removeObjectForKey:debt.xid];
+        [self updateControlLabels];
         
     }
     
@@ -109,7 +84,6 @@
 - (IBAction)cashingButtonPressed:(id)sender {
 
     [self showCashingControls];
-
     [self.tableVC.tableView setEditing:YES animated:YES];
     
 }
@@ -117,7 +91,6 @@
 - (IBAction)cancelButtonPressed:(id)sender {
 
     [self.tableVC.tableView setEditing:NO animated:YES];
-
     [self showCashingButton];
     
 }
@@ -125,40 +98,62 @@
 - (IBAction)doneButtonPressed:(id)sender {
 
     [self.tableVC.tableView setEditing:NO animated:YES];
-
     [self showCashingButton];
 
 }
 
-- (void)hideControls {
+- (void)hideControlsView {
     
     self.controlsView.hidden = YES;
     
 }
 
-- (void)showControls {
+- (void)showControlsView {
     
     self.controlsView.hidden = NO;
+    [self updateControlLabels];
     [self showCashingButton];
     
 }
 
+- (void)updateControlLabels {
+    
+    NSDecimalNumber *sum = [NSDecimalNumber decimalNumberWithString:@"0"];
+    NSDecimalNumber *remainderSum = self.tableVC.totalSum;
+    
+    for (NSArray *debtValues in [self.debtsDictionary allValues]) {
+        
+        NSDecimalNumber *cashing = debtValues[1];
+        
+        sum = [sum decimalNumberByAdding:cashing];
+        
+        remainderSum = [remainderSum decimalNumberBySubtracting:cashing];
+        
+    }
+    
+    self.summLabel.text = [NSString stringWithFormat:@"%@", sum];
+    self.remainderLabel.text = [NSString stringWithFormat:@"%@", remainderSum];
+
+}
 
 - (void)showCashingButton {
     
     self.cashingButton.hidden = NO;
+    
     self.datePicker.hidden = YES;
     self.cancelButton.hidden = YES;
     self.doneButton.hidden = YES;
     self.summLabel.hidden = YES;
     self.remainderLabel.hidden = YES;
     self.debtSummTextField.hidden = YES;
+    self.debtSummTextField.text = @"0.00";
     
 }
 
 - (void)showCashingControls {
 
     self.cashingButton.hidden = YES;
+    
     self.datePicker.hidden = NO;
     self.cancelButton.hidden = NO;
     self.doneButton.hidden = NO;
@@ -235,7 +230,7 @@
     [self addObservers];
     
     if (!self.outlet) {
-        [self hideControls];
+        [self hideControlsView];
     }
     
     [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];

@@ -15,9 +15,9 @@
 
 @property (nonatomic, strong) STMOutlet *outlet;
 @property (nonatomic, strong) STMOutletDebtsTVC *tableVC;
-@property (nonatomic, strong) STMDebt *debt;
-@property (nonatomic, strong) NSMutableArray *debtsArray;
+@property (nonatomic, strong) NSMutableDictionary *debtsDictionary;
 
+- (void)addCashing:(STMDebt *)debt;
 - (void)removeCashing:(STMDebt *)debt;
 
 @end
