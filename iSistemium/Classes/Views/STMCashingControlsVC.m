@@ -45,6 +45,18 @@
     
 }
 
+- (void)setDebt:(STMDebt *)debt {
+    
+    if (_debt != debt) {
+        
+        self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debt.summ];
+        
+        _debt = debt;
+        
+    }
+
+}
+
 - (IBAction)cashingButtonPressed:(id)sender {
 
     [self showCashingControls];

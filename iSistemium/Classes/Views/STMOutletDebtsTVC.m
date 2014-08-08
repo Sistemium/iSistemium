@@ -169,11 +169,30 @@
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView.editing) {
+        
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];        
+        [cell setTintColor:ACTIVE_BLUE_COLOR];
+
+        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
+        STMDebt *debt = sectionInfo.objects[indexPath.row];
+
+        self.parentVC.controlsVC.debt = debt;
+        
+    }
+    
+    return indexPath;
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+    self.tableView.allowsSelectionDuringEditing = YES;
 
 }
 
