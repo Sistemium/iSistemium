@@ -649,6 +649,8 @@
 //        NSLog(@"second attempt for %@", href);
     }
     
+    __weak NSManagedObject *weakObject = object;
+    
     [self.downloadQueue addOperationWithBlock:^{
         
 //        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -682,7 +684,7 @@
 //                        });
 
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
+                            [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
                         });
 
 //                        NSLog(@"secondAttempt.count %d", self.secondAttempt.count);
@@ -701,7 +703,16 @@
 //                NSLog(@"%@ load successefully", href);
                 
                 [self.hrefDictionary removeObjectForKey:href];
-                [[self class] setImagesFromData:data forPicture:(STMPicture *)object];
+                
+                NSData *dataCopy = [data copy];
+                    
+                @autoreleasepool {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
+                        
+                        [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
+                        
+                    });
+                }
                 
 //                NSLog(@"hrefDictionary.allKeys2 %d", self.hrefDictionary.allKeys.count);
                 
@@ -801,70 +812,68 @@
 
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
 
-    NSString *fileName = nil;
-    NSString *fileType = nil;
+//    NSLog(@"data.length %d", data.length);
     
-    __block BOOL pngType;
-
-    if ([picture isKindOfClass:[STMCampaignPicture class]]) {
-
-        fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
-        fileType = [[[fileName componentsSeparatedByString:@"."] lastObject] lowercaseString];
-        
-        pngType = [fileType isEqualToString:@"png"];
-
-    } else if ([picture isKindOfClass:[STMPhoto class]]) {
-        
-        NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
-        fileName = [xid stringByAppendingString:@".jpg"];
-        pngType = NO;
-//        NSLog(@"fileName %@", fileName);
-        
-        [[self sharedController] addUploadOperationForPhoto:(STMPhoto *)picture withFileName:fileName data:data];
-        
-    }
+    NSData *weakData = data;
+    STMPicture *weakPicture = picture;
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
-    NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
+//    NSLog(@"weakData.length %d", weakData.length);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
 
-        UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *fileName = nil;
 
-//            if (pngType) {
-//                picture.imageThumbnail = UIImagePNGRepresentation(imageThumbnail);
-//            } else {
-                picture.imageThumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
-//            }
+        if ([picture isKindOfClass:[STMCampaignPicture class]]) {
+
+            fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
+
+        } else if ([picture isKindOfClass:[STMPhoto class]]) {
             
+            NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
+            fileName = [xid stringByAppendingString:@".jpg"];
+            
+            [[self sharedController] addUploadOperationForPhoto:(STMPhoto *)picture withFileName:fileName data:weakData];
+            
+        }
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+        NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
+    
+//        NSLog(@"weakData %d", weakData.length);
+    
+        UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:weakData] toSize:CGSizeMake(150, 150)];
+        NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
+//        NSLog(@"thumbnail before the block %@", thumbnail);
+    
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+//            NSLog(@"weakPicture %@", weakPicture);
+//            NSLog(@"thumbnail %@", thumbnail);
+
+                weakPicture.imageThumbnail = thumbnail;
         
         });
 
-        [data writeToFile:imagePath atomically:YES];
+        [weakData writeToFile:imagePath atomically:YES];
 
-        UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
+        UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:weakData] toSize:CGSizeMake(1024, 1024)];
         NSData *resizedImageData = nil;
         
-//        if (pngType) {
-//            resizedImageData = UIImagePNGRepresentation(resizedImage);
-//        } else {
             resizedImageData = UIImageJPEGRepresentation(resizedImage, 0.0);
-//        }
         
         [resizedImageData writeToFile:resizedImagePath atomically:YES];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            picture.imagePath = imagePath;
-            picture.resizedImagePath = resizedImagePath;
+            weakPicture.imagePath = imagePath;
+            weakPicture.resizedImagePath = resizedImagePath;
             
         });
         
-    });
+   // });
 
 }
 
