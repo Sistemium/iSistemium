@@ -9,7 +9,7 @@
 #import "STMCashingControlsVC.h"
 #import "STMConstants.h"
 
-@interface STMCashingControlsVC ()
+@interface STMCashingControlsVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *controlsView;
 @property (weak, nonatomic) IBOutlet UIButton *cashingButton;
@@ -60,6 +60,7 @@
     if (debt) {
         
         self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debt.summ];
+        self.debtSummTextField.hidden = NO;
         
         [self.debtsDictionary setObject:@[debt, debt.summ] forKey:debt.xid];
         [self updateControlLabels];
@@ -73,6 +74,7 @@
     if (debt && [[self.debtsDictionary allKeys] containsObject:debt.xid]) {
         
         self.debtSummTextField.text = @"0.00";
+        self.debtSummTextField.hidden = YES;
 
         [self.debtsDictionary removeObjectForKey:debt.xid];
         [self updateControlLabels];
@@ -148,6 +150,12 @@
     self.debtSummTextField.hidden = YES;
     self.debtSummTextField.text = @"0.00";
     
+    self.debtsDictionary = nil;
+    
+    [self updateControlLabels];
+    
+    [self.tableVC.tableView reloadData];
+    
 }
 
 - (void)showCashingControls {
@@ -159,7 +167,7 @@
     self.doneButton.hidden = NO;
     self.summLabel.hidden = NO;
     self.remainderLabel.hidden = NO;
-    self.debtSummTextField.hidden = NO;
+//    self.debtSummTextField.hidden = NO;
 
 }
 
@@ -210,6 +218,34 @@
     
 }
 
+- (BOOL)isCorrectDebtSumValue {
+
+    NSLog(@"debtSummTextField %f", [self.debtSummTextField.text doubleValue]);
+    
+    NSScanner* scan = [NSScanner scannerWithString:self.debtSummTextField.text];
+    int val;
+    return [scan scanInt:&val] && [scan isAtEnd];
+    
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    
+    return [self isCorrectDebtSumValue];
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+
+    [textField resignFirstResponder];
+    return YES;
+    
+}
+
+
+#pragma mark - observers
+
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -238,6 +274,10 @@
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     self.summLabel.text = @"0.00";
     self.remainderLabel.text = [NSString stringWithFormat:@"%@", self.tableVC.totalSum];
+    
+    self.debtSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
+    self.debtSummTextField.hidden = YES;
+    self.debtSummTextField.delegate = self;
     
 }
 
