@@ -150,6 +150,24 @@
     
 }
 
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (tableView.editing) {
+        
+        return UITableViewCellEditingStyleNone;
+
+    } else {
+        
+        return UITableViewCellEditingStyleDelete;
+    }
+    
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    return NO;
+    
+}
 
 #pragma mark - view lifecycle
 

@@ -232,7 +232,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="debtDetailsCell" textLabel="0Vy-Uu-bk6" detailTextLabel="v8g-Iy-5Pe" style="IBUITableViewCellStyleSubtitle" id="RL8-KJ-9dM">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="debtDetailsCell" editingAccessoryType="checkmark" textLabel="0Vy-Uu-bk6" detailTextLabel="v8g-Iy-5Pe" style="IBUITableViewCellStyleSubtitle" id="RL8-KJ-9dM">
                                 <rect key="frame" x="0.0" y="22" width="768" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RL8-KJ-9dM" id="Him-4f-X4W">

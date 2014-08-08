@@ -49,15 +49,21 @@
 
     [self showCashingControls];
 
+    [self.tableVC.tableView setEditing:YES animated:YES];
+    
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
-    
+
+    [self.tableVC.tableView setEditing:NO animated:YES];
+
     [self showCashingButton];
     
 }
 
 - (IBAction)doneButtonPressed:(id)sender {
+
+    [self.tableVC.tableView setEditing:NO animated:YES];
 
     [self showCashingButton];
 
