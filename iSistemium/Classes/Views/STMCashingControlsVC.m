@@ -50,6 +50,12 @@
     if (_debt != debt) {
         
         self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debt.summ];
+
+        double summ = [self.summLabel.text doubleValue];
+        
+        summ += [debt.summ doubleValue];
+        
+        self.summLabel.text = [NSString stringWithFormat:@"%.2f", summ];
         
         _debt = debt;
         
