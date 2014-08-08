@@ -66,7 +66,7 @@
             
         }
         
-        NSLog(@"totalSum %@", totalSum);
+//        NSLog(@"totalSum %@", totalSum);
         
         _totalSum = totalSum;
         
@@ -89,7 +89,6 @@
     } else {
         
         [self.tableView setEditing:NO animated:YES];
-        [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
         [self.tableView reloadData];
         
     }

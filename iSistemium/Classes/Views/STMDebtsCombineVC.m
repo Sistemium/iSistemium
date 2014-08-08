@@ -68,7 +68,7 @@
         
     }
     
-    NSLog(@"self %@", self);
+//    NSLog(@"self %@", self);
     
 }
 
