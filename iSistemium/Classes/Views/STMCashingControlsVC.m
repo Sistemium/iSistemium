@@ -105,9 +105,61 @@
     
 }
 
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
+    [self moveTextFieldViewByDictance:keyboardHeight-tabBarHeight];
+    
+}
+
+- (void)keyboardWillBeHidden:(NSNotification *)notification {
+
+    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
+    [self moveTextFieldViewByDictance:tabBarHeight-keyboardHeight];
+
+}
+
+- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
+    
+    CGRect keyboardRect = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
+    
+    return keyboardRect.size.height;
+
+}
+
+- (void)moveTextFieldViewByDictance:(CGFloat)distance {
+
+    const float movementDuration = 0.3f;
+
+    [UIView beginAnimations:@"animation" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:movementDuration];
+    self.view.frame = CGRectOffset(self.view.frame, 0, -distance);
+    [UIView commitAnimations];
+
+}
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [self addObservers];
     
     if (!self.outlet) {
         [self hideControls];
