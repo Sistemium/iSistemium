@@ -140,7 +140,12 @@
     [UIView setAnimationDuration:movementDuration];
     self.view.frame = CGRectOffset(self.view.frame, 0, -distance);
     [UIView commitAnimations];
+    
+    CGRect tableVCFrame = self.tableVC.tableView.frame;
+    CGFloat newHeight = tableVCFrame.size.height - distance;
 
+    self.tableVC.tableView.frame = CGRectMake(tableVCFrame.origin.x, tableVCFrame.origin.y, tableVCFrame.size.width, newHeight);
+    
 }
 
 - (void)addObservers {

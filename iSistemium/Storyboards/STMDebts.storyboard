@@ -187,7 +187,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <containerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c2U-S2-sBk">
+                            <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c2U-S2-sBk">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="808"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -209,7 +209,11 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="c2U-S2-sBk" firstAttribute="leading" secondItem="rsI-TL-EGV" secondAttribute="leading" id="Gjl-Ep-VMR"/>
+                            <constraint firstItem="CR3-pF-Zcy" firstAttribute="top" secondItem="c2U-S2-sBk" secondAttribute="bottom" id="Lx4-i9-661"/>
+                            <constraint firstItem="c2U-S2-sBk" firstAttribute="top" secondItem="rsI-TL-EGV" secondAttribute="top" id="OxL-xh-tuu"/>
                             <constraint firstItem="39P-sH-iI7" firstAttribute="top" secondItem="CR3-pF-Zcy" secondAttribute="bottom" id="b72-mA-lil"/>
+                            <constraint firstAttribute="trailing" secondItem="c2U-S2-sBk" secondAttribute="trailing" id="f4G-XL-hxO"/>
                             <constraint firstAttribute="trailing" secondItem="CR3-pF-Zcy" secondAttribute="trailing" id="ky2-MH-NNz"/>
                             <constraint firstItem="CR3-pF-Zcy" firstAttribute="leading" secondItem="rsI-TL-EGV" secondAttribute="leading" id="mjg-Bt-wkI"/>
                         </constraints>
