@@ -53,7 +53,10 @@
             
             self.debtsDictionary = nil;
             [self showControlsView];
+            
+            self.debtSummTextField.delegate = nil;
             [self.controlsView endEditing:YES];
+            self.debtSummTextField.delegate = self;
             
         }
         
@@ -89,6 +92,10 @@
 
         self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
         self.debtSummTextField.hidden = YES;
+
+        self.debtSummTextField.delegate = nil;
+        [self.controlsView endEditing:YES];
+        self.debtSummTextField.delegate = self;
 
         [self.debtsDictionary removeObjectForKey:debt.xid];
         [self updateControlLabels];
