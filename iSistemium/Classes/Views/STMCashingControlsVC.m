@@ -44,7 +44,13 @@
         
         if (_outlet) {
             
-            self.remainderLabel.text = [NSString stringWithFormat:@"%@", self.tableVC.totalSum];
+            NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+
+            NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
+            
+            self.remainderLabel.text = [NSString stringWithFormat:@"%@", totalSumString];
+            
             self.debtsDictionary = nil;
             [self showControlsView];
             [self.controlsView endEditing:YES];
@@ -59,7 +65,12 @@
     
     if (debt) {
         
-        self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debt.summ];
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+
+        NSString *debtSum = [numberFormatter stringFromNumber:debt.summ];
+        
+        self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debtSum];
         self.debtSummTextField.hidden = NO;
         
         [self.debtsDictionary setObject:@[debt, debt.summ] forKey:debt.xid];
@@ -73,7 +84,10 @@
     
     if (debt && [[self.debtsDictionary allKeys] containsObject:debt.xid]) {
         
-        self.debtSummTextField.text = @"0.00";
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+
+        self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
         self.debtSummTextField.hidden = YES;
 
         [self.debtsDictionary removeObjectForKey:debt.xid];
@@ -120,7 +134,10 @@
 
 - (void)updateControlLabels {
     
-    NSDecimalNumber *sum = [NSDecimalNumber decimalNumberWithString:@"0"];
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    NSDecimalNumber *sum = [NSDecimalNumber zero];
     NSDecimalNumber *remainderSum = self.tableVC.totalSum;
     
     for (NSArray *debtValues in [self.debtsDictionary allValues]) {
@@ -133,8 +150,11 @@
         
     }
     
-    self.summLabel.text = [NSString stringWithFormat:@"%@", sum];
-    self.remainderLabel.text = [NSString stringWithFormat:@"%@", remainderSum];
+    NSString *sumString = [numberFormatter stringFromNumber:sum];
+    NSString *remainderSumString = [numberFormatter stringFromNumber:remainderSum];
+    
+    self.summLabel.text = [NSString stringWithFormat:@"%@", sumString];
+    self.remainderLabel.text = [NSString stringWithFormat:@"%@", remainderSumString];
 
 }
 
@@ -148,7 +168,11 @@
     self.summLabel.hidden = YES;
     self.remainderLabel.hidden = YES;
     self.debtSummTextField.hidden = YES;
-    self.debtSummTextField.text = @"0.00";
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
     
     self.debtsDictionary = nil;
     
@@ -221,6 +245,19 @@
 - (BOOL)isCorrectDebtSumValue {
 
     NSLog(@"debtSummTextField %f", [self.debtSummTextField.text doubleValue]);
+
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
+    
+    NSLog(@"number %@", number);
+    
+    numberFormatter.generatesDecimalNumbers = YES;
+    
+    NSNumber *decimalNumber = [numberFormatter numberFromString:self.debtSummTextField.text];
+    
+    NSLog(@"decimalNumber %@", decimalNumber);
     
     NSScanner *scan = [NSScanner scannerWithString:self.debtSummTextField.text];
     int val;
@@ -272,8 +309,15 @@
     [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];
     [self.cancelButton setTitle:NSLocalizedString(@"CANCEL", nil) forState:UIControlStateNormal];
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
-    self.summLabel.text = @"0.00";
-    self.remainderLabel.text = [NSString stringWithFormat:@"%@", self.tableVC.totalSum];
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    self.summLabel.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
+    
+    NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
+    
+    self.remainderLabel.text = [NSString stringWithFormat:@"%@", totalSumString];
     
     self.debtSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.debtSummTextField.hidden = YES;

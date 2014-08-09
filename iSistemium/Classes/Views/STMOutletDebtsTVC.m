@@ -139,17 +139,23 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
     
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+
     STMDebt *debt = sectionInfo.objects[indexPath.row];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@", debt.summ];
+    NSString *debtSumString = [numberFormatter stringFromNumber:debt.summ];
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"%@", debtSumString];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
     NSString *debtDate = [dateFormatter stringFromDate:debt.date];
+    NSString *debtSumOriginString = [numberFormatter stringFromNumber:debt.summOrigin];
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debt.summOrigin];
+    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     

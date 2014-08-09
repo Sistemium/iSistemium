@@ -179,6 +179,9 @@
 
 - (NSString *)detailedTextForOutlet:(STMOutlet *)outlet {
     
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
     NSDecimalNumber *debtSum = [NSDecimalNumber zero];
     
     for (STMDebt *debt in outlet.debts) {
@@ -186,6 +189,8 @@
         debtSum = [debtSum decimalNumberByAdding:debt.summ];
         
     }
+    
+    NSString *debtSumString = [numberFormatter stringFromNumber:debtSum];
     
     NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
     
@@ -195,12 +200,18 @@
         
     }
     
+    NSString *cashingSumString = [numberFormatter stringFromNumber:cashingSum];
+    
     NSString *detailedText = nil;
     
     if ([cashingSum compare:[NSDecimalNumber zero]] == NSOrderedSame) {
-        detailedText = [NSString stringWithFormat:@"%@", debtSum];
+        
+        detailedText = [NSString stringWithFormat:@"%@", debtSumString];
+        
     } else {
-        detailedText = [NSString stringWithFormat:@"%@ (%@)", debtSum, cashingSum];
+        
+        detailedText = [NSString stringWithFormat:@"%@ (%@)", debtSumString, cashingSumString];
+        
     }
 
     return detailedText;
