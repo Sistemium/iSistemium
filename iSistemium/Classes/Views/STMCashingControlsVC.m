@@ -244,8 +244,6 @@
 
 - (BOOL)isCorrectDebtSumValue {
 
-    NSLog(@"debtSummTextField %f", [self.debtSummTextField.text doubleValue]);
-
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     
@@ -253,15 +251,7 @@
     
     NSLog(@"number %@", number);
     
-    numberFormatter.generatesDecimalNumbers = YES;
-    
-    NSNumber *decimalNumber = [numberFormatter numberFromString:self.debtSummTextField.text];
-    
-    NSLog(@"decimalNumber %@", decimalNumber);
-    
-    NSScanner *scan = [NSScanner scannerWithString:self.debtSummTextField.text];
-    int val;
-    return [scan scanInt:&val] && [scan isAtEnd];
+    return [number boolValue];
     
 }
 
