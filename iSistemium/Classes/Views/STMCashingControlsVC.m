@@ -20,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
 
+@property (nonatomic, strong) STMDebt *selectedDebt;
+
 @end
 
 @implementation STMCashingControlsVC
@@ -77,6 +79,8 @@
         self.debtSummTextField.hidden = NO;
         
         [self.debtsDictionary setObject:@[debt, debt.summ] forKey:debt.xid];
+        self.selectedDebt = debt;
+        
         [self updateControlLabels];
         
     }
@@ -98,6 +102,8 @@
         self.debtSummTextField.delegate = self;
 
         [self.debtsDictionary removeObjectForKey:debt.xid];
+        self.selectedDebt = nil;
+        
         [self updateControlLabels];
         
     }
@@ -256,8 +262,6 @@
     
     NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
     
-    NSLog(@"number %@", number);
-    
     return [number boolValue];
     
 }
@@ -267,6 +271,22 @@
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
     
     return [self isCorrectDebtSumValue];
+    
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
+    NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
+    
+    [self.debtsDictionary setObject:@[self.selectedDebt, cashingSum] forKey:self.selectedDebt.xid];
+
+    [self.tableVC updateRowWithDebt:self.selectedDebt];
+    
+    [self updateControlLabels];
     
 }
 

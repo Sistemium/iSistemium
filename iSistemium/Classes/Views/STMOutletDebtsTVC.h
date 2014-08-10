@@ -15,4 +15,6 @@
 
 @property (nonatomic, strong) NSDecimalNumber *totalSum;
 
+- (void)updateRowWithDebt:(STMDebt *)debt;
+
 @end

@@ -118,6 +118,19 @@
 }
 
 
+- (void)updateRowWithDebt:(STMDebt *)debt {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:debt];
+    
+    if ([self.tableView cellForRowAtIndexPath:indexPath]) {
+        
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+    }
+    
+}
+
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -160,9 +173,25 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     if ([[self.parentVC.controlsVC.debtsDictionary allKeys] containsObject:debt.xid]) {
-        [cell setTintColor:ACTIVE_BLUE_COLOR];
+        
+        NSDecimalNumber *cashingSum = [self.parentVC.controlsVC.debtsDictionary objectForKey:debt.xid][1];
+        
+        if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
+            
+            [cell setTintColor:STM_LIGHT_BLUE_COLOR];
+            
+        } else {
+        
+            [cell setTintColor:ACTIVE_BLUE_COLOR];
+
+        }
+        
+        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        
     } else {
+        
         [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+        
     }
     
     return cell;
@@ -231,7 +260,9 @@
     [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
-
+    
+    self.clearsSelectionOnViewWillAppear = NO;
+    
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
