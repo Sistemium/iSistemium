@@ -73,7 +73,14 @@
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
 
-        NSString *debtSum = [numberFormatter stringFromNumber:debt.summ];
+        NSMutableString *debtSum = [[numberFormatter stringFromNumber:debt.summ] mutableCopy];
+        
+//        NSLog(@"debtSum %@", debtSum);
+//        
+//        [debtSum replaceOccurrencesOfString:@" " withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [debtSum length])];
+//
+//        NSLog(@"debtSum %@", debtSum);
+//
         
         self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debtSum];
         self.debtSummTextField.hidden = NO;
@@ -110,6 +117,9 @@
     
 }
 
+
+#pragma mark - buttons pressed
+
 - (IBAction)cashingButtonPressed:(id)sender {
 
     [self showCashingControls];
@@ -130,6 +140,9 @@
     [self showCashingButton];
 
 }
+
+
+#pragma mark - controls view
 
 - (void)hideControlsView {
     
@@ -209,9 +222,7 @@
 }
 
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
-    
-}
+#pragma mark - keyboard show / hide
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     
@@ -255,17 +266,6 @@
     
 }
 
-- (BOOL)isCorrectDebtSumValue {
-
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    
-    NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
-    
-    return [number boolValue];
-    
-}
-
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
@@ -294,6 +294,52 @@
 
     [textField resignFirstResponder];
     return YES;
+    
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    NSMutableString *text = [textField.text mutableCopy];
+    [text replaceCharactersInRange:range withString:string];
+
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.maximumFractionDigits = 2;
+    
+    [text replaceOccurrencesOfString:numberFormatter.groupingSeparator withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [text length])];
+
+    NSNumber *number = [numberFormatter numberFromString:[NSString stringWithFormat:@"%@", text]];
+    
+    if (!number) {
+        
+        return NO;
+        
+    } else {
+
+        NSString *finalString = [numberFormatter stringFromNumber:number];
+
+        if ([string isEqualToString:numberFormatter.decimalSeparator]) {
+            
+            finalString = [finalString stringByAppendingString:numberFormatter.decimalSeparator];
+            
+        }
+        
+        textField.text = finalString;
+        
+        return NO;
+
+    }
+    
+}
+
+- (BOOL)isCorrectDebtSumValue {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
+    
+    return [number boolValue];
     
 }
 
