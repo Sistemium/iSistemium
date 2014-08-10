@@ -162,6 +162,7 @@
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.minimumFractionDigits = 2;
     
     NSDecimalNumber *sum = [NSDecimalNumber zero];
     NSDecimalNumber *remainderSum = self.tableVC.totalSum;
@@ -278,6 +279,7 @@
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.minimumFractionDigits = 2;
     
     NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
     NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
@@ -285,6 +287,8 @@
     [self.debtsDictionary setObject:@[self.selectedDebt, cashingSum] forKey:self.selectedDebt.xid];
 
     [self.tableVC updateRowWithDebt:self.selectedDebt];
+    
+    self.debtSummTextField.text = [numberFormatter stringFromNumber:number];
     
     [self updateControlLabels];
     
