@@ -57,6 +57,7 @@
 		2C80C820198E4C220044ADE4 /* STMOutletDebtsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C81F198E4C220044ADE4 /* STMOutletDebtsTVC.m */; };
 		2C80C823198E4D9A0044ADE4 /* STMDebtsCombineVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C822198E4D9A0044ADE4 /* STMDebtsCombineVC.m */; };
 		2C80C826198E505F0044ADE4 /* STMCashingControlsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C825198E505F0044ADE4 /* STMCashingControlsVC.m */; };
+		2C80C8301998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C82F1998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.m */; };
 		2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8369561986714300DA4316 /* STMDebts.storyboard */; };
 		2C83695A1986809900DA4316 /* STMDebtsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8369591986809900DA4316 /* STMDebtsTVC.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
@@ -214,6 +215,8 @@
 		2C80C824198E505F0044ADE4 /* STMCashingControlsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCashingControlsVC.h; sourceTree = "<group>"; };
 		2C80C825198E505F0044ADE4 /* STMCashingControlsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCashingControlsVC.m; sourceTree = "<group>"; };
 		2C80C829198FB03C0044ADE4 /* STMConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMConstants.h; sourceTree = "<group>"; };
+		2C80C82E1998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMFetchedResultsControllerTVC.h; sourceTree = "<group>"; };
+		2C80C82F1998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMFetchedResultsControllerTVC.m; sourceTree = "<group>"; };
 		2C836949198651D800DA4316 /* STMDataModel 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 8.xcdatamodel"; sourceTree = "<group>"; };
 		2C8369561986714300DA4316 /* STMDebts.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts.storyboard; sourceTree = "<group>"; };
 		2C8369581986809900DA4316 /* STMDebtsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebtsTVC.h; sourceTree = "<group>"; };
@@ -314,6 +317,8 @@
 				2CE8B514195475F400C84A6D /* STMRootTBC.m */,
 				2CE8B52119556F0700C84A6D /* STMAuthTVC.h */,
 				2CE8B52219556F0700C84A6D /* STMAuthTVC.m */,
+				2C80C82E1998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.h */,
+				2C80C82F1998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.m */,
 				2C53B8A719409E83002298A5 /* STMLocationTVC.h */,
 				2C53B8A819409E83002298A5 /* STMLocationTVC.m */,
 				2C53B8A919409E83002298A5 /* STMSettingsTVC.h */,
@@ -774,6 +779,7 @@
 				2C80C7F4198A5CF10044ADE4 /* STMDebtsDetailsPVC.m in Sources */,
 				2CA4527C195AF68C00D93CA2 /* STMPhotoReportPVC.m in Sources */,
 				2C53B9BC19472D28002298A5 /* STMArticlesTVC.m in Sources */,
+				2C80C8301998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.m in Sources */,
 				2CA4528B195EB53400D93CA2 /* STMPicture.m in Sources */,
 				2C80C7E8198904170044ADE4 /* STMLocation.m in Sources */,
 				2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */,

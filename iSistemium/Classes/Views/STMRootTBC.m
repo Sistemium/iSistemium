@@ -133,8 +133,6 @@
     
     self.viewControllers = viewControllers;
     
-    self.selectedIndex = 2;
-
 }
 
 - (void)showTabWithName:(NSString *)tabName {
