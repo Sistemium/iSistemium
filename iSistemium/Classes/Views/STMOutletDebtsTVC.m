@@ -154,6 +154,7 @@
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.minimumFractionDigits = 2;
 
     STMDebt *debt = sectionInfo.objects[indexPath.row];
     

@@ -377,6 +377,12 @@
     
     if (!number) {
         
+        if ([text isEqualToString:@""]) {
+            
+            textField.text = text;
+            
+        }
+        
         return NO;
         
     } else {
