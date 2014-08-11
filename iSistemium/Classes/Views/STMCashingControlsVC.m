@@ -9,6 +9,9 @@
 #import "STMCashingControlsVC.h"
 #import "STMConstants.h"
 #import "STMDebtsSVC.h"
+#import "STMDocument.h"
+#import "STMSessionManager.h"
+#import "STMCashing.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate>
 
@@ -20,12 +23,25 @@
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
+@property (nonatomic, strong) STMDocument *document;
 
 @property (nonatomic, strong) STMDebt *selectedDebt;
 
 @end
 
 @implementation STMCashingControlsVC
+
+- (STMDocument *)document {
+    
+    if (!_document) {
+        
+        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
+        
+    }
+    
+    return _document;
+    
+}
 
 - (NSMutableDictionary *)debtsDictionary {
     
@@ -129,7 +145,6 @@
         
     }
     
-    
     [self showCashingControls];
     [self.tableVC.tableView setEditing:YES animated:YES];
     
@@ -137,27 +152,14 @@
 
 - (IBAction)cancelButtonPressed:(id)sender {
 
-    [self.tableVC.tableView setEditing:NO animated:YES];
     [self showCashingButton];
-
-    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
-        
-        [(STMDebtsSVC *)self.splitViewController setOutletLocked:NO];
-        
-    }
 
 }
 
 - (IBAction)doneButtonPressed:(id)sender {
 
-    [self.tableVC.tableView setEditing:NO animated:YES];
+    [self saveCashings];
     [self showCashingButton];
-
-    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
-        
-        [(STMDebtsSVC *)self.splitViewController setOutletLocked:NO];
-        
-    }
 
 }
 
@@ -207,9 +209,18 @@
 
 - (void)showCashingButton {
     
+    [self.tableVC.tableView setEditing:NO animated:YES];
+    
+    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+        
+        [(STMDebtsSVC *)self.splitViewController setOutletLocked:NO];
+        
+    }
+    
     self.cashingButton.hidden = NO;
     
     self.datePicker.hidden = YES;
+    self.datePicker.date = [NSDate date];
     self.cancelButton.hidden = YES;
     self.doneButton.hidden = YES;
     self.summLabel.hidden = YES;
@@ -240,6 +251,36 @@
     self.remainderLabel.hidden = NO;
 //    self.debtSummTextField.hidden = NO;
 
+}
+
+
+#pragma mark - save cashings
+
+- (void)saveCashings {
+    
+    NSDate *date = self.datePicker.date;
+    
+    for (NSArray *debtArray in [self.debtsDictionary allValues]) {
+    
+        STMDebt *debt = debtArray[0];
+        NSDecimalNumber *summ = debtArray[1];
+        
+        STMCashing *cashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:self.document.managedObjectContext];
+        
+        cashing.date = date;
+        cashing.summ = summ;
+        cashing.debt = debt;
+        cashing.outlet = self.outlet;
+        
+    }
+    
+    [self.document saveDocument:^(BOOL success) {
+        if (success) {
+            //                NSLog(@"create new photoReport");
+        }
+    }];
+
+    
 }
 
 
