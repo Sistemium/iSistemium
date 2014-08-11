@@ -31,7 +31,6 @@
         
         _outlet = outlet;
         [self performFetch];
-//        [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
 
     }
     
@@ -160,6 +159,44 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, summOriginString];
     
     return cell;
+    
+}
+
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
+//    NSLog(@"controllerWillChangeContent");
+    
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+//    NSLog(@"controllerDidChangeContent");
+    [self.tableView reloadData];
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    if (type == NSFetchedResultsChangeDelete) {
+        
+//        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        NSLog(@"NSFetchedResultsChangeDelete");
+        
+    } else if (type == NSFetchedResultsChangeInsert) {
+        
+//        [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        NSLog(@"NSFetchedResultsChangeInsert");
+        
+        
+    } else if (type == NSFetchedResultsChangeUpdate) {
+        
+//        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        NSLog(@"NSFetchedResultsChangeUpdate");
+        
+    }
     
 }
 
