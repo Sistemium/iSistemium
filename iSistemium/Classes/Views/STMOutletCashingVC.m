@@ -104,14 +104,16 @@
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:section];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
+    
+    NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
+
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
-    NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
-    
     NSString *cashingDate = [dateFormatter stringFromDate:date];
     
-    NSDecimalNumber *summ = 0;
+    NSDecimalNumber *summ = [NSDecimalNumber zero];
     
     for (STMCashing *cashing in sectionInfo.objects) {
         
@@ -119,7 +121,13 @@
         
     }
     
-    NSString *title = [NSString stringWithFormat:@"%@ %@", cashingDate, summ];
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.minimumFractionDigits = 2;
+
+    NSString *sumString = [numberFormatter stringFromNumber:summ];
+    
+    NSString *title = [NSString stringWithFormat:@"%@ %@", cashingDate, sumString];
     
     return title;
     
@@ -133,7 +141,13 @@
     
     STMCashing *cashing = sectionInfo.objects[indexPath.row];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@", cashing.summ];
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.minimumFractionDigits = 2;
+
+    NSString *sumString = [numberFormatter stringFromNumber:cashing.summ];
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"%@", sumString];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
@@ -141,7 +155,9 @@
     
     NSString *debtDate = [dateFormatter stringFromDate:cashing.debt.date];
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, cashing.debt.summOrigin];
+    NSString *summOriginString = [numberFormatter stringFromNumber:cashing.debt.summOrigin];
+    
+    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, summOriginString];
     
     return cell;
     
