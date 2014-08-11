@@ -163,16 +163,37 @@
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+ 
+    if (self.splitVC.outletLocked) {
+        
+        return nil;
 
+    } else {
+        
+        return indexPath;
+        
+    }
+    
+}
+ 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
-    STMOutlet *outlet = sectionInfo.objects[indexPath.row];
-    
-    self.splitVC.detailVC.outlet = outlet;
-    
-    return indexPath;
-    
+    if (self.splitVC.outletLocked) {
+        
+        return nil;
+        
+    } else {
+        
+        id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
+        STMOutlet *outlet = sectionInfo.objects[indexPath.row];
+        
+        self.splitVC.detailVC.outlet = outlet;
+        
+        return indexPath;
+        
+    }
+
 }
 
 

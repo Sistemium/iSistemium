@@ -8,6 +8,7 @@
 
 #import "STMCashingControlsVC.h"
 #import "STMConstants.h"
+#import "STMDebtsSVC.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate>
 
@@ -122,6 +123,13 @@
 
 - (IBAction)cashingButtonPressed:(id)sender {
 
+    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+        
+        [(STMDebtsSVC *)self.splitViewController setOutletLocked:YES];
+        
+    }
+    
+    
     [self showCashingControls];
     [self.tableVC.tableView setEditing:YES animated:YES];
     
@@ -131,13 +139,25 @@
 
     [self.tableVC.tableView setEditing:NO animated:YES];
     [self showCashingButton];
-    
+
+    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+        
+        [(STMDebtsSVC *)self.splitViewController setOutletLocked:NO];
+        
+    }
+
 }
 
 - (IBAction)doneButtonPressed:(id)sender {
 
     [self.tableVC.tableView setEditing:NO animated:YES];
     [self showCashingButton];
+
+    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+        
+        [(STMDebtsSVC *)self.splitViewController setOutletLocked:NO];
+        
+    }
 
 }
 

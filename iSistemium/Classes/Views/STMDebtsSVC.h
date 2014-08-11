@@ -15,4 +15,6 @@
 @property (nonatomic, strong) STMDebtsTVC *masterVC;
 @property (nonatomic, strong) STMDebtsDetailsPVC *detailVC;
 
+@property (nonatomic) BOOL outletLocked;
+
 @end

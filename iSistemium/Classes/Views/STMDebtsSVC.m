@@ -14,6 +14,18 @@
 
 @implementation STMDebtsSVC
 
+- (void)setOutletLocked:(BOOL)outletLocked {
+    
+    if (_outletLocked != outletLocked) {
+        
+        outletLocked ? [self.masterVC.tableView setAllowsSelection:NO] : [self.masterVC.tableView setAllowsSelection:YES];
+        
+        _outletLocked = outletLocked;
+        
+    }
+    
+}
+
 - (STMDebtsDetailsPVC *)detailVC {
     
     if (!_detailVC) {
