@@ -7,9 +7,7 @@
 //
 
 #import "STMCampaignsTVC.h"
-#import <CoreData/CoreData.h>
-#import "STMSessionManager.h"
-#import "STMDocument.h"
+
 #import "STMCampaign.h"
 #import "STMArticlesTVC.h"
 #import "STMRootTBC.h"
@@ -20,16 +18,16 @@
 #import "STMPhoto.h"
 #import "STMConstants.h"
 
-@interface STMCampaignsTVC () <NSFetchedResultsControllerDelegate>
+@interface STMCampaignsTVC ()
 
-@property (nonatomic, strong) NSFetchedResultsController *resultsController;
-@property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMCampaignsSVC *splitVC;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
 @implementation STMCampaignsTVC
+
+@synthesize resultsController = _resultsController;
 
 - (STMCampaignsSVC *)splitVC {
     
@@ -42,18 +40,6 @@
     }
     
     return _splitVC;
-    
-}
-
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
-        
-    }
-    
-    return _document;
     
 }
 
@@ -153,19 +139,6 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    return self.resultsController.sections.count;
-    
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
-    return [sectionInfo numberOfObjects];
-    
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"campaignCell" forIndexPath:indexPath];
@@ -243,102 +216,5 @@
     
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-
-#pragma mark - NSFetchedResultsController delegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-
-    //    NSLog(@"controllerWillChangeContent");
-
-    self.selectedIndexPath = [self.tableView indexPathForSelectedRow];
-    [self.tableView beginUpdates];
-    
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    
-//    NSLog(@"controllerDidChangeContent");
-    
-    [self.tableView endUpdates];
-    [self.tableView selectRowAtIndexPath:self.selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-    
-//    [self.document saveDocument:^(BOOL success) {}];
-    
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    //    NSLog(@"controller didChangeObject");
-//    NSLog(@"anObject %@", anObject);
-    
-    if (type == NSFetchedResultsChangeDelete) {
-        
-        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//        NSLog(@"NSFetchedResultsChangeDelete");
-        
-    } else if (type == NSFetchedResultsChangeInsert) {
-        
-        [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-        //        [self.tableView scrollToRowAtIndexPath:newIndexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-//        NSLog(@"NSFetchedResultsChangeInsert");
-        
-        
-    } else if (type == NSFetchedResultsChangeUpdate) {
-        
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//        NSLog(@"NSFetchedResultsChangeUpdate");
-        
-    }
-    
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

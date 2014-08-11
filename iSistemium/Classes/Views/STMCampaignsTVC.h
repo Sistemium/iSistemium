@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMFetchedResultsControllerTVC.h"
 
-@interface STMCampaignsTVC : UITableViewController
+@interface STMCampaignsTVC : STMFetchedResultsControllerTVC
 
 @end
