@@ -289,6 +289,7 @@
     if (!_downloadQueue) {
         
         _downloadQueue = [[NSOperationQueue alloc] init];
+        _downloadQueue.maxConcurrentOperationCount = 2;
 
     }
     
@@ -706,13 +707,13 @@
                 
                 NSData *dataCopy = [data copy];
                     
-                @autoreleasepool {
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
-                        
+//                @autoreleasepool {
+//                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
+                
                         [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
                         
-                    });
-                }
+//                    });
+//                }
                 
 //                NSLog(@"hrefDictionary.allKeys2 %d", self.hrefDictionary.allKeys.count);
                 
@@ -852,14 +853,14 @@
         NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
 //        NSLog(@"thumbnail before the block %@", thumbnail);
     
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
+//        dispatch_async(dispatch_get_main_queue(), ^{
+    
 //            NSLog(@"weakPicture %@", weakPicture);
 //            NSLog(@"thumbnail %@", thumbnail);
 
                 weakPicture.imageThumbnail = thumbnail;
         
-        });
+//        });
 
         [weakData writeToFile:imagePath atomically:YES];
 
@@ -870,13 +871,13 @@
         
         [resizedImageData writeToFile:resizedImagePath atomically:YES];
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
+//        dispatch_async(dispatch_get_main_queue(), ^{
+    
             weakPicture.imagePath = imagePath;
             weakPicture.resizedImagePath = resizedImagePath;
             
-        });
-        
+//        });
+    
    // });
 
 }
