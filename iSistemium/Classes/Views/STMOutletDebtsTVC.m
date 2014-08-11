@@ -10,6 +10,7 @@
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMDebt.h"
+#import "STMCashing.h"
 #import "STMDebtsCombineVC.h"
 #import "STMConstants.h"
 
@@ -189,8 +190,28 @@
         
         [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
-    } else {
+    } else if (debt.cashings.count != 0) {
+            
+        NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
         
+        for (STMCashing *cashing in debt.cashings) {
+            cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+        }
+
+        if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
+            
+            [cell setTintColor:STM_LIGHT_BLUE_COLOR];
+            
+        } else {
+            
+            [cell setTintColor:ACTIVE_BLUE_COLOR];
+            
+        }
+        
+        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            
+    } else {
+    
         [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
         
     }
