@@ -132,6 +132,8 @@
     }
     
     self.viewControllers = viewControllers;
+    
+    self.selectedIndex = 2;
 
 }
 
@@ -246,8 +248,10 @@
 
 - (void)syncStateChanged {
 
-    self.session.syncer.syncerState == STMSyncerIdle ? [self enableTabs] : [self disableTabs];
+//    self.session.syncer.syncerState == STMSyncerIdle ? [self enableTabs] : [self disableTabs];
 
+    [self enableTabs];
+    
 }
 
 - (void)disableTabs {
