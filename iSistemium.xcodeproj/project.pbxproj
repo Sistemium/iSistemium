@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */; };
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
+		2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */; };
 		2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C297F9619507A01000D9485 /* STMExtendNSLog.m */; };
 		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
 		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
@@ -114,6 +115,8 @@
 		2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReport.m; sourceTree = "<group>"; };
 		2C27B5AA196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMOutlet+photoReportsArePresent.h"; sourceTree = "<group>"; };
 		2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMOutlet+photoReportsArePresent.m"; sourceTree = "<group>"; };
+		2C2968D1199B3AC30038B122 /* STMDebt+Cashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMDebt+Cashing.h"; sourceTree = "<group>"; };
+		2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMDebt+Cashing.m"; sourceTree = "<group>"; };
 		2C297F9519507A01000D9485 /* STMExtendNSLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMExtendNSLog.h; sourceTree = "<group>"; };
 		2C297F9619507A01000D9485 /* STMExtendNSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMExtendNSLog.m; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
@@ -380,12 +383,18 @@
 				2CA452D919649C0D00D93CA2 /* STMDataModel.xcdatamodeld */,
 				2C80C812198CFD4B0044ADE4 /* STMOutlet.h */,
 				2C80C813198CFD4B0044ADE4 /* STMOutlet.m */,
+				2C27B5AA196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.h */,
+				2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */,
 				2C80C80B198BA6BF0044ADE4 /* STMDebt.h */,
 				2C80C80C198BA6BF0044ADE4 /* STMDebt.m */,
+				2C2968D1199B3AC30038B122 /* STMDebt+Cashing.h */,
+				2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */,
 				2C80C808198BA6BF0044ADE4 /* STMCashing.h */,
 				2C80C809198BA6BF0044ADE4 /* STMCashing.m */,
 				2C80C7E9198904170044ADE4 /* STMDatum.h */,
 				2C80C7EA198904170044ADE4 /* STMDatum.m */,
+				2C53B8D21940A1B8002298A5 /* STMDatum+Init.h */,
+				2C53B8D31940A1B8002298A5 /* STMDatum+Init.m */,
 				2C80C7E6198904170044ADE4 /* STMLocation.h */,
 				2C80C7E7198904170044ADE4 /* STMLocation.m */,
 				2C80C7E3198904170044ADE4 /* STMPhoto.h */,
@@ -398,6 +407,8 @@
 				2CA4528A195EB53400D93CA2 /* STMPicture.m */,
 				2C65292019576895008605D9 /* STMTrack.h */,
 				2C65292119576895008605D9 /* STMTrack.m */,
+				2C53B8D61940A1B8002298A5 /* STMTrack+dayAsString.h */,
+				2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */,
 				2C65291D19576895008605D9 /* STMSalesman.h */,
 				2C65291E19576895008605D9 /* STMSalesman.m */,
 				2C65291419576895008605D9 /* STMArticlePicture.h */,
@@ -410,20 +421,14 @@
 				2C65290019576895008605D9 /* STMBatteryStatus.m */,
 				2C6528F919576894008605D9 /* STMLogMessage.h */,
 				2C6528FA19576894008605D9 /* STMLogMessage.m */,
+				2C53B8D41940A1B8002298A5 /* STMLogMessage+dayAsString.h */,
+				2C53B8D51940A1B8002298A5 /* STMLogMessage+dayAsString.m */,
 				2C6528F619576894008605D9 /* STMCampaign.h */,
 				2C6528F719576894008605D9 /* STMCampaign.m */,
 				2C6528F319576894008605D9 /* STMCampaignPicture.h */,
 				2C6528F419576894008605D9 /* STMCampaignPicture.m */,
 				2C6528F019576894008605D9 /* STMPartner.h */,
 				2C6528F119576894008605D9 /* STMPartner.m */,
-				2C53B8D21940A1B8002298A5 /* STMDatum+Init.h */,
-				2C53B8D31940A1B8002298A5 /* STMDatum+Init.m */,
-				2C53B8D41940A1B8002298A5 /* STMLogMessage+dayAsString.h */,
-				2C53B8D51940A1B8002298A5 /* STMLogMessage+dayAsString.m */,
-				2C53B8D61940A1B8002298A5 /* STMTrack+dayAsString.h */,
-				2C53B8D71940A1B8002298A5 /* STMTrack+dayAsString.m */,
-				2C27B5AA196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.h */,
-				2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */,
 			);
 			path = DataModel;
 			sourceTree = "<group>";
@@ -759,6 +764,7 @@
 				2C80C7EB198904170044ADE4 /* STMDatum.m in Sources */,
 				2CD443EB195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m in Sources */,
 				2CA452DF19649C0D00D93CA2 /* STMDataModel.xcdatamodeld in Sources */,
+				2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */,
 				2C53B8A319409E71002298A5 /* STMBatteryTracker.m in Sources */,
 				2C80C814198CFD4B0044ADE4 /* STMOutlet.m in Sources */,
 				2C65290D19576895008605D9 /* STMComment.m in Sources */,
