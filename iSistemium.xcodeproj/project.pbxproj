@@ -11,6 +11,7 @@
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
 		2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */; };
 		2C2968D7199B4CB50038B122 /* STMDebt.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D6199B4CB50038B122 /* STMDebt.m */; };
+		2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968DC199F8F220038B122 /* STMCashing+dayAsString.m */; };
 		2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C297F9619507A01000D9485 /* STMExtendNSLog.m */; };
 		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
 		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
@@ -120,6 +121,8 @@
 		2C2968D4199B4C8D0038B122 /* STMDataModel 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 12.xcdatamodel"; sourceTree = "<group>"; };
 		2C2968D5199B4CB50038B122 /* STMDebt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebt.h; sourceTree = "<group>"; };
 		2C2968D6199B4CB50038B122 /* STMDebt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebt.m; sourceTree = "<group>"; };
+		2C2968DB199F8F220038B122 /* STMCashing+dayAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMCashing+dayAsString.h"; sourceTree = "<group>"; };
+		2C2968DC199F8F220038B122 /* STMCashing+dayAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMCashing+dayAsString.m"; sourceTree = "<group>"; };
 		2C297F9519507A01000D9485 /* STMExtendNSLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMExtendNSLog.h; sourceTree = "<group>"; };
 		2C297F9619507A01000D9485 /* STMExtendNSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMExtendNSLog.m; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
@@ -392,6 +395,8 @@
 				2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */,
 				2C80C808198BA6BF0044ADE4 /* STMCashing.h */,
 				2C80C809198BA6BF0044ADE4 /* STMCashing.m */,
+				2C2968DB199F8F220038B122 /* STMCashing+dayAsString.h */,
+				2C2968DC199F8F220038B122 /* STMCashing+dayAsString.m */,
 				2C80C7E9198904170044ADE4 /* STMDatum.h */,
 				2C80C7EA198904170044ADE4 /* STMDatum.m */,
 				2C53B8D21940A1B8002298A5 /* STMDatum+Init.h */,
@@ -748,6 +753,7 @@
 				2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */,
 				2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */,
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
+				2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */,
 				2C6528F219576894008605D9 /* STMPartner.m in Sources */,
 				2C65284219571C4B008605D9 /* STMCampaignsSVC.m in Sources */,
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
