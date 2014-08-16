@@ -195,26 +195,6 @@
         
         [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
-//    } else if (debt.cashings.count != 0) {
-//            
-//        NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
-//        
-//        for (STMCashing *cashing in debt.cashings) {
-//            cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
-//        }
-//
-//        if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
-//            
-//            [cell setTintColor:STM_LIGHT_BLUE_COLOR];
-//            
-//        } else {
-//            
-//            [cell setTintColor:ACTIVE_BLUE_COLOR];
-//            
-//        }
-//        
-//        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        
     } else {
     
         [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
@@ -307,17 +287,11 @@
     
     [self customInit];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-//    [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
 
 }
 

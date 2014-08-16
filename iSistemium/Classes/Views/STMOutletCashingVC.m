@@ -11,6 +11,7 @@
 #import "STMSessionManager.h"
 #import "STMCashing.h"
 #import "STMDebt.h"
+#import "STMDebtsSVC.h"
 
 @interface STMOutletCashingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 
@@ -233,7 +234,26 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
 
-        NSLog(@"delete@indexPath %@", indexPath);
+        STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
+        
+        [self.document.managedObjectContext deleteObject:cashing];
+        
+        [self.document saveDocument:^(BOOL success) {
+            
+            if (success) {
+                
+            }
+            
+        }];
+        
+        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+            
+            STMDebtsSVC *splitVC = (STMDebtsSVC *)self.splitViewController;
+            NSIndexPath *indexPath = [splitVC.masterVC.resultsController indexPathForObject:self.outlet];
+            [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            
+        }
+
     
     }
     
