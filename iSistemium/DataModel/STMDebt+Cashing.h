@@ -10,4 +10,7 @@
 
 @interface STMDebt (Cashing)
 
+- (NSDecimalNumber *)cashingCalculatedSum;
+
+
 @end

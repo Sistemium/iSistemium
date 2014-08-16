@@ -12,6 +12,7 @@
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMCashing.h"
+#import "STMDebt+Cashing.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate>
 
@@ -272,6 +273,8 @@
         cashing.summ = summ;
         cashing.debt = debt;
         cashing.outlet = self.outlet;
+
+        debt.calculatedSum = [debt cashingCalculatedSum];
         
     }
     
@@ -287,6 +290,27 @@
     
 }
 
+/*
+- (NSDecimalNumber *)cashingCalculatedSumForDebt:(STMDebt *)debt {
+    
+    NSDecimalNumber *result = debt.summ;
+    
+    for (STMCashing *cashing in debt.cashings) {
+        
+        result = [result decimalNumberBySubtracting:cashing.summ];
+        
+    }
+    
+    if ([result compare:[NSDecimalNumber zero]] == NSOrderedAscending) {
+        
+        result = [NSDecimalNumber zero];
+        
+    }
+    
+    return result;
+    
+}
+*/
 
 #pragma mark - keyboard show / hide
 

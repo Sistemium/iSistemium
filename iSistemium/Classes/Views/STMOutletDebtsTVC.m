@@ -96,9 +96,7 @@
         
         [self.tableView setEditing:NO animated:YES];
         [self.tableView reloadData];
-        
-        NSLog(@"resultsController.fetchedObjects.count %d", self.resultsController.fetchedObjects.count);
-        
+                
     }
     
 }
@@ -113,9 +111,7 @@
         NSSortDescriptor *ndocSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ndoc" ascending:YES selector:@selector(compare:)];
         
         request.sortDescriptors = @[dateSortDescriptor, ndocSortDescriptor];
-        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@ AND calculatedSum > %@", self.outlet, [NSDecimalNumber decimalNumberWithString:@"5000"]];
-//        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@ AND calculatedSum != %@", self.outlet, [NSDecimalNumber zero]];
-//        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.outlet];
+        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@ AND calculatedSum != %@", self.outlet, [NSDecimalNumber zero]];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
