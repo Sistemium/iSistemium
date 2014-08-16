@@ -17,7 +17,6 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 
 @property (nonatomic, strong) UIPopoverController *popover;
-//@property (nonatomic, strong) UIBarButtonItem *homeButton;
 
 @property (nonatomic, strong) STMDocument *document;
 
@@ -83,30 +82,6 @@
         [self.popover dismissPopoverAnimated:YES];
 
     }
-    
-}
-
-/*
-- (UIBarButtonItem *)homeButton {
-    
-    if (!_homeButton) {
-        
-        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HOME", nil) style:UIBarButtonItemStylePlain target:self action:@selector(homeButtonPressed)];
-        
-        _homeButton = button;
-        
-    }
-    
-    return _homeButton;
-    
-}
-*/
-
-- (void)homeButtonPressed {
-    
-    //    NSLog(@"homeButtonPressed");
-    [[STMRootTBC sharedRootVC] showTabWithName:@"STMAuthTVC"];
-    
     
 }
 
@@ -256,8 +231,6 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
-//    self.navigationItem.rightBarButtonItem = self.homeButton;
     
     self.dataSource = self;
     self.delegate = self;
