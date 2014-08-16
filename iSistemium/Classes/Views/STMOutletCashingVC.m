@@ -18,6 +18,13 @@
 @property (nonatomic, strong) STMDocument *document;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+@property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
+@property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
+@property (nonatomic, strong) NSMutableArray *deletedRowIndexPaths;
+@property (nonatomic, strong) NSMutableArray *insertedRowIndexPaths;
+@property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
+
+
 @end
 
 @implementation STMOutletCashingVC
@@ -45,6 +52,56 @@
     }
     
     return _document;
+    
+}
+
+- (NSMutableIndexSet *)deletedSectionIndexes {
+    
+    if (!_deletedSectionIndexes) {
+        _deletedSectionIndexes = [NSMutableIndexSet indexSet];
+    }
+    
+    return _deletedSectionIndexes;
+    
+}
+
+- (NSMutableIndexSet *)insertedSectionIndexes {
+    
+    if (!_insertedSectionIndexes) {
+        _insertedSectionIndexes = [NSMutableIndexSet indexSet];
+    }
+    
+    return _insertedSectionIndexes;
+    
+}
+
+- (NSMutableArray *)deletedRowIndexPaths {
+    
+    if (!_deletedRowIndexPaths) {
+        _deletedRowIndexPaths = [NSMutableArray array];
+    }
+    
+    return _deletedRowIndexPaths;
+    
+}
+
+- (NSMutableArray *)insertedRowIndexPaths {
+    
+    if (!_insertedRowIndexPaths) {
+        _insertedRowIndexPaths = [NSMutableArray array];
+    }
+    
+    return _insertedRowIndexPaths;
+    
+}
+
+- (NSMutableArray *)updatedRowIndexPaths {
+    
+    if (!_updatedRowIndexPaths) {
+        _updatedRowIndexPaths = [NSMutableArray array];
+    }
+    
+    return _updatedRowIndexPaths;
     
 }
 
@@ -165,40 +222,85 @@
 
 #pragma mark - NSFetchedResultsController delegate
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-//    NSLog(@"controllerWillChangeContent");
+    [self.tableView beginUpdates];
+    
+    [self.tableView deleteSections:self.deletedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView insertSections:self.insertedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
+    
+    [self.tableView deleteRowsAtIndexPaths:self.deletedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView insertRowsAtIndexPaths:self.insertedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadRowsAtIndexPaths:self.updatedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+    
+    [self.tableView endUpdates];
+    
+    self.insertedSectionIndexes = nil;
+    self.deletedSectionIndexes = nil;
+    self.deletedRowIndexPaths = nil;
+    self.insertedRowIndexPaths = nil;
+    self.updatedRowIndexPaths = nil;
     
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     
-//    NSLog(@"controllerDidChangeContent");
-    [self.tableView reloadData];
+    switch (type) {
+            
+        case NSFetchedResultsChangeInsert:
+            [self.insertedSectionIndexes addIndex:sectionIndex];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.deletedSectionIndexes addIndex:sectionIndex];
+            break;
+            
+        default:
+            ; // Shouldn't have a default
+            break;
+            
+    }
     
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    if (type == NSFetchedResultsChangeDelete) {
+    
+    if (type == NSFetchedResultsChangeInsert) {
         
-//        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//        NSLog(@"NSFetchedResultsChangeDelete");
+        if ([self.insertedSectionIndexes containsIndex:newIndexPath.section]) {
+            return;
+        }
         
-    } else if (type == NSFetchedResultsChangeInsert) {
+        [self.insertedRowIndexPaths addObject:newIndexPath];
         
-//        [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//        NSLog(@"NSFetchedResultsChangeInsert");
+    } else if (type == NSFetchedResultsChangeDelete) {
         
+        if ([self.deletedSectionIndexes containsIndex:indexPath.section]) {
+            return;
+        }
+        
+        [self.deletedRowIndexPaths addObject:indexPath];
+        
+    } else if (type == NSFetchedResultsChangeMove) {
+        
+        if (![self.insertedSectionIndexes containsIndex:newIndexPath.section]) {
+            [self.insertedRowIndexPaths addObject:newIndexPath];
+        }
+        
+        if (![self.deletedSectionIndexes containsIndex:indexPath.section]) {
+            [self.deletedRowIndexPaths addObject:indexPath];
+        }
         
     } else if (type == NSFetchedResultsChangeUpdate) {
         
-//        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//        NSLog(@"NSFetchedResultsChangeUpdate");
+        [self.updatedRowIndexPaths addObject:indexPath];
         
     }
     
 }
+
 
 
 #pragma mark - view lifecycle

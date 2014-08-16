@@ -239,9 +239,7 @@
     [self updateControlLabels];
     
     [self.tableVC.tableView reloadData];
-    
-    NSLog(@"self.splitViewController %@", self.splitViewController);
-    
+
     if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
         
         STMDebtsSVC *splitVC = (STMDebtsSVC *)self.splitViewController;
