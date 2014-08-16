@@ -116,7 +116,7 @@
         request.sortDescriptors = @[dateSortDescriptor];
         request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.outlet];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"date" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"dayAsString" cacheName:nil];
         
         _resultsController.delegate = self;
         
@@ -159,16 +159,8 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:section];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
-    
-    NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
+    NSString *cashingDate = [sectionInfo name];
 
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
-    
-    NSString *cashingDate = [dateFormatter stringFromDate:date];
-    
     NSDecimalNumber *summ = [NSDecimalNumber zero];
     
     for (STMCashing *cashing in sectionInfo.objects) {
