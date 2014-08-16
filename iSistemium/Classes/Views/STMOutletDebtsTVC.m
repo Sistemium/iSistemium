@@ -9,7 +9,7 @@
 #import "STMOutletDebtsTVC.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
-#import "STMDebt.h"
+#import "STMDebt+Cashing.h"
 #import "STMCashing.h"
 #import "STMDebtsCombineVC.h"
 #import "STMConstants.h"
@@ -18,13 +18,15 @@
 
 @property (nonatomic, strong) STMDebtsCombineVC *parentVC;
 
-@property (nonatomic, strong) STMDocument *document;
+//@property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
 
 @end
 
 @implementation STMOutletDebtsTVC
+
+@synthesize resultsController = _resultsController;
 
 - (STMDebtsCombineVC *)parentVC {
     
@@ -43,6 +45,7 @@
     
 }
 
+/*
 - (STMDocument *)document {
     
     if (!_document) {
@@ -54,16 +57,18 @@
     return _document;
     
 }
+*/
+ 
 
 - (NSDecimalNumber *)totalSum {
     
     if (!_totalSum) {
         
-        NSDecimalNumber *totalSum = [NSDecimalNumber decimalNumberWithString:@"0.0"];
+        NSDecimalNumber *totalSum = [NSDecimalNumber zero];
         
         for (STMDebt *debt in self.resultsController.fetchedObjects) {
             
-            totalSum = [totalSum decimalNumberByAdding:debt.summ];
+            totalSum = [totalSum decimalNumberByAdding:debt.calculatedSum];
             
         }
         
@@ -92,6 +97,8 @@
         [self.tableView setEditing:NO animated:YES];
         [self.tableView reloadData];
         
+        NSLog(@"resultsController.fetchedObjects.count %d", self.resultsController.fetchedObjects.count);
+        
     }
     
 }
@@ -106,7 +113,9 @@
         NSSortDescriptor *ndocSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ndoc" ascending:YES selector:@selector(compare:)];
         
         request.sortDescriptors = @[dateSortDescriptor, ndocSortDescriptor];
-        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.outlet];
+        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@ AND calculatedSum > %@", self.outlet, [NSDecimalNumber decimalNumberWithString:@"5000"]];
+//        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@ AND calculatedSum != %@", self.outlet, [NSDecimalNumber zero]];
+//        request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.outlet];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
@@ -159,7 +168,7 @@
 
     STMDebt *debt = sectionInfo.objects[indexPath.row];
     
-    NSString *debtSumString = [numberFormatter stringFromNumber:debt.summ];
+    NSString *debtSumString = [numberFormatter stringFromNumber:debt.calculatedSum];
     
     cell.textLabel.text = [NSString stringWithFormat:@"%@", debtSumString];
     
@@ -190,26 +199,26 @@
         
         [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
-    } else if (debt.cashings.count != 0) {
-            
-        NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+//    } else if (debt.cashings.count != 0) {
+//            
+//        NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+//        
+//        for (STMCashing *cashing in debt.cashings) {
+//            cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+//        }
+//
+//        if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
+//            
+//            [cell setTintColor:STM_LIGHT_BLUE_COLOR];
+//            
+//        } else {
+//            
+//            [cell setTintColor:ACTIVE_BLUE_COLOR];
+//            
+//        }
+//        
+//        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
-        for (STMCashing *cashing in debt.cashings) {
-            cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
-        }
-
-        if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
-            
-            [cell setTintColor:STM_LIGHT_BLUE_COLOR];
-            
-        } else {
-            
-            [cell setTintColor:ACTIVE_BLUE_COLOR];
-            
-        }
-        
-        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-            
     } else {
     
         [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];

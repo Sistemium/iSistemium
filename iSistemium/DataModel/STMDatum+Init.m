@@ -24,6 +24,8 @@
     
 //    NSLog(@"awakeFromInsert");
     
+//    [super awakeFromInsert];
+    
     if (self.managedObjectContext.parentContext) {
         [self setPrimitiveValue:[self newXid] forKey:@"xid"];
         

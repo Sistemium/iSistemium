@@ -89,8 +89,9 @@
         
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+        numberFormatter.minimumFractionDigits = 2;
 
-        NSMutableString *debtSum = [[numberFormatter stringFromNumber:debt.summ] mutableCopy];
+        NSMutableString *debtSum = [[numberFormatter stringFromNumber:debt.calculatedSum] mutableCopy];
         
 //        NSLog(@"debtSum %@", debtSum);
 //        
@@ -102,7 +103,7 @@
         self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debtSum];
         self.debtSummTextField.hidden = NO;
         
-        [self.debtsDictionary setObject:@[debt, debt.summ] forKey:debt.xid];
+        [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
         self.selectedDebt = debt;
         
         [self updateControlLabels];
@@ -274,9 +275,12 @@
         
     }
     
+//    self.tableVC.outlet = nil;
+//    self.tableVC.outlet = self.outlet;
+    
     [self.document saveDocument:^(BOOL success) {
         if (success) {
-            //                NSLog(@"create new photoReport");
+
         }
     }];
 

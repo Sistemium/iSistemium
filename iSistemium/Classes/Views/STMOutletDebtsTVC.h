@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "STMOutlet.h"
+#import "STMFetchedResultsControllerTVC.h"
 
-@interface STMOutletDebtsTVC : UITableViewController
+@interface STMOutletDebtsTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, strong) STMOutlet *outlet;
 

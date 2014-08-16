@@ -2,7 +2,7 @@
 //  STMDebt.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 01/08/14.
+//  Created by Maxim Grigoriev on 13/08/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -18,8 +18,9 @@
 @property (nonatomic, retain) NSString * ndoc;
 @property (nonatomic, retain) NSDecimalNumber * summ;
 @property (nonatomic, retain) NSDecimalNumber * summOrigin;
-@property (nonatomic, retain) STMOutlet *outlet;
+@property (nonatomic, retain) NSDecimalNumber * calculatedSum;
 @property (nonatomic, retain) NSSet *cashings;
+@property (nonatomic, retain) STMOutlet *outlet;
 @end
 
 @interface STMDebt (CoreDataGeneratedAccessors)
