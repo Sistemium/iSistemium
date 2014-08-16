@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSMutableArray *insertedRowIndexPaths;
 @property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
 
+//@property (nonatomic, strong) NSMutableArray *selectedObjects;
 
 @end
 
@@ -129,6 +130,26 @@
 
 #pragma mark - NSFetchedResultsController delegate
 
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
+/*
+    self.selectedObjects = [NSMutableArray array];
+    
+    NSLog(@"self %@", self);
+    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
+    
+    for (NSIndexPath *indexPath in self.tableView.indexPathsForSelectedRows) {
+        
+        id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
+        NSManagedObject *object = sectionInfo.objects[indexPath.row];
+
+        [self.selectedObjects addObject:object];
+        
+    }
+*/
+ 
+}
+
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
     [self.tableView beginUpdates];
@@ -147,9 +168,20 @@
     self.deletedRowIndexPaths = nil;
     self.insertedRowIndexPaths = nil;
     self.updatedRowIndexPaths = nil;
-    
-    
-    
+  
+/*
+    for (NSManagedObject *object in self.selectedObjects) {
+        
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:object];
+        
+        NSLog(@"self %@", self);
+        NSLog(@"indexPath %@", indexPath);
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+*/
+ 
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo

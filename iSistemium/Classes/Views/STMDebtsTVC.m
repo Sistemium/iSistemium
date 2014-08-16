@@ -7,8 +7,6 @@
 //
 
 #import "STMDebtsTVC.h"
-//#import <CoreData/CoreData.h>
-
 #import "STMDebtsSVC.h"
 
 #import "STMOutlet.h"
@@ -18,10 +16,10 @@
 #import "STMConstants.h"
 
 
-@interface STMDebtsTVC ()// <NSFetchedResultsControllerDelegate>
+@interface STMDebtsTVC ()
 
-//@property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
@@ -133,11 +131,23 @@
     
     self.splitVC.detailVC.outlet = outlet;
     
+    self.selectedIndexPath = indexPath;
+    
     return indexPath;
 
 }
 
-
+/*
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.selectedIndexPath && [indexPath compare:self.selectedIndexPath] == NSOrderedSame) {
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
+}
+*/
 
 - (NSString *)detailedTextForOutlet:(STMOutlet *)outlet {
     

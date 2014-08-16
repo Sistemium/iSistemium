@@ -240,6 +240,16 @@
     
     [self.tableVC.tableView reloadData];
     
+    NSLog(@"self.splitViewController %@", self.splitViewController);
+    
+    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+        
+        STMDebtsSVC *splitVC = (STMDebtsSVC *)self.splitViewController;
+        NSIndexPath *indexPath = [splitVC.masterVC.resultsController indexPathForObject:self.outlet];
+        [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
 }
 
 - (void)showCashingControls {
@@ -277,9 +287,6 @@
         debt.calculatedSum = [debt cashingCalculatedSum];
         
     }
-    
-//    self.tableVC.outlet = nil;
-//    self.tableVC.outlet = self.outlet;
     
     [self.document saveDocument:^(BOOL success) {
         if (success) {
