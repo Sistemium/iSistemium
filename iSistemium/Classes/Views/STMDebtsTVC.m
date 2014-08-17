@@ -152,7 +152,7 @@
 - (NSString *)detailedTextForOutlet:(STMOutlet *)outlet {
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
     NSDecimalNumber *debtSum = [NSDecimalNumber zero];
     

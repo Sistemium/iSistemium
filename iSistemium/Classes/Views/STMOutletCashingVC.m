@@ -191,8 +191,7 @@
     STMCashing *cashing = sectionInfo.objects[indexPath.row];
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    numberFormatter.minimumFractionDigits = 2;
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
 
     NSString *sumString = [numberFormatter stringFromNumber:cashing.summ];
     

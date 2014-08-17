@@ -159,8 +159,7 @@
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    numberFormatter.minimumFractionDigits = 2;
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
 
     STMDebt *debt = sectionInfo.objects[indexPath.row];
     
