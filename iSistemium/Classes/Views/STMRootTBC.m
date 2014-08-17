@@ -66,15 +66,18 @@
     
     self.storyboardnames = @[@"STMAuthTVC",
                              @"STMCampaigns",
-                             @"STMDebts"];
+                             @"STMDebts",
+                             @"STMUncashing"];
     
     self.storyboardtitles = @[NSLocalizedString(@"AUTHORIZATION", nil),
                               NSLocalizedString(@"AD CAMPAIGNS", nil),
-                              NSLocalizedString(@"DEBTS", nil)];
+                              NSLocalizedString(@"DEBTS", nil),
+                              NSLocalizedString(@"UNCASHING", nil)];
     
     self.tabImages = @[[UIImage imageNamed:@"password2-128.png"],
                        [UIImage imageNamed:@"christmas_gift-128.png"],
-                       [UIImage imageNamed:@"cash_receiving-128.png"]];
+                       [UIImage imageNamed:@"cash_receiving-128.png"],
+                       [UIImage imageNamed:@"banknotes-128.png"]];
     
     
 //    self.tabBar.hidden = YES;
