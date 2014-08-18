@@ -323,34 +323,6 @@
                                             <action selector="doneButtonPressed:" destination="Bhj-cs-cfa" eventType="touchUpInside" id="53f-hI-cgM"/>
                                         </connections>
                                     </button>
-                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="G7u-b7-NyN">
-                                        <rect key="frame" x="20" y="0.0" width="320" height="216"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                        <date key="date" timeIntervalSinceReferenceDate="428851410.00405401">
-                                            <!--2014-08-04 13:23:30 +0000-->
-                                        </date>
-                                        <timeZone key="timeZone" name="America/Los_Angeles">
-                                            <data key="data">
-VFppZgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAC5AAAABAAAABCepkign7sVkKCGKqChmveQ
-y4kaoNIj9HDSYSYQ1v50INiArZDa/tGg28CQENzes6DdqayQ3r6VoN+JjpDgnneg4WlwkOJ+WaDjSVKQ
-5F47oOUpNJDmR1gg5xJREOgnOiDo8jMQ6gccIOrSFRDr5v4g7LH3EO3G4CDukdkQ76/8oPBxuxDxj96g
-8n/BkPNvwKD0X6OQ9U+ioPY/hZD3L4Sg+CiiEPkPZqD6CIQQ+viDIPvoZhD82GUg/chIEP64RyD/qCoQ
-AJgpIAGIDBACeAsgA3EokARhJ6AFUQqQBkEJoAcw7JAHjUOgCRDOkAmtvyAK8LCQC+CvoAzZzRANwJGg
-DrmvEA+priAQmZEQEYmQIBJ5cxATaXIgFFlVEBVJVCAWOTcQFyk2IBgiU5AZCRggGgI1kBryNKAb4heQ
-HNIWoB3B+ZAesfigH6HbkCB2KyAhgb2QIlYNICNq2hAkNe8gJUq8ECYV0SAnKp4QJ/7toCkKgBAp3s+g
-KupiECu+saAs036QLZ6ToC6zYJAvfnWgMJNCkDFnkiAycySQM0d0IDRTBpA1J1YgNjLokDcHOCA4HAUQ
-OOcaIDn75xA6xvwgO9vJEDywGKA9u6sQPo/6oD+bjRBAb9ygQYSpkEJPvqBDZIuQRC+goEVEbZBF89Mg
-Ry2KEEfTtSBJDWwQSbOXIErtThBLnLOgTNZqkE18laBOtkyQT1x3oFCWLpBRPFmgUnYQkFMcO6BUVfKQ
-VPwdoFY11JBW5TogWB7xEFjFHCBZ/tMQWqT+IFvetRBchOAgXb6XEF5kwiBfnnkQYE3eoGGHlZBiLcCg
-Y2d3kGQNoqBlR1mQZe2EoGcnO5BnzWagaQcdkGmtSKBq5v+Qa5ZlIGzQHBBtdkcgbq/+EG9WKSBwj+AQ
-cTYLIHJvwhBzFe0gdE+kEHT/CaB2OMCQdt7roHgYopB4vs2gefiEkHqer6B72GaQfH6RoH24SJB+XnOg
-f5gqkAABAAECAwEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEA
-AQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEA
-AQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEA
-AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
-</data>
-                                        </timeZone>
-                                    </datePicker>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qei-aZ-LsZ">
                                         <rect key="frame" x="613" y="166" width="70" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -385,19 +357,17 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="Qhg-Ga-ozT" firstAttribute="leading" secondItem="G7u-b7-NyN" secondAttribute="trailing" constant="8" id="3wA-rW-Q6u"/>
                                     <constraint firstItem="ttz-JU-f1H" firstAttribute="centerY" secondItem="qei-aZ-LsZ" secondAttribute="centerY" id="63G-SK-giy"/>
                                     <constraint firstItem="39W-GY-tIJ" firstAttribute="top" secondItem="yhP-p4-IJa" secondAttribute="top" constant="20" id="6Cn-3x-0BR"/>
                                     <constraint firstItem="mMK-Cs-cYF" firstAttribute="top" secondItem="yhP-p4-IJa" secondAttribute="top" constant="20" id="6EF-lO-7M2"/>
                                     <constraint firstAttribute="bottom" secondItem="ttz-JU-f1H" secondAttribute="bottom" constant="15" id="9Kb-Ma-XN1"/>
+                                    <constraint firstItem="Qhg-Ga-ozT" firstAttribute="leading" secondItem="yhP-p4-IJa" secondAttribute="leading" constant="348" id="9oN-x9-fYj"/>
                                     <constraint firstAttribute="bottom" secondItem="Qhg-Ga-ozT" secondAttribute="bottom" constant="20" id="EXY-I7-t4S"/>
+                                    <constraint firstItem="mMK-Cs-cYF" firstAttribute="leading" secondItem="yhP-p4-IJa" secondAttribute="leading" constant="348" id="I4O-JN-HmM"/>
                                     <constraint firstAttribute="centerY" secondItem="fhH-4Y-Gt5" secondAttribute="centerY" id="KiK-aI-B01"/>
-                                    <constraint firstAttribute="centerY" secondItem="G7u-b7-NyN" secondAttribute="centerY" id="MO7-9M-CZ9"/>
                                     <constraint firstItem="ttz-JU-f1H" firstAttribute="leading" secondItem="v7I-mu-q6E" secondAttribute="trailing" constant="8" id="STV-ou-Bhs"/>
                                     <constraint firstItem="qei-aZ-LsZ" firstAttribute="top" secondItem="v7I-mu-q6E" secondAttribute="bottom" constant="8" id="Yoq-kF-nq6"/>
                                     <constraint firstItem="ttz-JU-f1H" firstAttribute="leading" secondItem="qei-aZ-LsZ" secondAttribute="trailing" constant="8" id="c8a-MR-T9A"/>
-                                    <constraint firstItem="mMK-Cs-cYF" firstAttribute="leading" secondItem="G7u-b7-NyN" secondAttribute="trailing" constant="8" id="oSb-tL-zry"/>
-                                    <constraint firstItem="G7u-b7-NyN" firstAttribute="leading" secondItem="yhP-p4-IJa" secondAttribute="leading" constant="20" id="qQN-Ve-yz4"/>
                                     <constraint firstAttribute="trailing" secondItem="ttz-JU-f1H" secondAttribute="trailing" constant="20" id="r0X-uO-TK8"/>
                                     <constraint firstAttribute="trailing" secondItem="39W-GY-tIJ" secondAttribute="trailing" constant="20" id="sDy-c6-tfO"/>
                                     <constraint firstAttribute="centerX" secondItem="fhH-4Y-Gt5" secondAttribute="centerX" id="tl6-9d-ydV"/>
@@ -418,7 +388,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outlet property="cashingButton" destination="fhH-4Y-Gt5" id="Eeb-lv-brK"/>
                         <outlet property="controlsView" destination="yhP-p4-IJa" id="DAl-Ao-vVJ"/>
                         <outlet property="dateButton" destination="mMK-Cs-cYF" id="W5W-cI-KhO"/>
-                        <outlet property="datePicker" destination="G7u-b7-NyN" id="fV4-Ti-DQw"/>
                         <outlet property="debtSummTextField" destination="Qhg-Ga-ozT" id="ua5-6s-26I"/>
                         <outlet property="doneButton" destination="ttz-JU-f1H" id="8XV-8I-E4B"/>
                         <outlet property="remainderLabel" destination="v7I-mu-q6E" id="oDc-7u-hGx"/>

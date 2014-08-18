@@ -19,7 +19,6 @@
 
 @property (weak, nonatomic) IBOutlet UIView *controlsView;
 @property (weak, nonatomic) IBOutlet UIButton *cashingButton;
-@property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
@@ -250,10 +249,6 @@
     
     self.dateButton.hidden = YES;
     self.selectedDate = [NSDate date];
-    
-    self.datePicker.hidden = YES;
-    self.datePicker.date = [NSDate date];
-    
     self.cancelButton.hidden = YES;
     self.doneButton.hidden = YES;
     self.summLabel.hidden = YES;
@@ -286,7 +281,6 @@
     self.cashingButton.hidden = YES;
     
     self.dateButton.hidden = NO;
-    self.datePicker.hidden = NO;
     self.cancelButton.hidden = NO;
     self.doneButton.hidden = NO;
     self.summLabel.hidden = NO;
@@ -300,7 +294,7 @@
 
 - (void)saveCashings {
     
-    NSDate *date = self.datePicker.date;
+    NSDate *date = self.selectedDate;
     
     for (NSArray *debtArray in [self.debtsDictionary allValues]) {
     
