@@ -19,6 +19,7 @@
 		2C2968F319A0C31B0038B122 /* STMUncashingSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968F219A0C31B0038B122 /* STMUncashingSVC.m */; };
 		2C2968F619A0C37E0038B122 /* STMUncashingMasterTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968F519A0C37E0038B122 /* STMUncashingMasterTVC.m */; };
 		2C2968F919A0C3950038B122 /* STMUncashingDetailsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968F819A0C3950038B122 /* STMUncashingDetailsTVC.m */; };
+		2C2968FC19A208FB0038B122 /* STMDatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */; };
 		2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C297F9619507A01000D9485 /* STMExtendNSLog.m */; };
 		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
 		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
@@ -141,6 +142,8 @@
 		2C2968F519A0C37E0038B122 /* STMUncashingMasterTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingMasterTVC.m; sourceTree = "<group>"; };
 		2C2968F719A0C3950038B122 /* STMUncashingDetailsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingDetailsTVC.h; sourceTree = "<group>"; };
 		2C2968F819A0C3950038B122 /* STMUncashingDetailsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingDetailsTVC.m; sourceTree = "<group>"; };
+		2C2968FA19A208FB0038B122 /* STMDatePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDatePickerVC.h; sourceTree = "<group>"; };
+		2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDatePickerVC.m; sourceTree = "<group>"; };
 		2C297F9519507A01000D9485 /* STMExtendNSLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMExtendNSLog.h; sourceTree = "<group>"; };
 		2C297F9619507A01000D9485 /* STMExtendNSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMExtendNSLog.m; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
@@ -381,6 +384,8 @@
 				2C80C81F198E4C220044ADE4 /* STMOutletDebtsTVC.m */,
 				2C80C824198E505F0044ADE4 /* STMCashingControlsVC.h */,
 				2C80C825198E505F0044ADE4 /* STMCashingControlsVC.m */,
+				2C2968FA19A208FB0038B122 /* STMDatePickerVC.h */,
+				2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */,
 				2C80C81B198D25D40044ADE4 /* STMOutletCashingVC.h */,
 				2C80C81C198D25D40044ADE4 /* STMOutletCashingVC.m */,
 				2C2968F119A0C31B0038B122 /* STMUncashingSVC.h */,
@@ -833,6 +838,7 @@
 				2C53B8A119409E71002298A5 /* STMLogger.m in Sources */,
 				2C53B8A219409E71002298A5 /* STMTracker.m in Sources */,
 				2C2968D7199B4CB50038B122 /* STMDebt.m in Sources */,
+				2C2968FC19A208FB0038B122 /* STMDatePickerVC.m in Sources */,
 				2C76A5CE196877B7004D6D80 /* AWXMLRequestSerializerFixed.m in Sources */,
 				2C53B8AC19409E83002298A5 /* STMSettingsTVC.m in Sources */,
 			);

@@ -16,6 +16,7 @@
 @property (nonatomic, strong) STMOutlet *outlet;
 @property (nonatomic, strong) STMOutletDebtsTVC *tableVC;
 @property (nonatomic, strong) NSMutableDictionary *debtsDictionary;
+@property (nonatomic, strong) NSDate *selectedDate;
 
 - (void)addCashing:(STMDebt *)debt;
 - (void)removeCashing:(STMDebt *)debt;

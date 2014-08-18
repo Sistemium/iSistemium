@@ -13,6 +13,7 @@
 #import "STMSessionManager.h"
 #import "STMCashing.h"
 #import "STMDebt+Cashing.h"
+#import "STMDatePickerVC.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate>
 
@@ -24,6 +25,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
+@property (weak, nonatomic) IBOutlet UIButton *dateButton;
+
+
+
 @property (nonatomic, strong) STMDocument *document;
 
 @property (nonatomic, strong) STMDebt *selectedDebt;
@@ -81,6 +86,28 @@
         }
         
     }
+    
+}
+
+- (void)setSelectedDate:(NSDate *)selectedDate {
+    
+    if (_selectedDate != selectedDate) {
+        
+        _selectedDate = selectedDate;
+        
+        [self refreshDateButtonTitle];
+        
+    }
+    
+}
+
+- (void)refreshDateButtonTitle {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
+    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    
+    [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
     
 }
 
@@ -221,8 +248,12 @@
     
     self.cashingButton.hidden = NO;
     
+    self.dateButton.hidden = YES;
+    self.selectedDate = [NSDate date];
+    
     self.datePicker.hidden = YES;
     self.datePicker.date = [NSDate date];
+    
     self.cancelButton.hidden = YES;
     self.doneButton.hidden = YES;
     self.summLabel.hidden = YES;
@@ -254,6 +285,7 @@
 
     self.cashingButton.hidden = YES;
     
+    self.dateButton.hidden = NO;
     self.datePicker.hidden = NO;
     self.cancelButton.hidden = NO;
     self.doneButton.hidden = NO;
@@ -469,6 +501,8 @@
     
     [self addObservers];
     
+    self.selectedDate = [NSDate date];
+    
     if (!self.outlet) {
         [self hideControlsView];
     }
@@ -513,15 +547,20 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:@"showDatePicker"] && [segue.destinationViewController isKindOfClass:[STMDatePickerVC class]]) {
+
+        STMDatePickerVC *datePickerVC = (STMDatePickerVC *)segue.destinationViewController;
+        datePickerVC.parentVC = self;
+        datePickerVC.selectedDate = self.selectedDate;
+
+    }
+
 }
-*/
+
 
 @end
