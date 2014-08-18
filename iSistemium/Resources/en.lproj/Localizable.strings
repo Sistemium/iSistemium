@@ -51,5 +51,5 @@
 "CASHING" = "Cashing";
 "DONE" = "Done";
 "UNCASHING" = "Uncashing";
-"ON HAND" = "On hand";
-"HAND OVER" = "Hand over";
+"ON HAND" = "On hand:";
+"HAND OVER" = "Hand over:";

@@ -7,17 +7,34 @@
 //
 
 #import "STMUncashingMasterTVC.h"
+#import "STMUncashingSVC.h"
 #import "STMConstants.h"
 #import "STMCashing.h"
 #import "STMUncashing.h"
 
 @interface STMUncashingMasterTVC ()
 
+@property (nonatomic, strong) STMUncashingSVC *splitVC;
+
 @end
 
 @implementation STMUncashingMasterTVC
 
 @synthesize resultsController = _resultsController;
+
+- (STMUncashingSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMUncashingSVC class]]) {
+            _splitVC = (STMUncashingSVC *)self.splitViewController;
+        }
+        
+    }
+    
+    return _splitVC;
+    
+}
 
 - (NSDecimalNumber *)cashingSum {
     
@@ -75,7 +92,7 @@
     
         if (self.resultsController.sections.count > 0) {
             
-            id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
+            id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section-1];
             return [sectionInfo numberOfObjects];
             
         } else {
@@ -95,8 +112,18 @@
         return NSLocalizedString(@"ON HAND", nil);
         
     } else {
-        
-        return NSLocalizedString(@"HAND OVER", nil);
+
+        id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section-1];
+
+        if ([sectionInfo numberOfObjects] == 0) {
+            
+            return nil;
+            
+        } else {
+
+            return NSLocalizedString(@"HAND OVER", nil);
+
+        }
 
     }
     
@@ -120,7 +147,7 @@
         
     } else if (indexPath.section == 1) {
         
-        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
+        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section-1];
         STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
 
         cell.textLabel.text = [numberFormatter stringFromNumber:uncashing.summ];
@@ -142,7 +169,47 @@
     
 }
 
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        self.splitVC.detailVC.uncashing = nil;
+        
+    } else {
+    
+        id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section-1];
+        STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
+        
+        self.splitVC.detailVC.uncashing = uncashing;
+
+    }
+
+    return indexPath;
+    
+}
+
+
+
 #pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    self.clearsSelectionOnViewWillAppear = NO;
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+        
+        NSLog(@"performFetch error %@", error);
+        
+    } else {
+        
+        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
+}
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -153,10 +220,11 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning

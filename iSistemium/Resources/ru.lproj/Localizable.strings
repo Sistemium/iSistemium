@@ -51,5 +51,5 @@
 "CASHING" = "Сбор выручки";
 "DONE" = "Готово";
 "UNCASHING" = "Выручка";
-"ON HAND" = "На руках";
-"HAND OVER" = "Сдано";
+"ON HAND" = "На руках:";
+"HAND OVER" = "Сдано:";

@@ -19,7 +19,7 @@
 @interface STMDebtsTVC ()
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
-@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+//@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
@@ -131,7 +131,7 @@
     
     self.splitVC.detailVC.outlet = outlet;
     
-    self.selectedIndexPath = indexPath;
+//    self.selectedIndexPath = indexPath;
     
     return indexPath;
 

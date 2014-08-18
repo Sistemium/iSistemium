@@ -7,7 +7,10 @@
 //
 
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMUncashing.h"
 
 @interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC <UISplitViewControllerDelegate>
+
+@property (nonatomic, strong) STMUncashing *uncashing;
 
 @end
