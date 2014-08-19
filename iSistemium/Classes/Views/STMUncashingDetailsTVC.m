@@ -10,8 +10,12 @@
 #import "STMDebt.h"
 #import "STMCashing.h"
 #import "STMConstants.h"
+#import "STMHandOverPopoverVC.h"
 
 @interface STMUncashingDetailsTVC ()
+
+@property (nonatomic, strong) UIBarButtonItem *handOverButton;
+@property (nonatomic, strong) UIPopoverController *handOverPopover;
 
 @end
 
@@ -31,6 +35,20 @@
     
 }
 
+- (UIPopoverController *)handOverPopover {
+    
+    if (!_handOverPopover) {
+        
+        STMHandOverPopoverVC *handOverPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"handOverPopoverVC"];
+        handOverPopoverVC.uncashingSum = [NSDecimalNumber zero];
+        
+        _handOverPopover = [[UIPopoverController alloc] initWithContentViewController:handOverPopoverVC];
+
+    }
+
+    return _handOverPopover;
+    
+}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -66,6 +84,11 @@
     
 }
 
+- (void)showHandOverPopover {
+    
+    [self.handOverPopover presentPopoverFromBarButtonItem:self.handOverButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
 
 #pragma mark - table view data source
 
@@ -117,6 +140,9 @@
 - (void)customInit {
     
     [self performFetch];
+    
+    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHandOverPopover)];
+    self.navigationItem.rightBarButtonItem = self.handOverButton;
     
 }
 

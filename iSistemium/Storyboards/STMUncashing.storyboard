@@ -50,6 +50,45 @@
             </objects>
             <point key="canvasLocation" x="1286" y="11"/>
         </scene>
+        <!--Hand Over PopoverVC-->
+        <scene sceneID="WXV-jP-DpB">
+            <objects>
+                <viewController storyboardIdentifier="handOverPopoverVC" id="maE-Mh-LPs" customClass="STMHandOverPopoverVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="tCS-BJ-FhL"/>
+                        <viewControllerLayoutGuide type="bottom" id="eJ8-WF-SVJ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="w1n-Gs-sBc">
+                        <rect key="frame" x="0.0" y="0.0" width="256" height="64"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XAU-eY-fxX">
+                                <rect key="frame" x="192" y="17" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WT2-ws-FNo">
+                                <rect key="frame" x="20" y="17" width="164" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="256" height="64"/>
+                    <connections>
+                        <outlet property="doneButton" destination="XAU-eY-fxX" id="wkN-Bw-LDf"/>
+                        <outlet property="uncashingSumTextField" destination="WT2-ws-FNo" id="SvT-Vs-bRe"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nbo-ic-xti" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2205" y="907"/>
+        </scene>
         <!--Uncashing MasterTVC - Root View Controller-->
         <scene sceneID="Amy-ez-Ebg">
             <objects>
