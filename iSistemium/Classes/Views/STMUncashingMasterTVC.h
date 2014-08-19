@@ -10,4 +10,6 @@
 
 @interface STMUncashingMasterTVC : STMFetchedResultsControllerTVC
 
+- (NSDecimalNumber *)cashingSum;
+
 @end

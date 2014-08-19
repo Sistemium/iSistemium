@@ -11,8 +11,11 @@
 #import "STMCashing.h"
 #import "STMConstants.h"
 #import "STMHandOverPopoverVC.h"
+#import "STMUncashingSVC.h"
 
 @interface STMUncashingDetailsTVC ()
+
+@property (nonatomic, strong) STMUncashingSVC *splitVC;
 
 @property (nonatomic, strong) UIBarButtonItem *handOverButton;
 @property (nonatomic, strong) UIPopoverController *handOverPopover;
@@ -23,6 +26,19 @@
 
 @synthesize resultsController = _resultsController;
 
+- (STMUncashingSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMUncashingSVC class]]) {
+            _splitVC = (STMUncashingSVC *)self.splitViewController;
+        }
+        
+    }
+    
+    return _splitVC;
+    
+}
 
 - (void)setUncashing:(STMUncashing *)uncashing {
     
@@ -40,7 +56,7 @@
     if (!_handOverPopover) {
         
         STMHandOverPopoverVC *handOverPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"handOverPopoverVC"];
-        handOverPopoverVC.uncashingSum = [NSDecimalNumber zero];
+        handOverPopoverVC.uncashingSum = [self.splitVC.masterVC cashingSum];
         
         _handOverPopover = [[UIPopoverController alloc] initWithContentViewController:handOverPopoverVC];
 

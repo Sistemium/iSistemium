@@ -8,15 +8,121 @@
 
 #import "STMHandOverPopoverVC.h"
 
-@interface STMHandOverPopoverVC ()
+@interface STMHandOverPopoverVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *uncashingSumTextField;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 
+@property (nonatomic, strong) NSNumberFormatter *decimalNumberFormatter;
 
 @end
 
+
 @implementation STMHandOverPopoverVC
+
+
+- (NSNumberFormatter *)decimalNumberFormatter {
+    
+    if (!_decimalNumberFormatter) {
+        
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+        numberFormatter.minimumFractionDigits = 2;
+
+        _decimalNumberFormatter = numberFormatter;
+        
+    }
+    
+    return _decimalNumberFormatter;
+    
+}
+
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    
+    return [self isCorrectValue];
+    
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+    NSNumber *number = [self.decimalNumberFormatter numberFromString:self.uncashingSumTextField.text];
+    
+    self.uncashingSumTextField.text = [self.decimalNumberFormatter stringFromNumber:number];
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    return YES;
+    
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    NSMutableString *text = [textField.text mutableCopy];
+    [text replaceCharactersInRange:range withString:string];
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.maximumFractionDigits = 2;
+
+    [text replaceOccurrencesOfString:numberFormatter.groupingSeparator
+                          withString:@""
+                             options:NSCaseInsensitiveSearch
+                               range:NSMakeRange(0, [text length])];
+    
+    NSNumber *number = [numberFormatter numberFromString:[NSString stringWithFormat:@"%@", text]];
+    
+    if (!number) {
+        
+        if ([text isEqualToString:@""]) {
+            
+            textField.text = text;
+            
+        }
+        
+        return NO;
+        
+    } else {
+        
+        NSString *finalString = [numberFormatter stringFromNumber:number];
+        
+        if ([string isEqualToString:numberFormatter.decimalSeparator]) {
+            
+            finalString = [finalString stringByAppendingString:numberFormatter.decimalSeparator];
+            
+        }
+        
+        textField.text = finalString;
+        
+        return NO;
+        
+    }
+    
+}
+
+- (BOOL)isCorrectValue {
+    
+    NSNumber *number = [self.decimalNumberFormatter numberFromString:self.uncashingSumTextField.text];
+    return [number boolValue];
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    self.uncashingSumTextField.keyboardType = UIKeyboardTypeDecimalPad;
+    self.uncashingSumTextField.delegate = self;
+    
+    self.uncashingSumTextField.text = [self.decimalNumberFormatter stringFromNumber:self.uncashingSum];
+    
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -27,10 +133,11 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning
