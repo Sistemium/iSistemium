@@ -140,6 +140,13 @@
     
 }
 
+- (void)editingButtonPressed:(NSNotification *)notification {
+    
+    BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
+    
+    [self.tableView setEditing:editing animated:YES];
+    
+}
 
 #pragma mark - Table view data source
 
@@ -343,6 +350,27 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editingButtonPressed:) name:@"editingButtonPressed" object:self.parentViewController];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
+- (void)customInit {
+    
+    [self addObservers];
+    
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+//    [self.tableView setEditing:YES animated:YES];
+
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -356,10 +384,8 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    [self.tableView setEditing:YES animated:YES];
-    
+    [self customInit];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {

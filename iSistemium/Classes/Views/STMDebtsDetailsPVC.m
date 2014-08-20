@@ -11,11 +11,11 @@
 #import "STMSessionManager.h"
 #import "STMDebtsDetailsVC.h"
 #import "STMRootTBC.h"
+#import "STMOutletCashingVC.h"
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
-
 @property (nonatomic, strong) UIPopoverController *popover;
 
 @property (nonatomic, strong) STMDocument *document;
@@ -113,6 +113,29 @@
     
 }
 
+- (void)editButtonForVC:(UIViewController *)vc {
+    
+    if ([vc isKindOfClass:[STMOutletCashingVC class]]) {
+        
+        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+        
+    } else {
+        
+        self.navigationItem.rightBarButtonItem = nil;
+        
+    }
+
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    
+    [super setEditing:editing animated:animated];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": [NSNumber numberWithBool:editing]}];
+    
+    NSLog(@"setEditing:editing %d", editing);
+    
+}
 
 #pragma mark - Page View Controller Data Source
 
@@ -139,6 +162,7 @@
 }
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+    
     if (completed) {
         
         STMDebtsDetailsVC *previousVC = previousViewControllers[0];
@@ -147,9 +171,11 @@
         
         self.segmentedControl.selectedSegmentIndex = self.currentIndex;
         
+        [self editButtonForVC:pageViewController.viewControllers[0]];
+        
     }
+    
 }
-
 
 #pragma mark - UISplitViewControllerDelegate
 
@@ -224,6 +250,8 @@
     STMDebtsDetailsVC *vc = [self viewControllerAtIndex:index storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:direction animated:YES completion:NULL];
+    
+    [self editButtonForVC:vc];
     
 }
 
