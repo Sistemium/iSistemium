@@ -113,7 +113,7 @@
 //        NSLog(@"fetchedObjects %@", self.resultsController.fetchedObjects);
         
 //        [self.tableView setEditing:NO animated:YES];
-//        [self.tableView reloadData];
+        [self.tableView reloadData];
         
     }
     
@@ -129,8 +129,28 @@
 
     [self.handOverPopover dismissPopoverAnimated:YES];
 
-//    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
+    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
 
+    NSArray *cashings = self.resultsController.fetchedObjects;
+    
+    for (STMCashing *cashing in cashings) {
+        
+        cashing.uncashing = uncashing;
+        
+    }
+    
+    uncashing.summOrigin = [self.splitVC.masterVC cashingSum];
+    
+#warning - need ot be changed
+    uncashing.summ = [self.splitVC.masterVC cashingSum];
+    
+    uncashing.date = [NSDate date];
+    
+    [self.document saveDocument:^(BOOL success) {
+        if (success) {
+            
+        }
+    }];
     
 }
 

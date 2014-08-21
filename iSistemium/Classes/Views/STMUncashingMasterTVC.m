@@ -42,7 +42,7 @@
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"uncashing.@count == 0"];
+    request.predicate = [NSPredicate predicateWithFormat:@"uncashing != %@", nil];
     
     NSError *error;
     NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
@@ -189,6 +189,68 @@
     
 }
 
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+    
+    switch (type) {
+            
+        case NSFetchedResultsChangeInsert:
+            [self.insertedSectionIndexes addIndex:sectionIndex+1];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.deletedSectionIndexes addIndex:sectionIndex+1];
+            break;
+            
+        default:
+            ; // Shouldn't have a default
+            break;
+            
+    }
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    NSIndexPath *iPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section+1];
+    NSIndexPath *nPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:newIndexPath.section+1];
+    
+    if (type == NSFetchedResultsChangeInsert) {
+        
+        if ([self.insertedSectionIndexes containsIndex:nPath.section]) {
+            return;
+        }
+        
+        [self.insertedRowIndexPaths addObject:nPath];
+        
+    } else if (type == NSFetchedResultsChangeDelete) {
+        
+        if ([self.deletedSectionIndexes containsIndex:iPath.section]) {
+            return;
+        }
+        
+        [self.deletedRowIndexPaths addObject:iPath];
+        
+    } else if (type == NSFetchedResultsChangeMove) {
+        
+        if (![self.insertedSectionIndexes containsIndex:nPath.section]) {
+            [self.insertedRowIndexPaths addObject:nPath];
+        }
+        
+        if (![self.deletedSectionIndexes containsIndex:iPath.section]) {
+            [self.deletedRowIndexPaths addObject:iPath];
+        }
+        
+    } else if (type == NSFetchedResultsChangeUpdate) {
+        
+        [self.updatedRowIndexPaths addObject:iPath];
+        
+    }
+    
+}
 
 
 #pragma mark - view lifecycle

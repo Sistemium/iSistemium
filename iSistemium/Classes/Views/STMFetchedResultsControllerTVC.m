@@ -10,14 +10,6 @@
 
 @interface STMFetchedResultsControllerTVC ()
 
-@property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
-@property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
-@property (nonatomic, strong) NSMutableArray *deletedRowIndexPaths;
-@property (nonatomic, strong) NSMutableArray *insertedRowIndexPaths;
-@property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
-
-//@property (nonatomic, strong) NSMutableArray *selectedObjects;
-
 @end
 
 
