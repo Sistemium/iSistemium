@@ -215,6 +215,13 @@
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, summOriginString];
     
+    if (cashing.uncashing) {
+        
+        cell.textLabel.textColor = [UIColor darkGrayColor];
+        cell.detailTextLabel.textColor = [UIColor darkGrayColor];
+        
+    }
+    
     return cell;
     
 }
@@ -233,7 +240,17 @@
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return UITableViewCellEditingStyleDelete;
+    STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
+    
+    if (cashing.uncashing) {
+        
+        return UITableViewCellEditingStyleNone;
+        
+    } else {
+        
+        return UITableViewCellEditingStyleDelete;
+        
+    }
     
 }
 
