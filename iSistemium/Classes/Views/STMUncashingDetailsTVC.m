@@ -71,7 +71,12 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDebt class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)]];
+
+        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
+        
+        request.sortDescriptors = @[outletNameSortDescriptor, dateSortDescriptor];
+        
         request.predicate = [NSPredicate predicateWithFormat:@"cashings.@count != 0 AND ANY cashings.uncashing == %@", self.uncashing];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"outlet.name" cacheName:nil];
         _resultsController.delegate = self;
@@ -92,6 +97,8 @@
         NSLog(@"performFetch error %@", error);
         
     } else {
+        
+//        NSLog(@"fetchedObjects %@", self.resultsController.fetchedObjects);
         
 //        [self.tableView setEditing:NO animated:YES];
 //        [self.tableView reloadData];
@@ -155,10 +162,10 @@
 
 - (void)customInit {
     
-    [self performFetch];
-    
     self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHandOverPopover)];
     self.navigationItem.rightBarButtonItem = self.handOverButton;
+
+    [self performFetch];
     
 }
 

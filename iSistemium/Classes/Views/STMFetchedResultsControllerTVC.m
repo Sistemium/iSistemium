@@ -207,14 +207,20 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-/*
-    if ([NSStringFromClass([self class]) isEqualToString:@"STMOutletDebtsTVC"]) {
-        
-        NSLog(@"type %d", type);
-        NSLog(@"anObject %@", anObject);
-        
-    }
-*/
+
+//    if ([NSStringFromClass([self class]) isEqualToString:@"STMUncashingDetailsTVC"]) {
+//        
+//        NSLog(@"type %d", type);
+//        NSLog(@"anObject %@", anObject);
+//        
+//    }
+    
+//    if ([NSStringFromClass([anObject class]) isEqualToString:@"STMDebt"]) {
+//        
+//        NSLog(@"self %@", self);
+//        NSLog(@"anObject %@", anObject);
+//        
+//    }
     
     if (type == NSFetchedResultsChangeInsert) {
         
