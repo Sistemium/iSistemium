@@ -7,9 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMUncashingDetailsTVC.h"
 
 @interface STMHandOverPopoverVC : UIViewController
 
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
+
+@property (nonatomic, strong) STMUncashingDetailsTVC *parent;
 
 @end

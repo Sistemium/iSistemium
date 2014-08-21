@@ -37,6 +37,11 @@
     
 }
 
+- (void)uncashingDone {
+    
+    [self.parent uncashingDone];
+    
+}
 
 #pragma mark - UITextFieldDelegate
 
@@ -52,11 +57,14 @@
     
     self.uncashingSumTextField.text = [self.decimalNumberFormatter stringFromNumber:number];
     
+    
+    
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
+    [self uncashingDone];
     return YES;
     
 }
@@ -121,6 +129,9 @@
     self.uncashingSumTextField.delegate = self;
     
     self.uncashingSumTextField.text = [self.decimalNumberFormatter stringFromNumber:self.uncashingSum];
+    
+    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
+    [self.doneButton addTarget:self action:@selector(uncashingDone) forControlEvents:UIControlEventTouchUpInside];
     
 }
 

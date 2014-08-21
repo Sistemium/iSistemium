@@ -57,6 +57,7 @@
         
         STMHandOverPopoverVC *handOverPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"handOverPopoverVC"];
         handOverPopoverVC.uncashingSum = [self.splitVC.masterVC cashingSum];
+        handOverPopoverVC.parent = self;
         
         _handOverPopover = [[UIPopoverController alloc] initWithContentViewController:handOverPopoverVC];
 
@@ -70,17 +71,28 @@
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDebt class])];
+//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDebt class])];
+//
+//        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//        NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
+//        
+//        request.sortDescriptors = @[outletNameSortDescriptor, dateSortDescriptor];
+//        
+//        request.predicate = [NSPredicate predicateWithFormat:@"cashings.@count != 0 AND ANY cashings.uncashing == %@", self.uncashing];
+//        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"outlet.name" cacheName:nil];
+//        _resultsController.delegate = self;
 
-        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
+        
+        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"debt.outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
         
         request.sortDescriptors = @[outletNameSortDescriptor, dateSortDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"cashings.@count != 0 AND ANY cashings.uncashing == %@", self.uncashing];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"outlet.name" cacheName:nil];
+        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", self.uncashing];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"debt.outlet.name" cacheName:nil];
         _resultsController.delegate = self;
-        
+
     }
     
     return _resultsController;
@@ -113,6 +125,15 @@
     
 }
 
+- (void)uncashingDone {
+
+    [self.handOverPopover dismissPopoverAnimated:YES];
+
+//    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
+
+    
+}
+
 #pragma mark - table view data source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -127,18 +148,20 @@
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-    STMDebt *debt = sectionInfo.objects[indexPath.row];
+//    STMDebt *debt = sectionInfo.objects[indexPath.row];
+  
+    STMCashing *cashing = sectionInfo.objects[indexPath.row];
     
-    NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+//    NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+//    
+//    for (STMCashing *cashing in debt.cashings) {
+//        
+//        cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+//        
+//    }
     
-    for (STMCashing *cashing in debt.cashings) {
-        
-        cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
-        
-    }
-    
-    NSString *textLabel = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:cashingSum]];
-    NSString *detailTextLabel = [NSString stringWithFormat:@"%@ / %@ / %@", debt.ndoc, [dateFormatter stringFromDate:debt.date], [numberFormatter stringFromNumber:debt.summOrigin]];
+    NSString *textLabel = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:cashing.summ]];
+    NSString *detailTextLabel = [NSString stringWithFormat:@"%@ / %@ / %@", cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.date], [numberFormatter stringFromNumber:cashing.debt.summOrigin]];
     
     cell.textLabel.text = textLabel;
     cell.detailTextLabel.text = detailTextLabel;
