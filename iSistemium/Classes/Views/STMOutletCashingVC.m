@@ -38,6 +38,7 @@
     if (_outlet != outlet) {
         
         _outlet = outlet;
+        [self.parentViewController setEditing:NO animated:YES];
         [self performFetch];
 
     }
@@ -392,6 +393,14 @@
     
     [super viewWillAppear:animated];
     
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+
+    [self.parentViewController setEditing:NO animated:YES];
+
 }
 
 - (void)didReceiveMemoryWarning

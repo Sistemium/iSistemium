@@ -173,6 +173,7 @@
         
     }
     
+    [self updateControlLabels];
     [self showCashingControls];
     [self.tableVC.tableView setEditing:YES animated:YES];
     
@@ -215,6 +216,7 @@
     numberFormatter.minimumFractionDigits = 2;
     
     NSDecimalNumber *sum = [NSDecimalNumber zero];
+    self.tableVC.totalSum = nil;
     NSDecimalNumber *remainderSum = self.tableVC.totalSum;
     
     for (NSArray *debtValues in [self.debtsDictionary allValues]) {

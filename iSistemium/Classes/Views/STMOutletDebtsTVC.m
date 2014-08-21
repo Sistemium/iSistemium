@@ -63,7 +63,7 @@
 - (NSDecimalNumber *)totalSum {
     
     if (!_totalSum) {
-        
+    
         NSDecimalNumber *totalSum = [NSDecimalNumber zero];
         
         for (STMDebt *debt in self.resultsController.fetchedObjects) {
