@@ -26,6 +26,8 @@
 #import "STMSetting.h"
 #import "STMLogMessage.h"
 #import "STMDebt.h"
+#import "STMCashing.h"
+#import "STMUncashing.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -931,7 +933,9 @@
                              NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMOutlet class]),
                              NSStringFromClass([STMPhotoReport class]),
-                             NSStringFromClass([STMDebt class])];
+                             NSStringFromClass([STMDebt class]),
+                             NSStringFromClass([STMCashing class]),
+                             NSStringFromClass([STMUncashing class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;
     NSLog(@"total count %d", totalCount);

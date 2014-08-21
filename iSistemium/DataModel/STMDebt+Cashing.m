@@ -13,14 +13,20 @@
 
 - (NSDecimalNumber *)cashingCalculatedSum {
     
+    [self willAccessValueForKey:@"summ"];
     NSDecimalNumber *result = self.summ;
+    [self didAccessValueForKey:@"summ"];
     
-    for (STMCashing *cashing in self.cashings) {
+    [self willAccessValueForKey:@"cashings"];
+    NSSet *cashings = self.cashings;
+    [self didAccessValueForKey:@"cashings"];
+    
+    for (STMCashing *cashing in cashings) {
         
         result = [result decimalNumberBySubtracting:cashing.summ];
         
     }
-    
+
     if ([result compare:[NSDecimalNumber zero]] == NSOrderedAscending) {
         
         result = [NSDecimalNumber zero];
@@ -35,28 +41,40 @@
     
     NSDecimalNumber *cashingCalculatedSum = [self cashingCalculatedSum];
     
-    if (cashingCalculatedSum != [self primitiveValueForKey:@"calculatedSum"]) {
-                
+    [self willAccessValueForKey:@"calculatedSum"];
+    NSDecimalNumber *primitiveCalculatedSum = [self primitiveValueForKey:@"calculatedSum"];
+    [self didAccessValueForKey:@"calculatedSum"];
+    
+    if ([cashingCalculatedSum compare:primitiveCalculatedSum] != NSOrderedSame) {
+        
+        [self willChangeValueForKey:@"calculatedSum"];
         [self setPrimitiveValue:cashingCalculatedSum forKey:@"calculatedSum"];
-                
+        [self didChangeValueForKey:@"calculatedSum"];
+
     }
- 
+    
     [super willSave];
     
 }
-
 
 - (void)awakeFromFetch {
     
     [super awakeFromFetch];
     
-    if (!self.calculatedSum) {
+    [self willAccessValueForKey:@"calculatedSum"];
+    NSDecimalNumber *calculatedSum = self.calculatedSum;
+    [self didAccessValueForKey:@"calculatedSum"];
+    
+    if (!calculatedSum) {
         
+        [self willChangeValueForKey:@"calculatedSum"];
         [self setValue:[self cashingCalculatedSum] forKey:@"calculatedSum"];
+        [self didChangeValueForKey:@"calculatedSum"];
         
     }
     
 }
+
 
 
 @end

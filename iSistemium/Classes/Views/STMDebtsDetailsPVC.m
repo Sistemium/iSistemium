@@ -133,7 +133,7 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": [NSNumber numberWithBool:editing]}];
     
-    NSLog(@"setEditing:editing %d", editing);
+//    NSLog(@"setEditing:editing %d", editing);
     
 }
 
