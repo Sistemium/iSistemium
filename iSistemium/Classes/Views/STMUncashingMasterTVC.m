@@ -12,11 +12,32 @@
 #import "STMCashing.h"
 #import "STMUncashing.h"
 
+
 @interface STMUncashingMasterTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 
 @end
+
+
+//@interface STMCashingSumFRCD ()
+//
+//@end
+
+#pragma mark - STMCashingSumFRCD
+
+@implementation STMCashingSumFRCD
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [self.cashingSumTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+    
+}
+
+@end
+
+
+#pragma mark - STMUncashingMasterTVC
 
 @implementation STMUncashingMasterTVC
 

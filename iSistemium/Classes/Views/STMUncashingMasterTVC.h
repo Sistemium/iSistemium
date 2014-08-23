@@ -13,3 +13,10 @@
 - (NSDecimalNumber *)cashingSum;
 
 @end
+
+
+@interface STMCashingSumFRCD : NSObject <NSFetchedResultsControllerDelegate>
+
+@property (nonatomic, strong) UITableView *cashingSumTableView;
+
+@end
