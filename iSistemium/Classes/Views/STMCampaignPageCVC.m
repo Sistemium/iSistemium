@@ -39,11 +39,7 @@
     
     [super viewWillAppear:animated];
     
-//    CGFloat navBarHeight = self.navigationController.navigationBar.frame.size.height;
-    
-//    if (navBarHeight == 0) {
-        [self.collectionView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
-//    }
+//    [self.collectionView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
     
 }
 

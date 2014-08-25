@@ -9,12 +9,17 @@
 #import "STMRootTBC.h"
 #import "STMAuthController.h"
 #import "STMAuthTVC.h"
+#import "STMFunctions.h"
+#import "STMSessionManager.h"
+#import "STMSession.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSArray *storyboardnames;
+@property (nonatomic, strong) NSArray *tabImages;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
+@property (nonatomic, strong) STMSession *session;
 
 @end
 
@@ -30,6 +35,12 @@
     });
     
     return _sharedRootVC;
+    
+}
+
+- (STMSession *)session {
+    
+    return [STMSessionManager sharedManager].currentSession;
     
 }
 
@@ -53,14 +64,26 @@
 
     self.delegate = self;
     
-//    self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns", @"STMDebts"];
-    self.storyboardnames = @[@"STMAuthTVC", @"STMCampaigns"];
-    self.storyboardtitles = @[NSLocalizedString(@"AUTHORIZATION", nil), NSLocalizedString(@"AD CAMPAIGNS", nil), NSLocalizedString(@"DEBTS", nil)];
+    self.storyboardnames = @[@"STMAuthTVC",
+                             @"STMCampaigns",
+                             @"STMDebts",
+                             @"STMUncashing"];
     
-    self.tabBar.hidden = YES;
-//    self.tabBar.hidden = NO;
+    self.storyboardtitles = @[NSLocalizedString(@"AUTHORIZATION", nil),
+                              NSLocalizedString(@"AD CAMPAIGNS", nil),
+                              NSLocalizedString(@"DEBTS", nil),
+                              NSLocalizedString(@"UNCASHING", nil)];
     
-    [self authControllerStateChanged];
+    self.tabImages = @[[UIImage imageNamed:@"password2-128.png"],
+                       [UIImage imageNamed:@"christmas_gift-128.png"],
+                       [UIImage imageNamed:@"cash_receiving-128.png"],
+                       [UIImage imageNamed:@"banknotes-128.png"]];
+    
+    
+//    self.tabBar.hidden = YES;
+    self.tabBar.hidden = NO;
+    
+    [self stateChanged];
     
 }
 
@@ -84,7 +107,8 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:authTabName bundle:nil];
     UIViewController *vc = [storyboard instantiateInitialViewController];
     vc.title = authTabTitle;
-    
+    vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[0] toSize:CGSizeMake(30, 30)];
+
     [self.tabs setObject:vc forKey:authTabName];
     
     self.viewControllers = [self.tabs allValues];
@@ -99,8 +123,11 @@
         
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
         
+        NSUInteger index = [self.storyboardnames indexOfObject:name];
+        
         UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = [self.storyboardtitles objectAtIndex:[self.storyboardnames indexOfObject:name]];
+        vc.title = [self.storyboardtitles objectAtIndex:index];
+        vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[index] toSize:CGSizeMake(30, 30)];
         [viewControllers addObject:vc];
 
         [self.tabs setObject:vc forKey:name];
@@ -108,14 +135,8 @@
     }
     
     self.viewControllers = viewControllers;
-
+    
 }
-
-//- (void)flushTabs {
-//    
-//    [self customInit];
-//    
-//}
 
 - (void)showTabWithName:(NSString *)tabName {
     
@@ -213,15 +234,42 @@
     
 }
 
-- (void)authControllerStateChanged {
+- (void)stateChanged {
     
-    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+    [self authStateChanged];
+    [self syncStateChanged];
+    
+}
+
+- (void)authStateChanged {
+    
+    [STMAuthController authController].controllerState != STMAuthSuccess ? [self initAuthTab] : [self initAllTabs];
+    
+}
+
+- (void)syncStateChanged {
+
+//    self.session.syncer.syncerState == STMSyncerIdle ? [self enableTabs] : [self disableTabs];
+
+    [self enableTabs];
+    
+}
+
+- (void)disableTabs {
+    
+    for (UIViewController *vc in self.viewControllers) {
         
-        [self initAuthTab];
+        vc.tabBarItem.enabled = NO;
         
-    } else {
+    }
+    
+}
+
+- (void)enableTabs {
+
+    for (UIViewController *vc in self.viewControllers) {
         
-        [self initAllTabs];
+        vc.tabBarItem.enabled = YES;
         
     }
     
@@ -233,7 +281,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAuthAlert) name:@"notAuthorized" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncStateChanged) name:@"syncStatusChanged" object:self.session.syncer];
     
 }
 

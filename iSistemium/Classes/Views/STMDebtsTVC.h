@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMFetchedResultsControllerTVC.h"
 
-@interface STMDebtsTVC : UITableViewController
+@interface STMDebtsTVC : STMFetchedResultsControllerTVC
 
 @end

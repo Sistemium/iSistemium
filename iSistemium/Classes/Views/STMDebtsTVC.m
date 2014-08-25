@@ -7,33 +7,37 @@
 //
 
 #import "STMDebtsTVC.h"
-#import <CoreData/CoreData.h>
-
-#import "STMDocument.h"
-#import "STMSessionManager.h"
+#import "STMDebtsSVC.h"
 
 #import "STMOutlet.h"
 #import "STMDebt.h"
+#import "STMCashing.h"
+
+#import "STMConstants.h"
 
 
-@interface STMDebtsTVC () <NSFetchedResultsControllerDelegate>
+@interface STMDebtsTVC ()
 
-@property (nonatomic, strong) NSFetchedResultsController *resultsController;
-@property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, strong) STMDebtsSVC *splitVC;
+//@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
 @implementation STMDebtsTVC
 
-- (STMDocument *)document {
+@synthesize resultsController = _resultsController;
+
+- (STMDebtsSVC *)splitVC {
     
-    if (!_document) {
+    if (!_splitVC) {
         
-        _document = (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
+        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+            _splitVC = (STMDebtsSVC *)self.splitViewController;
+        }
         
     }
     
-    return _document;
+    return _splitVC;
     
 }
 
@@ -43,7 +47,7 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]];
-//        request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
+        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"partner.name" cacheName:nil];
         _resultsController.delegate = self;
         
@@ -59,12 +63,14 @@
 
 - (void)customInit {
     
+    self.clearsSelectionOnViewWillAppear = NO;
+
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
         NSLog(@"performFetch error %@", error);
     }
 
-    self.title = self.tabBarController.selectedViewController.title;
+    self.title = NSLocalizedString(@"OUTLETS", nil);
     
 }
 
@@ -93,27 +99,6 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    return self.resultsController.sections.count;
-
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
-    return [sectionInfo numberOfObjects];
-
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:section];
-    return [sectionInfo name];
-    
-}
-
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtCell" forIndexPath:indexPath];
@@ -122,69 +107,87 @@
 
     STMOutlet *outlet = sectionInfo.objects[indexPath.row];
     
-    NSDecimalNumber *debtSum = [NSDecimalNumber decimalNumberWithString:@"0"];
+    cell.textLabel.text = outlet.shortName;
+    cell.detailTextLabel.text = [self detailedTextForOutlet:outlet];
     
-    for (STMDebt *debt in outlet.debts) {
-        
-        debtSum = [debtSum decimalNumberByAdding:debt.summ];
-
-    }
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
+    selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
     
-    cell.textLabel.text = outlet.name;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", debtSum];
+    cell.selectedBackgroundView = selectedBackgroundView;
+    
+    UIColor *highlightedTextColor = [UIColor whiteColor];
+    
+    cell.textLabel.highlightedTextColor = highlightedTextColor;
+    cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
     
     return cell;
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
+    STMOutlet *outlet = sectionInfo.objects[indexPath.row];
+    
+    self.splitVC.detailVC.outlet = outlet;
+    
+//    self.selectedIndexPath = indexPath;
+    
+    return indexPath;
+
+}
 
 /*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.selectedIndexPath && [indexPath compare:self.selectedIndexPath] == NSOrderedSame) {
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
 }
 */
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
+- (NSString *)detailedTextForOutlet:(STMOutlet *)outlet {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    
+    NSDecimalNumber *debtSum = [NSDecimalNumber zero];
+    
+    for (STMDebt *debt in outlet.debts) {
+        
+        debtSum = [debtSum decimalNumberByAdding:debt.summ];
+        
+    }
+    
+    NSString *debtSumString = [numberFormatter stringFromNumber:debtSum];
+    
+    NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+    
+    for (STMCashing *cashing in outlet.cashings) {
+        
+        cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+        
+    }
+    
+    NSString *cashingSumString = [numberFormatter stringFromNumber:cashingSum];
+    
+    NSString *detailedText = nil;
+    
+    if ([cashingSum compare:[NSDecimalNumber zero]] == NSOrderedSame) {
+        
+        detailedText = [NSString stringWithFormat:@"%@", debtSumString];
+        
+    } else {
+        
+        detailedText = [NSString stringWithFormat:@"%@ (%@)", debtSumString, cashingSumString];
+        
+    }
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
+    return detailedText;
+    
 }
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

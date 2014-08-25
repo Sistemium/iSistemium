@@ -521,7 +521,7 @@
             self.syncerState = STMSyncerIdle;
             
         } else {
-            
+//            NSLog(@"connection %@", connection);
 //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
             
         }

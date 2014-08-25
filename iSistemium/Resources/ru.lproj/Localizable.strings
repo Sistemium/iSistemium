@@ -45,3 +45,14 @@
 "R U SURE" = "Вы уверены?";
 "AUTHORIZATION" = "Авторизация";
 "DEBTS" = "Долги";
+"DEBT DETAILS" = "За %@ от %@ на сумму %@";
+"CASHING" = "Выручка";
+"OUTLETS" = "Точки";
+"CASHING" = "Сбор выручки";
+"DONE" = "Готово";
+"UNCASHING" = "Выручка";
+"ON HAND" = "На руках:";
+"HAND OVER" = "Сдано:";
+"HAND OVER BUTTON" = "Сдать";
+"PICKED" = "Собрано";
+"REMAINDER" = "Остаток";

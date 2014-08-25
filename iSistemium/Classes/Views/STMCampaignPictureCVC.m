@@ -46,7 +46,12 @@
     if (!_campaignPicturesResultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaignPicture class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
+        
+        NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+        NSSortDescriptor *deviceCtsSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)];
+        
+        request.sortDescriptors = @[nameSortDescriptor, deviceCtsSortDescriptor];
+        
         request.predicate = [NSPredicate predicateWithFormat:@"ANY campaigns == %@", self.campaign];
         _campaignPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         _campaignPicturesResultsController.delegate = self;
