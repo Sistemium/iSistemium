@@ -17,7 +17,6 @@
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 
-@property (nonatomic, strong) UIBarButtonItem *handOverButton;
 @property (nonatomic, strong) UIPopoverController *handOverPopover;
 
 @end
@@ -41,6 +40,8 @@
 }
 
 - (void)setUncashing:(STMUncashing *)uncashing {
+    
+//    NSLog(@"setUncashing %@", uncashing);
     
     if (_uncashing != uncashing) {
         
@@ -71,17 +72,6 @@
     
     if (!_resultsController) {
         
-//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDebt class])];
-//
-//        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-//        NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
-//        
-//        request.sortDescriptors = @[outletNameSortDescriptor, dateSortDescriptor];
-//        
-//        request.predicate = [NSPredicate predicateWithFormat:@"cashings.@count != 0 AND ANY cashings.uncashing == %@", self.uncashing];
-//        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"outlet.name" cacheName:nil];
-//        _resultsController.delegate = self;
-
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
         
         NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"debt.outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
@@ -121,11 +111,12 @@
 
 - (void)showHandOverPopover {
     
+    self.handOverPopover = nil;
     [self.handOverPopover presentPopoverFromBarButtonItem:self.handOverButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     
 }
 
-- (void)uncashingDone {
+- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ {
 
     [self.handOverPopover dismissPopoverAnimated:YES];
 
@@ -141,8 +132,7 @@
     
     uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
     
-#warning - need ot be changed
-    uncashing.summ = self.splitVC.masterVC.cashingSum;
+    uncashing.summ = summ;
     
     uncashing.date = [NSDate date];
     

@@ -12,7 +12,8 @@
 @interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC <UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMUncashing *uncashing;
+@property (nonatomic, strong) UIBarButtonItem *handOverButton;
 
-- (void)uncashingDone;
+- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ;
 
 @end

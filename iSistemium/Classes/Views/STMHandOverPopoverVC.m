@@ -39,7 +39,11 @@
 
 - (void)uncashingDone {
     
-    [self.parent uncashingDone];
+    NSDecimalNumber *summ = [NSDecimalNumber decimalNumberWithDecimal:[[self.decimalNumberFormatter numberFromString:self.uncashingSumTextField.text] decimalValue]];
+    
+//    NSLog(@"summ %@", summ);
+    
+    [self.parent uncashingDoneWithSum:summ];
     
 }
 
@@ -64,7 +68,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
-    [self uncashingDone];
+//    [self uncashingDone];
     return YES;
     
 }

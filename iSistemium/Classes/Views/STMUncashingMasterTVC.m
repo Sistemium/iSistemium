@@ -168,8 +168,14 @@
             
         }
 
+        self.splitVC.detailVC.handOverButton.enabled = (self.cashingSum.intValue == 0) ? NO : YES;
+                
         cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
         cell.detailTextLabel.text = nil;
+        
+        [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                    animated:YES
+                              scrollPosition:UITableViewScrollPositionNone];
         
     } else if (indexPath.section == 1) {
         
@@ -296,9 +302,9 @@
         
     } else {
         
-        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                    animated:YES
-                              scrollPosition:UITableViewScrollPositionNone];
+//        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+//                                    animated:YES
+//                              scrollPosition:UITableViewScrollPositionNone];
 
     }
 

@@ -495,8 +495,6 @@
 
 - (void)customInit {
     
-    [self addObservers];
-    
     self.selectedDate = [NSDate date];
     
     if (!self.outlet) {
@@ -535,6 +533,20 @@
     
     [super viewDidLoad];
     [self customInit];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    [self addObservers];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    [self removeObservers];
+    
 }
 
 - (void)didReceiveMemoryWarning
