@@ -56,7 +56,7 @@
     if (!_handOverPopover) {
         
         STMHandOverPopoverVC *handOverPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"handOverPopoverVC"];
-        handOverPopoverVC.uncashingSum = [self.splitVC.masterVC cashingSum];
+        handOverPopoverVC.uncashingSum = self.splitVC.masterVC.cashingSum;
         handOverPopoverVC.parent = self;
         
         _handOverPopover = [[UIPopoverController alloc] initWithContentViewController:handOverPopoverVC];
@@ -139,10 +139,10 @@
         
     }
     
-    uncashing.summOrigin = [self.splitVC.masterVC cashingSum];
+    uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
     
 #warning - need ot be changed
-    uncashing.summ = [self.splitVC.masterVC cashingSum];
+    uncashing.summ = self.splitVC.masterVC.cashingSum;
     
     uncashing.date = [NSDate date];
     

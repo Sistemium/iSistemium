@@ -16,6 +16,8 @@
 @interface STMUncashingMasterTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
+@property (nonatomic, strong) STMCashingSumFRCD *cashingSumFRCD;
+@property (nonatomic, strong) NSFetchedResultsController *cashingSumResultsController;
 
 @end
 
@@ -57,24 +59,19 @@
     
 }
 
-- (NSDecimalNumber *)cashingSum {
+- (NSFetchedResultsController *)cashingSumResultsController {
     
-    NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"uncashing != %@", nil];
-    
-    NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-
-    for (STMCashing *cashing in fetchResult) {
+    if (!_cashingSumResultsController) {
         
-        cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", nil];
+        _cashingSumResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _cashingSumResultsController.delegate = self.cashingSumFRCD;
         
     }
     
-    return cashingSum;
+    return _cashingSumResultsController;
     
 }
 
@@ -163,7 +160,15 @@
     
     if (indexPath.section == 0) {
         
-        cell.textLabel.text = [numberFormatter stringFromNumber:[self cashingSum]];
+        self.cashingSum = [NSDecimalNumber zero];
+        
+        for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
+            
+            self.cashingSum = [self.cashingSum decimalNumberByAdding:cashing.summ];
+            
+        }
+
+        cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
         cell.detailTextLabel.text = nil;
         
     } else if (indexPath.section == 1) {
@@ -278,16 +283,30 @@
 
 - (void)customInit {
     
+    self.cashingSumFRCD = [[STMCashingSumFRCD alloc] init];
+    self.cashingSumFRCD.cashingSumTableView = self.tableView;
+    
     self.clearsSelectionOnViewWillAppear = NO;
     
     NSError *error;
-    if (![self.resultsController performFetch:&error]) {
+    
+    if (![self.cashingSumResultsController performFetch:&error]) {
         
         NSLog(@"performFetch error %@", error);
         
     } else {
         
-        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UITableViewScrollPositionNone];
+        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                    animated:YES
+                              scrollPosition:UITableViewScrollPositionNone];
+
+    }
+
+    if (![self.resultsController performFetch:&error]) {
+        
+        NSLog(@"performFetch error %@", error);
+        
+    } else {
         
     }
     

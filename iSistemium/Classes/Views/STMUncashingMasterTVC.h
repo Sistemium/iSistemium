@@ -10,13 +10,13 @@
 
 @interface STMUncashingMasterTVC : STMFetchedResultsControllerTVC
 
-- (NSDecimalNumber *)cashingSum;
+@property (nonatomic, strong) NSDecimalNumber *cashingSum;
 
 @end
 
 
 @interface STMCashingSumFRCD : NSObject <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) UITableView *cashingSumTableView;
+@property (nonatomic, weak) UITableView *cashingSumTableView;
 
 @end
