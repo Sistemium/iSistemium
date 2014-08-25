@@ -212,8 +212,8 @@
 - (void)updateControlLabels {
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    numberFormatter.minimumFractionDigits = 2;
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+//    numberFormatter.minimumFractionDigits = 2;
     
     NSDecimalNumber *sum = [NSDecimalNumber zero];
     self.tableVC.totalSum = nil;
@@ -232,8 +232,8 @@
     NSString *sumString = [numberFormatter stringFromNumber:sum];
     NSString *remainderSumString = [numberFormatter stringFromNumber:remainderSum];
     
-    self.summLabel.text = [NSString stringWithFormat:@"%@", sumString];
-    self.remainderLabel.text = [NSString stringWithFormat:@"%@", remainderSumString];
+    self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), sumString];
+    self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
 
 }
 
@@ -506,13 +506,13 @@
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
-    self.summLabel.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
+    self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
     
     NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
     
-    self.remainderLabel.text = [NSString stringWithFormat:@"%@", totalSumString];
+    self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), totalSumString];
     
     self.debtSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.debtSummTextField.hidden = YES;
