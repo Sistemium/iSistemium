@@ -46,6 +46,17 @@
     if (_uncashing != uncashing) {
         
         _uncashing = uncashing;
+        
+        if (_uncashing) {
+            
+            self.handOverButton.enabled = NO;
+            
+        } else {
+            
+            self.handOverButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
+
+        }
+        
         [self performFetch];
         
     }
@@ -197,6 +208,8 @@
     
     self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHandOverPopover)];
     self.navigationItem.rightBarButtonItem = self.handOverButton;
+
+    self.handOverButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
 
     [self performFetch];
     
