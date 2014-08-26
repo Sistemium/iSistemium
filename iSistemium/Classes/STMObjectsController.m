@@ -372,9 +372,7 @@
                     
                 } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
                     
-                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-                    value = [dateFormatter dateFromString:value];
+                    value = [[STMFunctions dateFormatter] dateFromString:value];
 //                    NSLog(@"value %@", value);
                     
                 }

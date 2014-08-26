@@ -13,13 +13,14 @@
 #import "STMFunctions.h"
 
 //#define SEND_URL @"https://nginx.sistemium.com/api/v1/dev/"
-#define SEND_URL @"https://sistemium.com/api/chest/dev/"
+//#define SEND_URL @"https://sistemium.com/api/chest/dev/"
 
 @interface STMSyncer() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic) int fetchLimit;
 @property (nonatomic, strong) NSString *restServerURI;
+@property (nonatomic, strong) NSString *apiUrlString;
 @property (nonatomic, strong) NSString *xmlNamespace;
 @property (nonatomic, strong) NSTimer *syncTimer;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
@@ -112,6 +113,15 @@
         _restServerURI = [self.settings valueForKey:@"restServerURI"];
     }
     return _restServerURI;
+}
+
+- (NSString *)apiUrlString {
+    if (!_apiUrlString) {
+        NSArray *currentSettings = self.session.settingsController.currentSettings;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", @"API.url"];
+        _apiUrlString = [[[currentSettings filteredArrayUsingPredicate:predicate] lastObject] valueForKey:@"value"];
+    }
+    return _apiUrlString;
 }
 
 - (NSString *)xmlNamespace {
@@ -512,10 +522,7 @@
             
             if ([value isKindOfClass:[NSDate class]]) {
                 
-                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
-                dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-                value = [dateFormatter stringFromDate:value];
+                value = [[STMFunctions dateFormatter] stringFromDate:value];
                 
             }
             
@@ -560,40 +567,53 @@
 
 - (void)startConnectionForSendData:(NSData *)sendData {
     
-    NSURL *requestURL = [NSURL URLWithString:SEND_URL];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
-    
-    request = [[self.authDelegate authenticateRequest:request] mutableCopy];
-    
-    if ([request valueForHTTPHeaderField:@"Authorization"]) {
+    if (self.apiUrlString) {
         
-        request.HTTPShouldHandleCookies = NO;
-        //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-        [request setHTTPMethod:@"POST"];
-        [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-
-        request.HTTPBody = sendData;
+//        NSLog(@"apiUrlString %@", self.apiUrlString);
         
-        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
         
-        if (!connection) {
+        request = [[self.authDelegate authenticateRequest:request] mutableCopy];
+        
+        if ([request valueForHTTPHeaderField:@"Authorization"]) {
             
-            [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
-            self.syncerState = STMSyncerIdle;
+            request.HTTPShouldHandleCookies = NO;
+            //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+            [request setHTTPMethod:@"POST"];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+            
+            request.HTTPBody = sendData;
+            
+            NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+            
+            if (!connection) {
+                
+                [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
+                self.syncerState = STMSyncerIdle;
+                
+            } else {
+                
+                //            NSLog(@"connection %@", connection);
+                //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+                
+            }
             
         } else {
             
-//            NSLog(@"connection %@", connection);
-//            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+            [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
+            [self notAuthorized];
             
         }
-        
+
     } else {
         
-        [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
-        [self notAuthorized];
+        NSLog(@"no API.url");
+        
+        self.syncerState = STMSyncerRecieveData;
         
     }
+    
     
 }
 
@@ -679,7 +699,7 @@
         
     }
     
-    if ([connection.currentRequest.URL.absoluteString isEqualToString:SEND_URL]) {
+    if ([connection.currentRequest.URL.absoluteString isEqualToString:self.apiUrlString]) {
         entityName = @"SEND_DATA";
     }
     

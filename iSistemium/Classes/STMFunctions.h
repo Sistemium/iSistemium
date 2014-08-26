@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+@interface STMDateFormatter : NSDateFormatter
+
+@end
+
+
 @interface STMFunctions : NSObject
 
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString;
@@ -18,5 +23,7 @@
 
 + (NSString *)pluralTypeForCount:(NSUInteger)count;
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
+
++ (STMDateFormatter *)dateFormatter;
 
 @end

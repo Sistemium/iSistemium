@@ -8,7 +8,38 @@
 
 #import "STMFunctions.h"
 
+
+@implementation STMDateFormatter
+
+- (NSDate *)dateFromString:(NSString *)string {
+
+    if (string.length == 10) {
+        
+        self.dateFormat = @"yyyy-MM-dd";
+        
+    }
+    
+    return [super dateFromString:string];
+    
+}
+
+
+@end
+
+
 @implementation STMFunctions
+
+
++ (STMDateFormatter *)dateFormatter {
+    
+    STMDateFormatter *dateFormatter = [[STMDateFormatter alloc] init];
+    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+    
+    return dateFormatter;
+    
+}
+
 
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString {
     
@@ -156,7 +187,6 @@
     }
     
 }
-
 
 
 @end
