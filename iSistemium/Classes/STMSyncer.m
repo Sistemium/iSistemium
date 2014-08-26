@@ -570,7 +570,7 @@
         request.HTTPShouldHandleCookies = NO;
         //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
         [request setHTTPMethod:@"POST"];
-        [request setValue:@"text/json" forHTTPHeaderField:@"Content-type"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
 
         request.HTTPBody = sendData;
         
