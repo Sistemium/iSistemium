@@ -21,6 +21,7 @@
 
 @property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
+@property (nonatomic, strong) NSMutableIndexSet *updatedSectionIndexes;
 @property (nonatomic, strong) NSMutableArray *deletedRowIndexPaths;
 @property (nonatomic, strong) NSMutableArray *insertedRowIndexPaths;
 @property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
@@ -74,6 +75,16 @@
     }
     
     return _insertedSectionIndexes;
+    
+}
+
+- (NSMutableIndexSet *)updatedSectionIndexes {
+    
+    if (!_updatedSectionIndexes) {
+        _updatedSectionIndexes = [NSMutableIndexSet indexSet];
+    }
+    
+    return _updatedSectionIndexes;
     
 }
 
@@ -215,12 +226,10 @@
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, summOriginString];
     
-    if (cashing.uncashing) {
-        
-        cell.textLabel.textColor = [UIColor darkGrayColor];
-        cell.detailTextLabel.textColor = [UIColor darkGrayColor];
-        
-    }
+    UIColor *textColor = cashing.uncashing ? [UIColor darkGrayColor] : [UIColor blackColor];
+    
+    cell.textLabel.textColor = textColor;
+    cell.detailTextLabel.textColor = textColor;
     
     return cell;
     
@@ -291,6 +300,7 @@
     
     [self.tableView deleteSections:self.deletedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView insertSections:self.insertedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadSections:self.updatedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
     
     [self.tableView deleteRowsAtIndexPaths:self.deletedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView insertRowsAtIndexPaths:self.insertedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
@@ -300,6 +310,8 @@
     
     self.insertedSectionIndexes = nil;
     self.deletedSectionIndexes = nil;
+    self.updatedSectionIndexes = nil;
+    
     self.deletedRowIndexPaths = nil;
     self.insertedRowIndexPaths = nil;
     self.updatedRowIndexPaths = nil;
@@ -318,6 +330,10 @@
         case NSFetchedResultsChangeDelete:
             [self.deletedSectionIndexes addIndex:sectionIndex];
             break;
+            
+//        case NSFetchedResultsChangeUpdate:
+//            [self.updatedSectionIndexes addIndex:sectionIndex];
+//            break;
             
         default:
             ; // Shouldn't have a default
@@ -338,6 +354,8 @@
         
         [self.insertedRowIndexPaths addObject:newIndexPath];
         
+        [self.updatedSectionIndexes addIndex:newIndexPath.section];
+        
     } else if (type == NSFetchedResultsChangeDelete) {
         
         if ([self.deletedSectionIndexes containsIndex:indexPath.section]) {
@@ -345,6 +363,8 @@
         }
         
         [self.deletedRowIndexPaths addObject:indexPath];
+        
+        [self.updatedSectionIndexes addIndex:newIndexPath.section];
         
     } else if (type == NSFetchedResultsChangeMove) {
         
@@ -359,6 +379,8 @@
     } else if (type == NSFetchedResultsChangeUpdate) {
         
         [self.updatedRowIndexPaths addObject:indexPath];
+        
+        [self.updatedSectionIndexes addIndex:newIndexPath.section];
         
     }
     
