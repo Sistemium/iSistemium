@@ -59,6 +59,18 @@
     
 }
 
+- (void)setCashingSum:(NSDecimalNumber *)cashingSum {
+    
+    if (_cashingSum != cashingSum) {
+        
+        self.splitVC.detailVC.handOverButton.enabled = (!self.splitVC.detailVC.uncashing && cashingSum.intValue == 0) ? NO : YES;
+     
+        _cashingSum = cashingSum;
+        
+    }
+    
+}
+
 - (NSFetchedResultsController *)cashingSumResultsController {
     
     if (!_cashingSumResultsController) {
@@ -160,13 +172,15 @@
     
     if (indexPath.section == 0) {
         
-        self.cashingSum = [NSDecimalNumber zero];
+        NSDecimalNumber *cashSum = [NSDecimalNumber zero];
         
         for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
             
-            self.cashingSum = [self.cashingSum decimalNumberByAdding:cashing.summ];
+            cashSum = [cashSum decimalNumberByAdding:cashing.summ];
             
         }
+        
+        self.cashingSum = cashSum;
                 
         cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
         cell.detailTextLabel.text = nil;

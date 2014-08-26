@@ -11,6 +11,7 @@
 #import "STMDebtsSVC.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
+#import "STMSyncer.h"
 #import "STMCashing.h"
 #import "STMDebt+Cashing.h"
 #import "STMDatePickerVC.h"
@@ -317,6 +318,9 @@
     [self.document saveDocument:^(BOOL success) {
         if (success) {
 
+            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
+            syncer.syncerState = STMSyncerSendData;
+            
         }
     }];
 

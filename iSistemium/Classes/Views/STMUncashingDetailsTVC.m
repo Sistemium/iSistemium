@@ -12,6 +12,7 @@
 #import "STMConstants.h"
 #import "STMHandOverPopoverVC.h"
 #import "STMUncashingSVC.h"
+#import "STMSyncer.h"
 
 @interface STMUncashingDetailsTVC ()
 
@@ -111,10 +112,13 @@
         
     } else {
         
-//        NSLog(@"fetchedObjects %@", self.resultsController.fetchedObjects);
-        
-//        [self.tableView setEditing:NO animated:YES];
         [self.tableView reloadData];
+        
+//        if (!self.uncashing) {
+//            
+//            self.handOverButton.enabled = [[NSNumber numberWithInteger:self.resultsController.fetchedObjects.count] boolValue];
+//            
+//        }
         
     }
     
@@ -150,6 +154,9 @@
     [self.document saveDocument:^(BOOL success) {
         if (success) {
             
+            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
+            syncer.syncerState = STMSyncerSendData;
+
         }
     }];
     
@@ -209,8 +216,6 @@
     self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHandOverPopover)];
     self.navigationItem.rightBarButtonItem = self.handOverButton;
 
-    self.handOverButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
-
     [self performFetch];
     
 }
@@ -229,6 +234,14 @@
     [super viewDidLoad];
     [self customInit];
 
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+//    NSLog(@"cashingSum.intValue %d", self.splitVC.masterVC.cashingSum.intValue);
+    
+//    self.handOverButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
+    
 }
 
 - (void)didReceiveMemoryWarning

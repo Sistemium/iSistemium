@@ -405,8 +405,8 @@
             
         }
         
-//        [[self document] saveDocument:^(BOOL success) {}];
-
+        [object setValue:[NSDate date] forKey:@"lts"];
+        
     }
     
     completionHandler(YES);
@@ -481,8 +481,11 @@
             } else {
 
                 [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
-//                [[self document] saveDocument:^(BOOL success) {}];
 
+                NSDate *lts = [NSDate date];
+                [ownerObject setValue:lts forKey:@"lts"];
+                [destinationObject setValue:lts forKey:@"lts"];
+                
             }
             
             

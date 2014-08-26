@@ -12,6 +12,7 @@
 #import "STMPhotoReport.h"
 #import "STMFunctions.h"
 
+//#define SEND_URL @"https://nginx.sistemium.com/api/v1/dev/"
 #define SEND_URL @"https://sistemium.com/api/chest/dev/"
 
 @interface STMSyncer() <NSFetchedResultsControllerDelegate>
@@ -373,10 +374,15 @@
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
         [request setIncludesSubentities:YES];
-        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts) && href != %@", nil, nil];
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
+        
+//        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts) && href != %@", nil, nil];
+//        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts) && (NOT (href IN %@) || href != %@)", nil, keys, nil];
+        
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         _resultsController.delegate = self;
         
@@ -403,8 +409,17 @@
       
         if (self.resultsController.fetchedObjects.count > 0) {
             
-            NSLog(@"send %d objects", self.resultsController.fetchedObjects.count);
-            [self startConnectionForSendData:[self JSONFrom:self.resultsController.fetchedObjects]];
+            NSData *sendData = [self JSONFrom:self.resultsController.fetchedObjects];
+
+            if (sendData) {
+                
+                [self startConnectionForSendData:sendData];
+                
+            } else {
+                
+                self.syncerState = STMSyncerRecieveData;
+                
+            }
 
         } else {
         
@@ -422,34 +437,63 @@
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
     for (NSManagedObject *object in dataForSyncing) {
-
-        NSDate *currentDate = [NSDate date];
-        [object setPrimitiveValue:currentDate forKey:@"sts"];
         
-        NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
-        NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+        BOOL isInSyncList = [@[@"STMPhotoReport",@"STMCashing",@"STMUncashing"] containsObject:object.entity.name];
+        
+        if (isInSyncList) {
             
-        [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
-        [syncDataArray addObject:objectDictionary];
+            BOOL hasHref = [object.entity.propertiesByName.allKeys containsObject:@"href"];
+            
+            BOOL hrefIsNil = hasHref ? [[object valueForKey:@"href"] isEqual:nil] : YES;
+            
+            if (!hasHref || (hasHref && !hrefIsNil)) {
+                
+                NSDate *currentDate = [NSDate date];
+                [object setPrimitiveValue:currentDate forKey:@"sts"];
+                
+                NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
+                NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+                
+                [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
+                [syncDataArray addObject:objectDictionary];
+                
+            }
+
+        }
+        
+    }
+    
+    if (syncDataArray.count == 0) {
+        
+        NSLog(@"nothing to send");
+        
+        return nil;
+        
+    } else {
+        
+        NSLog(@"%d objects to send", syncDataArray.count);
+
+        NSDictionary *dataDictionary = [NSDictionary dictionaryWithObject:syncDataArray forKey:@"data"];
+        
+        NSError *error;
+        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
+        
+//        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+//        NSLog(@"JSONString %@", JSONString);
+        
+        return JSONData;
 
     }
     
-    NSDictionary *dataDictionary = [NSDictionary dictionaryWithObject:syncDataArray forKey:@"data"];
-    
-//    NSLog(@"dataDictionary %@", dataDictionary);
-    
-    NSError *error;
-    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
-    
-//    NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-//    NSLog(@"JSONString %@", JSONString);
-    
-    return JSONData;
 }
 
 - (NSMutableDictionary *)dictionaryForObject:(NSManagedObject *)object {
     
-    NSString *name = @"stc.PhotoReport";
+    NSString *entityName = object.entity.name;
+    
+    NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
+    
+//    NSString *name = @"stc.PhotoReport";
     NSString *xid = [STMFunctions xidStringFromXidData:[object valueForKey:@"xid"]];
 
     return [NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name", xid, @"xid", nil];
@@ -464,28 +508,44 @@
         
         id value = [object valueForKey:key];
         
-        if ([value isKindOfClass:[NSDate class]] || [key isEqual:@"href"]) {
+        if (value) {
+            
+            if ([value isKindOfClass:[NSDate class]]) {
+                
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+                dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+                value = [dateFormatter stringFromDate:value];
+                
+            }
             
             [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
-
+            
         }
         
     }
     
     for (NSString *key in object.entity.relationshipsByName.allKeys) {
-
-        if ([@[@"campaign", @"outlet"] containsObject:key]) {
+        
+        NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
+        
+        if (![relationshipDescription isToMany]) {
             
             NSManagedObject *relationshipObject = [object valueForKey:key];
             
             if (relationshipObject) {
                 
-                NSString *xid = [STMFunctions xidStringFromXidData:[relationshipObject valueForKey:@"xid"]];
+                NSData *xidData = [relationshipObject valueForKey:@"xid"];
                 
-                NSMutableDictionary *entityProperties = [self.entitySyncInfo objectForKey:relationshipObject.entity.name];
-                NSString *entityName = [@"stc." stringByAppendingString:[entityProperties objectForKey:@"name"]];
-                
-                [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
+                if (xidData.length != 0) {
+                    
+                    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
+                    
+                    NSString *entityName = [@"stc." stringByAppendingString:[relationshipObject.entity.name stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
+                    
+                    [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
+                    
+                }
                 
             }
 
@@ -510,6 +570,7 @@
         request.HTTPShouldHandleCookies = NO;
         //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
         [request setHTTPMethod:@"POST"];
+        [request setValue:@"text/json" forHTTPHeaderField:@"Content-type"];
 
         request.HTTPBody = sendData;
         
@@ -521,6 +582,7 @@
             self.syncerState = STMSyncerIdle;
             
         } else {
+            
 //            NSLog(@"connection %@", connection);
 //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
             
@@ -632,9 +694,18 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
-    self.syncerState = STMSyncerIdle;
     NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error];
     [self.session.logger saveLogMessageWithText:errorMessage type:@"error"];
+
+    if (self.syncerState == STMSyncerSendData) {
+        
+        self.syncerState = STMSyncerRecieveData;
+
+    } else {
+        
+        self.syncerState = STMSyncerIdle;
+        
+    }
     
 }
 
