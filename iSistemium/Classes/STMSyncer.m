@@ -66,12 +66,6 @@
         self.document = (STMDocument *)session.document;
         _session = session;
         
-        //        NSError *error;
-        //        if (![self.resultsController performFetch:&error]) {
-        //
-        //        } else {
-        //
-        //        }
         [self startSyncer];
         
     }
@@ -117,9 +111,7 @@
 
 - (NSString *)apiUrlString {
     if (!_apiUrlString) {
-        NSArray *currentSettings = self.session.settingsController.currentSettings;
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", @"API.url"];
-        _apiUrlString = [[[currentSettings filteredArrayUsingPredicate:predicate] lastObject] valueForKey:@"value"];
+        _apiUrlString = [self.settings valueForKey:@"API.url"];
     }
     return _apiUrlString;
 }
@@ -130,15 +122,6 @@
     }
     return _xmlNamespace;
 }
-
-//- (void)setSyncing:(BOOL)syncing {
-//    if (_syncing != syncing) {
-//        _syncing = syncing;
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
-//        NSString *status = _syncing ? @"start" : @"stop";
-//        [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@ syncing", status] type:@""];
-//    }
-//}
 
 - (NSMutableDictionary *)entitySyncInfo {
     
@@ -262,6 +245,7 @@
     
     if (!self.running) {
         
+        self.settings = nil;
         self.running = YES;
         [STMObjectsController checkPhotos];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
@@ -298,14 +282,15 @@
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
-    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerSettingsChanged:) name:[NSString stringWithFormat:@"%@SettingsChanged", @"syncer"] object:[(id <STMSession>)self.session settingsController]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerSettingsChanged) name:@"syncerSettingsChanged" object:self.session];
+
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenReceived:) name:@"tokenReceived" object: self.authDelegate];
     
 }
 
 - (void)removeObservers {
-    
-    //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"tokenReceived" object:self.authDelegate];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 }
 
@@ -318,6 +303,12 @@
     } else if ([[(id <STMSession>)notification.object status] isEqualToString:@"running"]) {
         [self startSyncer];
     }
+    
+}
+
+- (void)syncerSettingsChanged {
+    
+    self.settings = nil;
     
 }
 
@@ -391,7 +382,6 @@
         request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
         
 //        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts) && href != %@", nil, nil];
-//        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts) && (NOT (href IN %@) || href != %@)", nil, keys, nil];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         _resultsController.delegate = self;
@@ -404,9 +394,6 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-//    NSLog(@"controllerDidChangeContent count %d", self.resultsController.fetchedObjects.count);
-//    NSLog(@"controllerDidChangeContent %@", self.resultsController.fetchedObjects);
-    
 }
 
 #pragma mark - syncing
@@ -415,8 +402,6 @@
     
     if (self.syncerState == STMSyncerSendData) {
         
-//        NSLog(@"sendData");
-      
         if (self.resultsController.fetchedObjects.count > 0) {
             
             NSData *sendData = [self JSONFrom:self.resultsController.fetchedObjects];
@@ -503,7 +488,6 @@
     
     NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
     
-//    NSString *name = @"stc.PhotoReport";
     NSString *xid = [STMFunctions xidStringFromXidData:[object valueForKey:@"xid"]];
 
     return [NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name", xid, @"xid", nil];
@@ -568,8 +552,6 @@
 - (void)startConnectionForSendData:(NSData *)sendData {
     
     if (self.apiUrlString) {
-        
-//        NSLog(@"apiUrlString %@", self.apiUrlString);
         
         NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
@@ -656,7 +638,6 @@
             if (!connection) {
                 
                 [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
-                //            self.syncing = NO;
                 self.syncerState = STMSyncerIdle;
                 
             } else {
@@ -702,9 +683,6 @@
     if ([connection.currentRequest.URL.absoluteString isEqualToString:self.apiUrlString]) {
         entityName = @"SEND_DATA";
     }
-    
-//    NSLog(@"URL.absoluteString %@", connection.currentRequest.URL.absoluteString);
-//    NSLog(@"entityName %@", entityName);
     
     return entityName;
     

@@ -312,12 +312,13 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-//    NSLog(@"controller didChangeObject");
-//    NSLog(@"anObject %@", anObject);
-    
     if ([anObject isKindOfClass:[STMSetting class]]) {
-       
-        [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@SettingsChanged", [anObject valueForKey:@"group"]] object:self.session userInfo:[NSDictionary dictionaryWithObject:[anObject valueForKey:@"value"] forKey:[anObject valueForKey:@"name"]]];
+        
+        NSString *notificationName = [NSString stringWithFormat:@"%@SettingsChanged", [anObject valueForKey:@"group"]];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[anObject valueForKey:@"value"] forKey:[anObject valueForKey:@"name"]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self.session userInfo:userInfo];
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"settingsChanged" object:self.session userInfo:[NSDictionary dictionaryWithObject:anObject forKey:@"changedObject"]];
         
     }
