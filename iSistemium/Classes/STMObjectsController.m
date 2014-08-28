@@ -8,6 +8,7 @@
 
 #import "STMObjectsController.h"
 #import "STMSessionManager.h"
+#import "STMSession.h"
 #import "STMDocument.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
@@ -45,6 +46,8 @@
 @property (nonatomic, strong) NSString *accessKey;
 @property (nonatomic, strong) NSString *secretKey;
 @property (nonatomic) BOOL s3Initialized;
+@property (nonatomic, strong) STMSession *session;
+@property (nonatomic, strong) NSMutableDictionary *settings;
 
 @end
 
@@ -161,21 +164,25 @@
     
 //    NSLog(@"delete photo %@", photo);
     
-//    STMPhotoReport *photoReport = photo.photoReport;
-//    [photoReport removePhotosObject:photo];
-    
     [[self document].managedObjectContext deleteObject:photo];
-    
-//    if (photoReport.photos.count == 0) {
-//        
-//        [[self document].managedObjectContext deleteObject:photoReport];
-//        
-//    }
     
     [[self document] saveDocument:^(BOOL success) {
         
     }];
     
+}
+
+- (STMSession *)session {
+
+    return [STMSessionManager sharedManager].currentSession;
+    
+}
+
+- (NSMutableDictionary *)settings {
+    if (!_settings) {
+        _settings = [self.session.settingsController currentSettingsForGroup:@"amazon"];
+    }
+    return _settings;
 }
 
 - (KeychainItemWrapper *)s3keychainItem {
@@ -199,9 +206,7 @@
         
         if (![accessKey boolValue]) {
             
-            NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
-            NSPredicate *accessKeyPredicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.AccessKeyID"];
-            accessKey = [[[currentSettings filteredArrayUsingPredicate:accessKeyPredicate] lastObject] valueForKey:@"value"];
+            accessKey = [self.settings valueForKey:@"S3.AccessKeyID"];
             
             [self.s3keychainItem setObject:accessKey forKey:(__bridge id)(kSecAttrAccount)];
             
@@ -234,10 +239,8 @@
         
         if (![secretKey boolValue]) {
             
-            NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
-            NSPredicate *secretKeyPredicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.SecretAccessKey"];
-            secretKey = [[[currentSettings filteredArrayUsingPredicate:secretKeyPredicate] lastObject] valueForKey:@"value"];
-
+            secretKey = [self.settings valueForKey:@"S3.SecretAccessKey"];
+            
             [self.s3keychainItem setObject:secretKey forKey:(__bridge id)(kSecValueData)];
 
         }
@@ -750,60 +753,68 @@
 
     if ([self s3Init]) {
         
-        NSArray *currentSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettings];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", @"S3.IMGUploadBucket"];
-        NSString *bucket = [[[currentSettings filteredArrayUsingPredicate:predicate] lastObject] valueForKey:@"value"];
+        NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
         
-        [self.uploadQueue addOperationWithBlock:^{
+        if (bucket) {
             
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            
-            AWSS3 *transferManager = [[AWSS3 alloc] initWithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration];
-            AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
-            photoRequest.bucket = bucket;
-            photoRequest.key = filename;
-            photoRequest.contentType = @"image/jpeg";
-            photoRequest.body = data;
-            photoRequest.contentLength = [NSNumber numberWithInteger:data.length];
-            
-            [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
+            [self.uploadQueue addOperationWithBlock:^{
                 
-                if (task.error) {
-                    
-                    NSLog(@"Upload error: %@",task.error);
-                    
-                    NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
-                    });
-                    
-                } else {
-                    
-//                    NSLog(@"Got here: %@", task.result);
-                    
-                    NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
-                    NSString *href = [urlArray componentsJoinedByString:@"/"];
-                    
-                    photo.href = href;
-                    
-                    NSLog(@"%@ upload successefully", href);
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        
-                        [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
-                        
-                    });
-                    
-                }
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-
-                return nil;
+                AWSS3 *transferManager = [[AWSS3 alloc] initWithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration];
+                AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
+                photoRequest.bucket = bucket;
+                photoRequest.key = filename;
+                photoRequest.contentType = @"image/jpeg";
+                photoRequest.body = data;
+                photoRequest.contentLength = [NSNumber numberWithInteger:data.length];
+                
+                [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
+                    
+                    if (task.error) {
+                        
+                        NSLog(@"Upload error: %@", task.error);
+                        
+                        NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+                        });
+                        
+                    } else {
+                        
+                        //                    NSLog(@"Got here: %@", task.result);
+                        
+                        NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
+                        NSString *href = [urlArray componentsJoinedByString:@"/"];
+                        
+                        photo.href = href;
+                        
+                        NSLog(@"%@ upload successefully", href);
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
+                            
+                        });
+                        
+                    }
+                    
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                    
+                    return nil;
+                    
+                }];
                 
             }];
+
             
-        }];
+        } else {
+            
+            NSLog(@"have no S3.IMGUploadBucket");
+            
+        }
+        
         
     } else {
         
@@ -856,14 +867,14 @@
         NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
 //        NSLog(@"thumbnail before the block %@", thumbnail);
     
-//        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
     
 //            NSLog(@"weakPicture %@", weakPicture);
 //            NSLog(@"thumbnail %@", thumbnail);
 
                 weakPicture.imageThumbnail = thumbnail;
         
-//        });
+        });
 
         [weakData writeToFile:imagePath atomically:YES];
 
@@ -874,12 +885,12 @@
         
         [resizedImageData writeToFile:resizedImagePath atomically:YES];
 
-//        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
     
             weakPicture.imagePath = imagePath;
             weakPicture.resizedImagePath = resizedImagePath;
             
-//        });
+        });
     
    // });
 
