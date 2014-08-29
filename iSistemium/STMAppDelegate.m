@@ -20,9 +20,51 @@
     self.window.rootViewController = [STMRootTBC sharedRootVC];
     [self.window makeKeyAndVisible];
     
+    
+    application.applicationIconBadgeNumber = 0;
+    
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    
+    if (launchOptions != nil) {
+        
+        NSString *msg = [NSString stringWithFormat:@"%@", launchOptions];
+        NSLog(@"%@", msg);
+        [self createAlert:msg];
+        
+    }
+
     return YES;
     
 }
+
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
+    
+	NSLog(@"deviceToken: %@", deviceToken);
+    
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
+    
+	NSLog(@"Failed to register with error : %@", error);
+    
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+    application.applicationIconBadgeNumber = 0;
+    NSString *msg = [NSString stringWithFormat:@"%@", userInfo];
+    NSLog(@"%@", msg);
+    [self createAlert:msg];
+    
+}
+
+- (void)createAlert:(NSString *)msg {
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Message Received" message:[NSString stringWithFormat:@"%@", msg]delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+    
+}
+
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {

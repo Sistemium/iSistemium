@@ -677,6 +677,11 @@
 				TargetAttributes = {
 					2C8EF59A1940859F0021D202 = {
 						DevelopmentTeam = HZMMGDCLPA;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					2C8EF5BB1940859F0021D202 = {
 						TestTargetID = 2C8EF59A1940859F0021D202;
