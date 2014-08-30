@@ -10,9 +10,36 @@
 
 @interface STMMessagesDetailTVC ()
 
+@property (nonatomic, strong) UIPopoverController *popover;
+
 @end
 
 @implementation STMMessagesDetailTVC
+
+
+#pragma mark - UISplitViewControllerDelegate
+
+- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
+    
+    barButtonItem.title = NSLocalizedString(@"MESSAGES", nil);
+    
+    self.navigationItem.leftBarButtonItem = barButtonItem;
+    
+    self.popover = pc;
+    
+}
+
+- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)button {
+    
+    self.navigationItem.leftBarButtonItem = nil;
+    
+    self.popover = nil;
+    
+}
+
+
+#pragma mark - view lifecycle
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

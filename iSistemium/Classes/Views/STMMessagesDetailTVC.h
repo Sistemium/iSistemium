@@ -8,6 +8,6 @@
 
 #import "STMFetchedResultsControllerTVC.h"
 
-@interface STMMessagesDetailTVC : STMFetchedResultsControllerTVC
+@interface STMMessagesDetailTVC : STMFetchedResultsControllerTVC <UISplitViewControllerDelegate>
 
 @end
