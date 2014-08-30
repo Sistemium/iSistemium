@@ -21,6 +21,8 @@
 		2C2968F919A0C3950038B122 /* STMUncashingDetailsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968F819A0C3950038B122 /* STMUncashingDetailsTVC.m */; };
 		2C2968FC19A208FB0038B122 /* STMDatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */; };
 		2C2968FF19A37C480038B122 /* STMHandOverPopoverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968FE19A37C480038B122 /* STMHandOverPopoverVC.m */; };
+		2C29690419B1B2B50038B122 /* STMMessages.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C29690319B1B2B50038B122 /* STMMessages.storyboard */; };
+		2C29690619B1B4210038B122 /* message-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C29690519B1B4210038B122 /* message-128.png */; };
 		2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C297F9619507A01000D9485 /* STMExtendNSLog.m */; };
 		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
 		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
@@ -147,6 +149,8 @@
 		2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDatePickerVC.m; sourceTree = "<group>"; };
 		2C2968FD19A37C480038B122 /* STMHandOverPopoverVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMHandOverPopoverVC.h; sourceTree = "<group>"; };
 		2C2968FE19A37C480038B122 /* STMHandOverPopoverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMHandOverPopoverVC.m; sourceTree = "<group>"; };
+		2C29690319B1B2B50038B122 /* STMMessages.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMMessages.storyboard; sourceTree = "<group>"; };
+		2C29690519B1B4210038B122 /* message-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "message-128.png"; sourceTree = "<group>"; };
 		2C297F9519507A01000D9485 /* STMExtendNSLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMExtendNSLog.h; sourceTree = "<group>"; };
 		2C297F9619507A01000D9485 /* STMExtendNSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMExtendNSLog.m; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
@@ -609,6 +613,7 @@
 				D94AC565198BC66700D8CD63 /* cash_receiving-128.png */,
 				2CD443F0195AD76E004ADE58 /* photo-icon.png */,
 				2C2968EF19A0C22F0038B122 /* banknotes-128.png */,
+				2C29690519B1B4210038B122 /* message-128.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -621,6 +626,7 @@
 				2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */,
 				2C8369561986714300DA4316 /* STMDebts.storyboard */,
 				2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */,
+				2C29690319B1B2B50038B122 /* STMMessages.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -714,6 +720,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */,
+				2C29690619B1B4210038B122 /* message-128.png in Resources */,
 				2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */,
 				2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */,
 				2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */,
@@ -722,6 +729,7 @@
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
 				2C2968F019A0C22F0038B122 /* banknotes-128.png in Resources */,
+				2C29690419B1B2B50038B122 /* STMMessages.storyboard in Resources */,
 				D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */,
 				2C2968EE19A0BFD10038B122 /* STMUncashing.storyboard in Resources */,
 				2C53B88A19409E42002298A5 /* settings_schema.json in Resources */,
