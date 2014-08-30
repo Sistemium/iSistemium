@@ -4,31 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="F9g-3Q-cEr">
-            <objects>
-                <viewController id="bC5-51-edl" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="qvG-dv-ANA"/>
-                        <viewControllerLayoutGuide type="bottom" id="0qx-wb-l3R"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="C1W-2C-hYe">
-                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" id="wbb-em-o7Q"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="AuI-Dg-Rsm" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2335" y="563"/>
-        </scene>
-        <!--Table View Controller - Root View Controller-->
+        <!--Messages MasterTVC - Root View Controller-->
         <scene sceneID="RYx-XG-d6e">
             <objects>
-                <tableViewController clearsSelectionOnViewWillAppear="NO" id="08j-bA-Thf" sceneMemberID="viewController">
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="08j-bA-Thf" customClass="STMMessagesMasterTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Lvc-Ts-heS">
                         <rect key="frame" x="0.0" y="64" width="320" height="788"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -70,10 +49,10 @@
             </objects>
             <point key="canvasLocation" x="1361" y="-373"/>
         </scene>
-        <!--Split View Controller-->
+        <!--MessagesSVC-->
         <scene sceneID="w0e-NP-yhl">
             <objects>
-                <splitViewController id="tFa-H5-VQQ" sceneMemberID="viewController">
+                <splitViewController id="tFa-H5-VQQ" customClass="STMMessagesSVC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <connections>
                         <segue destination="Ocr-dg-zq0" kind="relationship" relationship="masterViewController" id="wRF-77-VKx"/>
@@ -95,12 +74,41 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="bC5-51-edl" kind="relationship" relationship="rootViewController" id="U05-Nl-bCN"/>
+                        <segue destination="Fpz-ii-hjM" kind="relationship" relationship="rootViewController" id="fPA-zA-b3B"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wfY-bM-KTy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1361" y="563"/>
+        </scene>
+        <!--Messages DetailTVC-->
+        <scene sceneID="PJf-Sl-Q7J">
+            <objects>
+                <tableViewController id="Fpz-ii-hjM" customClass="STMMessagesDetailTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Jvh-ac-92X">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="GTH-Ih-Ddw">
+                                <rect key="frame" x="0.0" y="86" width="768" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GTH-Ih-Ddw" id="9iF-D8-5Q7">
+                                    <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Fpz-ii-hjM" id="rq6-Tn-jsm"/>
+                            <outlet property="delegate" destination="Fpz-ii-hjM" id="ik3-uG-MJR"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="iz9-ON-7BV"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yJq-rG-tRC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2309" y="563"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
