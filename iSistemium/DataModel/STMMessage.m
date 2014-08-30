@@ -1,13 +1,18 @@
 //
-//  STMMessagesMasterTVC.h
+//  STMMessage.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 30/08/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMMessage.h"
 
-@interface STMMessagesMasterTVC : STMFetchedResultsControllerTVC
+
+@implementation STMMessage
+
+@dynamic cts;
+@dynamic subject;
+@dynamic body;
 
 @end

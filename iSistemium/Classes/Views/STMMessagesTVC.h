@@ -1,5 +1,5 @@
 //
-//  STMMessagesDetailTVC.h
+//  STMMessagesTVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 30/08/14.
@@ -8,6 +8,6 @@
 
 #import "STMFetchedResultsControllerTVC.h"
 
-@interface STMMessagesDetailTVC : STMFetchedResultsControllerTVC <UISplitViewControllerDelegate>
+@interface STMMessagesTVC : STMFetchedResultsControllerTVC
 
 @end
