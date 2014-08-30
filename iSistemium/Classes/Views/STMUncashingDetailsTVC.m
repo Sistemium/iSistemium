@@ -17,7 +17,7 @@
 @interface STMUncashingDetailsTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
-
+@property (nonatomic, strong) UIPopoverController *popover;
 @property (nonatomic, strong) UIPopoverController *handOverPopover;
 
 @end
@@ -59,6 +59,7 @@
         }
         
         [self performFetch];
+        [self.popover dismissPopoverAnimated:YES];
         
     }
     
@@ -161,6 +162,28 @@
     }];
     
 }
+
+
+#pragma mark - UISplitViewControllerDelegate
+
+- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
+    
+    barButtonItem.title = NSLocalizedString(@"UNCASHING", nil);
+    
+    self.navigationItem.leftBarButtonItem = barButtonItem;
+    
+    self.popover = pc;
+    
+}
+
+- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)button {
+    
+    self.navigationItem.leftBarButtonItem = nil;
+    
+    self.popover = nil;
+    
+}
+
 
 #pragma mark - table view data source
 
