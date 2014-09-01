@@ -9,9 +9,57 @@
 #import "STMMessagesTVC.h"
 #import "STMMessage.h"
 
+#define STMTextFont [UIFont systemFontOfSize:12]
+#define STMDetailTextFont [UIFont systemFontOfSize:18]
+#define STMHPadding 15
+
 @interface STMMessagesTVC ()
 
 @end
+
+
+@interface STMMessageCell : UITableViewCell
+
+@end
+
+#pragma mark - STMMessageCell
+
+@implementation STMMessageCell
+
+- (void)layoutSubviews {
+    
+    self.textLabel.font = STMTextFont;
+    self.detailTextLabel.font = STMDetailTextFont;
+    
+    self.detailTextLabel.numberOfLines = 0;
+    self.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    [super layoutSubviews];
+
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    
+    if (self) {
+
+    }
+    
+    return self;
+    
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    
+    [super setSelected:selected animated:animated];
+    
+}
+
+@end
+
+
+#pragma mark - STMMessagesTVC
 
 @implementation STMMessagesTVC
 
@@ -70,9 +118,9 @@
     
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (STMMessageCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"messageCell" forIndexPath:indexPath];
+    STMMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"messageCell" forIndexPath:indexPath];
 
     STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
     
@@ -87,6 +135,24 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMMessageCell *cell = [[STMMessageCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"messageCell"];
+    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+    
+    CGFloat contentWidth = tableView.frame.size.width - 2 * STMHPadding;
+    CGSize contentSize = {contentWidth, tableView.frame.size.height};
+    UIFont *defaultFont = cell.detailTextLabel.font;
+    
+    CGRect defaultTextFrame = [message.body boundingRectWithSize:contentSize options:NSStringDrawingTruncatesLastVisibleLine attributes:@{NSFontAttributeName:defaultFont} context:nil];
+    
+    CGRect detailTextFrame = [message.body boundingRectWithSize:contentSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:STMDetailTextFont} context:nil];
+
+    CGFloat hDiff = ceil(detailTextFrame.size.height) - ceil(defaultTextFrame.size.height);
+    
+    return cell.frame.size.height + hDiff;
+    
+}
 
 #pragma mark - view lifecycle
 
