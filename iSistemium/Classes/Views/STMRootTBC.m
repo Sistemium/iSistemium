@@ -141,7 +141,9 @@
         
         if ([name isEqualToString:@"STMMessages"]) {
             
-            vc.tabBarItem.badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)[STMObjectsController unreadMessagesCount]];
+            NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+            NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+            vc.tabBarItem.badgeValue = badgeValue;
             
         }
         
@@ -288,6 +290,15 @@
     
 }
 
+- (void)getNewMessage {
+    
+    UIViewController *vc = [self.tabs objectForKey:@"STMMessages"];
+    NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+    NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+    vc.tabBarItem.badgeValue = badgeValue;
+
+}
+
 #pragma mark - notifications
 
 - (void)addObservers {
@@ -296,6 +307,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncStateChanged) name:@"syncStatusChanged" object:self.session.syncer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessage) name:@"getNewMessage" object:nil];
     
 }
 

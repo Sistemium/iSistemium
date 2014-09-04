@@ -132,7 +132,7 @@
     cell.textLabel.text = [dateFormatter stringFromDate:message.cts];
     cell.detailTextLabel.text = message.body;
 
-    if (message.isRead) {
+    if ([message.isRead boolValue]) {
         cell.textLabel.textColor = [UIColor blackColor];
     } else {
         cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
@@ -161,6 +161,18 @@
     
 }
 
+
+/*
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
+    [super controllerWillChangeContent:controller];
+    
+    [self showUnreadCount];
+    
+}
+*/
 
 - (void)showUnreadCount {
     

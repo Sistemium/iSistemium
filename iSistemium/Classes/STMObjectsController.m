@@ -410,6 +410,12 @@
         
         [object setValue:[NSDate date] forKey:@"lts"];
         
+        if ([entityName isEqualToString:NSStringFromClass([STMMessage class])]) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"getNewMessage" object:nil];
+            
+        }
+        
     }
     
     completionHandler(YES);
