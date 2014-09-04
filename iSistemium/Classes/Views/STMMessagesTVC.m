@@ -8,6 +8,7 @@
 
 #import "STMMessagesTVC.h"
 #import "STMMessage.h"
+#import "STMConstants.h"
 
 #define STMTextFont [UIFont systemFontOfSize:12]
 #define STMDetailTextFont [UIFont systemFontOfSize:18]
@@ -130,6 +131,12 @@
     
     cell.textLabel.text = [dateFormatter stringFromDate:message.cts];
     cell.detailTextLabel.text = message.body;
+
+    if (message.isRead) {
+        cell.textLabel.textColor = [UIColor blackColor];
+    } else {
+        cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
+    }
     
     return cell;
     
@@ -154,11 +161,26 @@
     
 }
 
+
+- (void)showUnreadCount {
+    
+    NSPredicate *unreadPredicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
+    
+    NSUInteger unreadCount = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:unreadPredicate].count;
+    
+    self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+    
+    NSLog(@"self.tabBarItem %@ unreadCount %d", self.tabBarItem, unreadCount);
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [self performFetch];
+    [self showUnreadCount];
     
 }
 
@@ -174,7 +196,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self performFetch];
+    [self customInit];
 
 }
 

@@ -12,6 +12,7 @@
 #import "STMFunctions.h"
 #import "STMSessionManager.h"
 #import "STMSession.h"
+#import "STMObjectsController.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
@@ -137,6 +138,12 @@
         [viewControllers addObject:vc];
 
         [self.tabs setObject:vc forKey:name];
+        
+        if ([name isEqualToString:@"STMMessages"]) {
+            
+            vc.tabBarItem.badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)[STMObjectsController unreadMessagesCount]];
+            
+        }
         
     }
     
