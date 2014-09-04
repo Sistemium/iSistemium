@@ -2,7 +2,7 @@
 //  STMMessage.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 30/08/14.
+//  Created by Maxim Grigoriev on 04/09/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -13,8 +13,9 @@
 
 @interface STMMessage : STMComment
 
+@property (nonatomic, retain) NSString * body;
 @property (nonatomic, retain) NSDate * cts;
 @property (nonatomic, retain) NSString * subject;
-@property (nonatomic, retain) NSString * body;
+@property (nonatomic, retain) NSNumber * isRead;
 
 @end

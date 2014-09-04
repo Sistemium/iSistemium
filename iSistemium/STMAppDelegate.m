@@ -22,16 +22,23 @@
     [self.window makeKeyAndVisible];
     
     
-    application.applicationIconBadgeNumber = 0;
+//    application.applicationIconBadgeNumber = 0;
     
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
     if (launchOptions != nil) {
         
-//        NSString *msg = [NSString stringWithFormat:@"%@", launchOptions];
-//        NSLog(@"%@", msg);
-//        [self createAlert:msg];
+        NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
         
+        if (remoteNotification) {
+
+            NSString *msg = [NSString stringWithFormat:@"%@", [remoteNotification objectForKey:@"alert"]];
+
+            NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
+            [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+
+        }
+
     }
 
     return YES;
@@ -52,23 +59,75 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
-    application.applicationIconBadgeNumber = 0;
-    NSString *msg = [NSString stringWithFormat:@"%@", userInfo];
+//    application.applicationIconBadgeNumber = 0;
+    NSString *msg = [NSString stringWithFormat:@"%@", [userInfo objectForKey:@"alert"]];
     
-    NSString *logMessage = [NSString stringWithFormat:@"recieve notification: %@", msg];
+    NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-    
+
+//    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+//    localNotification.fireDate = nil;
+//    localNotification.alertAction = @"TEST";
+//    localNotification.alertBody = @"ALERT!";
+//    
+//    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+
 //    NSLog(@"%@", msg);
 //    [self createAlert:msg];
     
 }
 
-//- (void)createAlert:(NSString *)msg {
-//    
-//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Message Received" message:[NSString stringWithFormat:@"%@", msg]delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//    [alertView show];
-//    
-//}
+/*
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+    NSLog(@"didReceiveRemoteNotification");
+    
+    application.applicationIconBadgeNumber = 0;
+    NSString *msg = [NSString stringWithFormat:@"%@", userInfo];
+
+    NSString *logMessage = [NSString stringWithFormat:@"recieve notification: %@", msg];
+    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.fireDate = nil;
+    localNotification.alertAction = @"TEST";
+    localNotification.alertBody = @"ALERT!";
+    
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    
+    completionHandler(UIBackgroundFetchResultNewData);
+    
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+    NSLog(@"performFetchWithCompletionHandler");
+    
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.fireDate = nil;
+    localNotification.timeZone = nil;
+    localNotification.alertAction = @"TEST";
+    localNotification.alertBody = @"ALERT!";
+    
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+
+    completionHandler(UIBackgroundFetchResultNewData);
+    
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+
+    [self createAlert:notification.alertBody];
+    
+}
+
+- (void)createAlert:(NSString *)msg {
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Message Received" message:[NSString stringWithFormat:@"%@", msg]delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+    
+}
+*/
 
 							
 - (void)applicationWillResignActive:(UIApplication *)application {

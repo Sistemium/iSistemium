@@ -12,6 +12,12 @@
 #import "STMPhotoReport.h"
 #import "STMFunctions.h"
 
+#import "STMPhotoReport.h"
+#import "STMCashing.h"
+#import "STMUncashing.h"
+#import "STMMessage.h"
+#import "STMClientData.h"
+
 //#define SEND_URL @"https://nginx.sistemium.com/api/v1/dev/"
 //#define SEND_URL @"https://sistemium.com/api/chest/dev/"
 
@@ -433,7 +439,15 @@
     
     for (NSManagedObject *object in dataForSyncing) {
         
-        BOOL isInSyncList = [@[@"STMPhotoReport",@"STMCashing",@"STMUncashing"] containsObject:object.entity.name];
+        NSArray *entityNamesForSending = @[
+                                           NSStringFromClass([STMPhotoReport class]),
+                                           NSStringFromClass([STMCashing class]),
+                                           NSStringFromClass([STMUncashing class]),
+                                           NSStringFromClass([STMMessage class]),
+                                           NSStringFromClass([STMClientData class])
+                                           ];
+        
+        BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
         
         if (isInSyncList) {
             
