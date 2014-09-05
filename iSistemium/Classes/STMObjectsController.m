@@ -412,7 +412,7 @@
         
         if ([entityName isEqualToString:NSStringFromClass([STMMessage class])]) {
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"getNewMessage" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
             
         }
         

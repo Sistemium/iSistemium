@@ -100,6 +100,12 @@
     
 }
 
+- (void)markMessageAsRead:(STMMessage *)message {
+    
+    message.isRead = [NSNumber numberWithBool:YES];
+    [self showUnreadCount];
+    
+}
 
 #pragma mark - Table view data source
 
@@ -133,9 +139,14 @@
     cell.detailTextLabel.text = message.body;
 
     if ([message.isRead boolValue]) {
+        
         cell.textLabel.textColor = [UIColor blackColor];
+        
     } else {
+        
         cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
+        [self performSelector:@selector(markMessageAsRead:) withObject:message afterDelay:2];
+        
     }
     
     return cell;
@@ -177,12 +188,9 @@
 - (void)showUnreadCount {
     
     NSPredicate *unreadPredicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
-    
     NSUInteger unreadCount = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:unreadPredicate].count;
-    
-    self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
-    
-    NSLog(@"self.tabBarItem %@ unreadCount %d", self.tabBarItem, unreadCount);
+    NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+    self.navigationController.tabBarItem.badgeValue = badgeValue;
     
 }
 

@@ -290,7 +290,7 @@
     
 }
 
-- (void)getNewMessage {
+- (void)gotNewMessage {
     
     UIViewController *vc = [self.tabs objectForKey:@"STMMessages"];
     NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
@@ -307,7 +307,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncStateChanged) name:@"syncStatusChanged" object:self.session.syncer];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessage) name:@"getNewMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gotNewMessage) name:@"gotNewMessage" object:nil];
     
 }
 
