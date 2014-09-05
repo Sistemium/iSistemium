@@ -9,6 +9,7 @@
 #import "STMMessagesTVC.h"
 #import "STMMessage.h"
 #import "STMConstants.h"
+#import "STMSyncer.h"
 
 #define STMTextFont [UIFont systemFontOfSize:12]
 #define STMDetailTextFont [UIFont systemFontOfSize:18]
@@ -102,7 +103,20 @@
 
 - (void)markMessageAsRead:(STMMessage *)message {
     
+    NSLog(@"message before %@", message);
+    
     message.isRead = [NSNumber numberWithBool:YES];
+
+    [self.document saveDocument:^(BOOL success) {
+        if (success) {
+            
+            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
+            syncer.syncerState = STMSyncerSendData;
+            NSLog(@"message after %@", message);
+            
+        }
+    }];
+    
     [self showUnreadCount];
     
 }
