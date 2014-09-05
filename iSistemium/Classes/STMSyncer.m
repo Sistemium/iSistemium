@@ -254,6 +254,7 @@
         self.settings = nil;
         self.running = YES;
         [STMObjectsController checkPhotos];
+        [STMObjectsController checkDeviceToken];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];

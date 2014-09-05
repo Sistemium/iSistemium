@@ -49,12 +49,36 @@
     
 	NSLog(@"deviceToken: %@", deviceToken);
     
+    [self recieveDeviceToken:deviceToken];
+
 }
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
     
 	NSLog(@"Failed to register with error : %@", error);
     
+    [self recieveDeviceToken:[NSData data]];
+    
+}
+
+- (void)recieveDeviceToken:(NSData *)deviceToken {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSData *oldDeviceToken = [defaults objectForKey:@"deviceToken"];
+    
+    if (![deviceToken isEqualToData:oldDeviceToken]) {
+        
+        [defaults setObject:deviceToken forKey:@"deviceToken"];
+        [defaults synchronize];
+        
+        self.hasNewDeviceToken = YES;
+                
+    } else {
+        
+        self.hasNewDeviceToken = NO;
+        
+    }
+
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {

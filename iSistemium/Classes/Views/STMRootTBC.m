@@ -65,26 +65,32 @@
 
     self.delegate = self;
     
-    self.storyboardnames = @[@"STMAuthTVC",
+    self.storyboardnames = @[
+                             @"STMAuthTVC",
                              @"STMCampaigns",
                              @"STMDebts",
                              @"STMUncashing",
                              @"STMMessages",
-                             @"STMLogs"];
+                             @"STMLogs"
+                             ];
     
-    self.storyboardtitles = @[NSLocalizedString(@"AUTHORIZATION", nil),
+    self.storyboardtitles = @[
+                              NSLocalizedString(@"AUTHORIZATION", nil),
                               NSLocalizedString(@"AD CAMPAIGNS", nil),
                               NSLocalizedString(@"DEBTS", nil),
                               NSLocalizedString(@"UNCASHING", nil),
                               NSLocalizedString(@"MESSAGES", nil),
-                              NSLocalizedString(@"LOGS", nil)];
+                              NSLocalizedString(@"LOGS", nil)
+                              ];
     
-    self.tabImages = @[[UIImage imageNamed:@"password2-128.png"],
+    self.tabImages = @[
+                       [UIImage imageNamed:@"password2-128.png"],
                        [UIImage imageNamed:@"christmas_gift-128.png"],
                        [UIImage imageNamed:@"cash_receiving-128.png"],
                        [UIImage imageNamed:@"banknotes-128.png"],
                        [UIImage imageNamed:@"message-128.png"],
-                       [UIImage imageNamed:@"archive-128.png"]];
+                       [UIImage imageNamed:@"archive-128.png"]
+                       ];
     
     
 //    self.tabBar.hidden = YES;
@@ -144,7 +150,8 @@
             NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
             NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
             vc.tabBarItem.badgeValue = badgeValue;
-            
+            [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+
         }
         
     }
@@ -296,6 +303,7 @@
     NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
     NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
     vc.tabBarItem.badgeValue = badgeValue;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
 
 }
 

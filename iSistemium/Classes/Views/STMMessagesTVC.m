@@ -191,6 +191,7 @@
     NSUInteger unreadCount = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:unreadPredicate].count;
     NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
     self.navigationController.tabBarItem.badgeValue = badgeValue;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
     
 }
 

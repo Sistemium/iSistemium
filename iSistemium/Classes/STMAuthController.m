@@ -239,7 +239,8 @@
         NSLog(@"No userID");
     }
     if (self.accessToken) {
-        NSLog(@"accessToken %@", self.accessToken);
+//        NSLog(@"accessToken %@", self.accessToken);
+        NSLog(@"accessToken ok");
     } else {
         NSLog(@"No accessToken");
     }

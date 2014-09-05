@@ -7,6 +7,7 @@
 //
 
 #import "STMObjectsController.h"
+#import "STMAppDelegate.h"
 #import "STMSessionManager.h"
 #import "STMSession.h"
 #import "STMDocument.h"
@@ -94,6 +95,39 @@
     }
 
     return self.s3Initialized;
+    
+}
+
++ (void)checkDeviceToken {
+    
+    if ([(STMAppDelegate *)[UIApplication sharedApplication].delegate hasNewDeviceToken]) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
+    
+        NSLog(@"hasNewDeviceToken %@", deviceToken);
+        
+        NSString *entityName = NSStringFromClass([STMClientData class]);
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        
+        NSError *error;
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+        STMClientData *clientData = [fetchResult lastObject];
+        
+        if (!clientData) {
+
+            clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            
+        }
+
+        clientData.deviceToken = deviceToken;
+        
+        [(STMAppDelegate *)[UIApplication sharedApplication].delegate setHasNewDeviceToken:NO];
+
+    }
     
 }
 
