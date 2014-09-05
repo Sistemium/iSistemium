@@ -34,6 +34,7 @@
 @property (nonatomic) BOOL running;
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic) NSUInteger entityCount;
+@property (nonatomic) BOOL noApiUrl;
 
 @end
 
@@ -568,6 +569,8 @@
     
     if (self.apiUrlString) {
         
+        self.noApiUrl = NO;
+        
         NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
         
@@ -607,7 +610,19 @@
         
         NSLog(@"no API.url");
         
-        self.syncerState = STMSyncerRecieveData;
+        if (self.noApiUrl) {
+
+            NSLog(@"still have no API.url");
+
+            self.noApiUrl = NO;
+            self.syncerState = STMSyncerIdle;
+            
+        } else {
+            
+            self.noApiUrl = YES;
+            self.syncerState = STMSyncerRecieveData;
+    
+        }
         
     }
     
@@ -769,7 +784,17 @@
             self.entityCount -= 1;
             
             if (self.entityCount == 0) {
-                self.syncerState = STMSyncerIdle;
+                
+                if (self.noApiUrl && self.syncerState == STMSyncerRecieveData) {
+                    
+                    self.syncerState = STMSyncerSendData;
+                    
+                } else {
+
+                    self.syncerState = STMSyncerIdle;
+
+                }
+                
             }
             
         }
