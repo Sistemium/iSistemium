@@ -512,8 +512,8 @@
         NSError *error;
         NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
         
-        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-        NSLog(@"JSONString %@", JSONString);
+//        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+//        NSLog(@"JSONString %@", JSONString);
         
         return JSONData;
 
