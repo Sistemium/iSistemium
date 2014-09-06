@@ -15,7 +15,7 @@
 typedef enum {
     STMSyncerIdle,
     STMSyncerSendData,
-    STMSyncerRecieveData
+    STMSyncerReceiveData
 } STMSyncerState;
 
 @property (nonatomic, strong) id <STMSession> session;

@@ -663,7 +663,7 @@
     
     STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
     [syncer flushEntitySyncInfo];
-    syncer.syncerState = STMSyncerRecieveData;
+    syncer.syncerState = STMSyncerReceiveData;
     
 }
 

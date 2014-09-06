@@ -103,16 +103,15 @@
 
 - (void)markMessageAsRead:(STMMessage *)message {
     
-    NSLog(@"message before %@", message);
-    
     message.isRead = [NSNumber numberWithBool:YES];
 
     [self.document saveDocument:^(BOOL success) {
         if (success) {
             
+            NSLog(@"message %@", message);
+            
             STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
             syncer.syncerState = STMSyncerSendData;
-            NSLog(@"message after %@", message);
             
         }
     }];
