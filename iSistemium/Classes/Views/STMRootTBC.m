@@ -71,7 +71,7 @@
                              @"STMDebts",
                              @"STMUncashing",
                              @"STMMessages",
-                             @"STMLogs"
+//                             @"STMLogs"
                              ];
     
     self.storyboardtitles = @[
@@ -80,7 +80,7 @@
                               NSLocalizedString(@"DEBTS", nil),
                               NSLocalizedString(@"UNCASHING", nil),
                               NSLocalizedString(@"MESSAGES", nil),
-                              NSLocalizedString(@"LOGS", nil)
+//                              NSLocalizedString(@"LOGS", nil)
                               ];
     
     self.tabImages = @[
@@ -89,7 +89,7 @@
                        [UIImage imageNamed:@"cash_receiving-128.png"],
                        [UIImage imageNamed:@"banknotes-128.png"],
                        [UIImage imageNamed:@"message-128.png"],
-                       [UIImage imageNamed:@"archive-128.png"]
+//                       [UIImage imageNamed:@"archive-128.png"]
                        ];
     
     
@@ -271,29 +271,7 @@
 
 - (void)syncStateChanged {
 
-//    self.session.syncer.syncerState == STMSyncerIdle ? [self enableTabs] : [self disableTabs];
-
-    [self enableTabs];
-    
-}
-
-- (void)disableTabs {
-    
-    for (UIViewController *vc in self.viewControllers) {
-        
-        vc.tabBarItem.enabled = NO;
-        
-    }
-    
-}
-
-- (void)enableTabs {
-
-    for (UIViewController *vc in self.viewControllers) {
-        
-        vc.tabBarItem.enabled = YES;
-        
-    }
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMObjectsController unreadMessagesCount];
     
 }
 
