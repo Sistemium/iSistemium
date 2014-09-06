@@ -16,13 +16,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [STMAuthController authController];
-
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [STMRootTBC sharedRootVC];
-    [self.window makeKeyAndVisible];
-    
-    
-//    application.applicationIconBadgeNumber = 0;
     
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
@@ -32,14 +25,15 @@
         
         if (remoteNotification) {
 
-            NSString *msg = [NSString stringWithFormat:@"%@", [remoteNotification objectForKey:@"alert"]];
-
-            NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
-            [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-
+            [self receiveRemoteNotification:remoteNotification];
+            
         }
 
     }
+
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.rootViewController = [STMRootTBC sharedRootVC];
+    [self.window makeKeyAndVisible];
 
     return YES;
     
@@ -66,7 +60,6 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSData *oldDeviceToken = [defaults objectForKey:@"deviceToken"];
     
-    
     if (![deviceToken isEqualToData:oldDeviceToken]) {
         
         [defaults setObject:deviceToken forKey:@"deviceToken"];
@@ -82,22 +75,17 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
-//    application.applicationIconBadgeNumber = 0;
-    NSString *msg = [NSString stringWithFormat:@"%@", [userInfo objectForKey:@"alert"]];
+    [self receiveRemoteNotification:userInfo];
     
+}
+
+- (void)receiveRemoteNotification:(NSDictionary *)remoteNotification {
+    
+    NSString *msg = [NSString stringWithFormat:@"%@", [[remoteNotification objectForKey:@"aps"] objectForKey:@"alert"]];
     NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData];
 
-//    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-//    localNotification.fireDate = nil;
-//    localNotification.alertAction = @"TEST";
-//    localNotification.alertBody = @"ALERT!";
-//    
-//    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-
-//    NSLog(@"%@", msg);
-//    [self createAlert:msg];
-    
 }
 
 /*

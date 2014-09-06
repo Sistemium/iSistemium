@@ -12,11 +12,6 @@
 
 @interface STMSyncer : NSObject <STMSyncer>
 
-typedef enum {
-    STMSyncerIdle,
-    STMSyncerSendData,
-    STMSyncerReceiveData
-} STMSyncerState;
 
 @property (nonatomic, strong) id <STMSession> session;
 @property (nonatomic, strong) id <STMRequestAuthenticatable> authDelegate;
@@ -24,7 +19,6 @@ typedef enum {
 @property (nonatomic) double syncInterval;
 @property (nonatomic) STMSyncerState syncerState;
 
-//- (void)syncData;
 - (void)prepareToDestroy;
 - (void)flushEntitySyncInfo;
 
