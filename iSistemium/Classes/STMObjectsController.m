@@ -7,7 +7,6 @@
 //
 
 #import "STMObjectsController.h"
-#import "STMAppDelegate.h"
 #import "STMSessionManager.h"
 #import "STMSession.h"
 #import "STMDocument.h"
@@ -99,13 +98,15 @@
 }
 
 + (void)checkDeviceToken {
-    
-    if ([(STMAppDelegate *)[UIApplication sharedApplication].delegate hasNewDeviceToken]) {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL clientDataWaitingForSync = [[defaults objectForKey:@"clientDataWaitingForSync"] boolValue];
+
+    if (clientDataWaitingForSync) {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
     
-        NSLog(@"hasNewDeviceToken %@", deviceToken);
+        NSLog(@"hasDeviceTokenForSync %@", deviceToken);
         
         NSString *entityName = NSStringFromClass([STMClientData class]);
         
@@ -125,8 +126,6 @@
 
         clientData.deviceToken = deviceToken;
         
-        [(STMAppDelegate *)[UIApplication sharedApplication].delegate setHasNewDeviceToken:NO];
-
     }
     
 }

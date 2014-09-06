@@ -66,18 +66,17 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSData *oldDeviceToken = [defaults objectForKey:@"deviceToken"];
     
+    
     if (![deviceToken isEqualToData:oldDeviceToken]) {
         
         [defaults setObject:deviceToken forKey:@"deviceToken"];
-        [defaults synchronize];
+        [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"clientDataWaitingForSync"];
         
-        self.hasNewDeviceToken = YES;
-                
     } else {
-        
-        self.hasNewDeviceToken = NO;
-        
+
     }
+
+    [defaults synchronize];
 
 }
 

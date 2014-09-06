@@ -36,6 +36,7 @@
 @property (nonatomic) NSUInteger entityCount;
 @property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL checkSending;
+@property (nonatomic, strong) NSData *clientDataXid;
 
 @end
 
@@ -524,11 +525,14 @@
 - (NSMutableDictionary *)dictionaryForObject:(NSManagedObject *)object {
     
     NSString *entityName = object.entity.name;
-    
     NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
-    
-    NSString *xid = [STMFunctions xidStringFromXidData:[object valueForKey:@"xid"]];
+    NSData *xidData = [object valueForKey:@"xid"];
+    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
 
+    if ([entityName isEqualToString:NSStringFromClass([STMClientData class])]) {
+        self.clientDataXid = xidData;
+    }
+    
     return [NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name", xid, @"xid", nil];
     
 }
@@ -961,6 +965,14 @@
             [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
 
             [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync object with xid %@", xid] type:@""];
+            
+            if ([xidData isEqualToData:self.clientDataXid]) {
+                
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"clientDataWaitingForSync"];
+                [defaults synchronize];
+                
+            }
             
         } else {
             
