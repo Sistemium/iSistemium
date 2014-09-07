@@ -13,8 +13,28 @@
 
 @implementation STMAppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    
+    UIRemoteNotificationType types = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
+    
+    if (types & UIRemoteNotificationTypeAlert) {
+        NSLog(@"UIRemoteNotificationTypeAlert");
+    }
+    if (types & UIRemoteNotificationTypeBadge) {
+        NSLog(@"UIRemoteNotificationTypeBadge");
+    }
+    if (types & UIRemoteNotificationTypeSound) {
+        NSLog(@"UIRemoteNotificationTypeSound");
+    }
+    if (types & UIRemoteNotificationTypeNewsstandContentAvailability) {
+        NSLog(@"UIRemoteNotificationTypeNewsstandContentAvailability");
+    }
+    if (types == UIRemoteNotificationTypeNone) {
+        NSLog(@"UIRemoteNotificationTypeNone");
+    }
+
+    
     [STMAuthController authController];
     
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
@@ -56,7 +76,7 @@
 }
 
 - (void)recieveDeviceToken:(NSData *)deviceToken {
-
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSData *oldDeviceToken = [defaults objectForKey:@"deviceToken"];
     

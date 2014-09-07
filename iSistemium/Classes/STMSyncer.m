@@ -543,18 +543,22 @@
     
     for (NSString *key in object.entity.attributesByName.allKeys) {
         
-        id value = [object valueForKey:key];
-        
-        if (value) {
+        if (![key isEqualToString:@"xid"]) {
             
-            if ([value isKindOfClass:[NSDate class]]) {
+            id value = [object valueForKey:key];
+            
+            if (value) {
                 
-                value = [[STMFunctions dateFormatter] stringFromDate:value];
+                if ([value isKindOfClass:[NSDate class]]) {
+                    
+                    value = [[STMFunctions dateFormatter] stringFromDate:value];
+                    
+                }
+                
+                [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
                 
             }
-            
-            [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
-            
+
         }
         
     }
