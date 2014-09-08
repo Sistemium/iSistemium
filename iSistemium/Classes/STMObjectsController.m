@@ -126,6 +126,16 @@
 
         clientData.deviceToken = deviceToken;
         
+#ifdef DEBUG
+        
+        clientData.buildType = @"debug";
+        
+#else
+        
+        clientData.buildType = @"release";
+        
+#endif
+        
     }
     
 }

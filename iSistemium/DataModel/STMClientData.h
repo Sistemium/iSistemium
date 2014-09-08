@@ -1,8 +1,8 @@
 //
-//  SMTClientData.h
+//  STMClientData.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 04/09/14.
+//  Created by Maxim Grigoriev on 08/09/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -14,5 +14,6 @@
 @interface STMClientData : STMComment
 
 @property (nonatomic, retain) NSData * deviceToken;
+@property (nonatomic, retain) NSString * buildType;
 
 @end
