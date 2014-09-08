@@ -20,6 +20,7 @@
 
 + (NSData *)dataFromString:(NSString *)string;
 + (NSString *)xidStringFromXidData:(NSData *)xidData;
++ (NSString *)hexStringFromData:(NSData *)data;
 
 + (NSString *)pluralTypeForCount:(NSUInteger)count;
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;

@@ -544,7 +544,7 @@
     for (NSString *key in object.entity.attributesByName.allKeys) {
         
         if (![key isEqualToString:@"xid"]) {
-            
+        
             id value = [object valueForKey:key];
             
             if (value) {
@@ -552,6 +552,10 @@
                 if ([value isKindOfClass:[NSDate class]]) {
                     
                     value = [[STMFunctions dateFormatter] stringFromDate:value];
+                    
+                } else if ([value isKindOfClass:[NSData class]]) {
+                    
+                    value = [STMFunctions hexStringFromData:value];
                     
                 }
                 

@@ -108,6 +108,20 @@
     
 }
 
++ (NSString *)hexStringFromData:(NSData *)data {
+ 
+    NSUInteger dataLength = [data length];
+    NSMutableString *string = [NSMutableString string];
+    const unsigned char *dataBytes = [data bytes];
+    
+    for (NSInteger i = 0; i < dataLength; ++i) {
+        [string appendFormat:@"%02X", dataBytes[i]];
+    }
+    
+    return string;
+    
+}
+
 + (NSString *)pluralTypeForCount:(NSUInteger)count {
     
     NSString *result;
