@@ -980,16 +980,24 @@
         
         if (object) {
             
-            [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
+            if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
 
-            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync object with xid %@", xid] type:@""];
+                [self.session.document.managedObjectContext deleteObject:object];
+                
+            } else {
             
-            if ([xidData isEqualToData:self.clientDataXid]) {
+                [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
                 
-                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"clientDataWaitingForSync"];
-                [defaults synchronize];
+                [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync object with xid %@", xid] type:@""];
                 
+                if ([xidData isEqualToData:self.clientDataXid]) {
+                    
+                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                    [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"clientDataWaitingForSync"];
+                    [defaults synchronize];
+                    
+                }
+
             }
             
         } else {
