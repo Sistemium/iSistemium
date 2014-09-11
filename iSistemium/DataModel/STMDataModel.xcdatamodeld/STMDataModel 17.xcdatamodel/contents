@@ -77,7 +77,6 @@
     <entity name="STMMessage" representedClassName="STMMessage" parentEntity="STMComment" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="cts" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="isRead" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="STMOutlet" representedClassName="STMOutlet" parentEntity="STMComment" syncable="YES">
@@ -114,7 +113,7 @@
     <entity name="STMRecordStatus" representedClassName="STMRecordStatus" parentEntity="STMComment" syncable="YES">
         <attribute name="isRead" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isRemoved" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="removedObjectXid" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="objectXid" optional="YES" attributeType="Binary" syncable="YES"/>
     </entity>
     <entity name="STMSalesman" representedClassName="STMSalesman" parentEntity="STMComment" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>

@@ -13,6 +13,6 @@
 
 @dynamic isRead;
 @dynamic isRemoved;
-@dynamic removedObjectXid;
+@dynamic objectXid;
 
 @end

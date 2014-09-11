@@ -15,6 +15,6 @@
 
 @property (nonatomic, retain) NSNumber * isRead;
 @property (nonatomic, retain) NSNumber * isRemoved;
-@property (nonatomic, retain) NSDate * removedObjectXid;
+@property (nonatomic, retain) NSData * objectXid;
 
 @end

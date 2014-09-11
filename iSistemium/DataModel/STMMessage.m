@@ -2,7 +2,7 @@
 //  STMMessage.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 04/09/14.
+//  Created by Maxim Grigoriev on 09/09/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -14,6 +14,5 @@
 @dynamic body;
 @dynamic cts;
 @dynamic subject;
-@dynamic isRead;
 
 @end

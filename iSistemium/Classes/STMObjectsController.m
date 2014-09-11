@@ -1046,12 +1046,26 @@
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
+//    request.predicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
     
     NSError *error;
     NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     
-    return result.count;
+    NSMutableArray *messageXids = [NSMutableArray array];
+    
+    for (STMMessage *message in result) {
+        
+        [messageXids addObject:message.xid];
+        
+    }
+    
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
+
+    result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    
+    return messageXids.count - result.count;
     
 }
 

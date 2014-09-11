@@ -17,6 +17,7 @@
 #import "STMUncashing.h"
 #import "STMMessage.h"
 #import "STMClientData.h"
+#import "STMRecordStatus.h"
 
 //#define SEND_URL @"https://nginx.sistemium.com/api/v1/dev/"
 //#define SEND_URL @"https://sistemium.com/api/chest/dev/"
@@ -472,7 +473,8 @@
                                            NSStringFromClass([STMCashing class]),
                                            NSStringFromClass([STMUncashing class]),
                                            NSStringFromClass([STMMessage class]),
-                                           NSStringFromClass([STMClientData class])
+                                           NSStringFromClass([STMClientData class]),
+                                           NSStringFromClass([STMRecordStatus class])
                                            ];
         
         BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
@@ -555,7 +557,15 @@
                     
                 } else if ([value isKindOfClass:[NSData class]]) {
                     
-                    value = [STMFunctions hexStringFromData:value];
+                    if ([key isEqualToString:@"objectXid"]) {
+                        
+                        value = [STMFunctions xidStringFromXidData:value];
+                        
+                    } else {
+                        
+                        value = [STMFunctions hexStringFromData:value];
+
+                    }
                     
                 }
                 
@@ -630,8 +640,8 @@
                 
             } else {
                 
-                //            NSLog(@"connection %@", connection);
-                //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+//                NSLog(@"connection %@", connection);
+//                [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
                 
             }
             

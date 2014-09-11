@@ -10,6 +10,7 @@
 #import "STMMessage.h"
 #import "STMConstants.h"
 #import "STMSyncer.h"
+#import "STMRecordStatus.h"
 
 #define STMTextFont [UIFont systemFontOfSize:12]
 #define STMDetailTextFont [UIFont systemFontOfSize:18]
@@ -101,10 +102,17 @@
     
 }
 
-- (void)markMessageAsRead:(STMMessage *)message {
-        
-    message.isRead = [NSNumber numberWithBool:YES];
+- (void)markMessageAsRead:(NSDictionary *)messageData{
 
+    STMMessage *message = [messageData objectForKey:@"message"];
+    NSIndexPath *indexPath = [messageData objectForKey:@"indexPath"];
+    
+    STMRecordStatus *recordStatus = [self recordStatusForMessage:message];
+
+    recordStatus.isRead = [NSNumber numberWithBool:YES];
+
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    
     [self showUnreadCount];
 
     STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
@@ -116,6 +124,28 @@
         }
     }];
     
+}
+
+- (STMRecordStatus *)recordStatusForMessage:(STMMessage *)message {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", message.xid];
+    
+    NSError *error;
+    NSArray *fetchResult = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+    
+    STMRecordStatus *recordStatus = [fetchResult lastObject];
+    
+    if (!recordStatus) {
+        
+        recordStatus = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].managedObjectContext];
+        recordStatus.objectXid = message.xid;
+        
+    }
+    
+    return recordStatus;
+
 }
 
 #pragma mark - Table view data source
@@ -149,14 +179,16 @@
     cell.textLabel.text = [dateFormatter stringFromDate:message.cts];
     cell.detailTextLabel.text = message.body;
 
-    if ([message.isRead boolValue]) {
+    STMRecordStatus *recordStatus = [self recordStatusForMessage:message];
+    
+    if ([recordStatus.isRead boolValue]) {
         
         cell.textLabel.textColor = [UIColor blackColor];
         
     } else {
         
         cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
-        [self performSelector:@selector(markMessageAsRead:) withObject:message afterDelay:2];
+        [self performSelector:@selector(markMessageAsRead:) withObject:@{@"message": message, @"indexPath": indexPath} afterDelay:2];
         
     }
     
@@ -183,23 +215,24 @@
     
 }
 
-
-/*
-#pragma mark - NSFetchedResultsController delegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    
-    [super controllerWillChangeContent:controller];
-    
-    [self showUnreadCount];
-    
-}
-*/
-
 - (void)showUnreadCount {
     
-    NSPredicate *unreadPredicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
-    NSUInteger unreadCount = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:unreadPredicate].count;
+    NSMutableArray *messageXids = [NSMutableArray array];
+    
+    for (STMMessage *message in self.resultsController.fetchedObjects) {
+        
+        [messageXids addObject:message.xid];
+        
+    }
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
+    
+    NSError *error;
+    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSUInteger unreadCount = messageXids.count - result.count;
+    
     NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
     self.navigationController.tabBarItem.badgeValue = badgeValue;
     [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
