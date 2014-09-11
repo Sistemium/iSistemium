@@ -14,11 +14,16 @@
 #import "STMDebtsSVC.h"
 #import "STMObjectsController.h"
 
+@interface STMOutletCashingTV : UITableView
+
+@end
+
+
 @interface STMOutletCashingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet STMOutletCashingTV *tableView;
 
 @property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
@@ -27,8 +32,28 @@
 @property (nonatomic, strong) NSMutableArray *insertedRowIndexPaths;
 @property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
 
+@property (nonatomic) BOOL wasChanged;
 
 @end
+
+
+@implementation STMOutletCashingTV
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+
+    if (self.editing && !editing) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"quitEditingMode" object:self];
+        
+    }
+    
+    [super setEditing:editing animated:animated];
+    
+}
+
+@end
+
+
 
 @implementation STMOutletCashingVC
 
@@ -158,6 +183,17 @@
     BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
     
     [self.tableView setEditing:editing animated:YES];
+    
+}
+
+- (void)quitEditingMode {
+    
+    if (self.wasChanged) {
+
+        self.wasChanged = NO;
+        [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendData;
+        
+    }
     
 }
 
@@ -372,6 +408,8 @@
             [self.updatedSectionIndexes addIndex:newIndexPath.section];
         }
         
+        self.wasChanged = YES;
+        
     } else if (type == NSFetchedResultsChangeMove) {
         
         if (![self.insertedSectionIndexes containsIndex:newIndexPath.section]) {
@@ -399,6 +437,7 @@
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editingButtonPressed:) name:@"editingButtonPressed" object:self.parentViewController];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(quitEditingMode) name:@"quitEditingMode" object:self.tableView];
     
 }
 

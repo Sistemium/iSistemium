@@ -11,6 +11,7 @@
 #import "STMConstants.h"
 #import "STMSyncer.h"
 #import "STMRecordStatus.h"
+#import "STMObjectsController.h"
 
 #define STMTextFont [UIFont systemFontOfSize:12]
 #define STMDetailTextFont [UIFont systemFontOfSize:18]
@@ -74,7 +75,7 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
         //        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"xid" cacheName:nil];
         _resultsController.delegate = self;
@@ -107,8 +108,8 @@
     STMMessage *message = [messageData objectForKey:@"message"];
     NSIndexPath *indexPath = [messageData objectForKey:@"indexPath"];
     
-    STMRecordStatus *recordStatus = [self recordStatusForMessage:message];
-
+    STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:message];
+    
     recordStatus.isRead = [NSNumber numberWithBool:YES];
 
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -124,28 +125,6 @@
         }
     }];
     
-}
-
-- (STMRecordStatus *)recordStatusForMessage:(STMMessage *)message {
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", message.xid];
-    
-    NSError *error;
-    NSArray *fetchResult = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-    
-    STMRecordStatus *recordStatus = [fetchResult lastObject];
-    
-    if (!recordStatus) {
-        
-        recordStatus = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].managedObjectContext];
-        recordStatus.objectXid = message.xid;
-        
-    }
-    
-    return recordStatus;
-
 }
 
 #pragma mark - Table view data source
@@ -179,7 +158,7 @@
     cell.textLabel.text = [dateFormatter stringFromDate:message.cts];
     cell.detailTextLabel.text = message.body;
 
-    STMRecordStatus *recordStatus = [self recordStatusForMessage:message];
+    STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:message];
     
     if ([recordStatus.isRead boolValue]) {
         
