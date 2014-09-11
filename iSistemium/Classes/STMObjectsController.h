@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "STMPicture.h"
+#import "STMRecordStatus.h"
 
 @interface STMObjectsController : NSObject
 
@@ -22,6 +23,8 @@
 
 + (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
+
++ (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
 
 + (void)removeAllObjects;
 

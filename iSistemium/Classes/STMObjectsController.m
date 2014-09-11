@@ -31,7 +31,6 @@
 #import "STMUncashing.h"
 #import "STMMessage.h"
 #import "STMClientData.h"
-#import "STMRecordStatus.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -595,6 +594,31 @@
     }
     
 }
+
++ (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object {
+    
+    NSData *objectXid = [object valueForKey:@"xid"];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", objectXid];
+    
+    NSError *error;
+    NSArray *fetchResult = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+    
+    STMRecordStatus *recordStatus = [fetchResult lastObject];
+    
+    if (!recordStatus) {
+        
+        recordStatus = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].managedObjectContext];
+        recordStatus.objectXid = objectXid;
+        
+    }
+    
+    return recordStatus;
+    
+}
+
 
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName {
     

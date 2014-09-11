@@ -12,6 +12,7 @@
 #import "STMCashing.h"
 #import "STMDebt.h"
 #import "STMDebtsSVC.h"
+#import "STMObjectsController.h"
 
 @interface STMOutletCashingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 
@@ -269,6 +270,9 @@
 
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
         
+        STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:cashing];
+        recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+        
         [self.document.managedObjectContext deleteObject:cashing];
         
         [self.document saveDocument:^(BOOL success) {
@@ -291,6 +295,7 @@
     }
     
 }
+
 
 #pragma mark - NSFetchedResultsController delegate
 
@@ -345,7 +350,6 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    
     if (type == NSFetchedResultsChangeInsert) {
         
         if ([self.insertedSectionIndexes containsIndex:newIndexPath.section]) {
@@ -364,7 +368,9 @@
         
         [self.deletedRowIndexPaths addObject:indexPath];
         
-        [self.updatedSectionIndexes addIndex:newIndexPath.section];
+        if (newIndexPath) {
+            [self.updatedSectionIndexes addIndex:newIndexPath.section];
+        }
         
     } else if (type == NSFetchedResultsChangeMove) {
         
