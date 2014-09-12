@@ -277,6 +277,8 @@
                                    @"STMDataModel", @"dataModelName",
                                    @"50", @"fetchLimit",
                                    @"600", @"syncInterval",
+                                   @"100", @"requiredAccuracy",
+                                   @"10", @"desiredAccuracy",
                                    nil];
     
     [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];

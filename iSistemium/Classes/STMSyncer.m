@@ -18,6 +18,7 @@
 #import "STMMessage.h"
 #import "STMClientData.h"
 #import "STMRecordStatus.h"
+#import "STMLocation.h"
 
 //#define SEND_URL @"https://nginx.sistemium.com/api/v1/dev/"
 //#define SEND_URL @"https://sistemium.com/api/chest/dev/"
@@ -474,7 +475,8 @@
                                            NSStringFromClass([STMUncashing class]),
                                            NSStringFromClass([STMMessage class]),
                                            NSStringFromClass([STMClientData class]),
-                                           NSStringFromClass([STMRecordStatus class])
+                                           NSStringFromClass([STMRecordStatus class]),
+                                           NSStringFromClass([STMLocation class])
                                            ];
         
         BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];

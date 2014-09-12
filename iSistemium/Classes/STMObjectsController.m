@@ -31,6 +31,7 @@
 #import "STMUncashing.h"
 #import "STMMessage.h"
 #import "STMClientData.h"
+#import "STMLocation.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -1026,7 +1027,8 @@
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMMessage class]),
                              NSStringFromClass([STMClientData class]),
-                             NSStringFromClass([STMRecordStatus class])];
+                             NSStringFromClass([STMRecordStatus class]),
+                             NSStringFromClass([STMLocation class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;
     NSLog(@"total count %d", totalCount);

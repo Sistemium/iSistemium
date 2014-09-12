@@ -16,5 +16,6 @@
 @property (nonatomic, strong) CLLocation *lastLocation;
 
 - (void)getLocation;
+- (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location;
 
 @end

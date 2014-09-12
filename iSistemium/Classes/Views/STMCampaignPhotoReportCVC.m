@@ -10,6 +10,8 @@
 #import "STMOutlet+photoReportsArePresent.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
+#import "STMSession.h"
+#import "STMLocationTracker.h"
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
 #import "STMPhotoReportPVC.h"
@@ -17,6 +19,7 @@
 #import "STMObjectsController.h"
 #import "STMCampaignsSVC.h"
 #import "STMConstants.h"
+
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -30,6 +33,8 @@
 @property (nonatomic, strong) NSBlockOperation *changeOperation;
 @property (nonatomic, strong) STMCampaign *updatingCampaign;
 @property (nonatomic) BOOL isUpdating;
+@property (nonatomic, strong) NSMutableArray *waitingLocationPhotos;
+@property (nonatomic, strong) STMLocationTracker *locationTracker;
 
 @property (nonatomic, strong) UIImagePickerController *imagePickerController;
 @property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
@@ -214,6 +219,28 @@
     
 }
 
+- (NSMutableArray *)waitingLocationPhotos {
+    
+    if (!_waitingLocationPhotos) {
+        _waitingLocationPhotos = [NSMutableArray array];
+    }
+    
+    return _waitingLocationPhotos;
+    
+}
+
+- (STMLocationTracker *)locationTracker {
+    
+    if (!_locationTracker) {
+        
+        _locationTracker = [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
+        
+    }
+    
+    return _locationTracker;
+    
+}
+
 - (IBAction)cameraButtonPressed:(id)sender {
     
     UIView *view = [[UIView alloc] initWithFrame:self.imagePickerController.cameraOverlayView.frame];
@@ -337,6 +364,9 @@
   
     self.selectedPhotoReport.campaign = self.campaign;
     
+    [self.locationTracker getLocation];
+    [self.waitingLocationPhotos addObject:self.selectedPhotoReport];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:[NSDictionary dictionaryWithObject:self.campaign forKey:@"campaign"]];
 
     [[self document] saveDocument:^(BOOL success) {
@@ -364,6 +394,29 @@
 - (void)photosCountChanged {
     
     [self fetchPhotoReport];
+    
+}
+
+- (void)currentLocationWasUpdated:(NSNotification *)notification {
+    
+    if (self.waitingLocationPhotos.count > 0) {
+    
+        CLLocation *currentLocation = [notification.userInfo objectForKey:@"currentLocation"];
+        NSLog(@"currentLocation %@", currentLocation);
+
+        STMLocation *location = [self.locationTracker locationObjectFromCLLocation:currentLocation];
+        
+        //        NSArray *waitingLocationPhotos = [self.waitingLocationPhotos copy];
+        
+        for (STMPhoto *photo in self.waitingLocationPhotos) {
+            
+            photo.location = location;
+            
+            [self.waitingLocationPhotos removeObject:photo];
+            
+        }
+
+    }
     
 }
 
@@ -631,9 +684,22 @@
     
 }
 
-- (void)customInit {
+- (void)addObservers {
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photosCountChanged) name:@"photosCountChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentLocationWasUpdated:) name:@"currentLocationWasUpdated" object:self.locationTracker];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
+- (void)customInit {
+
+    [self addObservers];
     [self addSpinner];
     
 }
