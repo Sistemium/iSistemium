@@ -7,6 +7,7 @@
 //
 
 #import "STMDatum+Init.h"
+#import "STMMessage.h"
 
 @implementation STMDatum (Init)
 
@@ -54,13 +55,20 @@
 - (void)willSave {
     
 //    NSLog(@"STGTDatum willSave");
+    
 //    NSLog(@"[self changedValues] %@", [self changedValues]);
     
-    if (![[[self changedValues] allKeys] containsObject:@"lts"] && ![[[self changedValues] allKeys] containsObject:@"sts"]) {
+    BOOL notLts = ![[[self changedValues] allKeys] containsObject:@"lts"];
+    BOOL notSts = ![[[self changedValues] allKeys] containsObject:@"sts"];
+    BOOL notDeviceTs = ![[[self changedValues] allKeys] containsObject:@"deviceTs"];
+    
+    if (notLts && notSts && notDeviceTs) {
         
         NSDate *ts = [NSDate date];
         
+        [self willChangeValueForKey:@"deviceTs"];
         [self setPrimitiveValue:ts forKey:@"deviceTs"];
+        [self didChangeValueForKey:@"deviceTs"];
         
         NSDate *lts = [self primitiveValueForKey:@"lts"];
         

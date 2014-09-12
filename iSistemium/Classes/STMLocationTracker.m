@@ -144,7 +144,7 @@
 
     if ([[NSDate date] timeIntervalSinceDate:self.lastLocation.timestamp] < self.timeFilter) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationUpdated" object:self.lastLocation];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":self.lastLocation}];
         
     } else {
         
@@ -161,11 +161,13 @@
 - (CLLocationManager *)locationManager {
     
     if (!_locationManager) {
+        
         _locationManager = [[CLLocationManager alloc] init];
         _locationManager.delegate = self;
         _locationManager.distanceFilter = self.distanceFilter;
         _locationManager.desiredAccuracy = self.desiredAccuracy;
         _locationManager.pausesLocationUpdatesAutomatically = NO;
+        
     }
     
     return _locationManager;
@@ -175,6 +177,7 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     CLLocation *newLocation = [locations lastObject];
+    
     NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
     self.currentAccuracy = newLocation.horizontalAccuracy;
     
@@ -201,15 +204,20 @@
             } else {
 
                 if (!self.lastLocation || time > self.timeFilter) {
-                    
-                    [self addLocation:newLocation];
-                    
+                                        
                     if (self.singlePointMode) {
                         
                         [self stopTracking];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationUpdated" object:newLocation];
                         self.singlePointMode = NO;
-                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":newLocation}];
+                        self.lastLocation = newLocation;
+
+                    } else {
+                    
+                        if (self.tracking) {
+                            [self addLocation:newLocation];
+                        }
+
                     }
                     
                 }

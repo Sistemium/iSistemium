@@ -28,6 +28,7 @@
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
         numberFormatter.minimumFractionDigits = 2;
+        numberFormatter.maximumFractionDigits = 2;
 
         _decimalNumberFormatter = numberFormatter;
         

@@ -29,6 +29,9 @@
 #import "STMDebt.h"
 #import "STMCashing.h"
 #import "STMUncashing.h"
+#import "STMMessage.h"
+#import "STMClientData.h"
+#import "STMLocation.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -92,6 +95,49 @@
     }
 
     return self.s3Initialized;
+    
+}
+
++ (void)checkDeviceToken {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL clientDataWaitingForSync = [[defaults objectForKey:@"clientDataWaitingForSync"] boolValue];
+
+    if (clientDataWaitingForSync) {
+        
+        NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
+    
+        NSLog(@"hasDeviceTokenForSync %@", deviceToken);
+        
+        NSString *entityName = NSStringFromClass([STMClientData class]);
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        
+        NSError *error;
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+        STMClientData *clientData = [fetchResult lastObject];
+        
+        if (!clientData) {
+
+            clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            
+        }
+
+        clientData.deviceToken = deviceToken;
+        
+#ifdef DEBUG
+        
+        clientData.buildType = @"debug";
+        
+#else
+        
+        clientData.buildType = @"release";
+        
+#endif
+        
+    }
     
 }
 
@@ -408,6 +454,12 @@
         
         [object setValue:[NSDate date] forKey:@"lts"];
         
+        if ([entityName isEqualToString:NSStringFromClass([STMMessage class])]) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
+            
+        }
+        
     }
     
     completionHandler(YES);
@@ -544,6 +596,31 @@
     
 }
 
++ (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object {
+    
+    NSData *objectXid = [object valueForKey:@"xid"];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", objectXid];
+    
+    NSError *error;
+    NSArray *fetchResult = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+    
+    STMRecordStatus *recordStatus = [fetchResult lastObject];
+    
+    if (!recordStatus) {
+        
+        recordStatus = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].managedObjectContext];
+        recordStatus.objectXid = objectXid;
+        
+    }
+    
+    return recordStatus;
+    
+}
+
+
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName {
     
     NSEntityDescription *coreEntity = [NSEntityDescription entityForName:@"STMComment" inManagedObjectContext:[self document].managedObjectContext];
@@ -621,7 +698,7 @@
     
     STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
     [syncer flushEntitySyncInfo];
-    syncer.syncerState = STMSyncerRecieveData;
+    syncer.syncerState = STMSyncerReceiveData;
     
 }
 
@@ -947,7 +1024,11 @@
                              NSStringFromClass([STMPhotoReport class]),
                              NSStringFromClass([STMDebt class]),
                              NSStringFromClass([STMCashing class]),
-                             NSStringFromClass([STMUncashing class])];
+                             NSStringFromClass([STMUncashing class]),
+                             NSStringFromClass([STMMessage class]),
+                             NSStringFromClass([STMClientData class]),
+                             NSStringFromClass([STMRecordStatus class]),
+                             NSStringFromClass([STMLocation class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;
     NSLog(@"total count %d", totalCount);
@@ -984,6 +1065,33 @@
         return nil;
         
     }
+    
+}
+
++ (NSUInteger)unreadMessagesCount {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+//    request.predicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
+    
+    NSError *error;
+    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    
+    NSMutableArray *messageXids = [NSMutableArray array];
+    
+    for (STMMessage *message in result) {
+        
+        [messageXids addObject:message.xid];
+        
+    }
+    
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
+
+    result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    
+    return messageXids.count - result.count;
     
 }
 

@@ -12,12 +12,18 @@
 #import "STMCashing.h"
 #import "STMDebt.h"
 #import "STMDebtsSVC.h"
+#import "STMObjectsController.h"
+
+@interface STMOutletCashingTV : UITableView
+
+@end
+
 
 @interface STMOutletCashingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet STMOutletCashingTV *tableView;
 
 @property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
@@ -26,8 +32,28 @@
 @property (nonatomic, strong) NSMutableArray *insertedRowIndexPaths;
 @property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
 
+@property (nonatomic) BOOL wasChanged;
 
 @end
+
+
+@implementation STMOutletCashingTV
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+
+    if (self.editing && !editing) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"quitEditingMode" object:self];
+        
+    }
+    
+    [super setEditing:editing animated:animated];
+    
+}
+
+@end
+
+
 
 @implementation STMOutletCashingVC
 
@@ -160,6 +186,17 @@
     
 }
 
+- (void)quitEditingMode {
+    
+    if (self.wasChanged) {
+
+        self.wasChanged = NO;
+        [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendData;
+        
+    }
+    
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -269,6 +306,9 @@
 
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
         
+        STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:cashing];
+        recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+        
         [self.document.managedObjectContext deleteObject:cashing];
         
         [self.document saveDocument:^(BOOL success) {
@@ -291,6 +331,7 @@
     }
     
 }
+
 
 #pragma mark - NSFetchedResultsController delegate
 
@@ -345,7 +386,6 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    
     if (type == NSFetchedResultsChangeInsert) {
         
         if ([self.insertedSectionIndexes containsIndex:newIndexPath.section]) {
@@ -364,7 +404,11 @@
         
         [self.deletedRowIndexPaths addObject:indexPath];
         
-        [self.updatedSectionIndexes addIndex:newIndexPath.section];
+        if (newIndexPath) {
+            [self.updatedSectionIndexes addIndex:newIndexPath.section];
+        }
+        
+        self.wasChanged = YES;
         
     } else if (type == NSFetchedResultsChangeMove) {
         
@@ -393,6 +437,7 @@
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editingButtonPressed:) name:@"editingButtonPressed" object:self.parentViewController];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(quitEditingMode) name:@"quitEditingMode" object:self.tableView];
     
 }
 

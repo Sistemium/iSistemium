@@ -18,7 +18,7 @@
       [
         {
           "name": "desiredAccuracy",
-          "value": -2,
+          "value": 10,
           "control": "slider",
           "min": 0,
           "max": 5,
@@ -26,7 +26,7 @@
         },
         {
           "name": "requiredAccuracy",
-          "value": 10,
+          "value": 100,
           "control": "slider",
           "min": 0,
           "max": 100,

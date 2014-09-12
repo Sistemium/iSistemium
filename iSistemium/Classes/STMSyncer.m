@@ -12,6 +12,14 @@
 #import "STMPhotoReport.h"
 #import "STMFunctions.h"
 
+#import "STMPhotoReport.h"
+#import "STMCashing.h"
+#import "STMUncashing.h"
+#import "STMMessage.h"
+#import "STMClientData.h"
+#import "STMRecordStatus.h"
+#import "STMLocation.h"
+
 //#define SEND_URL @"https://nginx.sistemium.com/api/v1/dev/"
 //#define SEND_URL @"https://sistemium.com/api/chest/dev/"
 
@@ -28,6 +36,9 @@
 @property (nonatomic) BOOL running;
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic) NSUInteger entityCount;
+@property (nonatomic) BOOL syncing;
+@property (nonatomic) BOOL checkSending;
+@property (nonatomic, strong) NSData *clientDataXid;
 
 @end
 
@@ -188,11 +199,11 @@
 
 - (void)setSyncerState:(STMSyncerState)syncerState {
     
-    if (syncerState != _syncerState) {
+    if (!self.syncing && syncerState != _syncerState) {
         
         _syncerState = syncerState;
         
-        NSArray *syncStates = @[@"idle", @"sendData", @"recieveData"];
+        NSArray *syncStates = @[@"idle", @"sendData", @"receiveData"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
         [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]] type:@""];
         
@@ -200,16 +211,19 @@
                 
             case STMSyncerSendData:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                self.syncing = YES;
                 [self sendData];
                 break;
                 
-            case STMSyncerRecieveData:
+            case STMSyncerReceiveData:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                [self recieveData];
+                self.syncing = YES;
+                [self receiveData];
                 break;
                 
             case STMSyncerIdle:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                self.syncing = NO;
                 [STMObjectsController dataLoadingFinished];
                 break;
                 
@@ -248,6 +262,7 @@
         self.settings = nil;
         self.running = YES;
         [STMObjectsController checkPhotos];
+        [STMObjectsController checkDeviceToken];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];
@@ -270,6 +285,7 @@
     if (self.running) {
         
         [self.session.logger saveLogMessageWithText:@"Syncer stop" type:@""];
+        self.syncing = NO;
         self.syncerState = STMSyncerIdle;
         [self releaseTimer];
         self.resultsController = nil;
@@ -408,23 +424,43 @@
 
             if (sendData) {
                 
+                self.checkSending = YES;
                 [self startConnectionForSendData:sendData];
                 
             } else {
                 
-                self.syncerState = STMSyncerRecieveData;
+                [self nothingToSend];
                 
             }
 
         } else {
         
-            NSLog(@"nothing to send");
-            self.syncerState = STMSyncerRecieveData;
-
+            [self nothingToSend];
+            
         }
         
     }
     
+}
+
+- (void)nothingToSend {
+    
+    [self.session.logger saveLogMessageWithText:@"Syncer nothing to send" type:@""];
+
+    self.syncing = NO;
+    
+    if (self.checkSending) {
+        
+        self.checkSending = NO;
+        self.syncerState = STMSyncerIdle;
+        
+    } else {
+        
+        self.checkSending = YES;
+        self.syncerState = STMSyncerReceiveData;
+        
+    }
+
 }
 
 - (NSData *)JSONFrom:(NSArray *)dataForSyncing {
@@ -433,7 +469,17 @@
     
     for (NSManagedObject *object in dataForSyncing) {
         
-        BOOL isInSyncList = [@[@"STMPhotoReport",@"STMCashing",@"STMUncashing"] containsObject:object.entity.name];
+        NSArray *entityNamesForSending = @[
+                                           NSStringFromClass([STMPhotoReport class]),
+                                           NSStringFromClass([STMCashing class]),
+                                           NSStringFromClass([STMUncashing class]),
+                                           NSStringFromClass([STMMessage class]),
+                                           NSStringFromClass([STMClientData class]),
+                                           NSStringFromClass([STMRecordStatus class]),
+                                           NSStringFromClass([STMLocation class])
+                                           ];
+        
+        BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
         
         if (isInSyncList) {
             
@@ -460,13 +506,11 @@
     
     if (syncDataArray.count == 0) {
         
-        NSLog(@"nothing to send");
-        
         return nil;
         
     } else {
         
-        NSLog(@"%d objects to send", syncDataArray.count);
+        [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count] type:@""];
 
         NSDictionary *dataDictionary = [NSDictionary dictionaryWithObject:syncDataArray forKey:@"data"];
         
@@ -485,11 +529,14 @@
 - (NSMutableDictionary *)dictionaryForObject:(NSManagedObject *)object {
     
     NSString *entityName = object.entity.name;
-    
     NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
-    
-    NSString *xid = [STMFunctions xidStringFromXidData:[object valueForKey:@"xid"]];
+    NSData *xidData = [object valueForKey:@"xid"];
+    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
 
+    if ([entityName isEqualToString:NSStringFromClass([STMClientData class])]) {
+        self.clientDataXid = xidData;
+    }
+    
     return [NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name", xid, @"xid", nil];
     
 }
@@ -500,18 +547,34 @@
     
     for (NSString *key in object.entity.attributesByName.allKeys) {
         
-        id value = [object valueForKey:key];
+        if (![key isEqualToString:@"xid"]) {
         
-        if (value) {
+            id value = [object valueForKey:key];
             
-            if ([value isKindOfClass:[NSDate class]]) {
+            if (value) {
                 
-                value = [[STMFunctions dateFormatter] stringFromDate:value];
+                if ([value isKindOfClass:[NSDate class]]) {
+                    
+                    value = [[STMFunctions dateFormatter] stringFromDate:value];
+                    
+                } else if ([value isKindOfClass:[NSData class]]) {
+                    
+                    if ([key isEqualToString:@"objectXid"]) {
+                        
+                        value = [STMFunctions xidStringFromXidData:value];
+                        
+                    } else {
+                        
+                        value = [STMFunctions hexStringFromData:value];
+
+                    }
+                    
+                }
+                
+                [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
                 
             }
-            
-            [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
-            
+
         }
         
     }
@@ -553,6 +616,8 @@
     
     if (self.apiUrlString) {
         
+//        self.noApiUrl = NO;
+        
         NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
         
@@ -572,12 +637,13 @@
             if (!connection) {
                 
                 [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
+                self.syncing = NO;
                 self.syncerState = STMSyncerIdle;
                 
             } else {
                 
-                //            NSLog(@"connection %@", connection);
-                //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+//                NSLog(@"connection %@", connection);
+//                [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
                 
             }
             
@@ -590,27 +656,28 @@
 
     } else {
         
-        NSLog(@"no API.url");
+        [self.session.logger saveLogMessageWithText:@"Syncer: no API.url" type:@"error"];
         
-        self.syncerState = STMSyncerRecieveData;
+        self.syncing = NO;
+        self.syncerState = STMSyncerReceiveData;
         
     }
     
     
 }
 
-- (void)recieveData {
+- (void)receiveData {
     
-    if (self.syncerState == STMSyncerRecieveData) {
+    if (self.syncerState == STMSyncerReceiveData) {
         
-        //        NSLog(@"recieveData");
-        [self startConnectionForRecieveEntitiesWithName:@"STMEntity"];
+        //        NSLog(@"receiveData");
+        [self startConnectionForReceiveEntitiesWithName:@"STMEntity"];
         
     }
     
 }
 
-- (void)startConnectionForRecieveEntitiesWithName:(NSString *)entityName {
+- (void)startConnectionForReceiveEntitiesWithName:(NSString *)entityName {
     
     if (self.syncerState != STMSyncerIdle) {
         
@@ -638,6 +705,7 @@
             if (!connection) {
                 
                 [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
+                self.syncing = NO;
                 self.syncerState = STMSyncerIdle;
                 
             } else {
@@ -695,9 +763,11 @@
     NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error];
     [self.session.logger saveLogMessageWithText:errorMessage type:@"error"];
 
+    self.syncing = NO;
+    
     if (self.syncerState == STMSyncerSendData) {
         
-        self.syncerState = STMSyncerRecieveData;
+        self.syncerState = STMSyncerReceiveData;
 
     } else {
         
@@ -746,7 +816,7 @@
             [entityNames removeObject:entityName];
             
             for (NSString *name in entityNames) {
-                [self startConnectionForRecieveEntitiesWithName:name];
+                [self startConnectionForReceiveEntitiesWithName:name];
             }
             
         } else {
@@ -754,7 +824,10 @@
             self.entityCount -= 1;
             
             if (self.entityCount == 0) {
-                self.syncerState = STMSyncerIdle;
+                
+                self.syncing = NO;
+                self.syncerState = STMSyncerSendData;
+                
             }
             
         }
@@ -846,7 +919,8 @@
                     [self syncObject:datum];
                 }
                 
-                self.syncerState = STMSyncerRecieveData;
+                self.syncing = NO;
+                self.syncerState = STMSyncerReceiveData;
                 
             }
             
@@ -879,7 +953,7 @@
     NSString *eTag = [[self.entitySyncInfo objectForKey:entityName] objectForKey:@"temporaryETag"];
     [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
     [self saveServerDataModel];
-    [self startConnectionForRecieveEntitiesWithName:entityName];
+    [self startConnectionForReceiveEntitiesWithName:entityName];
     
 }
 
@@ -908,9 +982,25 @@
         
         if (object) {
             
-            [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
-            NSLog(@"successefully sync object with xid %@", xid);
-//            NSLog(@"object %@", object);
+            if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
+
+                [self.session.document.managedObjectContext deleteObject:object];
+                
+            } else {
+            
+                [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
+                
+                [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync object with xid %@", xid] type:@""];
+                
+                if ([xidData isEqualToData:self.clientDataXid]) {
+                    
+                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                    [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"clientDataWaitingForSync"];
+                    [defaults synchronize];
+                    
+                }
+
+            }
             
         } else {
             

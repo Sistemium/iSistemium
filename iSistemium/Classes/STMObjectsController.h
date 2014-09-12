@@ -9,18 +9,29 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "STMPicture.h"
+#import "STMRecordStatus.h"
 
 @interface STMObjectsController : NSObject
 
 + (STMObjectsController *)sharedController;
+
 + (void)checkPhotos;
++ (void)checkDeviceToken;
+
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
+
 + (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
+
++ (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
+
 + (void)removeAllObjects;
+
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)dataLoadingFinished;
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
+
++ (NSUInteger)unreadMessagesCount;
 
 @end

@@ -308,6 +308,8 @@
     
     self.clearsSelectionOnViewWillAppear = NO;
     
+    self.title = NSLocalizedString(@"UNCASHING", nil);
+    
     NSError *error;
     
     if (![self.cashingSumResultsController performFetch:&error]) {

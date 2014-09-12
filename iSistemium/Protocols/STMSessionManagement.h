@@ -10,6 +10,13 @@
 #import "STMRequestAuthenticatable.h"
 
 
+typedef enum {
+    STMSyncerIdle,
+    STMSyncerSendData,
+    STMSyncerReceiveData
+} STMSyncerState;
+
+
 @protocol STMLogger <NSObject, UITableViewDataSource, UITableViewDelegate>
 
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
@@ -21,7 +28,7 @@
 
 @protocol STMSyncer <NSObject>
 
-//- (void)syncData;
+@property (nonatomic) STMSyncerState syncerState;
 
 @end
 

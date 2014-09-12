@@ -12,6 +12,7 @@
 #import "STMFunctions.h"
 #import "STMSessionManager.h"
 #import "STMSession.h"
+#import "STMObjectsController.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
@@ -64,20 +65,32 @@
 
     self.delegate = self;
     
-    self.storyboardnames = @[@"STMAuthTVC",
+    self.storyboardnames = @[
+                             @"STMAuthTVC",
                              @"STMCampaigns",
                              @"STMDebts",
-                             @"STMUncashing"];
+                             @"STMUncashing",
+                             @"STMMessages",
+//                             @"STMLogs"
+                             ];
     
-    self.storyboardtitles = @[NSLocalizedString(@"AUTHORIZATION", nil),
+    self.storyboardtitles = @[
+                              NSLocalizedString(@"AUTHORIZATION", nil),
                               NSLocalizedString(@"AD CAMPAIGNS", nil),
                               NSLocalizedString(@"DEBTS", nil),
-                              NSLocalizedString(@"UNCASHING", nil)];
+                              NSLocalizedString(@"UNCASHING", nil),
+                              NSLocalizedString(@"MESSAGES", nil),
+//                              NSLocalizedString(@"LOGS", nil)
+                              ];
     
-    self.tabImages = @[[UIImage imageNamed:@"password2-128.png"],
+    self.tabImages = @[
+                       [UIImage imageNamed:@"password2-128.png"],
                        [UIImage imageNamed:@"christmas_gift-128.png"],
                        [UIImage imageNamed:@"cash_receiving-128.png"],
-                       [UIImage imageNamed:@"banknotes-128.png"]];
+                       [UIImage imageNamed:@"banknotes-128.png"],
+                       [UIImage imageNamed:@"message-128.png"],
+//                       [UIImage imageNamed:@"archive-128.png"]
+                       ];
     
     
 //    self.tabBar.hidden = YES;
@@ -131,6 +144,15 @@
         [viewControllers addObject:vc];
 
         [self.tabs setObject:vc forKey:name];
+        
+        if ([name isEqualToString:@"STMMessages"]) {
+            
+            NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+            NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+            vc.tabBarItem.badgeValue = badgeValue;
+            [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+
+        }
         
     }
     
@@ -249,30 +271,18 @@
 
 - (void)syncStateChanged {
 
-//    self.session.syncer.syncerState == STMSyncerIdle ? [self enableTabs] : [self disableTabs];
-
-    [self enableTabs];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMObjectsController unreadMessagesCount];
     
 }
 
-- (void)disableTabs {
+- (void)gotNewMessage {
     
-    for (UIViewController *vc in self.viewControllers) {
-        
-        vc.tabBarItem.enabled = NO;
-        
-    }
-    
-}
+    UIViewController *vc = [self.tabs objectForKey:@"STMMessages"];
+    NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+    NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+    vc.tabBarItem.badgeValue = badgeValue;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
 
-- (void)enableTabs {
-
-    for (UIViewController *vc in self.viewControllers) {
-        
-        vc.tabBarItem.enabled = YES;
-        
-    }
-    
 }
 
 #pragma mark - notifications
@@ -283,6 +293,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncStateChanged) name:@"syncStatusChanged" object:self.session.syncer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gotNewMessage) name:@"gotNewMessage" object:nil];
     
 }
 

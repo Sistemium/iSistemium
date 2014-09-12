@@ -10,6 +10,8 @@
 #import "STMPhotoVC.h"
 #import "STMSessionManager.h"
 #import "STMDocument.h"
+#import "STMRecordStatus.h"
+#import "STMObjectsController.h"
 
 @interface STMPhotoReportPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
@@ -19,17 +21,6 @@
 
 @implementation STMPhotoReportPVC
 
-//- (NSArray *)photoArray {
-//    
-//    if (!_photoArray) {
-//        
-////        _photoArray = [self.photoReport.photos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]]];
-//        
-//    }
-//    
-//    return _photoArray;
-//    
-//}
 
 - (STMPhotoVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
@@ -69,15 +60,16 @@
     STMPhotoReport *photoReport = [notification.userInfo objectForKey:@"photo2delete"];
     STMCampaign *campaign = photoReport.campaign;
     
+    STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:photoReport];
+    recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    
     [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photoReport];
+
+    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged" object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:[NSDictionary dictionaryWithObject:campaign forKey:@"campaign"]];
 
-//    if (self.photoReport.photos.count == 0) {
-//        [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:self.photoReport];
-//    }
-    
     [(STMDocument *)[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
         
         if (success) {
@@ -115,17 +107,6 @@
                 [weakSelf setViewControllers:@[vc] direction:direction animated:NO completion:nil];
             });
         }];
-        
-//        void (^completionBlock)(BOOL) = ^(BOOL finished) {
-//
-//            dispatch_async(dispatch_get_main_queue(), ^(){
-//                [self setViewControllers:@[vc] direction:direction animated:NO completion:nil];
-//            });
-//
-//        };
-//
-//        [self setViewControllers:@[vc] direction:direction animated:YES completion:completionBlock];
-
         
     }
     
