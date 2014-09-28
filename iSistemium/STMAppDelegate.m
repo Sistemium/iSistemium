@@ -15,7 +15,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    
+/* deprecated in iOS 8.0
     UIRemoteNotificationType types = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
     
     if (types & UIRemoteNotificationTypeAlert) {
@@ -33,7 +33,7 @@
     if (types == UIRemoteNotificationTypeNone) {
         NSLog(@"UIRemoteNotificationTypeNone");
     }
-
+*/
     
     [STMAuthController authController];
     

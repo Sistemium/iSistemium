@@ -584,7 +584,7 @@
         NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
         
         if (![relationshipDescription isToMany]) {
-            
+        
             NSManagedObject *relationshipObject = [object valueForKey:key];
             
             if (relationshipObject) {
@@ -594,8 +594,10 @@
                 if (xidData.length != 0) {
                     
                     NSString *xid = [STMFunctions xidStringFromXidData:xidData];
+        
+//                    NSString *entityName = [@"stc." stringByAppendingString:[relationshipObject.entity.name stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
                     
-                    NSString *entityName = [@"stc." stringByAppendingString:[relationshipObject.entity.name stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
+                    NSString *entityName = key;
                     
                     [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
                     
@@ -861,8 +863,18 @@
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
     
 //    NSLog(@"responseJSON %@", responseJSON);
+
+    NSString *errorString = nil;
     
-    NSString *errorString = [responseJSON objectForKey:@"error"];
+    if ([responseJSON isKindOfClass:[NSDictionary class]]) {
+        
+        errorString = [responseJSON objectForKey:@"error"];
+
+    } else {
+        
+        errorString = @"response not a dictionary";
+        
+    }
     
     if (!errorString) {
         
@@ -941,6 +953,13 @@
             NSLog(@"originalRequest %@", connection.originalRequest);
             NSLog(@"requestBody %@", requestBody);
             NSLog(@"responseJSON %@", responseJSON);
+            
+//            if (self.syncerState == STMSyncerSendData) {
+//                
+//                self.syncing = NO;
+//                self.syncerState = STMSyncerIdle;
+//                
+//            }
             
         }
         
