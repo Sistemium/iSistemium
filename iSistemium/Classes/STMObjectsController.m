@@ -417,12 +417,18 @@
                 if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
                     
                     value = [NSDecimalNumber decimalNumberWithString:value];
-//                    NSLog(@"value %@", value);
                     
                 } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
                     
                     value = [[STMFunctions dateFormatter] dateFromString:value];
-//                    NSLog(@"value %@", value);
+                    
+                } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
+                    
+                    value = [NSNumber numberWithBool:[value boolValue]];
+                    
+                } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
+                    
+                    value = [STMFunctions dataFromString:[value stringByReplacingOccurrencesOfString:@"-" withString:@""]];
                     
                 }
                 
