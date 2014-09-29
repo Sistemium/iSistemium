@@ -1041,6 +1041,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "cf03902f-03a0-416e-9fb6-cf11cfea5196";
 				TARGETED_DEVICE_FAMILY = 2;
@@ -1059,6 +1060,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "cf03902f-03a0-416e-9fb6-cf11cfea5196";
 				TARGETED_DEVICE_FAMILY = 2;
