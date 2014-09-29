@@ -1042,7 +1042,7 @@
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a55dafc2-0b50-43b0-a5c6-10a0d34138fc";
+				PROVISIONING_PROFILE = "cf03902f-03a0-416e-9fb6-cf11cfea5196";
 				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1060,7 +1060,7 @@
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a55dafc2-0b50-43b0-a5c6-10a0d34138fc";
+				PROVISIONING_PROFILE = "cf03902f-03a0-416e-9fb6-cf11cfea5196";
 				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
