@@ -61,7 +61,7 @@
 
 + (BOOL)isCorrectSMSCode:(NSString *)SMSCode {
     
-    if (SMSCode.length == 4) {
+    if (SMSCode.length > 3 && SMSCode.length < 7) {
 
         NSScanner *scan = [NSScanner scannerWithString:SMSCode];
         int val;
