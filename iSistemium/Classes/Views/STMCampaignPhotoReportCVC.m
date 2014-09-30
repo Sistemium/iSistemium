@@ -334,8 +334,9 @@
     self.selectedPhotoReport = photoReport;
 
     self.currentSection = tag;
-    
-    [(UIView *)[sender view] setBackgroundColor:STM_YELLOW_COLOR];
+
+    [(UIView *)[sender view] setBackgroundColor:ACTIVE_BLUE_COLOR];
+//    [(UIView *)[sender view] setBackgroundColor:STM_YELLOW_COLOR];
     
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
     
@@ -479,8 +480,8 @@
     
     if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
 
-//        headerView.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:1 alpha:1.0];
-        headerView.backgroundColor = STM_YELLOW_COLOR;
+        headerView.backgroundColor = ACTIVE_BLUE_COLOR;
+//        headerView.backgroundColor = STM_YELLOW_COLOR;
 
     } else {
      
