@@ -218,13 +218,32 @@
     
 }
 
+- (void)messageIsRead {
+    
+    [self showUnreadCount];
+    [self.tableView reloadData];
+    
+}
 
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageIsRead) name:@"messageIsRead" object:nil];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
 
 - (void)customInit {
     
     [self performFetch];
     [self showUnreadCount];
+    [self addObservers];
     
 }
 

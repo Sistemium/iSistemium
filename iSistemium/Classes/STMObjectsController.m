@@ -464,6 +464,25 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
             
+        } else if ([entityName isEqualToString:NSStringFromClass([STMRecordStatus class])]) {
+            
+            STMRecordStatus *recordStatus = (STMRecordStatus *)object;
+
+            NSManagedObject *affectedObject = [self objectForXid:recordStatus.objectXid];
+
+            if ([recordStatus.isRead boolValue]) {
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+                
+            }
+            
+            if ([recordStatus.isRemoved boolValue]) {
+            
+                [[self document].managedObjectContext deleteObject:affectedObject];
+                [[self document].managedObjectContext deleteObject:recordStatus];
+                
+            }
+            
         }
         
     }
@@ -556,25 +575,30 @@
     
 }
 
++ (NSManagedObject *)objectForXid:(NSData *)xidData {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
+    
+    NSError *error;
+    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    
+    NSManagedObject *object = [fetchResult lastObject];
+
+    return object;
+    
+}
+
 + (NSManagedObject *)objectForEntityName:(NSString *)entityName andXid:(NSString *)xid {
     
     NSArray *dataModelEntityNames = [self dataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
-        xid = [xid stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        
-        NSData *xidData = [STMFunctions dataFromString:xid];
+        NSData *xidData = [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]];
 
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-        request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
-
-        NSError *error;
-        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-        
-        NSManagedObject *object = [fetchResult lastObject];
+        NSManagedObject *object = [self objectForXid:xidData];
         
         if (object) {
         
