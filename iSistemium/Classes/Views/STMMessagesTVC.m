@@ -212,7 +212,7 @@
     NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     NSInteger unreadCount = messageXids.count - result.count;
     
-    NSString *badgeValue = unreadCount >= 0 ? [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount] : nil;
+    NSString *badgeValue = unreadCount > 0 ? [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount] : nil;
     self.navigationController.tabBarItem.badgeValue = badgeValue;
     [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
     
