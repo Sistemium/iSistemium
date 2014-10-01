@@ -243,7 +243,7 @@
 
 - (void)setupSegmentedControl {
     
-    NSArray *titles = @[@"DEBTS", @"CASHING"];
+    NSArray *titles = @[@"DEBTS", @"CASHED"];
     
     for (int i = 0; i < titles.count; i++) {
         [self.segmentedControl insertSegmentWithTitle:NSLocalizedString(titles[i], nil) atIndex:i animated:YES];
