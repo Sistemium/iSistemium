@@ -23,6 +23,8 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
+@property (nonatomic, strong) STMDebtsDetailsVC *debtsCombineVC;
+@property (nonatomic, strong) STMDebtsDetailsVC *outletCashingVC;
 
 @end
 
@@ -85,6 +87,30 @@
     
 }
 
+- (STMDebtsDetailsVC *)debtsCombineVC {
+    
+    if (!_debtsCombineVC) {
+        
+        _debtsCombineVC = [self.storyboard instantiateViewControllerWithIdentifier:@"debtsCombineVC"];
+        
+    }
+    
+    return _debtsCombineVC;
+    
+}
+
+- (STMDebtsDetailsVC *)outletCashingVC {
+    
+    if (!_outletCashingVC) {
+        
+        _outletCashingVC = [self.storyboard instantiateViewControllerWithIdentifier:@"outletCashingVC"];
+        
+    }
+    
+    return _outletCashingVC;
+    
+}
+
 - (STMDebtsDetailsVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
     STMDebtsDetailsVC *vc = nil;
@@ -92,12 +118,12 @@
     switch (index) {
             
         case 0:
-            vc = [storyboard instantiateViewControllerWithIdentifier:@"debtsCombineVC"];
+            vc = self.debtsCombineVC;
             break;
             
         case 1:
             if (self.outlet) {
-                vc = [storyboard instantiateViewControllerWithIdentifier:@"outletCashingVC"];
+                vc = self.outletCashingVC;
             }
             break;
             
