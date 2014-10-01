@@ -518,7 +518,7 @@
         NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
         
 //        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-//        NSLog(@"JSONString %@", JSONString);
+//        NSLog(@"send JSONString %@", JSONString);
         
         return JSONData;
 
@@ -1009,8 +1009,6 @@
             
                 [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
                 
-                [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync object with xid %@", xid] type:@""];
-                
                 if ([xidData isEqualToData:self.clientDataXid]) {
                     
                     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -1020,6 +1018,9 @@
                 }
 
             }
+            
+            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync object with xid %@", xid] type:@""];
+
             
         } else {
             
