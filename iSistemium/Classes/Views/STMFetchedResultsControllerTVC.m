@@ -10,6 +10,8 @@
 
 @interface STMFetchedResultsControllerTVC ()
 
+@property (nonatomic, strong) NSMutableArray *selectedObjects;
+
 @end
 
 
@@ -124,21 +126,14 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     
-/*
     self.selectedObjects = [NSMutableArray array];
-    
-    NSLog(@"self %@", self);
-    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
     
     for (NSIndexPath *indexPath in self.tableView.indexPathsForSelectedRows) {
         
-        id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
-        NSManagedObject *object = sectionInfo.objects[indexPath.row];
-
+        NSManagedObject *object = [self.resultsController objectAtIndexPath:indexPath];
         [self.selectedObjects addObject:object];
         
     }
-*/
  
 }
 
@@ -161,18 +156,12 @@
     self.insertedRowIndexPaths = nil;
     self.updatedRowIndexPaths = nil;
   
-/*
     for (NSManagedObject *object in self.selectedObjects) {
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:object];
-        
-        NSLog(@"self %@", self);
-        NSLog(@"indexPath %@", indexPath);
-        
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
     }
-*/
  
 }
 
