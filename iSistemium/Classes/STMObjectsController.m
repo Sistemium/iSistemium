@@ -469,20 +469,23 @@
             STMRecordStatus *recordStatus = (STMRecordStatus *)object;
 
             NSManagedObject *affectedObject = [self objectForXid:recordStatus.objectXid];
+            
+            if (affectedObject) {
+                if ([recordStatus.isRead boolValue]) {
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+                    
+                }
+                
+                if ([recordStatus.isRemoved boolValue]) {
+                    
+                    [[self document].managedObjectContext deleteObject:affectedObject];
+                    [[self document].managedObjectContext deleteObject:recordStatus];
+                    
+                }
+                
+            }
 
-            if ([recordStatus.isRead boolValue]) {
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-                
-            }
-            
-            if ([recordStatus.isRemoved boolValue]) {
-            
-                [[self document].managedObjectContext deleteObject:affectedObject];
-                [[self document].managedObjectContext deleteObject:recordStatus];
-                
-            }
-            
         }
         
     }
