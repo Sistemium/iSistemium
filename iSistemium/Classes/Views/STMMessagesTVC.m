@@ -210,9 +210,9 @@
     
     NSError *error;
     NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSUInteger unreadCount = messageXids.count - result.count;
+    NSInteger unreadCount = messageXids.count - result.count;
     
-    NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+    NSString *badgeValue = unreadCount >= 0 ? [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount] : nil;
     self.navigationController.tabBarItem.badgeValue = badgeValue;
     [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
     

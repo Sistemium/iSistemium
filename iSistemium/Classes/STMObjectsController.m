@@ -471,6 +471,7 @@
             NSManagedObject *affectedObject = [self objectForXid:recordStatus.objectXid];
             
             if (affectedObject) {
+                
                 if ([recordStatus.isRead boolValue]) {
                     
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
