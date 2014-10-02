@@ -359,13 +359,13 @@
 
 - (void)initTimer {
     
-    UIBackgroundTaskIdentifier bgTask = 0;
-    UIApplication  *app = [UIApplication sharedApplication];
-    
-    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
-        [app endBackgroundTask:bgTask];
-    }];
-    
+//    UIBackgroundTaskIdentifier bgTask = 0;
+//    UIApplication  *app = [UIApplication sharedApplication];
+//    
+//    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
+//        [app endBackgroundTask:bgTask];
+//    }];
+//    
     [[NSRunLoop currentRunLoop] addTimer:self.syncTimer forMode:NSRunLoopCommonModes];
     
 }
