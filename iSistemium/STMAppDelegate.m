@@ -94,11 +94,11 @@
 
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    
-    [self receiveRemoteNotification:userInfo];
-    
-}
+//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//
+//    [self receiveRemoteNotification:userInfo];
+//
+//}
 
 - (void)receiveRemoteNotification:(NSDictionary *)remoteNotification {
     
@@ -204,5 +204,11 @@
 
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
+    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler: handler];
+}
+
 
 @end

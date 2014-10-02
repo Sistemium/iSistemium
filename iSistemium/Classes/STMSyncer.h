@@ -21,5 +21,6 @@
 
 - (void)prepareToDestroy;
 - (void)flushEntitySyncInfo;
+- (void) setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler;
 
 @end

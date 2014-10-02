@@ -29,7 +29,7 @@ typedef enum {
 @protocol STMSyncer <NSObject>
 
 @property (nonatomic) STMSyncerState syncerState;
-
+- (void) setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler;
 @end
 
 
