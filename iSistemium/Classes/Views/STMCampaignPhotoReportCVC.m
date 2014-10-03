@@ -208,6 +208,15 @@
         self.cameraOverlayView.backgroundColor = [UIColor clearColor];
         self.cameraOverlayView.autoresizesSubviews = YES;
         self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+
+            UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+            CGRect originalFrame = [[UIScreen mainScreen] bounds];
+            CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
+            self.cameraOverlayView.frame = screenFrame;
+
+        }
         
         imagePickerController.cameraOverlayView = self.cameraOverlayView;
         
