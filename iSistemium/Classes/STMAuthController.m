@@ -386,6 +386,8 @@
     
     self.controllerState = STMAuthEnterPhoneNumber;
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:[NSDictionary dictionaryWithObject:error.localizedDescription forKey:@"error"]];
+
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
 }
