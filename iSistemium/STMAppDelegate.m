@@ -105,8 +105,15 @@
     NSString *msg = [NSString stringWithFormat:@"%@", [[remoteNotification objectForKey:@"aps"] objectForKey:@"alert"]];
     NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData];
+    
+    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+    
+    if ([[session status] isEqualToString:@"running"]) {
+        
+        [[session syncer] setSyncerState:STMSyncerSendData];
 
+    }
+    
 }
 
 /*
@@ -207,7 +214,15 @@
 
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler: handler];
+    
+    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+    
+    if ([[session status] isEqualToString:@"running"]) {
+        
+        [[session syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler: handler];
+        
+    }
+
 }
 
 
