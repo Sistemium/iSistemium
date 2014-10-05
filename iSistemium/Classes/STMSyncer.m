@@ -39,6 +39,7 @@
 @property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL checkSending;
 @property (nonatomic, strong) NSData *clientDataXid;
+@property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 
 @end
 
@@ -197,6 +198,14 @@
     
 }
 
+- (void) setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
+    
+    self.fetchCompletionHandler = handler;
+    self.syncerState = syncerState;
+    
+}
+
+
 - (void)setSyncerState:(STMSyncerState)syncerState {
     
     if (!self.syncing && syncerState != _syncerState) {
@@ -225,6 +234,9 @@
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 self.syncing = NO;
                 [STMObjectsController dataLoadingFinished];
+                if (self.fetchCompletionHandler) {
+                    self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
+                }
                 break;
                 
             default:

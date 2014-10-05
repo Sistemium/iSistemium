@@ -94,19 +94,26 @@
 
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    
-    [self receiveRemoteNotification:userInfo];
-    
-}
+//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//
+//    [self receiveRemoteNotification:userInfo];
+//
+//}
 
 - (void)receiveRemoteNotification:(NSDictionary *)remoteNotification {
     
     NSString *msg = [NSString stringWithFormat:@"%@", [[remoteNotification objectForKey:@"aps"] objectForKey:@"alert"]];
     NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData];
+    
+    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+    
+    if ([[session status] isEqualToString:@"running"]) {
+        
+        [[session syncer] setSyncerState:STMSyncerSendData];
 
+    }
+    
 }
 
 /*
@@ -204,5 +211,19 @@
 
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
+    
+    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+    
+    if ([[session status] isEqualToString:@"running"]) {
+        
+        [[session syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler: handler];
+        
+    }
+
+}
+
 
 @end
