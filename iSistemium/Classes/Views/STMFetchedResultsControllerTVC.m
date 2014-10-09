@@ -130,8 +130,13 @@
     
     for (NSIndexPath *indexPath in self.tableView.indexPathsForSelectedRows) {
         
-        NSManagedObject *object = [self.resultsController objectAtIndexPath:indexPath];
-        [self.selectedObjects addObject:object];
+        @try {
+            NSManagedObject *object = [self.resultsController objectAtIndexPath:indexPath];
+            [self.selectedObjects addObject:object];
+        }
+        @catch (NSException *exception) {
+            [self.tableView deselectRowAtIndexPath: indexPath animated: true];
+        }
         
     }
  
