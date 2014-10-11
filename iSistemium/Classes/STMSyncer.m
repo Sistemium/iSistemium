@@ -846,6 +846,16 @@
             
         }
         
+    } else {
+        
+        NSLog(@"%@: HTTP status %d", entityName, statusCode);
+        
+        if (! -- self.entityCount) {
+            
+            self.syncing = NO;
+            self.syncerState = STMSyncerSendData;
+            
+        }
     }
     
 }
