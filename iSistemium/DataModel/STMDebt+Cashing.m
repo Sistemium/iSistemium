@@ -18,7 +18,12 @@
     [self didAccessValueForKey:@"summ"];
     
     [self willAccessValueForKey:@"cashings"];
-    NSSet *cashings = self.cashings;
+    [self willAccessValueForKey:@"isProcessed"];
+
+    NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", [NSNumber numberWithBool:YES]];
+    NSSet *cashings = [self.cashings filteredSetUsingPredicate:cashingPredicate];
+    
+    [self didAccessValueForKey:@"isProcessed"];
     [self didAccessValueForKey:@"cashings"];
     
     for (STMCashing *cashing in cashings) {

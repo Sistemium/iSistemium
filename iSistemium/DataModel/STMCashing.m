@@ -2,7 +2,7 @@
 //  STMCashing.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 17/08/14.
+//  Created by Maxim Grigoriev on 14/10/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -16,6 +16,7 @@
 
 @dynamic date;
 @dynamic summ;
+@dynamic isProcessed;
 @dynamic debt;
 @dynamic outlet;
 @dynamic uncashing;

@@ -214,6 +214,8 @@
     NSString *textLabel = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:cashing.summ]];
     NSString *detailTextLabel = [NSString stringWithFormat:@"%@ / %@ / %@", cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.date], [numberFormatter stringFromNumber:cashing.debt.summOrigin]];
     
+//    detailTextLabel = [NSString stringWithFormat:@"%@ %@", detailTextLabel, cashing.isProcessed];
+    
     cell.textLabel.text = textLabel;
     cell.detailTextLabel.text = detailTextLabel;
 

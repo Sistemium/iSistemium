@@ -177,6 +177,7 @@
     if (serviceUri != _serviceUri) {
         
         [self.keychainItem setObject:serviceUri forKey:(__bridge id)kSecAttrService];
+        NSLog(@"serviceUri %@", serviceUri);
         _serviceUri = serviceUri;
         
     }
@@ -223,6 +224,7 @@
     if (accessToken != _accessToken) {
         
         [self.keychainItem setObject:accessToken forKey:(__bridge id)(kSecValueData)];
+        NSLog(@"accessToken %@", accessToken);
         _accessToken = accessToken;
         
     }

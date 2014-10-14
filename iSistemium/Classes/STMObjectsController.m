@@ -109,33 +109,38 @@
     
         NSLog(@"hasDeviceTokenForSync %@", deviceToken);
         
-        NSString *entityName = NSStringFromClass([STMClientData class]);
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-        
-        NSError *error;
-        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-        
-        STMClientData *clientData = [fetchResult lastObject];
-        
-        if (!clientData) {
-
-            clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+        if ([self document].managedObjectContext) {
             
-        }
-
-        clientData.deviceToken = deviceToken;
-        
+            NSString *entityName = NSStringFromClass([STMClientData class]);
+            
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+            request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+            
+            NSError *error;
+            NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+            
+            STMClientData *clientData = [fetchResult lastObject];
+            
+            if (!clientData) {
+                
+                clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+                
+            }
+            
+            clientData.deviceToken = deviceToken;
+            
 #ifdef DEBUG
-        
-        clientData.buildType = @"debug";
-        
+            
+            clientData.buildType = @"debug";
+            
 #else
-        
-        clientData.buildType = @"release";
-        
+            
+            clientData.buildType = @"release";
+            
 #endif
+            
+
+        }
         
     }
     
