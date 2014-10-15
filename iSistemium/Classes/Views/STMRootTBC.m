@@ -257,6 +257,11 @@
 //            NSURL *updateURL = [NSURL URLWithString:@"http://www.iptm.ru"];
             [[UIApplication sharedApplication] openURL:updateURL];
 
+        } else {
+            
+            UIViewController *vc = [self.tabs objectForKey:@"STMAuthTVC"];
+            vc.tabBarItem.badgeValue = @"!";
+
         }
         
         
@@ -309,7 +314,7 @@
     self.appDownloadUrl = [notification.userInfo objectForKey:@"appDownloadUrl"];
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UPDATE AVAILABLE", nil)
-                                                        message:[NSString stringWithFormat:@"VERSION %@ AVAILABLE", appVersion]
+                                                        message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"VERSION", nil), appVersion]
                                                        delegate:self
                                               cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
                                               otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
