@@ -36,6 +36,26 @@
     
 }
 
+- (NSMutableArray *)groupNames {
+    
+    if (!_groupNames) {
+
+        NSMutableArray *groupNames = [NSMutableArray array];
+        
+        for (id <NSFetchedResultsSectionInfo> sectionInfo in self.fetchedSettingsResultController.sections) {
+            
+            [groupNames addObject:[sectionInfo name]];
+
+        }
+        
+        _groupNames = groupNames;
+        
+    }
+    
+    return _groupNames;
+    
+}
+
 - (NSString *)normalizeValue:(NSString *)value forKey:(NSString *)key {
     
     NSArray *positiveDoubleValues = [NSArray arrayWithObjects:@"trackDetectionTime", @"trackSeparationDistance", @"fetchLimit", @"syncInterval", @"deviceMotionUpdateInterval", nil];
@@ -148,7 +168,7 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSetting class])];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)]];
-        _fetchedSettingsResultController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.session.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _fetchedSettingsResultController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.session.document.managedObjectContext sectionNameKeyPath:@"group" cacheName:nil];
         _fetchedSettingsResultController.delegate = self;
         
     }
@@ -158,6 +178,8 @@
 }
 
 - (void)NSLogSettings {
+    
+//    NSLog(@"self.currentSettings %@", self.currentSettings);
     
     for (STMSetting *setting in self.currentSettings) {
         
@@ -303,11 +325,15 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 //    NSLog(@"controllerDidChangeContent");
+    
+    self.groupNames = nil;
+    
     [[(STMSession *)self.session document] saveDocument:^(BOOL success) {
         if (success) {
             NSLog(@"save settings success");
         }
     }];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {

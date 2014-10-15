@@ -30,5 +30,6 @@
 
 @property (nonatomic, strong) NSMutableDictionary *startSettings;
 @property (nonatomic, strong) id <STMSession> session;
+@property (nonatomic, strong) NSMutableArray *groupNames;
 
 @end

@@ -71,6 +71,7 @@
                              @"STMDebts",
                              @"STMUncashing",
                              @"STMMessages",
+                             @"STMSettings",
 //                             @"STMLogs"
                              ];
     
@@ -80,6 +81,7 @@
                               NSLocalizedString(@"DEBTS", nil),
                               NSLocalizedString(@"UNCASHING", nil),
                               NSLocalizedString(@"MESSAGES", nil),
+                              NSLocalizedString(@"SETTINGS", nil),
 //                              NSLocalizedString(@"LOGS", nil)
                               ];
     
@@ -89,6 +91,7 @@
                        [UIImage imageNamed:@"cash_receiving-128.png"],
                        [UIImage imageNamed:@"banknotes-128.png"],
                        [UIImage imageNamed:@"message-128.png"],
+                       [UIImage imageNamed:@"settings3-128.png"],
 //                       [UIImage imageNamed:@"archive-128.png"]
                        ];
     

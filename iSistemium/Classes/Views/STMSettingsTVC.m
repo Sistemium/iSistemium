@@ -8,6 +8,7 @@
 
 #import "STMSettingsController.h"
 #import "STMSettingsTVC.h"
+#import "STMSessionManager.h"
 #import "STMSession.h"
 #import "STMSetting.h"
 #import "STMSettingsData.h"
@@ -15,7 +16,7 @@
 @interface STMSettingsTVC () <UITextFieldDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSDictionary *controlsSettings;
-//@property (nonatomic, strong) NSFetchedResultsController *settingsResultController;
+//@property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
 @end
 
@@ -53,8 +54,15 @@
 
 @implementation STMSettingsTVC
 
+//@synthesize resultsController = _resultsController;
 
 #pragma mark - STGTSettingsTableViewController
+
+- (id <STMSession>)session {
+    
+    return [STMSessionManager sharedManager].currentSession;
+    
+}
 
 - (NSDictionary *)controlsSettings {
     
@@ -75,23 +83,43 @@
 
 - (NSArray *)groupNames {
     
-    return [[self controlsSettings] valueForKey:@"groupNames"];
+//    return [[self controlsSettings] valueForKey:@"groupNames"];
+    
+    return [(STMSettingsController *)[self.session settingsController] groupNames];
     
 }
 
 - (NSArray *)settingsGroupForSection:(NSInteger)section {
     
     NSString *groupName = [[self groupNames] objectAtIndex:section];
-    return [self.controlsSettings valueForKey:groupName];
+    NSArray *settingsGroup = [self.controlsSettings valueForKey:groupName];
+    
+    return settingsGroup;
     
 }
 
 - (NSString *)controlTypeForIndexPath:(NSIndexPath *)indexPath {
     
     NSArray *controlGroup = [self settingsGroupForSection:indexPath.section];
-    return [[controlGroup objectAtIndex:indexPath.row] objectAtIndex:0];
+
+    NSString *controlType = nil;
+    
+//    NSLog(@"controlGroup.count %d, indexPath.row-1 %d", controlGroup.count, indexPath.row-1)
+    
+    if (indexPath.row < controlGroup.count) {
+        
+        controlType = [[controlGroup objectAtIndex:indexPath.row] objectAtIndex:0];
+
+    } else {
+        
+        controlType = @"textField";
+        
+    }
+    
+    return controlType;
     
 }
+
 
 - (NSString *)minForIndexPath:(NSIndexPath *)indexPath {
     
@@ -112,7 +140,17 @@
 
 - (NSString *)settingNameForIndexPath:(NSIndexPath *)indexPath {
     
-    return [[[self settingsGroupForSection:indexPath.section] objectAtIndex:indexPath.row] lastObject];
+    NSArray *settingsGroup = [self settingsGroupForSection:indexPath.section];
+    NSLog(@"settingsGroup %@", settingsGroup);
+    
+    NSArray *setting = [settingsGroup objectAtIndex:indexPath.row];
+    NSLog(@"setting %@", setting);
+    
+    NSString *settingName = [setting lastObject];
+    NSLog(@"settingName %@", settingName);
+    
+    return settingName;
+    
 }
 
 
@@ -139,6 +177,9 @@
 - (NSString *)valueForIndexPath:(NSIndexPath *)indexPath {
     
     NSString *settingName = [self settingNameForIndexPath:indexPath];
+    
+    NSLog(@"settingName %@", settingName);
+    
     NSString *value = [[self settingObjectForIndexPath:indexPath] valueForKey:@"value"];
     if ([[self controlTypeForIndexPath:indexPath] isEqualToString:@"slider"]) {
         value = [self formatValue:value forSettingName:settingName];
@@ -165,23 +206,30 @@
     return valueString;
 
 }
-
+ 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    
     return [[self groupNames] count];
+    
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
     NSArray *keys = [self groupNames];
-    return [[self.controlsSettings valueForKey:[keys objectAtIndex:section]] count];
+    
+    return [[[self.session settingsController] currentSettingsForGroup:[keys objectAtIndex:section]] count];
+    
+//    return [[self.controlsSettings valueForKey:[keys objectAtIndex:section]] count];
+    
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
     NSString *title = [NSString stringWithFormat:@"SETTING%@",[[self groupNames] objectAtIndex:section]];
     return NSLocalizedString(title, @"");
+    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -189,18 +237,24 @@
     NSString *controlType = [self controlTypeForIndexPath:indexPath];
     
     if ([controlType isEqualToString:@"slider"] || [controlType isEqualToString:@"textField"]) {
+        
         return 70.0;
+        
     } else if ([controlType isEqualToString:@"switch"] || [controlType isEqualToString:@"segmentedControl"]) {
+        
         return 44.0;
+        
     } else {
+        
         return 0.0;
+        
     }
     
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     static NSString *cellIdentifier = @"settingCell";
     STMSettingsTVCell *cell = nil;
     
@@ -229,6 +283,7 @@
     cell.textLabel.text = NSLocalizedString([self settingNameForIndexPath:indexPath], @"");
     
     return cell;
+    
 }
 
 - (void)addSliderToCell:(STMSettingsTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -260,6 +315,9 @@
 - (void)addTextFieldToCell:(STMSettingsTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 
     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(25, 38, 270, 24)];
+
+    NSLog(@"indexPath %@", indexPath);
+
     textField.text = [self valueForIndexPath:indexPath];
     textField.font = [UIFont systemFontOfSize:14];
     textField.keyboardType = UIKeyboardTypeURL;
@@ -440,8 +498,8 @@
 
 #pragma mark - view lifecycle
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
+- (id)initWithStyle:(UITableViewStyle)style {
+    
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
@@ -449,15 +507,26 @@
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)customInit {
+
+    self.title = NSLocalizedString(@"SETTINGS", @"");
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:@"settingsChanged" object:self.session];
-    [super viewWillAppear:animated];
+
+    
 }
 
-- (void)viewDidLoad
-{
+//- (void)viewWillAppear:(BOOL)animated {
+//    
+//    [super viewWillAppear:animated];
+//    
+//}
+
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"SETTINGS", @"");
+    [self customInit];
+    
 }
 
 - (void)didReceiveMemoryWarning
