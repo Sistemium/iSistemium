@@ -275,6 +275,7 @@
         self.running = YES;
         [STMObjectsController checkPhotos];
         [STMObjectsController checkDeviceToken];
+        [STMObjectsController checkAppVersion];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];
@@ -529,8 +530,8 @@
         NSError *error;
         NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
         
-//        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-//        NSLog(@"send JSONString %@", JSONString);
+        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+        NSLog(@"send JSONString %@", JSONString);
         
         return JSONData;
 

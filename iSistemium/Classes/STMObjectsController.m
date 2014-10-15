@@ -146,6 +146,60 @@
     
 }
 
++ (void)checkAppVersion {
+    
+    if ([self document].managedObjectContext) {
+        
+        NSString *entityName = NSStringFromClass([STMClientData class]);
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        
+        NSError *error;
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+        STMClientData *clientData = [fetchResult lastObject];
+        
+        if (!clientData) {
+            
+            clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            
+        }
+        
+        NSString *bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+        
+        if (![bundleVersion isEqualToString:clientData.appVersion]) {
+            clientData.appVersion = bundleVersion;
+        }
+        
+        entityName = NSStringFromClass([STMSetting class]);
+        
+        request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"availableVersion"];
+        
+        fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+        STMSetting *availableVersionSetting = [fetchResult lastObject];
+        
+        NSNumber *availableVersion = [NSNumber numberWithInteger:[availableVersionSetting.value integerValue]];
+        NSNumber *currentVersion = [NSNumber numberWithInteger:[clientData.appVersion integerValue]];
+        
+        if ([availableVersion compare:currentVersion] == NSOrderedDescending) {
+
+            request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"appDownloadUrl"];
+            fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+            STMSetting *appDownloadUrlSetting = [fetchResult lastObject];
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"newAppVersionAvailable" object:nil userInfo:@{@"availableVersion": availableVersion, @"appDownloadUrl":appDownloadUrlSetting.value}];
+            
+        }
+        
+    }
+
+    
+}
+
 + (void)checkPhotos {
     
     [self checkBrokenPhotos];

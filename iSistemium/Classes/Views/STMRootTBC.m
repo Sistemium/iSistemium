@@ -22,6 +22,8 @@
 @property (nonatomic, strong) UIAlertView *authAlert;
 @property (nonatomic, strong) STMSession *session;
 
+@property (nonatomic, strong) NSString *appDownloadUrl;
+
 @end
 
 @implementation STMRootTBC
@@ -246,6 +248,19 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
+    if (alertView.tag == 1) {
+
+        if (buttonIndex == 1) {
+            
+            NSLog(@"self.appDownloadUrl %@", self.appDownloadUrl);
+            NSURL *updateURL = [NSURL URLWithString:self.appDownloadUrl];
+//            NSURL *updateURL = [NSURL URLWithString:@"http://www.iptm.ru"];
+            [[UIApplication sharedApplication] openURL:updateURL];
+
+        }
+        
+        
+    }
     
 }
 
@@ -288,6 +303,24 @@
 
 }
 
+- (void)newAppVersionAvailable:(NSNotification *)notification {
+    
+    NSNumber *appVersion = [notification.userInfo objectForKey:@"availableVersion"];
+    self.appDownloadUrl = [notification.userInfo objectForKey:@"appDownloadUrl"];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UPDATE AVAILABLE", nil)
+                                                        message:[NSString stringWithFormat:@"VERSION %@ AVAILABLE", appVersion]
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
+    
+    alertView.tag = 1;
+
+    [alertView show];
+    
+}
+
+
 #pragma mark - notifications
 
 - (void)addObservers {
@@ -298,6 +331,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncStateChanged) name:@"syncStatusChanged" object:self.session.syncer];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnreadMessageCount) name:@"gotNewMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnreadMessageCount) name:@"messageIsRead" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"newAppVersionAvailable" object:nil];
     
 }
 
