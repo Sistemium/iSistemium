@@ -182,17 +182,25 @@
         
         STMSetting *availableVersionSetting = [fetchResult lastObject];
         
-        NSNumber *availableVersion = [NSNumber numberWithInteger:[availableVersionSetting.value integerValue]];
-        NSNumber *currentVersion = [NSNumber numberWithInteger:[clientData.appVersion integerValue]];
-        
-        if ([availableVersion compare:currentVersion] == NSOrderedDescending) {
-
-            request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"appDownloadUrl"];
-            fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-            STMSetting *appDownloadUrlSetting = [fetchResult lastObject];
-
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"newAppVersionAvailable" object:nil userInfo:@{@"availableVersion": availableVersion, @"appDownloadUrl":appDownloadUrlSetting.value}];
+        if (availableVersionSetting) {
             
+            NSNumber *availableVersion = [NSNumber numberWithInteger:[availableVersionSetting.value integerValue]];
+            NSNumber *currentVersion = [NSNumber numberWithInteger:[clientData.appVersion integerValue]];
+            
+            if ([availableVersion compare:currentVersion] == NSOrderedDescending) {
+                
+                request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"appDownloadUrl"];
+                fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+                STMSetting *appDownloadUrlSetting = [fetchResult lastObject];
+
+                if (appDownloadUrlSetting) {
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newAppVersionAvailable" object:nil userInfo:@{@"availableVersion": availableVersion, @"appDownloadUrl":appDownloadUrlSetting.value}];
+
+                }
+                
+            }
+
         }
         
     }
@@ -546,6 +554,16 @@
                 
             }
 
+        } else if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
+
+            STMSetting *setting = (STMSetting *)object;
+            
+            if ([setting.name isEqualToString:@"availableVersion"]) {
+                
+                [self checkAppVersion];
+                
+            }
+            
         }
         
     }
