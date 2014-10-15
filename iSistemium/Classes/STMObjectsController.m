@@ -172,6 +172,7 @@
             clientData.appVersion = bundleVersion;
         }
         
+        
         entityName = NSStringFromClass([STMSetting class]);
         
         request = [NSFetchRequest fetchRequestWithEntityName:entityName];
@@ -195,10 +196,30 @@
 
                 if (appDownloadUrlSetting) {
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newAppVersionAvailable" object:nil userInfo:@{@"availableVersion": availableVersion, @"appDownloadUrl":appDownloadUrlSetting.value}];
+                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                    BOOL newAppVersionAvailable = [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
+                    
+                    if (!newAppVersionAvailable) {
 
+                        [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"newAppVersionAvailable"];
+                        [defaults setObject:availableVersion forKey:@"availableVersion"];
+                        [defaults setObject:appDownloadUrlSetting.value forKey:@"appDownloadUrl"];
+                        [defaults synchronize];
+
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"newAppVersionAvailable" object:nil userInfo:@{@"availableVersion": availableVersion, @"appDownloadUrl":appDownloadUrlSetting.value}];
+                        
+                    }
+                    
                 }
                 
+            } else {
+
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"newAppVersionAvailable"];
+                [defaults removeObjectForKey:@"availableVersion"];
+                [defaults removeObjectForKey:@"appDownloadUrl"];
+                [defaults synchronize];
+
             }
 
         }
@@ -558,7 +579,7 @@
 
             STMSetting *setting = (STMSetting *)object;
             
-            if ([setting.name isEqualToString:@"availableVersion"]) {
+            if ([setting.group isEqualToString:@"appSettings"]) {
                 
                 [self checkAppVersion];
                 

@@ -47,6 +47,13 @@
     
 }
 
+- (BOOL)newAppVersionAvailable {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
+    
+}
+
 - (id)init {
     
     self = [super init];
@@ -157,6 +164,17 @@
             vc.tabBarItem.badgeValue = badgeValue;
             [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
 
+        } else if ([name isEqualToString:@"STMAuthTVC"]) {
+            
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            BOOL newAppVersionAvailable = [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
+
+            if (newAppVersionAvailable) {
+                
+                vc.tabBarItem.badgeValue = @"!";
+                
+            }
+            
         }
         
     }
@@ -310,8 +328,10 @@
 
 - (void)newAppVersionAvailable:(NSNotification *)notification {
     
-    NSNumber *appVersion = [notification.userInfo objectForKey:@"availableVersion"];
-    self.appDownloadUrl = [notification.userInfo objectForKey:@"appDownloadUrl"];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSNumber *appVersion = [defaults objectForKey:@"availableVersion"];
+    self.appDownloadUrl = [defaults objectForKey:@"appDownloadUrl"];
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UPDATE AVAILABLE", nil)
                                                         message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"VERSION", nil), appVersion]
@@ -337,6 +357,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnreadMessageCount) name:@"gotNewMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnreadMessageCount) name:@"messageIsRead" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"newAppVersionAvailable" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"updateButtonPressed" object:nil];
     
 }
 

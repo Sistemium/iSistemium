@@ -504,6 +504,28 @@
     
 }
 
+- (void)showUpdateButton {
+    
+    UIBarButtonItem *updateButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"UPDATE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(updateButtonPressed)];
+
+    [updateButton setTintColor:[UIColor redColor]];
+    
+    self.navigationItem.rightBarButtonItem = updateButton;
+    
+}
+
+- (void)updateButtonPressed {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateButtonPressed" object:nil];
+    
+}
+
+- (void)newAppVersionAvailable:(NSNotification *)notification {
+    
+    [self showUpdateButton];
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -511,16 +533,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerStatusChanged:) name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(entityCountdownChange:) name:@"entityCountdownChange" object:[[STMSessionManager sharedManager].currentSession syncer]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"newAppVersionAvailable" object:nil];
 
     
 }
 
 - (void)removeObservers {
     
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerError" object:[STMAuthController authController]];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"authControllerStateChanged" object:[STMAuthController authController]];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
-
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 }
@@ -528,6 +547,12 @@
 - (void)customInit {
     
     [self addObservers];
+    
+    STMRootTBC *rootTBC = (STMRootTBC *)self.tabBarController;
+    
+    if (rootTBC.newAppVersionAvailable) {
+        [self showUpdateButton];
+    }
     
 }
 
