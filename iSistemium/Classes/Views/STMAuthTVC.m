@@ -565,6 +565,18 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if ([(STMRootTBC *)self.tabBarController newAppVersionAvailable]) {
+        
+        [(STMRootTBC *)self.tabBarController newAppVersionAvailable:nil];
+        
+    }
+    
+}
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];

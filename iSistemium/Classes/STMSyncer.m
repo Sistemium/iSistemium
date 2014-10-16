@@ -275,7 +275,7 @@
         self.running = YES;
         [STMObjectsController checkPhotos];
         [STMObjectsController checkDeviceToken];
-        [STMObjectsController checkAppVersion];
+//        [STMObjectsController checkAppVersion];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];

@@ -140,7 +140,7 @@
         self.settingsController.session = self;
 
 //        [self.logger saveLogMessageWithText:[NSString stringWithFormat:@"document ready: %@", notification.object] type:nil];
-        [self.logger saveLogMessageWithText:@"document ready" type:nil];
+        [self.logger saveLogMessageWithText:@"document ready" type:@"blue"];
 
     }
     

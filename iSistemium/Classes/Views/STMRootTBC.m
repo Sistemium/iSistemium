@@ -23,6 +23,7 @@
 @property (nonatomic, strong) STMSession *session;
 
 @property (nonatomic, strong) NSString *appDownloadUrl;
+@property (nonatomic) BOOL updateAlertIsShowing;
 
 @end
 
@@ -69,7 +70,7 @@
 }
 
 - (void)customInit {
-    
+
     [self addObservers];
 
     self.delegate = self;
@@ -80,8 +81,10 @@
                              @"STMDebts",
                              @"STMUncashing",
                              @"STMMessages",
-//                             @"STMSettings",
-//                             @"STMLogs"
+#ifdef DEBUG
+                             @"STMSettings",
+                             @"STMLogs"
+#endif
                              ];
     
     self.storyboardtitles = @[
@@ -90,8 +93,10 @@
                               NSLocalizedString(@"DEBTS", nil),
                               NSLocalizedString(@"UNCASHING", nil),
                               NSLocalizedString(@"MESSAGES", nil),
-//                              NSLocalizedString(@"SETTINGS", nil),
-//                              NSLocalizedString(@"LOGS", nil)
+#ifdef DEBUG
+                              NSLocalizedString(@"SETTINGS", nil),
+                              NSLocalizedString(@"LOGS", nil)
+#endif
                               ];
     
     self.tabImages = @[
@@ -100,8 +105,10 @@
                        [UIImage imageNamed:@"cash_receiving-128.png"],
                        [UIImage imageNamed:@"banknotes-128.png"],
                        [UIImage imageNamed:@"message-128.png"],
-//                       [UIImage imageNamed:@"settings3-128.png"],
-//                       [UIImage imageNamed:@"archive-128.png"]
+#ifdef DEBUG
+                       [UIImage imageNamed:@"settings3-128.png"],
+                       [UIImage imageNamed:@"archive-128.png"]
+#endif
                        ];
     
     
@@ -166,14 +173,16 @@
 
         } else if ([name isEqualToString:@"STMAuthTVC"]) {
             
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            BOOL newAppVersionAvailable = [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
+//            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//            BOOL newAppVersionAvailable = [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
+//
+//            if (newAppVersionAvailable) {
+//                
+//                vc.tabBarItem.badgeValue = @"!";
+//                
+//            }
 
-            if (newAppVersionAvailable) {
-                
-                vc.tabBarItem.badgeValue = @"!";
-                
-            }
+            [STMObjectsController checkAppVersion];
             
         }
         
@@ -277,11 +286,10 @@
 
         } else {
             
-            UIViewController *vc = [self.tabs objectForKey:@"STMAuthTVC"];
-            vc.tabBarItem.badgeValue = @"!";
 
         }
         
+        self.updateAlertIsShowing = NO;
         
     }
     
@@ -327,22 +335,31 @@
 }
 
 - (void)newAppVersionAvailable:(NSNotification *)notification {
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    NSNumber *appVersion = [defaults objectForKey:@"availableVersion"];
-    self.appDownloadUrl = [defaults objectForKey:@"appDownloadUrl"];
-    
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UPDATE AVAILABLE", nil)
-                                                        message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"VERSION", nil), appVersion]
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                              otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
-    
-    alertView.tag = 1;
 
-    [alertView show];
-    
+    if (!self.updateAlertIsShowing) {
+
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        
+        NSNumber *appVersion = [defaults objectForKey:@"availableVersion"];
+        self.appDownloadUrl = [defaults objectForKey:@"appDownloadUrl"];
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UPDATE AVAILABLE", nil)
+                                                            message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"VERSION", nil), appVersion]
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
+        
+        alertView.tag = 1;
+        
+        UIViewController *vc = [self.tabs objectForKey:@"STMAuthTVC"];
+        vc.tabBarItem.badgeValue = @"!";
+        
+        self.updateAlertIsShowing = YES;
+        
+        [alertView show];
+
+    }
+
 }
 
 

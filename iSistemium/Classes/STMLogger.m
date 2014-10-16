@@ -172,6 +172,8 @@
     
     if ([logMessage.type isEqualToString:@"error"]) {
         cell.textLabel.textColor = [UIColor redColor];
+    } else if ([logMessage.type isEqualToString:@"blue"]) {
+        cell.textLabel.textColor = [UIColor blueColor];
     } else {
         cell.textLabel.textColor = [UIColor blackColor];
     }
