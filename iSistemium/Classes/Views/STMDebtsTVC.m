@@ -162,16 +162,24 @@
         
     }
     
-    NSString *debtSumString = [numberFormatter stringFromNumber:debtSum];
-    
     NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+
+    NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", [NSNumber numberWithBool:YES]];
+    NSSet *cashings = [outlet.cashings filteredSetUsingPredicate:cashingPredicate];
     
-    for (STMCashing *cashing in outlet.cashings) {
+    for (STMCashing *cashing in cashings) {
         
         cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
         
     }
     
+    debtSum = [debtSum decimalNumberBySubtracting:cashingSum];
+    
+    NSString *debtSumString = [numberFormatter stringFromNumber:debtSum];
+
+    return debtSumString;
+
+/*
     NSString *cashingSumString = [numberFormatter stringFromNumber:cashingSum];
     
     NSString *detailedText = nil;
@@ -187,7 +195,8 @@
     }
 
     return detailedText;
-    
+*/
+
 }
 
 @end
