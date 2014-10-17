@@ -57,9 +57,30 @@
     
 }
 
+- (void)debtSummChanged:(NSNotification *)notification {
+    
+    STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:outlet];
 
+    if (indexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+    
+}
 
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debtSummChanged:) name:@"debtSummChanged" object:nil];
+
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
 
 - (void)customInit {
     
@@ -71,6 +92,8 @@
     }
 
     self.title = NSLocalizedString(@"OUTLETS", nil);
+    
+    [self addObservers];
     
 }
 

@@ -58,6 +58,14 @@
 
     }
     
+    BOOL sumChanged = [[[self changedValues] allKeys] containsObject:@"summ"];
+    
+    if (sumChanged) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"debtSummChanged" object:nil userInfo:@{@"outlet": self.outlet}];
+        
+    }
+    
     [super willSave];
     
 }
