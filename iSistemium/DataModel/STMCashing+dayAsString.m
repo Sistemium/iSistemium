@@ -7,6 +7,7 @@
 //
 
 #import "STMCashing+dayAsString.h"
+#import "STMDebt+Cashing.h"
 
 @implementation STMCashing (dayAsString)
 
@@ -26,6 +27,29 @@
     NSString *dateString = [formatter stringFromDate:self.date];
     
     return dateString;
+    
+}
+
+- (void)willSave {
+    
+    BOOL isProcessedChanged = [[[self changedValues] allKeys] containsObject:@"isProcessed"];
+    
+    if (isProcessedChanged) {
+
+        NSDecimalNumber *newCalculatedSum = [self.debt cashingCalculatedSum];
+        NSDecimalNumber *oldCalculatedSum = self.debt.calculatedSum;
+        
+        if ([newCalculatedSum compare:oldCalculatedSum] != NSOrderedSame) {
+            
+            [self.debt willChangeValueForKey:@"calculatedSum"];
+            [self.debt setPrimitiveValue:newCalculatedSum forKey:@"calculatedSum"];
+            [self.debt didChangeValueForKey:@"calculatedSum"];
+
+        }
+        
+    }
+    
+    [super willSave];
     
 }
 
