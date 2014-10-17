@@ -526,11 +526,16 @@
                     [self hrefProcessingForObject:object];
                 }
                 
+            } else {
+                
+                [object setValue:nil forKey:key];
+                
             }
             
         }
         
-        NSDictionary *ownObjectRelationships = [self ownObjectRelationshipsForEntityName:entityName];
+//        NSDictionary *ownObjectRelationships = [self ownObjectRelationshipsForEntityName:entityName];
+        NSDictionary *ownObjectRelationships = [self singleRelationshipsForEntityName:entityName];
         
         for (NSString *relationship in [ownObjectRelationships allKeys]) {
             
@@ -541,6 +546,10 @@
                 
                 NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
                 [object setValue:destinationObject forKey:relationship];
+                
+            } else {
+                
+                [object setValue:nil forKey:relationship];
                 
             }
             
@@ -790,6 +799,32 @@
     
     return objectRelationships;
     
+}
+
++ (NSDictionary *)singleRelationshipsForEntityName:(NSString *)entityName {
+    
+    NSEntityDescription *coreEntity = [NSEntityDescription entityForName:@"STMComment" inManagedObjectContext:[self document].managedObjectContext];
+    NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
+    
+    NSEntityDescription *objectEntity = [NSEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
+    
+    [objectRelationshipNames minusSet:coreRelationshipNames];
+    
+    NSMutableDictionary *objectRelationships = [NSMutableDictionary dictionary];
+    
+    for (NSString *relationshipName in objectRelationshipNames) {
+        
+        NSRelationshipDescription *relationship = [[objectEntity relationshipsByName] objectForKey:relationshipName];
+        
+        if (![relationship isToMany]) {
+            [objectRelationships setObject:[relationship destinationEntity].name forKey:relationshipName];
+        }
+        
+    }
+    
+    return objectRelationships;
+
 }
 
 + (NSArray *)dataModelEntityNames {
