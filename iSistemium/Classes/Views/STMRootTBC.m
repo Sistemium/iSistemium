@@ -171,19 +171,6 @@
             vc.tabBarItem.badgeValue = badgeValue;
             [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
 
-        } else if ([name isEqualToString:@"STMAuthTVC"]) {
-            
-//            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//            BOOL newAppVersionAvailable = [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
-//
-//            if (newAppVersionAvailable) {
-//                
-//                vc.tabBarItem.badgeValue = @"!";
-//                
-//            }
-
-            [STMObjectsController checkAppVersion];
-            
         }
         
     }
@@ -362,6 +349,9 @@
 
 }
 
+- (void) setDocumentReady {
+    [STMObjectsController checkAppVersion];
+}
 
 #pragma mark - notifications
 
@@ -375,6 +365,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnreadMessageCount) name:@"messageIsRead" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"newAppVersionAvailable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"updateButtonPressed" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setDocumentReady) name:@"documentReady" object:nil];
     
 }
 
