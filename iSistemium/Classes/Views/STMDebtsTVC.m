@@ -185,8 +185,10 @@
     NSDecimalNumber *debtSum = [NSDecimalNumber zero];
     
     for (STMDebt *debt in outlet.debts) {
-        
-        debtSum = [debtSum decimalNumberByAdding:debt.summ];
+                
+        if (debt.summ) {
+            debtSum = [debtSum decimalNumberByAdding:debt.summ];
+        }
         
     }
     
