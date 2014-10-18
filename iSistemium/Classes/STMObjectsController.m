@@ -547,6 +547,8 @@
                 NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
                 [object setValue:destinationObject forKey:relationship];
                 
+                [destinationObject setValue:[NSDate date] forKey:@"lts"];
+                
             } else {
                 
                 [object setValue:nil forKey:relationship];
