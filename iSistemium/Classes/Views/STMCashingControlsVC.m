@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton;
+@property (weak, nonatomic) IBOutlet UITextField *cashingSummTextField;
 
 
 
@@ -213,12 +214,22 @@
 - (void)updateControlLabels {
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
 //    numberFormatter.minimumFractionDigits = 2;
     
     NSDecimalNumber *sum = [NSDecimalNumber zero];
-    self.tableVC.totalSum = nil;
-    NSDecimalNumber *remainderSum = self.tableVC.totalSum;
+
+//    self.tableVC.totalSum = nil;
+    
+    NSNumber *cashingSumm = [numberFormatter numberFromString:self.cashingSummTextField.text];
+    
+    NSDecimalNumber *remainderSum = [NSDecimalNumber decimalNumberWithDecimal:[cashingSumm decimalValue]];
+    
+    if ([remainderSum doubleValue] > 0) {
+        self.remainderLabel.hidden = NO;
+    } else {
+        self.remainderLabel.hidden = YES;
+    }
     
     for (NSArray *debtValues in [self.debtsDictionary allValues]) {
         
@@ -226,10 +237,21 @@
         
         sum = [sum decimalNumberByAdding:cashing];
         
-        remainderSum = [remainderSum decimalNumberBySubtracting:cashing];
+        if ([[remainderSum decimalNumberBySubtracting:cashing] doubleValue] < 0) {
+            
+            self.remainderLabel.textColor = ACTIVE_BLUE_COLOR;
+            
+        } else {
+
+            self.remainderLabel.textColor = [UIColor blackColor];
+            remainderSum = [remainderSum decimalNumberBySubtracting:cashing];
+
+        }
         
     }
     
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+
     NSString *sumString = [numberFormatter stringFromNumber:sum];
     NSString *remainderSumString = [numberFormatter stringFromNumber:remainderSum];
     
@@ -257,6 +279,7 @@
     self.summLabel.hidden = YES;
     self.remainderLabel.hidden = YES;
     self.debtSummTextField.hidden = YES;
+    self.cashingSummTextField.hidden = YES;
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
@@ -287,8 +310,11 @@
     self.cancelButton.hidden = NO;
     self.doneButton.hidden = NO;
     self.summLabel.hidden = NO;
-    self.remainderLabel.hidden = NO;
-//    self.debtSummTextField.hidden = NO;
+    self.cashingSummTextField.hidden = NO;
+
+    if ([self.cashingSummTextField.text doubleValue] > 0) {
+        self.remainderLabel.hidden = NO;
+    }
 
 }
 
@@ -397,8 +423,12 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
     
-    return [self isCorrectDebtSumValue];
-    
+    if ([textField isEqual:self.cashingSummTextField] && [self.cashingSummTextField.text isEqualToString:@""]) {
+        return YES;
+    } else {
+        return [self isCorrectDebtSumValueForTextField:textField];
+    }
+
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
@@ -407,14 +437,23 @@
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     numberFormatter.minimumFractionDigits = 2;
     
-    NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
-    NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
-    
-    [self.debtsDictionary setObject:@[self.selectedDebt, cashingSum] forKey:self.selectedDebt.xid];
-
-    [self.tableVC updateRowWithDebt:self.selectedDebt];
-    
-    self.debtSummTextField.text = [numberFormatter stringFromNumber:number];
+    if ([textField isEqual:self.debtSummTextField]) {
+        
+        NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
+        NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
+        
+        [self.debtsDictionary setObject:@[self.selectedDebt, cashingSum] forKey:self.selectedDebt.xid];
+        
+        [self.tableVC updateRowWithDebt:self.selectedDebt];
+        
+        self.debtSummTextField.text = [numberFormatter stringFromNumber:number];
+        
+    } else if ([textField isEqual:self.cashingSummTextField]) {
+        
+        NSNumber *number = [numberFormatter numberFromString:self.cashingSummTextField.text];
+        self.cashingSummTextField.text = [numberFormatter stringFromNumber:number];
+        
+    }
     
     [self updateControlLabels];
     
@@ -468,12 +507,12 @@
     
 }
 
-- (BOOL)isCorrectDebtSumValue {
+- (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     
-    NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
+    NSNumber *number = [numberFormatter numberFromString:textField.text];
     
     return [number boolValue];
     
@@ -514,14 +553,19 @@
     
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
     
-    NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
+//    NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
     
-    self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), totalSumString];
+    self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), @""];
     
     self.debtSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.debtSummTextField.hidden = YES;
     self.debtSummTextField.delegate = self;
     
+    self.cashingSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
+    self.cashingSummTextField.hidden = YES;
+    self.cashingSummTextField.placeholder = NSLocalizedString(@"CASHING SUMM", nil);
+    self.cashingSummTextField.delegate = self;
+
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
