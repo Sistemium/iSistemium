@@ -545,9 +545,19 @@
             if (destinationObjectXid) {
                 
                 NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
-                [object setValue:destinationObject forKey:relationship];
                 
-                [destinationObject setValue:[NSDate date] forKey:@"lts"];
+                if (![[object valueForKey:relationship] isEqual:destinationObject]) {
+
+                    NSDate *lts = [destinationObject valueForKey:@"lts"];
+                    NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
+
+                    [object setValue:destinationObject forKey:relationship];
+
+                    if ([lts compare:deviceTs] != NSOrderedAscending) {
+                        [destinationObject setValue:[NSDate date] forKey:@"lts"];
+                    }
+                    
+                }
                 
             } else {
                 
