@@ -491,128 +491,156 @@
         
         NSString *xid = [dictionary objectForKey:@"xid"];
         NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
-        NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
-
-        NSEntityDescription *currentEntity = [object entity];
-        NSDictionary *entityAttributes = [currentEntity attributesByName];
-
-        for (NSString *key in ownObjectKeys) {
-            
-            id value = [properties objectForKey:key];
-            
-            if (value) {
-                
-                if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
-                    
-                    value = [NSDecimalNumber decimalNumberWithString:value];
-                    
-                } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
-                    
-                    value = [[STMFunctions dateFormatter] dateFromString:value];
-                    
-                } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
-                    
-                    value = [NSNumber numberWithBool:[value boolValue]];
-                    
-                } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
-                    
-                    value = [STMFunctions dataFromString:[value stringByReplacingOccurrencesOfString:@"-" withString:@""]];
-                    
-                }
-                
-                [object setValue:value forKey:key];
-                
-                if ([key isEqualToString:@"href"]) {
-                    [self hrefProcessingForObject:object];
-                }
-                
-            } else {
-                
-                [object setValue:nil forKey:key];
-                
-            }
-            
-        }
         
-//        NSDictionary *ownObjectRelationships = [self ownObjectRelationshipsForEntityName:entityName];
-        NSDictionary *ownObjectRelationships = [self singleRelationshipsForEntityName:entityName];
-        
-        for (NSString *relationship in [ownObjectRelationships allKeys]) {
-            
-            NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
-            NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
-            
-            if (destinationObjectXid) {
-                
-                NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
-                
-                if (![[object valueForKey:relationship] isEqual:destinationObject]) {
-
-                    BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
-                    
-                    NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
-
-                    [object setValue:destinationObject forKey:relationship];
-
-                    if (!waitingForSync) {
-                        [destinationObject setValue:deviceTs forKey:@"deviceTs"];
-                    }
-                    
-                }
-                
-            } else {
-                
-                [object setValue:nil forKey:relationship];
-                
-            }
-            
-        }
-        
-        [object setValue:[NSDate date] forKey:@"lts"];
-        
-        if ([entityName isEqualToString:NSStringFromClass([STMMessage class])]) {
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
-            
-        } else if ([entityName isEqualToString:NSStringFromClass([STMRecordStatus class])]) {
-            
-            STMRecordStatus *recordStatus = (STMRecordStatus *)object;
-
-            NSManagedObject *affectedObject = [self objectForXid:recordStatus.objectXid];
-            
-            if (affectedObject) {
-                
-                if ([recordStatus.isRead boolValue]) {
-                    
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-                    
-                }
-                
-                if ([recordStatus.isRemoved boolValue]) {
-                    
-                    [[self document].managedObjectContext deleteObject:affectedObject];
-                    [[self document].managedObjectContext deleteObject:recordStatus];
-                    
-                }
-                
-            }
-
-        } else if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
-
-            STMSetting *setting = (STMSetting *)object;
-            
-            if ([setting.group isEqualToString:@"appSettings"]) {
-                
-                [self checkAppVersion];
-                
-            }
-            
+        if (![self isWaitingToSyncForObject:object]) {
+            [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
         }
         
     }
     
     completionHandler(YES);
     
+}
+
++ (void)processingOfObject:(NSManagedObject *)object withEntityName:(NSString *)entityName fillWithValues:(NSDictionary *)properties {
+    
+    NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
+    
+    NSEntityDescription *currentEntity = [object entity];
+    NSDictionary *entityAttributes = [currentEntity attributesByName];
+    
+    for (NSString *key in ownObjectKeys) {
+        
+        id value = [properties objectForKey:key];
+        
+        if (value) {
+            
+            value = [self typeConversionForValue:value key:key entityAttributes:entityAttributes];
+            
+            [object setValue:value forKey:key];
+            
+            if ([key isEqualToString:@"href"]) {
+                [self hrefProcessingForObject:object];
+            }
+            
+        } else {
+            
+            [object setValue:nil forKey:key];
+            
+        }
+        
+    }
+    
+    [self processingOfRelationshipsForObject:object withEntityName:entityName andValues:properties];
+    
+    [object setValue:[NSDate date] forKey:@"lts"];
+
+    [self postprocessingForObject:object withEntityName:entityName];
+
+}
+
++ (id)typeConversionForValue:(id)value key:(NSString *)key entityAttributes:(NSDictionary *)entityAttributes {
+    
+    if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
+        
+        value = [NSDecimalNumber decimalNumberWithString:value];
+        
+    } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
+        
+        value = [[STMFunctions dateFormatter] dateFromString:value];
+        
+    } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
+        
+        value = [NSNumber numberWithBool:[value boolValue]];
+        
+    } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
+        
+        value = [STMFunctions dataFromString:[value stringByReplacingOccurrencesOfString:@"-" withString:@""]];
+        
+    }
+
+    return value;
+    
+}
+
++ (void)processingOfRelationshipsForObject:(NSManagedObject *)object withEntityName:(NSString *)entityName andValues:(NSDictionary *)properties {
+    
+    NSDictionary *ownObjectRelationships = [self singleRelationshipsForEntityName:entityName];
+    
+    for (NSString *relationship in [ownObjectRelationships allKeys]) {
+        
+        NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
+        NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
+        
+        if (destinationObjectXid) {
+            
+            NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
+            
+            if (![[object valueForKey:relationship] isEqual:destinationObject]) {
+                
+                BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                
+                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
+                
+                [object setValue:destinationObject forKey:relationship];
+                
+                if (!waitingForSync) {
+                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+                }
+                
+            }
+            
+        } else {
+            
+            [object setValue:nil forKey:relationship];
+            
+        }
+        
+    }
+    
+}
+
++ (void)postprocessingForObject:(NSManagedObject *)object withEntityName:(NSString *)entityName {
+    
+    if ([entityName isEqualToString:NSStringFromClass([STMMessage class])]) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
+        
+    } else if ([entityName isEqualToString:NSStringFromClass([STMRecordStatus class])]) {
+        
+        STMRecordStatus *recordStatus = (STMRecordStatus *)object;
+        
+        NSManagedObject *affectedObject = [self objectForXid:recordStatus.objectXid];
+        
+        if (affectedObject) {
+            
+            if ([recordStatus.isRead boolValue]) {
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+                
+            }
+            
+            if ([recordStatus.isRemoved boolValue]) {
+                
+                [[self document].managedObjectContext deleteObject:affectedObject];
+                [[self document].managedObjectContext deleteObject:recordStatus];
+                
+            }
+            
+        }
+        
+    } else if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
+        
+        STMSetting *setting = (STMSetting *)object;
+        
+        if ([setting.group isEqualToString:@"appSettings"]) {
+            
+            [self checkAppVersion];
+            
+        }
+        
+    }
+
 }
 
 + (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler {
@@ -704,7 +732,7 @@
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
         
-    return ([lts compare:deviceTs] == NSOrderedAscending);
+    return (lts && [lts compare:deviceTs] == NSOrderedAscending);
     
 }
 
