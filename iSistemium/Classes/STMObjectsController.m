@@ -548,13 +548,14 @@
                 
                 if (![[object valueForKey:relationship] isEqual:destinationObject]) {
 
-                    NSDate *lts = [destinationObject valueForKey:@"lts"];
+                    BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                    
                     NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
 
                     [object setValue:destinationObject forKey:relationship];
 
-                    if ([lts compare:deviceTs] != NSOrderedAscending) {
-                        [destinationObject setValue:[NSDate date] forKey:@"lts"];
+                    if (!waitingForSync) {
+                        [destinationObject setValue:deviceTs forKey:@"deviceTs"];
                     }
                     
                 }
@@ -695,6 +696,15 @@
     }
     
     completionHandler(YES);
+    
+}
+
++ (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
+    
+    NSDate *lts = [object valueForKey:@"lts"];
+    NSDate *deviceTs = [object valueForKey:@"deviceTs"];
+        
+    return ([lts compare:deviceTs] == NSOrderedAscending);
     
 }
 
