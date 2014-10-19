@@ -704,17 +704,28 @@
             
             NSSet *destinationSet = [ownerObject valueForKey:roleName];
             
-            if ([destinationSet containsObject:destinationObject] && [destinationEntityName isEqualToString:@"STMCampaignPicture"]) {
+            if ([destinationSet containsObject:destinationObject]) {
 
-                NSLog(@"already in set: %@, %@, %@", roleOwnerEntityName, destinationEntityName, destinationXid);
+                NSLog(@"already have relationship %@ %@ — %@ %@", roleOwnerEntityName, ownerXid, destinationEntityName, destinationXid);
+                
                 
             } else {
 
+                BOOL ownerIsWaitingForSync = [self isWaitingToSyncForObject:ownerObject];
+                BOOL destinationIsWaitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                
+                NSDate *ownerDeviceTs = [ownerObject valueForKey:@"deviceTs"];
+                NSDate *destinationDeviceTs = [destinationObject valueForKey:@"deviceTs"];
+                
                 [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
 
-                NSDate *lts = [NSDate date];
-                [ownerObject setValue:lts forKey:@"lts"];
-                [destinationObject setValue:lts forKey:@"lts"];
+                if (!ownerIsWaitingForSync) {
+                    [ownerObject setValue:ownerDeviceTs forKey:@"deviceTs"];
+                }
+                
+                if (!destinationIsWaitingForSync) {
+                    [destinationObject setValue:destinationDeviceTs forKey:@"deviceTs"];
+                }
                 
             }
             
