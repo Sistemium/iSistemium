@@ -275,18 +275,22 @@
         self.cashingLimitIsReached = NO;
         
     }
+    
+    [self showCashingSumLabel];
 
 }
 
 - (void)controlLabelsWOCashingLimit {
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    //    numberFormatter.minimumFractionDigits = 2;
-
     self.remainderLabel.hidden = YES;
     
     self.cashingLimitIsReached = NO;
+
+    [self showCashingSumLabel];
+
+}
+
+- (void)showCashingSumLabel {
     
     NSDecimalNumber *sum = [NSDecimalNumber zero];
     
@@ -298,6 +302,7 @@
         
     }
     
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     NSString *sumString = [numberFormatter stringFromNumber:sum];
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), sumString];
