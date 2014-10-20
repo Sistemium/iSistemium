@@ -253,7 +253,7 @@
         NSDecimalNumber *fillingSumm = [self.remainderSumm decimalNumberByAdding:self.selectedDebt.calculatedSum];
         numberFormatter.minimumFractionDigits = 2;
         self.debtSummTextField.text = [numberFormatter stringFromNumber:fillingSumm];
-        self.cashingSummLimit = [self.cashingSummLimit decimalNumberBySubtracting:fillingSumm];
+//        self.cashingSummLimit = [self.cashingSummLimit decimalNumberBySubtracting:fillingSumm];
         self.remainderLabel.textColor = [UIColor redColor];
         
         [self.debtsDictionary setObject:@[self.selectedDebt, fillingSumm] forKey:self.selectedDebt.xid];
@@ -263,11 +263,16 @@
         NSString *remainderSumString = [numberFormatter stringFromNumber:self.remainderSumm];
         self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
         
+        self.cashingLimitIsReached = YES;
+        
     } else {
         
         numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
         NSString *remainderSumString = [numberFormatter stringFromNumber:self.remainderSumm];
         self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
+        self.remainderLabel.textColor = [UIColor blackColor];
+        
+        self.cashingLimitIsReached = NO;
         
     }
 
@@ -280,6 +285,8 @@
     //    numberFormatter.minimumFractionDigits = 2;
 
     self.remainderLabel.hidden = YES;
+    
+    self.cashingLimitIsReached = NO;
     
     NSDecimalNumber *sum = [NSDecimalNumber zero];
     

@@ -255,13 +255,17 @@
     
     if (tableView.editing) {
         
-        STMOutletDebtsTVCell *cell = (STMOutletDebtsTVCell *)[tableView cellForRowAtIndexPath:indexPath];
-        [cell setTintColor:ACTIVE_BLUE_COLOR];
+        if (!self.parentVC.controlsVC.cashingLimitIsReached) {
+            
+            STMOutletDebtsTVCell *cell = (STMOutletDebtsTVCell *)[tableView cellForRowAtIndexPath:indexPath];
+            [cell setTintColor:ACTIVE_BLUE_COLOR];
+            
+            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
+            STMDebt *debt = sectionInfo.objects[indexPath.row];
+            
+            [self.parentVC.controlsVC addCashing:debt];
 
-        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-        STMDebt *debt = sectionInfo.objects[indexPath.row];
-
-        [self.parentVC.controlsVC addCashing:debt];
+        }
         
     }
     
