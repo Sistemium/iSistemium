@@ -32,7 +32,6 @@
 @property (nonatomic, strong) NSMutableArray *debtsArray;
 
 
-
 @property (nonatomic, strong) STMDocument *document;
 
 @property (nonatomic, strong) STMDebt *selectedDebt;
@@ -241,6 +240,29 @@
     
 }
 
+- (NSDecimalNumber *)fillingSumProcessing {
+
+    STMDebt *lastDebt = [self.debtsArray lastObject];
+    NSDecimalNumber *fillingSumm = [self.remainderSumm decimalNumberByAdding:lastDebt.calculatedSum];
+
+    if ([fillingSumm doubleValue] < 0) {
+        
+        [self.debtsArray removeObject:lastDebt];
+        [self.debtsDictionary removeObjectForKey:lastDebt.xid];
+        [self.tableVC updateRowWithDebt:lastDebt];
+        self.remainderSumm = fillingSumm;
+        self.selectedDebt = [self.debtsArray lastObject];
+        
+        return [self fillingSumProcessing];
+        
+    } else {
+        
+        return fillingSumm;
+        
+    }
+    
+}
+
 - (void)controlLabelsWithCashingLimit {
     
     self.remainderLabel.hidden = NO;
@@ -250,7 +272,8 @@
     
     if ([self.remainderSumm doubleValue] < 0) {
         
-        NSDecimalNumber *fillingSumm = [self.remainderSumm decimalNumberByAdding:self.selectedDebt.calculatedSum];
+        NSDecimalNumber *fillingSumm = [self fillingSumProcessing];
+
         numberFormatter.minimumFractionDigits = 2;
         self.debtSummTextField.text = [numberFormatter stringFromNumber:fillingSumm];
 //        self.cashingSummLimit = [self.cashingSummLimit decimalNumberBySubtracting:fillingSumm];
