@@ -228,6 +228,18 @@
         
     }
     
+    if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+        
+        cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
+        cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
+        
+    } else {
+
+        cell.textLabel.textColor = [UIColor blackColor];
+        cell.detailTextLabel.textColor = [UIColor blackColor];
+
+    }
+    
     return cell;
     
 }
@@ -255,13 +267,17 @@
     
     if (tableView.editing) {
         
-        STMOutletDebtsTVCell *cell = (STMOutletDebtsTVCell *)[tableView cellForRowAtIndexPath:indexPath];
-        [cell setTintColor:ACTIVE_BLUE_COLOR];
+        if (!self.parentVC.controlsVC.cashingLimitIsReached) {
+            
+            STMOutletDebtsTVCell *cell = (STMOutletDebtsTVCell *)[tableView cellForRowAtIndexPath:indexPath];
+            [cell setTintColor:ACTIVE_BLUE_COLOR];
+            
+            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
+            STMDebt *debt = sectionInfo.objects[indexPath.row];
+            
+            [self.parentVC.controlsVC addCashing:debt];
 
-        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-        STMDebt *debt = sectionInfo.objects[indexPath.row];
-
-        [self.parentVC.controlsVC addCashing:debt];
+        }
         
     }
     

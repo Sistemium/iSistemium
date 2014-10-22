@@ -339,7 +339,7 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Remainder" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v7I-mu-q6E">
-                                        <rect key="frame" x="20" y="30" width="84" height="21"/>
+                                        <rect key="frame" x="20" y="58" width="84" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="highlightedColor"/>
@@ -357,23 +357,32 @@
                                             </segue>
                                         </connections>
                                     </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dQm-4Y-jON">
+                                        <rect key="frame" x="20" y="20" width="26" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="centerX" secondItem="mMK-Cs-cYF" secondAttribute="centerX" id="1PU-ds-U79"/>
-                                    <constraint firstAttribute="bottom" secondItem="qei-aZ-LsZ" secondAttribute="bottom" constant="20" id="7Rl-HS-ugf"/>
+                                    <constraint firstItem="dQm-4Y-jON" firstAttribute="leading" secondItem="yhP-p4-IJa" secondAttribute="leading" constant="20" id="2gx-sw-8ab"/>
                                     <constraint firstAttribute="bottom" secondItem="ttz-JU-f1H" secondAttribute="bottom" constant="14" id="9Kb-Ma-XN1"/>
-                                    <constraint firstItem="v7I-mu-q6E" firstAttribute="top" secondItem="yhP-p4-IJa" secondAttribute="top" constant="30" id="IAJ-pA-dle"/>
+                                    <constraint firstAttribute="bottom" secondItem="qei-aZ-LsZ" secondAttribute="bottom" constant="20" id="GjP-ev-ajp"/>
+                                    <constraint firstAttribute="centerY" secondItem="v7I-mu-q6E" secondAttribute="centerY" constant="-3.5" id="Gyc-sF-Qoa"/>
                                     <constraint firstAttribute="centerY" secondItem="fhH-4Y-Gt5" secondAttribute="centerY" id="KiK-aI-B01"/>
                                     <constraint firstItem="39W-GY-tIJ" firstAttribute="top" secondItem="yhP-p4-IJa" secondAttribute="top" constant="20" id="LAW-ed-zIP"/>
                                     <constraint firstItem="v7I-mu-q6E" firstAttribute="leading" secondItem="yhP-p4-IJa" secondAttribute="leading" constant="20" id="Nun-gQ-3WM"/>
                                     <constraint firstAttribute="centerX" secondItem="Qhg-Ga-ozT" secondAttribute="centerX" id="WRs-rR-H6L"/>
                                     <constraint firstItem="qei-aZ-LsZ" firstAttribute="leading" secondItem="yhP-p4-IJa" secondAttribute="leading" constant="20" id="iPa-yp-yaZ"/>
+                                    <constraint firstItem="dQm-4Y-jON" firstAttribute="top" secondItem="yhP-p4-IJa" secondAttribute="top" constant="20" id="jaq-1V-z64"/>
                                     <constraint firstAttribute="bottom" secondItem="Qhg-Ga-ozT" secondAttribute="bottom" constant="20" id="ktq-Ov-x8i"/>
-                                    <constraint firstItem="Qhg-Ga-ozT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qei-aZ-LsZ" secondAttribute="trailing" constant="20" id="qCS-Ps-D2L"/>
                                     <constraint firstAttribute="trailing" secondItem="ttz-JU-f1H" secondAttribute="trailing" constant="20" id="r0X-uO-TK8"/>
                                     <constraint firstItem="mMK-Cs-cYF" firstAttribute="top" secondItem="yhP-p4-IJa" secondAttribute="top" constant="24" id="rQC-ZN-Qfk"/>
+                                    <constraint firstItem="Qhg-Ga-ozT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qei-aZ-LsZ" secondAttribute="trailing" constant="20" id="sBv-7n-5Mv"/>
                                     <constraint firstAttribute="centerX" secondItem="fhH-4Y-Gt5" secondAttribute="centerX" id="tl6-9d-ydV"/>
+                                    <constraint firstItem="mMK-Cs-cYF" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="dQm-4Y-jON" secondAttribute="trailing" constant="20" id="uji-zs-tY2"/>
                                     <constraint firstAttribute="trailing" secondItem="39W-GY-tIJ" secondAttribute="trailing" constant="20" id="ziu-ep-tSu"/>
                                 </constraints>
                             </view>
@@ -391,6 +400,7 @@
                     <connections>
                         <outlet property="cancelButton" destination="39W-GY-tIJ" id="wRO-7u-Vyf"/>
                         <outlet property="cashingButton" destination="fhH-4Y-Gt5" id="Eeb-lv-brK"/>
+                        <outlet property="cashingSummTextField" destination="dQm-4Y-jON" id="2QH-G0-iwy"/>
                         <outlet property="controlsView" destination="yhP-p4-IJa" id="DAl-Ao-vVJ"/>
                         <outlet property="dateButton" destination="mMK-Cs-cYF" id="W5W-cI-KhO"/>
                         <outlet property="debtSummTextField" destination="Qhg-Ga-ozT" id="ua5-6s-26I"/>

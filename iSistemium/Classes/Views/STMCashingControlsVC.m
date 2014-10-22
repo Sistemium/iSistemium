@@ -26,7 +26,9 @@
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton;
-
+@property (weak, nonatomic) IBOutlet UITextField *cashingSummTextField;
+@property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
+@property (nonatomic, strong) NSDecimalNumber *remainderSumm;
 
 
 @property (nonatomic, strong) STMDocument *document;
@@ -61,6 +63,18 @@
     
 }
 
+- (NSMutableArray *)debtsArray {
+    
+    if (!_debtsArray) {
+        
+        _debtsArray = [NSMutableArray array];
+        
+    }
+    
+    return _debtsArray;
+    
+}
+
 - (void)setOutlet:(STMOutlet *)outlet {
     
     if (_outlet != outlet) {
@@ -69,12 +83,12 @@
         
         if (_outlet) {
             
-            NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-
-            NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
-            
-            self.remainderLabel.text = [NSString stringWithFormat:@"%@", totalSumString];
+//            NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+//            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+//
+//            NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
+//            
+//            self.remainderLabel.text = [NSString stringWithFormat:@"%@", totalSumString];
             
             self.debtsDictionary = nil;
             [self showControlsView];
@@ -121,19 +135,21 @@
 
         NSMutableString *debtSum = [[numberFormatter stringFromNumber:debt.calculatedSum] mutableCopy];
         
-//        NSLog(@"debtSum %@", debtSum);
-//        
-//        [debtSum replaceOccurrencesOfString:@" " withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [debtSum length])];
-//
-//        NSLog(@"debtSum %@", debtSum);
-//
-        
         self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debtSum];
         self.debtSummTextField.hidden = NO;
-        
+
+        STMDebt *lastDebt = [self.debtsArray lastObject];
+
         [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
+        [self.debtsArray addObject:debt];
+        
         self.selectedDebt = debt;
         
+        self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
+        
+        [self.tableVC updateRowWithDebt:lastDebt];
+        [self.tableVC updateRowWithDebt:debt];
+
         [self updateControlLabels];
         
     }
@@ -155,8 +171,13 @@
         self.debtSummTextField.delegate = self;
 
         [self.debtsDictionary removeObjectForKey:debt.xid];
-        self.selectedDebt = nil;
+        [self.debtsArray removeObject:debt];
         
+        self.selectedDebt = [self.debtsArray lastObject];
+        
+        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+        
+        [self.tableVC updateRowWithDebt:debt];
         [self updateControlLabels];
         
     }
@@ -212,13 +233,100 @@
 
 - (void)updateControlLabels {
     
+    if ([self.cashingSummLimit doubleValue] > 0) {
+
+        [self controlLabelsWithCashingLimit];
+        
+    } else {
+
+        [self controlLabelsWOCashingLimit];
+
+    }
+    
+}
+
+- (NSDecimalNumber *)fillingSumProcessing {
+
+    NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
+
+    STMDebt *lastDebt = [self.debtsArray lastObject];    
+    if (lastDebt) {
+        
+        NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:lastDebt.xid][1];
+        fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
+        
+    }
+    
+    if ([fillingSumm doubleValue] < 0) {
+        
+        [self.debtsArray removeObject:lastDebt];
+        [self.debtsDictionary removeObjectForKey:lastDebt.xid];
+        [self.tableVC updateRowWithDebt:lastDebt];
+        self.remainderSumm = fillingSumm;
+        self.selectedDebt = [self.debtsArray lastObject];
+        
+        return [self fillingSumProcessing];
+        
+    } else {
+        
+        return fillingSumm;
+        
+    }
+    
+}
+
+- (void)controlLabelsWithCashingLimit {
+    
+    self.remainderLabel.hidden = NO;
+    
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-//    numberFormatter.minimumFractionDigits = 2;
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    if ([self.remainderSumm doubleValue] < 0) {
+        
+        NSDecimalNumber *fillingSumm = [self fillingSumProcessing];
+
+        numberFormatter.minimumFractionDigits = 2;
+        self.debtSummTextField.text = [numberFormatter stringFromNumber:fillingSumm];
+        self.remainderLabel.textColor = [UIColor redColor];
+        
+        [self.debtsDictionary setObject:@[self.selectedDebt, fillingSumm] forKey:self.selectedDebt.xid];
+        [self.tableVC updateRowWithDebt:self.selectedDebt];
+        
+        numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+        NSString *remainderSumString = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
+        self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
+        
+        self.cashingLimitIsReached = YES;
+        
+    } else {
+        
+        numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+        NSString *remainderSumString = [numberFormatter stringFromNumber:self.remainderSumm];
+        self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
+        self.remainderLabel.textColor = [UIColor blackColor];
+        
+        self.cashingLimitIsReached = NO;
+        
+    }
+    
+    [self showCashingSumLabel];
+
+}
+
+- (void)controlLabelsWOCashingLimit {
+    
+    self.remainderLabel.hidden = YES;
+    
+    self.cashingLimitIsReached = NO;
+
+    [self showCashingSumLabel];
+
+}
+
+- (void)showCashingSumLabel {
     
     NSDecimalNumber *sum = [NSDecimalNumber zero];
-    self.tableVC.totalSum = nil;
-    NSDecimalNumber *remainderSum = self.tableVC.totalSum;
     
     for (NSArray *debtValues in [self.debtsDictionary allValues]) {
         
@@ -226,15 +334,12 @@
         
         sum = [sum decimalNumberByAdding:cashing];
         
-        remainderSum = [remainderSum decimalNumberBySubtracting:cashing];
-        
     }
     
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     NSString *sumString = [numberFormatter stringFromNumber:sum];
-    NSString *remainderSumString = [numberFormatter stringFromNumber:remainderSum];
-    
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), sumString];
-    self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
 
 }
 
@@ -257,6 +362,7 @@
     self.summLabel.hidden = YES;
     self.remainderLabel.hidden = YES;
     self.debtSummTextField.hidden = YES;
+    self.cashingSummTextField.hidden = YES;
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
@@ -264,6 +370,10 @@
     self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
     
     self.debtsDictionary = nil;
+    self.debtsArray = nil;
+    self.remainderSumm = [NSDecimalNumber zero];
+    self.cashingSummTextField.text = @"";
+    self.cashingSummLimit = [NSDecimalNumber zero];
     
     [self updateControlLabels];
     
@@ -287,11 +397,29 @@
     self.cancelButton.hidden = NO;
     self.doneButton.hidden = NO;
     self.summLabel.hidden = NO;
-    self.remainderLabel.hidden = NO;
-//    self.debtSummTextField.hidden = NO;
+    self.cashingSummTextField.hidden = NO;
+
+    if ([self.cashingSummTextField.text doubleValue] > 0) {
+        self.remainderLabel.hidden = NO;
+    }
 
 }
 
+- (NSDecimalNumber *)debtsSumm {
+    
+    NSDecimalNumber *sum = [NSDecimalNumber zero];
+
+    for (NSArray *debtValues in [self.debtsDictionary allValues]) {
+        
+        NSDecimalNumber *cashing = debtValues[1];
+        
+        sum = [sum decimalNumberByAdding:cashing];
+        
+    }
+    
+    return sum;
+    
+}
 
 #pragma mark - save cashings
 
@@ -397,8 +525,12 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
     
-    return [self isCorrectDebtSumValue];
-    
+    if ([textField isEqual:self.cashingSummTextField] && [self.cashingSummTextField.text isEqualToString:@""]) {
+        return YES;
+    } else {
+        return [self isCorrectDebtSumValueForTextField:textField];
+    }
+
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
@@ -407,14 +539,25 @@
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     numberFormatter.minimumFractionDigits = 2;
     
-    NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
-    NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
-    
-    [self.debtsDictionary setObject:@[self.selectedDebt, cashingSum] forKey:self.selectedDebt.xid];
-
-    [self.tableVC updateRowWithDebt:self.selectedDebt];
-    
-    self.debtSummTextField.text = [numberFormatter stringFromNumber:number];
+    if ([textField isEqual:self.debtSummTextField]) {
+        
+        NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
+        NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
+        
+        [self.debtsDictionary setObject:@[self.selectedDebt, cashingSum] forKey:self.selectedDebt.xid];
+        
+        [self.tableVC updateRowWithDebt:self.selectedDebt];
+        
+        self.debtSummTextField.text = [numberFormatter stringFromNumber:number];
+        
+    } else if ([textField isEqual:self.cashingSummTextField]) {
+        
+        NSNumber *number = [numberFormatter numberFromString:self.cashingSummTextField.text];
+        self.cashingSummTextField.text = [numberFormatter stringFromNumber:number];
+        self.cashingSummLimit = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
+        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+        
+    }
     
     [self updateControlLabels];
     
@@ -468,12 +611,12 @@
     
 }
 
-- (BOOL)isCorrectDebtSumValue {
+- (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     
-    NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
+    NSNumber *number = [numberFormatter numberFromString:textField.text];
     
     return [number boolValue];
     
@@ -514,14 +657,19 @@
     
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
     
-    NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
+//    NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
     
-    self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), totalSumString];
+    self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), @""];
     
     self.debtSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.debtSummTextField.hidden = YES;
     self.debtSummTextField.delegate = self;
     
+    self.cashingSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
+    self.cashingSummTextField.hidden = YES;
+    self.cashingSummTextField.placeholder = NSLocalizedString(@"CASHING SUMM", nil);
+    self.cashingSummTextField.delegate = self;
+
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
