@@ -60,6 +60,9 @@
 @synthesize accessKey = _accessKey;
 @synthesize secretKey = _secretKey;
 
+
+#pragma mark - singleton
+
 + (STMObjectsController *)sharedController {
     
     static dispatch_once_t pred = 0;
@@ -75,6 +78,9 @@
     return _sharedController;
     
 }
+
+
+#pragma mark - amazon S3 init
 
 - (BOOL)s3Init {
     
@@ -97,6 +103,9 @@
     return self.s3Initialized;
     
 }
+
+
+#pragma mark - checking client state
 
 + (void)checkDeviceToken {
 
@@ -306,6 +315,9 @@
     
 }
 
+
+#pragma mark - instance properties
+
 - (STMSession *)session {
 
     return [STMSessionManager sharedManager].currentSession;
@@ -454,6 +466,9 @@
     
 }
 
+
+#pragma mark - recieved objects management
+
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     __block BOOL result = YES;
@@ -486,15 +501,29 @@
     NSArray *dataModelEntityNames = [self dataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
-
-        NSDictionary *properties = [dictionary objectForKey:@"properties"];
         
         NSString *xid = [dictionary objectForKey:@"xid"];
-        NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
+        NSData *xidData = [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]];
         
-        if (![self isWaitingToSyncForObject:object]) {
-            [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
+        STMRecordStatus *recordStatus = [self existingRecordStatusForXid:xidData];
+        
+        if (![recordStatus.isRemoved boolValue]) {
+            
+            NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
+            
+            if (![self isWaitingToSyncForObject:object]) {
+                
+                NSDictionary *properties = [dictionary objectForKey:@"properties"];
+                [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
+                
+            }
+
+        } else {
+            
+            NSLog(@"object with xid %@ have recordStatus.isRemoved == YES", xid);
+            
         }
+        
         
     }
     
@@ -638,7 +667,7 @@
             if ([recordStatus.isRemoved boolValue]) {
                 
                 [[self document].managedObjectContext deleteObject:affectedObject];
-                [[self document].managedObjectContext deleteObject:recordStatus];
+//                [[self document].managedObjectContext deleteObject:recordStatus];
                 
             }
             
@@ -762,6 +791,9 @@
     
 }
 
+
+#pragma mark - getting specified objects
+
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
@@ -813,10 +845,8 @@
     
 }
 
-+ (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object {
-    
-    NSData *objectXid = [object valueForKey:@"xid"];
-    
++ (STMRecordStatus *)existingRecordStatusForXid:(NSData *)objectXid {
+
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", objectXid];
@@ -825,6 +855,16 @@
     NSArray *fetchResult = [self.document.managedObjectContext executeFetchRequest:request error:&error];
     
     STMRecordStatus *recordStatus = [fetchResult lastObject];
+
+    return recordStatus;
+    
+}
+
++ (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object {
+    
+    NSData *objectXid = [object valueForKey:@"xid"];
+
+    STMRecordStatus *recordStatus = [self existingRecordStatusForXid:objectXid];
     
     if (!recordStatus) {
         
@@ -837,6 +877,8 @@
     
 }
 
+
+#pragma mark - getting entity properties
 
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName {
     
@@ -909,6 +951,9 @@
     
 }
 
+
+#pragma mark - flushing
+
 + (void)removeAllObjects {
     
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:@"reload data" type:nil];
@@ -944,6 +989,9 @@
     syncer.syncerState = STMSyncerReceiveData;
     
 }
+
+
+#pragma mark - picture processing
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object {
     
@@ -1216,13 +1264,6 @@
 
 }
 
-+ (void)dataLoadingFinished {
-    
-//    [self generatePhotoReports];
-    [self totalNumberOfObjects];
-    
-}
-
 + (void)generatePhotoReports {
 
     NSArray *outlets = [self objectsForEntityName:NSStringFromClass([STMOutlet class])];
@@ -1251,6 +1292,16 @@
         
     }
 
+}
+
+
+#pragma mark - recieve of objects is finished
+
++ (void)dataLoadingFinished {
+    
+    //    [self generatePhotoReports];
+    [self totalNumberOfObjects];
+    
 }
 
 + (void)totalNumberOfObjects {
@@ -1310,6 +1361,9 @@
     }
     
 }
+
+
+#pragma mark - messages
 
 + (NSUInteger)unreadMessagesCount {
     
