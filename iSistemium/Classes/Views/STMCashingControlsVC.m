@@ -246,7 +246,10 @@
 
     STMDebt *lastDebt = [self.debtsArray lastObject];    
     if (lastDebt) {
-        fillingSumm = [self.remainderSumm decimalNumberByAdding:lastDebt.calculatedSum];
+        
+        NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:lastDebt.xid][1];
+        fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
+        
     }
     
     if ([fillingSumm doubleValue] < 0) {
@@ -280,14 +283,13 @@
 
         numberFormatter.minimumFractionDigits = 2;
         self.debtSummTextField.text = [numberFormatter stringFromNumber:fillingSumm];
-//        self.cashingSummLimit = [self.cashingSummLimit decimalNumberBySubtracting:fillingSumm];
         self.remainderLabel.textColor = [UIColor redColor];
         
         [self.debtsDictionary setObject:@[self.selectedDebt, fillingSumm] forKey:self.selectedDebt.xid];
         [self.tableVC updateRowWithDebt:self.selectedDebt];
         
         numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-        NSString *remainderSumString = [numberFormatter stringFromNumber:self.remainderSumm];
+        NSString *remainderSumString = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
         self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
         
         self.cashingLimitIsReached = YES;
