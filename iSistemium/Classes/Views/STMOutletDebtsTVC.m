@@ -228,6 +228,18 @@
         
     }
     
+    if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+        
+        cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
+        cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
+        
+    } else {
+
+        cell.textLabel.textColor = [UIColor blackColor];
+        cell.detailTextLabel.textColor = [UIColor blackColor];
+
+    }
+    
     return cell;
     
 }

@@ -29,7 +29,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *cashingSummTextField;
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
-@property (nonatomic, strong) NSMutableArray *debtsArray;
 
 
 @property (nonatomic, strong) STMDocument *document;
@@ -138,7 +137,9 @@
         
         self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debtSum];
         self.debtSummTextField.hidden = NO;
-        
+
+        STMDebt *lastDebt = [self.debtsArray lastObject];
+
         [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
         [self.debtsArray addObject:debt];
         
@@ -146,6 +147,9 @@
         
         self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
         
+        [self.tableVC updateRowWithDebt:lastDebt];
+        [self.tableVC updateRowWithDebt:debt];
+
         [self updateControlLabels];
         
     }
@@ -173,6 +177,7 @@
         
         self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
         
+        [self.tableVC updateRowWithDebt:debt];
         [self updateControlLabels];
         
     }
