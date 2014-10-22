@@ -592,7 +592,22 @@
             
         } else {
             
-            [object setValue:nil forKey:relationship];
+            NSManagedObject *destinationObject = [object valueForKey:relationship];
+            
+            if (destinationObject) {
+                
+                BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                
+                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
+                
+                [object setValue:nil forKey:relationship];
+                
+                if (!waitingForSync) {
+                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+                }
+
+                
+            }
             
         }
         
