@@ -169,9 +169,9 @@
         [self.debtsDictionary removeObjectForKey:debt.xid];
         [self.debtsArray removeObject:debt];
         
-        self.selectedDebt = nil;
+        self.selectedDebt = [self.debtsArray lastObject];
         
-        self.remainderSumm = [self.remainderSumm decimalNumberByAdding:debt.calculatedSum];
+        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
         
         [self updateControlLabels];
         
@@ -242,9 +242,13 @@
 
 - (NSDecimalNumber *)fillingSumProcessing {
 
-    STMDebt *lastDebt = [self.debtsArray lastObject];
-    NSDecimalNumber *fillingSumm = [self.remainderSumm decimalNumberByAdding:lastDebt.calculatedSum];
+    NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
 
+    STMDebt *lastDebt = [self.debtsArray lastObject];    
+    if (lastDebt) {
+        fillingSumm = [self.remainderSumm decimalNumberByAdding:lastDebt.calculatedSum];
+    }
+    
     if ([fillingSumm doubleValue] < 0) {
         
         [self.debtsArray removeObject:lastDebt];
