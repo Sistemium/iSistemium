@@ -199,22 +199,13 @@
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-//    STMDebt *debt = sectionInfo.objects[indexPath.row];
   
     STMCashing *cashing = sectionInfo.objects[indexPath.row];
     
-//    NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
-//    
-//    for (STMCashing *cashing in debt.cashings) {
-//        
-//        cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
-//        
-//    }
-    
     NSString *textLabel = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:cashing.summ]];
-    NSString *detailTextLabel = [NSString stringWithFormat:@"%@ / %@ / %@", cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.date], [numberFormatter stringFromNumber:cashing.debt.summOrigin]];
     
-//    detailTextLabel = [NSString stringWithFormat:@"%@ %@", detailTextLabel, cashing.isProcessed];
+    NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
+    NSString *detailTextLabel = [NSString stringWithFormat:@"%@ / %@",debtString, [dateFormatter stringFromDate:cashing.date]];
     
     cell.textLabel.text = textLabel;
     cell.detailTextLabel.text = detailTextLabel;
