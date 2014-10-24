@@ -215,6 +215,7 @@
             
             backgroundColor = [UIColor clearColor];
             textColor = [UIColor blackColor];
+            UIFont *font = [UIFont systemFontOfSize:16];
             
             attributes = @{
                            NSFontAttributeName: font,
@@ -262,7 +263,7 @@
                 if (dateIsInPast) {
                     
                     textColor = [UIColor redColor];
-                    dueDate = [NSString stringWithFormat:@"%@ %@", dueDate, NSLocalizedString(@"AGO", nil)];
+                    dueDate = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"AGO", nil), dueDate];
                     
                 }
                 

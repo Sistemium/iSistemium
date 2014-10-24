@@ -11,13 +11,14 @@
 #import "STMConstants.h"
 #import "STMCashing.h"
 #import "STMUncashing.h"
-
+#import "STMUncashingSumPopoverVC.h"
 
 @interface STMUncashingMasterTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) STMCashingSumFRCD *cashingSumFRCD;
 @property (nonatomic, strong) NSFetchedResultsController *cashingSumResultsController;
+@property (nonatomic, strong) UIPopoverController *sumPopover;
 
 @end
 
@@ -103,6 +104,25 @@
     
 }
 
+- (UIPopoverController *)sumPopover {
+    
+    if (!_sumPopover) {
+        
+        STMUncashingSumPopoverVC *sumPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"sumPopoverVC"];
+        
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+        
+        sumPopoverVC.labelText = [numberFormatter stringFromNumber:self.cashingSum];
+        
+        _sumPopover = [[UIPopoverController alloc] initWithContentViewController:sumPopoverVC];
+        
+    }
+    
+    return _sumPopover;
+    
+}
+
 
 #pragma mark - UITableView dataSource & delegate
 
@@ -172,22 +192,23 @@
     
     if (indexPath.section == 0) {
         
-        NSDecimalNumber *cashSum = [NSDecimalNumber zero];
+//        NSDecimalNumber *cashSum = [NSDecimalNumber zero];
+//        
+//        for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
+//            
+//            cashSum = [cashSum decimalNumberByAdding:cashing.summ];
+//            
+//        }
+//
+//        self.cashingSum = cashSum;
         
-        for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
-            
-            cashSum = [cashSum decimalNumberByAdding:cashing.summ];
-            
-        }
+//        cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
+        cell.textLabel.text = NSLocalizedString(@"INFO", nil);
+//        cell.detailTextLabel.text = nil;
         
-        self.cashingSum = cashSum;
-                
-        cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
-        cell.detailTextLabel.text = nil;
-        
-        [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                    animated:YES
-                              scrollPosition:UITableViewScrollPositionNone];
+//        [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+//                                    animated:YES
+//                              scrollPosition:UITableViewScrollPositionNone];
         
         self.splitVC.detailVC.uncashing = nil;
         
@@ -196,8 +217,9 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section-1];
         STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
 
-        cell.textLabel.text = [numberFormatter stringFromNumber:uncashing.summ];
-        cell.detailTextLabel.text = [dateFormatter stringFromDate:uncashing.date];
+//        cell.textLabel.text = [numberFormatter stringFromNumber:uncashing.summ];
+        cell.textLabel.text = [dateFormatter stringFromDate:uncashing.date];
+//        cell.detailTextLabel.text = [dateFormatter stringFromDate:uncashing.date];
         
     }
     
@@ -210,6 +232,12 @@
     
     cell.textLabel.highlightedTextColor = highlightedTextColor;
     cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
+    
+    UIButton *detailButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(detailButtonTapped:)];
+    [detailButton addGestureRecognizer:tap];
+    
+    cell.accessoryView = detailButton;
     
     return cell;
     
@@ -230,11 +258,65 @@
         self.splitVC.detailVC.uncashing = uncashing;
 
     }
+    
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    [cell setTintColor:[UIColor whiteColor]];
 
     return indexPath;
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    [cell setTintColor:ACTIVE_BLUE_COLOR];
+    
+    return indexPath;
+    
+}
+
+- (void)detailButtonTapped:(UITapGestureRecognizer *)tap {
+    
+    if ([tap.view isKindOfClass:[UIButton class]]) {
+        
+        UIButton *detailButton = (UIButton *)tap.view;
+        
+        if ([detailButton.superview.superview isKindOfClass:[UITableViewCell class]]) {
+            
+            self.sumPopover = nil;
+            
+            UITableViewCell *cell = (UITableViewCell *)detailButton.superview.superview;
+            
+            NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+            
+            if (indexPath.section == 0) {
+            
+                NSDecimalNumber *cashSum = [NSDecimalNumber zero];
+                
+                for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
+                    
+                    cashSum = [cashSum decimalNumberByAdding:cashing.summ];
+                    
+                }
+                
+                self.cashingSum = cashSum;
+
+            } else if (indexPath.section == 1) {
+            
+                id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section-1];
+                STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
+                
+                self.cashingSum = uncashing.summ;
+            
+            }
+
+            [self.sumPopover presentPopoverFromRect:detailButton.frame inView:cell permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+
+        }
+        
+    }
+    
+}
 
 #pragma mark - NSFetchedResultsController delegate
 

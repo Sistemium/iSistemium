@@ -95,6 +95,7 @@
 		2CA4528B195EB53400D93CA2 /* STMPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA4528A195EB53400D93CA2 /* STMPicture.m */; };
 		2CA452DF19649C0D00D93CA2 /* STMDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2CA452D919649C0D00D93CA2 /* STMDataModel.xcdatamodeld */; };
 		2CA452E319649C5E00D93CA2 /* STMSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA452E219649C5E00D93CA2 /* STMSetting.m */; };
+		2CA611E919FA997B0046ECF4 /* STMUncashingSumPopoverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA611E819FA997B0046ECF4 /* STMUncashingSumPopoverVC.m */; };
 		2CB4052019BF38F000813E88 /* STMMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB4051F19BF38F000813E88 /* STMMessage.m */; };
 		2CB4052319BF3A9600813E88 /* STMRecordStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB4052219BF3A9600813E88 /* STMRecordStatus.m */; };
 		2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */; };
@@ -306,6 +307,8 @@
 		2CA452E019649C2D00D93CA2 /* STMDataModel 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 6.xcdatamodel"; sourceTree = "<group>"; };
 		2CA452E119649C5E00D93CA2 /* STMSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSetting.h; sourceTree = "<group>"; };
 		2CA452E219649C5E00D93CA2 /* STMSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSetting.m; sourceTree = "<group>"; };
+		2CA611E719FA997B0046ECF4 /* STMUncashingSumPopoverVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingSumPopoverVC.h; sourceTree = "<group>"; };
+		2CA611E819FA997B0046ECF4 /* STMUncashingSumPopoverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingSumPopoverVC.m; sourceTree = "<group>"; };
 		2CB4051319BE1E9C00813E88 /* STMDataModel 16.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 16.xcdatamodel"; sourceTree = "<group>"; };
 		2CB4051719BF2FAE00813E88 /* STMDataModel 17.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 17.xcdatamodel"; sourceTree = "<group>"; };
 		2CB4051E19BF38F000813E88 /* STMMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMessage.h; sourceTree = "<group>"; };
@@ -434,6 +437,8 @@
 				2C2968F219A0C31B0038B122 /* STMUncashingSVC.m */,
 				2C2968F419A0C37E0038B122 /* STMUncashingMasterTVC.h */,
 				2C2968F519A0C37E0038B122 /* STMUncashingMasterTVC.m */,
+				2CA611E719FA997B0046ECF4 /* STMUncashingSumPopoverVC.h */,
+				2CA611E819FA997B0046ECF4 /* STMUncashingSumPopoverVC.m */,
 				2C2968F719A0C3950038B122 /* STMUncashingDetailsTVC.h */,
 				2C2968F819A0C3950038B122 /* STMUncashingDetailsTVC.m */,
 				2C2968FD19A37C480038B122 /* STMHandOverPopoverVC.h */,
@@ -858,6 +863,7 @@
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
 				2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */,
 				2C6528F219576894008605D9 /* STMPartner.m in Sources */,
+				2CA611E919FA997B0046ECF4 /* STMUncashingSumPopoverVC.m in Sources */,
 				2C65284219571C4B008605D9 /* STMCampaignsSVC.m in Sources */,
 				2C2968F619A0C37E0038B122 /* STMUncashingMasterTVC.m in Sources */,
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
