@@ -10,7 +10,6 @@
 		2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */; };
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
 		2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */; };
-		2C2968D7199B4CB50038B122 /* STMDebt.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D6199B4CB50038B122 /* STMDebt.m */; };
 		2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968DC199F8F220038B122 /* STMCashing+dayAsString.m */; };
 		2C2968EA19A0B98D0038B122 /* STMUncashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968E919A0B98D0038B122 /* STMUncashing.m */; };
 		2C2968EE19A0BFD10038B122 /* STMUncashing.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */; };
@@ -113,6 +112,7 @@
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
 		2CF365B519EEAA2D00F078BD /* STMClientData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B419EEAA2D00F078BD /* STMClientData.m */; };
+		2CF365B919FA4B8E00F078BD /* STMDebt.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B819FA4B8E00F078BD /* STMDebt.m */; };
 		CEAB4F59717C484083629622 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6311C3BED44E4D598636BF2C /* libPods.a */; };
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
 		D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */; };
@@ -138,8 +138,6 @@
 		2C2968D1199B3AC30038B122 /* STMDebt+Cashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMDebt+Cashing.h"; sourceTree = "<group>"; };
 		2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMDebt+Cashing.m"; sourceTree = "<group>"; };
 		2C2968D4199B4C8D0038B122 /* STMDataModel 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 12.xcdatamodel"; sourceTree = "<group>"; };
-		2C2968D5199B4CB50038B122 /* STMDebt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebt.h; sourceTree = "<group>"; };
-		2C2968D6199B4CB50038B122 /* STMDebt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebt.m; sourceTree = "<group>"; };
 		2C2968DB199F8F220038B122 /* STMCashing+dayAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMCashing+dayAsString.h"; sourceTree = "<group>"; };
 		2C2968DC199F8F220038B122 /* STMCashing+dayAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMCashing+dayAsString.m"; sourceTree = "<group>"; };
 		2C2968DE19A0B8DD0038B122 /* STMDataModel 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 13.xcdatamodel"; sourceTree = "<group>"; };
@@ -341,6 +339,9 @@
 		2CF365B219EEA9E000F078BD /* STMDataModel 19.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 19.xcdatamodel"; sourceTree = "<group>"; };
 		2CF365B319EEAA2D00F078BD /* STMClientData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMClientData.h; sourceTree = "<group>"; };
 		2CF365B419EEAA2D00F078BD /* STMClientData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMClientData.m; sourceTree = "<group>"; };
+		2CF365B619FA4B3000F078BD /* STMDataModel 20.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 20.xcdatamodel"; sourceTree = "<group>"; };
+		2CF365B719FA4B8E00F078BD /* STMDebt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebt.h; sourceTree = "<group>"; };
+		2CF365B819FA4B8E00F078BD /* STMDebt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebt.m; sourceTree = "<group>"; };
 		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
 		D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "christmas_gift-128.png"; sourceTree = "<group>"; };
@@ -458,6 +459,8 @@
 			isa = PBXGroup;
 			children = (
 				2CA452D919649C0D00D93CA2 /* STMDataModel.xcdatamodeld */,
+				2CF365B719FA4B8E00F078BD /* STMDebt.h */,
+				2CF365B819FA4B8E00F078BD /* STMDebt.m */,
 				2CF365B319EEAA2D00F078BD /* STMClientData.h */,
 				2CF365B419EEAA2D00F078BD /* STMClientData.m */,
 				2CF365A819ED8F1900F078BD /* STMCashing.h */,
@@ -470,8 +473,6 @@
 				2C80C813198CFD4B0044ADE4 /* STMOutlet.m */,
 				2C27B5AA196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.h */,
 				2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */,
-				2C2968D5199B4CB50038B122 /* STMDebt.h */,
-				2C2968D6199B4CB50038B122 /* STMDebt.m */,
 				2C2968D1199B3AC30038B122 /* STMDebt+Cashing.h */,
 				2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */,
 				2C2968E819A0B98D0038B122 /* STMUncashing.h */,
@@ -910,10 +911,10 @@
 				2C80C820198E4C220044ADE4 /* STMOutletDebtsTVC.m in Sources */,
 				2C65292E1958A77A008605D9 /* STMCampaignPicturePVC.m in Sources */,
 				2CB4052019BF38F000813E88 /* STMMessage.m in Sources */,
+				2CF365B919FA4B8E00F078BD /* STMDebt.m in Sources */,
 				2C65290119576895008605D9 /* STMBatteryStatus.m in Sources */,
 				2C53B8A119409E71002298A5 /* STMLogger.m in Sources */,
 				2C53B8A219409E71002298A5 /* STMTracker.m in Sources */,
-				2C2968D7199B4CB50038B122 /* STMDebt.m in Sources */,
 				2CF365AA19ED8F1900F078BD /* STMCashing.m in Sources */,
 				2C2968FC19A208FB0038B122 /* STMDatePickerVC.m in Sources */,
 				2C76A5CE196877B7004D6D80 /* AWXMLRequestSerializerFixed.m in Sources */,
@@ -1160,6 +1161,7 @@
 		2CA452D919649C0D00D93CA2 /* STMDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2CF365B619FA4B3000F078BD /* STMDataModel 20.xcdatamodel */,
 				2CF365A719ED8EA000F078BD /* STMDataModel 18.xcdatamodel */,
 				2CF365B219EEA9E000F078BD /* STMDataModel 19.xcdatamodel */,
 				2CB4051719BF2FAE00813E88 /* STMDataModel 17.xcdatamodel */,
@@ -1180,7 +1182,7 @@
 				2CA452E019649C2D00D93CA2 /* STMDataModel 6.xcdatamodel */,
 				2CA452DE19649C0D00D93CA2 /* STMDataModel.xcdatamodel */,
 			);
-			currentVersion = 2CF365B219EEA9E000F078BD /* STMDataModel 19.xcdatamodel */;
+			currentVersion = 2CF365B619FA4B3000F078BD /* STMDataModel 20.xcdatamodel */;
 			path = STMDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

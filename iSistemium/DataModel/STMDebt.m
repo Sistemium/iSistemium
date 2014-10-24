@@ -2,7 +2,7 @@
 //  STMDebt.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 13/08/14.
+//  Created by Maxim Grigoriev on 24/10/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -13,11 +13,13 @@
 
 @implementation STMDebt
 
+@dynamic calculatedSum;
 @dynamic date;
 @dynamic ndoc;
 @dynamic summ;
 @dynamic summOrigin;
-@dynamic calculatedSum;
+@dynamic dateE;
+@dynamic whom;
 @dynamic cashings;
 @dynamic outlet;
 
