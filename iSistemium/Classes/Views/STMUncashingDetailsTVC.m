@@ -203,12 +203,54 @@
     STMCashing *cashing = sectionInfo.objects[indexPath.row];
     
     NSString *textLabel = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:cashing.summ]];
+
+    cell.textLabel.text = textLabel;
+
+    
+    UIColor *textColor = [UIColor blackColor];
+    UIColor *backgroundColor = [UIColor clearColor];
+    UIFont *font = cell.detailTextLabel.font;
+    
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName: font,
+                                 NSBackgroundColorAttributeName: backgroundColor,
+                                 NSForegroundColorAttributeName: textColor
+                                 };
     
     NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
-    NSString *detailTextLabel = [NSString stringWithFormat:@"%@ / %@",debtString, [dateFormatter stringFromDate:cashing.date]];
+
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
     
-    cell.textLabel.text = textLabel;
-    cell.detailTextLabel.text = detailTextLabel;
+    if (cashing.debt.responsibility) {
+        
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
+        
+        UIColor *backgroundColor = [UIColor grayColor];
+        UIColor *textColor = [UIColor whiteColor];
+        
+        NSDictionary *attributes = @{
+                                     NSFontAttributeName: font,
+                                     NSBackgroundColorAttributeName: backgroundColor,
+                                     NSForegroundColorAttributeName: textColor
+                                     };
+        
+        NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", cashing.debt.responsibility];
+        
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
+        
+    }
+    
+    NSString *dateString = [NSString stringWithFormat:@" / %@", [dateFormatter stringFromDate:cashing.date]];
+
+    textColor = [UIColor blackColor];
+    backgroundColor = [UIColor clearColor];
+
+    [text appendAttributedString:[[NSAttributedString alloc] initWithString:dateString attributes:attributes]];
+    
+    cell.detailTextLabel.attributedText = text;
+
+//    cell.detailTextLabel.text = detailTextLabel;
+    
 
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
