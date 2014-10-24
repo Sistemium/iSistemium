@@ -242,9 +242,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cashingDetailsCell" forIndexPath:indexPath];
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-    
-    STMCashing *cashing = sectionInfo.objects[indexPath.row];
+    STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -261,13 +259,44 @@
     
     NSString *summOriginString = [numberFormatter stringFromNumber:cashing.debt.summOrigin];
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, summOriginString];
+    NSString *detailText = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, summOriginString];
     
     UIColor *textColor = cashing.uncashing ? [UIColor darkGrayColor] : [UIColor blackColor];
-    
+
     cell.textLabel.textColor = textColor;
-    cell.detailTextLabel.textColor = textColor;
+
+    UIColor *backgroundColor = [UIColor clearColor];
+    UIFont *font = cell.detailTextLabel.font;
     
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName: font,
+                                 NSBackgroundColorAttributeName: backgroundColor,
+                                 NSForegroundColorAttributeName: textColor
+                                 };
+
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:detailText attributes:attributes];
+    
+    if (cashing.debt.responsibility) {
+        
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
+        
+        UIColor *backgroundColor = [UIColor grayColor];
+        UIColor *textColor = [UIColor whiteColor];
+        
+        NSDictionary *attributes = @{
+                       NSFontAttributeName: font,
+                       NSBackgroundColorAttributeName: backgroundColor,
+                       NSForegroundColorAttributeName: textColor
+                       };
+        
+        NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", cashing.debt.responsibility];
+        
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
+
+    }
+    
+    cell.detailTextLabel.attributedText = text;
+
     return cell;
     
 }
