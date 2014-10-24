@@ -19,7 +19,7 @@
 @dynamic summ;
 @dynamic summOrigin;
 @dynamic dateE;
-@dynamic whom;
+@dynamic responsibility;
 @dynamic cashings;
 @dynamic outlet;
 

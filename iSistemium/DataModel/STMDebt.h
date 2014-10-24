@@ -20,7 +20,7 @@
 @property (nonatomic, retain) NSDecimalNumber * summ;
 @property (nonatomic, retain) NSDecimalNumber * summOrigin;
 @property (nonatomic, retain) NSDate * dateE;
-@property (nonatomic, retain) NSString * whom;
+@property (nonatomic, retain) NSString * responsibility;
 @property (nonatomic, retain) NSSet *cashings;
 @property (nonatomic, retain) STMOutlet *outlet;
 @end

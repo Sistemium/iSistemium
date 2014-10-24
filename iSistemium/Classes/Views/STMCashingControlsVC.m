@@ -202,7 +202,7 @@
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
-
+    
     [self showCashingButton];
 
 }

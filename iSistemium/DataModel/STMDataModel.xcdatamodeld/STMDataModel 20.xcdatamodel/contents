@@ -57,9 +57,9 @@
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateE" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="ndoc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="responsibility" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="summ" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
         <attribute name="summOrigin" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="whom" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="cashings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCashing" inverseName="debt" inverseEntity="STMCashing" syncable="YES"/>
         <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="debts" inverseEntity="STMOutlet" syncable="YES"/>
     </entity>

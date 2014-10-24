@@ -183,17 +183,57 @@
 - (STMOutletDebtsTVCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMOutletDebtsTVCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtDetailsCell" forIndexPath:indexPath];
-    
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-    
+
+    STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
+
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-
-    STMDebt *debt = sectionInfo.objects[indexPath.row];
     
     NSString *debtSumString = [numberFormatter stringFromNumber:debt.calculatedSum];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@", debtSumString];
+    if (debtSumString) {
+        
+        UIColor *backgroundColor = [UIColor clearColor];
+        UIColor *textColor = [UIColor blackColor];
+        UIFont *font = cell.textLabel.font;
+        
+        if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+            
+            textColor = ACTIVE_BLUE_COLOR;
+            
+        }
+
+        
+        NSDictionary *attributes = @{
+                                                NSFontAttributeName: font,
+                                     NSBackgroundColorAttributeName: backgroundColor,
+                                     NSForegroundColorAttributeName: textColor
+                                     };
+        
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:debtSumString attributes:attributes];
+        
+        if (debt.responsibility) {
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
+            
+            backgroundColor = [UIColor grayColor];
+            textColor = [UIColor whiteColor];
+
+            attributes = @{
+                                      NSFontAttributeName: font,
+                           NSBackgroundColorAttributeName: backgroundColor,
+                           NSForegroundColorAttributeName: textColor
+                           };
+            
+            NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", debt.responsibility];
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
+            
+        }
+
+        cell.textLabel.attributedText = text;
+
+    }
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
@@ -226,18 +266,6 @@
     
         [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
         
-    }
-    
-    if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
-        
-        cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
-        cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
-        
-    } else {
-
-        cell.textLabel.textColor = [UIColor blackColor];
-        cell.detailTextLabel.textColor = [UIColor blackColor];
-
     }
     
     return cell;
