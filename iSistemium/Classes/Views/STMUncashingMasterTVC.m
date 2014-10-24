@@ -19,6 +19,7 @@
 @property (nonatomic, strong) STMCashingSumFRCD *cashingSumFRCD;
 @property (nonatomic, strong) NSFetchedResultsController *cashingSumResultsController;
 @property (nonatomic, strong) UIPopoverController *sumPopover;
+@property (nonatomic, strong) NSDecimalNumber *infoSum;
 
 @end
 
@@ -113,7 +114,7 @@
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
         
-        sumPopoverVC.labelText = [numberFormatter stringFromNumber:self.cashingSum];
+        sumPopoverVC.labelText = [numberFormatter stringFromNumber:self.infoSum];
         
         _sumPopover = [[UIPopoverController alloc] initWithContentViewController:sumPopoverVC];
         
@@ -192,23 +193,24 @@
     
     if (indexPath.section == 0) {
         
-//        NSDecimalNumber *cashSum = [NSDecimalNumber zero];
-//        
-//        for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
-//            
-//            cashSum = [cashSum decimalNumberByAdding:cashing.summ];
-//            
-//        }
-//
-//        self.cashingSum = cashSum;
+        NSDecimalNumber *cashSum = [NSDecimalNumber zero];
+        
+        for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
+            
+            cashSum = [cashSum decimalNumberByAdding:cashing.summ];
+            
+        }
+
+        self.cashingSum = cashSum;
         
 //        cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
         cell.textLabel.text = NSLocalizedString(@"INFO", nil);
 //        cell.detailTextLabel.text = nil;
         
-//        [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-//                                    animated:YES
-//                              scrollPosition:UITableViewScrollPositionNone];
+        [cell setTintColor:[UIColor whiteColor]];
+        [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                    animated:YES
+                              scrollPosition:UITableViewScrollPositionNone];
         
         self.splitVC.detailVC.uncashing = nil;
         
@@ -291,22 +293,14 @@
             
             if (indexPath.section == 0) {
             
-                NSDecimalNumber *cashSum = [NSDecimalNumber zero];
+                self.infoSum = self.cashingSum;
                 
-                for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
-                    
-                    cashSum = [cashSum decimalNumberByAdding:cashing.summ];
-                    
-                }
-                
-                self.cashingSum = cashSum;
-
             } else if (indexPath.section == 1) {
             
                 id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section-1];
                 STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
                 
-                self.cashingSum = uncashing.summ;
+                self.infoSum = uncashing.summ;
             
             }
 
