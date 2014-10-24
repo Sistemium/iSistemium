@@ -13,6 +13,7 @@
 #import "STMCashing.h"
 #import "STMDebtsCombineVC.h"
 #import "STMConstants.h"
+#import "STMFunctions.h"
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
@@ -164,6 +165,128 @@
     
 }
 
+- (NSMutableAttributedString *)textLabelForDebt:(STMDebt *)debt withFont:(UIFont *)font {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    
+    NSString *debtSumString = [numberFormatter stringFromNumber:debt.calculatedSum];
+    
+    if (debtSumString) {
+
+        UIColor *backgroundColor = [UIColor clearColor];
+        UIColor *textColor = [UIColor blackColor];
+        
+        if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+            
+            textColor = ACTIVE_BLUE_COLOR;
+            
+        }
+        
+        
+        NSDictionary *attributes = @{
+                                     NSFontAttributeName: font,
+                                     NSBackgroundColorAttributeName: backgroundColor,
+                                     NSForegroundColorAttributeName: textColor
+                                     };
+        
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:debtSumString attributes:attributes];
+        
+        if (debt.responsibility) {
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
+            
+            backgroundColor = [UIColor grayColor];
+            textColor = [UIColor whiteColor];
+            
+            attributes = @{
+                           NSFontAttributeName: font,
+                           NSBackgroundColorAttributeName: backgroundColor,
+                           NSForegroundColorAttributeName: textColor
+                           };
+            
+            NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", debt.responsibility];
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
+            
+        }
+        
+        if (debt.dateE) {
+            
+            backgroundColor = [UIColor clearColor];
+            textColor = [UIColor blackColor];
+            
+            attributes = @{
+                           NSFontAttributeName: font,
+                           NSBackgroundColorAttributeName: backgroundColor,
+                           NSForegroundColorAttributeName: textColor
+                           };
+            
+            NSString *dueDateHeader = [NSString stringWithFormat:@" / %@: ", NSLocalizedString(@"DUE DATE", nil)];
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:dueDateHeader attributes:attributes]];
+            
+            NSNumber *numberOfDays = [STMFunctions daysFromTodayToDate:debt.dateE];
+
+            NSString *dueDate = nil;
+            
+            if ([numberOfDays intValue] == 0) {
+                
+                textColor = [UIColor purpleColor];
+                dueDate = NSLocalizedString(@"TODAY", nil);
+                
+            } else if ([numberOfDays intValue] == 1) {
+                
+                dueDate = NSLocalizedString(@"TOMORROW", nil);
+                
+            } else if ([numberOfDays intValue] == -1) {
+                
+                textColor = [UIColor redColor];
+                dueDate = NSLocalizedString(@"YESTERDAY", nil);
+                
+            } else {
+                
+                NSString *pluralType = [STMFunctions pluralTypeForCount:abs([numberOfDays intValue])];
+                
+                BOOL dateIsInPast = ([numberOfDays intValue] < 0);
+                
+                if (dateIsInPast) {
+                    
+                    int positiveNumberOfDays = -1 * [numberOfDays intValue];
+                    numberOfDays = [NSNumber numberWithInt:positiveNumberOfDays];
+                    
+                }
+                
+                dueDate = [NSString stringWithFormat:@"%@ %@", numberOfDays, NSLocalizedString([pluralType stringByAppendingString:@"DAYS"], nil)];
+                
+                if (dateIsInPast) {
+                    
+                    textColor = [UIColor redColor];
+                    dueDate = [NSString stringWithFormat:@"%@ %@", dueDate, NSLocalizedString(@"AGO", nil)];
+                    
+                }
+                
+            }
+            
+            attributes = @{
+                           NSFontAttributeName: font,
+                           NSBackgroundColorAttributeName: backgroundColor,
+                           NSForegroundColorAttributeName: textColor
+                           };
+
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:dueDate attributes:attributes]];
+            
+        }
+        
+        return text;
+        
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
 
 #pragma mark - Table view data source
 
@@ -186,54 +309,10 @@
 
     STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
 
+    cell.textLabel.attributedText = [self textLabelForDebt:debt withFont:cell.textLabel.font];
+    
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-    
-    NSString *debtSumString = [numberFormatter stringFromNumber:debt.calculatedSum];
-    
-    if (debtSumString) {
-        
-        UIColor *backgroundColor = [UIColor clearColor];
-        UIColor *textColor = [UIColor blackColor];
-        UIFont *font = cell.textLabel.font;
-        
-        if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
-            
-            textColor = ACTIVE_BLUE_COLOR;
-            
-        }
-
-        
-        NSDictionary *attributes = @{
-                                                NSFontAttributeName: font,
-                                     NSBackgroundColorAttributeName: backgroundColor,
-                                     NSForegroundColorAttributeName: textColor
-                                     };
-        
-        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:debtSumString attributes:attributes];
-        
-        if (debt.responsibility) {
-            
-            [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
-            
-            backgroundColor = [UIColor grayColor];
-            textColor = [UIColor whiteColor];
-
-            attributes = @{
-                                      NSFontAttributeName: font,
-                           NSBackgroundColorAttributeName: backgroundColor,
-                           NSForegroundColorAttributeName: textColor
-                           };
-            
-            NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", debt.responsibility];
-            
-            [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
-            
-        }
-
-        cell.textLabel.attributedText = text;
-
-    }
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
@@ -243,6 +322,17 @@
     NSString *debtSumOriginString = [numberFormatter stringFromNumber:debt.summOrigin];
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
+    
+    if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+        
+        cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
+        
+    } else {
+        
+        cell.detailTextLabel.textColor = [UIColor blackColor];
+        
+    }
+
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     

@@ -25,6 +25,8 @@
 + (NSString *)pluralTypeForCount:(NSUInteger)count;
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
 
++ (NSNumber *)daysFromTodayToDate:(NSDate *)date;
+
 + (STMDateFormatter *)dateFormatter;
 
 @end

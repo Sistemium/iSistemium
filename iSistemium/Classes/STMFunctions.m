@@ -40,6 +40,24 @@
     
 }
 
++ (NSNumber *)daysFromTodayToDate:(NSDate *)date {
+    
+    NSDate *today = [NSDate date];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    
+    today = [dateFormatter dateFromString:[dateFormatter stringFromDate:today]];
+    date = [dateFormatter dateFromString:[dateFormatter stringFromDate:date]];
+    
+    NSTimeInterval interval = [date timeIntervalSinceDate:today];
+    
+    int numberOfDays = floor(interval / (60 * 60 * 24));
+    
+    return [NSNumber numberWithInt:numberOfDays];
+    
+}
 
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString {
     

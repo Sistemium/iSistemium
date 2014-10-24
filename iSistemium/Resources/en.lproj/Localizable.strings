@@ -63,3 +63,11 @@
 "UPDATE" = "Update";
 "VERSION" = "Version";
 "CASHING SUMM" = "Cashing summ";
+"DUE DATE" = "Due date";
+"TODAY" = "Today";
+"TOMORROW" = "Tomorrow";
+"YESTERDAY" = "Yesterday";
+"1DAYS" = "day";
+"2DAYS" = "days";
+"5DAYS" = "days";
+"AGO" = "ago";
