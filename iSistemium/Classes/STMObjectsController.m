@@ -784,10 +784,21 @@
 
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
+    NSArray *entityNamesForSending = @[
+        NSStringFromClass([STMPhotoReport class]),
+        NSStringFromClass([STMCashing class]),
+        NSStringFromClass([STMUncashing class]),
+        NSStringFromClass([STMClientData class]),
+        NSStringFromClass([STMRecordStatus class]),
+        NSStringFromClass([STMLocation class])
+    ];
+    
+    BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
+
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
         
-    return (lts && [lts compare:deviceTs] == NSOrderedAscending);
+    return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
     
 }
 
