@@ -7,6 +7,7 @@
 //
 
 #import "STMUncashingHandOverVC.h"
+#import "STMCashing.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate>
 
@@ -37,11 +38,30 @@
     
 }
 
+- (void)cashingDictionaryChanged {
+    
+    NSDecimalNumber *uncashingSum = [NSDecimalNumber zero];
+    
+    for (STMCashing *cashing in [self.splitVC.detailVC.cashingDictionary allValues]) {
+        
+        uncashingSum = [uncashingSum decimalNumberByAdding:cashing.summ];
+        
+    }
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    
+    self.uncashingSumLabel.text = [numberFormatter stringFromNumber:uncashingSum];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingDictionaryChanged) name:@"cashingDictionaryChanged" object:self.splitVC.detailVC];
     
 }
 
@@ -51,11 +71,27 @@
     
 }
 
+- (void)labelsInit {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    
+    self.dateLabel.text = [dateFormatter stringFromDate:[NSDate date]];
+    
+    self.uncashingLabel.text = NSLocalizedString(@"CASHING SUMM", nil);
+
+    [self cashingDictionaryChanged];
+    
+    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
+    
+}
 
 - (void)customInit {
 
     [self addObservers];
     [self.navigationItem setHidesBackButton:YES animated:YES];
+    [self labelsInit];
     
 }
 

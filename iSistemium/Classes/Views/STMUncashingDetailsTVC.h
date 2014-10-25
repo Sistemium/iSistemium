@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) STMUncashing *uncashing;
 @property (nonatomic, strong) UIBarButtonItem *handOverButton;
+@property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
 
 - (void)uncashingDoneWithSum:(NSDecimalNumber *)summ;
 
