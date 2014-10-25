@@ -12,6 +12,7 @@
 #import "STMCashing.h"
 #import "STMUncashing.h"
 #import "STMUncashingSumPopoverVC.h"
+#import "STMUncashingHandOverVC.h"
 
 @interface STMUncashingMasterTVC ()
 
@@ -374,10 +375,48 @@
     
 }
 
+- (void)handOverProcessingChanged:(NSNotification *)notification {
+    
+    if (self.splitVC.isUncashingHandOverProcessing) {
+        
+        [self performSegueWithIdentifier:@"showHandOverVC" sender:self];
+        
+    }
+    
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showHandOverVC"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMUncashingHandOverVC class]]) {
+            
+            STMUncashingHandOverVC *handOverVC = (STMUncashingHandOverVC *)segue.destinationViewController;
+            handOverVC.splitVC = self.splitVC;
+            
+        }
+        
+    }
+    
+}
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
+    
+    [self addObservers];
     
     self.cashingSumFRCD = [[STMCashingSumFRCD alloc] init];
     self.cashingSumFRCD.cashingSumTableView = self.tableView;

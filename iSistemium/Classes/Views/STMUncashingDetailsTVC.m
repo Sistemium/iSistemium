@@ -125,6 +125,12 @@
     
 }
 
+- (void)handOverButtonPressed {
+    
+    self.splitVC.isUncashingHandOverProcessing = !self.splitVC.isUncashingHandOverProcessing;
+    
+}
+
 - (void)showHandOverPopover {
     
     self.handOverPopover = nil;
@@ -271,7 +277,7 @@
 
 - (void)customInit {
     
-    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHandOverPopover)];
+    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(handOverButtonPressed)];
     self.navigationItem.rightBarButtonItem = self.handOverButton;
 
     [self performFetch];
