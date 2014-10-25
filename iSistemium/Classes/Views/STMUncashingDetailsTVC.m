@@ -17,8 +17,8 @@
 @interface STMUncashingDetailsTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
-@property (nonatomic, strong) UIPopoverController *popover;
-@property (nonatomic, strong) UIPopoverController *handOverPopover;
+@property (nonatomic, strong) UIPopoverController *uncashingPopover;
+//@property (nonatomic, strong) UIPopoverController *handOverPopover;
 
 @end
 
@@ -59,27 +59,27 @@
         }
         
         [self performFetch];
-        [self.popover dismissPopoverAnimated:YES];
+        [self.uncashingPopover dismissPopoverAnimated:YES];
         
     }
     
 }
 
-- (UIPopoverController *)handOverPopover {
-    
-    if (!_handOverPopover) {
-        
-        STMHandOverPopoverVC *handOverPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"handOverPopoverVC"];
-        handOverPopoverVC.uncashingSum = self.splitVC.masterVC.cashingSum;
-        handOverPopoverVC.parent = self;
-        
-        _handOverPopover = [[UIPopoverController alloc] initWithContentViewController:handOverPopoverVC];
-
-    }
-
-    return _handOverPopover;
-    
-}
+//- (UIPopoverController *)handOverPopover {
+//    
+//    if (!_handOverPopover) {
+//        
+//        STMHandOverPopoverVC *handOverPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"handOverPopoverVC"];
+//        handOverPopoverVC.uncashingSum = self.splitVC.masterVC.cashingSum;
+//        handOverPopoverVC.parent = self;
+//        
+//        _handOverPopover = [[UIPopoverController alloc] initWithContentViewController:handOverPopoverVC];
+//
+//    }
+//
+//    return _handOverPopover;
+//    
+//}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -136,23 +136,23 @@
         
     } else {
         
-        [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
         [self.handOverButton setTintColor:ACTIVE_BLUE_COLOR];
+        [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
         
     }
     
 }
 
-- (void)showHandOverPopover {
-    
-    self.handOverPopover = nil;
-    [self.handOverPopover presentPopoverFromBarButtonItem:self.handOverButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-    
-}
+//- (void)showHandOverPopover {
+//    
+//    self.handOverPopover = nil;
+//    [self.handOverPopover presentPopoverFromBarButtonItem:self.handOverButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+//    
+//}
 
 - (void)uncashingDoneWithSum:(NSDecimalNumber *)summ {
 
-    [self.handOverPopover dismissPopoverAnimated:YES];
+//    [self.handOverPopover dismissPopoverAnimated:YES];
 
     STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
 
@@ -184,13 +184,35 @@
 
 #pragma mark - UISplitViewControllerDelegate
 
+//- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation {
+//    
+//    if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
+//        
+//        return NO;
+//        
+//    } else {
+//    
+//        if (self.splitVC.isUncashingHandOverProcessing) {
+//            
+//            return NO;
+//            
+//        } else {
+//            
+//            return YES;
+//            
+//        }
+//
+//    }
+//    
+//}
+
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
     
     barButtonItem.title = NSLocalizedString(@"UNCASHING", nil);
     
     self.navigationItem.leftBarButtonItem = barButtonItem;
     
-    self.popover = pc;
+    self.uncashingPopover = pc;
     
 }
 
@@ -198,7 +220,7 @@
     
     self.navigationItem.leftBarButtonItem = nil;
     
-    self.popover = nil;
+    self.uncashingPopover = nil;
     
 }
 

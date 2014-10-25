@@ -8,12 +8,24 @@
 
 #import "STMUncashingHandOverVC.h"
 
-@interface STMUncashingHandOverVC ()
+@interface STMUncashingHandOverVC () <UIAlertViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *uncashingLabel;
+@property (weak, nonatomic) IBOutlet UILabel *uncashingSumLabel;
+@property (weak, nonatomic) IBOutlet UIButton *doneButton;
+
 
 @end
 
 @implementation STMUncashingHandOverVC
 
+- (IBAction)doneButtonPressed:(id)sender {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TEST" message:@"TEST" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    [alert show];
+    
+}
 
 - (void)handOverProcessingChanged:(NSNotification *)notification {
     

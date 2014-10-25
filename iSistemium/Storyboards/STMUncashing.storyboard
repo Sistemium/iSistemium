@@ -185,9 +185,56 @@
                     <view key="view" contentMode="scaleToFill" id="QWV-wc-A6p">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="852"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TtG-d9-1yB">
+                                <rect key="frame" x="116" y="107" width="89" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uncashing label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KIX-w8-fsd">
+                                <rect key="frame" x="99" y="164" width="123" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uncashing sum" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iMs-Li-lWm">
+                                <rect key="frame" x="78" y="193" width="165" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WgK-L0-ZHr">
+                                <rect key="frame" x="137" y="270" width="47" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Done">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doneButtonPressed:" destination="9xA-4C-LDv" eventType="touchUpInside" id="cH3-Ja-Wxa"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="KIX-w8-fsd" firstAttribute="top" secondItem="TtG-d9-1yB" secondAttribute="bottom" constant="33" id="AOb-ZA-7Ii"/>
+                            <constraint firstAttribute="centerX" secondItem="iMs-Li-lWm" secondAttribute="centerX" constant="-0.5" id="QDx-Ii-5Fl"/>
+                            <constraint firstAttribute="centerX" secondItem="WgK-L0-ZHr" secondAttribute="centerX" constant="-0.5" id="Qrd-7H-qj6"/>
+                            <constraint firstItem="WgK-L0-ZHr" firstAttribute="top" secondItem="iMs-Li-lWm" secondAttribute="bottom" constant="48" id="ebb-D1-hva"/>
+                            <constraint firstItem="iMs-Li-lWm" firstAttribute="top" secondItem="KIX-w8-fsd" secondAttribute="bottom" constant="8" id="klh-0I-oY6"/>
+                            <constraint firstAttribute="centerX" secondItem="KIX-w8-fsd" secondAttribute="centerX" constant="-0.5" id="s7Z-ID-YM9"/>
+                            <constraint firstItem="TtG-d9-1yB" firstAttribute="top" secondItem="JVV-tK-uNm" secondAttribute="bottom" constant="43" id="u1K-su-wGQ"/>
+                            <constraint firstAttribute="centerX" secondItem="TtG-d9-1yB" secondAttribute="centerX" constant="-0.5" id="zOB-Dv-cbz"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="lMW-dZ-KBK"/>
+                    <connections>
+                        <outlet property="dateLabel" destination="TtG-d9-1yB" id="zML-LA-jUU"/>
+                        <outlet property="doneButton" destination="WgK-L0-ZHr" id="GXZ-xH-Kxv"/>
+                        <outlet property="uncashingLabel" destination="KIX-w8-fsd" id="xIu-gJ-yR6"/>
+                        <outlet property="uncashingSumLabel" destination="iMs-Li-lWm" id="H5m-Qm-2n4"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hkw-38-b52" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
