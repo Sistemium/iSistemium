@@ -203,9 +203,12 @@
         }
 
         self.cashingSum = cashSum;
-        
+
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        cell.textLabel.text = [dateFormatter stringFromDate:[NSDate date]];
+
 //        cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
-        cell.textLabel.text = NSLocalizedString(@"INFO", nil);
+//        cell.textLabel.text = NSLocalizedString(@"INFO", nil);
 //        cell.detailTextLabel.text = nil;
         
         [cell setTintColor:[UIColor whiteColor]];

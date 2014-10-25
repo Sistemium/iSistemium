@@ -129,6 +129,18 @@
     
     self.splitVC.isUncashingHandOverProcessing = !self.splitVC.isUncashingHandOverProcessing;
     
+    if (self.splitVC.isUncashingHandOverProcessing) {
+        
+        [self.handOverButton setTitle:NSLocalizedString(@"CANCEL", nil)];
+        [self.handOverButton setTintColor:[UIColor redColor]];
+        
+    } else {
+        
+        [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
+        [self.handOverButton setTintColor:ACTIVE_BLUE_COLOR];
+        
+    }
+    
 }
 
 - (void)showHandOverPopover {
