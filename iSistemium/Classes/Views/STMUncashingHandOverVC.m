@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *uncashingLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingSumLabel;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
+@property (nonatomic, strong) NSDecimalNumber *uncashingSum;
 
 
 @end
@@ -23,8 +24,28 @@
 
 - (IBAction)doneButtonPressed:(id)sender {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"TEST" message:@"TEST" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) message:[numberFormatter stringFromNumber:self.uncashingSum] delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+    alert.tag = 1;
     [alert show];
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (alertView.tag == 1) {
+        
+        if (buttonIndex == 1) {
+
+            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
+            
+        } else {
+            
+        }
+        
+    }
     
 }
 
@@ -52,6 +73,14 @@
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
     self.uncashingSumLabel.text = [numberFormatter stringFromNumber:uncashingSum];
+    
+    self.uncashingSum = uncashingSum;
+    
+    if ([self.uncashingSum intValue] <= 0) {
+        self.doneButton.enabled = NO;
+    } else {
+        self.doneButton.enabled = YES;
+    }
     
 }
 

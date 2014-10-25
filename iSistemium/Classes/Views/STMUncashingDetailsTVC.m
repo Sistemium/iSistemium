@@ -152,7 +152,7 @@
 
     STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
 
-    NSArray *cashings = self.resultsController.fetchedObjects;
+    NSArray *cashings = [self.cashingDictionary allValues];
     
     for (STMCashing *cashing in cashings) {
         
@@ -174,6 +174,8 @@
 
         }
     }];
+    
+    [self handOverButtonPressed];
     
 }
 

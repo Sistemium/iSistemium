@@ -211,7 +211,7 @@
 //        cell.textLabel.text = NSLocalizedString(@"INFO", nil);
 //        cell.detailTextLabel.text = nil;
         
-        [cell setTintColor:[UIColor whiteColor]];
+        [cell setSelected:YES];
         [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                                     animated:YES
                               scrollPosition:UITableViewScrollPositionNone];
@@ -244,6 +244,12 @@
     [detailButton addGestureRecognizer:tap];
     
     cell.accessoryView = detailButton;
+    
+    if (cell.selected) {
+        cell.tintColor = [UIColor whiteColor];
+    } else {
+        cell.tintColor = ACTIVE_BLUE_COLOR;
+    }
     
     return cell;
     
@@ -383,6 +389,11 @@
     if (self.splitVC.isUncashingHandOverProcessing) {
         
         [self performSegueWithIdentifier:@"showHandOverVC" sender:self];
+        
+    } else {
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
         
     }
     
