@@ -239,17 +239,17 @@
     cell.textLabel.highlightedTextColor = highlightedTextColor;
     cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
     
-    UIButton *detailButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(detailButtonTapped:)];
-    [detailButton addGestureRecognizer:tap];
+//    UIButton *detailButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(detailButtonTapped:)];
+//    [detailButton addGestureRecognizer:tap];
+//    
+//    cell.accessoryView = detailButton;
     
-    cell.accessoryView = detailButton;
-    
-    if (cell.selected) {
-        cell.tintColor = [UIColor whiteColor];
-    } else {
-        cell.tintColor = ACTIVE_BLUE_COLOR;
-    }
+//    if (cell.selected) {
+//        cell.tintColor = [UIColor whiteColor];
+//    } else {
+//        cell.tintColor = ACTIVE_BLUE_COLOR;
+//    }
     
     return cell;
     

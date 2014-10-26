@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) UIPopoverController *uncashingPopover;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 
 @end
 
@@ -64,6 +65,31 @@
     
 }
 
+- (void)setInfoLabelTitle {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    
+    if (self.uncashing) {
+        
+        self.infoLabel.title = [numberFormatter stringFromNumber:self.uncashing.summ];
+        
+    } else {
+        
+        NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+        
+        for (STMCashing *cashing in self.resultsController.fetchedObjects) {
+            
+            cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+            
+        }
+        
+        self.infoLabel.title = [numberFormatter stringFromNumber:cashingSum];
+        
+    }
+    
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -97,6 +123,7 @@
     } else {
         
         [self.tableView reloadData];
+        [self setInfoLabelTitle];
         
     }
     
@@ -175,6 +202,7 @@
         }
     }];
     
+    [self setInfoLabelTitle];
     [self handOverButtonPressed];
     
 }
@@ -366,6 +394,12 @@
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
 
+    self.infoLabel.title = @"";
+    self.infoLabel.enabled = NO;
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+    
     [self performFetch];
     
 }
@@ -389,10 +423,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
-//    NSLog(@"cashingSum.intValue %d", self.splitVC.masterVC.cashingSum.intValue);
-    
-//    self.handOverButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
     
 }
 

@@ -9,7 +9,7 @@
             <objects>
                 <tableViewController id="QcM-6o-Vp9" customClass="STMUncashingDetailsTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="do2-E9-R4L">
-                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
+                        <rect key="frame" x="0.0" y="64" width="768" height="916"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -44,7 +44,15 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="dmN-Jz-gBG"/>
+                        <barButtonItem title="Item" id="WKD-Ud-w5N"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="lRc-M5-z0n"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="3G7-Yy-GVl"/>
+                    <connections>
+                        <outlet property="infoLabel" destination="WKD-Ud-w5N" id="9ZQ-dO-Jma"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3jY-ap-vdd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -272,13 +280,17 @@
         <!--Navigation Controller-->
         <scene sceneID="A74-f3-nEo">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="vvk-fx-6i2" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="vvk-fx-6i2" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="4zs-ia-d2J">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Yxa-ZP-UOt">
+                        <rect key="frame" x="0.0" y="980" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="QcM-6o-Vp9" kind="relationship" relationship="rootViewController" id="ORE-jO-n84"/>
                     </connections>
