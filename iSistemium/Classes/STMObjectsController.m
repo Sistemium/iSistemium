@@ -206,19 +206,14 @@
                 if (appDownloadUrlSetting) {
                     
                     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                    BOOL newAppVersionAvailable = [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
-                    
-                    if (!newAppVersionAvailable) {
 
-                        [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"newAppVersionAvailable"];
-                        [defaults setObject:availableVersion forKey:@"availableVersion"];
-                        [defaults setObject:appDownloadUrlSetting.value forKey:@"appDownloadUrl"];
-                        [defaults synchronize];
+                    [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"newAppVersionAvailable"];
+                    [defaults setObject:availableVersion forKey:@"availableVersion"];
+                    [defaults setObject:appDownloadUrlSetting.value forKey:@"appDownloadUrl"];
+                    [defaults synchronize];
 
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"newAppVersionAvailable" object:nil userInfo:@{@"availableVersion": availableVersion, @"appDownloadUrl":appDownloadUrlSetting.value}];
-                        
-                    }
-                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newAppVersionAvailable" object:nil userInfo:@{@"availableVersion": availableVersion, @"appDownloadUrl":appDownloadUrlSetting.value}];
+                                        
                 }
                 
             } else {

@@ -50,8 +50,16 @@
 
 - (BOOL)newAppVersionAvailable {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
+    if ([self.session.status isEqualToString:@"running"]) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        return [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
+
+    } else {
+        
+        return NO;
+        
+    }
     
 }
 

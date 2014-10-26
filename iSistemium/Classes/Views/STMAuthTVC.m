@@ -548,11 +548,11 @@
     
     [self addObservers];
     
-    STMRootTBC *rootTBC = (STMRootTBC *)self.tabBarController;
-    
-    if (rootTBC.newAppVersionAvailable) {
-        [self showUpdateButton];
-    }
+//    STMRootTBC *rootTBC = (STMRootTBC *)self.tabBarController;
+//
+//    if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
+//        [self showUpdateButton];
+//    }
     
 }
 
@@ -569,9 +569,9 @@
     
     [super viewWillAppear:animated];
     
-    if ([(STMRootTBC *)self.tabBarController newAppVersionAvailable]) {
+    if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
         
-        [(STMRootTBC *)self.tabBarController newAppVersionAvailable:nil];
+        [[STMRootTBC sharedRootVC] newAppVersionAvailable:nil];
         
     }
     
