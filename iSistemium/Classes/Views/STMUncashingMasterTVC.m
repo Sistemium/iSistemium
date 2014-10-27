@@ -10,8 +10,6 @@
 #import "STMUncashingSVC.h"
 #import "STMConstants.h"
 #import "STMCashing.h"
-#import "STMUncashing.h"
-#import "STMUncashingSumPopoverVC.h"
 #import "STMUncashingHandOverVC.h"
 
 @interface STMUncashingMasterTVC ()
@@ -19,15 +17,10 @@
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) STMCashingSumFRCD *cashingSumFRCD;
 @property (nonatomic, strong) NSFetchedResultsController *cashingSumResultsController;
-@property (nonatomic, strong) UIPopoverController *sumPopover;
 @property (nonatomic, strong) NSDecimalNumber *infoSum;
 
 @end
 
-
-//@interface STMCashingSumFRCD ()
-//
-//@end
 
 #pragma mark - STMCashingSumFRCD
 
@@ -106,22 +99,21 @@
     
 }
 
-- (UIPopoverController *)sumPopover {
+- (void)selectRowWithUncashing:(STMUncashing *)uncashing {
     
-    if (!_sumPopover) {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+
+    if (uncashing) {
         
-        STMUncashingSumPopoverVC *sumPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"sumPopoverVC"];
-        
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-        
-        sumPopoverVC.labelText = [numberFormatter stringFromNumber:self.infoSum];
-        
-        _sumPopover = [[UIPopoverController alloc] initWithContentViewController:sumPopoverVC];
-        
+        indexPath = [self.resultsController indexPathForObject:uncashing];
+
     }
     
-    return _sumPopover;
+    if (indexPath) {
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        
+    }
     
 }
 
@@ -207,9 +199,6 @@
         dateFormatter.timeStyle = NSDateFormatterNoStyle;
         cell.textLabel.text = [dateFormatter stringFromDate:[NSDate date]];
 
-//        cell.detailTextLabel.text = nil;
-
-
         [cell setSelected:YES];
         [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                                     animated:YES
@@ -222,9 +211,7 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section-1];
         STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
 
-//        cell.textLabel.text = [numberFormatter stringFromNumber:uncashing.summ];
         cell.textLabel.text = [dateFormatter stringFromDate:uncashing.date];
-//        cell.detailTextLabel.text = [dateFormatter stringFromDate:uncashing.date];
         
     }
     
@@ -274,40 +261,6 @@
     
 }
 
-- (void)detailButtonTapped:(UITapGestureRecognizer *)tap {
-    
-    if ([tap.view isKindOfClass:[UIButton class]]) {
-        
-        UIButton *detailButton = (UIButton *)tap.view;
-        
-        if ([detailButton.superview.superview isKindOfClass:[UITableViewCell class]]) {
-            
-            self.sumPopover = nil;
-            
-            UITableViewCell *cell = (UITableViewCell *)detailButton.superview.superview;
-            
-            NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-            
-            if (indexPath.section == 0) {
-            
-                self.infoSum = self.cashingSum;
-                
-            } else if (indexPath.section == 1) {
-            
-                id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section-1];
-                STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
-                
-                self.infoSum = uncashing.summ;
-            
-            }
-
-            [self.sumPopover presentPopoverFromRect:detailButton.frame inView:cell permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-
-        }
-        
-    }
-    
-}
 
 #pragma mark - NSFetchedResultsController delegate
 

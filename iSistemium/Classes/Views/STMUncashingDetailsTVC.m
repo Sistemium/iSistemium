@@ -10,7 +10,6 @@
 #import "STMDebt.h"
 #import "STMCashing.h"
 #import "STMConstants.h"
-#import "STMHandOverPopoverVC.h"
 #import "STMUncashingSVC.h"
 #import "STMSyncer.h"
 
@@ -192,10 +191,10 @@
     }
     
     uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
-    
     uncashing.summ = summ;
-    
     uncashing.date = [NSDate date];
+    
+//    self.uncashing = uncashing;
     
     [self.document saveDocument:^(BOOL success) {
         if (success) {
@@ -208,6 +207,7 @@
     
     [self setInfoLabelTitle];
     [self handOverButtonPressed];
+    [self.splitVC.masterVC selectRowWithUncashing:nil];
     
 }
 

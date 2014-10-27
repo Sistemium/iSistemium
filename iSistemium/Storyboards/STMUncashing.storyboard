@@ -58,52 +58,6 @@
             </objects>
             <point key="canvasLocation" x="1286" y="11"/>
         </scene>
-        <!--Hand Over PopoverVC-->
-        <scene sceneID="WXV-jP-DpB">
-            <objects>
-                <viewController storyboardIdentifier="handOverPopoverVC" id="maE-Mh-LPs" customClass="STMHandOverPopoverVC" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="tCS-BJ-FhL"/>
-                        <viewControllerLayoutGuide type="bottom" id="eJ8-WF-SVJ"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="w1n-Gs-sBc">
-                        <rect key="frame" x="0.0" y="0.0" width="256" height="64"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XAU-eY-fxX">
-                                <rect key="frame" x="190" y="17" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                            </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="WT2-ws-FNo">
-                                <rect key="frame" x="20" y="17" width="150" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="M4i-V8-y99"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="done"/>
-                            </textField>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="XAU-eY-fxX" secondAttribute="trailing" constant="20" id="Jdb-LV-9VN"/>
-                            <constraint firstItem="WT2-ws-FNo" firstAttribute="leading" secondItem="w1n-Gs-sBc" secondAttribute="leading" constant="20" id="N1d-Hg-xoH"/>
-                            <constraint firstAttribute="centerY" secondItem="XAU-eY-fxX" secondAttribute="centerY" id="Nfq-Oz-p5b"/>
-                            <constraint firstAttribute="centerY" secondItem="WT2-ws-FNo" secondAttribute="centerY" id="usi-AY-rkj"/>
-                        </constraints>
-                    </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="256" height="64"/>
-                    <connections>
-                        <outlet property="doneButton" destination="XAU-eY-fxX" id="wkN-Bw-LDf"/>
-                        <outlet property="uncashingSumTextField" destination="WT2-ws-FNo" id="SvT-Vs-bRe"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nbo-ic-xti" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2205" y="907"/>
-        </scene>
         <!--Uncashing MasterTVC - Root View Controller-->
         <scene sceneID="Amy-ez-Ebg">
             <objects>
@@ -145,42 +99,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I6R-rJ-3ND" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="846" y="-1017"/>
-        </scene>
-        <!--Uncashing Sum PopoverVC-->
-        <scene sceneID="ncN-pJ-sCQ">
-            <objects>
-                <viewController storyboardIdentifier="sumPopoverVC" id="KlO-fU-TwT" customClass="STMUncashingSumPopoverVC" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="BB7-dj-Jza"/>
-                        <viewControllerLayoutGuide type="bottom" id="mZ9-Cz-q3Q"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Dm2-Hu-9u2">
-                        <rect key="frame" x="0.0" y="0.0" width="192" height="48"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bIa-2s-1zv">
-                                <rect key="frame" x="75" y="13" width="42" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="centerY" secondItem="bIa-2s-1zv" secondAttribute="centerY" constant="0.5" id="jvZ-GL-dyr"/>
-                            <constraint firstAttribute="centerX" secondItem="bIa-2s-1zv" secondAttribute="centerX" id="mfb-57-ojx"/>
-                        </constraints>
-                    </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="192" height="48"/>
-                    <connections>
-                        <outlet property="sumLabel" destination="bIa-2s-1zv" id="Wr5-UB-0pM"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Ygq-Rr-XVv" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1239" y="-894"/>
         </scene>
         <!--Uncashing Hand OverVC-->
         <scene sceneID="Zto-A9-eEo">

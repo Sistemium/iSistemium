@@ -7,11 +7,13 @@
 //
 
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMUncashing.h"
 
 @interface STMUncashingMasterTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, strong) NSDecimalNumber *cashingSum;
 
+- (void)selectRowWithUncashing:(STMUncashing *)uncashing;
 
 @end
 
