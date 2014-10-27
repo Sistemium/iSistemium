@@ -72,7 +72,9 @@
     
     if (self.uncashing) {
         
-        self.infoLabel.title = [numberFormatter stringFromNumber:self.uncashing.summ];
+        NSString *infoLabelTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"TOTAL", nil), [numberFormatter stringFromNumber:self.uncashing.summ]];
+        
+        self.infoLabel.title = infoLabelTitle;
         
     } else {
         
@@ -83,8 +85,10 @@
             cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
             
         }
-        
-        self.infoLabel.title = [numberFormatter stringFromNumber:cashingSum];
+
+        NSString *infoLabelTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"TOTAL", nil), [numberFormatter stringFromNumber:cashingSum]];
+
+        self.infoLabel.title = infoLabelTitle;
         
     }
     
