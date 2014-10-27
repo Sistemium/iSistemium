@@ -17,8 +17,8 @@
 @interface STMUncashingDetailsTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
-@property (nonatomic, strong) UIPopoverController *popover;
-@property (nonatomic, strong) UIPopoverController *handOverPopover;
+@property (nonatomic, strong) UIPopoverController *uncashingPopover;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 
 @end
 
@@ -59,25 +59,34 @@
         }
         
         [self performFetch];
-        [self.popover dismissPopoverAnimated:YES];
+        [self.uncashingPopover dismissPopoverAnimated:YES];
         
     }
     
 }
 
-- (UIPopoverController *)handOverPopover {
+- (void)setInfoLabelTitle {
     
-    if (!_handOverPopover) {
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    
+    if (self.uncashing) {
         
-        STMHandOverPopoverVC *handOverPopoverVC = [self.storyboard instantiateViewControllerWithIdentifier:@"handOverPopoverVC"];
-        handOverPopoverVC.uncashingSum = self.splitVC.masterVC.cashingSum;
-        handOverPopoverVC.parent = self;
+        self.infoLabel.title = [numberFormatter stringFromNumber:self.uncashing.summ];
         
-        _handOverPopover = [[UIPopoverController alloc] initWithContentViewController:handOverPopoverVC];
-
+    } else {
+        
+        NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
+        
+        for (STMCashing *cashing in self.resultsController.fetchedObjects) {
+            
+            cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+            
+        }
+        
+        self.infoLabel.title = [numberFormatter stringFromNumber:cashingSum];
+        
     }
-
-    return _handOverPopover;
     
 }
 
@@ -114,31 +123,63 @@
     } else {
         
         [self.tableView reloadData];
-        
-//        if (!self.uncashing) {
-//            
-//            self.handOverButton.enabled = [[NSNumber numberWithInteger:self.resultsController.fetchedObjects.count] boolValue];
-//            
-//        }
+        [self setInfoLabelTitle];
         
     }
     
 }
 
-- (void)showHandOverPopover {
+- (NSMutableDictionary *)cashingDictionary {
     
-    self.handOverPopover = nil;
-    [self.handOverPopover presentPopoverFromBarButtonItem:self.handOverButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    if (!_cashingDictionary) {
+        
+        _cashingDictionary = [NSMutableDictionary dictionary];
+        
+    }
+    
+    return _cashingDictionary;
+    
+}
+
+- (void)handOverButtonPressed {
+    
+    self.splitVC.isUncashingHandOverProcessing = !self.splitVC.isUncashingHandOverProcessing;
+    
+    if (self.splitVC.isUncashingHandOverProcessing) {
+
+        [self.tableView setEditing:YES animated:YES];
+
+        for (STMCashing *cashing in self.resultsController.fetchedObjects) {
+            
+            [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+            NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
+            
+            [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+            
+        }
+
+        [self.handOverButton setTitle:NSLocalizedString(@"CANCEL", nil)];
+        [self.handOverButton setTintColor:[UIColor redColor]];
+        
+    } else {
+
+        [self.tableView setEditing:NO animated:YES];
+
+        self.cashingDictionary = nil;
+
+        [self.handOverButton setTintColor:ACTIVE_BLUE_COLOR];
+        [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
+        
+    }
     
 }
 
 - (void)uncashingDoneWithSum:(NSDecimalNumber *)summ {
 
-    [self.handOverPopover dismissPopoverAnimated:YES];
-
     STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
 
-    NSArray *cashings = self.resultsController.fetchedObjects;
+    NSArray *cashings = [self.cashingDictionary allValues];
     
     for (STMCashing *cashing in cashings) {
         
@@ -161,10 +202,35 @@
         }
     }];
     
+    [self setInfoLabelTitle];
+    [self handOverButtonPressed];
+    
 }
 
 
 #pragma mark - UISplitViewControllerDelegate
+
+//- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation {
+//    
+//    if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
+//        
+//        return NO;
+//        
+//    } else {
+//    
+//        if (self.splitVC.isUncashingHandOverProcessing) {
+//            
+//            return NO;
+//            
+//        } else {
+//            
+//            return YES;
+//            
+//        }
+//
+//    }
+//    
+//}
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
     
@@ -172,7 +238,7 @@
     
     self.navigationItem.leftBarButtonItem = barButtonItem;
     
-    self.popover = pc;
+    self.uncashingPopover = pc;
     
 }
 
@@ -180,7 +246,7 @@
     
     self.navigationItem.leftBarButtonItem = nil;
     
-    self.popover = nil;
+    self.uncashingPopover = nil;
     
 }
 
@@ -248,21 +314,72 @@
     [text appendAttributedString:[[NSAttributedString alloc] initWithString:dateString attributes:attributes]];
     
     cell.detailTextLabel.attributedText = text;
+    
+    if ([[self.cashingDictionary allKeys] containsObject:cashing.xid]) {
+        
+        cell.tintColor = ACTIVE_BLUE_COLOR;
+        
+    } else {
+        
+        cell.tintColor = STM_LIGHT_LIGHT_GREY_COLOR;
+        
+    }
+    
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-//    cell.detailTextLabel.text = detailTextLabel;
-    
-
-    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
-    selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
-    
-    cell.selectedBackgroundView = selectedBackgroundView;
-    
-    UIColor *highlightedTextColor = [UIColor whiteColor];
-    
-    cell.textLabel.highlightedTextColor = highlightedTextColor;
-    cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
-    
     return cell;
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView.editing) {
+        
+        return UITableViewCellEditingStyleNone;
+        
+    } else {
+        
+        return UITableViewCellEditingStyleDelete;
+    }
+    
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return NO;
+    
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView.editing) {
+
+        STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
+        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
+        
+    }
+    
+    return indexPath;
+    
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (tableView.editing) {
+        
+        STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
+        [self.cashingDictionary removeObjectForKey:cashing.xid];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
+
+    }
+    
+    return indexPath;
     
 }
 
@@ -271,9 +388,18 @@
 
 - (void)customInit {
     
-    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHandOverPopover)];
+    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(handOverButtonPressed)];
     self.navigationItem.rightBarButtonItem = self.handOverButton;
 
+    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = YES;
+
+    self.infoLabel.title = @"";
+    self.infoLabel.enabled = NO;
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+    
     [self performFetch];
     
 }
@@ -296,9 +422,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-//    NSLog(@"cashingSum.intValue %d", self.splitVC.masterVC.cashingSum.intValue);
-    
-//    self.handOverButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
+    [super viewWillAppear:animated];
     
 }
 

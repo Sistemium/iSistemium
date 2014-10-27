@@ -12,11 +12,13 @@
 
 @property (nonatomic, strong) NSDecimalNumber *cashingSum;
 
+
 @end
 
 
 @interface STMCashingSumFRCD : NSObject <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, weak) UITableView *cashingSumTableView;
+
 
 @end

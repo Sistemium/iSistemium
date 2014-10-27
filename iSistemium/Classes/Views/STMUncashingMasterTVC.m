@@ -12,6 +12,7 @@
 #import "STMCashing.h"
 #import "STMUncashing.h"
 #import "STMUncashingSumPopoverVC.h"
+#import "STMUncashingHandOverVC.h"
 
 @interface STMUncashingMasterTVC ()
 
@@ -202,12 +203,22 @@
         }
 
         self.cashingSum = cashSum;
+<<<<<<< HEAD
         
         cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
 //        cell.textLabel.text = NSLocalizedString(@"INFO", nil);
         cell.detailTextLabel.text = nil;
+=======
+
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        cell.textLabel.text = [dateFormatter stringFromDate:[NSDate date]];
+
+//        cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
+//        cell.textLabel.text = NSLocalizedString(@"INFO", nil);
+//        cell.detailTextLabel.text = nil;
+>>>>>>> uncashingVC
         
-        [cell setTintColor:[UIColor whiteColor]];
+        [cell setSelected:YES];
         [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                                     animated:YES
                               scrollPosition:UITableViewScrollPositionNone];
@@ -240,6 +251,15 @@
 //    [detailButton addGestureRecognizer:tap];
 //    
 //    cell.accessoryView = detailButton;
+<<<<<<< HEAD
+=======
+    
+//    if (cell.selected) {
+//        cell.tintColor = [UIColor whiteColor];
+//    } else {
+//        cell.tintColor = ACTIVE_BLUE_COLOR;
+//    }
+>>>>>>> uncashingVC
     
     return cell;
     
@@ -374,10 +394,53 @@
     
 }
 
+- (void)handOverProcessingChanged:(NSNotification *)notification {
+    
+    if (self.splitVC.isUncashingHandOverProcessing) {
+        
+        [self performSegueWithIdentifier:@"showHandOverVC" sender:self];
+        
+    } else {
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showHandOverVC"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMUncashingHandOverVC class]]) {
+            
+            STMUncashingHandOverVC *handOverVC = (STMUncashingHandOverVC *)segue.destinationViewController;
+            handOverVC.splitVC = self.splitVC;
+            
+        }
+        
+    }
+    
+}
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
+    
+    [self addObservers];
     
     self.cashingSumFRCD = [[STMCashingSumFRCD alloc] init];
     self.cashingSumFRCD.cashingSumTableView = self.tableView;
