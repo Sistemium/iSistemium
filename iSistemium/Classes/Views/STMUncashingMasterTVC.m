@@ -203,21 +203,13 @@
         }
 
         self.cashingSum = cashSum;
-<<<<<<< HEAD
         
-        cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
-//        cell.textLabel.text = NSLocalizedString(@"INFO", nil);
-        cell.detailTextLabel.text = nil;
-=======
-
         dateFormatter.timeStyle = NSDateFormatterNoStyle;
         cell.textLabel.text = [dateFormatter stringFromDate:[NSDate date]];
 
-//        cell.textLabel.text = [numberFormatter stringFromNumber:self.cashingSum];
-//        cell.textLabel.text = NSLocalizedString(@"INFO", nil);
 //        cell.detailTextLabel.text = nil;
->>>>>>> uncashingVC
-        
+
+
         [cell setSelected:YES];
         [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                                     animated:YES
@@ -230,9 +222,9 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section-1];
         STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
 
-        cell.textLabel.text = [numberFormatter stringFromNumber:uncashing.summ];
-//        cell.textLabel.text = [dateFormatter stringFromDate:uncashing.date];
-        cell.detailTextLabel.text = [dateFormatter stringFromDate:uncashing.date];
+//        cell.textLabel.text = [numberFormatter stringFromNumber:uncashing.summ];
+        cell.textLabel.text = [dateFormatter stringFromDate:uncashing.date];
+//        cell.detailTextLabel.text = [dateFormatter stringFromDate:uncashing.date];
         
     }
     
@@ -245,21 +237,6 @@
     
     cell.textLabel.highlightedTextColor = highlightedTextColor;
     cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
-    
-//    UIButton *detailButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(detailButtonTapped:)];
-//    [detailButton addGestureRecognizer:tap];
-//    
-//    cell.accessoryView = detailButton;
-<<<<<<< HEAD
-=======
-    
-//    if (cell.selected) {
-//        cell.tintColor = [UIColor whiteColor];
-//    } else {
-//        cell.tintColor = ACTIVE_BLUE_COLOR;
-//    }
->>>>>>> uncashingVC
     
     return cell;
     
