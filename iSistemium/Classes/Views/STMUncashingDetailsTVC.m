@@ -388,6 +388,16 @@
 }
 
 
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [super controllerDidChangeContent:controller];
+    [self setInfoLabelTitle];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
