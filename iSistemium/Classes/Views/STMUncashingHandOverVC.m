@@ -15,12 +15,77 @@
 @property (weak, nonatomic) IBOutlet UILabel *uncashingLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingSumLabel;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *typeSelector;
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
-
+@property (nonatomic) BOOL viaBankOffice;
+@property (nonatomic) BOOL viaCashDesk;
 
 @end
 
 @implementation STMUncashingHandOverVC
+
+
+- (void)setViaBankOffice:(BOOL)viaBankOffice {
+    
+    if (_viaBankOffice != viaBankOffice) {
+
+        if (viaBankOffice) {
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"PHOTO", nil) message:@"Photo" delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+            alert.tag = 2;
+            [alert show];
+
+        }
+        
+        _viaBankOffice = viaBankOffice;
+        
+        [self checkControlsState];
+        
+    }
+    
+}
+
+- (void)setViaCashDesk:(BOOL)viaCashDesk {
+    
+    if (_viaCashDesk != viaCashDesk) {
+     
+        if (viaCashDesk) {
+            
+            self.viaBankOffice = NO;
+            self.typeSelector.selectedSegmentIndex = 0;
+            
+        }
+        
+        _viaCashDesk = viaCashDesk;
+        
+        [self checkControlsState];
+        
+    }
+    
+}
+
+- (IBAction)typeSelected:(id)sender {
+    
+    if ([sender isEqual:self.typeSelector]) {
+        
+        if (self.typeSelector.selectedSegmentIndex == 0) {
+            
+            self.viaCashDesk = YES;
+            
+        } else if (self.typeSelector.selectedSegmentIndex == 1) {
+            
+            self.viaBankOffice = YES;
+            
+        } else {
+            
+            self.viaBankOffice = NO;
+            self.viaCashDesk = NO;
+            
+        }
+        
+    }
+    
+}
 
 - (IBAction)doneButtonPressed:(id)sender {
     
@@ -42,6 +107,20 @@
             [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
             
         } else {
+            
+        }
+        
+    } else if (alertView.tag == 2) {
+        
+        if (buttonIndex == 0) {
+            
+            self.viaBankOffice = NO;
+            self.typeSelector.selectedSegmentIndex = self.viaCashDesk ? 0 : UISegmentedControlNoSegment;
+            
+        } else if (buttonIndex == 1) {
+            
+            self.viaCashDesk = NO;
+            self.typeSelector.selectedSegmentIndex = 1;
             
         }
         
@@ -75,13 +154,23 @@
     self.uncashingSumLabel.text = [numberFormatter stringFromNumber:uncashingSum];
     
     self.uncashingSum = uncashingSum;
+
+    [self checkControlsState];
     
-    if ([self.uncashingSum intValue] <= 0) {
+}
+
+- (void)checkControlsState {
+ 
+    if ([self.uncashingSum intValue] <= 0 || !(self.viaBankOffice || self.viaCashDesk)) {
+        
         self.doneButton.enabled = NO;
+        
     } else {
+        
         self.doneButton.enabled = YES;
+        
     }
-    
+
 }
 
 
@@ -110,9 +199,13 @@
     
     self.uncashingLabel.text = NSLocalizedString(@"CASHING SUMM", nil);
 
-    [self cashingDictionaryChanged];
-    
+    [self.typeSelector setSelectedSegmentIndex:UISegmentedControlNoSegment];
+    [self.typeSelector setTitle:NSLocalizedString(@"CASH DESK", nil) forSegmentAtIndex:0];
+    [self.typeSelector setTitle:NSLocalizedString(@"BANK OFFICE", nil) forSegmentAtIndex:1];
+
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
+
+    [self cashingDictionaryChanged];
     
 }
 

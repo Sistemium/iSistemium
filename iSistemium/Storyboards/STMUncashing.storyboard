@@ -131,7 +131,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WgK-L0-ZHr">
-                                <rect key="frame" x="137" y="270" width="47" height="36"/>
+                                <rect key="frame" x="137" y="336" width="47" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="Done">
@@ -141,13 +141,27 @@
                                     <action selector="doneButtonPressed:" destination="9xA-4C-LDv" eventType="touchUpInside" id="cH3-Ja-Wxa"/>
                                 </connections>
                             </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dZC-U6-eEt">
+                                <rect key="frame" x="20" y="251" width="280" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="First"/>
+                                    <segment title="Second"/>
+                                </segments>
+                                <connections>
+                                    <action selector="typeSelected:" destination="9xA-4C-LDv" eventType="valueChanged" id="8RI-HW-oap"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="dZC-U6-eEt" firstAttribute="top" secondItem="iMs-Li-lWm" secondAttribute="bottom" constant="29" id="36s-Qc-iv2"/>
                             <constraint firstItem="KIX-w8-fsd" firstAttribute="top" secondItem="TtG-d9-1yB" secondAttribute="bottom" constant="33" id="AOb-ZA-7Ii"/>
                             <constraint firstAttribute="centerX" secondItem="iMs-Li-lWm" secondAttribute="centerX" constant="-0.5" id="QDx-Ii-5Fl"/>
                             <constraint firstAttribute="centerX" secondItem="WgK-L0-ZHr" secondAttribute="centerX" constant="-0.5" id="Qrd-7H-qj6"/>
-                            <constraint firstItem="WgK-L0-ZHr" firstAttribute="top" secondItem="iMs-Li-lWm" secondAttribute="bottom" constant="48" id="ebb-D1-hva"/>
+                            <constraint firstItem="dZC-U6-eEt" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="cyo-L5-WiL"/>
+                            <constraint firstItem="WgK-L0-ZHr" firstAttribute="top" secondItem="iMs-Li-lWm" secondAttribute="bottom" constant="114" id="ebb-D1-hva"/>
+                            <constraint firstAttribute="trailing" secondItem="dZC-U6-eEt" secondAttribute="trailing" constant="20" id="gkY-JD-vdC"/>
                             <constraint firstItem="iMs-Li-lWm" firstAttribute="top" secondItem="KIX-w8-fsd" secondAttribute="bottom" constant="8" id="klh-0I-oY6"/>
                             <constraint firstAttribute="centerX" secondItem="KIX-w8-fsd" secondAttribute="centerX" constant="-0.5" id="s7Z-ID-YM9"/>
                             <constraint firstItem="TtG-d9-1yB" firstAttribute="top" secondItem="JVV-tK-uNm" secondAttribute="bottom" constant="43" id="u1K-su-wGQ"/>
@@ -158,6 +172,7 @@
                     <connections>
                         <outlet property="dateLabel" destination="TtG-d9-1yB" id="zML-LA-jUU"/>
                         <outlet property="doneButton" destination="WgK-L0-ZHr" id="GXZ-xH-Kxv"/>
+                        <outlet property="typeSelector" destination="dZC-U6-eEt" id="qZV-vp-csA"/>
                         <outlet property="uncashingLabel" destination="KIX-w8-fsd" id="xIu-gJ-yR6"/>
                         <outlet property="uncashingSumLabel" destination="iMs-Li-lWm" id="H5m-Qm-2n4"/>
                     </connections>

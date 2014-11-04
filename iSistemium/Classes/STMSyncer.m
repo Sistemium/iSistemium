@@ -851,11 +851,16 @@
         
         NSLog(@"%@: HTTP status %d", entityName, statusCode);
         
-        if ([entityName isEqualToString:@"STMEntity"]) {
+        if ([entityName isEqualToString:@"SEND_DATA"]) {
             
             self.syncing = NO;
             self.syncerState = STMSyncerIdle;
             
+        } else if ([entityName isEqualToString:@"STMEntity"]) {
+
+            self.syncing = NO;
+            self.syncerState = STMSyncerIdle;
+
         } else if (! -- self.entityCount) {
             
             self.syncing = NO;
