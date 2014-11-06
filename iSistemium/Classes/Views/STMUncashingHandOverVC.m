@@ -9,7 +9,7 @@
 #import "STMUncashingHandOverVC.h"
 #import "STMCashing.h"
 
-@interface STMUncashingHandOverVC () <UIAlertViewDelegate>
+@interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingLabel;
@@ -19,11 +19,69 @@
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
+@property (nonatomic, strong) UIImagePickerController *imagePickerController;
+@property (nonatomic, strong) UIView *spinnerView;
+@property (nonatomic, strong) UIView *cameraOverlayView;
 
 @end
 
 @implementation STMUncashingHandOverVC
 
+- (UIImagePickerController *)imagePickerController {
+    
+    if (!_imagePickerController) {
+        
+        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        
+        imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+        imagePickerController.showsCameraControls = NO;
+        
+        [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
+        self.cameraOverlayView.backgroundColor = [UIColor clearColor];
+        self.cameraOverlayView.autoresizesSubviews = YES;
+        self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+        
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+            
+            UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+            CGRect originalFrame = [[UIScreen mainScreen] bounds];
+            CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
+            self.cameraOverlayView.frame = screenFrame;
+            
+        }
+        
+        imagePickerController.cameraOverlayView = self.cameraOverlayView;
+        
+        _imagePickerController = imagePickerController;
+        
+    }
+    
+    return _imagePickerController;
+    
+}
+
+- (UIView *)spinnerView {
+    
+    if (!_spinnerView) {
+        
+        UIView *view = [[UIView alloc] initWithFrame:self.splitViewController.view.frame];
+        view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        view.backgroundColor = [UIColor grayColor];
+        view.alpha = 0.75;
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        spinner.center = view.center;
+        spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+        [spinner startAnimating];
+        [view addSubview:spinner];
+        
+        _spinnerView = view;
+        
+    }
+    
+    return _spinnerView;
+    
+}
 
 - (void)setViaBankOffice:(BOOL)viaBankOffice {
     
@@ -98,6 +156,44 @@
     
 }
 
+- (IBAction)cameraButtonPressed:(id)sender {
+    
+    NSLog(@"cameraButtonPressed");
+    
+    UIView *view = [[UIView alloc] initWithFrame:self.imagePickerController.cameraOverlayView.frame];
+    view.backgroundColor = [UIColor grayColor];
+    view.alpha = 0.75;
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    spinner.center = view.center;
+    [spinner startAnimating];
+    [view addSubview:spinner];
+    
+    [self.imagePickerController.cameraOverlayView addSubview:view];
+    
+    [self.imagePickerController takePicture];
+    
+}
+
+- (IBAction)cancelButtonPressed:(id)sender {
+    
+    NSLog(@"cancelButtonPressed");
+    
+    [self.imagePickerController dismissViewControllerAnimated:NO completion:^{
+        
+        [self.spinnerView removeFromSuperview];
+        
+        //        if (self.selectedPhotoReport.photos.count == 0) {
+        //            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+        //            //            NSLog(@"delete empty photoReport");
+        //        }
+        
+        self.imagePickerController = nil;
+        //        NSLog(@"cancel button pressed");
+        
+    }];
+    
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (alertView.tag == 1) {
@@ -119,10 +215,27 @@
             
         } else if (buttonIndex == 1) {
             
+            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+            
             self.viaCashDesk = NO;
             self.typeSelector.selectedSegmentIndex = 1;
             
         }
+        
+    }
+    
+}
+
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
+        
+        [self.splitViewController presentViewController:self.imagePickerController animated:YES completion:^{
+            
+            [self.splitViewController.view addSubview:self.spinnerView];
+            //            NSLog(@"presentViewController:UIImagePickerController");
+            
+        }];
         
     }
     
@@ -214,6 +327,11 @@
     [self addObservers];
     [self.navigationItem setHidesBackButton:YES animated:YES];
     [self labelsInit];
+    
+//    NSLog(@"self.cameraOverlayView %@", self.cameraOverlayView);
+//    NSArray *array = [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
+//    NSLog(@"array %@", array);
+//    NSLog(@"self.cameraOverlayView %@", self.cameraOverlayView);
     
 }
 
