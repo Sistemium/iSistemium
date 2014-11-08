@@ -182,13 +182,7 @@
         
         [self.spinnerView removeFromSuperview];
         
-        //        if (self.selectedPhotoReport.photos.count == 0) {
-        //            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
-        //            //            NSLog(@"delete empty photoReport");
-        //        }
-        
         self.imagePickerController = nil;
-        //        NSLog(@"cancel button pressed");
         
     }];
     
@@ -284,6 +278,33 @@
         
     }
 
+}
+
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    NSLog(@"picker didFinishPickingMediaWithInfo");
+    
+    [picker dismissViewControllerAnimated:NO completion:^{
+        
+//        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
+        self.imagePickerController = nil;
+        //        NSLog(@"dismiss UIImagePickerController");
+        
+    }];
+    
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:NO completion:^{
+        
+        NSLog(@"imagePickerControllerDidCancel");
+        
+    }];
+    
 }
 
 
