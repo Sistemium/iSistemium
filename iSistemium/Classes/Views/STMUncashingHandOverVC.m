@@ -178,6 +178,8 @@
     
     NSLog(@"cancelButtonPressed");
     
+    [self cancelBankOffice];
+    
     [self.imagePickerController dismissViewControllerAnimated:NO completion:^{
         
         [self.spinnerView removeFromSuperview];
@@ -204,20 +206,23 @@
         
         if (buttonIndex == 0) {
             
-            self.viaBankOffice = NO;
-            self.typeSelector.selectedSegmentIndex = self.viaCashDesk ? 0 : UISegmentedControlNoSegment;
+            [self cancelBankOffice];
             
         } else if (buttonIndex == 1) {
             
             [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
             
-            self.viaCashDesk = NO;
-            self.typeSelector.selectedSegmentIndex = 1;
-            
         }
         
     }
     
+}
+
+- (void)cancelBankOffice {
+    
+    self.viaBankOffice = NO;
+    self.typeSelector.selectedSegmentIndex = self.viaCashDesk ? 0 : UISegmentedControlNoSegment;
+
 }
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
@@ -285,13 +290,16 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    NSLog(@"picker didFinishPickingMediaWithInfo");
+//    NSLog(@"picker didFinishPickingMediaWithInfo");
     
+    self.viaCashDesk = NO;
+    self.typeSelector.selectedSegmentIndex = 1;
+
     [picker dismissViewControllerAnimated:NO completion:^{
         
 //        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
         self.imagePickerController = nil;
-        //        NSLog(@"dismiss UIImagePickerController");
+//        NSLog(@"dismiss UIImagePickerController");
         
     }];
     
@@ -301,7 +309,7 @@
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
-        NSLog(@"imagePickerControllerDidCancel");
+//        NSLog(@"imagePickerControllerDidCancel");
         
     }];
     
