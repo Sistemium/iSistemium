@@ -12,14 +12,20 @@
 #import "STMConstants.h"
 #import "STMUncashingSVC.h"
 #import "STMSyncer.h"
+#import "STMUncashingPicture.h"
+#import "STMObjectsController.h"
+#import "STMUncashingInfoVC.h"
 
 @interface STMUncashingDetailsTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) UIPopoverController *uncashingPopover;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
+@property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
+
 
 @end
+
 
 @implementation STMUncashingDetailsTVC
 
@@ -75,6 +81,10 @@
         
         self.infoLabel.title = infoLabelTitle;
         
+        self.infoLabel.enabled = YES;
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:ACTIVE_BLUE_COLOR};
+        [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+        
     } else {
         
         NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
@@ -88,7 +98,12 @@
         NSString *infoLabelTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"TOTAL", nil), [numberFormatter stringFromNumber:cashingSum]];
 
         self.infoLabel.title = infoLabelTitle;
-        
+
+        self.infoLabel.enabled = NO;
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+        [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+        [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+
     }
     
 }
@@ -144,6 +159,28 @@
     
 }
 
+- (UIPopoverController *)uncashingInfoPopover {
+    
+    if (!_uncashingInfoPopover) {
+        
+        STMUncashingInfoVC *uncashingInfoPopover = [self.storyboard instantiateViewControllerWithIdentifier:@"uncashingInfoPopover"];
+        uncashingInfoPopover.uncashing = self.uncashing;
+        
+        _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoPopover];
+        
+    }
+    
+    return _uncashingInfoPopover;
+    
+}
+
+- (void)showUncashingInfoPopover {
+    
+    self.uncashingInfoPopover = nil;
+    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
 - (void)handOverButtonPressed {
     
     self.splitVC.isUncashingHandOverProcessing = !self.splitVC.isUncashingHandOverProcessing;
@@ -178,10 +215,10 @@
     
 }
 
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ {
-
+- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type {
+    
     STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
-
+    
     NSArray *cashings = [self.cashingDictionary allValues];
     
     for (STMCashing *cashing in cashings) {
@@ -194,14 +231,24 @@
     uncashing.summ = summ;
     uncashing.date = [NSDate date];
     
-//    self.uncashing = uncashing;
+    if (image) {
+
+        STMUncashingPicture *picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
+        
+        [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
+        
+        uncashing.picture = picture;
+
+    }
+    
+    uncashing.type = type;
     
     [self.document saveDocument:^(BOOL success) {
         if (success) {
             
             STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
             syncer.syncerState = STMSyncerSendData;
-
+            
         }
     }];
     
@@ -210,6 +257,39 @@
     [self.splitVC.masterVC selectRowWithUncashing:nil];
     
 }
+
+//- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ {
+//
+//    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
+//
+//    NSArray *cashings = [self.cashingDictionary allValues];
+//    
+//    for (STMCashing *cashing in cashings) {
+//        
+//        cashing.uncashing = uncashing;
+//        
+//    }
+//    
+//    uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
+//    uncashing.summ = summ;
+//    uncashing.date = [NSDate date];
+//    
+////    self.uncashing = uncashing;
+//    
+//    [self.document saveDocument:^(BOOL success) {
+//        if (success) {
+//            
+//            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
+//            syncer.syncerState = STMSyncerSendData;
+//
+//        }
+//    }];
+//    
+//    [self setInfoLabelTitle];
+//    [self handOverButtonPressed];
+//    [self.splitVC.masterVC selectRowWithUncashing:nil];
+//    
+//}
 
 
 #pragma mark - UISplitViewControllerDelegate
@@ -413,6 +493,11 @@
     NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
     [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+    
+    [self.infoLabel setTarget:self];
+    [self.infoLabel setAction:@selector(showUncashingInfoPopover)];
+    
+//    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHandOverPopover)];
     
     [self performFetch];
     

@@ -8,8 +8,7 @@
 
 #import "STMUncashingHandOverVC.h"
 #import "STMCashing.h"
-#import "STMUncashingPicture.h"
-#import "STMObjectsController.h"
+#import "STMUncashingInfoVC.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -26,7 +25,8 @@
 @property (nonatomic, strong) UIView *spinnerView;
 @property (nonatomic, strong) UIView *cameraOverlayView;
 
-@property (nonatomic, strong) STMUncashingPicture *picture;
+@property (nonatomic, strong) UIImage *pictureImage;
+@property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
 
 
 @end
@@ -86,6 +86,19 @@
     }
     
     return _spinnerView;
+    
+}
+
+- (UIPopoverController *)uncashingInfoPopover {
+    
+    if (!_uncashingInfoPopover) {
+        
+        STMUncashingInfoVC *uncashingInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:@"uncashingInfoPopover"];
+        _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoVC];
+        
+    }
+    
+    return _uncashingInfoPopover;
     
 }
 
@@ -156,9 +169,11 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) message:[numberFormatter stringFromNumber:self.uncashingSum] delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-    alert.tag = 1;
-    [alert show];
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) message:[numberFormatter stringFromNumber:self.uncashingSum] delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+//    alert.tag = 1;
+//    [alert show];
+
+    [self.uncashingInfoPopover presentPopoverFromRect:self.doneButton.frame inView:self.splitVC.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     
 }
 
@@ -201,8 +216,17 @@
     if (alertView.tag == 1) {
         
         if (buttonIndex == 1) {
-
-            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
+            
+            NSString *type = nil;
+            
+            if (self.viaBankOffice) {
+                type = @"bankOffice";
+            } else if (self.viaCashDesk) {
+                type = @"cashDesk";
+            }
+            
+//            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
+            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:type];
             
         } else {
             
@@ -291,28 +315,33 @@
 
 }
 
-- (void)saveImage:(UIImage *)image {
-    
-    self.picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.splitVC.detailVC.document.managedObjectContext];
-    
-    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.picture];
-    
-    [self.picture addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
-
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    
-    if ([object isKindOfClass:[STMUncashingPicture class]]) {
-        
-        [self.spinnerView removeFromSuperview];
-        self.spinnerView = nil;
-        
-        [object removeObserver:self forKeyPath:@"imageThumbnail" context:nil];
-        
-    }
-    
-}
+//- (void)saveImage:(UIImage *)image {
+//
+//
+//    self.picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.splitVC.detailVC.document.managedObjectContext];
+//
+//    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.picture];
+//
+//    [self.splitVC.detailVC.document saveDocument:^(BOOL success) {
+//        
+//    }];
+//    
+//    [self.picture addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+//
+//}
+//
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+//    
+//    if ([object isKindOfClass:[STMUncashingPicture class]]) {
+//        
+//        [self.spinnerView removeFromSuperview];
+//        self.spinnerView = nil;
+//        
+//        [object removeObserver:self forKeyPath:@"imageThumbnail" context:nil];
+//        
+//    }
+//    
+//}
 
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -326,8 +355,13 @@
 
     [picker dismissViewControllerAnimated:NO completion:^{
         
-        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
+//        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
+        
+        self.pictureImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+        [self.spinnerView removeFromSuperview];
+        self.spinnerView = nil;
         self.imagePickerController = nil;
+        
 //        NSLog(@"dismiss UIImagePickerController");
         
     }];

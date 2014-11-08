@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UIBarButtonItem *handOverButton;
 @property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
 
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ;
+//- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ;
+- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type;
 
 @end
