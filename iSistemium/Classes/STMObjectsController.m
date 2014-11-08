@@ -32,6 +32,7 @@
 #import "STMMessage.h"
 #import "STMClientData.h"
 #import "STMLocation.h"
+#import "STMUncashingPicture.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -1221,7 +1222,7 @@
 
             fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
 
-        } else if ([picture isKindOfClass:[STMPhoto class]]) {
+        } else if ([picture isKindOfClass:[STMPhoto class]] || [picture isKindOfClass:[STMUncashingPicture class]]) {
             
             NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
             fileName = [xid stringByAppendingString:@".jpg"];
@@ -1328,6 +1329,7 @@
                              NSStringFromClass([STMMessage class]),
                              NSStringFromClass([STMClientData class]),
                              NSStringFromClass([STMRecordStatus class]),
+                             NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMLocation class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;

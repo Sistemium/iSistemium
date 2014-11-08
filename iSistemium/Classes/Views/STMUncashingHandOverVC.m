@@ -8,6 +8,8 @@
 
 #import "STMUncashingHandOverVC.h"
 #import "STMCashing.h"
+#import "STMUncashingPicture.h"
+#import "STMObjectsController.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -16,12 +18,16 @@
 @property (weak, nonatomic) IBOutlet UILabel *uncashingSumLabel;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSelector;
+
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
 @property (nonatomic, strong) UIImagePickerController *imagePickerController;
 @property (nonatomic, strong) UIView *spinnerView;
 @property (nonatomic, strong) UIView *cameraOverlayView;
+
+@property (nonatomic, strong) STMUncashingPicture *picture;
+
 
 @end
 
@@ -285,6 +291,29 @@
 
 }
 
+- (void)saveImage:(UIImage *)image {
+    
+    self.picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.splitVC.detailVC.document.managedObjectContext];
+    
+    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.picture];
+    
+    [self.picture addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    if ([object isKindOfClass:[STMUncashingPicture class]]) {
+        
+        [self.spinnerView removeFromSuperview];
+        self.spinnerView = nil;
+        
+        [object removeObserver:self forKeyPath:@"imageThumbnail" context:nil];
+        
+    }
+    
+}
+
 
 #pragma mark - UIImagePickerControllerDelegate
 
@@ -297,7 +326,7 @@
 
     [picker dismissViewControllerAnimated:NO completion:^{
         
-//        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
+        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
         self.imagePickerController = nil;
 //        NSLog(@"dismiss UIImagePickerController");
         
