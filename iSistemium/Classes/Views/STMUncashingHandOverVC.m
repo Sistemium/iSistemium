@@ -27,9 +27,11 @@
 
 @property (nonatomic, strong) UIImage *pictureImage;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
+@property (nonatomic) BOOL infoPopoverIsVisible;
 
 
 @end
+
 
 @implementation STMUncashingHandOverVC
 
@@ -173,7 +175,7 @@
 //    alert.tag = 1;
 //    [alert show];
 
-    [self.uncashingInfoPopover presentPopoverFromRect:self.doneButton.frame inView:self.splitVC.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self showInfoPopover];
     
 }
 
@@ -343,6 +345,45 @@
 //    
 //}
 
+//- (void)deviceOrientationDidChangeNotification:(NSNotification*)notification {
+//    
+//    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+//    
+//    [self.uncashingInfoPopover dismissPopoverAnimated:YES];
+//
+//}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    if (self.infoPopoverIsVisible) {
+        
+        [self.uncashingInfoPopover dismissPopoverAnimated:YES];
+        self.uncashingInfoPopover = nil;
+        [self showInfoPopover];
+        self.infoPopoverIsVisible = NO;
+        
+    }
+    
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+
+    if (self.uncashingInfoPopover.popoverVisible) {
+        
+        self.infoPopoverIsVisible = YES;
+        
+    }
+    
+}
+
+- (void)showInfoPopover {
+    
+    //    CGRect rect = self.doneButton.frame;
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    
+    [self.uncashingInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+
+}
 
 #pragma mark - UIImagePickerControllerDelegate
 
@@ -385,6 +426,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingDictionaryChanged) name:@"cashingDictionaryChanged" object:self.splitVC.detailVC];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:nil];
     
 }
 
