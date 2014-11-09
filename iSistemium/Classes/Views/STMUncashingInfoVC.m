@@ -26,6 +26,9 @@
 }
 
 - (IBAction)confirmButtonPressed:(id)sender {
+    
+    [self.parentVC confirmButtonPressed];
+    
 }
 
 
@@ -33,7 +36,15 @@
 
 - (void)customInit {
     
-    [self.confirmButton setTitle:NSLocalizedString(@"CONFIRM", nil)];
+    if (self.uncashing) {
+        
+        self.toolbar.hidden = YES;
+        
+    } else {
+    
+        [self.confirmButton setTitle:NSLocalizedString(@"CONFIRM", nil)];
+
+    }
     
     self.mainLabel.text = [self.uncashing.summ stringValue];
     

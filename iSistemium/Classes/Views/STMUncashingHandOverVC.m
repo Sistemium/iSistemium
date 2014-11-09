@@ -214,22 +214,30 @@
     
 }
 
+- (void)confirmButtonPressed {
+    
+    [self dismissInfoPopover];
+    
+    NSString *type = nil;
+    
+    if (self.viaBankOffice) {
+        type = @"bankOffice";
+    } else if (self.viaCashDesk) {
+        type = @"cashDesk";
+    }
+    
+    //            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
+    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:type];
+    
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (alertView.tag == 1) {
         
         if (buttonIndex == 1) {
-            
-            NSString *type = nil;
-            
-            if (self.viaBankOffice) {
-                type = @"bankOffice";
-            } else if (self.viaCashDesk) {
-                type = @"cashDesk";
-            }
-            
-//            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
-            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:type];
+
+            [self confirmButtonPressed];
             
         } else {
             
