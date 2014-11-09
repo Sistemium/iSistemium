@@ -1136,6 +1136,25 @@
         
         NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
         
+        NSString *entityName = photo.entity.name;
+        
+        NSDate *currentDate = [NSDate date];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"yyyy";
+        
+        NSString *year = [dateFormatter stringFromDate:currentDate];
+        
+        dateFormatter.dateFormat = @"MM";
+        
+        NSString *month = [dateFormatter stringFromDate:currentDate];
+
+        dateFormatter.dateFormat = @"dd";
+        
+        NSString *day = [dateFormatter stringFromDate:currentDate];
+
+        bucket = [bucket stringByAppendingString:[NSString stringWithFormat:@"/%@/%@/%@/%@", entityName, year, month, day]];
+        
         if (bucket) {
             
             [self.uploadQueue addOperationWithBlock:^{
