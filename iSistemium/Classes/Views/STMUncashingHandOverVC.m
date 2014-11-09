@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSelector;
 
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
+@property (nonatomic, strong) NSString *uncashingType;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
 @property (nonatomic, strong) UIImagePickerController *imagePickerController;
@@ -97,11 +98,28 @@
         
         STMUncashingInfoVC *uncashingInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:@"uncashingInfoPopover"];
         uncashingInfoVC.parentVC = self;
+        uncashingInfoVC.sum = self.uncashingSum;
+        uncashingInfoVC.type = self.uncashingType;
+        uncashingInfoVC.image = self.pictureImage;
         _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoVC];
         
     }
     
     return _uncashingInfoPopover;
+    
+}
+
+- (NSString *)uncashingType {
+    
+    NSString *type = nil;
+    
+    if (self.viaBankOffice) {
+        type = @"bankOffice";
+    } else if (self.viaCashDesk) {
+        type = @"cashDesk";
+    }
+
+    return type;
     
 }
 
@@ -218,16 +236,8 @@
     
     [self dismissInfoPopover];
     
-    NSString *type = nil;
-    
-    if (self.viaBankOffice) {
-        type = @"bankOffice";
-    } else if (self.viaCashDesk) {
-        type = @"cashDesk";
-    }
-    
-    //            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
-    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:type];
+//            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
+    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType];
     
 }
 

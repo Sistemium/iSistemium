@@ -74,6 +74,10 @@
 "INFO" = "Информация";
 "TOTAL" = "Итого";
 "CASH DESK" = "Касса";
+"CASH DESK2" = "Кассу";
 "BANK OFFICE" = "Банк";
 "CONFIRM" = "Подтвердить";
+"UNCASHING DATE" = "Выручка за";
+"UNCASHING SUM" = "На сумму";
+"UNCASHING TYPE" = "Сдано через";
 

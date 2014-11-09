@@ -12,7 +12,12 @@
 
 @interface STMUncashingInfoVC : UIViewController
 
-@property (nonatomic, strong) STMUncashing *uncashing;
 @property (nonatomic, strong) STMUncashingHandOverVC *parentVC;
+
+@property (nonatomic, strong) STMUncashing *uncashing;
+
+@property (nonatomic, strong) NSDecimalNumber *sum;
+@property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) UIImage *image;
 
 @end

@@ -74,5 +74,10 @@
 "INFO" = "Information";
 "TOTAL" = "Total";
 "CASH DESK" = "Cash desk";
+"CASH DESK2" = "Cash desk";
 "BANK OFFICE" = "Bank office";
 "CONFIRM" = "Confirm";
+"UNCASHING DATE" = "Uncashing date";
+"UNCASHING SUM" = "Uncashing sum";
+"UNCASHING TYPE" = "Uncashing via";
+
