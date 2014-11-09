@@ -200,7 +200,7 @@
 
 - (IBAction)cameraButtonPressed:(id)sender {
     
-    NSLog(@"cameraButtonPressed");
+//    NSLog(@"cameraButtonPressed");
     
     UIView *view = [[UIView alloc] initWithFrame:self.imagePickerController.cameraOverlayView.frame];
     view.backgroundColor = [UIColor grayColor];
@@ -218,7 +218,7 @@
 
 - (IBAction)cancelButtonPressed:(id)sender {
     
-    NSLog(@"cancelButtonPressed");
+//    NSLog(@"cancelButtonPressed");
     
     [self cancelBankOffice];
     

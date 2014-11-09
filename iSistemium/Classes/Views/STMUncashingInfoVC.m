@@ -7,6 +7,7 @@
 //
 
 #import "STMUncashingInfoVC.h"
+#import "STMUncashingPicture.h"
 
 @interface STMUncashingInfoVC ()
 @property (weak, nonatomic) IBOutlet UILabel *mainLabel;
@@ -45,50 +46,49 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
+    NSDecimalNumber *sum = nil;
+    NSString *type = nil;
+    UIImage *image = nil;
+    
     if (self.uncashing) {
         
         self.toolbar.hidden = YES;
         
         self.mainLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING DATE", nil), [dateFormatter stringFromDate:self.uncashing.date]];
-        self.sumLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING SUM", nil), [numberFormatter stringFromNumber:self.uncashing.summ]];
         
-        NSString *type = nil;
-        
-        if ([self.uncashing.type isEqualToString:@"bankOffice"]) {
-            type = NSLocalizedString(@"BANK OFFICE", nil);
-        } else if ([self.uncashing.type isEqualToString:@"cashDesk"]) {
-            type = NSLocalizedString(@"CASH DESK2", nil);
-        }
-        
-        if (type) {
-            self.typeLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING TYPE", nil), type];
-        } else {
-            self.typeLabel.text = nil;
-        }
-
+        sum = self.uncashing.summ;
+        type = self.uncashing.type;
+        image = [UIImage imageWithData:self.uncashing.picture.imageThumbnail];
         
     } else {
     
         [self.confirmButton setTitle:NSLocalizedString(@"CONFIRM", nil)];
 
         self.mainLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"UNCASHING", nil)];
-        self.sumLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING SUM", nil), [numberFormatter stringFromNumber:self.sum]];
         
-        NSString *type = nil;
-        
-        if ([self.type isEqualToString:@"bankOffice"]) {
-            type = NSLocalizedString(@"BANK OFFICE", nil);
-        } else if ([self.type isEqualToString:@"cashDesk"]) {
-            type = NSLocalizedString(@"CASH DESK2", nil);
-        }
-        
-        if (type) {
-            self.typeLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING TYPE", nil), type];
-        } else {
-            self.typeLabel.text = nil;
-        }
+        sum = self.sum;
+        type = self.type;
+        image = self.image;
 
     }
+    
+    self.sumLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING SUM", nil), [numberFormatter stringFromNumber:sum]];
+    
+    if ([type isEqualToString:@"bankOffice"]) {
+        type = NSLocalizedString(@"BANK OFFICE", nil);
+    } else if ([type isEqualToString:@"cashDesk"]) {
+        type = NSLocalizedString(@"CASH DESK2", nil);
+    }
+    
+    if (type) {
+        self.typeLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING TYPE", nil), type];
+    } else {
+        self.typeLabel.text = nil;
+    }
+
+    self.imageView.image = image;
+
+//    NSLog(@"self.uncashing %@", self.uncashing);
     
 }
 
