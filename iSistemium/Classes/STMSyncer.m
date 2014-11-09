@@ -482,15 +482,17 @@
     
     for (NSManagedObject *object in dataForSyncing) {
         
-        NSArray *entityNamesForSending = @[
-                                           NSStringFromClass([STMPhotoReport class]),
-                                           NSStringFromClass([STMCashing class]),
-                                           NSStringFromClass([STMUncashing class]),
-                                           NSStringFromClass([STMMessage class]),
-                                           NSStringFromClass([STMClientData class]),
-                                           NSStringFromClass([STMRecordStatus class]),
-                                           NSStringFromClass([STMLocation class])
-                                           ];
+//        NSArray *entityNamesForSending = @[
+//                                           NSStringFromClass([STMPhotoReport class]),
+//                                           NSStringFromClass([STMCashing class]),
+//                                           NSStringFromClass([STMUncashing class]),
+//                                           NSStringFromClass([STMMessage class]),
+//                                           NSStringFromClass([STMClientData class]),
+//                                           NSStringFromClass([STMRecordStatus class]),
+//                                           NSStringFromClass([STMLocation class])
+//                                           ];
+        
+        NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
         
         BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
         

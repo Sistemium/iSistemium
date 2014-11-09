@@ -35,4 +35,6 @@
 
 + (NSUInteger)unreadMessagesCount;
 
++ (NSArray *)entityNamesForSyncing;
+
 @end

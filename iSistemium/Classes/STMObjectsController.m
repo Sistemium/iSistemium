@@ -780,16 +780,7 @@
 
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
-    NSArray *entityNamesForSending = @[
-        NSStringFromClass([STMPhotoReport class]),
-        NSStringFromClass([STMCashing class]),
-        NSStringFromClass([STMUncashing class]),
-        NSStringFromClass([STMClientData class]),
-        NSStringFromClass([STMRecordStatus class]),
-        NSStringFromClass([STMLocation class])
-    ];
-    
-    BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
+    BOOL isInSyncList = [[self entityNamesForSyncing] containsObject:object.entity.name];
 
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
@@ -798,6 +789,21 @@
     
 }
 
++ (NSArray *)entityNamesForSyncing {
+    
+    NSArray *entityNamesForSyncing = @[
+                                       NSStringFromClass([STMPhotoReport class]),
+                                       NSStringFromClass([STMCashing class]),
+                                       NSStringFromClass([STMUncashing class]),
+                                       NSStringFromClass([STMClientData class]),
+                                       NSStringFromClass([STMRecordStatus class]),
+                                       NSStringFromClass([STMUncashingPicture class]),
+                                       NSStringFromClass([STMLocation class])
+                                       ];
+    
+    return entityNamesForSyncing;
+
+}
 
 #pragma mark - getting specified objects
 
