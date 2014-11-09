@@ -2,7 +2,7 @@
 //  STMUncashing.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/11/14.
+//  Created by Maxim Grigoriev on 09/11/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -18,6 +18,6 @@
 @dynamic summOrigin;
 @dynamic type;
 @dynamic cashings;
-@dynamic picture;
+@dynamic pictures;
 
 @end

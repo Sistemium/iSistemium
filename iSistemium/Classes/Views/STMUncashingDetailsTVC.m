@@ -237,7 +237,7 @@
         
         [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
         
-        uncashing.picture = picture;
+        [uncashing addPicturesObject:picture];
 
     }
     

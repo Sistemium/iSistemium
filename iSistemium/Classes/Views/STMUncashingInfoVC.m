@@ -58,7 +58,12 @@
         
         sum = self.uncashing.summ;
         type = self.uncashing.type;
-        image = [UIImage imageWithData:self.uncashing.picture.imageThumbnail];
+        
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCTS" ascending:YES];
+        
+        STMUncashingPicture *picture = [[self.uncashing.pictures sortedArrayUsingDescriptors:@[sortDescriptor]] lastObject];
+        
+        image = [UIImage imageWithData:picture.imageThumbnail];
         
     } else {
     

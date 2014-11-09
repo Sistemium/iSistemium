@@ -2,7 +2,7 @@
 //  STMUncashingPicture.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/11/14.
+//  Created by Maxim Grigoriev on 09/11/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
