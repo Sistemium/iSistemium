@@ -96,6 +96,7 @@
     if (!_uncashingInfoPopover) {
         
         STMUncashingInfoVC *uncashingInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:@"uncashingInfoPopover"];
+        uncashingInfoVC.parentVC = self;
         _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoVC];
         
     }
@@ -357,8 +358,7 @@
     
     if (self.infoPopoverIsVisible) {
         
-        [self.uncashingInfoPopover dismissPopoverAnimated:YES];
-        self.uncashingInfoPopover = nil;
+        [self dismissInfoPopover];
         [self showInfoPopover];
         self.infoPopoverIsVisible = NO;
         
@@ -383,6 +383,13 @@
     
     [self.uncashingInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
 
+}
+
+- (void)dismissInfoPopover {
+    
+    [self.uncashingInfoPopover dismissPopoverAnimated:YES];
+    self.uncashingInfoPopover = nil;
+    
 }
 
 #pragma mark - UIImagePickerControllerDelegate

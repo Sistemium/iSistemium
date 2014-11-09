@@ -13,5 +13,6 @@
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 
+- (void)dismissInfoPopover;
 
 @end

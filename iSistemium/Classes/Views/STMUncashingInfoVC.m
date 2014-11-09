@@ -13,17 +13,30 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *confirmButton;
 
 @end
 
 @implementation STMUncashingInfoVC
 
+- (IBAction)cancelButtonPressed:(id)sender {
+
+    [self.parentVC dismissInfoPopover];
+    
+}
+
+- (IBAction)confirmButtonPressed:(id)sender {
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    [self.confirmButton setTitle:NSLocalizedString(@"CONFIRM", nil)];
+    
     self.mainLabel.text = [self.uncashing.summ stringValue];
+    
         
 }
 

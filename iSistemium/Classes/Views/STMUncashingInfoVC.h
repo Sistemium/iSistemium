@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "STMUncashing.h"
+#import "STMUncashingHandOverVC.h"
 
 @interface STMUncashingInfoVC : UIViewController
 
 @property (nonatomic, strong) STMUncashing *uncashing;
-
+@property (nonatomic, strong) STMUncashingHandOverVC *parentVC;
 
 @end

@@ -197,9 +197,17 @@
                                 <rect key="frame" x="0.0" y="212" width="512" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem systemItem="cancel" id="sTl-mG-Xs5"/>
+                                    <barButtonItem systemItem="cancel" id="sTl-mG-Xs5">
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="P6g-Kn-xTQ" id="lC3-HK-cfu"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="lSr-vi-Imq"/>
-                                    <barButtonItem systemItem="done" id="8cK-zY-CFN"/>
+                                    <barButtonItem title="Item" id="8cK-zY-CFN">
+                                        <connections>
+                                            <action selector="confirmButtonPressed:" destination="P6g-Kn-xTQ" id="m7r-qo-vJ3"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eQe-cN-Oof">
@@ -220,7 +228,7 @@
                     <size key="freeformSize" width="512" height="256"/>
                     <connections>
                         <outlet property="cancelButton" destination="sTl-mG-Xs5" id="Oul-Hx-PoC"/>
-                        <outlet property="doneButton" destination="8cK-zY-CFN" id="TMp-wg-Hrf"/>
+                        <outlet property="confirmButton" destination="8cK-zY-CFN" id="cNK-Oi-Mtb"/>
                         <outlet property="imageView" destination="eQe-cN-Oof" id="P7Z-Pk-roE"/>
                         <outlet property="mainLabel" destination="r9y-Pf-eE5" id="nus-61-0EH"/>
                         <outlet property="toolbar" destination="SrX-sg-Uef" id="bgU-iQ-e5d"/>
