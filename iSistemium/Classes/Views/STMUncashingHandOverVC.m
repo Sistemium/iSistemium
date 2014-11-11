@@ -132,7 +132,7 @@
 
         if (viaBankOffice) {
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"PHOTO", nil) message:@"Photo" delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ATTENTION", nil) message:NSLocalizedString(@"BANK CHECK PHOTO", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
             alert.tag = 2;
             [alert show];
 
@@ -245,6 +245,15 @@
     
 //            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
     [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText];
+    
+}
+
+- (void)deletePhoto {
+    
+    [self dismissInfoPopover];
+    [self cancelBankOffice];
+    self.pictureImage = nil;
+    self.viaBankOffice = YES;
     
 }
 

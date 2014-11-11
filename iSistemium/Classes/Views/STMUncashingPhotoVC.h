@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "STMUncashingPicture.h"
+#import "STMUncashingHandOverVC.h"
 
 @interface STMUncashingPhotoVC : UIViewController
 
 @property (nonatomic, strong) STMUncashingPicture *picture;
 @property (nonatomic, strong) UIImage *image;
+
+@property (nonatomic, strong) STMUncashingHandOverVC *handOverController;
 
 @end

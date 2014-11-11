@@ -15,6 +15,6 @@
 
 - (void)dismissInfoPopover;
 - (void)confirmButtonPressed;
-
+- (void)deletePhoto;
 
 @end

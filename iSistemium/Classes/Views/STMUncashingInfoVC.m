@@ -48,6 +48,7 @@
     } else {
         
         photoVC.image = self.image;
+        photoVC.handOverController = self.parentVC;
         
     }
     

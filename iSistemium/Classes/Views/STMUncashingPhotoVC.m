@@ -50,6 +50,12 @@
     
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoViewTap" object:self];
 
+    [self dismissSelf];
+
+}
+
+- (void)dismissSelf {
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
     [self dismissViewControllerAnimated:YES completion:^{
@@ -88,8 +94,9 @@
         case 1:
             
             if (buttonIndex == 1) {
-                
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"deletePhoto" object:self userInfo:[NSDictionary dictionaryWithObject:self.photo forKey:@"photo2delete"]];
+
+                [self dismissSelf];
+                [self.handOverController deletePhoto];
                 
             }
             
