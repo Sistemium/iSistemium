@@ -10,16 +10,18 @@
 #import "STMCashing.h"
 #import "STMUncashingInfoVC.h"
 
-@interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingSumLabel;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSelector;
+@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
 @property (nonatomic, strong) NSString *uncashingType;
+@property (nonatomic, strong) NSString *commentText;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
 @property (nonatomic, strong) UIImagePickerController *imagePickerController;
@@ -100,6 +102,7 @@
         uncashingInfoVC.parentVC = self;
         uncashingInfoVC.sum = self.uncashingSum;
         uncashingInfoVC.type = self.uncashingType;
+        uncashingInfoVC.comment = self.commentText;
         uncashingInfoVC.image = self.pictureImage;
         _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoVC];
         
@@ -193,6 +196,10 @@
 //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) message:[numberFormatter stringFromNumber:self.uncashingSum] delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
 //    alert.tag = 1;
 //    [alert show];
+    
+    if ([self.commentTextView isFirstResponder]) {
+        [self.commentTextView resignFirstResponder];
+    }
 
     [self showInfoPopover];
     
@@ -237,12 +244,13 @@
     [self dismissInfoPopover];
     
 //            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
-    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType];
+    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText];
     
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
+/*
     if (alertView.tag == 1) {
         
         if (buttonIndex == 1) {
@@ -253,7 +261,10 @@
             
         }
         
-    } else if (alertView.tag == 2) {
+    } else
+*/
+    
+    if (alertView.tag == 2) {
         
         if (buttonIndex == 0) {
             
@@ -336,41 +347,6 @@
 
 }
 
-//- (void)saveImage:(UIImage *)image {
-//
-//
-//    self.picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.splitVC.detailVC.document.managedObjectContext];
-//
-//    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.picture];
-//
-//    [self.splitVC.detailVC.document saveDocument:^(BOOL success) {
-//        
-//    }];
-//    
-//    [self.picture addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
-//
-//}
-//
-//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-//    
-//    if ([object isKindOfClass:[STMUncashingPicture class]]) {
-//        
-//        [self.spinnerView removeFromSuperview];
-//        self.spinnerView = nil;
-//        
-//        [object removeObserver:self forKeyPath:@"imageThumbnail" context:nil];
-//        
-//    }
-//    
-//}
-
-//- (void)deviceOrientationDidChangeNotification:(NSNotification*)notification {
-//    
-//    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-//    
-//    [self.uncashingInfoPopover dismissPopoverAnimated:YES];
-//
-//}
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
@@ -445,6 +421,62 @@
 }
 
 
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+
+        NSString *text = self.commentTextView.text;
+        
+        if ([text isEqualToString:NSLocalizedString(@"ADD COMMENT", nil)]) {
+            
+            self.commentTextView.text = @"";
+            self.commentTextView.textColor = [UIColor blackColor];
+            
+        }
+        
+    }
+    
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        NSString *text = self.commentTextView.text;
+        
+        if ([text isEqualToString:@""]) {
+            
+            self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
+            self.commentTextView.textColor = [UIColor grayColor];
+            self.commentText = nil;
+            
+        } else {
+            
+            self.commentText = text;
+            
+        }
+        
+        
+    }
+    
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    UITouch *touch = [[event allTouches] anyObject];
+    
+    if ([self.commentTextView isFirstResponder] && [touch view] != self.commentTextView) {
+        
+        [self.commentTextView resignFirstResponder];
+        
+    }
+    
+    [super touchesBegan:touches withEvent:event];
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -464,7 +496,7 @@
 - (void)labelsInit {
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
     self.dateLabel.text = [dateFormatter stringFromDate:[NSDate date]];
@@ -474,6 +506,12 @@
     [self.typeSelector setSelectedSegmentIndex:UISegmentedControlNoSegment];
     [self.typeSelector setTitle:NSLocalizedString(@"CASH DESK", nil) forSegmentAtIndex:0];
     [self.typeSelector setTitle:NSLocalizedString(@"BANK OFFICE", nil) forSegmentAtIndex:1];
+
+    self.commentTextView.textColor = [UIColor grayColor];
+    self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
+    self.commentTextView.layer.borderWidth = 1.0f;
+    self.commentTextView.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    self.commentTextView.layer.cornerRadius = 5.0f;
 
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
 
@@ -485,13 +523,9 @@
 
     [self addObservers];
     [self.navigationItem setHidesBackButton:YES animated:YES];
+    self.commentTextView.delegate = self;
     [self labelsInit];
-    
-//    NSLog(@"self.cameraOverlayView %@", self.cameraOverlayView);
-//    NSArray *array = [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
-//    NSLog(@"array %@", array);
-//    NSLog(@"self.cameraOverlayView %@", self.cameraOverlayView);
-    
+
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

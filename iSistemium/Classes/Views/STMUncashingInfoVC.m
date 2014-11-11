@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *confirmButton;
+@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 
 @end
 
@@ -48,6 +49,7 @@
     
     NSDecimalNumber *sum = nil;
     NSString *type = nil;
+    NSString *comment = nil;
     UIImage *image = nil;
     
     if (self.uncashing) {
@@ -58,6 +60,7 @@
         
         sum = self.uncashing.summ;
         type = self.uncashing.type;
+        comment = self.uncashing.commentText;
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCTS" ascending:YES];
         
@@ -73,6 +76,7 @@
         
         sum = self.sum;
         type = self.type;
+        comment = self.comment;
         image = self.image;
 
     }
@@ -91,6 +95,8 @@
         self.typeLabel.text = nil;
     }
 
+    self.commentTextView.text = comment;
+    
     self.imageView.image = image;
 
 //    NSLog(@"self.uncashing %@", self.uncashing);

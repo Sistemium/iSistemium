@@ -16,6 +16,6 @@
 @property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
 
 //- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ;
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type;
+- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment;
 
 @end

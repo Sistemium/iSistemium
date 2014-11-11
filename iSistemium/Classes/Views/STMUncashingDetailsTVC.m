@@ -215,7 +215,7 @@
     
 }
 
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type {
+- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment{
     
     STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
     
@@ -242,6 +242,7 @@
     }
     
     uncashing.type = type;
+    uncashing.commentText = comment;
     
     [self.document saveDocument:^(BOOL success) {
         if (success) {
@@ -257,39 +258,6 @@
     [self.splitVC.masterVC selectRowWithUncashing:nil];
     
 }
-
-//- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ {
-//
-//    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
-//
-//    NSArray *cashings = [self.cashingDictionary allValues];
-//    
-//    for (STMCashing *cashing in cashings) {
-//        
-//        cashing.uncashing = uncashing;
-//        
-//    }
-//    
-//    uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
-//    uncashing.summ = summ;
-//    uncashing.date = [NSDate date];
-//    
-////    self.uncashing = uncashing;
-//    
-//    [self.document saveDocument:^(BOOL success) {
-//        if (success) {
-//            
-//            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-//            syncer.syncerState = STMSyncerSendData;
-//
-//        }
-//    }];
-//    
-//    [self setInfoLabelTitle];
-//    [self handOverButtonPressed];
-//    [self.splitVC.masterVC selectRowWithUncashing:nil];
-//    
-//}
 
 
 #pragma mark - UISplitViewControllerDelegate

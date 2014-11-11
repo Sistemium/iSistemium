@@ -181,7 +181,7 @@
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
     dateFormatter.timeStyle = NSDateFormatterShortStyle;
     
     if (indexPath.section == 0) {

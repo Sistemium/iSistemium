@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) NSDecimalNumber *sum;
 @property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString *comment;
 @property (nonatomic, strong) UIImage *image;
 
 @end
