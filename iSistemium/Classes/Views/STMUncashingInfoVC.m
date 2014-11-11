@@ -84,15 +84,23 @@
     self.sumLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING SUM", nil), [numberFormatter stringFromNumber:sum]];
     
     if ([type isEqualToString:@"bankOffice"]) {
+        
         type = NSLocalizedString(@"BANK OFFICE", nil);
+        
     } else if ([type isEqualToString:@"cashDesk"]) {
+        
         type = NSLocalizedString(@"CASH DESK2", nil);
+        
     }
     
     if (type) {
+        
         self.typeLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING TYPE", nil), type];
+        
     } else {
+        
         self.typeLabel.text = nil;
+        
     }
 
     self.commentTextView.text = comment;
