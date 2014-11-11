@@ -61,6 +61,7 @@
 		2C8047161A0E381400FEFEFF /* STMUncashingInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8047151A0E381400FEFEFF /* STMUncashingInfoVC.m */; };
 		2C80471D1A0F7B0B00FEFEFF /* STMUncashingPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80471C1A0F7B0B00FEFEFF /* STMUncashingPicture.m */; };
 		2C8047201A0F7B3200FEFEFF /* STMUncashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80471F1A0F7B3200FEFEFF /* STMUncashing.m */; };
+		2C8047231A12352F00FEFEFF /* STMUncashingPhotoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8047221A12352F00FEFEFF /* STMUncashingPhotoVC.m */; };
 		2C80C7E5198904170044ADE4 /* STMPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7E4198904170044ADE4 /* STMPhoto.m */; };
 		2C80C7E8198904170044ADE4 /* STMLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7E7198904170044ADE4 /* STMLocation.m */; };
 		2C80C7EB198904170044ADE4 /* STMDatum.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7EA198904170044ADE4 /* STMDatum.m */; };
@@ -241,6 +242,8 @@
 		2C80471C1A0F7B0B00FEFEFF /* STMUncashingPicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingPicture.m; sourceTree = "<group>"; };
 		2C80471E1A0F7B3200FEFEFF /* STMUncashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashing.h; sourceTree = "<group>"; };
 		2C80471F1A0F7B3200FEFEFF /* STMUncashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashing.m; sourceTree = "<group>"; };
+		2C8047211A12352F00FEFEFF /* STMUncashingPhotoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingPhotoVC.h; sourceTree = "<group>"; };
+		2C8047221A12352F00FEFEFF /* STMUncashingPhotoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingPhotoVC.m; sourceTree = "<group>"; };
 		2C80C7D9198902EE0044ADE4 /* STMDataModel 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 9.xcdatamodel"; sourceTree = "<group>"; };
 		2C80C7E3198904170044ADE4 /* STMPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhoto.h; sourceTree = "<group>"; };
 		2C80C7E4198904170044ADE4 /* STMPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhoto.m; sourceTree = "<group>"; };
@@ -448,6 +451,8 @@
 				2C2968F819A0C3950038B122 /* STMUncashingDetailsTVC.m */,
 				2C8047141A0E381400FEFEFF /* STMUncashingInfoVC.h */,
 				2C8047151A0E381400FEFEFF /* STMUncashingInfoVC.m */,
+				2C8047211A12352F00FEFEFF /* STMUncashingPhotoVC.h */,
+				2C8047221A12352F00FEFEFF /* STMUncashingPhotoVC.m */,
 				2C29691719B1CFAB0038B122 /* STMMessagesTVC.h */,
 				2C29691819B1CFAB0038B122 /* STMMessagesTVC.m */,
 				2C734B8319B4E8DC00EE33FA /* STMLogsTVC.h */,
@@ -885,6 +890,7 @@
 				2CD443E5195AAD72004ADE58 /* STMCampaignDetailsPVC.m in Sources */,
 				2CD443EE195AB4D6004ADE58 /* STMCampaignPageCVC.m in Sources */,
 				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,
+				2C8047231A12352F00FEFEFF /* STMUncashingPhotoVC.m in Sources */,
 				2C2968F319A0C31B0038B122 /* STMUncashingSVC.m in Sources */,
 				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,
 				2C53B8A619409E71002298A5 /* STMSettingsController.m in Sources */,

@@ -8,6 +8,7 @@
 
 #import "STMUncashingInfoVC.h"
 #import "STMUncashingPicture.h"
+#import "STMUncashingPhotoVC.h"
 
 @interface STMUncashingInfoVC ()
 @property (weak, nonatomic) IBOutlet UILabel *mainLabel;
@@ -35,6 +36,26 @@
     
 }
 
+- (void)imageViewTapped {
+
+    STMUncashingPhotoVC *photoVC = [self.storyboard instantiateViewControllerWithIdentifier:@"uncashingPhotoVC"];
+    
+    if (self.uncashing) {
+        
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
+        photoVC.picture = [[self.uncashing.pictures sortedArrayUsingDescriptors:@[sortDescriptor]] lastObject];
+        
+    } else {
+        
+        photoVC.image = self.image;
+        
+    }
+    
+    [self presentViewController:photoVC animated:YES completion:^{
+        
+    }];
+    
+}
 
 #pragma mark - view lifecycle
 
@@ -106,7 +127,14 @@
     self.commentTextView.text = comment;
     
     self.imageView.image = image;
+    
+    if (image) {
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped)];
+        [self.imageView addGestureRecognizer:tap];
 
+    }
+    
 //    NSLog(@"self.uncashing %@", self.uncashing);
     
 }
