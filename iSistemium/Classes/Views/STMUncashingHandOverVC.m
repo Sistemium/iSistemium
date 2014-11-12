@@ -285,6 +285,14 @@
     
 }
 
+- (void)toolbarDoneButtonPressed {
+    
+    if ([self.commentTextView isFirstResponder]) {
+        [self.commentTextView resignFirstResponder];
+    }
+    
+}
+
 - (void)deletePhoto {
     
     [self dismissInfoPopover];
@@ -477,7 +485,7 @@
         toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
         
         UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:nil];
+        UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toolbarDoneButtonPressed)];
         
         [toolbar setItems:@[flexibleSpace,doneButon] animated:YES];
         
