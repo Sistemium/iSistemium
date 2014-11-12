@@ -9,6 +9,7 @@
 #import "STMUncashingHandOverVC.h"
 #import "STMCashing.h"
 #import "STMUncashingInfoVC.h"
+#import "STMUncashingPhotoVC.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate>
 
@@ -166,6 +167,29 @@
     
 }
 
+- (void)setPictureImage:(UIImage *)pictureImage {
+    
+    if (_pictureImage != pictureImage) {
+        
+        _pictureImage = pictureImage;
+
+        self.imageView.image = _pictureImage;
+
+        if (_pictureImage) {
+        
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped)];
+            [self.imageView addGestureRecognizer:tap];
+            
+        } else {
+            
+            self.imageView.gestureRecognizers = [NSArray array];
+            
+        }
+        
+    }
+    
+}
+
 - (IBAction)typeSelected:(id)sender {
     
     if ([sender isEqual:self.typeSelector]) {
@@ -235,6 +259,18 @@
         [self.spinnerView removeFromSuperview];
         
         self.imagePickerController = nil;
+        
+    }];
+    
+}
+
+- (void)imageViewTapped {
+    
+    STMUncashingPhotoVC *photoVC = [self.storyboard instantiateViewControllerWithIdentifier:@"uncashingPhotoVC"];
+    photoVC.image = self.pictureImage;
+    photoVC.handOverController = self;
+    
+    [self presentViewController:photoVC animated:YES completion:^{
         
     }];
     
@@ -413,7 +449,6 @@
         [self.spinnerView removeFromSuperview];
         self.spinnerView = nil;
         self.imagePickerController = nil;
-        self.imageView.image = self.pictureImage;
         
 //        NSLog(@"dismiss UIImagePickerController");
         
