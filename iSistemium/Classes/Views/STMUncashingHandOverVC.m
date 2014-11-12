@@ -469,6 +469,38 @@
 
 #pragma mark - UITextViewDelegate
 
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        UIToolbar *toolbar = [[UIToolbar alloc] init];
+        toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+        
+        UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:nil];
+        
+        [toolbar setItems:@[flexibleSpace,doneButon] animated:YES];
+        
+        self.commentTextView.inputAccessoryView = toolbar;
+
+    }
+    
+    return YES;
+    
+}
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        self.commentTextView.inputAccessoryView = nil;
+        
+    }
+    
+    return YES;
+    
+}
+
 - (void)textViewDidBeginEditing:(UITextView *)textView {
     
     if ([textView isEqual:self.commentTextView]) {
@@ -523,14 +555,48 @@
     
 }
 
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+//    UIToolbar *toolbar = [[UIToolbar alloc] init];
+//    toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+//    self.commentTextView.inputAccessoryView = toolbar;
+    
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    
+//    self.commentTextView.inputAccessoryView = nil;
+    
+}
+
+- (id)findFirstResponder {
+    
+    if (self.isFirstResponder) {
+        return self;
+    }
+    
+    for (UIView *subView in self.view.subviews) {
+        
+        if ([subView isFirstResponder]) {
+            return subView;
+        }
+        
+    }
+    
+    return nil;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingDictionaryChanged) name:@"cashingDictionaryChanged" object:self.splitVC.detailVC];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+
 }
 
 - (void)removeObservers {
@@ -587,6 +653,18 @@
     
     [super viewDidLoad];
     [self customInit];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
     
 }
 
