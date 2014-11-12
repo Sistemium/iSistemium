@@ -77,7 +77,8 @@
     
     if (self.uncashing) {
         
-        NSString *infoLabelTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"TOTAL", nil), [numberFormatter stringFromNumber:self.uncashing.summ]];
+//        NSString *infoLabelTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"TOTAL", nil), [numberFormatter stringFromNumber:self.uncashing.summ]];
+        NSString *infoLabelTitle = NSLocalizedString(@"DETAILS", nil);
         
         self.infoLabel.title = infoLabelTitle;
         

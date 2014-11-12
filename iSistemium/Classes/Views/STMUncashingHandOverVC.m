@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSelector;
 @property (weak, nonatomic) IBOutlet UITextView *commentTextView;
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
 @property (nonatomic, strong) NSString *uncashingType;
@@ -412,6 +413,7 @@
         [self.spinnerView removeFromSuperview];
         self.spinnerView = nil;
         self.imagePickerController = nil;
+        self.imageView.image = self.pictureImage;
         
 //        NSLog(@"dismiss UIImagePickerController");
         

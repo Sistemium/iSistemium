@@ -119,13 +119,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uncashing label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KIX-w8-fsd">
-                                <rect key="frame" x="99" y="138" width="123" height="21"/>
+                                <rect key="frame" x="20" y="138" width="208" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uncashing sum" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iMs-Li-lWm">
-                                <rect key="frame" x="78" y="167" width="165" height="29"/>
+                                <rect key="frame" x="20" y="167" width="208" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <nil key="highlightedColor"/>
@@ -162,23 +162,35 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
                             </textView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CSZ-EQ-uWE">
+                                <rect key="frame" x="236" y="132" width="64" height="64"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="64" id="26N-VY-5yr"/>
+                                    <constraint firstAttribute="height" constant="64" id="Nlg-Jc-oeM"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="CSZ-EQ-uWE" secondAttribute="trailing" constant="20" id="2V3-lI-QDd"/>
                             <constraint firstItem="dZC-U6-eEt" firstAttribute="top" secondItem="iMs-Li-lWm" secondAttribute="bottom" constant="29" id="36s-Qc-iv2"/>
+                            <constraint firstItem="CSZ-EQ-uWE" firstAttribute="top" secondItem="TtG-d9-1yB" secondAttribute="bottom" constant="20" id="3cm-mV-rTI"/>
                             <constraint firstItem="KIX-w8-fsd" firstAttribute="top" secondItem="TtG-d9-1yB" secondAttribute="bottom" constant="26" id="AOb-ZA-7Ii"/>
                             <constraint firstItem="n4U-J4-lwl" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="Cc4-1F-2gg"/>
                             <constraint firstAttribute="centerX" secondItem="n4U-J4-lwl" secondAttribute="centerX" id="Fkv-F5-xBl"/>
-                            <constraint firstAttribute="centerX" secondItem="iMs-Li-lWm" secondAttribute="centerX" constant="-0.5" id="QDx-Ii-5Fl"/>
+                            <constraint firstItem="iMs-Li-lWm" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="KUx-mF-YvJ"/>
                             <constraint firstAttribute="centerX" secondItem="WgK-L0-ZHr" secondAttribute="centerX" constant="-0.5" id="Qrd-7H-qj6"/>
                             <constraint firstAttribute="trailing" secondItem="n4U-J4-lwl" secondAttribute="trailing" constant="20" id="b6I-lA-yRN"/>
                             <constraint firstItem="n4U-J4-lwl" firstAttribute="top" secondItem="dZC-U6-eEt" secondAttribute="bottom" constant="8" id="be2-KH-chP"/>
                             <constraint firstItem="dZC-U6-eEt" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="cyo-L5-WiL"/>
                             <constraint firstAttribute="trailing" secondItem="dZC-U6-eEt" secondAttribute="trailing" constant="20" id="gkY-JD-vdC"/>
                             <constraint firstItem="iMs-Li-lWm" firstAttribute="top" secondItem="KIX-w8-fsd" secondAttribute="bottom" constant="8" id="klh-0I-oY6"/>
-                            <constraint firstAttribute="centerX" secondItem="KIX-w8-fsd" secondAttribute="centerX" constant="-0.5" id="s7Z-ID-YM9"/>
+                            <constraint firstItem="CSZ-EQ-uWE" firstAttribute="leading" secondItem="iMs-Li-lWm" secondAttribute="trailing" constant="8" id="rbP-6g-7yS"/>
                             <constraint firstItem="TtG-d9-1yB" firstAttribute="top" secondItem="JVV-tK-uNm" secondAttribute="bottom" constant="24" id="u1K-su-wGQ"/>
                             <constraint firstItem="WgK-L0-ZHr" firstAttribute="top" secondItem="n4U-J4-lwl" secondAttribute="bottom" constant="7" id="wkZ-ZX-6pK"/>
+                            <constraint firstItem="KIX-w8-fsd" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="xuG-Sz-QjC"/>
+                            <constraint firstItem="CSZ-EQ-uWE" firstAttribute="leading" secondItem="KIX-w8-fsd" secondAttribute="trailing" constant="8" id="yfL-mc-nMM"/>
                             <constraint firstAttribute="centerX" secondItem="TtG-d9-1yB" secondAttribute="centerX" constant="-0.5" id="zOB-Dv-cbz"/>
                         </constraints>
                     </view>
@@ -187,6 +199,7 @@
                         <outlet property="commentTextView" destination="n4U-J4-lwl" id="tDp-GW-vtL"/>
                         <outlet property="dateLabel" destination="TtG-d9-1yB" id="zML-LA-jUU"/>
                         <outlet property="doneButton" destination="WgK-L0-ZHr" id="GXZ-xH-Kxv"/>
+                        <outlet property="imageView" destination="CSZ-EQ-uWE" id="uEj-3l-crB"/>
                         <outlet property="typeSelector" destination="dZC-U6-eEt" id="qZV-vp-csA"/>
                         <outlet property="uncashingLabel" destination="KIX-w8-fsd" id="xIu-gJ-yR6"/>
                         <outlet property="uncashingSumLabel" destination="iMs-Li-lWm" id="H5m-Qm-2n4"/>
