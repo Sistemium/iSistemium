@@ -19,9 +19,7 @@
 @interface STMCashingControlsVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *controlsView;
-//@property (weak, nonatomic) IBOutlet UIButton *cashingButton;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
-//@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
@@ -100,16 +98,7 @@
         
         if (_outlet) {
             
-//            NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-//            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-//
-//            NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
-//            
-//            self.remainderLabel.text = [NSString stringWithFormat:@"%@", totalSumString];
-            
             self.debtsDictionary = nil;
-//            [self showControlsView];
-            
             self.debtSummTextField.delegate = nil;
             [self.controlsView endEditing:YES];
             self.debtSummTextField.delegate = self;
@@ -206,14 +195,6 @@
 
 - (IBAction)cashingButtonPressed:(id)sender {
 
-//    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
-//        
-//        [(STMDebtsSVC *)self.splitViewController setOutletLocked:YES];
-//        
-//    }
-
-//    [self showCashingControls];
-    
     if (self.splitVC.detailVC.isCashingProcessing) {
         
         [self updateControlLabels];
@@ -236,14 +217,6 @@
     
 }
 
-/*
-- (IBAction)cancelButtonPressed:(id)sender {
-    
-    [self showCashingButton];
-
-}
-*/
-
 - (IBAction)doneButtonPressed:(id)sender {
 
     if ([self.debtSummTextField isFirstResponder]) {
@@ -259,28 +232,10 @@
 
     }
     
-//    [self showCashingButton];
-
 }
 
 
 #pragma mark - controls view
-
-/*
-- (void)hideControlsView {
-    
-    self.controlsView.hidden = YES;
-    
-}
-
-- (void)showControlsView {
-    
-    self.controlsView.hidden = NO;
-    [self updateControlLabels];
-    [self showCashingButton];
-    
-}
-*/
 
 - (void)updateControlLabels {
     
@@ -396,72 +351,6 @@
 
 }
 
-/*
-- (void)showCashingButton {
-    
-    [self.tableVC.tableView setEditing:NO animated:YES];
-    
-    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
-        
-        [(STMDebtsSVC *)self.splitViewController setOutletLocked:NO];
-        
-    }
-    
-    self.cashingButton.hidden = NO;
-    
-    self.dateButton.hidden = YES;
-    self.selectedDate = [NSDate date];
-    self.cancelButton.hidden = YES;
-    self.doneButton.hidden = YES;
-    self.summLabel.hidden = YES;
-    self.remainderLabel.hidden = YES;
-    self.debtSummTextField.hidden = YES;
-    self.cashingSummTextField.hidden = YES;
-    
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    
-    self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
-    
-    self.debtsDictionary = nil;
-    self.debtsArray = nil;
-    self.remainderSumm = [NSDecimalNumber zero];
-    self.cashingSummTextField.text = @"";
-    self.cashingSummLimit = [NSDecimalNumber zero];
-    
-    [self updateControlLabels];
-    
-    [self.tableVC.tableView reloadData];
-
-    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
-        
-        STMDebtsSVC *splitVC = (STMDebtsSVC *)self.splitViewController;
-        NSIndexPath *indexPath = [splitVC.masterVC.resultsController indexPathForObject:self.outlet];
-        [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        
-    }
-    
-}
-*/
-
-/*
-- (void)showCashingControls {
-
-//    self.cashingButton.hidden = YES;
-    
-    self.dateButton.hidden = NO;
-//    self.cancelButton.hidden = NO;
-    self.doneButton.hidden = NO;
-    self.summLabel.hidden = NO;
-    self.cashingSummTextField.hidden = NO;
-
-    if ([self.cashingSummTextField.text doubleValue] > 0) {
-        self.remainderLabel.hidden = NO;
-    }
-
-}
-*/
-
 - (NSDecimalNumber *)debtsSumm {
     
     NSDecimalNumber *sum = [NSDecimalNumber zero];
@@ -512,73 +401,6 @@
     
 }
 
-/*
-- (NSDecimalNumber *)cashingCalculatedSumForDebt:(STMDebt *)debt {
-    
-    NSDecimalNumber *result = debt.summ;
-    
-    for (STMCashing *cashing in debt.cashings) {
-        
-        result = [result decimalNumberBySubtracting:cashing.summ];
-        
-    }
-    
-    if ([result compare:[NSDecimalNumber zero]] == NSOrderedAscending) {
-        
-        result = [NSDecimalNumber zero];
-        
-    }
-    
-    return result;
-    
-}
-*/
-
-/*
-#pragma mark - keyboard show / hide
-
-- (void)keyboardWillShow:(NSNotification *)notification {
-    
-    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
-    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
-    [self moveTextFieldViewByDictance:keyboardHeight-tabBarHeight];
-    
-}
-
-- (void)keyboardWillBeHidden:(NSNotification *)notification {
-
-    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
-    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
-    [self moveTextFieldViewByDictance:tabBarHeight-keyboardHeight];
-
-}
-
-- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
-    
-    CGRect keyboardRect = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
-    
-    return keyboardRect.size.height;
-
-}
-
-- (void)moveTextFieldViewByDictance:(CGFloat)distance {
-
-    const float movementDuration = 0.3f;
-
-    [UIView beginAnimations:@"animation" context:nil];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:movementDuration];
-    self.view.frame = CGRectOffset(self.view.frame, 0, -distance);
-    [UIView commitAnimations];
-    
-    CGRect tableVCFrame = self.tableVC.tableView.frame;
-    CGFloat newHeight = tableVCFrame.size.height - distance;
-
-    self.tableVC.tableView.frame = CGRectMake(tableVCFrame.origin.x, tableVCFrame.origin.y, tableVCFrame.size.width, newHeight);
-    
-}
-*/
 
 #pragma mark - UITextFieldDelegate
 
@@ -689,8 +511,6 @@
 
 - (void)addObservers {
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed:) name:@"cashingButtonPressed" object:nil];
     
 }
@@ -711,12 +531,6 @@
 
     self.selectedDate = [NSDate date];
     
-//    if (!self.outlet) {
-//        [self hideControlsView];
-//    }
-    
-//    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];
-//    [self.cancelButton setTitle:NSLocalizedString(@"CANCEL", nil) forState:UIControlStateNormal];
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     self.doneButton.enabled = NO;
     
@@ -724,8 +538,6 @@
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
-    
-//    NSString *totalSumString = [numberFormatter stringFromNumber:self.tableVC.totalSum];
     
     self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), @""];
     
