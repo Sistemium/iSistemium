@@ -234,6 +234,20 @@
     
 }
 
+- (void)toolbarDoneButtonPressed {
+    
+    if ([self.debtSummTextField isFirstResponder]) {
+        
+        [self.debtSummTextField resignFirstResponder];
+        
+    } else if ([self.cashingSummTextField isFirstResponder]) {
+        
+        [self.cashingSummTextField resignFirstResponder];
+        
+    }
+    
+}
+
 
 #pragma mark - controls view
 
@@ -403,6 +417,22 @@
 
 
 #pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toolbarDoneButtonPressed)];
+    
+    [toolbar setItems:@[flexibleSpace,doneButon] animated:YES];
+    
+    textField.inputAccessoryView = toolbar;
+
+    return YES;
+    
+}
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
     
