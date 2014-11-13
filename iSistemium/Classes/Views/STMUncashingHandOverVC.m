@@ -563,19 +563,19 @@
     
 }
 
+/*
+- (void)keyboardDidShow:(NSNotification *)notification {
+ 
+}
+
 - (void)keyboardWillShow:(NSNotification *)notification {
-    
-//    UIToolbar *toolbar = [[UIToolbar alloc] init];
-//    toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
-//    self.commentTextView.inputAccessoryView = toolbar;
-    
+ 
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
     
-//    self.commentTextView.inputAccessoryView = nil;
-    
 }
+*/
 
 - (id)findFirstResponder {
     
@@ -602,8 +602,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingDictionaryChanged) name:@"cashingDictionaryChanged" object:self.splitVC.detailVC];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 
 }
 

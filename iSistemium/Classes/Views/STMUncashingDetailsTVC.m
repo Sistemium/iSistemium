@@ -15,6 +15,7 @@
 #import "STMUncashingPicture.h"
 #import "STMObjectsController.h"
 #import "STMUncashingInfoVC.h"
+#import "STMTableViewCell.h"
 
 @interface STMUncashingDetailsTVC ()
 
@@ -306,9 +307,9 @@
 
 #pragma mark - table view data source
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (STMTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uncashingDetailCell" forIndexPath:indexPath];
+    STMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uncashingDetailCell" forIndexPath:indexPath];
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;

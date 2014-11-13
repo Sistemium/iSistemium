@@ -14,40 +14,12 @@
 #import "STMDebtsCombineVC.h"
 #import "STMConstants.h"
 #import "STMFunctions.h"
+#import "STMTableViewCell.h"
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) STMDebtsCombineVC *parentVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
-
-
-@end
-
-
-@interface STMOutletDebtsTVCell : UITableViewCell
-
-@end
-
-
-@implementation STMOutletDebtsTVCell
-
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
-    
-    [super setEditing:editing animated:animated];
-    
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-
-        for (UIView *subview in self.subviews) {
-            
-            if ([NSStringFromClass(subview.class) isEqualToString:@"UITableViewCellEditControl"]) {
-                subview.hidden = YES;
-            }
-            
-        }
-
-    }
-    
-}
 
 
 @end
@@ -304,9 +276,9 @@
     
 }
 
-- (STMOutletDebtsTVCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (STMTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMOutletDebtsTVCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtDetailsCell" forIndexPath:indexPath];
+    STMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtDetailsCell" forIndexPath:indexPath];
 
     STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
 
@@ -388,7 +360,7 @@
         
         if (!self.parentVC.controlsVC.cashingLimitIsReached) {
             
-            STMOutletDebtsTVCell *cell = (STMOutletDebtsTVCell *)[tableView cellForRowAtIndexPath:indexPath];
+            STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
             [cell setTintColor:ACTIVE_BLUE_COLOR];
             
             id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
@@ -408,7 +380,7 @@
 
     if (tableView.editing) {
         
-        STMOutletDebtsTVCell *cell = (STMOutletDebtsTVCell *)[tableView cellForRowAtIndexPath:indexPath];
+        STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
         [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
         
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
