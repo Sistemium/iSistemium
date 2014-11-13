@@ -211,8 +211,9 @@
 
 - (void)dismissSelf {
     
-    [self.tableVC.tableView setEditing:NO animated:YES];
     self.splitVC.controlsVC = nil;
+    [self.tableVC.tableView setEditing:NO animated:YES];
+    [self.tableVC.tableView reloadData];
     [self.navigationController popViewControllerAnimated:YES];
     
 }
@@ -226,7 +227,6 @@
     } else {
         
         [self saveCashings];
-        [self.tableVC.tableView reloadData];
         [self dismissSelf];
         [self.splitVC.detailVC cashingButtonPressed];
 
