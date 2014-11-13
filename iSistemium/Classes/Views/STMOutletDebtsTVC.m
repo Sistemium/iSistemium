@@ -15,10 +15,12 @@
 #import "STMConstants.h"
 #import "STMFunctions.h"
 #import "STMTableViewCell.h"
+#import "STMDebtsSVC.h"
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) STMDebtsCombineVC *parentVC;
+//@property (nonatomic, strong) STMDebtsCombineVC *parentVC;
+@property (nonatomic, strong) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
 
@@ -29,9 +31,25 @@
 
 @synthesize resultsController = _resultsController;
 
-- (STMDebtsCombineVC *)parentVC {
+//- (STMDebtsCombineVC *)parentVC {
+//    
+//    return (STMDebtsCombineVC *)self.parentViewController;
+//    
+//}
+
+- (STMDebtsSVC *)splitVC {
     
-    return (STMDebtsCombineVC *)self.parentViewController;
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+            
+            _splitVC = (STMDebtsSVC *)self.splitViewController;
+            
+        }
+        
+    }
+    
+    return _splitVC;
     
 }
 
@@ -134,7 +152,7 @@
         UIColor *backgroundColor = [UIColor clearColor];
         UIColor *textColor = [UIColor blackColor];
         
-        if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+        if ([[self.splitVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
             
             textColor = ACTIVE_BLUE_COLOR;
             
@@ -281,7 +299,7 @@
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
     
-    if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+    if ([[self.splitVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
         
         cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
         
@@ -294,9 +312,9 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if ([[self.parentVC.controlsVC.debtsDictionary allKeys] containsObject:debt.xid]) {
+    if ([[self.splitVC.controlsVC.debtsDictionary allKeys] containsObject:debt.xid]) {
         
-        NSDecimalNumber *cashingSum = [self.parentVC.controlsVC.debtsDictionary objectForKey:debt.xid][1];
+        NSDecimalNumber *cashingSum = [self.splitVC.controlsVC.debtsDictionary objectForKey:debt.xid][1];
         
         if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
             
@@ -343,7 +361,7 @@
     
     if (tableView.editing) {
         
-        if (!self.parentVC.controlsVC.cashingLimitIsReached) {
+        if (!self.splitVC.controlsVC.cashingLimitIsReached) {
             
             STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
             [cell setTintColor:ACTIVE_BLUE_COLOR];
@@ -351,7 +369,7 @@
             id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
             STMDebt *debt = sectionInfo.objects[indexPath.row];
             
-            [self.parentVC.controlsVC addCashing:debt];
+            [self.splitVC.controlsVC addCashing:debt];
 
         }
         
@@ -371,7 +389,7 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
         STMDebt *debt = sectionInfo.objects[indexPath.row];
         
-        [self.parentVC.controlsVC removeCashing:debt];
+        [self.splitVC.controlsVC removeCashing:debt];
         
     }
 

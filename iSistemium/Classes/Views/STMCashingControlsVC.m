@@ -19,9 +19,9 @@
 @interface STMCashingControlsVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *controlsView;
-@property (weak, nonatomic) IBOutlet UIButton *cashingButton;
+//@property (weak, nonatomic) IBOutlet UIButton *cashingButton;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
-@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+//@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
@@ -30,6 +30,7 @@
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
 
+@property (nonatomic, strong) STMDebtsSVC *splitVC;
 
 @property (nonatomic, strong) STMDocument *document;
 
@@ -38,6 +39,22 @@
 @end
 
 @implementation STMCashingControlsVC
+
+- (STMDebtsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+            
+            _splitVC = (STMDebtsSVC *)self.splitViewController;
+            
+        }
+        
+    }
+    
+    return _splitVC;
+    
+}
 
 - (STMDocument *)document {
     
@@ -91,7 +108,7 @@
 //            self.remainderLabel.text = [NSString stringWithFormat:@"%@", totalSumString];
             
             self.debtsDictionary = nil;
-            [self showControlsView];
+//            [self showControlsView];
             
             self.debtSummTextField.delegate = nil;
             [self.controlsView endEditing:YES];
@@ -189,36 +206,58 @@
 
 - (IBAction)cashingButtonPressed:(id)sender {
 
-    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+//    if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+//        
+//        [(STMDebtsSVC *)self.splitViewController setOutletLocked:YES];
+//        
+//    }
+
+//    [self showCashingControls];
+    
+    if (self.splitVC.detailVC.isCashingProcessing) {
         
-        [(STMDebtsSVC *)self.splitViewController setOutletLocked:YES];
+        [self updateControlLabels];
+        [self.tableVC.tableView setEditing:YES animated:YES];
+
+    } else {
+        
+        [self.tableVC.tableView setEditing:NO animated:YES];
+        self.splitVC.controlsVC = nil;
+        [self.navigationController popViewControllerAnimated:YES];
         
     }
     
-    [self updateControlLabels];
-    [self showCashingControls];
-    [self.tableVC.tableView setEditing:YES animated:YES];
-
-    [self.navigationController popViewControllerAnimated:YES];
-
+    
 }
 
+/*
 - (IBAction)cancelButtonPressed:(id)sender {
     
     [self showCashingButton];
 
 }
+*/
 
 - (IBAction)doneButtonPressed:(id)sender {
 
-    [self saveCashings];
-    [self showCashingButton];
+    if ([self.debtSummTextField isFirstResponder]) {
+
+        [self.debtSummTextField resignFirstResponder];
+        
+    } else {
+        
+        [self saveCashings];
+
+    }
+    
+//    [self showCashingButton];
 
 }
 
 
 #pragma mark - controls view
 
+/*
 - (void)hideControlsView {
     
     self.controlsView.hidden = YES;
@@ -232,6 +271,7 @@
     [self showCashingButton];
     
 }
+*/
 
 - (void)updateControlLabels {
     
@@ -338,6 +378,8 @@
         
     }
     
+    self.doneButton.enabled = (sum.floatValue > 0);
+    
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     NSString *sumString = [numberFormatter stringFromNumber:sum];
@@ -345,6 +387,7 @@
 
 }
 
+/*
 - (void)showCashingButton {
     
     [self.tableVC.tableView setEditing:NO animated:YES];
@@ -390,13 +433,15 @@
     }
     
 }
+*/
 
+/*
 - (void)showCashingControls {
 
-    self.cashingButton.hidden = YES;
+//    self.cashingButton.hidden = YES;
     
     self.dateButton.hidden = NO;
-    self.cancelButton.hidden = NO;
+//    self.cancelButton.hidden = NO;
     self.doneButton.hidden = NO;
     self.summLabel.hidden = NO;
     self.cashingSummTextField.hidden = NO;
@@ -406,6 +451,7 @@
     }
 
 }
+*/
 
 - (NSDecimalNumber *)debtsSumm {
     
@@ -479,6 +525,7 @@
 }
 */
 
+/*
 #pragma mark - keyboard show / hide
 
 - (void)keyboardWillShow:(NSNotification *)notification {
@@ -522,6 +569,7 @@
     self.tableVC.tableView.frame = CGRectMake(tableVCFrame.origin.x, tableVCFrame.origin.y, tableVCFrame.size.width, newHeight);
     
 }
+*/
 
 #pragma mark - UITextFieldDelegate
 
@@ -551,6 +599,8 @@
         [self.tableVC updateRowWithDebt:self.selectedDebt];
         
         self.debtSummTextField.text = [numberFormatter stringFromNumber:number];
+        
+        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
         
     } else if ([textField isEqual:self.cashingSummTextField]) {
         
@@ -630,8 +680,8 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed:) name:@"cashingButtonPressed" object:nil];
     
 }
@@ -646,15 +696,18 @@
 
 - (void)customInit {
     
+    self.splitVC.controlsVC = self;
+    
     self.selectedDate = [NSDate date];
     
-    if (!self.outlet) {
-        [self hideControlsView];
-    }
+//    if (!self.outlet) {
+//        [self hideControlsView];
+//    }
     
-    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];
-    [self.cancelButton setTitle:NSLocalizedString(@"CANCEL", nil) forState:UIControlStateNormal];
+//    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil) forState:UIControlStateNormal];
+//    [self.cancelButton setTitle:NSLocalizedString(@"CANCEL", nil) forState:UIControlStateNormal];
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
+    self.doneButton.enabled = NO;
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -670,9 +723,11 @@
     self.debtSummTextField.delegate = self;
     
     self.cashingSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
-    self.cashingSummTextField.hidden = YES;
+//    self.cashingSummTextField.hidden = YES;
     self.cashingSummTextField.placeholder = NSLocalizedString(@"CASHING SUMM", nil);
     self.cashingSummTextField.delegate = self;
+    
+    [self cashingButtonPressed:nil];
 
 }
 
