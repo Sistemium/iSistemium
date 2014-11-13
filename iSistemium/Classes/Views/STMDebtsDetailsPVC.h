@@ -17,4 +17,6 @@
 @property (nonatomic, strong) STMDebtsDetailsVC *debtsCombineVC;
 @property (nonatomic, strong) STMDebtsDetailsVC *outletCashingVC;
 
+- (void)cashingButtonPressed;
+
 @end

@@ -221,12 +221,18 @@
 
     } else {
         
-        [self.tableVC.tableView setEditing:NO animated:YES];
-        self.splitVC.controlsVC = nil;
-        [self.navigationController popViewControllerAnimated:YES];
+        [self dismissSelf];
         
     }
     
+    
+}
+
+- (void)dismissSelf {
+    
+    [self.tableVC.tableView setEditing:NO animated:YES];
+    self.splitVC.controlsVC = nil;
+    [self.navigationController popViewControllerAnimated:YES];
     
 }
 
@@ -247,6 +253,9 @@
     } else {
         
         [self saveCashings];
+        [self.tableVC.tableView reloadData];
+        [self dismissSelf];
+        [self.splitVC.detailVC cashingButtonPressed];
 
     }
     
@@ -697,7 +706,9 @@
 - (void)customInit {
     
     self.splitVC.controlsVC = self;
-    
+
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+
     self.selectedDate = [NSDate date];
     
 //    if (!self.outlet) {
