@@ -15,6 +15,8 @@
 
 #import "STMConstants.h"
 
+#import "STMCashingControlsVC.h"
+#import "STMDebtsCombineVC.h"
 
 @interface STMDebtsTVC ()
 
@@ -73,11 +75,39 @@
     
 }
 
+- (void)cashingButtonPressed {
+    
+    if (self.splitVC.detailVC.isCashingProcessing) {
+        
+        [self performSegueWithIdentifier:@"showCashingControls" sender:self];
+        
+    }
+    
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showCashingControls"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMCashingControlsVC class]]) {
+            
+            STMCashingControlsVC *controlsVC = (STMCashingControlsVC *)segue.destinationViewController;
+            
+            controlsVC.outlet = self.splitVC.detailVC.outlet;
+            controlsVC.tableVC = [(STMDebtsCombineVC *)self.splitVC.detailVC.debtsCombineVC tableVC];
+            
+        }
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debtSummChanged:) name:@"debtSummChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed) name:@"cashingButtonPressed" object:self.splitVC.detailVC];
 
 }
 

@@ -23,7 +23,7 @@
         
         _outlet = outlet;
         self.tableVC.outlet = self.outlet;
-        self.controlsVC.outlet = self.outlet;
+//        self.controlsVC.outlet = self.outlet;
 
     }
     
@@ -60,12 +60,12 @@
         self.tableVC = (STMOutletDebtsTVC *)[segue destinationViewController];
         self.tableVC.outlet = self.outlet;
         
-    } else if ([segue.identifier isEqualToString: @"controlsVC"]) {
-     
-        self.controlsVC = (STMCashingControlsVC *)[segue destinationViewController];
-        self.controlsVC.outlet = self.outlet;
-        self.controlsVC.tableVC = self.tableVC;
-        
+//    } else if ([segue.identifier isEqualToString: @"controlsVC"]) {
+//     
+//        self.controlsVC = (STMCashingControlsVC *)[segue destinationViewController];
+//        self.controlsVC.outlet = self.outlet;
+//        self.controlsVC.tableVC = self.tableVC;
+//        
     }
     
 //    NSLog(@"self %@", self);

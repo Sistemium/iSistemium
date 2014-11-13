@@ -9,9 +9,10 @@
 #import "STMDebtsDetailsPVC.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
-#import "STMDebtsDetailsVC.h"
 #import "STMRootTBC.h"
 #import "STMOutletCashingVC.h"
+#import "STMConstants.h"
+#import "STMDebtsCombineVC.h"
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
@@ -23,8 +24,7 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
-@property (nonatomic, strong) STMDebtsDetailsVC *debtsCombineVC;
-@property (nonatomic, strong) STMDebtsDetailsVC *outletCashingVC;
+@property (nonatomic, strong) UIBarButtonItem *cashingButton;
 
 @end
 
@@ -42,6 +42,17 @@
     
 }
 
+- (UIBarButtonItem *)cashingButton {
+    
+    if (!_cashingButton) {
+        
+        _cashingButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CASHING", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cashingButtonPressed)];
+
+    }
+
+    return _cashingButton;
+    
+}
 
 - (void)setOutlet:(STMOutlet *)outlet {
     
@@ -80,6 +91,8 @@
             self.navigationItem.leftBarButtonItem.title = self.outlet.name;
             
         }
+        
+        [self editButtonForVC:self.viewControllers[self.currentIndex]];
 
         [self.popover dismissPopoverAnimated:YES];
 
@@ -147,7 +160,9 @@
         
     } else {
         
-        self.navigationItem.rightBarButtonItem = nil;
+        if (self.outlet) {
+            self.navigationItem.rightBarButtonItem = self.cashingButton;
+        }
         
     }
 
@@ -160,6 +175,33 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": [NSNumber numberWithBool:editing]}];
     
 //    NSLog(@"setEditing:editing %d", editing);
+    
+}
+
+- (void)cashingButtonPressed {
+    
+    if (self.isCashingProcessing) {
+
+        [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
+        [self.cashingButton setTintColor:ACTIVE_BLUE_COLOR];
+        self.isCashingProcessing = NO;
+
+    } else {
+    
+        [self.cashingButton setTitle:NSLocalizedString(@"CANCEL", nil)];
+        [self.cashingButton setTintColor:[UIColor redColor]];
+        self.isCashingProcessing = YES;
+        
+    }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingButtonPressed" object:self userInfo:nil];
+    
+//    if ([self.debtsCombineVC isKindOfClass:[STMDebtsCombineVC class]]) {
+//        
+//        [[(STMDebtsCombineVC *)self.debtsCombineVC tableVC] setEditing:self.isCashingProcessing animated:NO];
+//        
+//    }
+
     
 }
 

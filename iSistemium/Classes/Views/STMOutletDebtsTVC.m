@@ -46,21 +46,6 @@
     
 }
 
-/*
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
-    
-}
-*/
- 
-
 - (NSDecimalNumber *)totalSum {
     
     if (!_totalSum) {

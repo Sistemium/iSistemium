@@ -198,7 +198,9 @@
     [self updateControlLabels];
     [self showCashingControls];
     [self.tableVC.tableView setEditing:YES animated:YES];
-    
+
+    [self.navigationController popViewControllerAnimated:YES];
+
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
@@ -623,12 +625,14 @@
 }
 
 
+
 #pragma mark - observers
 
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed:) name:@"cashingButtonPressed" object:nil];
     
 }
 
