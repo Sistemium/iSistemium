@@ -134,22 +134,19 @@
         _selectedDebt = selectedDebt;
         
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+        numberFormatter.minimumFractionDigits = 2;
 
         if (selectedDebt) {
             
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+            dateFormatter.dateStyle = NSDateFormatterShortStyle;
             dateFormatter.timeStyle = NSDateFormatterNoStyle;
             
             NSString *debtDate = [dateFormatter stringFromDate:selectedDebt.date];
-            NSString *debtSumOriginString = [numberFormatter stringFromNumber:selectedDebt.summOrigin];
             
-            self.debtInfoTextView.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), selectedDebt.ndoc, debtDate, debtSumOriginString];
-            
-            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-            numberFormatter.minimumFractionDigits = 2;
-            
+            self.debtInfoTextView.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
+
             NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:selectedDebt.xid][1];
             
             NSMutableString *cashingSumString = [[numberFormatter stringFromNumber:cashingSum] mutableCopy];
@@ -161,9 +158,6 @@
             [self.tableVC updateRowWithDebt:selectedDebt];
 
         } else {
-
-            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-            numberFormatter.minimumFractionDigits = 2;
 
             self.debtInfoTextView.text = nil;
 
@@ -638,6 +632,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    self.title = NSLocalizedString(@"CASHING", nil);
     
     self.splitVC.controlsVC = self;
 

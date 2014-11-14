@@ -641,13 +641,15 @@
 
 - (void)labelsInit {
     
+    self.title = NSLocalizedString(@"HANDOVERING", nil);
+    
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterLongStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
     self.dateLabel.text = [dateFormatter stringFromDate:[NSDate date]];
     
-    self.uncashingLabel.text = NSLocalizedString(@"CASHING SUMM", nil);
+    self.uncashingLabel.text = NSLocalizedString(@"CASHING SUMM2", nil);
 
     [self.typeSelector setSelectedSegmentIndex:UISegmentedControlNoSegment];
     [self.typeSelector setTitle:NSLocalizedString(@"CASH DESK", nil) forSegmentAtIndex:0];

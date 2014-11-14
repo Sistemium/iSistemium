@@ -46,11 +46,13 @@
 "AUTHORIZATION" = "Авторизация";
 "DEBTS" = "Долги";
 "DEBT DETAILS" = "За %@ от %@ на сумму %@";
+"DEBT INFO" = "Долг за %@ от %@";
 "CASHING" = "Выручка";
 "OUTLETS" = "Точки";
 "CASHING" = "Сбор выручки";
 "CASHED" = "Выручка";
 "DONE" = "Готово";
+"HANDOVERING" = "Сдача выручки";
 "UNCASHING" = "Выручка";
 "ON HAND" = "На руках:";
 "HAND OVER" = "Сдано:";
@@ -63,6 +65,7 @@
 "UPDATE" = "Обновить";
 "VERSION" = "Версия";
 "CASHING SUMM" = "Подбор под сумму";
+"CASHING SUMM2" = "Сумма выручки";
 "CASHING SUMM PLACEHOLDER" = "Нажмите для ввода суммы";
 "DEBT SUM LABEL" = "Получено по долгу";
 "DUE DATE" = "Срок оплаты";
