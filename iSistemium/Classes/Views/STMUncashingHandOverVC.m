@@ -291,9 +291,11 @@
 
 - (void)toolbarDoneButtonPressed {
     
-    if ([self.commentTextView isFirstResponder]) {
-        [self.commentTextView resignFirstResponder];
-    }
+    [self.view endEditing:NO];
+
+//    if ([self.commentTextView isFirstResponder]) {
+//        [self.commentTextView resignFirstResponder];
+//    }
     
 }
 
@@ -302,7 +304,7 @@
     if ([self.commentTextView isFirstResponder]) {
         
         self.commentTextView.text = self.initialCommentText;
-        [self.commentTextView resignFirstResponder];
+        [self toolbarDoneButtonPressed];
         
     }
     

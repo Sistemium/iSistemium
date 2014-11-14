@@ -294,15 +294,17 @@
 
 - (void)toolbarDoneButtonPressed {
     
-    if ([self.debtSummTextField isFirstResponder]) {
-        
-        [self.debtSummTextField resignFirstResponder];
-        
-    } else if ([self.cashingSummTextField isFirstResponder]) {
-        
-        [self.cashingSummTextField resignFirstResponder];
-        
-    }
+    [self.view endEditing:NO];
+    
+//    if ([self.debtSummTextField isFirstResponder]) {
+//        
+//        [self.debtSummTextField resignFirstResponder];
+//        
+//    } else if ([self.cashingSummTextField isFirstResponder]) {
+//        
+//        [self.cashingSummTextField resignFirstResponder];
+//        
+//    }
     
 }
 
