@@ -18,13 +18,19 @@
 
 @interface STMCashingControlsVC () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UIView *controlsView;
+//@property (weak, nonatomic) IBOutlet UIView *controlsView;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton;
 @property (weak, nonatomic) IBOutlet UITextField *cashingSummTextField;
+@property (weak, nonatomic) IBOutlet UILabel *cashingSumLabel;
+@property (weak, nonatomic) IBOutlet UITextView *debtInfoTextView;
+@property (weak, nonatomic) IBOutlet UILabel *debtSumLabel;
+
+
+
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
 @property (nonatomic, strong) NSString *initialTextFieldValue;
@@ -100,7 +106,7 @@
             
             self.debtsDictionary = nil;
             self.debtSummTextField.delegate = nil;
-            [self.controlsView endEditing:YES];
+//            [self.controlsView endEditing:YES];
             self.debtSummTextField.delegate = self;
             
         }
@@ -121,6 +127,56 @@
     
 }
 
+- (void)setSelectedDebt:(STMDebt *)selectedDebt {
+    
+    if (_selectedDebt != selectedDebt) {
+        
+        _selectedDebt = selectedDebt;
+        
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+
+        if (selectedDebt) {
+            
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+            dateFormatter.timeStyle = NSDateFormatterNoStyle;
+            
+            NSString *debtDate = [dateFormatter stringFromDate:selectedDebt.date];
+            NSString *debtSumOriginString = [numberFormatter stringFromNumber:selectedDebt.summOrigin];
+            
+            self.debtInfoTextView.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), selectedDebt.ndoc, debtDate, debtSumOriginString];
+            
+            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+            numberFormatter.minimumFractionDigits = 2;
+            
+            NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:selectedDebt.xid][1];
+            
+            NSMutableString *cashingSumString = [[numberFormatter stringFromNumber:cashingSum] mutableCopy];
+            
+            self.debtSummTextField.text = [NSString stringWithFormat:@"%@", cashingSumString];
+            self.debtSummTextField.hidden = NO;
+            self.debtSumLabel.hidden = NO;
+
+            [self.tableVC updateRowWithDebt:selectedDebt];
+
+        } else {
+
+            numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+            numberFormatter.minimumFractionDigits = 2;
+
+            self.debtInfoTextView.text = nil;
+
+            self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
+            self.debtSummTextField.hidden = NO;
+            self.debtSumLabel.hidden = NO;
+
+        }
+        
+    }
+    
+}
+
 - (void)refreshDateButtonTitle {
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -135,14 +191,15 @@
     
     if (debt) {
         
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-        numberFormatter.minimumFractionDigits = 2;
-
-        NSMutableString *debtSum = [[numberFormatter stringFromNumber:debt.calculatedSum] mutableCopy];
-        
-        self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debtSum];
-        self.debtSummTextField.hidden = NO;
+//        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+//        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+//        numberFormatter.minimumFractionDigits = 2;
+//
+//        NSMutableString *debtSum = [[numberFormatter stringFromNumber:debt.calculatedSum] mutableCopy];
+//        
+//        self.debtSummTextField.text = [NSString stringWithFormat:@"%@", debtSum];
+//        self.debtSummTextField.hidden = NO;
+//        self.debtSumLabel.hidden = NO;
 
         STMDebt *lastDebt = [self.debtsArray lastObject];
 
@@ -166,14 +223,15 @@
     
     if (debt && [[self.debtsDictionary allKeys] containsObject:debt.xid]) {
         
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-
-        self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
-        self.debtSummTextField.hidden = YES;
+//        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+//        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+//
+//        self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
+//        self.debtSummTextField.hidden = YES;
+//        self.debtSumLabel.hidden = YES;
 
         self.debtSummTextField.delegate = nil;
-        [self.controlsView endEditing:YES];
+//        [self.controlsView endEditing:YES];
         self.debtSummTextField.delegate = self;
 
         [self.debtsDictionary removeObjectForKey:debt.xid];
@@ -585,25 +643,33 @@
 
     self.selectedDate = [NSDate date];
     
-    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
-    self.doneButton.enabled = NO;
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
-    self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
+    self.cashingSumLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"CASHING SUMM", nil), @""];
+    
+    self.cashingSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
+    //    self.cashingSummTextField.hidden = YES;
+    self.cashingSummTextField.placeholder = NSLocalizedString(@"CASHING SUMM PLACEHOLDER", nil);
+    self.cashingSummTextField.delegate = self;
     
     self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), @""];
+    
+    self.debtInfoTextView.text = nil;
+    
+    self.debtSumLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DEBT SUM LABEL", nil), @""];
+    self.debtSumLabel.hidden = YES;
     
     self.debtSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.debtSummTextField.hidden = YES;
     self.debtSummTextField.delegate = self;
-    
-    self.cashingSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
-//    self.cashingSummTextField.hidden = YES;
-    self.cashingSummTextField.placeholder = NSLocalizedString(@"CASHING SUMM", nil);
-    self.cashingSummTextField.delegate = self;
-    
+
+    self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
+
+    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
+    self.doneButton.enabled = NO;
+
     [self cashingButtonPressed:nil];
 
 }

@@ -63,6 +63,8 @@
 "UPDATE" = "Update";
 "VERSION" = "Version";
 "CASHING SUMM" = "Cashing summ";
+"CASHING SUMM PLACEHOLDER" = "Press to enter sum";
+"DEBT SUM LABEL" = "Debt sum";
 "DUE DATE" = "Due date";
 "TODAY" = "Today";
 "TOMORROW" = "Tomorrow";
