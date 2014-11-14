@@ -162,8 +162,8 @@
             self.debtInfoTextView.text = nil;
 
             self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
-            self.debtSummTextField.hidden = NO;
-            self.debtSumLabel.hidden = NO;
+            self.debtSummTextField.hidden = YES;
+            self.debtSumLabel.hidden = YES;
 
         }
         
