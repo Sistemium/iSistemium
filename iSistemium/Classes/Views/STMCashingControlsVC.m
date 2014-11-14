@@ -27,7 +27,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *cashingSummTextField;
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
-
+@property (nonatomic, strong) NSString *initialTextFieldValue;
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
 
 @property (nonatomic, strong) STMDocument *document;
@@ -248,6 +248,21 @@
     
 }
 
+- (void)toolbarCancelButtonPressed {
+
+    if ([self.debtSummTextField isFirstResponder]) {
+        
+        self.debtSummTextField.text = self.initialTextFieldValue;
+        
+    } else if ([self.cashingSummTextField isFirstResponder]) {
+        
+        self.cashingSummTextField.text = self.initialTextFieldValue;
+        
+    }
+
+    [self toolbarDoneButtonPressed];
+
+}
 
 #pragma mark - controls view
 
@@ -423,10 +438,11 @@
     UIToolbar *toolbar = [[UIToolbar alloc] init];
     toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
     
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(toolbarCancelButtonPressed)];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toolbarDoneButtonPressed)];
     
-    [toolbar setItems:@[flexibleSpace,doneButon] animated:YES];
+    [toolbar setItems:@[cancelButton,flexibleSpace,doneButon] animated:YES];
     
     textField.inputAccessoryView = toolbar;
 
@@ -442,6 +458,12 @@
         return [self isCorrectDebtSumValueForTextField:textField];
     }
 
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    self.initialTextFieldValue = textField.text;
+    
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
