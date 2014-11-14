@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
 @property (nonatomic, strong) NSString *uncashingType;
 @property (nonatomic, strong) NSString *commentText;
+@property (nonatomic, strong) NSString *initialCommentText;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
 @property (nonatomic, strong) UIImagePickerController *imagePickerController;
@@ -190,6 +191,9 @@
     
 }
 
+
+#pragma mark - buttons pressing
+
 - (IBAction)typeSelected:(id)sender {
     
     if ([sender isEqual:self.typeSelector]) {
@@ -292,6 +296,20 @@
     }
     
 }
+
+- (void)toolbarCancelButtonPressed {
+    
+    if ([self.commentTextView isFirstResponder]) {
+        
+        self.commentTextView.text = self.initialCommentText;
+        [self.commentTextView resignFirstResponder];
+        
+    }
+    
+}
+
+
+# pragma mark - methods
 
 - (void)deletePhoto {
     
@@ -484,10 +502,11 @@
         UIToolbar *toolbar = [[UIToolbar alloc] init];
         toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
         
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(toolbarCancelButtonPressed)];
         UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toolbarDoneButtonPressed)];
         
-        [toolbar setItems:@[flexibleSpace,doneButon] animated:YES];
+        [toolbar setItems:@[cancelButton,flexibleSpace,doneButon] animated:YES];
         
         self.commentTextView.inputAccessoryView = toolbar;
 
@@ -521,6 +540,8 @@
             self.commentTextView.textColor = [UIColor blackColor];
             
         }
+        
+        self.initialCommentText = self.commentTextView.text;
         
     }
     
