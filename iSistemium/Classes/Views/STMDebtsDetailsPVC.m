@@ -91,8 +91,8 @@
             self.navigationItem.leftBarButtonItem.title = self.outlet.name;
             
         }
-        
-        [self editButtonForVC:self.viewControllers[self.currentIndex]];
+                
+        [self editButtonForVC:self.viewControllers[0]];
 
         [self.popover dismissPopoverAnimated:YES];
 
