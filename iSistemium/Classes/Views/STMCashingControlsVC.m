@@ -536,6 +536,7 @@
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     
     self.initialTextFieldValue = textField.text;
+    [textField selectAll:nil];
     
 }
 
