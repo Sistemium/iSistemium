@@ -26,9 +26,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *dateButton;
 @property (weak, nonatomic) IBOutlet UITextField *cashingSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *cashingSumLabel;
-@property (weak, nonatomic) IBOutlet UITextView *debtInfoTextView;
+//@property (weak, nonatomic) IBOutlet UITextView *debtInfoTextView;
 @property (weak, nonatomic) IBOutlet UILabel *debtSumLabel;
 @property (weak, nonatomic) IBOutlet UITextView *commentTextView;
+@property (weak, nonatomic) IBOutlet UILabel *debtInfoLabel;
+
+
 
 @property (nonatomic) CGFloat textViewShiftDistance;
 @property (nonatomic) BOOL textViewIsShifted;
@@ -185,7 +188,7 @@
             
             NSString *debtDate = [dateFormatter stringFromDate:selectedDebt.date];
             
-            self.debtInfoTextView.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
+            self.debtInfoLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
 
             NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:selectedDebt.xid][1];
             
@@ -213,8 +216,7 @@
 
         } else {
 
-            self.debtInfoTextView.text = nil;
-
+            self.debtInfoLabel.text = nil;
             self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
             self.debtSummTextField.hidden = YES;
             self.debtSumLabel.hidden = YES;
@@ -878,7 +880,7 @@
         
     self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), @""];
     
-    self.debtInfoTextView.text = nil;
+    self.debtInfoLabel.text = nil;
     
     self.debtSumLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DEBT SUM LABEL", nil), @""];
     self.debtSumLabel.hidden = YES;
