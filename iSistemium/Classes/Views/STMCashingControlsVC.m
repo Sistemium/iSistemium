@@ -30,6 +30,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *debtSumLabel;
 @property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 
+@property (nonatomic) CGFloat textViewShiftDistance;
+@property (nonatomic) BOOL textViewIsShifted;
+
 @property (nonatomic, strong) UIToolbar *keyboardToolbar;
 
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
@@ -692,6 +695,13 @@
             
         }
         
+        if (self.textViewIsShifted) {
+            
+            [self moveTextFieldViewByDictance:-self.textViewShiftDistance];
+            
+            self.textViewIsShifted = NO;
+            
+        }
         
     }
     
@@ -712,10 +722,78 @@
 }
 
 
+#pragma mark - keyboard show / hide
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    if ([self.commentTextView isFirstResponder] && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        
+        if (!self.textViewIsShifted) {
+            
+            CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+            CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
+            CGFloat textViewHeight = self.commentTextView.frame.size.height;
+            CGFloat textViewOriginY = self.commentTextView.frame.origin.y;
+            CGFloat viewHeight = self.view.frame.size.height;
+            
+            self.textViewShiftDistance = textViewOriginY+textViewHeight+keyboardHeight-viewHeight-tabBarHeight;
+            
+            [self moveTextFieldViewByDictance:self.textViewShiftDistance];
+            
+            self.textViewIsShifted = YES;
+
+        }
+        
+    }
+    
+}
+
+- (void)keyboardWillBeHidden:(NSNotification *)notification {
+
+    if ([self.commentTextView isFirstResponder] && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        
+        if (self.textViewIsShifted) {
+            
+            [self moveTextFieldViewByDictance:-self.textViewShiftDistance];
+            
+            self.textViewIsShifted = NO;
+
+        }
+
+    }
+    
+}
+
+- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
+    
+    CGRect keyboardRect = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
+    
+    return keyboardRect.size.height;
+    
+}
+
+- (void)moveTextFieldViewByDictance:(CGFloat)distance {
+    
+    const float movementDuration = 0.3f;
+    
+    [UIView beginAnimations:@"animation" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:movementDuration];
+    self.view.frame = CGRectOffset(self.view.frame, 0, -distance);
+    [UIView commitAnimations];
+    
+    NSLog(@"self.view %@", self.view);
+    
+}
+
+
 #pragma mark - observers
 
 - (void)addObservers {
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed:) name:@"cashingButtonPressed" object:nil];
     
 }
