@@ -38,10 +38,11 @@
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
 @property (nonatomic, strong) NSString *initialTextFieldValue;
+@property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
+
+
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
-
 @property (nonatomic, strong) STMDocument *document;
-
 @property (nonatomic, strong) STMDebt *selectedDebt;
 
 @end
@@ -85,6 +86,18 @@
     }
     
     return _debtsDictionary;
+    
+}
+
+- (NSMutableDictionary *)commentsDictionary {
+    
+    if (!_commentsDictionary) {
+        
+        _commentsDictionary = [NSMutableDictionary dictionary];
+        
+    }
+    
+    return _commentsDictionary;
     
 }
 
@@ -182,6 +195,19 @@
             self.debtSummTextField.hidden = NO;
             self.debtSumLabel.hidden = NO;
             self.commentTextView.hidden = NO;
+            
+            NSString *commentText = [self.commentsDictionary objectForKey:selectedDebt.xid];
+            
+            if (commentText) {
+                
+                self.commentTextView.textColor = [UIColor blackColor];
+                self.commentTextView.text = commentText;
+                
+            } else {
+                
+                [self wipeCommentText];
+                
+            }
 
             [self.tableVC updateRowWithDebt:selectedDebt];
 
@@ -192,6 +218,7 @@
             self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
             self.debtSummTextField.hidden = YES;
             self.debtSumLabel.hidden = YES;
+            [self wipeCommentText];
             self.commentTextView.hidden = YES;
 
         }
@@ -493,12 +520,14 @@
     
         STMDebt *debt = debtArray[0];
         NSDecimalNumber *summ = debtArray[1];
+        NSString *commentText = [self.commentsDictionary objectForKey:debt.xid];
         
         STMCashing *cashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:self.document.managedObjectContext];
         
         cashing.date = date;
         cashing.summ = summ;
         cashing.debt = debt;
+        cashing.commentText = commentText;
         cashing.outlet = self.outlet;
 
         debt.calculatedSum = [debt cashingCalculatedSum];
@@ -690,12 +719,17 @@
         
         if ([text isEqualToString:@""]) {
             
-            self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
-            self.commentTextView.textColor = GREY_LINE_COLOR;
+            [self wipeCommentText];
+            
+            if (self.selectedDebt.xid) {
+                [self.commentsDictionary removeObjectForKey:self.selectedDebt.xid];
+            }
             
         } else {
             
-            
+            if (self.selectedDebt.xid) {
+                [self.commentsDictionary setObject:text forKey:self.selectedDebt.xid];
+            }
             
         }
         
@@ -709,6 +743,13 @@
         
     }
     
+}
+
+- (void)wipeCommentText {
+    
+    self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
+    self.commentTextView.textColor = GREY_LINE_COLOR;
+
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -849,12 +890,11 @@
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
 
     self.commentTextView.delegate = self;
-    self.commentTextView.textColor = GREY_LINE_COLOR;
-    self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
     self.commentTextView.layer.borderWidth = 1.0f;
     self.commentTextView.layer.borderColor = [GREY_LINE_COLOR CGColor];
     self.commentTextView.layer.cornerRadius = 5.0f;
     self.commentTextView.hidden = YES;
+    [self wipeCommentText];
 
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     self.doneButton.enabled = NO;
