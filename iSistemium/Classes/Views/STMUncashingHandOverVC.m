@@ -10,6 +10,7 @@
 #import "STMCashing.h"
 #import "STMUncashingInfoVC.h"
 #import "STMUncashingPhotoVC.h"
+#import "STMConstants.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate>
 
@@ -562,7 +563,7 @@
         if ([text isEqualToString:@""]) {
             
             self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
-            self.commentTextView.textColor = [UIColor grayColor];
+            self.commentTextView.textColor = GREY_LINE_COLOR;
             self.commentText = nil;
             
         } else {
@@ -657,10 +658,10 @@
     [self.typeSelector setTitle:NSLocalizedString(@"CASH DESK", nil) forSegmentAtIndex:0];
     [self.typeSelector setTitle:NSLocalizedString(@"BANK OFFICE", nil) forSegmentAtIndex:1];
 
-    self.commentTextView.textColor = [UIColor grayColor];
+    self.commentTextView.textColor = GREY_LINE_COLOR;
     self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
     self.commentTextView.layer.borderWidth = 1.0f;
-    self.commentTextView.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    self.commentTextView.layer.borderColor = [GREY_LINE_COLOR CGColor];
     self.commentTextView.layer.cornerRadius = 5.0f;
 
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];

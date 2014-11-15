@@ -689,7 +689,7 @@
         if ([text isEqualToString:@""]) {
             
             self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
-            self.commentTextView.textColor = [UIColor grayColor];
+            self.commentTextView.textColor = GREY_LINE_COLOR;
             
         } else {
             
@@ -783,8 +783,6 @@
     self.view.frame = CGRectOffset(self.view.frame, 0, -distance);
     [UIView commitAnimations];
     
-    NSLog(@"self.view %@", self.view);
-    
 }
 
 
@@ -826,7 +824,7 @@
     //    self.cashingSummTextField.hidden = YES;
     self.cashingSummTextField.placeholder = NSLocalizedString(@"CASHING SUMM PLACEHOLDER", nil);
     self.cashingSummTextField.delegate = self;
-    
+        
     self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), @""];
     
     self.debtInfoTextView.text = nil;
@@ -841,10 +839,10 @@
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
 
     self.commentTextView.delegate = self;
-    self.commentTextView.textColor = [UIColor grayColor];
+    self.commentTextView.textColor = GREY_LINE_COLOR;
     self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
     self.commentTextView.layer.borderWidth = 1.0f;
-    self.commentTextView.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    self.commentTextView.layer.borderColor = [GREY_LINE_COLOR CGColor];
     self.commentTextView.layer.cornerRadius = 5.0f;
 
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
