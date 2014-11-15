@@ -736,12 +736,18 @@
             CGFloat textViewOriginY = self.commentTextView.frame.origin.y;
             CGFloat viewHeight = self.view.frame.size.height;
             
-            self.textViewShiftDistance = textViewOriginY+textViewHeight+keyboardHeight-viewHeight-tabBarHeight;
+            CGFloat distance = textViewOriginY+textViewHeight+keyboardHeight-viewHeight-tabBarHeight;
             
-            [self moveTextFieldViewByDictance:self.textViewShiftDistance];
-            
-            self.textViewIsShifted = YES;
+            if (distance > 0) {
+                
+                self.textViewShiftDistance = textViewOriginY+textViewHeight+keyboardHeight-viewHeight-tabBarHeight;
+                
+                [self moveTextFieldViewByDictance:self.textViewShiftDistance];
+                
+                self.textViewIsShifted = YES;
 
+            }
+            
         }
         
     }
