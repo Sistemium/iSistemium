@@ -226,9 +226,11 @@
 //    alert.tag = 1;
 //    [alert show];
     
-    if ([self.commentTextView isFirstResponder]) {
-        [self.commentTextView resignFirstResponder];
-    }
+    [self.view endEditing:NO];
+
+//    if ([self.commentTextView isFirstResponder]) {
+//        [self.commentTextView resignFirstResponder];
+//    }
 
     [self showInfoPopover];
     

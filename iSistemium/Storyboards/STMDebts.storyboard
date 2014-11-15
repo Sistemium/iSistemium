@@ -254,7 +254,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ttz-JU-f1H">
-                                <rect key="frame" x="20" y="328" width="280" height="41"/>
+                                <rect key="frame" x="20" y="402" width="280" height="41"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Done">
@@ -310,7 +310,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Current debt info" id="ONY-nx-JOR">
-                                <rect key="frame" x="20" y="180" width="280" height="44"/>
+                                <rect key="frame" x="20" y="180" width="280.00000008514951" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -322,6 +322,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="Add comment" id="4J3-VT-tEq">
+                                <rect key="frame" x="20" y="328" width="280" height="66"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -331,6 +338,7 @@
                     <connections>
                         <outlet property="cashingSumLabel" destination="bZK-tz-Z1o" id="hdf-gr-Phd"/>
                         <outlet property="cashingSummTextField" destination="dQm-4Y-jON" id="2QH-G0-iwy"/>
+                        <outlet property="commentTextView" destination="4J3-VT-tEq" id="JQA-Ks-Dq7"/>
                         <outlet property="dateButton" destination="mMK-Cs-cYF" id="W5W-cI-KhO"/>
                         <outlet property="debtInfoTextView" destination="ONY-nx-JOR" id="vvq-rD-PWd"/>
                         <outlet property="debtSumLabel" destination="8sK-In-b6v" id="OI1-h0-FLw"/>

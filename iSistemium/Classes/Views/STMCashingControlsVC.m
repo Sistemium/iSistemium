@@ -16,7 +16,7 @@
 #import "STMDebt+Cashing.h"
 #import "STMDatePickerVC.h"
 
-@interface STMCashingControlsVC () <UITextFieldDelegate>
+@interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
 
 //@property (weak, nonatomic) IBOutlet UIView *controlsView;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
@@ -28,8 +28,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *cashingSumLabel;
 @property (weak, nonatomic) IBOutlet UITextView *debtInfoTextView;
 @property (weak, nonatomic) IBOutlet UILabel *debtSumLabel;
+@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 
-
+@property (nonatomic, strong) UIToolbar *keyboardToolbar;
 
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
@@ -93,6 +94,29 @@
     }
     
     return _debtsArray;
+    
+}
+
+- (UIToolbar *)keyboardToolbar {
+    
+    if (!_keyboardToolbar) {
+        
+        UIToolbar *toolbar = [[UIToolbar alloc] init];
+        toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+        
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(toolbarCancelButtonPressed)];
+        UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toolbarDoneButtonPressed)];
+        
+        [cancelButton setTintColor:[UIColor redColor]];
+        
+        [toolbar setItems:@[cancelButton,flexibleSpace,doneButon] animated:YES];
+
+        _keyboardToolbar = toolbar;
+        
+    }
+    
+    return _keyboardToolbar;
     
 }
 
@@ -312,6 +336,10 @@
         
         self.cashingSummTextField.text = self.initialTextFieldValue;
         
+    } else if ([self.commentTextView isFirstResponder]) {
+        
+        self.commentTextView.text = self.initialTextFieldValue;
+        
     }
 
     [self toolbarDoneButtonPressed];
@@ -489,18 +517,7 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
-    UIToolbar *toolbar = [[UIToolbar alloc] init];
-    toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
-    
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(toolbarCancelButtonPressed)];
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toolbarDoneButtonPressed)];
-    
-    [cancelButton setTintColor:[UIColor redColor]];
-
-    [toolbar setItems:@[cancelButton,flexibleSpace,doneButon] animated:YES];
-    
-    textField.inputAccessoryView = toolbar;
+    textField.inputAccessoryView = self.keyboardToolbar;
 
     return YES;
     
@@ -614,6 +631,85 @@
 }
 
 
+#pragma mark - UITextViewDelegate
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        self.commentTextView.inputAccessoryView = self.keyboardToolbar;
+        
+    }
+    
+    return YES;
+    
+}
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        self.commentTextView.inputAccessoryView = nil;
+        
+    }
+    
+    return YES;
+    
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        NSString *text = self.commentTextView.text;
+        
+        if ([text isEqualToString:NSLocalizedString(@"ADD COMMENT", nil)]) {
+            
+            self.commentTextView.text = @"";
+            self.commentTextView.textColor = [UIColor blackColor];
+            
+        }
+        
+        self.initialTextFieldValue = self.commentTextView.text;
+        
+    }
+    
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        NSString *text = self.commentTextView.text;
+        
+        if ([text isEqualToString:@""]) {
+            
+            self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
+            self.commentTextView.textColor = [UIColor grayColor];
+            
+        } else {
+            
+        }
+        
+        
+    }
+    
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    UITouch *touch = [[event allTouches] anyObject];
+    
+    if ([self.commentTextView isFirstResponder] && [touch view] != self.commentTextView) {
+        
+        [self.commentTextView resignFirstResponder];
+        
+    }
+    
+    [super touchesBegan:touches withEvent:event];
+    
+}
+
 
 #pragma mark - observers
 
@@ -664,6 +760,13 @@
     self.debtSummTextField.delegate = self;
 
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
+
+    self.commentTextView.delegate = self;
+    self.commentTextView.textColor = [UIColor grayColor];
+    self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
+    self.commentTextView.layer.borderWidth = 1.0f;
+    self.commentTextView.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    self.commentTextView.layer.cornerRadius = 5.0f;
 
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     self.doneButton.enabled = NO;
