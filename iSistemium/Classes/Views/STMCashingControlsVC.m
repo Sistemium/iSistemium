@@ -181,6 +181,7 @@
             self.debtSummTextField.text = [NSString stringWithFormat:@"%@", cashingSumString];
             self.debtSummTextField.hidden = NO;
             self.debtSumLabel.hidden = NO;
+            self.commentTextView.hidden = NO;
 
             [self.tableVC updateRowWithDebt:selectedDebt];
 
@@ -191,6 +192,7 @@
             self.debtSummTextField.text = [numberFormatter stringFromNumber:[NSDecimalNumber zero]];
             self.debtSummTextField.hidden = YES;
             self.debtSumLabel.hidden = YES;
+            self.commentTextView.hidden = YES;
 
         }
         
@@ -693,6 +695,8 @@
             
         } else {
             
+            
+            
         }
         
         if (self.textViewIsShifted) {
@@ -850,6 +854,7 @@
     self.commentTextView.layer.borderWidth = 1.0f;
     self.commentTextView.layer.borderColor = [GREY_LINE_COLOR CGColor];
     self.commentTextView.layer.cornerRadius = 5.0f;
+    self.commentTextView.hidden = YES;
 
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     self.doneButton.enabled = NO;
