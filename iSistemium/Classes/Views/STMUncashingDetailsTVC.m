@@ -452,7 +452,8 @@
 
 - (void)customInit {
     
-    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(handOverButtonPressed)];
+    self.handOverButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(handOverButtonPressed)];
+    
     self.navigationItem.rightBarButtonItem = self.handOverButton;
 
     self.tableView.allowsSelectionDuringEditing = YES;
@@ -466,8 +467,6 @@
     
     [self.infoLabel setTarget:self];
     [self.infoLabel setAction:@selector(showUncashingInfoPopover)];
-    
-//    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showHandOverPopover)];
     
     [self performFetch];
     

@@ -8,11 +8,12 @@
 
 #import "STMFetchedResultsControllerTVC.h"
 #import "STMUncashing.h"
+#import "STMUI.h"
 
 @interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC <UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMUncashing *uncashing;
-@property (nonatomic, strong) UIBarButtonItem *handOverButton;
+@property (nonatomic, strong) STMUIBarButtonItem *handOverButton;
 @property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
 
 //- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ;

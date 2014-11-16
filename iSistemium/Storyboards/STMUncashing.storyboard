@@ -225,13 +225,13 @@
                                 <rect key="frame" x="0.0" y="212" width="512" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem systemItem="cancel" id="sTl-mG-Xs5">
+                                    <barButtonItem systemItem="cancel" id="sTl-mG-Xs5" customClass="STMUIBarButtonItemCancel">
                                         <connections>
                                             <action selector="cancelButtonPressed:" destination="P6g-Kn-xTQ" id="lC3-HK-cfu"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="lSr-vi-Imq"/>
-                                    <barButtonItem title="Item" id="8cK-zY-CFN">
+                                    <barButtonItem title="Item" id="8cK-zY-CFN" customClass="STMUIBarButtonItemDone">
                                         <connections>
                                             <action selector="confirmButtonPressed:" destination="P6g-Kn-xTQ" id="m7r-qo-vJ3"/>
                                         </connections>

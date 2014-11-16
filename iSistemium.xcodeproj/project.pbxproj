@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C140AB81A189772002C5C17 /* STMUIBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */; };
 		2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */; };
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
 		2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */; };
@@ -134,6 +135,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2C140AB61A189772002C5C17 /* STMUIBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUIBarButtonItem.h; sourceTree = "<group>"; };
+		2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUIBarButtonItem.m; sourceTree = "<group>"; };
+		2C140AB91A18991B002C5C17 /* STMUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMUI.h; sourceTree = "<group>"; };
 		2C27B5A0196FC5FC00D26D58 /* STMDataModel 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 7.xcdatamodel"; sourceTree = "<group>"; };
 		2C27B5A4196FC6D200D26D58 /* STMPhotoReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReport.h; sourceTree = "<group>"; };
 		2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReport.m; sourceTree = "<group>"; };
@@ -389,6 +393,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2C140AB51A1896FF002C5C17 /* STMUI */ = {
+			isa = PBXGroup;
+			children = (
+				2C140AB91A18991B002C5C17 /* STMUI.h */,
+				2C140AB61A189772002C5C17 /* STMUIBarButtonItem.h */,
+				2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */,
+			);
+			path = STMUI;
+			sourceTree = "<group>";
+		};
 		2C53B88419409D64002298A5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -656,6 +670,7 @@
 				2C53B9AF19434E1E002298A5 /* STMObjectsController.m */,
 				2C76A5CC196877B7004D6D80 /* AWXMLRequestSerializerFixed.h */,
 				2C76A5CD196877B7004D6D80 /* AWXMLRequestSerializerFixed.m */,
+				2C140AB51A1896FF002C5C17 /* STMUI */,
 				2C53B88419409D64002298A5 /* Views */,
 			);
 			path = Classes;
@@ -915,6 +930,7 @@
 				2C80C81D198D25D40044ADE4 /* STMOutletCashingVC.m in Sources */,
 				2C80C826198E505F0044ADE4 /* STMCashingControlsVC.m in Sources */,
 				2C80C7F1198A3A690044ADE4 /* STMDebtsSVC.m in Sources */,
+				2C140AB81A189772002C5C17 /* STMUIBarButtonItem.m in Sources */,
 				2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */,
 				2C80C823198E4D9A0044ADE4 /* STMDebtsCombineVC.m in Sources */,
 				2C6528F819576894008605D9 /* STMCampaign.m in Sources */,
