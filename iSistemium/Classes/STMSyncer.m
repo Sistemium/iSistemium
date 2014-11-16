@@ -1054,12 +1054,12 @@
 
             }
             
-            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync object with xid %@", xid] type:@""];
+            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync %@ with xid %@", object.entity.name, xid] type:@""];
 
             
         } else {
             
-            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
+            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no %@ with xid: %@", object.entity.name, xid] type:@"error"];
             
         }
     

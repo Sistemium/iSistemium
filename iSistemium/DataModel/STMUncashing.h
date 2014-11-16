@@ -2,7 +2,7 @@
 //  STMUncashing.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 09/11/14.
+//  Created by Maxim Grigoriev on 16/11/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMCashing, STMUncashingPicture;
+@class STMCashing, STMUncashingPicture, STMUncashingPlace;
 
 @interface STMUncashing : STMComment
 
@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * type;
 @property (nonatomic, retain) NSSet *cashings;
 @property (nonatomic, retain) NSSet *pictures;
+@property (nonatomic, retain) STMUncashingPlace *uncashingPlace;
 @end
 
 @interface STMUncashing (CoreDataGeneratedAccessors)
