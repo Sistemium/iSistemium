@@ -226,7 +226,11 @@
     
     [self.view endEditing:NO];
 
-    [self showInfoPopover];
+    if ([self uncashingIsValid]) {
+        
+        [self showInfoPopover];
+
+    }
     
 }
 
@@ -361,6 +365,44 @@
             [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
             
         }
+        
+    }
+    
+}
+
+- (BOOL)uncashingIsValid {
+    
+    if (self.uncashingSum.doubleValue <= 0) {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"UNCASHING SUM NOT VALID", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        [alert show];
+        
+        return NO;
+        
+    } else if (!self.uncashingType) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO UNCASHING TYPE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        [alert show];
+        
+        return NO;
+
+    } else if ([self.uncashingType isEqualToString:@"bankOffice"] && !self.pictureImage) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CHECK IMAGE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        [alert show];
+        
+        return NO;
+
+    } else if ([self.uncashingType isEqualToString:@"cashDesk"] && !YES) {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        [alert show];
+        
+        return NO;
+        
+    } else {
+        
+        return YES;
         
     }
     
