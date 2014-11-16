@@ -33,6 +33,7 @@
         
         NSDate *ts = [NSDate date];
         [self setPrimitiveValue:ts forKey:@"deviceCts"];
+        [self setPrimitiveValue:ts forKey:@"deviceTs"];
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSNumber *largestId = [defaults objectForKey:@"largestId"];
@@ -61,8 +62,18 @@
     BOOL notLts = ![[[self changedValues] allKeys] containsObject:@"lts"];
     BOOL notSts = ![[[self changedValues] allKeys] containsObject:@"sts"];
     BOOL notDeviceTs = ![[[self changedValues] allKeys] containsObject:@"deviceTs"];
+    BOOL notEmpty = ([[self changedValues] allKeys].count != 0);
     
-    if (notLts && notSts && notDeviceTs) {
+    if (notLts && notSts && notDeviceTs && notEmpty) {
+
+/*
+        if ([self.entity.name isEqualToString:@"STMUncashing"]) {
+            
+            NSLog(@"self 1 %@", self)
+            NSLog(@"[[self changedValues] allKeys] %@", [[self changedValues] allKeys]);
+            
+        }
+*/
         
         NSDate *ts = [NSDate date];
         
@@ -79,11 +90,19 @@
         NSDate *sqts = lts ? deviceTs : deviceCts;
         
         [self setPrimitiveValue:sqts forKey:@"sqts"];
-        
+
+/*
+        if ([self.entity.name isEqualToString:@"STMUncashing"]) {
+            
+            NSLog(@"self 2 %@", self)
+            
+        }
+*/
+    
+        [super willSave];
+
     }
     
-    [super willSave];
-
 }
 
 

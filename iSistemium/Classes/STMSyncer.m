@@ -425,6 +425,18 @@
     
 }
 
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+/*
+    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashing"]) {
+        
+        NSLog(@"anObject change %@", anObject);
+        
+    }
+*/
+    
+}
+
 #pragma mark - syncing
 
 - (void)sendData {

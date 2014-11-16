@@ -598,9 +598,27 @@
         NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
         NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
         
+/*
+        if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+        
+            NSLog(@"object %@", object);
+            NSLog(@"properties %@", properties);
+            NSLog(@"destinationObjectXid %@", destinationObjectXid);
+            
+        }
+*/
+        
         if (destinationObjectXid) {
             
             NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
+            
+/*
+            if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+                
+                NSLog(@"destinationObject before 1 %@", destinationObject);
+                
+            }
+*/
             
             if (![[object valueForKey:relationship] isEqual:destinationObject]) {
                 
@@ -608,17 +626,35 @@
                 
                 NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
                 
-                [object setValue:destinationObject forKey:relationship];
+                [object setPrimitiveValue:destinationObject forKey:relationship];
+//                [object setValue:destinationObject forKey:relationship];
                 
                 if (!waitingForSync) {
                     [destinationObject setValue:deviceTs forKey:@"deviceTs"];
                 }
+                
+/*
+                if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+                    
+                    NSLog(@"destinationObject after 1 %@", destinationObject);
+                    
+                }
+*/
+                
                 
             }
             
         } else {
             
             NSManagedObject *destinationObject = [object valueForKey:relationship];
+            
+/*
+            if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+                
+                NSLog(@"destinationObject before 2 %@", destinationObject);
+                
+            }
+*/
             
             if (destinationObject) {
                 
@@ -632,6 +668,14 @@
                     [destinationObject setValue:deviceTs forKey:@"deviceTs"];
                 }
 
+/*
+                if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+                    
+                    NSLog(@"destinationObject after 2 %@", destinationObject);
+                    
+                }
+*/
+                
                 
             }
             
@@ -785,7 +829,16 @@
 
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
+    
+/*
+    if ([object.entity.name isEqualToString:@"STMUncashing"]) {
         
+        NSLog(@"object isWaiting? %@", object);
+        NSLog(@"isWaiting? %d", (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending));
+        
+    }
+*/
+    
     return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
     
 }
