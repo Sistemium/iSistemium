@@ -57,6 +57,13 @@
 
         [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
         
+        color = GREY_LINE_COLOR;
+        textAttributes = @{
+                           NSForegroundColorAttributeName:color
+                           };
+
+        [self setTitleTextAttributes:textAttributes forState:UIControlStateDisabled];
+
     } else if ([self isKindOfClass:[STMUIBarButtonItemCancel class]]) {
         
 
