@@ -89,6 +89,10 @@
 "BANK CHECK PHOTO" = "Для сдачи выручки через банк необходима фотография чека";
 "ATTENTION" = "Внимание!";
 "DETAILS" = "Подробности";
+"UNCASHING SUM NOT VALID" = "Неверная сумма выручки";
+"NO UNCASHING TYPE" = "Не выбрано место сдачи выручки";
+"NO CHECK IMAGE" = "Нет фотографии чека";
+"NO CASH DESK CHOOSEN" = "Не выбрана касса";
 
 
 

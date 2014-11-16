@@ -89,4 +89,8 @@
 "BANK CHECK PHOTO" = "BANK CHECK PHOTO";
 "ATTENTION" = "Attention!";
 "DETAILS" = "Details";
+"UNCASHING SUM NOT VALID" = "Uncashing sum not valid";
+"NO UNCASHING TYPE" = "No uncashing type";
+"NO CHECK IMAGE" = "No check image";
+"NO CASH DESK CHOOSEN" = "No cash desk choosen";
 
