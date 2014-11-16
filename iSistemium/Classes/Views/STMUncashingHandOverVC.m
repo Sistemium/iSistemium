@@ -11,6 +11,7 @@
 #import "STMUncashingInfoVC.h"
 #import "STMUncashingPhotoVC.h"
 #import "STMConstants.h"
+#import "STMUI.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate>
 
@@ -223,19 +224,21 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) message:[numberFormatter stringFromNumber:self.uncashingSum] delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-//    alert.tag = 1;
-//    [alert show];
-    
     [self.view endEditing:NO];
-
-//    if ([self.commentTextView isFirstResponder]) {
-//        [self.commentTextView resignFirstResponder];
-//    }
 
     [self showInfoPopover];
     
 }
+
+- (void)cancelUncashingProccess {
+    
+    [self.splitVC.detailVC cancelUncashingProccess];
+    [self.navigationController popViewControllerAnimated:YES];
+
+}
+
+
+#pragma mark - camera buttons
 
 - (IBAction)cameraButtonPressed:(id)sender {
     
@@ -271,6 +274,9 @@
     
 }
 
+
+#pragma mark - info popover buttons
+
 - (void)imageViewTapped {
     
     STMUncashingPhotoVC *photoVC = [self.storyboard instantiateViewControllerWithIdentifier:@"uncashingPhotoVC"];
@@ -291,6 +297,9 @@
     [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText];
     
 }
+
+
+#pragma mark - keyboard toolbar buttons
 
 - (void)toolbarDoneButtonPressed {
     
@@ -382,8 +391,8 @@
 - (void)handOverProcessingChanged:(NSNotification *)notification {
     
     if (!self.splitVC.isUncashingHandOverProcessing) {
-        
-        [self.navigationController popViewControllerAnimated:YES];
+
+        [self cancelUncashingProccess];
         
     }
     
@@ -673,7 +682,10 @@
 - (void)customInit {
 
     [self addObservers];
+    
     [self.navigationItem setHidesBackButton:YES animated:YES];
+    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelUncashingProccess)];
+    
     self.commentTextView.delegate = self;
     [self labelsInit];
 

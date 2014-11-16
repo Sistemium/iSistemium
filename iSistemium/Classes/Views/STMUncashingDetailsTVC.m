@@ -185,35 +185,57 @@
 
 - (void)handOverButtonPressed {
     
-    self.splitVC.isUncashingHandOverProcessing = !self.splitVC.isUncashingHandOverProcessing;
-    
-    if (self.splitVC.isUncashingHandOverProcessing) {
+    if (!self.splitVC.isUncashingHandOverProcessing) {
 
-        [self.tableView setEditing:YES animated:YES];
-
-        for (STMCashing *cashing in self.resultsController.fetchedObjects) {
-            
-            [self.cashingDictionary setObject:cashing forKey:cashing.xid];
-            NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
-            
-            [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
-            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-            
-        }
-
-        [self.handOverButton setTitle:NSLocalizedString(@"CANCEL", nil)];
-        [self.handOverButton setTintColor:[UIColor redColor]];
+        [self startUncashingProccess];
         
     } else {
 
-        [self.tableView setEditing:NO animated:YES];
-
-        self.cashingDictionary = nil;
-
-        [self.handOverButton setTintColor:ACTIVE_BLUE_COLOR];
-        [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
+        [self finishUncashingProccess];
         
     }
+    
+}
+
+- (void)startUncashingProccess {
+    
+    [self.tableView setEditing:YES animated:YES];
+    
+    for (STMCashing *cashing in self.resultsController.fetchedObjects) {
+        
+        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
+        
+        [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
+    [self.handOverButton setTitle:NSLocalizedString(@"DONE", nil)];
+
+    self.splitVC.isUncashingHandOverProcessing = YES;
+    
+}
+
+- (void)cancelUncashingProccess {
+    
+    self.cashingDictionary = nil;
+    [self finishUncashingProccess];
+
+}
+
+- (void)finishUncashingProccess {
+    
+    [self.tableView setEditing:NO animated:YES];
+    [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
+    
+    if (self.cashingDictionary) {
+        
+        // save uncashing
+        
+    }
+    
+    self.splitVC.isUncashingHandOverProcessing = NO;
     
 }
 
