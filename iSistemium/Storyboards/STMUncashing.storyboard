@@ -130,17 +130,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WgK-L0-ZHr">
-                                <rect key="frame" x="137" y="364" width="47" height="36"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Done">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="doneButtonPressed:" destination="9xA-4C-LDv" eventType="touchUpInside" id="cH3-Ja-Wxa"/>
-                                </connections>
-                            </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dZC-U6-eEt">
                                 <rect key="frame" x="20" y="225" width="280" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -180,7 +169,6 @@
                             <constraint firstItem="n4U-J4-lwl" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="Cc4-1F-2gg"/>
                             <constraint firstAttribute="centerX" secondItem="n4U-J4-lwl" secondAttribute="centerX" id="Fkv-F5-xBl"/>
                             <constraint firstItem="iMs-Li-lWm" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="KUx-mF-YvJ"/>
-                            <constraint firstAttribute="centerX" secondItem="WgK-L0-ZHr" secondAttribute="centerX" constant="-0.5" id="Qrd-7H-qj6"/>
                             <constraint firstAttribute="trailing" secondItem="n4U-J4-lwl" secondAttribute="trailing" constant="20" id="b6I-lA-yRN"/>
                             <constraint firstItem="n4U-J4-lwl" firstAttribute="top" secondItem="dZC-U6-eEt" secondAttribute="bottom" constant="8" id="be2-KH-chP"/>
                             <constraint firstItem="dZC-U6-eEt" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="cyo-L5-WiL"/>
@@ -188,7 +176,6 @@
                             <constraint firstItem="iMs-Li-lWm" firstAttribute="top" secondItem="KIX-w8-fsd" secondAttribute="bottom" constant="8" id="klh-0I-oY6"/>
                             <constraint firstItem="CSZ-EQ-uWE" firstAttribute="leading" secondItem="iMs-Li-lWm" secondAttribute="trailing" constant="8" id="rbP-6g-7yS"/>
                             <constraint firstItem="TtG-d9-1yB" firstAttribute="top" secondItem="JVV-tK-uNm" secondAttribute="bottom" constant="24" id="u1K-su-wGQ"/>
-                            <constraint firstItem="WgK-L0-ZHr" firstAttribute="top" secondItem="n4U-J4-lwl" secondAttribute="bottom" constant="7" id="wkZ-ZX-6pK"/>
                             <constraint firstItem="KIX-w8-fsd" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="xuG-Sz-QjC"/>
                             <constraint firstItem="CSZ-EQ-uWE" firstAttribute="leading" secondItem="KIX-w8-fsd" secondAttribute="trailing" constant="8" id="yfL-mc-nMM"/>
                             <constraint firstAttribute="centerX" secondItem="TtG-d9-1yB" secondAttribute="centerX" constant="-0.5" id="zOB-Dv-cbz"/>
@@ -198,7 +185,6 @@
                     <connections>
                         <outlet property="commentTextView" destination="n4U-J4-lwl" id="tDp-GW-vtL"/>
                         <outlet property="dateLabel" destination="TtG-d9-1yB" id="zML-LA-jUU"/>
-                        <outlet property="doneButton" destination="WgK-L0-ZHr" id="GXZ-xH-Kxv"/>
                         <outlet property="imageView" destination="CSZ-EQ-uWE" id="uEj-3l-crB"/>
                         <outlet property="typeSelector" destination="dZC-U6-eEt" id="qZV-vp-csA"/>
                         <outlet property="uncashingLabel" destination="KIX-w8-fsd" id="xIu-gJ-yR6"/>

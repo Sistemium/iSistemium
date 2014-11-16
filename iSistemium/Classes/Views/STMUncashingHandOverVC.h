@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 
+- (void)doneButtonPressed;
 - (void)dismissInfoPopover;
 - (void)confirmButtonPressed;
 - (void)deletePhoto;

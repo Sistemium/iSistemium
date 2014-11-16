@@ -191,7 +191,7 @@
         
     } else {
 
-        [self finishUncashingProccess];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingDoneButtonPressed" object:self userInfo:nil];
         
     }
     
@@ -228,12 +228,6 @@
     
     [self.tableView setEditing:NO animated:YES];
     [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
-    
-    if (self.cashingDictionary) {
-        
-        // save uncashing
-        
-    }
     
     self.splitVC.isUncashingHandOverProcessing = NO;
     
@@ -278,7 +272,8 @@
     }];
     
     [self setInfoLabelTitle];
-    [self handOverButtonPressed];
+//    [self handOverButtonPressed];
+    [self finishUncashingProccess];
     [self.splitVC.masterVC selectRowWithUncashing:nil];
     
 }
