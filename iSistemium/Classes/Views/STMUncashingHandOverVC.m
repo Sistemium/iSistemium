@@ -12,16 +12,18 @@
 #import "STMUncashingPhotoVC.h"
 #import "STMConstants.h"
 #import "STMUI.h"
+#import "STMUncashingPlaceController.h"
 
-@interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate>
+@interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, UIActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingSumLabel;
-@property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSelector;
 @property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UIButton *uncashingPlaceButton;
+@property (weak, nonatomic) IBOutlet UILabel *uncashingPlaceLabel;
 
 @property (nonatomic, strong) NSDecimalNumber *uncashingSum;
 @property (nonatomic, strong) NSString *uncashingType;
@@ -37,6 +39,8 @@
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
 @property (nonatomic) BOOL infoPopoverIsVisible;
 
+@property (nonatomic, strong) NSArray *uncashingPlaces;
+@property (nonatomic, strong) STMUncashingPlace *currentCashDeskPlace;
 
 @end
 
@@ -145,8 +149,6 @@
         
         _viaBankOffice = viaBankOffice;
         
-        [self checkControlsState];
-        
     }
     
 }
@@ -160,11 +162,11 @@
             self.viaBankOffice = NO;
             self.typeSelector.selectedSegmentIndex = 0;
             
+            [self uncashingPlaceButtonPressed:nil];
+            
         }
         
         _viaCashDesk = viaCashDesk;
-        
-        [self checkControlsState];
         
     }
     
@@ -193,6 +195,30 @@
     
 }
 
+- (void)setCurrentCashDeskPlace:(STMUncashingPlace *)currentCashDeskPlace {
+    
+    if (_currentCashDeskPlace != currentCashDeskPlace) {
+        
+        _currentCashDeskPlace = currentCashDeskPlace;
+        
+        [self.uncashingPlaceButton setTitle:currentCashDeskPlace.name forState:UIControlStateNormal];
+        self.uncashingPlaceButton.hidden = (!currentCashDeskPlace);
+        
+    }
+    
+}
+
+- (NSArray *)uncashingPlaces {
+    
+    if (!_uncashingPlaces) {
+        
+        _uncashingPlaces = [[STMUncashingPlaceController sharedController] uncashingPlaces];
+        
+    }
+    
+    return _uncashingPlaces;
+    
+}
 
 #pragma mark - buttons pressing
 
@@ -202,10 +228,12 @@
         
         if (self.typeSelector.selectedSegmentIndex == 0) {
             
+            [self showUncashingPlaceInfo];
             self.viaCashDesk = YES;
             
         } else if (self.typeSelector.selectedSegmentIndex == 1) {
             
+            [self hideUncashingPlaceInfo];
             self.viaBankOffice = YES;
             
         } else {
@@ -216,6 +244,23 @@
         }
         
     }
+    
+}
+
+- (IBAction)uncashingPlaceButtonPressed:(id)sender {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT UNCASHING PLACE", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+
+    for (STMUncashingPlace *place in self.uncashingPlaces) {
+        
+        [actionSheet addButtonWithTitle:place.name];
+        
+    }
+    
+    actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
+    actionSheet.tag = 1;
+//    [actionSheet showInView:self.splitVC.view];
+    [actionSheet showFromRect:self.uncashingPlaceButton.frame inView:self.view animated:YES];
     
 }
 
@@ -327,32 +372,9 @@
 }
 
 
-# pragma mark - methods
-
-- (void)deletePhoto {
-    
-    [self dismissInfoPopover];
-    [self cancelBankOffice];
-    self.pictureImage = nil;
-    self.viaBankOffice = YES;
-    
-}
+#pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-/*
-    if (alertView.tag == 1) {
-        
-        if (buttonIndex == 1) {
-
-            [self confirmButtonPressed];
-            
-        } else {
-            
-        }
-        
-    } else
-*/
     
     if (alertView.tag == 2) {
         
@@ -367,6 +389,46 @@
         }
         
     }
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag == 1) {
+        
+        self.currentCashDeskPlace = self.uncashingPlaces[buttonIndex];
+        
+    }
+    
+}
+
+
+# pragma mark - methods
+
+- (void)showUncashingPlaceInfo {
+    
+    self.uncashingPlaceLabel.hidden = NO;
+    [self.uncashingPlaceButton setTitle:self.currentCashDeskPlace.name forState:UIControlStateNormal];
+    self.uncashingPlaceButton.hidden = NO;
+    
+}
+
+- (void)hideUncashingPlaceInfo {
+    
+    self.uncashingPlaceLabel.hidden = YES;
+    self.uncashingPlaceButton.hidden = YES;
+
+}
+
+- (void)deletePhoto {
+    
+    [self dismissInfoPopover];
+    [self cancelBankOffice];
+    self.pictureImage = nil;
+    self.viaBankOffice = YES;
     
 }
 
@@ -411,7 +473,10 @@
 - (void)cancelBankOffice {
     
     self.viaBankOffice = NO;
-    self.typeSelector.selectedSegmentIndex = self.viaCashDesk ? 0 : UISegmentedControlNoSegment;
+    
+    self.typeSelector.selectedSegmentIndex = (self.viaCashDesk) ? 0 : UISegmentedControlNoSegment;
+    
+    (self.viaCashDesk) ? [self showUncashingPlaceInfo] : nil;
 
 }
 
@@ -457,24 +522,7 @@
     
     self.uncashingSum = uncashingSum;
 
-    [self checkControlsState];
-    
 }
-
-- (void)checkControlsState {
- 
-    if ([self.uncashingSum intValue] <= 0 || !(self.viaBankOffice || self.viaCashDesk)) {
-        
-        self.doneButton.enabled = NO;
-        
-    } else {
-        
-        self.doneButton.enabled = YES;
-        
-    }
-
-}
-
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
@@ -711,13 +759,16 @@
     [self.typeSelector setTitle:NSLocalizedString(@"CASH DESK", nil) forSegmentAtIndex:0];
     [self.typeSelector setTitle:NSLocalizedString(@"BANK OFFICE", nil) forSegmentAtIndex:1];
 
+    self.uncashingPlaceLabel.text = NSLocalizedString(@"UNCASHING PLACE LABEL", nil);
+    self.uncashingPlaceLabel.hidden = YES;
+    [self.uncashingPlaceButton setTitle:self.currentCashDeskPlace.name forState:UIControlStateNormal];
+    self.uncashingPlaceButton.hidden = YES;
+    
     self.commentTextView.textColor = GREY_LINE_COLOR;
     self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
     self.commentTextView.layer.borderWidth = 1.0f;
     self.commentTextView.layer.borderColor = [GREY_LINE_COLOR CGColor];
     self.commentTextView.layer.cornerRadius = 5.0f;
-
-    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
 
     [self cashingDictionaryChanged];
     

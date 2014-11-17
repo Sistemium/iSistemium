@@ -10,6 +10,7 @@
 		2C140AB81A189772002C5C17 /* STMUIBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */; };
 		2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC21A18D397002C5C17 /* STMUncashingPlace.m */; };
 		2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC51A18D398002C5C17 /* STMUncashing.m */; };
+		2C140ACA1A19F5B3002C5C17 /* STMUncashingPlaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC91A19F5B3002C5C17 /* STMUncashingPlaceController.m */; };
 		2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */; };
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
 		2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */; };
@@ -144,6 +145,8 @@
 		2C140AC21A18D397002C5C17 /* STMUncashingPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingPlace.m; sourceTree = "<group>"; };
 		2C140AC41A18D398002C5C17 /* STMUncashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashing.h; sourceTree = "<group>"; };
 		2C140AC51A18D398002C5C17 /* STMUncashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashing.m; sourceTree = "<group>"; };
+		2C140AC81A19F5B3002C5C17 /* STMUncashingPlaceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingPlaceController.h; sourceTree = "<group>"; };
+		2C140AC91A19F5B3002C5C17 /* STMUncashingPlaceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingPlaceController.m; sourceTree = "<group>"; };
 		2C27B5A0196FC5FC00D26D58 /* STMDataModel 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 7.xcdatamodel"; sourceTree = "<group>"; };
 		2C27B5A4196FC6D200D26D58 /* STMPhotoReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReport.h; sourceTree = "<group>"; };
 		2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReport.m; sourceTree = "<group>"; };
@@ -405,6 +408,15 @@
 				2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */,
 			);
 			path = STMUI;
+			sourceTree = "<group>";
+		};
+		2C140AC71A19F551002C5C17 /* EntityControllers */ = {
+			isa = PBXGroup;
+			children = (
+				2C140AC81A19F5B3002C5C17 /* STMUncashingPlaceController.h */,
+				2C140AC91A19F5B3002C5C17 /* STMUncashingPlaceController.m */,
+			);
+			path = EntityControllers;
 			sourceTree = "<group>";
 		};
 		2C53B88419409D64002298A5 /* Views */ = {
@@ -677,6 +689,7 @@
 				2C76A5CC196877B7004D6D80 /* AWXMLRequestSerializerFixed.h */,
 				2C76A5CD196877B7004D6D80 /* AWXMLRequestSerializerFixed.m */,
 				2C140AB51A1896FF002C5C17 /* STMUI */,
+				2C140AC71A19F551002C5C17 /* EntityControllers */,
 				2C53B88419409D64002298A5 /* Views */,
 			);
 			path = Classes;
@@ -910,6 +923,7 @@
 				2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */,
 				2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */,
 				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
+				2C140ACA1A19F5B3002C5C17 /* STMUncashingPlaceController.m in Sources */,
 				2C734B8519B4E8DC00EE33FA /* STMLogsTVC.m in Sources */,
 				2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */,
 				2CD443E5195AAD72004ADE58 /* STMCampaignDetailsPVC.m in Sources */,
