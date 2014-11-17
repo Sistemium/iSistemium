@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "STMUncashing.h"
+#import "STMUncashingPlace.h"
 #import "STMUncashingHandOverVC.h"
 
 @interface STMUncashingInfoVC : UIViewController
@@ -20,5 +21,6 @@
 @property (nonatomic, strong) NSString *type;
 @property (nonatomic, strong) NSString *comment;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) STMUncashingPlace *place;
 
 @end

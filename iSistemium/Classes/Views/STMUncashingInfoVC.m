@@ -73,6 +73,7 @@
     NSString *type = nil;
     NSString *comment = nil;
     UIImage *image = nil;
+    NSString *placeName = nil;
     
     if (self.uncashing) {
         
@@ -90,6 +91,8 @@
         
         image = [UIImage imageWithData:picture.imageThumbnail];
         
+        placeName = self.uncashing.uncashingPlace.name;
+        
     } else {
     
         [self.confirmButton setTitle:NSLocalizedString(@"CONFIRM", nil)];
@@ -100,6 +103,7 @@
         type = self.type;
         comment = self.comment;
         image = self.image;
+        placeName = self.place.name;
 
     }
     
@@ -118,6 +122,12 @@
     if (type) {
         
         self.typeLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING TYPE", nil), type];
+        
+        if (placeName) {
+            
+            self.typeLabel.text = [self.typeLabel.text stringByAppendingString:[NSString stringWithFormat:@" %@", placeName]];
+            
+        }
         
     } else {
         

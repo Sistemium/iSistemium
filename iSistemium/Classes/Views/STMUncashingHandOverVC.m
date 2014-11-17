@@ -113,6 +113,7 @@
         uncashingInfoVC.type = self.uncashingType;
         uncashingInfoVC.comment = self.commentText;
         uncashingInfoVC.image = self.pictureImage;
+        uncashingInfoVC.place = self.currentCashDeskPlace;
         _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoVC];
         
     }
