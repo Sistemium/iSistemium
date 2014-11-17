@@ -398,8 +398,16 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (actionSheet.tag == 1) {
+
+        if (buttonIndex == -1) {
+            
+            [self cancelCashDesk];
+            
+        } else {
         
-        self.currentCashDeskPlace = self.uncashingPlaces[buttonIndex];
+            self.currentCashDeskPlace = self.uncashingPlaces[buttonIndex];
+
+        }
         
     }
     
@@ -455,7 +463,7 @@
         
         return NO;
 
-    } else if ([self.uncashingType isEqualToString:@"cashDesk"] && !YES) {
+    } else if ([self.uncashingType isEqualToString:@"cashDesk"] && !self.currentCashDeskPlace) {
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
         [alert show];
@@ -478,6 +486,16 @@
     
     (self.viaCashDesk) ? [self showUncashingPlaceInfo] : nil;
 
+}
+
+- (void)cancelCashDesk {
+    
+    self.viaCashDesk = NO;
+    
+    self.typeSelector.selectedSegmentIndex = (self.viaBankOffice) ? 1 : UISegmentedControlNoSegment;
+    
+    [self hideUncashingPlaceInfo];
+    
 }
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
