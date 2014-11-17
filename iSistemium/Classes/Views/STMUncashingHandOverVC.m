@@ -343,7 +343,7 @@
     [self dismissInfoPopover];
     
 //            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
-    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText];
+    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentCashDeskPlace];
     
 }
 

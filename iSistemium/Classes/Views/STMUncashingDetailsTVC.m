@@ -233,7 +233,7 @@
     
 }
 
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment{
+- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
     
     STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
     
@@ -257,6 +257,12 @@
         
         [uncashing addPicturesObject:picture];
 
+    }
+    
+    if (place) {
+        
+        uncashing.uncashingPlace = place;
+        
     }
     
     uncashing.type = type;
