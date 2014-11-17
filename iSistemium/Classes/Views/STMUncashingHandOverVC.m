@@ -127,9 +127,9 @@
     NSString *type = nil;
     
     if (self.viaBankOffice) {
-        type = @"bankOffice";
+        type = BANK_OFFICE_TYPE;
     } else if (self.viaCashDesk) {
-        type = @"cashDesk";
+        type = CASH_DESK_TYPE;
     }
 
     return type;
@@ -363,7 +363,16 @@
     
     [self dismissInfoPopover];
     
-//            [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum];
+    if ([self.uncashingType isEqualToString:BANK_OFFICE_TYPE]) {
+        
+        self.currentCashDeskPlace = nil;
+        
+    } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE]) {
+        
+        self.pictureImage = nil;
+        
+    }
+    
     [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentCashDeskPlace];
     
 }
@@ -481,14 +490,14 @@
         
         return NO;
 
-    } else if ([self.uncashingType isEqualToString:@"bankOffice"] && !self.pictureImage) {
+    } else if ([self.uncashingType isEqualToString:BANK_OFFICE_TYPE] && !self.pictureImage) {
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CHECK IMAGE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
         [alert show];
         
         return NO;
 
-    } else if ([self.uncashingType isEqualToString:@"cashDesk"] && !self.currentCashDeskPlace) {
+    } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE] && !self.currentCashDeskPlace) {
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
         [alert show];

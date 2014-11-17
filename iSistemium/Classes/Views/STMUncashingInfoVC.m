@@ -109,11 +109,11 @@
     
     self.sumLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING SUM", nil), [numberFormatter stringFromNumber:sum]];
     
-    if ([type isEqualToString:@"bankOffice"]) {
+    if ([type isEqualToString:BANK_OFFICE_TYPE]) {
         
         type = NSLocalizedString(@"BANK OFFICE", nil);
         
-    } else if ([type isEqualToString:@"cashDesk"]) {
+    } else if ([type isEqualToString:CASH_DESK_TYPE]) {
         
         type = NSLocalizedString(@"CASH DESK2", nil);
         
