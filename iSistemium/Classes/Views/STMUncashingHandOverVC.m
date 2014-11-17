@@ -229,8 +229,19 @@
         
         if (self.typeSelector.selectedSegmentIndex == 0) {
             
-            [self showUncashingPlaceInfo];
-            self.viaCashDesk = YES;
+            if (!self.uncashingPlaces) {
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+                alert.delegate = self;
+                alert.tag = 1;
+                [alert show];
+
+            } else {
+                
+                [self showUncashingPlaceInfo];
+                self.viaCashDesk = YES;
+
+            }
             
         } else if (self.typeSelector.selectedSegmentIndex == 1) {
             
@@ -386,7 +397,11 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if (alertView.tag == 2) {
+    if (alertView.tag == 1) {
+        
+        [self cancelCashDesk];
+        
+    } else if (alertView.tag == 2) {
         
         if (buttonIndex == 0) {
             
