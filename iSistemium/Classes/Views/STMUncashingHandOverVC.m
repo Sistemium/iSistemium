@@ -250,18 +250,27 @@
 
 - (IBAction)uncashingPlaceButtonPressed:(id)sender {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT UNCASHING PLACE", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-
-    for (STMUncashingPlace *place in self.uncashingPlaces) {
+    if (self.uncashingPlaces.count == 1) {
         
-        [actionSheet addButtonWithTitle:place.name];
+        self.currentCashDeskPlace = [self.uncashingPlaces lastObject];
+        self.uncashingPlaceButton.enabled = NO;
         
-    }
+    } else if (self.uncashingPlaces.count > 1) {
     
-    actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
-    actionSheet.tag = 1;
-//    [actionSheet showInView:self.splitVC.view];
-    [actionSheet showFromRect:self.uncashingPlaceButton.frame inView:self.view animated:YES];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT UNCASHING PLACE", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        for (STMUncashingPlace *place in self.uncashingPlaces) {
+            
+            [actionSheet addButtonWithTitle:place.name];
+            
+        }
+        
+        actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
+        actionSheet.tag = 1;
+        //    [actionSheet showInView:self.splitVC.view];
+        [actionSheet showFromRect:self.uncashingPlaceButton.frame inView:self.view animated:YES];
+
+    }
     
 }
 
