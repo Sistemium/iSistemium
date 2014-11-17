@@ -142,13 +142,13 @@
                                 </connections>
                             </segmentedControl>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="Add comment" translatesAutoresizingMaskIntoConstraints="NO" id="n4U-J4-lwl">
-                                <rect key="frame" x="20" y="290" width="280" height="96"/>
+                                <rect key="frame" x="20" y="294" width="280" height="52"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="96" id="GvC-VV-1xW"/>
+                                    <constraint firstAttribute="height" constant="52" id="GvC-VV-1xW"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
                             </textView>
                             <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CSZ-EQ-uWE">
@@ -190,7 +190,7 @@
                             <constraint firstItem="n4U-J4-lwl" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="Cc4-1F-2gg"/>
                             <constraint firstAttribute="centerX" secondItem="n4U-J4-lwl" secondAttribute="centerX" id="Fkv-F5-xBl"/>
                             <constraint firstItem="iMs-Li-lWm" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="KUx-mF-YvJ"/>
-                            <constraint firstItem="n4U-J4-lwl" firstAttribute="top" secondItem="SRH-3D-Quk" secondAttribute="bottom" constant="4" id="Qvl-N9-rmd"/>
+                            <constraint firstItem="n4U-J4-lwl" firstAttribute="top" secondItem="SRH-3D-Quk" secondAttribute="bottom" constant="8" id="Qvl-N9-rmd"/>
                             <constraint firstItem="wQo-BL-Otr" firstAttribute="top" secondItem="dZC-U6-eEt" secondAttribute="bottom" constant="8" id="Ysw-SC-rAJ"/>
                             <constraint firstAttribute="trailing" secondItem="n4U-J4-lwl" secondAttribute="trailing" constant="20" id="b6I-lA-yRN"/>
                             <constraint firstItem="dZC-U6-eEt" firstAttribute="leading" secondItem="QWV-wc-A6p" secondAttribute="leading" constant="20" id="cyo-L5-WiL"/>
@@ -277,7 +277,7 @@
                                 <rect key="frame" x="220" y="107" width="272" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>

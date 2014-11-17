@@ -31,8 +31,6 @@
 @property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 @property (weak, nonatomic) IBOutlet UILabel *debtInfoLabel;
 
-
-
 @property (nonatomic) CGFloat textViewShiftDistance;
 @property (nonatomic) BOOL textViewIsShifted;
 
