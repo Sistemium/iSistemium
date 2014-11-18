@@ -715,6 +715,10 @@
         NSString *eTag = [entity objectForKey:@"eTag"];
         eTag = eTag ? eTag : @"*";
         
+//        if ([entityName isEqualToString:@"STMUncashingPlace"]) {
+//            NSLog(@"eTag %@", eTag);
+//        }
+        
         NSURL *requestURL = [NSURL URLWithString:url];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
         
@@ -929,6 +933,8 @@
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
         
         if ([connectionEntityName isEqualToString:@"STMEntity"]) {
+            
+//            NSLog(@"responseJSON %@", responseJSON);
             
             for (NSDictionary *datum in dataArray) {
                 

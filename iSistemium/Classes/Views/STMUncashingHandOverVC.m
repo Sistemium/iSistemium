@@ -142,10 +142,19 @@
 
         if (viaBankOffice) {
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ATTENTION", nil) message:NSLocalizedString(@"BANK CHECK PHOTO", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-            alert.tag = 2;
-            [alert show];
+            if (self.pictureImage) {
+                
+                [self showImageThumbnail];
+                self.viaCashDesk = NO;
+                
+            } else {
+            
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ATTENTION", nil) message:NSLocalizedString(@"BANK CHECK PHOTO", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                alert.tag = 2;
+                [alert show];
 
+            }
+            
         }
         
         _viaBankOffice = viaBankOffice;
@@ -163,6 +172,8 @@
             self.viaBankOffice = NO;
             self.typeSelector.selectedSegmentIndex = 0;
             
+            [self hideImageThumbnail];
+            
             [self uncashingPlaceButtonPressed:nil];
             
         }
@@ -178,19 +189,8 @@
     if (_pictureImage != pictureImage) {
         
         _pictureImage = pictureImage;
-
-        self.imageView.image = _pictureImage;
-
-        if (_pictureImage) {
         
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped)];
-            [self.imageView addGestureRecognizer:tap];
-            
-        } else {
-            
-            self.imageView.gestureRecognizers = [NSArray array];
-            
-        }
+        (pictureImage) ? [self showImageThumbnail] : [self hideImageThumbnail];
         
     }
     
@@ -221,6 +221,27 @@
     
 }
 
+- (void)showImageThumbnail {
+    
+    self.imageView.image = self.pictureImage;
+    
+    if (self.pictureImage) {
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapped)];
+        [self.imageView addGestureRecognizer:tap];
+        
+    }
+
+}
+
+- (void)hideImageThumbnail {
+    
+    self.imageView.image = nil;
+    self.imageView.gestureRecognizers = [NSArray array];
+    
+}
+
+
 #pragma mark - buttons pressing
 
 - (IBAction)typeSelected:(id)sender {
@@ -229,7 +250,7 @@
         
         if (self.typeSelector.selectedSegmentIndex == 0) {
             
-            if (!self.uncashingPlaces) {
+            if (self.uncashingPlaces.count == 0) {
 
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
                 alert.delegate = self;
