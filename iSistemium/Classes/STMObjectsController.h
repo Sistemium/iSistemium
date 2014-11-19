@@ -37,4 +37,6 @@
 
 + (NSArray *)entityNamesForSyncing;
 
++ (NSArray *)localDataModelEntityNames;
+
 @end

@@ -495,7 +495,7 @@
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
     
-    NSArray *dataModelEntityNames = [self dataModelEntityNames];
+    NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
@@ -520,11 +520,16 @@
             NSLog(@"object with xid %@ have recordStatus.isRemoved == YES", xid);
             
         }
+    
+        NSLog(@"completionHandler YES");
+        completionHandler(YES);
         
+    } else {
+        
+        NSLog(@"completionHandler NO");
+        completionHandler(NO);
         
     }
-    
-    completionHandler(YES);
     
 }
 
@@ -817,9 +822,12 @@
             
         }
         
+        completionHandler(YES);
+        
+    } else {
+        
+        completionHandler(NO);
     }
-    
-    completionHandler(YES);
     
 }
 
@@ -878,7 +886,7 @@
 
 + (NSManagedObject *)objectForEntityName:(NSString *)entityName andXid:(NSString *)xid {
     
-    NSArray *dataModelEntityNames = [self dataModelEntityNames];
+    NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
@@ -1012,7 +1020,7 @@
 
 }
 
-+ (NSArray *)dataModelEntityNames {
++ (NSArray *)localDataModelEntityNames {
     
     return [[self document].managedObjectModel.entitiesByName allKeys];
     
@@ -1433,7 +1441,7 @@
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
 
-    if ([[self dataModelEntityNames] containsObject:entityName]) {
+    if ([[self localDataModelEntityNames] containsObject:entityName]) {
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
