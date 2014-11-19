@@ -521,12 +521,10 @@
             
         }
     
-        NSLog(@"completionHandler YES");
         completionHandler(YES);
         
     } else {
         
-        NSLog(@"completionHandler NO");
         completionHandler(NO);
         
     }

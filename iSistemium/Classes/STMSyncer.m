@@ -796,7 +796,7 @@
     
     self.entityCount -= 1;
     
-    NSLog(@"self.entityCount %d", self.entityCount);
+//    NSLog(@"self.entityCount %d", self.entityCount);
     
     if (self.entityCount == 0) {
         
@@ -1015,6 +1015,8 @@
                         [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
                         
                     } else {
+                        
+                        NSLog(@"insert %@ not success, possible reason: there is no such entity in local dataModel", connectionEntityName);
                         
                         [self entityCountDecrease];
                         
