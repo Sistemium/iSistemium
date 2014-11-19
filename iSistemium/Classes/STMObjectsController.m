@@ -520,7 +520,7 @@
             NSLog(@"object with xid %@ have recordStatus.isRemoved == YES", xid);
             
         }
-    
+            
         completionHandler(YES);
         
     } else {
@@ -627,13 +627,16 @@
                 
                 BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
                 
-                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
+//                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
                 
-                [object setPrimitiveValue:destinationObject forKey:relationship];
-//                [object setValue:destinationObject forKey:relationship];
+//                [object setPrimitiveValue:destinationObject forKey:relationship];
+                [object setValue:destinationObject forKey:relationship];
                 
                 if (!waitingForSync) {
-                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+//                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+                    
+                    [destinationObject addObserver:[self sharedController] forKeyPath:@"deviceTs" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
+                    
                 }
                 
 /*
@@ -663,12 +666,14 @@
                 
                 BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
                 
-                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
+//                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
                 
                 [object setValue:nil forKey:relationship];
                 
                 if (!waitingForSync) {
-                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+//                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+                    [destinationObject addObserver:[self sharedController] forKeyPath:@"deviceTs" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
+
                 }
 
 /*
@@ -686,6 +691,29 @@
         
     }
     
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+//    NSLog(@"object before %@", object);
+//    
+//    NSDate *old = [change valueForKey:NSKeyValueChangeOldKey];
+//    NSDate *lts = [(NSManagedObject *)object valueForKey:@"lts"];
+//    
+//    NSLog(@"old %@, lts %@", [[STMFunctions dateFormatter] stringFromDate:old], [[STMFunctions dateFormatter] stringFromDate:lts]);
+    
+    [object removeObserver:self forKeyPath:keyPath];
+    
+    if ([object isKindOfClass:[NSManagedObject class]]) {
+        
+        [(NSManagedObject *)object setValue:[change valueForKey:NSKeyValueChangeOldKey] forKey:keyPath];
+        
+    }
+
+//    NSLog(@"object after %@", object);
+//    
+//    NSLog(@"current time: %@", [[STMFunctions dateFormatter] stringFromDate:[NSDate date]]);
+
 }
 
 + (void)postprocessingForObject:(NSManagedObject *)object withEntityName:(NSString *)entityName {

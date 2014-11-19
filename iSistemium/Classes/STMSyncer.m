@@ -427,13 +427,11 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-/*
-    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashing"]) {
-        
-        NSLog(@"anObject change %@", anObject);
-        
-    }
-*/
+//    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashing"]) {
+//        
+//        NSLog(@"anObject change %@", anObject);
+//        
+//    }
     
 }
 
@@ -490,6 +488,8 @@
 
 - (NSData *)JSONFrom:(NSArray *)dataForSyncing {
     
+    NSLog(@"current time: %@", [[STMFunctions dateFormatter] stringFromDate:[NSDate date]]);
+
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
     for (NSManagedObject *object in dataForSyncing) {
