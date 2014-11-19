@@ -234,6 +234,7 @@
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 self.syncing = NO;
                 [STMObjectsController dataLoadingFinished];
+                [STMObjectsController checkUploadedPhotos];
                 if (self.fetchCompletionHandler) {
                     self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
                 }
@@ -488,7 +489,7 @@
 
 - (NSData *)JSONFrom:(NSArray *)dataForSyncing {
     
-    NSLog(@"current time: %@", [[STMFunctions dateFormatter] stringFromDate:[NSDate date]]);
+//    NSLog(@"current time: %@", [[STMFunctions dateFormatter] stringFromDate:[NSDate date]]);
 
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
@@ -512,7 +513,7 @@
             
             BOOL hasHref = [object.entity.propertiesByName.allKeys containsObject:@"href"];
             
-            BOOL hrefIsNil = hasHref ? [[object valueForKey:@"href"] isEqual:nil] : YES;
+            BOOL hrefIsNil = hasHref ? ([object valueForKey:@"href"] == nil) : YES;
             
             if (!hasHref || (hasHref && !hrefIsNil)) {
                 

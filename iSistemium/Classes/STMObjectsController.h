@@ -18,6 +18,7 @@
 + (void)checkPhotos;
 + (void)checkDeviceToken;
 + (void)checkAppVersion;
++ (void)checkUploadedPhotos;
 
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
