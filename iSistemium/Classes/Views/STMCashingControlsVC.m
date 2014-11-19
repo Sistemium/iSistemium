@@ -334,9 +334,19 @@
         
     } else {
         
-        [self saveCashings];
-        [self dismissSelf];
-        [self.splitVC.detailVC cashingButtonPressed];
+        if ([self.remainderSumm doubleValue] == 0) {
+            
+            [self saveCashings];
+            [self dismissSelf];
+            [self.splitVC.detailVC cashingButtonPressed];
+
+        } else {
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"REM SUM NOT NULL", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+            [alert show];
+
+        }
+        
 
     }
     
@@ -431,7 +441,7 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     
-    if ([self.remainderSumm doubleValue] < 0) {
+    if ([self.remainderSumm doubleValue] <= 0) {
         
         NSDecimalNumber *fillingSumm = [self fillingSumProcessing];
 
@@ -447,6 +457,8 @@
         self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
         
         self.cashingLimitIsReached = YES;
+        
+        self.remainderSumm = [NSDecimalNumber zero];
         
     } else {
         
