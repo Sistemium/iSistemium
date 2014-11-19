@@ -11,6 +11,7 @@
 #import "STMConstants.h"
 #import "STMCashing.h"
 #import "STMUncashingHandOverVC.h"
+#import "STMUncashingController.h"
 
 @interface STMUncashingMasterTVC ()
 
@@ -258,6 +259,40 @@
     [cell setTintColor:ACTIVE_BLUE_COLOR];
     
     return indexPath;
+    
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (indexPath.section == 0) {
+        
+        return NO;
+        
+    } else {
+        
+        if (indexPath.row != 0) {
+            
+            return NO;
+            
+        } else {
+
+            return YES;
+
+        }
+        
+    }
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
+        
+        [[STMUncashingController sharedController] removeUncashing:[self.resultsController objectAtIndexPath:indexPath]];
+    
+    }
     
 }
 

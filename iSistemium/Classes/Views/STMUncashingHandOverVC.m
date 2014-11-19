@@ -217,6 +217,8 @@
         
     }
     
+//    NSLog(@"_uncashingPlaces %@", _uncashingPlaces);
+    
     return _uncashingPlaces;
     
 //    return [[STMUncashingPlaceController sharedController] uncashingPlaces];
