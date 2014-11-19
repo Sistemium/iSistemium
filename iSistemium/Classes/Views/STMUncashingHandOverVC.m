@@ -219,6 +219,8 @@
     
     return _uncashingPlaces;
     
+//    return [[STMUncashingPlaceController sharedController] uncashingPlaces];
+    
 }
 
 - (void)showImageThumbnail {
@@ -456,7 +458,9 @@
 
         if (buttonIndex == -1) {
             
-            [self cancelCashDesk];
+            if (!self.currentCashDeskPlace) {
+                [self cancelCashDesk];
+            }
             
         } else {
         
