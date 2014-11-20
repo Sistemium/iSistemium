@@ -358,9 +358,9 @@
     
 }
 
-- (void)cancelUncashingProccess {
+- (void)cancelUncashingProcess {
     
-    [self.splitVC.detailVC cancelUncashingProccess];
+    [self.splitVC.detailVC cancelUncashingProcess];
     [self flushSelf];
     [self.navigationController popViewControllerAnimated:YES];
 
@@ -621,7 +621,7 @@
     
     if (!self.splitVC.isUncashingHandOverProcessing) {
 
-        [self cancelUncashingProccess];
+        [self cancelUncashingProcess];
         
     }
     
@@ -910,7 +910,7 @@
 
     [self addObservers];
     
-    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelUncashingProccess)];
+    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelUncashingProcess)];
     [self.navigationItem setHidesBackButton:YES animated:YES];
 
     self.commentTextView.delegate = self;

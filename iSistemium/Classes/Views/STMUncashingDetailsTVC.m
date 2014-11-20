@@ -187,7 +187,7 @@
     
     if (!self.splitVC.isUncashingHandOverProcessing) {
 
-        [self startUncashingProccess];
+        [self startUncashingProcess];
         
     } else {
 
@@ -197,7 +197,7 @@
     
 }
 
-- (void)startUncashingProccess {
+- (void)startUncashingProcess {
     
     [self.tableView setEditing:YES animated:YES];
     
@@ -223,14 +223,14 @@
     
 }
 
-- (void)cancelUncashingProccess {
+- (void)cancelUncashingProcess {
     
     self.cashingDictionary = nil;
-    [self finishUncashingProccess];
+    [self finishUncashingProcess];
 
 }
 
-- (void)finishUncashingProccess {
+- (void)finishUncashingProcess {
     
     [self.tableView setEditing:NO animated:YES];
     [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
@@ -285,7 +285,7 @@
     
     [self setInfoLabelTitle];
 //    [self handOverButtonPressed];
-    [self finishUncashingProccess];
+    [self finishUncashingProcess];
     [self.splitVC.masterVC selectRowWithUncashing:nil];
     
 }

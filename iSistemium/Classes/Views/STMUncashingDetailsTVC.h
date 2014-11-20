@@ -16,7 +16,7 @@
 @property (nonatomic, strong) STMUIBarButtonItem *handOverButton;
 @property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
 
-- (void)cancelUncashingProccess;
+- (void)cancelUncashingProcess;
 
 - (void)uncashingDoneWithSum:(NSDecimalNumber *)summ
                        image:(UIImage *)image
