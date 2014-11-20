@@ -40,7 +40,7 @@
 @property (nonatomic) BOOL infoPopoverIsVisible;
 
 @property (nonatomic, strong) NSArray *uncashingPlaces;
-@property (nonatomic, strong) STMUncashingPlace *currentCashDeskPlace;
+@property (nonatomic, strong) STMUncashingPlace *currentUncashingPlace;
 
 @end
 
@@ -113,7 +113,7 @@
         uncashingInfoVC.type = self.uncashingType;
         uncashingInfoVC.comment = self.commentText;
         uncashingInfoVC.image = self.pictureImage;
-        uncashingInfoVC.place = self.currentCashDeskPlace;
+        uncashingInfoVC.place = self.currentUncashingPlace;
         _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoVC];
         
     }
@@ -196,11 +196,11 @@
     
 }
 
-- (void)setCurrentCashDeskPlace:(STMUncashingPlace *)currentCashDeskPlace {
+- (void)setCurrentUncashingPlace:(STMUncashingPlace *)currentCashDeskPlace {
     
-    if (_currentCashDeskPlace != currentCashDeskPlace) {
+    if (_currentUncashingPlace != currentCashDeskPlace) {
         
-        _currentCashDeskPlace = currentCashDeskPlace;
+        _currentUncashingPlace = currentCashDeskPlace;
         
         [self.uncashingPlaceButton setTitle:currentCashDeskPlace.name forState:UIControlStateNormal];
         self.uncashingPlaceButton.hidden = (!currentCashDeskPlace);
@@ -288,7 +288,7 @@
     
     if (self.uncashingPlaces.count == 1) {
         
-        self.currentCashDeskPlace = [self.uncashingPlaces lastObject];
+        self.currentUncashingPlace = [self.uncashingPlaces lastObject];
         self.uncashingPlaceButton.enabled = NO;
         
     } else if (self.uncashingPlaces.count > 1) {
@@ -390,7 +390,7 @@
     
     if ([self.uncashingType isEqualToString:BANK_OFFICE_TYPE]) {
         
-        self.currentCashDeskPlace = nil;
+        self.currentUncashingPlace = nil;
         
     } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE]) {
         
@@ -398,7 +398,7 @@
         
     }
     
-    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentCashDeskPlace];
+    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentUncashingPlace];
     
 }
 
@@ -460,13 +460,13 @@
 
         if (buttonIndex == -1) {
             
-            if (!self.currentCashDeskPlace) {
+            if (!self.currentUncashingPlace) {
                 [self cancelCashDesk];
             }
             
         } else {
         
-            self.currentCashDeskPlace = self.uncashingPlaces[buttonIndex];
+            self.currentUncashingPlace = self.uncashingPlaces[buttonIndex];
 
         }
         
@@ -480,7 +480,7 @@
 - (void)showUncashingPlaceInfo {
     
     self.uncashingPlaceLabel.hidden = NO;
-    [self.uncashingPlaceButton setTitle:self.currentCashDeskPlace.name forState:UIControlStateNormal];
+    [self.uncashingPlaceButton setTitle:self.currentUncashingPlace.name forState:UIControlStateNormal];
     self.uncashingPlaceButton.hidden = NO;
     
 }
@@ -524,7 +524,7 @@
         
         return NO;
 
-    } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE] && !self.currentCashDeskPlace) {
+    } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE] && !self.currentUncashingPlace) {
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
         [alert show];
@@ -840,7 +840,7 @@
 
     self.uncashingPlaceLabel.text = NSLocalizedString(@"UNCASHING PLACE LABEL", nil);
     self.uncashingPlaceLabel.hidden = YES;
-    [self.uncashingPlaceButton setTitle:self.currentCashDeskPlace.name forState:UIControlStateNormal];
+    [self.uncashingPlaceButton setTitle:self.currentUncashingPlace.name forState:UIControlStateNormal];
     self.uncashingPlaceButton.hidden = YES;
     
     self.commentTextView.textColor = GREY_LINE_COLOR;
