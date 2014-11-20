@@ -112,10 +112,12 @@
     if ([type isEqualToString:BANK_OFFICE_TYPE]) {
         
         type = NSLocalizedString(@"BANK OFFICE", nil);
+        placeName = nil;
         
     } else if ([type isEqualToString:CASH_DESK_TYPE]) {
         
         type = NSLocalizedString(@"CASH DESK2", nil);
+        image = nil;
         
     }
     

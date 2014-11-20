@@ -14,7 +14,7 @@
 #import "STMUI.h"
 #import "STMUncashingPlaceController.h"
 
-@interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, UIActionSheetDelegate>
+@interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingLabel;
@@ -114,7 +114,9 @@
         uncashingInfoVC.comment = self.commentText;
         uncashingInfoVC.image = self.pictureImage;
         uncashingInfoVC.place = self.currentUncashingPlace;
+        
         _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoVC];
+        _uncashingInfoPopover.delegate = self;
         
     }
     
@@ -626,10 +628,10 @@
 }
 
 - (void)showInfoPopover {
+
+//    self.uncashingInfoPopover = nil;
     
-    //    CGRect rect = self.doneButton.frame;
     CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-    
     [self.uncashingInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
 
 }
@@ -637,6 +639,14 @@
 - (void)dismissInfoPopover {
     
     [self.uncashingInfoPopover dismissPopoverAnimated:YES];
+    self.uncashingInfoPopover = nil;
+    
+}
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    
     self.uncashingInfoPopover = nil;
     
 }
