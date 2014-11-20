@@ -330,10 +330,20 @@
 - (void)cancelUncashingProccess {
     
     [self.splitVC.detailVC cancelUncashingProccess];
+    [self flushSelf];
     [self.navigationController popViewControllerAnimated:YES];
 
 }
 
+- (void)flushSelf {
+    
+    self.uncashingSum = nil;
+    self.pictureImage = nil;
+    self.uncashingType = nil;
+    self.currentUncashingPlace = nil;
+    self.uncashingPlaces = nil;
+    
+}
 
 #pragma mark - camera buttons
 
@@ -864,6 +874,8 @@
 }
 
 - (void)customInit {
+    
+//    NSLog(@"self %@", self);
 
     [self addObservers];
     

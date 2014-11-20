@@ -13,7 +13,7 @@
 
 @interface STMUncashingInfoVC : UIViewController
 
-@property (nonatomic, strong) STMUncashingHandOverVC *parentVC;
+@property (nonatomic, weak) STMUncashingHandOverVC *parentVC;
 
 @property (nonatomic, strong) STMUncashing *uncashing;
 

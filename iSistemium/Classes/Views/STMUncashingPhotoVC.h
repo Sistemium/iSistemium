@@ -15,6 +15,6 @@
 @property (nonatomic, strong) STMUncashingPicture *picture;
 @property (nonatomic, strong) UIImage *image;
 
-@property (nonatomic, strong) STMUncashingHandOverVC *handOverController;
+@property (nonatomic, weak) STMUncashingHandOverVC *handOverController;
 
 @end
