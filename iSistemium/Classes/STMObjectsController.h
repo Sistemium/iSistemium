@@ -34,6 +34,8 @@
 + (void)dataLoadingFinished;
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 
++ (NSManagedObject *)objectForXid:(NSData *)xidData;
+
 + (NSUInteger)unreadMessagesCount;
 
 + (NSArray *)entityNamesForSyncing;

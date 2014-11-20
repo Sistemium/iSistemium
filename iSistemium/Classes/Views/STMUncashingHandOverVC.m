@@ -13,6 +13,8 @@
 #import "STMConstants.h"
 #import "STMUI.h"
 #import "STMUncashingPlaceController.h"
+#import "STMFunctions.h"
+#import "STMObjectsController.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate>
 
@@ -41,6 +43,8 @@
 
 @property (nonatomic, strong) NSArray *uncashingPlaces;
 @property (nonatomic, strong) STMUncashingPlace *currentUncashingPlace;
+
+@property (nonatomic, strong) STMUncashingPlace *defaultUncashingPlace;
 
 @end
 
@@ -176,7 +180,15 @@
             
             [self hideImageThumbnail];
             
-            [self uncashingPlaceButtonPressed:nil];
+            if (self.defaultUncashingPlace) {
+                
+                self.currentUncashingPlace = self.defaultUncashingPlace;
+                
+            } else {
+            
+                [self uncashingPlaceButtonPressed:nil];
+
+            }
             
         }
         
@@ -219,11 +231,30 @@
         
     }
     
-//    NSLog(@"_uncashingPlaces %@", _uncashingPlaces);
-    
     return _uncashingPlaces;
     
-//    return [[STMUncashingPlaceController sharedController] uncashingPlaces];
+}
+
+- (STMUncashingPlace *)defaultUncashingPlace {
+    
+    if (!_defaultUncashingPlace) {
+        
+        NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
+        NSString *defaultUncashingPlaceXid = [appSettings valueForKey:@"uncashingPlace"];
+        
+        NSData *xidData = [STMFunctions dataFromString:[defaultUncashingPlaceXid stringByReplacingOccurrencesOfString:@"-" withString:@""]];
+
+        NSManagedObject *object = [STMObjectsController objectForXid:xidData];
+        
+        if ([object isKindOfClass:[STMUncashingPlace class]]) {
+            
+            _defaultUncashingPlace = (STMUncashingPlace *)object;
+            
+        }
+        
+    }
+    
+    return _defaultUncashingPlace;
     
 }
 
