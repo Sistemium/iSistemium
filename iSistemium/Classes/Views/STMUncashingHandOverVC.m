@@ -879,9 +879,9 @@
 
     [self addObservers];
     
-    [self.navigationItem setHidesBackButton:YES animated:YES];
     self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelUncashingProccess)];
-    
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+
     self.commentTextView.delegate = self;
     [self labelsInit];
 

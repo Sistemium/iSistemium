@@ -405,14 +405,14 @@
 
 - (void)customInit {
     
+    self.title = NSLocalizedString(@"UNCASHING", nil);
+
     [self addObservers];
     
     self.cashingSumFRCD = [[STMCashingSumFRCD alloc] init];
     self.cashingSumFRCD.cashingSumTableView = self.tableView;
     
     self.clearsSelectionOnViewWillAppear = NO;
-    
-    self.title = NSLocalizedString(@"UNCASHING", nil);
     
     NSError *error;
     
@@ -448,6 +448,18 @@
     
     [super viewDidLoad];
     [self customInit];
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
 
 }
 

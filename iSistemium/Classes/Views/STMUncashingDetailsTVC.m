@@ -212,7 +212,13 @@
     }
     
     [self.handOverButton setTitle:NSLocalizedString(@"DONE", nil)];
+    
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        
+        [self.uncashingPopover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 
+    }
+    
     self.splitVC.isUncashingHandOverProcessing = YES;
     
 }
