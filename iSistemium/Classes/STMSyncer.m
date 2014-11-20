@@ -511,12 +511,12 @@
         
         if (isInSyncList) {
             
-            BOOL hasHref = [object.entity.propertiesByName.allKeys containsObject:@"href"];
+//            BOOL hasHref = [object.entity.propertiesByName.allKeys containsObject:@"href"];
+//            
+//            BOOL hrefIsNil = hasHref ? ([object valueForKey:@"href"] == nil) : YES;
+//            
+//            if (!hasHref || (hasHref && !hrefIsNil)) {
             
-            BOOL hrefIsNil = hasHref ? ([object valueForKey:@"href"] == nil) : YES;
-            
-            if (!hasHref || (hasHref && !hrefIsNil)) {
-                
                 NSDate *currentDate = [NSDate date];
                 [object setPrimitiveValue:currentDate forKey:@"sts"];
                 
@@ -526,7 +526,7 @@
                 [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
                 [syncDataArray addObject:objectDictionary];
                 
-            }
+//            }
 
         }
         
