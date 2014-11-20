@@ -8,6 +8,7 @@
 
 #import "STMCashing+dayAsString.h"
 #import "STMDebt+Cashing.h"
+#import "STMOutlet+photoReportsArePresent.h"
 
 @implementation STMCashing (dayAsString)
 
@@ -46,6 +47,16 @@
             [self.debt didChangeValueForKey:@"calculatedSum"];
 
         }
+        
+        NSString *key = @"deviceTs";
+        
+        [self.outlet willAccessValueForKey:key];
+        NSDate *outletDeviceTs = [self.outlet valueForKey:key];
+        [self.outlet didAccessValueForKey:key];
+        
+        [self.outlet willChangeValueForKey:key];
+        [self.outlet setValue:outletDeviceTs forKeyPath:key];
+        [self.outlet didChangeValueForKey:key];
         
     }
     
