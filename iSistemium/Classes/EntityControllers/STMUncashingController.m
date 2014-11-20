@@ -11,6 +11,7 @@
 #import "STMDocument.h"
 #import "STMRecordStatus.h"
 #import "STMObjectsController.h"
+#import "STMUncashingPicture.h"
 
 @interface STMUncashingController()
 
@@ -48,8 +49,17 @@
 
 - (void)removeUncashing:(STMUncashing *)uncashing {
 
-    STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:uncashing];
-    recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    STMRecordStatus *uncashingRecordStatus = [STMObjectsController recordStatusForObject:uncashing];
+    uncashingRecordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    
+    for (STMUncashingPicture *picture in uncashing.pictures) {
+        
+        STMRecordStatus *pictureRecordStatus = [STMObjectsController recordStatusForObject:picture];
+        pictureRecordStatus.isRemoved = [NSNumber numberWithBool:YES];
+        
+        [self.document.managedObjectContext deleteObject:picture];
+        
+    }
     
     [self.document.managedObjectContext deleteObject:uncashing];
     [self.document saveDocument:^(BOOL success) {
