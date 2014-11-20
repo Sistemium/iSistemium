@@ -240,12 +240,10 @@
     if (!_defaultUncashingPlace) {
         
         NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
-        NSString *defaultUncashingPlaceXid = [appSettings valueForKey:@"uncashingPlace"];
-        
+        NSString *defaultUncashingPlaceXid = [appSettings valueForKey:@"defaultUncashingPlace"];
         NSData *xidData = [STMFunctions dataFromString:[defaultUncashingPlaceXid stringByReplacingOccurrencesOfString:@"-" withString:@""]];
-
         NSManagedObject *object = [STMObjectsController objectForXid:xidData];
-        
+
         if ([object isKindOfClass:[STMUncashingPlace class]]) {
             
             _defaultUncashingPlace = (STMUncashingPlace *)object;
