@@ -1276,12 +1276,11 @@
                         NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
                         NSString *href = [urlArray componentsJoinedByString:@"/"];
                         
-                        photo.href = href;
-                        
                         NSLog(@"%@ upload successefully", href);
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
+                            photo.href = href;
                             [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
                             
                         });
