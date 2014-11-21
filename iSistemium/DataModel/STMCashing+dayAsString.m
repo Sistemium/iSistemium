@@ -47,18 +47,8 @@
             [self.debt didChangeValueForKey:@"calculatedSum"];
 
         }
-        
-/* causes crash?
-        NSString *key = @"deviceTs";
-        
-        [self.outlet willAccessValueForKey:key];
-        NSDate *outletDeviceTs = [self.outlet valueForKey:key];
-        [self.outlet didAccessValueForKey:key];
-        
-        [self.outlet willChangeValueForKey:key];
-        [self.outlet setValue:outletDeviceTs forKeyPath:key];
-        [self.outlet didChangeValueForKey:key];
-*/
+
+        [self.managedObjectContext refreshObject:self.outlet mergeChanges:YES];
         
     }
     
