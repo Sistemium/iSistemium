@@ -347,18 +347,14 @@
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-  
-    STMCashing *cashing = sectionInfo.objects[indexPath.row];
+    STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
     
-    NSString *textLabel = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:cashing.summ]];
-
-    cell.textLabel.text = textLabel;
-
     
-    UIColor *textColor = [UIColor blackColor];
+    NSString *sumString = [[numberFormatter stringFromNumber:cashing.summ] stringByAppendingString:@" "];
+    
+    UIColor *textColor = cashing.uncashing ? [UIColor darkGrayColor] : [UIColor blackColor];
     UIColor *backgroundColor = [UIColor clearColor];
-    UIFont *font = cell.detailTextLabel.font;
+    UIFont *font = cell.textLabel.font;
     
     NSDictionary *attributes = @{
                                  NSFontAttributeName: font,
@@ -366,9 +362,33 @@
                                  NSForegroundColorAttributeName: textColor
                                  };
     
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:sumString attributes:attributes];
+    
+    if (cashing.commentText) {
+        
+        font = cell.detailTextLabel.font;
+        attributes = @{NSFontAttributeName: font};
+        
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:cashing.commentText attributes:attributes]];
+        
+    }
+    
+    cell.textLabel.attributedText = text;
+
+
+    textColor = [UIColor blackColor];
+    backgroundColor = [UIColor clearColor];
+    font = cell.detailTextLabel.font;
+    
+    attributes = @{
+                                 NSFontAttributeName: font,
+                                 NSBackgroundColorAttributeName: backgroundColor,
+                                 NSForegroundColorAttributeName: textColor
+                                 };
+    
     NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
 
-    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
+    text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
     
     if (cashing.debt.responsibility) {
         
@@ -397,6 +417,7 @@
     [text appendAttributedString:[[NSAttributedString alloc] initWithString:dateString attributes:attributes]];
     
     cell.detailTextLabel.attributedText = text;
+    
     
     if ([[self.cashingDictionary allKeys] containsObject:cashing.xid]) {
         

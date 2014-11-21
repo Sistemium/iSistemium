@@ -48,6 +48,7 @@
 
         }
         
+/* causes crash?
         NSString *key = @"deviceTs";
         
         [self.outlet willAccessValueForKey:key];
@@ -57,6 +58,7 @@
         [self.outlet willChangeValueForKey:key];
         [self.outlet setValue:outletDeviceTs forKeyPath:key];
         [self.outlet didChangeValueForKey:key];
+*/
         
     }
     

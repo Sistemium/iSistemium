@@ -244,12 +244,35 @@
     
     STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
     
+    
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
 
-    NSString *sumString = [numberFormatter stringFromNumber:cashing.summ];
+    NSString *sumString = [[numberFormatter stringFromNumber:cashing.summ] stringByAppendingString:@" "];
+
+    UIColor *textColor = cashing.uncashing ? [UIColor darkGrayColor] : [UIColor blackColor];
+    UIColor *backgroundColor = [UIColor clearColor];
+    UIFont *font = cell.textLabel.font;
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@", sumString];
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName: font,
+                                 NSBackgroundColorAttributeName: backgroundColor,
+                                 NSForegroundColorAttributeName: textColor
+                                 };
+    
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:sumString attributes:attributes];
+    
+    if (cashing.commentText) {
+        
+        font = cell.detailTextLabel.font;
+        attributes = @{NSFontAttributeName: font};
+        
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:cashing.commentText attributes:attributes]];
+
+    }
+    
+    cell.textLabel.attributedText = text;
+    
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
@@ -261,20 +284,17 @@
     
     NSString *detailText = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, summOriginString];
     
-    UIColor *textColor = cashing.uncashing ? [UIColor darkGrayColor] : [UIColor blackColor];
-
-    cell.textLabel.textColor = textColor;
-
-    UIColor *backgroundColor = [UIColor clearColor];
-    UIFont *font = cell.detailTextLabel.font;
+    backgroundColor = [UIColor clearColor];
+    font = cell.detailTextLabel.font;
     
-    NSDictionary *attributes = @{
+    attributes = @{
                                  NSFontAttributeName: font,
                                  NSBackgroundColorAttributeName: backgroundColor,
                                  NSForegroundColorAttributeName: textColor
                                  };
 
-    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:detailText attributes:attributes];
+    text = [[NSMutableAttributedString alloc] initWithString:detailText attributes:attributes];
+    
     
     if (cashing.debt.responsibility) {
         
