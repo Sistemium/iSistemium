@@ -34,6 +34,7 @@
 #import "STMLocation.h"
 #import "STMUncashingPicture.h"
 #import "STMUncashingPlace.h"
+#import "STMTrack.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -886,6 +887,7 @@
                                        NSStringFromClass([STMClientData class]),
                                        NSStringFromClass([STMRecordStatus class]),
                                        NSStringFromClass([STMUncashingPicture class]),
+                                       NSStringFromClass([STMTrack class]),
                                        NSStringFromClass([STMLocation class])
                                        ];
     
@@ -1443,6 +1445,7 @@
                              NSStringFromClass([STMRecordStatus class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMLocation class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;

@@ -83,7 +83,9 @@
         for (NSString *settingName in [_settings allKeys]) {
             [_settings addObserver:self forKeyPath:settingName options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
         }
-        
+    
+//        NSLog(@"_settings %@", _settings);
+
     }
     
     return _settings;
@@ -312,6 +314,8 @@
 
 - (void)stopTracking {
     
+//    NSLog(@"%@ stopTracking %@", self.group, [NSDate date]);
+
     if (self.tracking) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStop", self.group] object:self];

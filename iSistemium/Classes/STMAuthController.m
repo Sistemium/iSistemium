@@ -274,14 +274,29 @@
     
     NSArray *trackers = [NSArray arrayWithObjects:@"battery", @"location", nil];
     
-    NSDictionary *startSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   self.serviceUri, @"restServerURI",
-                                   @"STMDataModel", @"dataModelName",
-                                   @"50", @"fetchLimit",
-                                   @"600", @"syncInterval",
-                                   @"100", @"requiredAccuracy",
-                                   @"10", @"desiredAccuracy",
-                                   nil];
+//    NSDictionary *startSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                   self.serviceUri, @"restServerURI",
+//                                   @"STMDataModel", @"dataModelName",
+//                                   @"50", @"fetchLimit",
+//                                   @"600", @"syncInterval",
+//                                   @"100", @"requiredAccuracy",
+//                                   @"10", @"desiredAccuracy",
+//                                   @"60", @"timeFilter",
+//                                   @"60", @"maxSpeedThreshold",
+//                                   [NSNumber numberWithBool:YES], @"locationTrackerAutoStart",
+//                                   nil];
+    
+    NSDictionary *startSettings = @{
+                                    @"restServerURI"            : self.serviceUri,
+                                    @"dataModelName"            : @"STMDataModel",
+                                    @"fetchLimit"               : @"50",
+                                    @"syncInterval"             : @"600",
+                                    @"requiredAccuracy"         : @"100",
+                                    @"desiredAccuracy"          : @"10",
+                                    @"timeFilter"               : @"60",
+                                    @"maxSpeedThreshold"        : @"60",
+                                    @"locationTrackerAutoStart" : [NSNumber numberWithBool:YES]
+                                    };
     
     [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
 
