@@ -14,40 +14,14 @@
 #import "STMDebtsCombineVC.h"
 #import "STMConstants.h"
 #import "STMFunctions.h"
+#import "STMTableViewCell.h"
+#import "STMDebtsSVC.h"
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) STMDebtsCombineVC *parentVC;
+//@property (nonatomic, strong) STMDebtsCombineVC *parentVC;
+@property (nonatomic, strong) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
-
-
-@end
-
-
-@interface STMOutletDebtsTVCell : UITableViewCell
-
-@end
-
-
-@implementation STMOutletDebtsTVCell
-
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
-    
-    [super setEditing:editing animated:animated];
-    
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-
-        for (UIView *subview in self.subviews) {
-            
-            if ([NSStringFromClass(subview.class) isEqualToString:@"UITableViewCellEditControl"]) {
-                subview.hidden = YES;
-            }
-            
-        }
-
-    }
-    
-}
 
 
 @end
@@ -57,9 +31,25 @@
 
 @synthesize resultsController = _resultsController;
 
-- (STMDebtsCombineVC *)parentVC {
+//- (STMDebtsCombineVC *)parentVC {
+//    
+//    return (STMDebtsCombineVC *)self.parentViewController;
+//    
+//}
+
+- (STMDebtsSVC *)splitVC {
     
-    return (STMDebtsCombineVC *)self.parentViewController;
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+            
+            _splitVC = (STMDebtsSVC *)self.splitViewController;
+            
+        }
+        
+    }
+    
+    return _splitVC;
     
 }
 
@@ -73,21 +63,6 @@
     }
     
 }
-
-/*
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
-    
-}
-*/
- 
 
 - (NSDecimalNumber *)totalSum {
     
@@ -177,7 +152,7 @@
         UIColor *backgroundColor = [UIColor clearColor];
         UIColor *textColor = [UIColor blackColor];
         
-        if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+        if ([[self.splitVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
             
             textColor = ACTIVE_BLUE_COLOR;
             
@@ -304,9 +279,9 @@
     
 }
 
-- (STMOutletDebtsTVCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (STMTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMOutletDebtsTVCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtDetailsCell" forIndexPath:indexPath];
+    STMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtDetailsCell" forIndexPath:indexPath];
 
     STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
 
@@ -324,7 +299,7 @@
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
     
-    if ([[self.parentVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+    if ([[self.splitVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
         
         cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
         
@@ -337,9 +312,9 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if ([[self.parentVC.controlsVC.debtsDictionary allKeys] containsObject:debt.xid]) {
+    if ([[self.splitVC.controlsVC.debtsDictionary allKeys] containsObject:debt.xid]) {
         
-        NSDecimalNumber *cashingSum = [self.parentVC.controlsVC.debtsDictionary objectForKey:debt.xid][1];
+        NSDecimalNumber *cashingSum = [self.splitVC.controlsVC.debtsDictionary objectForKey:debt.xid][1];
         
         if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
             
@@ -386,15 +361,15 @@
     
     if (tableView.editing) {
         
-        if (!self.parentVC.controlsVC.cashingLimitIsReached) {
+        if (!self.splitVC.controlsVC.cashingLimitIsReached) {
             
-            STMOutletDebtsTVCell *cell = (STMOutletDebtsTVCell *)[tableView cellForRowAtIndexPath:indexPath];
+            STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
             [cell setTintColor:ACTIVE_BLUE_COLOR];
             
             id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
             STMDebt *debt = sectionInfo.objects[indexPath.row];
             
-            [self.parentVC.controlsVC addCashing:debt];
+            [self.splitVC.controlsVC addCashing:debt];
 
         }
         
@@ -408,13 +383,13 @@
 
     if (tableView.editing) {
         
-        STMOutletDebtsTVCell *cell = (STMOutletDebtsTVCell *)[tableView cellForRowAtIndexPath:indexPath];
+        STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
         [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
         
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
         STMDebt *debt = sectionInfo.objects[indexPath.row];
         
-        [self.parentVC.controlsVC removeCashing:debt];
+        [self.splitVC.controlsVC removeCashing:debt];
         
     }
 

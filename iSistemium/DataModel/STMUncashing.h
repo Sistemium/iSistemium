@@ -2,7 +2,7 @@
 //  STMUncashing.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 17/08/14.
+//  Created by Maxim Grigoriev on 16/11/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -10,14 +10,17 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMCashing;
+@class STMCashing, STMUncashingPicture, STMUncashingPlace;
 
 @interface STMUncashing : STMComment
 
 @property (nonatomic, retain) NSDate * date;
 @property (nonatomic, retain) NSDecimalNumber * summ;
 @property (nonatomic, retain) NSDecimalNumber * summOrigin;
+@property (nonatomic, retain) NSString * type;
 @property (nonatomic, retain) NSSet *cashings;
+@property (nonatomic, retain) NSSet *pictures;
+@property (nonatomic, retain) STMUncashingPlace *uncashingPlace;
 @end
 
 @interface STMUncashing (CoreDataGeneratedAccessors)
@@ -26,5 +29,10 @@
 - (void)removeCashingsObject:(STMCashing *)value;
 - (void)addCashings:(NSSet *)values;
 - (void)removeCashings:(NSSet *)values;
+
+- (void)addPicturesObject:(STMUncashingPicture *)value;
+- (void)removePicturesObject:(STMUncashingPicture *)value;
+- (void)addPictures:(NSSet *)values;
+- (void)removePictures:(NSSet *)values;
 
 @end

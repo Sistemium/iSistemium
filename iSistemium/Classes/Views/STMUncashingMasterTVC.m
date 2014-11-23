@@ -11,6 +11,7 @@
 #import "STMConstants.h"
 #import "STMCashing.h"
 #import "STMUncashingHandOverVC.h"
+#import "STMUncashingController.h"
 
 @interface STMUncashingMasterTVC ()
 
@@ -181,8 +182,8 @@
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
     
     if (indexPath.section == 0) {
         
@@ -258,6 +259,40 @@
     [cell setTintColor:ACTIVE_BLUE_COLOR];
     
     return indexPath;
+    
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (indexPath.section == 0) {
+        
+        return NO;
+        
+    } else {
+        
+        if (indexPath.row != 0) {
+            
+            return NO;
+            
+        } else {
+
+            return YES;
+
+        }
+        
+    }
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
+        
+        [[STMUncashingController sharedController] removeUncashing:[self.resultsController objectAtIndexPath:indexPath]];
+    
+    }
     
 }
 
@@ -370,14 +405,14 @@
 
 - (void)customInit {
     
+    self.title = NSLocalizedString(@"UNCASHING", nil);
+
     [self addObservers];
     
     self.cashingSumFRCD = [[STMCashingSumFRCD alloc] init];
     self.cashingSumFRCD.cashingSumTableView = self.tableView;
     
     self.clearsSelectionOnViewWillAppear = NO;
-    
-    self.title = NSLocalizedString(@"UNCASHING", nil);
     
     NSError *error;
     
@@ -413,6 +448,18 @@
     
     [super viewDidLoad];
     [self customInit];
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
 
 }
 

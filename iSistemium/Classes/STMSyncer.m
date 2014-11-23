@@ -234,6 +234,7 @@
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 self.syncing = NO;
                 [STMObjectsController dataLoadingFinished];
+                [STMObjectsController checkUploadedPhotos];
                 if (self.fetchCompletionHandler) {
                     self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
                 }
@@ -425,6 +426,16 @@
     
 }
 
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+//    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashing"]) {
+//        
+//        NSLog(@"anObject change %@", anObject);
+//        
+//    }
+    
+}
+
 #pragma mark - syncing
 
 - (void)sendData {
@@ -478,30 +489,34 @@
 
 - (NSData *)JSONFrom:(NSArray *)dataForSyncing {
     
+//    NSLog(@"current time: %@", [[STMFunctions dateFormatter] stringFromDate:[NSDate date]]);
+
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
     for (NSManagedObject *object in dataForSyncing) {
         
-        NSArray *entityNamesForSending = @[
-                                           NSStringFromClass([STMPhotoReport class]),
-                                           NSStringFromClass([STMCashing class]),
-                                           NSStringFromClass([STMUncashing class]),
-                                           NSStringFromClass([STMMessage class]),
-                                           NSStringFromClass([STMClientData class]),
-                                           NSStringFromClass([STMRecordStatus class]),
-                                           NSStringFromClass([STMLocation class])
-                                           ];
+//        NSArray *entityNamesForSending = @[
+//                                           NSStringFromClass([STMPhotoReport class]),
+//                                           NSStringFromClass([STMCashing class]),
+//                                           NSStringFromClass([STMUncashing class]),
+//                                           NSStringFromClass([STMMessage class]),
+//                                           NSStringFromClass([STMClientData class]),
+//                                           NSStringFromClass([STMRecordStatus class]),
+//                                           NSStringFromClass([STMLocation class])
+//                                           ];
+        
+        NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
         
         BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
         
         if (isInSyncList) {
             
-            BOOL hasHref = [object.entity.propertiesByName.allKeys containsObject:@"href"];
+//            BOOL hasHref = [object.entity.propertiesByName.allKeys containsObject:@"href"];
+//            
+//            BOOL hrefIsNil = hasHref ? ([object valueForKey:@"href"] == nil) : YES;
+//            
+//            if (!hasHref || (hasHref && !hrefIsNil)) {
             
-            BOOL hrefIsNil = hasHref ? [[object valueForKey:@"href"] isEqual:nil] : YES;
-            
-            if (!hasHref || (hasHref && !hrefIsNil)) {
-                
                 NSDate *currentDate = [NSDate date];
                 [object setPrimitiveValue:currentDate forKey:@"sts"];
                 
@@ -511,7 +526,7 @@
                 [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
                 [syncDataArray addObject:objectDictionary];
                 
-            }
+//            }
 
         }
         
@@ -701,6 +716,13 @@
         NSString *eTag = [entity objectForKey:@"eTag"];
         eTag = eTag ? eTag : @"*";
         
+//        if ([entityName isEqualToString:@"STMUncashingPlace"]) {
+//            NSLog(@"eTag %@", eTag);
+//        }
+//        
+//        NSLog(@"entityName %@", entityName);
+//        NSLog(@"url %@", url);
+        
         NSURL *requestURL = [NSURL URLWithString:url];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
         
@@ -771,6 +793,22 @@
     
 }
 
+- (void)entityCountDecrease {
+    
+    self.entityCount -= 1;
+    
+//    NSLog(@"self.entityCount %d", self.entityCount);
+    
+    if (self.entityCount == 0) {
+        
+        self.syncing = NO;
+        self.syncerState = STMSyncerSendData;
+        
+    }
+    
+}
+
+
 #pragma mark - NSURLConnectionDataDelegate
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
@@ -825,25 +863,42 @@
         
         if ([entityName isEqualToString:@"STMEntity"]) {
             
-            self.entityCount = self.entitySyncInfo.allKeys.count - 1;
+//            NSLog(@"entityName %@", entityName);
+//            NSLog(@"dataModelEntityNames %@", [STMObjectsController dataModelEntityNames]);
+//            
+//            BOOL entityIsInLocalDataModel = [[STMObjectsController dataModelEntityNames] containsObject:entityName];
+//            
+//            NSLog(@"entityIsInLocalDataModel %d", entityIsInLocalDataModel);
+//            
+//            NSMutableSet *entityNames = [NSMutableSet setWithArray:[STMObjectsController dataModelEntityNames]];
+//            
+//            NSLog(@"entityNames.count %d", entityNames.count);
+//            NSLog(@"entityNames %@", entityNames);
+//            NSLog(@"self.entitySyncInfo.allKeys.count %d", self.entitySyncInfo.allKeys.count);
+//            NSLog(@"self.entitySyncInfo.allKeys %@", self.entitySyncInfo.allKeys);
+//            
+//            [entityNames intersectSet:[NSSet setWithArray:self.entitySyncInfo.allKeys]];
+//            
+//            NSLog(@"entityNames.count %d", entityNames.count);
+//            NSLog(@"entityNames %@", entityNames);
+//            
+//            self.entityCount = entityNames.count;
+//            
+//            NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
+//            [entityNames removeObject:entityName];
             
             NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             [entityNames removeObject:entityName];
-            
+
+            self.entityCount = entityNames.count;
+
             for (NSString *name in entityNames) {
                 [self startConnectionForReceiveEntitiesWithName:name];
             }
             
         } else {
-            
-            self.entityCount -= 1;
-            
-            if (self.entityCount == 0) {
-                
-                self.syncing = NO;
-                self.syncerState = STMSyncerSendData;
-                
-            }
+
+            [self entityCountDecrease];
             
         }
         
@@ -851,11 +906,16 @@
         
         NSLog(@"%@: HTTP status %d", entityName, statusCode);
         
-        if ([entityName isEqualToString:@"STMEntity"]) {
+        if ([entityName isEqualToString:@"SEND_DATA"]) {
             
             self.syncing = NO;
             self.syncerState = STMSyncerIdle;
             
+        } else if ([entityName isEqualToString:@"STMEntity"]) {
+
+            self.syncing = NO;
+            self.syncerState = STMSyncerIdle;
+
         } else if (! -- self.entityCount) {
             
             self.syncing = NO;
@@ -911,6 +971,8 @@
         
         if ([connectionEntityName isEqualToString:@"STMEntity"]) {
             
+//            NSLog(@"responseJSON %@", responseJSON);
+            
             for (NSDictionary *datum in dataArray) {
                 
                 NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
@@ -936,6 +998,10 @@
                         //                        NSLog(@"%d relationships successefully added", dataArray.count);
                         [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
                         
+                    } else {
+                        
+                        [self entityCountDecrease];
+                        
                     }
                     
                 }];
@@ -948,6 +1014,12 @@
                         
                         //                        NSLog(@"%d objects successefully added", dataArray.count);
                         [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+                        
+                    } else {
+                        
+                        NSLog(@"insert %@ not success, possible reason: there is no such entity in local dataModel", connectionEntityName);
+                        
+                        [self entityCountDecrease];
                         
                     }
                     
@@ -1047,12 +1119,12 @@
 
             }
             
-            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync object with xid %@", xid] type:@""];
+            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync %@ with xid %@", object.entity.name, xid] type:@""];
 
             
         } else {
             
-            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
+            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no %@ with xid: %@", object.entity.name, xid] type:@"error"];
             
         }
     

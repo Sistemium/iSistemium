@@ -18,6 +18,7 @@
 + (void)checkPhotos;
 + (void)checkDeviceToken;
 + (void)checkAppVersion;
++ (void)checkUploadedPhotos;
 
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
@@ -33,6 +34,12 @@
 + (void)dataLoadingFinished;
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 
++ (NSManagedObject *)objectForXid:(NSData *)xidData;
+
 + (NSUInteger)unreadMessagesCount;
+
++ (NSArray *)entityNamesForSyncing;
+
++ (NSArray *)localDataModelEntityNames;
 
 @end

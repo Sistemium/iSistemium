@@ -33,6 +33,7 @@
         
         NSDate *ts = [NSDate date];
         [self setPrimitiveValue:ts forKey:@"deviceCts"];
+        [self setPrimitiveValue:ts forKey:@"deviceTs"];
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSNumber *largestId = [defaults objectForKey:@"largestId"];
@@ -58,11 +59,47 @@
     
 //    NSLog(@"[self changedValues] %@", [self changedValues]);
     
-    BOOL notLts = ![[[self changedValues] allKeys] containsObject:@"lts"];
-    BOOL notSts = ![[[self changedValues] allKeys] containsObject:@"sts"];
-    BOOL notDeviceTs = ![[[self changedValues] allKeys] containsObject:@"deviceTs"];
+    NSArray *changedKeys = [[self changedValues] allKeys];
     
-    if (notLts && notSts && notDeviceTs) {
+    BOOL notLts = ![changedKeys containsObject:@"lts"];
+    BOOL notSts = ![changedKeys containsObject:@"sts"];
+    BOOL notSqts = ![changedKeys containsObject:@"sqts"];
+    BOOL notDeviceTs = ![changedKeys containsObject:@"deviceTs"];
+    BOOL notEmpty = (changedKeys.count != 0);
+    BOOL notToMany = YES;
+    
+    NSMutableArray *relationshipsToMany = [NSMutableArray array];
+
+    for (NSRelationshipDescription *relationship in [self.entity.relationshipsByName allValues]) {
+        
+        if ([relationship isToMany]) {
+            
+            [relationshipsToMany addObject:relationship.name];
+            
+        }
+        
+    }
+    
+    if (changedKeys.count == 1) {
+        
+        NSString *key = [changedKeys lastObject];
+        if ([relationshipsToMany containsObject:key]) {
+            notToMany = NO;
+            
+//            NSLog(@"%@ is toMany", key);
+            
+        }
+        
+    }
+    
+    if (notLts && notSts && notSqts && notDeviceTs && notEmpty && notToMany) {
+
+//        if ([self.entity.name isEqualToString:@"STMUncashing"]) {
+//            
+//            NSLog(@"self 1 %@", self)
+//            NSLog(@"[[self changedValues] allKeys] %@", [[self changedValues] allKeys]);
+//            
+//        }
         
         NSDate *ts = [NSDate date];
         
@@ -79,7 +116,13 @@
         NSDate *sqts = lts ? deviceTs : deviceCts;
         
         [self setPrimitiveValue:sqts forKey:@"sqts"];
-        
+
+//        if ([self.entity.name isEqualToString:@"STMUncashing"]) {
+//            
+//            NSLog(@"self 2 %@", self)
+//            
+//        }
+    
     }
     
     [super willSave];

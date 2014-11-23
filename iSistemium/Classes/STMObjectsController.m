@@ -32,6 +32,8 @@
 #import "STMMessage.h"
 #import "STMClientData.h"
 #import "STMLocation.h"
+#import "STMUncashingPicture.h"
+#import "STMUncashingPlace.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -279,7 +281,7 @@
 
 + (void)checkUploadedPhotos {
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
     
@@ -493,7 +495,7 @@
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
     
-    NSArray *dataModelEntityNames = [self dataModelEntityNames];
+    NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
@@ -518,11 +520,14 @@
             NSLog(@"object with xid %@ have recordStatus.isRemoved == YES", xid);
             
         }
+            
+        completionHandler(YES);
         
+    } else {
+        
+        completionHandler(NO);
         
     }
-    
-    completionHandler(YES);
     
 }
 
@@ -596,21 +601,52 @@
         NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
         NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
         
+/*
+        if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+        
+            NSLog(@"object %@", object);
+            NSLog(@"properties %@", properties);
+            NSLog(@"destinationObjectXid %@", destinationObjectXid);
+            
+        }
+*/
+        
         if (destinationObjectXid) {
             
             NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
+            
+/*
+            if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+                
+                NSLog(@"destinationObject before 1 %@", destinationObject);
+                
+            }
+*/
             
             if (![[object valueForKey:relationship] isEqual:destinationObject]) {
                 
                 BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
                 
-                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
+//                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
                 
+//                [object setPrimitiveValue:destinationObject forKey:relationship];
                 [object setValue:destinationObject forKey:relationship];
                 
                 if (!waitingForSync) {
-                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+//                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+                    
+                    [destinationObject addObserver:[self sharedController] forKeyPath:@"deviceTs" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
+                    
                 }
+                
+/*
+                if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+                    
+                    NSLog(@"destinationObject after 1 %@", destinationObject);
+                    
+                }
+*/
+                
                 
             }
             
@@ -618,18 +654,36 @@
             
             NSManagedObject *destinationObject = [object valueForKey:relationship];
             
+/*
+            if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+                
+                NSLog(@"destinationObject before 2 %@", destinationObject);
+                
+            }
+*/
+            
             if (destinationObject) {
                 
                 BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
                 
-                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
+//                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
                 
                 [object setValue:nil forKey:relationship];
                 
                 if (!waitingForSync) {
-                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+//                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
+                    [destinationObject addObserver:[self sharedController] forKeyPath:@"deviceTs" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
+
                 }
 
+/*
+                if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
+                    
+                    NSLog(@"destinationObject after 2 %@", destinationObject);
+                    
+                }
+*/
+                
                 
             }
             
@@ -637,6 +691,29 @@
         
     }
     
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+//    NSLog(@"object before %@", object);
+//    
+//    NSDate *old = [change valueForKey:NSKeyValueChangeOldKey];
+//    NSDate *lts = [(NSManagedObject *)object valueForKey:@"lts"];
+//    
+//    NSLog(@"old %@, lts %@", [[STMFunctions dateFormatter] stringFromDate:old], [[STMFunctions dateFormatter] stringFromDate:lts]);
+    
+    [object removeObserver:self forKeyPath:keyPath];
+    
+    if ([object isKindOfClass:[NSManagedObject class]]) {
+        
+        [(NSManagedObject *)object setValue:[change valueForKey:NSKeyValueChangeOldKey] forKey:keyPath];
+        
+    }
+
+//    NSLog(@"object after %@", object);
+//    
+//    NSLog(@"current time: %@", [[STMFunctions dateFormatter] stringFromDate:[NSDate date]]);
+
 }
 
 + (void)postprocessingForObject:(NSManagedObject *)object withEntityName:(NSString *)entityName {
@@ -771,32 +848,50 @@
             
         }
         
+        completionHandler(YES);
+        
+    } else {
+        
+        completionHandler(NO);
     }
-    
-    completionHandler(YES);
     
 }
 
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
-    NSArray *entityNamesForSending = @[
-        NSStringFromClass([STMPhotoReport class]),
-        NSStringFromClass([STMCashing class]),
-        NSStringFromClass([STMUncashing class]),
-        NSStringFromClass([STMClientData class]),
-        NSStringFromClass([STMRecordStatus class]),
-        NSStringFromClass([STMLocation class])
-    ];
-    
-    BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
+    BOOL isInSyncList = [[self entityNamesForSyncing] containsObject:object.entity.name];
 
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
+    
+/*
+    if ([object.entity.name isEqualToString:@"STMUncashing"]) {
         
+        NSLog(@"object isWaiting? %@", object);
+        NSLog(@"isWaiting? %d", (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending));
+        
+    }
+*/
+    
     return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
     
 }
 
++ (NSArray *)entityNamesForSyncing {
+    
+    NSArray *entityNamesForSyncing = @[
+                                       NSStringFromClass([STMPhotoReport class]),
+                                       NSStringFromClass([STMCashing class]),
+                                       NSStringFromClass([STMUncashing class]),
+                                       NSStringFromClass([STMClientData class]),
+                                       NSStringFromClass([STMRecordStatus class]),
+                                       NSStringFromClass([STMUncashingPicture class]),
+                                       NSStringFromClass([STMLocation class])
+                                       ];
+    
+    return entityNamesForSyncing;
+
+}
 
 #pragma mark - getting specified objects
 
@@ -817,7 +912,7 @@
 
 + (NSManagedObject *)objectForEntityName:(NSString *)entityName andXid:(NSString *)xid {
     
-    NSArray *dataModelEntityNames = [self dataModelEntityNames];
+    NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
@@ -951,7 +1046,7 @@
 
 }
 
-+ (NSArray *)dataModelEntityNames {
++ (NSArray *)localDataModelEntityNames {
     
     return [[self document].managedObjectModel.entitiesByName allKeys];
     
@@ -1129,6 +1224,25 @@
         
         NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
         
+        NSString *entityName = photo.entity.name;
+        
+        NSDate *currentDate = [NSDate date];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"yyyy";
+        
+        NSString *year = [dateFormatter stringFromDate:currentDate];
+        
+        dateFormatter.dateFormat = @"MM";
+        
+        NSString *month = [dateFormatter stringFromDate:currentDate];
+
+        dateFormatter.dateFormat = @"dd";
+        
+        NSString *day = [dateFormatter stringFromDate:currentDate];
+
+        bucket = [bucket stringByAppendingString:[NSString stringWithFormat:@"/%@/%@/%@/%@", entityName, year, month, day]];
+        
         if (bucket) {
             
             [self.uploadQueue addOperationWithBlock:^{
@@ -1162,12 +1276,11 @@
                         NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
                         NSString *href = [urlArray componentsJoinedByString:@"/"];
                         
-                        photo.href = href;
-                        
                         NSLog(@"%@ upload successefully", href);
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
+                            photo.href = href;
                             [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
                             
                         });
@@ -1221,7 +1334,7 @@
 
             fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
 
-        } else if ([picture isKindOfClass:[STMPhoto class]]) {
+        } else if ([picture isKindOfClass:[STMPhoto class]] || [picture isKindOfClass:[STMUncashingPicture class]]) {
             
             NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
             fileName = [xid stringByAppendingString:@".jpg"];
@@ -1328,6 +1441,8 @@
                              NSStringFromClass([STMMessage class]),
                              NSStringFromClass([STMClientData class]),
                              NSStringFromClass([STMRecordStatus class]),
+                             NSStringFromClass([STMUncashingPicture class]),
+                             NSStringFromClass([STMUncashingPlace class]),
                              NSStringFromClass([STMLocation class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;
@@ -1351,7 +1466,7 @@
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
 
-    if ([[self dataModelEntityNames] containsObject:entityName]) {
+    if ([[self localDataModelEntityNames] containsObject:entityName]) {
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];

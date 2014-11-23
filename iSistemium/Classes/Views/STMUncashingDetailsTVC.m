@@ -12,14 +12,21 @@
 #import "STMConstants.h"
 #import "STMUncashingSVC.h"
 #import "STMSyncer.h"
+#import "STMUncashingPicture.h"
+#import "STMObjectsController.h"
+#import "STMUncashingInfoVC.h"
+#import "STMTableViewCell.h"
 
 @interface STMUncashingDetailsTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) UIPopoverController *uncashingPopover;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
+@property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
+
 
 @end
+
 
 @implementation STMUncashingDetailsTVC
 
@@ -71,9 +78,14 @@
     
     if (self.uncashing) {
         
-        NSString *infoLabelTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"TOTAL", nil), [numberFormatter stringFromNumber:self.uncashing.summ]];
+//        NSString *infoLabelTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"TOTAL", nil), [numberFormatter stringFromNumber:self.uncashing.summ]];
+        NSString *infoLabelTitle = NSLocalizedString(@"DETAILS", nil);
         
         self.infoLabel.title = infoLabelTitle;
+        
+        self.infoLabel.enabled = YES;
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:ACTIVE_BLUE_COLOR};
+        [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
         
     } else {
         
@@ -88,7 +100,12 @@
         NSString *infoLabelTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"TOTAL", nil), [numberFormatter stringFromNumber:cashingSum]];
 
         self.infoLabel.title = infoLabelTitle;
-        
+
+        self.infoLabel.enabled = NO;
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+        [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+        [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+
     }
     
 }
@@ -144,44 +161,88 @@
     
 }
 
+- (UIPopoverController *)uncashingInfoPopover {
+    
+    if (!_uncashingInfoPopover) {
+        
+        STMUncashingInfoVC *uncashingInfoPopover = [self.storyboard instantiateViewControllerWithIdentifier:@"uncashingInfoPopover"];
+        uncashingInfoPopover.uncashing = self.uncashing;
+        
+        _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoPopover];
+        
+    }
+    
+    return _uncashingInfoPopover;
+    
+}
+
+- (void)showUncashingInfoPopover {
+    
+    self.uncashingInfoPopover = nil;
+    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
 - (void)handOverButtonPressed {
     
-    self.splitVC.isUncashingHandOverProcessing = !self.splitVC.isUncashingHandOverProcessing;
-    
-    if (self.splitVC.isUncashingHandOverProcessing) {
+    if (!self.splitVC.isUncashingHandOverProcessing) {
 
-        [self.tableView setEditing:YES animated:YES];
-
-        for (STMCashing *cashing in self.resultsController.fetchedObjects) {
-            
-            [self.cashingDictionary setObject:cashing forKey:cashing.xid];
-            NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
-            
-            [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
-            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-            
-        }
-
-        [self.handOverButton setTitle:NSLocalizedString(@"CANCEL", nil)];
-        [self.handOverButton setTintColor:[UIColor redColor]];
+        [self startUncashingProcess];
         
     } else {
 
-        [self.tableView setEditing:NO animated:YES];
-
-        self.cashingDictionary = nil;
-
-        [self.handOverButton setTintColor:ACTIVE_BLUE_COLOR];
-        [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingDoneButtonPressed" object:self userInfo:nil];
         
     }
     
 }
 
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ {
+- (void)startUncashingProcess {
+    
+    [self.tableView setEditing:YES animated:YES];
+    
+    for (STMCashing *cashing in self.resultsController.fetchedObjects) {
+        
+        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
+        
+        [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
+    [self.handOverButton setTitle:NSLocalizedString(@"DONE", nil)];
+    
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        
+        [self.uncashingPopover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 
+    }
+    
+    self.splitVC.isUncashingHandOverProcessing = YES;
+    
+}
+
+- (void)cancelUncashingProcess {
+    
+    self.cashingDictionary = nil;
+    [self finishUncashingProcess];
+
+}
+
+- (void)finishUncashingProcess {
+    
+    [self.tableView setEditing:NO animated:YES];
+    [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
+    
+    self.splitVC.isUncashingHandOverProcessing = NO;
+    
+}
+
+- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
+    
     STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
-
+    
     NSArray *cashings = [self.cashingDictionary allValues];
     
     for (STMCashing *cashing in cashings) {
@@ -194,19 +255,37 @@
     uncashing.summ = summ;
     uncashing.date = [NSDate date];
     
-//    self.uncashing = uncashing;
+    if (image) {
+
+        STMUncashingPicture *picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
+        
+        [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
+        
+        [uncashing addPicturesObject:picture];
+
+    }
+    
+    if (place) {
+        
+        uncashing.uncashingPlace = place;
+        
+    }
+    
+    uncashing.type = type;
+    uncashing.commentText = comment;
     
     [self.document saveDocument:^(BOOL success) {
         if (success) {
             
             STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
             syncer.syncerState = STMSyncerSendData;
-
+            
         }
     }];
     
     [self setInfoLabelTitle];
-    [self handOverButtonPressed];
+//    [self handOverButtonPressed];
+    [self finishUncashingProcess];
     [self.splitVC.masterVC selectRowWithUncashing:nil];
     
 }
@@ -257,9 +336,9 @@
 
 #pragma mark - table view data source
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (STMTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uncashingDetailCell" forIndexPath:indexPath];
+    STMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uncashingDetailCell" forIndexPath:indexPath];
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -268,18 +347,14 @@
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-  
-    STMCashing *cashing = sectionInfo.objects[indexPath.row];
+    STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
     
-    NSString *textLabel = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:cashing.summ]];
-
-    cell.textLabel.text = textLabel;
-
     
-    UIColor *textColor = [UIColor blackColor];
+    NSString *sumString = [[numberFormatter stringFromNumber:cashing.summ] stringByAppendingString:@" "];
+    
+    UIColor *textColor = cashing.uncashing ? [UIColor darkGrayColor] : [UIColor blackColor];
     UIColor *backgroundColor = [UIColor clearColor];
-    UIFont *font = cell.detailTextLabel.font;
+    UIFont *font = cell.textLabel.font;
     
     NSDictionary *attributes = @{
                                  NSFontAttributeName: font,
@@ -287,9 +362,33 @@
                                  NSForegroundColorAttributeName: textColor
                                  };
     
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:sumString attributes:attributes];
+    
+    if (cashing.commentText) {
+        
+        font = cell.detailTextLabel.font;
+        attributes = @{NSFontAttributeName: font};
+        
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:cashing.commentText attributes:attributes]];
+        
+    }
+    
+    cell.textLabel.attributedText = text;
+
+
+    textColor = [UIColor blackColor];
+    backgroundColor = [UIColor clearColor];
+    font = cell.detailTextLabel.font;
+    
+    attributes = @{
+                                 NSFontAttributeName: font,
+                                 NSBackgroundColorAttributeName: backgroundColor,
+                                 NSForegroundColorAttributeName: textColor
+                                 };
+    
     NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
 
-    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
+    text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
     
     if (cashing.debt.responsibility) {
         
@@ -318,6 +417,7 @@
     [text appendAttributedString:[[NSAttributedString alloc] initWithString:dateString attributes:attributes]];
     
     cell.detailTextLabel.attributedText = text;
+    
     
     if ([[self.cashingDictionary allKeys] containsObject:cashing.xid]) {
         
@@ -388,11 +488,22 @@
 }
 
 
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [super controllerDidChangeContent:controller];
+    [self setInfoLabelTitle];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    self.handOverButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(handOverButtonPressed)];
+    self.handOverButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(handOverButtonPressed)];
+    
     self.navigationItem.rightBarButtonItem = self.handOverButton;
 
     self.tableView.allowsSelectionDuringEditing = YES;
@@ -403,6 +514,9 @@
     NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
     [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+    
+    [self.infoLabel setTarget:self];
+    [self.infoLabel setAction:@selector(showUncashingInfoPopover)];
     
     [self performFetch];
     

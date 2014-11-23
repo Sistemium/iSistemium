@@ -272,10 +272,7 @@
         
         [self.spinnerView removeFromSuperview];
         
-//        if (self.selectedPhotoReport.photos.count == 0) {
-//            [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
-//            //            NSLog(@"delete empty photoReport");
-//        }
+        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
 
         self.imagePickerController = nil;
 //        NSLog(@"cancel button pressed");
@@ -451,9 +448,9 @@
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
-    [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
         
-//        NSLog(@"imagePickerControllerDidCancel");
+        NSLog(@"imagePickerControllerDidCancel");
         
     }];
     

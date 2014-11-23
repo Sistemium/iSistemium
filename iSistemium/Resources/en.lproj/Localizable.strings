@@ -46,11 +46,13 @@
 "AUTHORIZATION" = "Authorization";
 "DEBTS" = "Debts";
 "DEBT DETAILS" = "For %@ of %@ by summ %@";
+"DEBT INFO" = "Debt for %@ of %@";
 "CASHING" = "Cashing";
 "CASHED" = "Cashed";
 "OUTLETS" = "Outlets";
 "CASHING" = "Cashing";
 "DONE" = "Done";
+"HANDOVERING" = "Handovering";
 "UNCASHING" = "Uncashing";
 "ON HAND" = "On hand:";
 "HAND OVER" = "Hand over:";
@@ -63,6 +65,9 @@
 "UPDATE" = "Update";
 "VERSION" = "Version";
 "CASHING SUMM" = "Cashing summ";
+"CASHING SUMM2" = "Cashing summ";
+"CASHING SUMM PLACEHOLDER" = "Press to enter sum";
+"DEBT SUM LABEL" = "Debt sum";
 "DUE DATE" = "Due date";
 "TODAY" = "Today";
 "TOMORROW" = "Tomorrow";
@@ -73,3 +78,23 @@
 "AGO" = "ago";
 "INFO" = "Information";
 "TOTAL" = "Total";
+"CASH DESK" = "Cash desk";
+"CASH DESK2" = "Cash desk";
+"BANK OFFICE" = "Bank office";
+"CONFIRM" = "Confirm";
+"UNCASHING DATE" = "Uncashing date";
+"UNCASHING SUM" = "Uncashing sum";
+"UNCASHING TYPE" = "Uncashing via";
+"ADD COMMENT" = "Add comment";
+"BANK CHECK PHOTO" = "BANK CHECK PHOTO";
+"ATTENTION" = "Attention!";
+"DETAILS" = "Details";
+"UNCASHING SUM NOT VALID" = "Uncashing sum not valid";
+"NO UNCASHING TYPE" = "No uncashing type";
+"NO CHECK IMAGE" = "No check image";
+"NO CASH DESK CHOOSEN" = "No cash desk choosen";
+"UNCASHING PLACE LABEL" = "Uncashing place:";
+"SELECT UNCASHING PLACE" = "Select cash desk";
+"NO CASH DESK" = "No cash desk";
+"REM SUM NOT NULL" = "Remainder sum is not null";
+

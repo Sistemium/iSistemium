@@ -8,6 +8,7 @@
 
 #import "STMCashing+dayAsString.h"
 #import "STMDebt+Cashing.h"
+#import "STMOutlet+photoReportsArePresent.h"
 
 @implementation STMCashing (dayAsString)
 
@@ -46,6 +47,8 @@
             [self.debt didChangeValueForKey:@"calculatedSum"];
 
         }
+
+        [self.managedObjectContext refreshObject:self.outlet mergeChanges:YES];
         
     }
     

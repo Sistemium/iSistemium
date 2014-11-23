@@ -46,23 +46,28 @@
 "AUTHORIZATION" = "Авторизация";
 "DEBTS" = "Долги";
 "DEBT DETAILS" = "За %@ от %@ на сумму %@";
+"DEBT INFO" = "Долг за %@ от %@";
 "CASHING" = "Выручка";
 "OUTLETS" = "Точки";
 "CASHING" = "Сбор выручки";
 "CASHED" = "Выручка";
 "DONE" = "Готово";
+"HANDOVERING" = "Сдача выручки";
 "UNCASHING" = "Выручка";
 "ON HAND" = "На руках:";
 "HAND OVER" = "Сдано:";
 "HAND OVER BUTTON" = "Сдать выручку";
-"PICKED" = "Собрано";
-"REMAINDER" = "Остаток";
+"PICKED" = "Получено всего";
+"REMAINDER" = "Осталось подобрать";
 "MESSAGES" = "Сообщения";
 "SETTINGS" = "Настройки";
 "UPDATE AVAILABLE" = "Доступно обновление";
 "UPDATE" = "Обновить";
 "VERSION" = "Версия";
-"CASHING SUMM" = "Сумма выручки";
+"CASHING SUMM" = "Подбор под сумму";
+"CASHING SUMM2" = "Сумма выручки";
+"CASHING SUMM PLACEHOLDER" = "Нажмите для ввода суммы";
+"DEBT SUM LABEL" = "Получено по долгу";
 "DUE DATE" = "Срок оплаты";
 "TODAY" = "Сегодня";
 "TOMORROW" = "Завтра";
@@ -73,3 +78,25 @@
 "AGO" = "просрочено";
 "INFO" = "Информация";
 "TOTAL" = "Итого";
+"CASH DESK" = "Касса";
+"CASH DESK2" = "кассу";
+"BANK OFFICE" = "Банк";
+"CONFIRM" = "Подтвердить";
+"UNCASHING DATE" = "Выручка за";
+"UNCASHING SUM" = "На сумму";
+"UNCASHING TYPE" = "Сдано через";
+"ADD COMMENT" = "Добавить комментарий";
+"BANK CHECK PHOTO" = "Для сдачи выручки через банк необходима фотография чека";
+"ATTENTION" = "Внимание!";
+"DETAILS" = "Подробности";
+"UNCASHING SUM NOT VALID" = "Неверная сумма выручки";
+"NO UNCASHING TYPE" = "Не выбрано место сдачи выручки";
+"NO CHECK IMAGE" = "Нет фотографии чека";
+"NO CASH DESK CHOOSEN" = "Не выбрана касса";
+"UNCASHING PLACE LABEL" = "Место сдачи выручки:";
+"SELECT UNCASHING PLACE" = "Выберите кассу";
+"NO CASH DESK" = "Нет доступных касс";
+"REM SUM NOT NULL" = "Не выбран остаток суммы подбора";
+
+
+
