@@ -67,12 +67,25 @@
 - (void)debtSummChanged:(NSNotification *)notification {
     
     STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
-    NSIndexPath *indexPath = [self.resultsController indexPathForObject:outlet];
+    [self reloadRowWithOutlet:outlet];
+    
+}
 
+- (void)cashingIsProcessedChanged:(NSNotification *)notification {
+
+    STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
+    [self reloadRowWithOutlet:outlet];
+
+}
+
+- (void)reloadRowWithOutlet:(STMOutlet *)outlet {
+
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:outlet];
+    
     if (indexPath) {
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
-    
+
 }
 
 - (void)cashingButtonPressed {
@@ -107,6 +120,7 @@
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debtSummChanged:) name:@"debtSummChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingIsProcessedChanged:) name:@"cashingIsProcessedChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed) name:@"cashingButtonPressed" object:self.splitVC.detailVC];
 
 }

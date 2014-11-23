@@ -507,7 +507,19 @@
         
         if (![recordStatus.isRemoved boolValue]) {
             
-            NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
+            NSManagedObject *object = nil;
+            
+//            if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
+//                
+//                object = [[[STMSessionManager sharedManager].currentSession settingsController] settingForDictionary:dictionary];
+//                
+//            }
+//            
+//            if (!object) {
+            
+                object = [self objectForEntityName:entityName andXid:xid];
+
+//            }
             
             if (![self isWaitingToSyncForObject:object]) {
                 
