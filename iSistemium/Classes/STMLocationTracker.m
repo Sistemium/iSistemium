@@ -230,19 +230,22 @@
             } else {
 
                 if (!self.lastLocation || time > self.timeFilter) {
-                                        
+                    
+                    if (self.tracking) {
+                        
+                        [self addLocation:newLocation];
+                        
+                    }
+                    
                     if (self.singlePointMode) {
                         
-                        [self stopTracking];
+                        if (!self.tracking) {
+                            [self stopTracking];
+                        }
+                        
                         self.singlePointMode = NO;
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":newLocation}];
                         self.lastLocation = newLocation;
-
-                    } else {
-                    
-                        if (self.tracking) {
-                            [self addLocation:newLocation];
-                        }
 
                     }
                     
@@ -283,12 +286,12 @@
     
     self.lastLocation = currentLocation;
     
+    NSLog(@"location %@", self.lastLocation);
+
     [self.document saveDocument:^(BOOL success) {
         
-        NSLog(@"save newLocation");
-        
         if (success) {
-            NSLog(@"save newLocation success");
+//            NSLog(@"save newLocation success");
         }
         
     }];
