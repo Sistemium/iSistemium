@@ -511,6 +511,7 @@
             if (![self isWaitingToSyncForObject:object]) {
                 
                 NSDictionary *properties = [dictionary objectForKey:@"properties"];
+                [object setValue:[NSNumber numberWithBool:NO] forKey:@"isFantom"];
                 [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
                 
             }
@@ -931,7 +932,7 @@
         
         } else {
             
-            object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            object = [self newObjectForEntityName:entityName];
             [object setValue:xidData forKey:@"xid"];
             
         }
@@ -943,6 +944,15 @@
         return nil;
         
     }
+    
+}
+
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
+    
+    NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    [object setValue:[NSNumber numberWithBool:YES] forKey:@"isFantom"];
+    
+    return object;
     
 }
 
