@@ -318,6 +318,7 @@
 		2C8EF5F11940872E0021D202 /* STMAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAppDelegate.h; sourceTree = "<group>"; };
 		2C8EF5F21940872E0021D202 /* STMAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAppDelegate.m; sourceTree = "<group>"; };
 		2C8EF5F6194089E10021D202 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		2CA245761A232E0A00389F56 /* STMDataModel 24.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 24.xcdatamodel"; sourceTree = "<group>"; };
 		2CA4527A195AF68C00D93CA2 /* STMPhotoReportPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportPVC.h; sourceTree = "<group>"; };
 		2CA4527B195AF68C00D93CA2 /* STMPhotoReportPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportPVC.m; sourceTree = "<group>"; };
 		2CA4527D195AF6BC00D93CA2 /* STMPhotoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoVC.h; sourceTree = "<group>"; };
@@ -1231,6 +1232,7 @@
 			isa = XCVersionGroup;
 			children = (
 				2C140ABA1A18D2DA002C5C17 /* STMDataModel 23.xcdatamodel */,
+				2CA245761A232E0A00389F56 /* STMDataModel 24.xcdatamodel */,
 				2C8047171A0F7AD600FEFEFF /* STMDataModel 22.xcdatamodel */,
 				2C8047071A0E185900FEFEFF /* STMDataModel 21.xcdatamodel */,
 				2CF365B619FA4B3000F078BD /* STMDataModel 20.xcdatamodel */,
@@ -1254,7 +1256,7 @@
 				2CA452E019649C2D00D93CA2 /* STMDataModel 6.xcdatamodel */,
 				2CA452DE19649C0D00D93CA2 /* STMDataModel.xcdatamodel */,
 			);
-			currentVersion = 2C140ABA1A18D2DA002C5C17 /* STMDataModel 23.xcdatamodel */;
+			currentVersion = 2CA245761A232E0A00389F56 /* STMDataModel 24.xcdatamodel */;
 			path = STMDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
