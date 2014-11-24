@@ -97,6 +97,8 @@
 		2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5F21940872E0021D202 /* STMAppDelegate.m */; };
 		2C8EF5F7194089E10021D202 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5F6194089E10021D202 /* Security.framework */; };
 		2C9051741A236A7600EFE40D /* STMDatum.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C9051731A236A7600EFE40D /* STMDatum.m */; };
+		2C9051801A23D01700EFE40D /* STMSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C90517F1A23D01700EFE40D /* STMSingleton.m */; };
+		2C9051831A23D05500EFE40D /* STMUncashingProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C9051821A23D05500EFE40D /* STMUncashingProcessController.m */; };
 		2CA4527C195AF68C00D93CA2 /* STMPhotoReportPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA4527B195AF68C00D93CA2 /* STMPhotoReportPVC.m */; };
 		2CA4527F195AF6BC00D93CA2 /* STMPhotoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA4527E195AF6BC00D93CA2 /* STMPhotoVC.m */; };
 		2CA4528B195EB53400D93CA2 /* STMPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA4528A195EB53400D93CA2 /* STMPicture.m */; };
@@ -319,6 +321,10 @@
 		2C9051711A236A4500EFE40D /* STMDataModel 25.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 25.xcdatamodel"; sourceTree = "<group>"; };
 		2C9051721A236A7600EFE40D /* STMDatum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDatum.h; sourceTree = "<group>"; };
 		2C9051731A236A7600EFE40D /* STMDatum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDatum.m; sourceTree = "<group>"; };
+		2C90517E1A23D01700EFE40D /* STMSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSingleton.h; sourceTree = "<group>"; };
+		2C90517F1A23D01700EFE40D /* STMSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSingleton.m; sourceTree = "<group>"; };
+		2C9051811A23D05500EFE40D /* STMUncashingProcessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingProcessController.h; sourceTree = "<group>"; };
+		2C9051821A23D05500EFE40D /* STMUncashingProcessController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingProcessController.m; sourceTree = "<group>"; };
 		2CA245761A232E0A00389F56 /* STMDataModel 24.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 24.xcdatamodel"; sourceTree = "<group>"; };
 		2CA4527A195AF68C00D93CA2 /* STMPhotoReportPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportPVC.h; sourceTree = "<group>"; };
 		2CA4527B195AF68C00D93CA2 /* STMPhotoReportPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportPVC.m; sourceTree = "<group>"; };
@@ -422,6 +428,8 @@
 				2C140AC91A19F5B3002C5C17 /* STMUncashingPlaceController.m */,
 				2C140ADA1A1D3016002C5C17 /* STMUncashingController.h */,
 				2C140ADB1A1D3016002C5C17 /* STMUncashingController.m */,
+				2C9051811A23D05500EFE40D /* STMUncashingProcessController.h */,
+				2C9051821A23D05500EFE40D /* STMUncashingProcessController.m */,
 			);
 			path = EntityControllers;
 			sourceTree = "<group>";
@@ -665,6 +673,8 @@
 			isa = PBXGroup;
 			children = (
 				2C80C829198FB03C0044ADE4 /* STMConstants.h */,
+				2C90517E1A23D01700EFE40D /* STMSingleton.h */,
+				2C90517F1A23D01700EFE40D /* STMSingleton.m */,
 				2C297F9519507A01000D9485 /* STMExtendNSLog.h */,
 				2C297F9619507A01000D9485 /* STMExtendNSLog.m */,
 				2C53B88C19409E71002298A5 /* STMSessionManager.h */,
@@ -951,6 +961,7 @@
 				2C80C814198CFD4B0044ADE4 /* STMOutlet.m in Sources */,
 				2C65290D19576895008605D9 /* STMComment.m in Sources */,
 				2CB4052319BF3A9600813E88 /* STMRecordStatus.m in Sources */,
+				2C9051801A23D01700EFE40D /* STMSingleton.m in Sources */,
 				2C65291619576895008605D9 /* STMArticlePicture.m in Sources */,
 				2C53B8D81940A1B8002298A5 /* STMDatum+Init.m in Sources */,
 				2C53B9B91944AB01002298A5 /* STMCampaignsTVC.m in Sources */,
@@ -989,6 +1000,7 @@
 				2CF365AA19ED8F1900F078BD /* STMCashing.m in Sources */,
 				2C2968FC19A208FB0038B122 /* STMDatePickerVC.m in Sources */,
 				2C76A5CE196877B7004D6D80 /* AWXMLRequestSerializerFixed.m in Sources */,
+				2C9051831A23D05500EFE40D /* STMUncashingProcessController.m in Sources */,
 				2C53B8AC19409E83002298A5 /* STMSettingsTVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
