@@ -1291,7 +1291,7 @@
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
                             photo.href = href;
-                            [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
+                            [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendDataOnce];
                             
                         });
                         

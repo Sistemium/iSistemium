@@ -212,7 +212,7 @@
         
         _syncerState = syncerState;
         
-        NSArray *syncStates = @[@"idle", @"sendData", @"receiveData"];
+        NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
         [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]] type:@""];
         
@@ -223,7 +223,13 @@
                 self.syncing = YES;
                 [self sendData];
                 break;
-                
+
+            case STMSyncerSendDataOnce:
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                self.syncing = YES;
+                [self sendData];
+                break;
+
             case STMSyncerReceiveData:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 self.syncing = YES;
@@ -440,7 +446,7 @@
 
 - (void)sendData {
     
-    if (self.syncerState == STMSyncerSendData) {
+    if (self.syncerState == STMSyncerSendData || self.syncerState == STMSyncerSendDataOnce) {
         
         if (self.resultsController.fetchedObjects.count > 0) {
             
@@ -448,7 +454,7 @@
 
             if (sendData) {
                 
-                self.checkSending = YES;
+                self.checkSending = (self.syncerState == STMSyncerSendData);
                 [self startConnectionForSendData:sendData];
                 
             } else {
@@ -1032,7 +1038,16 @@
                 }
                 
                 self.syncing = NO;
-                self.syncerState = STMSyncerReceiveData;
+
+                if (self.syncerState == STMSyncerSendData) {
+                    
+                    self.syncerState = STMSyncerReceiveData;
+                    
+                } else if (self.syncerState == STMSyncerSendDataOnce) {
+                    
+                    self.syncerState = STMSyncerIdle;
+                    
+                }
                 
             }
             

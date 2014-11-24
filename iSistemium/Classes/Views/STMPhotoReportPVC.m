@@ -65,7 +65,7 @@
     
     [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photoReport];
 
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData];
+    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged" object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:[NSDictionary dictionaryWithObject:campaign forKey:@"campaign"]];

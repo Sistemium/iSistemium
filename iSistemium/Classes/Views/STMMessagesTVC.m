@@ -117,7 +117,7 @@
     [self showUnreadCount];
 
     STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-    syncer.syncerState = STMSyncerSendData;
+    syncer.syncerState = STMSyncerSendDataOnce;
 
     [self.document saveDocument:^(BOOL success) {
         if (success) {
