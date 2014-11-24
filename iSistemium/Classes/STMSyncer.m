@@ -38,6 +38,7 @@
 @property (nonatomic) NSUInteger entityCount;
 @property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL checkSending;
+@property (nonatomic) BOOL sendOnce;
 @property (nonatomic, strong) NSData *clientDataXid;
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 
@@ -208,7 +209,15 @@
 
 - (void)setSyncerState:(STMSyncerState)syncerState {
     
+    self.sendOnce = (syncerState != STMSyncerIdle) && ((self.sendOnce) || (self.syncing && syncerState == STMSyncerSendDataOnce))? YES : NO;
+    
+//    NSLog(@"self.sendOnce %d", self.sendOnce);
+    
     if (!self.syncing && syncerState != _syncerState) {
+        
+        syncerState = (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
+        
+//        NSLog(@"syncerState %d", syncerState);
         
         _syncerState = syncerState;
         
@@ -239,6 +248,7 @@
             case STMSyncerIdle:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 self.syncing = NO;
+                self.sendOnce = NO;
                 [STMObjectsController dataLoadingFinished];
                 [STMObjectsController checkUploadedPhotos];
                 if (self.fetchCompletionHandler) {
