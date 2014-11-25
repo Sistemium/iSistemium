@@ -15,6 +15,7 @@
 #import "STMCashing.h"
 #import "STMDebt+Cashing.h"
 #import "STMDatePickerVC.h"
+#import "STMFunctions.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
 
@@ -626,17 +627,43 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    
+
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+
     NSMutableString *text = [textField.text mutableCopy];
     [text replaceCharactersInRange:range withString:string];
 
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    numberFormatter.maximumFractionDigits = 2;
-    
-    [text replaceOccurrencesOfString:numberFormatter.groupingSeparator withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [text length])];
+    NSArray *textParts = [text componentsSeparatedByString:numberFormatter.decimalSeparator];
 
-    NSNumber *number = [numberFormatter numberFromString:[NSString stringWithFormat:@"%@", text]];
+    NSString *decimalPart = (textParts.count == 2) ? textParts[1] : nil;
+
+    if (decimalPart.length == 3 && ![string isEqualToString:@""]) {
+        
+        return NO;
+        
+    } else {
+        
+        [text replaceOccurrencesOfString:numberFormatter.groupingSeparator withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [text length])];
+
+        [self fillTextField:textField withText:text];
+        
+//        NSInteger offset = range.location + string.length + replaceOccurrences;
+//
+//        UITextPosition *from = [textField positionFromPosition:[textField beginningOfDocument] offset:offset];
+//        UITextPosition *to = [textField positionFromPosition:from offset:0];
+//        [textField setSelectedTextRange:[textField textRangeFromPosition:from toPosition:to]];
+
+        return NO;
+        
+    }
+    
+}
+
+- (void)fillTextField:(UITextField *)textField withText:(NSString *)text {
+    
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+
+    NSNumber *number = [numberFormatter numberFromString:text];
     
     if (!number) {
         
@@ -646,24 +673,42 @@
             
         }
         
-        return NO;
-        
     } else {
-
-        NSString *finalString = [numberFormatter stringFromNumber:number];
-
-        if ([string isEqualToString:numberFormatter.decimalSeparator]) {
+        
+        if ([number doubleValue] == 0) {
             
-            finalString = [finalString stringByAppendingString:numberFormatter.decimalSeparator];
+            textField.text = text;
+            
+        } else {
+            
+            NSString *finalString = [numberFormatter stringFromNumber:number];
+            
+            NSString *appendingString = nil;
+            
+            NSString *suffix = nil;
+            
+            for (int i = 0; i <= 2; i++) {
+                
+                suffix = numberFormatter.decimalSeparator;
+                
+                for (int j = 0; j < i; j++) {
+                    
+                    suffix = [suffix stringByAppendingString:@"0"];
+                    
+                }
+                
+                appendingString = ([text hasSuffix:suffix]) ? suffix : appendingString;
+                
+            }
+
+            finalString = (appendingString) ? [finalString stringByAppendingString:appendingString] : finalString;
+
+            textField.text = finalString;
             
         }
-        
-        textField.text = finalString;
-        
-        return NO;
-
+                
     }
-    
+
 }
 
 - (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
