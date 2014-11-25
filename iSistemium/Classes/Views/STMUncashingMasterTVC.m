@@ -290,7 +290,7 @@
 
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
         
-        [[STMUncashingController sharedController] removeUncashing:[self.resultsController objectAtIndexPath:indexPath]];
+        [[STMUncashingController sharedInstance] removeUncashing:[self.resultsController objectAtIndexPath:indexPath]];
     
     }
     

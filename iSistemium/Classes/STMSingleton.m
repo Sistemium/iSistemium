@@ -7,6 +7,12 @@
 //
 
 #import "STMSingleton.h"
+#import "STMSessionManager.h"
+
+@interface STMSingleton()
+
+@end
+
 
 @implementation STMSingleton
 
@@ -21,6 +27,18 @@
     });
     
     return _sharedInstance;
+    
+}
+
+- (STMDocument *)document {
+    
+    if (!_document) {
+        
+        _document = (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
+        
+    }
+    
+    return _document;
     
 }
 

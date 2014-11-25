@@ -7,11 +7,20 @@
 //
 
 #import "STMSingleton.h"
+#import "STMCashing.h"
+#import "STMUncashing.h"
+#import "STMUncashingPlace.h"
 
 @interface STMUncashingProcessController : STMSingleton
 
-+ (STMUncashingProcessController *)sharedInstance;
+//+ (STMUncashingProcessController *)sharedInstance;
 
-@property (nonatomic, strong) NSString *stringProperty;
+- (void)startWithCashings:(NSArray *)cashings;
+- (void)cancelProcess;
+- (STMUncashing *)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place;
+
+- (void)addCashing:(STMCashing *)cashing;
+- (void)removeCashingWithXid:(NSData *)xid;
+- (BOOL)hasCashingWithXid:(NSData *)xid;
 
 @end

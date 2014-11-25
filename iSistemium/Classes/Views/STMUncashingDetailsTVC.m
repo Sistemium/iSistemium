@@ -16,6 +16,7 @@
 #import "STMObjectsController.h"
 #import "STMUncashingInfoVC.h"
 #import "STMTableViewCell.h"
+#import "STMUncashingProcessController.h"
 
 @interface STMUncashingDetailsTVC ()
 
@@ -149,17 +150,17 @@
     
 }
 
-- (NSMutableDictionary *)cashingDictionary {
-    
-    if (!_cashingDictionary) {
-        
-        _cashingDictionary = [NSMutableDictionary dictionary];
-        
-    }
-    
-    return _cashingDictionary;
-    
-}
+//- (NSMutableDictionary *)cashingDictionary {
+//    
+//    if (!_cashingDictionary) {
+//        
+//        _cashingDictionary = [NSMutableDictionary dictionary];
+//        
+//    }
+//    
+//    return _cashingDictionary;
+//    
+//}
 
 - (UIPopoverController *)uncashingInfoPopover {
     
@@ -201,9 +202,11 @@
     
     [self.tableView setEditing:YES animated:YES];
     
+    [[STMUncashingProcessController sharedInstance] startWithCashings:self.resultsController.fetchedObjects];
+
     for (STMCashing *cashing in self.resultsController.fetchedObjects) {
         
-        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+//        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
         
         [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
@@ -225,7 +228,8 @@
 
 - (void)cancelUncashingProcess {
     
-    self.cashingDictionary = nil;
+//    self.cashingDictionary = nil;
+    [[STMUncashingProcessController sharedInstance] cancelProcess];
     [self finishUncashingProcess];
 
 }
@@ -241,47 +245,49 @@
 
 - (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
     
-    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
+    [[STMUncashingProcessController sharedInstance] uncashingDoneWithSum:summ image:image type:type comment:comment place:place];
     
-    NSArray *cashings = [self.cashingDictionary allValues];
-    
-    for (STMCashing *cashing in cashings) {
-        
-        cashing.uncashing = uncashing;
-        
-    }
-    
-    uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
-    uncashing.summ = summ;
-    uncashing.date = [NSDate date];
-    
-    if (image) {
-
-        STMUncashingPicture *picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
-        
-        [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
-        
-        [uncashing addPicturesObject:picture];
-
-    }
-    
-    if (place) {
-        
-        uncashing.uncashingPlace = place;
-        
-    }
-    
-    uncashing.type = type;
-    uncashing.commentText = comment;
-    
-    [self.document saveDocument:^(BOOL success) {
-        if (success) {
-            
-            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-            syncer.syncerState = STMSyncerSendDataOnce;
-            
-        }
-    }];
+//    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
+//    
+//    NSArray *cashings = [self.cashingDictionary allValues];
+//    
+//    for (STMCashing *cashing in cashings) {
+//        
+//        cashing.uncashing = uncashing;
+//        
+//    }
+//    
+//    uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
+//    uncashing.summ = summ;
+//    uncashing.date = [NSDate date];
+//    
+//    if (image) {
+//
+//        STMUncashingPicture *picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
+//        
+//        [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
+//        
+//        [uncashing addPicturesObject:picture];
+//
+//    }
+//    
+//    if (place) {
+//        
+//        uncashing.uncashingPlace = place;
+//        
+//    }
+//    
+//    uncashing.type = type;
+//    uncashing.commentText = comment;
+//    
+//    [self.document saveDocument:^(BOOL success) {
+//        if (success) {
+//            
+//            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
+//            syncer.syncerState = STMSyncerSendDataOnce;
+//            
+//        }
+//    }];
     
     [self setInfoLabelTitle];
 //    [self handOverButtonPressed];
@@ -419,7 +425,7 @@
     cell.detailTextLabel.attributedText = text;
     
     
-    if ([[self.cashingDictionary allKeys] containsObject:cashing.xid]) {
+    if ([[STMUncashingProcessController sharedInstance] hasCashingWithXid:cashing.xid]) {
         
         cell.tintColor = ACTIVE_BLUE_COLOR;
         
@@ -460,7 +466,8 @@
     if (tableView.editing) {
 
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
-        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+        [[STMUncashingProcessController sharedInstance] addCashing:cashing];
+//        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
@@ -476,7 +483,8 @@
     if (tableView.editing) {
         
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
-        [self.cashingDictionary removeObjectForKey:cashing.xid];
+        [[STMUncashingProcessController sharedInstance] removeCashingWithXid:cashing.xid];
+//        [self.cashingDictionary removeObjectForKey:cashing.xid];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
         [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];

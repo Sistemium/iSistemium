@@ -7,9 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "STMDocument.h"
+#import "STMObjectsController.h"
+#import "STMSessionManager.h"
+#import "STMSessionManagement.h"
 
 @interface STMSingleton : NSObject
 
 + (id)sharedInstance;
+
+@property (nonatomic, strong) STMDocument *document;
+
 
 @end
