@@ -16,7 +16,7 @@
 + (STMObjectsController *)sharedController;
 
 + (void)checkPhotos;
-+ (void)checkDeviceToken;
++ (void)checkClientData;
 + (void)checkAppVersion;
 + (void)checkUploadedPhotos;
 

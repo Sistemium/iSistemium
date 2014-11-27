@@ -12,6 +12,7 @@
 #import "STMDocument.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
+
 #import <Security/Security.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 
@@ -109,16 +110,12 @@
 
 #pragma mark - checking client state
 
-+ (void)checkDeviceToken {
-
++ (void)checkClientData {
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL clientDataWaitingForSync = [[defaults objectForKey:@"clientDataWaitingForSync"] boolValue];
 
     if (clientDataWaitingForSync) {
-        
-        NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
-    
-        NSLog(@"hasDeviceTokenForSync %@", deviceToken);
         
         if ([self document].managedObjectContext) {
             
@@ -138,7 +135,11 @@
                 
             }
             
-            clientData.deviceToken = deviceToken;
+            NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
+
+            if (deviceToken) {
+                clientData.deviceToken = deviceToken;
+            }
             
 #ifdef DEBUG
             
@@ -150,6 +151,11 @@
             
 #endif
             
+            NSDate *lastAuth = [defaults objectForKey:@"lastAuth"];
+            
+            if (lastAuth) {
+                clientData.lastAuth = lastAuth;
+            }
 
         }
         
