@@ -54,7 +54,7 @@
                 
         request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
+        request.predicate = [NSPredicate predicateWithFormat:@"(ANY debts.summ != 0) OR (ANY cashings.summ != 0)"];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"partner.name" cacheName:nil];
         _resultsController.delegate = self;
         

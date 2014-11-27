@@ -40,6 +40,16 @@
     
 }
 
++ (NSNumberFormatter *)decimalFormatter {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.maximumFractionDigits = 2;
+
+    return numberFormatter;
+    
+}
+
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date {
     
     NSDate *today = [NSDate date];

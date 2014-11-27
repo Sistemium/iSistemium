@@ -294,7 +294,7 @@
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
         
-        [[self sharedController] addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
+        [[self sharedController] addUploadOperationForPicture:photo withFileName:fileName data:photoData];
         
     }
     
@@ -1214,27 +1214,27 @@
 
 - (void)repeatUploadOperationForObject:(NSManagedObject *)object {
     
-    if ([object isKindOfClass:[STMPhoto class]]) {
+    if ([object isKindOfClass:[STMPicture class]]) {
         
-        STMPhoto *photo = (STMPhoto *)object;
+        STMPicture *picture = (STMPicture *)object;
         
-        NSString *xid = [STMFunctions xidStringFromXidData:photo.xid];
+        NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
+        NSData *data = [NSData dataWithContentsOfFile:picture.imagePath];
 
-        [self addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
+        [self addUploadOperationForPicture:picture withFileName:fileName data:data];
         
     }
     
 }
 
-- (void)addUploadOperationForPhoto:(STMPhoto *)photo withFileName:(NSString *)filename data:(NSData *)data {
+- (void)addUploadOperationForPicture:(STMPicture *)picture withFileName:(NSString *)filename data:(NSData *)data {
 
     if ([self s3Init]) {
         
         NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
         
-        NSString *entityName = photo.entity.name;
+        NSString *entityName = picture.entity.name;
         
         NSDate *currentDate = [NSDate date];
         
@@ -1276,7 +1276,7 @@
                         NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+                            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
                         });
                         
                     } else {
@@ -1290,7 +1290,8 @@
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
-                            photo.href = href;
+                            picture.href = href;
+                            picture.deviceTs = [NSDate date];
                             [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendDataOnce];
                             
                         });
@@ -1317,7 +1318,7 @@
         
         NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
         });
 
     }
@@ -1349,7 +1350,7 @@
             NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
             fileName = [xid stringByAppendingString:@".jpg"];
             
-            [[self sharedController] addUploadOperationForPhoto:(STMPhoto *)picture withFileName:fileName data:weakData];
+            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
             
         }
         

@@ -444,9 +444,13 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-//    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashing"]) {
+//    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashingPicture"]) {
 //        
-//        NSLog(@"anObject change %@", anObject);
+//        NSLog(@"anObject %@ change", [anObject valueForKey:@"xid"]);
+//        NSLog(@"href %@", [anObject valueForKey:@"href"]);
+//        NSLog(@"deviceTs %@", [anObject valueForKey:@"deviceTs"]);
+//        NSLog(@"lts %@", [anObject valueForKey:@"lts"]);
+//        NSLog(@"sts %@", [anObject valueForKey:@"sts"]);
 //        
 //    }
     
@@ -489,7 +493,7 @@
 
     self.syncing = NO;
     
-    if (self.checkSending) {
+    if (self.checkSending || self.syncerState == STMSyncerSendDataOnce) {
         
         self.checkSending = NO;
         self.syncerState = STMSyncerIdle;
