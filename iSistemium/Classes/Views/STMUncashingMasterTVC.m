@@ -19,7 +19,7 @@
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) STMCashingSumFRCD *cashingSumFRCD;
 @property (nonatomic, strong) NSFetchedResultsController *cashingSumResultsController;
-@property (nonatomic, strong) NSDecimalNumber *infoSum;
+//@property (nonatomic, strong) NSDecimalNumber *infoSum;
 
 @end
 
@@ -57,17 +57,19 @@
     
 }
 
-//- (void)setCashingSum:(NSDecimalNumber *)cashingSum {
-//    
-//    if (_cashingSum != cashingSum) {
-//        
-//        self.splitVC.detailVC.uncashingProcessButton.enabled = (!self.splitVC.detailVC.uncashing && cashingSum.intValue == 0) ? NO : YES;
-//     
-//        _cashingSum = cashingSum;
-//        
-//    }
-//    
-//}
+- (void)setCashingSum:(NSDecimalNumber *)cashingSum {
+    
+    if (_cashingSum != cashingSum) {
+     
+        _cashingSum = cashingSum;
+
+        self.splitVC.detailVC.uncashingProcessButton.enabled = (!self.splitVC.detailVC.uncashing && cashingSum.intValue == 0) ? NO : YES;
+        
+        [STMUncashingProcessController sharedInstance].summOrigin = cashingSum;
+        
+    }
+    
+}
 
 - (NSFetchedResultsController *)cashingSumResultsController {
     
@@ -291,7 +293,9 @@
 
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
         
-        [[STMUncashingController sharedInstance] removeUncashing:[self.resultsController objectAtIndexPath:indexPath]];
+        STMUncashingController *uncashingController = [STMUncashingController sharedInstance];
+        
+        [uncashingController removeUncashing:[self.resultsController objectAtIndexPath:indexPath]];
     
     }
     

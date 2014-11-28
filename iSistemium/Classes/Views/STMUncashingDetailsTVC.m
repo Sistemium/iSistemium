@@ -24,7 +24,6 @@
 @property (nonatomic, strong) UIPopoverController *uncashingPopover;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
-@property (nonatomic, strong) STMUIBarButtonItem *uncashingProcessButton;
 
 
 @end
@@ -193,6 +192,7 @@
         
     } else if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessRunning) {
         
+        [[STMUncashingProcessController sharedInstance] checkUncashing];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingDoneButtonPressed" object:self userInfo:nil];
         
     }
@@ -249,12 +249,15 @@
     [self.tableView setEditing:NO animated:YES];
     [self.uncashingProcessButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
     
+    [self setInfoLabelTitle];
+    [self.splitVC.masterVC selectRowWithUncashing:nil];
+
 //    self.splitVC.isUncashingHandOverProcessing = NO;
     
 }
 
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
-    
+//- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
+
     
     
 //    [[STMUncashingProcessController sharedInstance] uncashingDoneWithSum:summ image:image type:type comment:comment place:place];
@@ -304,12 +307,8 @@
 //        }
 //    }];
     
-    [self setInfoLabelTitle];
-//    [self handOverButtonPressed];
-    [self uncashingProcessDone];
-    [self.splitVC.masterVC selectRowWithUncashing:nil];
     
-}
+//}
 
 
 #pragma mark - UISplitViewControllerDelegate
@@ -485,8 +484,6 @@
 //        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
-        
     }
     
     return indexPath;
@@ -501,8 +498,6 @@
         [[STMUncashingProcessController sharedInstance] removeCashing:cashing];
 //        [self.cashingDictionary removeObjectForKey:cashing.xid];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
 
     }
     

@@ -13,6 +13,8 @@
 @interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC <UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMUncashing *uncashing;
+@property (nonatomic, strong) STMUIBarButtonItem *uncashingProcessButton;
+
 //@property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
 
 //- (void)cancelUncashingProcess;

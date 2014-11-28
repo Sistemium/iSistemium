@@ -29,24 +29,27 @@ typedef enum {
 
 @property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
 @property (nonatomic) STMUncashingProcessState state;
-//@property (nonatomic, strong) NSDecimalNumber *uncashingSum;
-//@property (nonatomic, strong) NSString *uncashingType;
-//@property (nonatomic, strong) NSString *commentText;
-//@property (nonatomic, strong) UIImage *pictureImage;
-//@property (nonatomic, strong) STMUncashingPlace *currentUncashingPlace;
+
+@property (nonatomic, strong) NSDecimalNumber *uncashingSum;
+@property (nonatomic, strong) NSString *uncashingType;
+@property (nonatomic, strong) NSString *commentText;
+@property (nonatomic, strong) UIImage *pictureImage;
+@property (nonatomic, strong) STMUncashingPlace *currentUncashingPlace;
+@property (nonatomic, strong) NSDecimalNumber *summOrigin;
 
 - (void)startWithCashings:(NSArray *)cashings;
 - (void)cancelProcess;
+- (void)uncashingDone;
 
-- (STMUncashing *)uncashingDoneWithSum:(NSDecimalNumber *)summ
-                                 image:(UIImage *)image
-                                  type:(NSString *)type
-                               comment:(NSString *)comment
-                                 place:(STMUncashingPlace *)place;
+//- (STMUncashing *)uncashingDoneWithSum:(NSDecimalNumber *)summ
+//                                 image:(UIImage *)image
+//                                  type:(NSString *)type
+//                               comment:(NSString *)comment
+//                                 place:(STMUncashingPlace *)place;
 
 - (void)addCashing:(STMCashing *)cashing;
 - (void)removeCashing:(STMCashing *)cashing;
 - (BOOL)hasCashingWithXid:(NSData *)xid;
-- (BOOL)uncashingIsValid;
+- (void)checkUncashing;
 
 @end

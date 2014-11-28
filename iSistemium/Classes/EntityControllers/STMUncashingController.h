@@ -11,7 +11,7 @@
 
 @interface STMUncashingController : STMSingleton
 
-//+ (STMUncashingController *)sharedController;
++ (STMUncashingController *)sharedInstance;
 
 - (void)removeUncashing:(STMUncashing *)uncashing;
 

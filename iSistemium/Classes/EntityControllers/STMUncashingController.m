@@ -23,18 +23,11 @@
 
 @implementation STMUncashingController
 
-//+ (STMUncashingController *)sharedController {
-//    
-//    static dispatch_once_t pred = 0;
-//    __strong static id _sharedController = nil;
-//    
-//    dispatch_once(&pred, ^{
-//        _sharedController = [[self alloc] init];
-//    });
-//    
-//    return _sharedController;
-//    
-//}
++ (STMUncashingController *)sharedInstance {
+
+    return [super sharedInstance];
+    
+}
 
 //- (STMDocument *)document {
 //    

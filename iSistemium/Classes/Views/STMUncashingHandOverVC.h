@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "STMUncashingSVC.h"
+#import "STMUncashingProcessController.h"
 
 @interface STMUncashingHandOverVC : UIViewController
 
