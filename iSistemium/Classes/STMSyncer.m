@@ -229,12 +229,14 @@
                 
             case STMSyncerSendData:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                [STMObjectsController checkClientData];
                 self.syncing = YES;
                 [self sendData];
                 break;
 
             case STMSyncerSendDataOnce:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                [STMObjectsController checkClientData];
                 self.syncing = YES;
                 [self sendData];
                 break;
@@ -291,7 +293,7 @@
         self.settings = nil;
         self.running = YES;
         [STMObjectsController checkPhotos];
-        [STMObjectsController checkDeviceToken];
+        [STMObjectsController checkClientData];
 //        [STMObjectsController checkAppVersion];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
