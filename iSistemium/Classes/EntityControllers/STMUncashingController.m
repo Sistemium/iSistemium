@@ -15,7 +15,7 @@
 
 @interface STMUncashingController()
 
-@property (nonatomic, strong) STMDocument *document;
+//@property (nonatomic, strong) STMDocument *document;
 
 
 @end
@@ -36,16 +36,16 @@
 //    
 //}
 
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
-}
+//- (STMDocument *)document {
+//    
+//    if (!_document) {
+//        
+//        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
+//        
+//    }
+//    
+//    return _document;
+//}
 
 - (void)removeUncashing:(STMUncashing *)uncashing {
 

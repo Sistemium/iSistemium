@@ -12,6 +12,7 @@
 #import "STMCashing.h"
 #import "STMUncashingHandOverVC.h"
 #import "STMUncashingController.h"
+#import "STMUncashingProcessController.h"
 
 @interface STMUncashingMasterTVC ()
 
@@ -56,17 +57,17 @@
     
 }
 
-- (void)setCashingSum:(NSDecimalNumber *)cashingSum {
-    
-    if (_cashingSum != cashingSum) {
-        
-        self.splitVC.detailVC.handOverButton.enabled = (!self.splitVC.detailVC.uncashing && cashingSum.intValue == 0) ? NO : YES;
-     
-        _cashingSum = cashingSum;
-        
-    }
-    
-}
+//- (void)setCashingSum:(NSDecimalNumber *)cashingSum {
+//    
+//    if (_cashingSum != cashingSum) {
+//        
+//        self.splitVC.detailVC.uncashingProcessButton.enabled = (!self.splitVC.detailVC.uncashing && cashingSum.intValue == 0) ? NO : YES;
+//     
+//        _cashingSum = cashingSum;
+//        
+//    }
+//    
+//}
 
 - (NSFetchedResultsController *)cashingSumResultsController {
     
@@ -359,18 +360,37 @@
     
 }
 
-- (void)handOverProcessingChanged:(NSNotification *)notification {
+//- (void)handOverProcessingChanged:(NSNotification *)notification {
+//    
+//    if (self.splitVC.isUncashingHandOverProcessing) {
+//        
+//        [self performSegueWithIdentifier:@"showHandOverVC" sender:self];
+//        
+//    } else {
+//        
+//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+//        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+//        
+//    }
+//    
+//}
+
+- (void)uncashingProcessStart {
     
-    if (self.splitVC.isUncashingHandOverProcessing) {
-        
-        [self performSegueWithIdentifier:@"showHandOverVC" sender:self];
-        
-    } else {
-        
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-        
-    }
+    [self performSegueWithIdentifier:@"showHandOverVC" sender:self];
+
+}
+
+- (void)uncashingProcessCancel {
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+
+}
+
+- (void)uncashingProcessDone {
+    
+    [self uncashingProcessCancel];
     
 }
 
@@ -393,7 +413,10 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessStart) name:@"uncashingProcessStart" object:[STMUncashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessCancel) name:@"uncashingProcessCancel" object:[STMUncashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessDone) name:@"uncashingProcessDone" object:[STMUncashingProcessController sharedInstance]];
     
 }
 

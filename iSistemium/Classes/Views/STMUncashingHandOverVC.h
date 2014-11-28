@@ -9,9 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "STMUncashingSVC.h"
 
-#define BANK_OFFICE_TYPE @"bankOffice"
-#define CASH_DESK_TYPE @"cashDesk"
-
 @interface STMUncashingHandOverVC : UIViewController
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;

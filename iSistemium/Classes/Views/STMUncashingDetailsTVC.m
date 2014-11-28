@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UIPopoverController *uncashingPopover;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
+@property (nonatomic, strong) STMUIBarButtonItem *uncashingProcessButton;
 
 
 @end
@@ -57,11 +58,11 @@
         
         if (_uncashing) {
             
-            self.handOverButton.enabled = NO;
+            self.uncashingProcessButton.enabled = NO;
             
         } else {
             
-            self.handOverButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
+            self.uncashingProcessButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
 
         }
         
@@ -184,26 +185,35 @@
     
 }
 
-- (void)handOverButtonPressed {
-    
-    if (!self.splitVC.isUncashingHandOverProcessing) {
+- (void)uncashingProcessButtonPressed {
 
-        [self startUncashingProcess];
+    if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessIdle) {
         
-    } else {
-
+        [[STMUncashingProcessController sharedInstance] startWithCashings:self.resultsController.fetchedObjects];
+        
+    } else if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessRunning) {
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingDoneButtonPressed" object:self userInfo:nil];
         
     }
     
+    
+//    if (!self.splitVC.isUncashingHandOverProcessing) {
+//
+//        [self startUncashingProcess];
+//        
+//    } else {
+//
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingDoneButtonPressed" object:self userInfo:nil];
+//        
+//    }
+    
 }
 
-- (void)startUncashingProcess {
+- (void)uncashingProcessStart {
     
     [self.tableView setEditing:YES animated:YES];
     
-    [[STMUncashingProcessController sharedInstance] startWithCashings:self.resultsController.fetchedObjects];
-
     for (STMCashing *cashing in self.resultsController.fetchedObjects) {
         
 //        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
@@ -214,7 +224,7 @@
         
     }
     
-    [self.handOverButton setTitle:NSLocalizedString(@"DONE", nil)];
+    [self.uncashingProcessButton setTitle:NSLocalizedString(@"DONE", nil)];
     
     if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
         
@@ -222,30 +232,35 @@
 
     }
     
-    self.splitVC.isUncashingHandOverProcessing = YES;
+//    self.splitVC.isUncashingHandOverProcessing = YES;
     
 }
 
-- (void)cancelUncashingProcess {
+- (void)uncashingProcessCancel {
     
 //    self.cashingDictionary = nil;
-    [[STMUncashingProcessController sharedInstance] cancelProcess];
-    [self finishUncashingProcess];
+//    [[STMUncashingProcessController sharedInstance] cancelProcess];
+    [self uncashingProcessDone];
 
 }
 
-- (void)finishUncashingProcess {
+- (void)uncashingProcessDone {
     
     [self.tableView setEditing:NO animated:YES];
-    [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
+    [self.uncashingProcessButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
     
-    self.splitVC.isUncashingHandOverProcessing = NO;
+//    self.splitVC.isUncashingHandOverProcessing = NO;
     
 }
 
 - (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
     
-    [[STMUncashingProcessController sharedInstance] uncashingDoneWithSum:summ image:image type:type comment:comment place:place];
+    
+    
+//    [[STMUncashingProcessController sharedInstance] uncashingDoneWithSum:summ image:image type:type comment:comment place:place];
+    
+    
+    
     
 //    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
 //    
@@ -291,7 +306,7 @@
     
     [self setInfoLabelTitle];
 //    [self handOverButtonPressed];
-    [self finishUncashingProcess];
+    [self uncashingProcessDone];
     [self.splitVC.masterVC selectRowWithUncashing:nil];
     
 }
@@ -483,7 +498,7 @@
     if (tableView.editing) {
         
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
-        [[STMUncashingProcessController sharedInstance] removeCashingWithXid:cashing.xid];
+        [[STMUncashingProcessController sharedInstance] removeCashing:cashing];
 //        [self.cashingDictionary removeObjectForKey:cashing.xid];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
@@ -508,11 +523,27 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessStart) name:@"uncashingProcessStart" object:[STMUncashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessCancel) name:@"uncashingProcessCancel" object:[STMUncashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessDone) name:@"uncashingProcessDone" object:[STMUncashingProcessController sharedInstance]];    
+
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
     
-    self.handOverButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(handOverButtonPressed)];
+    [self addObservers];
     
-    self.navigationItem.rightBarButtonItem = self.handOverButton;
+    self.uncashingProcessButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(uncashingProcessButtonPressed)];
+    
+    self.navigationItem.rightBarButtonItem = self.uncashingProcessButton;
 
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;

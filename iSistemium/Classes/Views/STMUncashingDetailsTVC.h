@@ -13,15 +13,14 @@
 @interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC <UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMUncashing *uncashing;
-@property (nonatomic, strong) STMUIBarButtonItem *handOverButton;
 //@property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
 
-- (void)cancelUncashingProcess;
+//- (void)cancelUncashingProcess;
 
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ
-                       image:(UIImage *)image
-                        type:(NSString *)type
-                     comment:(NSString *)comment
-                       place:(STMUncashingPlace *)place;
+//- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ
+//                       image:(UIImage *)image
+//                        type:(NSString *)type
+//                     comment:(NSString *)comment
+//                       place:(STMUncashingPlace *)place;
 
 @end

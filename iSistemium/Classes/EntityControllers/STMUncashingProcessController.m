@@ -11,17 +11,15 @@
 
 @interface STMUncashingProcessController ()
 
-@property (nonatomic, strong) NSMutableDictionary *cashingDictionary;
-
 @end
 
 @implementation STMUncashingProcessController
 
-//+ (STMUncashingProcessController *)sharedInstance {
-//    
-//    return [super sharedInstance];
-//    
-//}
++ (STMUncashingProcessController *)sharedInstance {
+    
+    return [super sharedInstance];
+    
+}
 
 - (NSMutableDictionary *)cashingDictionary {
 
@@ -35,6 +33,15 @@
 
 }
 
+- (STMUncashingProcessState)state {
+    
+    if (!_state) {
+        _state = STMUncashingProcessIdle;
+    }
+    return _state;
+    
+}
+
 - (void)startWithCashings:(NSArray *)cashings {
     
     for (STMCashing *cashing in cashings) {
@@ -43,12 +50,17 @@
         
     }
     
+    self.state = STMUncashingProcessRunning;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingProcessStart" object:self];
+    
 }
 
 - (void)cancelProcess {
     
     self.cashingDictionary = nil;
-    
+    self.state = STMUncashingProcessIdle;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingProcessCancel" object:self];
+
 }
 
 - (STMUncashing *)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
@@ -62,7 +74,7 @@
         cashing.uncashing = uncashing;
         
     }
-    
+#warning summOrigin
 //    uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
     uncashing.summ = summ;
     uncashing.date = [NSDate date];
@@ -97,7 +109,18 @@
         }
     }];
 
+    self.state = STMUncashingProcessIdle;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingProcessDone" object:self];
+
     return uncashing;
+    
+}
+
+- (void)addCashing:(STMCashing *)cashing {
+    
+    [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingProcessAddCashing" object:self userInfo:@{@"cashing": cashing}];
     
 }
 
@@ -107,10 +130,51 @@
     
 }
 
-- (void)addCashing:(STMCashing *)cashing {
+- (void)removeCashing:(STMCashing *)cashing {
     
-    [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+    [self.cashingDictionary removeObjectForKey:cashing.xid];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingProcessRemoveCashing" object:self userInfo:@{@"cashing": cashing}];
+
 }
+
+//- (BOOL)uncashingIsValid {
+//    
+//    if (self.uncashingSum.doubleValue <= 0) {
+//        
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"UNCASHING SUM NOT VALID", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+//        [alert show];
+//        
+//        return NO;
+//        
+//    } else if (!self.uncashingType) {
+//        
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO UNCASHING TYPE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+//        [alert show];
+//        
+//        return NO;
+//        
+//    } else if ([self.uncashingType isEqualToString:BANK_OFFICE_TYPE] && !self.pictureImage) {
+//        
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CHECK IMAGE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+//        [alert show];
+//        
+//        return NO;
+//        
+//    } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE] && !self.currentUncashingPlace) {
+//        
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+//        [alert show];
+//        
+//        return NO;
+//        
+//    } else {
+//        
+//        return YES;
+//        
+//    }
+//    
+//}
+
 
 @end

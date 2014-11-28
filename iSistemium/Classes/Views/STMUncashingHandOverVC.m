@@ -13,6 +13,7 @@
 #import "STMConstants.h"
 #import "STMUI.h"
 #import "STMUncashingPlaceController.h"
+#import "STMUncashingProcessController.h"
 #import "STMFunctions.h"
 #import "STMObjectsController.h"
 
@@ -356,9 +357,15 @@
     
 }
 
-- (void)cancelUncashingProcess {
+- (void)cancelUncashingProcessButtonPressed {
     
-    [self.splitVC.detailVC cancelUncashingProcess];
+    [[STMUncashingProcessController sharedInstance] cancelProcess];
+    
+}
+
+- (void)uncashingProcessCancel {
+    
+//    [self.splitVC.detailVC cancelUncashingProcess];
     [self flushSelf];
     [self.navigationController popViewControllerAnimated:YES];
 
@@ -439,7 +446,9 @@
         
     }
     
-    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentUncashingPlace];
+    [[STMUncashingProcessController sharedInstance] uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentUncashingPlace];
+    
+//    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentUncashingPlace];
     
 }
 
@@ -615,21 +624,21 @@
     
 }
 
-- (void)handOverProcessingChanged:(NSNotification *)notification {
-    
-    if (!self.splitVC.isUncashingHandOverProcessing) {
-
-        [self cancelUncashingProcess];
-        
-    }
-    
-}
+//- (void)handOverProcessingChanged:(NSNotification *)notification {
+//    
+//    if (!self.splitVC.isUncashingHandOverProcessing) {
+//
+//        [self cancelUncashingProcess];
+//        
+//    }
+//    
+//}
 
 - (void)cashingDictionaryChanged {
     
     NSDecimalNumber *uncashingSum = [NSDecimalNumber zero];
     
-    for (STMCashing *cashing in [self.splitVC.detailVC.cashingDictionary allValues]) {
+    for (STMCashing *cashing in [[STMUncashingProcessController sharedInstance].cashingDictionary allValues]) {
         
         uncashingSum = [uncashingSum decimalNumberByAdding:cashing.summ];
         
@@ -855,9 +864,13 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingDictionaryChanged) name:@"cashingDictionaryChanged" object:self.splitVC.detailVC];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneButtonPressed) name:@"uncashingDoneButtonPressed" object:self.splitVC.detailVC];
+
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessStart) name:@"uncashingProcessStart" object:[STMUncashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessCancel) name:@"uncashingProcessCancel" object:[STMUncashingProcessController sharedInstance]];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessDone) name:@"uncashingProcessDone" object:[STMUncashingProcessController sharedInstance]];
 
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
@@ -908,7 +921,7 @@
 
     [self addObservers];
     
-    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelUncashingProcess)];
+    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelUncashingProcessButtonPressed)];
     [self.navigationItem setHidesBackButton:YES animated:YES];
 
     self.commentTextView.delegate = self;
