@@ -9,7 +9,7 @@
 #import "STMSingleton.h"
 #import "STMUncashing.h"
 
-@interface STMUncashingController : STMSingleton
+@interface STMUncashingController : NSObject
 
 + (STMUncashingController *)sharedInstance;
 

@@ -150,18 +150,6 @@
     
 }
 
-//- (NSMutableDictionary *)cashingDictionary {
-//    
-//    if (!_cashingDictionary) {
-//        
-//        _cashingDictionary = [NSMutableDictionary dictionary];
-//        
-//    }
-//    
-//    return _cashingDictionary;
-//    
-//}
-
 - (UIPopoverController *)uncashingInfoPopover {
     
     if (!_uncashingInfoPopover) {
@@ -197,17 +185,6 @@
         
     }
     
-    
-//    if (!self.splitVC.isUncashingHandOverProcessing) {
-//
-//        [self startUncashingProcess];
-//        
-//    } else {
-//
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingDoneButtonPressed" object:self userInfo:nil];
-//        
-//    }
-    
 }
 
 - (void)uncashingProcessStart {
@@ -216,7 +193,6 @@
     
     for (STMCashing *cashing in self.resultsController.fetchedObjects) {
         
-//        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
         
         [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
@@ -232,14 +208,10 @@
 
     }
     
-//    self.splitVC.isUncashingHandOverProcessing = YES;
-    
 }
 
 - (void)uncashingProcessCancel {
     
-//    self.cashingDictionary = nil;
-//    [[STMUncashingProcessController sharedInstance] cancelProcess];
     [self uncashingProcessDone];
 
 }
@@ -251,64 +223,8 @@
     
     [self setInfoLabelTitle];
     [self.splitVC.masterVC selectRowWithUncashing:nil];
-
-//    self.splitVC.isUncashingHandOverProcessing = NO;
     
 }
-
-//- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
-
-    
-    
-//    [[STMUncashingProcessController sharedInstance] uncashingDoneWithSum:summ image:image type:type comment:comment place:place];
-    
-    
-    
-    
-//    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
-//    
-//    NSArray *cashings = [self.cashingDictionary allValues];
-//    
-//    for (STMCashing *cashing in cashings) {
-//        
-//        cashing.uncashing = uncashing;
-//        
-//    }
-//    
-//    uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
-//    uncashing.summ = summ;
-//    uncashing.date = [NSDate date];
-//    
-//    if (image) {
-//
-//        STMUncashingPicture *picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
-//        
-//        [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
-//        
-//        [uncashing addPicturesObject:picture];
-//
-//    }
-//    
-//    if (place) {
-//        
-//        uncashing.uncashingPlace = place;
-//        
-//    }
-//    
-//    uncashing.type = type;
-//    uncashing.commentText = comment;
-//    
-//    [self.document saveDocument:^(BOOL success) {
-//        if (success) {
-//            
-//            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-//            syncer.syncerState = STMSyncerSendDataOnce;
-//            
-//        }
-//    }];
-    
-    
-//}
 
 
 #pragma mark - UISplitViewControllerDelegate
@@ -481,7 +397,6 @@
 
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
         [[STMUncashingProcessController sharedInstance] addCashing:cashing];
-//        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
     }
@@ -496,7 +411,6 @@
         
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
         [[STMUncashingProcessController sharedInstance] removeCashing:cashing];
-//        [self.cashingDictionary removeObjectForKey:cashing.xid];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
     }

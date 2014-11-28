@@ -202,20 +202,6 @@
     
 }
 
-//- (NSString *)uncashingType {
-//    
-//    NSString *type = nil;
-//    
-//    if (self.viaBankOffice) {
-//        type = BANK_OFFICE_TYPE;
-//    } else if (self.viaCashDesk) {
-//        type = CASH_DESK_TYPE;
-//    }
-//    
-//    return type;
-//    
-//}
-
 - (void)setUncashingType:(NSString *)uncashingType {
     
     if (_uncashingType != uncashingType) {
@@ -393,12 +379,6 @@
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
     [self.view endEditing:NO];
-
-//    if ([self uncashingIsValid]) {
-//        
-//        [self showInfoPopover];
-//
-//    }
     
 }
 
@@ -486,12 +466,7 @@
 - (void)confirmButtonPressed {
     
     [self dismissInfoPopover];
-        
     [[STMUncashingProcessController sharedInstance] uncashingDone];
-    
-//    [[STMUncashingProcessController sharedInstance] uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentUncashingPlace];
-    
-//    [self.splitVC.detailVC uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentUncashingPlace];
     
 }
 
@@ -590,44 +565,6 @@
     
 }
 
-//- (BOOL)uncashingIsValid {
-//    
-//    if (self.uncashingSum.doubleValue <= 0) {
-//        
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"UNCASHING SUM NOT VALID", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
-//        [alert show];
-//        
-//        return NO;
-//        
-//    } else if (!self.uncashingType) {
-//
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO UNCASHING TYPE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
-//        [alert show];
-//        
-//        return NO;
-//
-//    } else if ([self.uncashingType isEqualToString:BANK_OFFICE_TYPE] && !self.pictureImage) {
-//
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CHECK IMAGE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
-//        [alert show];
-//        
-//        return NO;
-//
-//    } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE] && !self.currentUncashingPlace) {
-//        
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
-//        [alert show];
-//        
-//        return NO;
-//        
-//    } else {
-//        
-//        return YES;
-//        
-//    }
-//    
-//}
-
 - (void)cancelBankOffice {
     
     self.viaBankOffice = NO;
@@ -662,16 +599,6 @@
     }
     
 }
-
-//- (void)handOverProcessingChanged:(NSNotification *)notification {
-//    
-//    if (!self.splitVC.isUncashingHandOverProcessing) {
-//
-//        [self cancelUncashingProcess];
-//        
-//    }
-//    
-//}
 
 - (void)cashingDictionaryChanged {
     
@@ -903,7 +830,6 @@
 
 - (void)addObservers {
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingDictionaryChanged) name:@"cashingDictionaryChanged" object:[STMUncashingProcessController sharedInstance]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneButtonPressed) name:@"uncashingDoneButtonPressed" object:self.splitVC.detailVC];
 

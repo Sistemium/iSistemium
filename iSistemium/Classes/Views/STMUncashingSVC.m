@@ -52,17 +52,6 @@
     
 }
 
-//- (void)setIsUncashingHandOverProcessing:(BOOL)isUncashingHandOverProcessing {
-//    
-//    if (isUncashingHandOverProcessing != _isUncashingHandOverProcessing) {
-//        
-//        _isUncashingHandOverProcessing = isUncashingHandOverProcessing;
-//        
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"handOverProcessingChanged" object:self];
-//        
-//    }
-//    
-//}
 
 #pragma mark - view lifecycle
 

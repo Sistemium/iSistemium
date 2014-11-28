@@ -8,8 +8,12 @@
 
 #import "STMUncashingProcessController.h"
 #import "STMUncashingPicture.h"
+#import "STMDocument.h"
+#import "STMSessionManager.h"
 
 @interface STMUncashingProcessController ()
+
+@property (nonatomic, strong) STMDocument *document;
 
 @end
 
@@ -17,8 +21,26 @@
 
 + (STMUncashingProcessController *)sharedInstance {
     
-    return [super sharedInstance];
+    static dispatch_once_t pred = 0;
+    __strong static id _sharedInstance = nil;
     
+    dispatch_once(&pred, ^{
+        _sharedInstance = [[self alloc] init];
+    });
+    
+    return _sharedInstance;
+    
+}
+
+- (STMDocument *)document {
+    
+    if (!_document) {
+        
+        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
+        
+    }
+    
+    return _document;
 }
 
 - (NSMutableDictionary *)cashingDictionary {
@@ -119,15 +141,14 @@
             
             [[[[STMSessionManager sharedManager] currentSession] syncer] setSyncerState:STMSyncerSendDataOnce];
             
-//            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-//            syncer.syncerState = STMSyncerSendDataOnce;
-            
         }
     }];
 
     self.state = STMUncashingProcessIdle;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingProcessDone" object:self];
 
+    self.cashingDictionary = nil;
+    
     return uncashing;
     
 }
@@ -136,8 +157,6 @@
     
     [self.cashingDictionary setObject:cashing forKey:cashing.xid];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
-
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingProcessAddCashing" object:self userInfo:@{@"cashing": cashing}];
     
 }
 
@@ -151,8 +170,6 @@
     
     [self.cashingDictionary removeObjectForKey:cashing.xid];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
-
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingProcessRemoveCashing" object:self userInfo:@{@"cashing": cashing}];
 
 }
 

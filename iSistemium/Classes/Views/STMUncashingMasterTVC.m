@@ -19,7 +19,6 @@
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) STMCashingSumFRCD *cashingSumFRCD;
 @property (nonatomic, strong) NSFetchedResultsController *cashingSumResultsController;
-//@property (nonatomic, strong) NSDecimalNumber *infoSum;
 
 @end
 
@@ -364,21 +363,6 @@
     
 }
 
-//- (void)handOverProcessingChanged:(NSNotification *)notification {
-//    
-//    if (self.splitVC.isUncashingHandOverProcessing) {
-//        
-//        [self performSegueWithIdentifier:@"showHandOverVC" sender:self];
-//        
-//    } else {
-//        
-//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-//        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-//        
-//    }
-//    
-//}
-
 - (void)uncashingProcessStart {
     
     [self performSegueWithIdentifier:@"showHandOverVC" sender:self];
@@ -417,7 +401,6 @@
 
 - (void)addObservers {
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handOverProcessingChanged:) name:@"handOverProcessingChanged" object:self.splitVC];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessStart) name:@"uncashingProcessStart" object:[STMUncashingProcessController sharedInstance]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessCancel) name:@"uncashingProcessCancel" object:[STMUncashingProcessController sharedInstance]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessDone) name:@"uncashingProcessDone" object:[STMUncashingProcessController sharedInstance]];

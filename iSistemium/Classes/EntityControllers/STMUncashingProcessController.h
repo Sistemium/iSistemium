@@ -21,7 +21,7 @@ typedef enum {
 } STMUncashingProcessState;
 
 
-@interface STMUncashingProcessController : STMSingleton
+@interface STMUncashingProcessController : NSObject
 
 
 + (STMUncashingProcessController *)sharedInstance;
@@ -40,12 +40,6 @@ typedef enum {
 - (void)startWithCashings:(NSArray *)cashings;
 - (void)cancelProcess;
 - (void)uncashingDone;
-
-//- (STMUncashing *)uncashingDoneWithSum:(NSDecimalNumber *)summ
-//                                 image:(UIImage *)image
-//                                  type:(NSString *)type
-//                               comment:(NSString *)comment
-//                                 place:(STMUncashingPlace *)place;
 
 - (void)addCashing:(STMCashing *)cashing;
 - (void)removeCashing:(STMCashing *)cashing;

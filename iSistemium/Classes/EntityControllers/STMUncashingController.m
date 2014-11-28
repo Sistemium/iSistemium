@@ -15,7 +15,7 @@
 
 @interface STMUncashingController()
 
-//@property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, strong) STMDocument *document;
 
 
 @end
@@ -24,21 +24,28 @@
 @implementation STMUncashingController
 
 + (STMUncashingController *)sharedInstance {
-
-    return [super sharedInstance];
+    
+    static dispatch_once_t pred = 0;
+    __strong static id _sharedInstance = nil;
+    
+    dispatch_once(&pred, ^{
+        _sharedInstance = [[self alloc] init];
+    });
+    
+    return _sharedInstance;
     
 }
 
-//- (STMDocument *)document {
-//    
-//    if (!_document) {
-//        
-//        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-//        
-//    }
-//    
-//    return _document;
-//}
+- (STMDocument *)document {
+    
+    if (!_document) {
+        
+        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
+        
+    }
+    
+    return _document;
+}
 
 - (void)removeUncashing:(STMUncashing *)uncashing {
 
