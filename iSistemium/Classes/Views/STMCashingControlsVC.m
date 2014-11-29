@@ -300,22 +300,15 @@
     
 }
 
-
-#pragma mark - buttons pressed
-
-- (IBAction)cashingButtonPressed:(id)sender {
-
-    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
-        
-        [self updateControlLabels];
-        [self.tableVC.tableView setEditing:YES animated:YES];
-
-    } else {
-        
-        [self dismissSelf];
-        
-    }
+- (void)cashingProcessCancel {
     
+    [self dismissSelf];
+    
+}
+
+- (void)cashingProcessDone {
+    
+    [self dismissSelf];
     
 }
 
@@ -327,6 +320,9 @@
     [self.navigationController popViewControllerAnimated:YES];
     
 }
+
+
+#pragma mark - buttons pressed
 
 - (IBAction)doneButtonPressed:(id)sender {
 
@@ -899,9 +895,25 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed:) name:@"cashingButtonPressed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessCancel)
+                                                 name:@"cashingProcessCancel"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessDone)
+                                                 name:@"cashingProcessDone"
+                                               object:[STMCashingProcessController sharedInstance]];
     
 }
 
@@ -913,16 +925,9 @@
 
 #pragma mark - view lifecycle
 
-- (void)customInit {
+- (void)labelsInit {
     
-    self.title = NSLocalizedString(@"CASHING", nil);
-    
-    self.splitVC.controlsVC = self;
-
-    [self.navigationItem setHidesBackButton:YES animated:YES];
-
     self.selectedDate = [NSDate date];
-    
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -933,7 +938,7 @@
     //    self.cashingSummTextField.hidden = YES;
     self.cashingSummTextField.placeholder = NSLocalizedString(@"CASHING SUMM PLACEHOLDER", nil);
     self.cashingSummTextField.delegate = self;
-        
+    
     self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), @""];
     
     self.debtInfoLabel.text = nil;
@@ -944,20 +949,37 @@
     self.debtSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.debtSummTextField.hidden = YES;
     self.debtSummTextField.delegate = self;
-
+    
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
-
+    
     self.commentTextView.delegate = self;
     self.commentTextView.layer.borderWidth = 1.0f;
     self.commentTextView.layer.borderColor = [GREY_LINE_COLOR CGColor];
     self.commentTextView.layer.cornerRadius = 5.0f;
     self.commentTextView.hidden = YES;
     [self wipeCommentText];
-
+    
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     self.doneButton.enabled = NO;
+    
+}
 
-    [self cashingButtonPressed:nil];
+- (void)customInit {
+    
+    self.title = NSLocalizedString(@"CASHING", nil);
+    
+    self.splitVC.controlsVC = self;
+
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+
+    [self labelsInit];
+
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+        
+        [self updateControlLabels];
+        [self.tableVC.tableView setEditing:YES animated:YES];
+        
+    }
 
 }
 
