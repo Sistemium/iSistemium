@@ -16,6 +16,7 @@
 #import "STMFunctions.h"
 #import "STMTableViewCell.h"
 #import "STMDebtsSVC.h"
+#import "STMCashingProcessController.h"
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
@@ -369,7 +370,8 @@
             id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
             STMDebt *debt = sectionInfo.objects[indexPath.row];
             
-            [self.splitVC.controlsVC addCashing:debt];
+//            [self.splitVC.controlsVC addCashing:debt];
+            [[STMCashingProcessController sharedInstance] addCashing:debt];
 
         }
         
@@ -389,7 +391,8 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
         STMDebt *debt = sectionInfo.objects[indexPath.row];
         
-        [self.splitVC.controlsVC removeCashing:debt];
+//        [self.splitVC.controlsVC removeCashing:debt];
+        [[STMCashingProcessController sharedInstance] removeCashing:debt];
         
     }
 

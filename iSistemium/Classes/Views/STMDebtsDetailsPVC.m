@@ -188,7 +188,7 @@
 
     } else if ([STMCashingProcessController sharedInstance].state == STMCashingProcessIdle) {
         
-        [[STMCashingProcessController sharedInstance] startCashingProcess];
+        [[STMCashingProcessController sharedInstance] startCashingProcessForOutlet:self.outlet];
         
     }
     

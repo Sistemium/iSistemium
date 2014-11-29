@@ -7,6 +7,8 @@
 //
 
 #import "STMSingleton.h"
+#import "STMOutlet.h"
+#import "STMDebt+Cashing.h"
 
 
 typedef enum {
@@ -22,11 +24,15 @@ typedef enum {
 
 
 @property (nonatomic) STMCashingProcessState state;
+@property (nonatomic, strong) NSDate *selectedDate;
 
 
-- (void)startCashingProcess;
+- (void)startCashingProcessForOutlet:(STMOutlet *)outlet;
 - (void)cancelCashingProcess;
 - (void)doneCashingProcess;
+
+- (void)addCashing:(STMDebt *)debt;
+- (void)removeCashing:(STMDebt *)debt;
 
 
 @end

@@ -9,8 +9,8 @@
 #import "STMCashingControlsVC.h"
 #import "STMConstants.h"
 #import "STMDebtsSVC.h"
-#import "STMDocument.h"
-#import "STMSessionManager.h"
+//#import "STMDocument.h"
+//#import "STMSessionManager.h"
 #import "STMSyncer.h"
 #import "STMCashing.h"
 #import "STMDebt+Cashing.h"
@@ -42,11 +42,11 @@
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
 @property (nonatomic, strong) NSString *initialTextFieldValue;
-@property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
+//@property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
 
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
-@property (nonatomic, strong) STMDocument *document;
+//@property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMDebt *selectedDebt;
 
 @end
@@ -69,53 +69,53 @@
     
 }
 
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
-    
-}
+//- (STMDocument *)document {
+//    
+//    if (!_document) {
+//        
+//        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
+//        
+//    }
+//    
+//    return _document;
+//    
+//}
 
-- (NSMutableDictionary *)debtsDictionary {
-    
-    if (!_debtsDictionary) {
-        
-        _debtsDictionary = [NSMutableDictionary dictionary];
-        
-    }
-    
-    return _debtsDictionary;
-    
-}
-
-- (NSMutableDictionary *)commentsDictionary {
-    
-    if (!_commentsDictionary) {
-        
-        _commentsDictionary = [NSMutableDictionary dictionary];
-        
-    }
-    
-    return _commentsDictionary;
-    
-}
-
-- (NSMutableArray *)debtsArray {
-    
-    if (!_debtsArray) {
-        
-        _debtsArray = [NSMutableArray array];
-        
-    }
-    
-    return _debtsArray;
-    
-}
+//- (NSMutableDictionary *)debtsDictionary {
+//    
+//    if (!_debtsDictionary) {
+//        
+//        _debtsDictionary = [NSMutableDictionary dictionary];
+//        
+//    }
+//    
+//    return _debtsDictionary;
+//    
+//}
+//
+//- (NSMutableDictionary *)commentsDictionary {
+//    
+//    if (!_commentsDictionary) {
+//        
+//        _commentsDictionary = [NSMutableDictionary dictionary];
+//        
+//    }
+//    
+//    return _commentsDictionary;
+//    
+//}
+//
+//- (NSMutableArray *)debtsArray {
+//    
+//    if (!_debtsArray) {
+//        
+//        _debtsArray = [NSMutableArray array];
+//        
+//    }
+//    
+//    return _debtsArray;
+//    
+//}
 
 - (UIToolbar *)keyboardToolbar {
     
@@ -148,7 +148,7 @@
         
         if (_outlet) {
             
-            self.debtsDictionary = nil;
+//            self.debtsDictionary = nil;
             self.debtSummTextField.delegate = nil;
 //            [self.controlsView endEditing:YES];
             self.debtSummTextField.delegate = self;
@@ -164,6 +164,8 @@
     if (_selectedDate != selectedDate) {
         
         _selectedDate = selectedDate;
+        
+        [STMCashingProcessController sharedInstance].selectedDate = selectedDate;
         
         [self refreshDateButtonTitle];
         
@@ -236,7 +238,7 @@
     dateFormatter.dateStyle = NSDateFormatterLongStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
-    [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
+    [self.dateButton setTitle:[dateFormatter stringFromDate:[STMCashingProcessController sharedInstance].selectedDate] forState:UIControlStateNormal];
     
 }
 
@@ -324,12 +326,6 @@
 
 
 #pragma mark - buttons pressed
-
-- (void)cancelCashingProcessButtonPressed {
-    
-    [[STMCashingProcessController sharedInstance] cancelCashingProcess];
-    
-}
 
 - (IBAction)doneButtonPressed:(id)sender {
 
@@ -977,7 +973,7 @@
     
     self.splitVC.controlsVC = self;
 
-    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelCashingProcessButtonPressed)];
+    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:[STMCashingProcessController sharedInstance] action:@selector(cancelCashingProcess)];
 
     [self.navigationItem setHidesBackButton:YES animated:YES];
 
