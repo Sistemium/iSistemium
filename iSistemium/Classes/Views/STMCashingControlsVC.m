@@ -17,6 +17,7 @@
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
 #import "STMCashingProcessController.h"
+#import "STMUI.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
 
@@ -323,6 +324,12 @@
 
 
 #pragma mark - buttons pressed
+
+- (void)cancelCashingProcessButtonPressed {
+    
+    [[STMCashingProcessController sharedInstance] cancelCashingProcess];
+    
+}
 
 - (IBAction)doneButtonPressed:(id)sender {
 
@@ -969,6 +976,8 @@
     self.title = NSLocalizedString(@"CASHING", nil);
     
     self.splitVC.controlsVC = self;
+
+    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelCashingProcessButtonPressed)];
 
     [self.navigationItem setHidesBackButton:YES animated:YES];
 

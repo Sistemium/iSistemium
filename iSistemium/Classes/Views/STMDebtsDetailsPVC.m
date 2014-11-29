@@ -223,6 +223,12 @@
 
 }
 
+- (void)cashingProcessCancel {
+
+    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
+
+}
+
 #pragma mark - Page View Controller Data Source
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
@@ -346,9 +352,21 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingProcessStart) name:@"cashingProcessStart" object:[STMCashingProcessController sharedInstance]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingProcessDone) name:@"cashingProcessDone" object:[STMCashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessStart)
+                                                 name:@"cashingProcessStart"
+                                               object:[STMCashingProcessController sharedInstance]];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessDone)
+                                                 name:@"cashingProcessDone"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessCancel)
+                                                 name:@"cashingProcessCancel"
+                                               object:[STMCashingProcessController sharedInstance]];
+
 }
 
 - (void)removeObsevers {
