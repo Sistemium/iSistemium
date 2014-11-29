@@ -17,7 +17,7 @@
 @implementation STMSingleton
 
 
-+ (id)sharedInstance {
++ (instancetype)sharedInstance {
     
     static dispatch_once_t pred = 0;
     __strong static id _sharedInstance = nil;

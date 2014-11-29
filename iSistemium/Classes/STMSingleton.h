@@ -14,7 +14,7 @@
 
 @interface STMSingleton : NSObject
 
-+ (id)sharedInstance;
++ (instancetype)sharedInstance;
 
 @property (nonatomic, strong) STMDocument *document;
 
