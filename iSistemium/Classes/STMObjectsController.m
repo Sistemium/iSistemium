@@ -7,6 +7,7 @@
 //
 
 #import "STMObjectsController.h"
+#import "STMAuthController.h"
 #import "STMSessionManager.h"
 #import "STMSession.h"
 #import "STMDocument.h"
@@ -115,49 +116,72 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL clientDataWaitingForSync = [[defaults objectForKey:@"clientDataWaitingForSync"] boolValue];
 
-    if (clientDataWaitingForSync) {
+    STMClientData *clientData = [self clientData];
+    
+    NSString *tokenHash = clientData.tokenHash;
+
+    if (!tokenHash) {
         
-        if ([self document].managedObjectContext) {
-            
-            NSString *entityName = NSStringFromClass([STMClientData class]);
-            
-            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-            request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-            
-            NSError *error;
-            NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-            
-            STMClientData *clientData = [fetchResult lastObject];
-            
-            if (!clientData) {
-                
-                clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-                
-            }
-            
-            NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
+        tokenHash = [STMAuthController authController].tokenHash;
+        clientDataWaitingForSync = YES;
+        
+    }
+    
+    if (clientDataWaitingForSync && clientData) {
+        
+        NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
 
-            if (deviceToken) {
-                clientData.deviceToken = deviceToken;
-            }
-            
-#ifdef DEBUG
-            
-            clientData.buildType = @"debug";
-            
-#else
-            
-            clientData.buildType = @"release";
-            
-#endif
-            
-            NSDate *lastAuth = [defaults objectForKey:@"lastAuth"];
-            
-            if (lastAuth) {
-                clientData.lastAuth = lastAuth;
-            }
-
+        if (deviceToken) {
+            clientData.deviceToken = deviceToken;
         }
+        
+        NSDate *lastAuth = [defaults objectForKey:@"lastAuth"];
+        
+        if (lastAuth) {
+            clientData.lastAuth = lastAuth;
+        }
+
+        clientData.tokenHash = tokenHash;
+        
+#ifdef DEBUG
+        
+        clientData.buildType = @"debug";
+        
+#else
+        
+        clientData.buildType = @"release";
+        
+#endif
+        
+    }
+    
+}
+
++ (STMClientData *)clientData {
+    
+    if ([self document].managedObjectContext) {
+        
+        NSString *entityName = NSStringFromClass([STMClientData class]);
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        
+        NSError *error;
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+        STMClientData *clientData = [fetchResult lastObject];
+        
+        if (!clientData) {
+            
+            clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            
+        }
+        
+        return clientData;
+
+    } else {
+        
+        return nil;
         
     }
     
