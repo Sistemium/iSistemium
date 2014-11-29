@@ -16,6 +16,7 @@
 #import "STMDebt+Cashing.h"
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
+#import "STMCashingProcessController.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
 
@@ -304,7 +305,7 @@
 
 - (IBAction)cashingButtonPressed:(id)sender {
 
-    if (self.splitVC.detailVC.isCashingProcessing) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
         
         [self updateControlLabels];
         [self.tableVC.tableView setEditing:YES animated:YES];

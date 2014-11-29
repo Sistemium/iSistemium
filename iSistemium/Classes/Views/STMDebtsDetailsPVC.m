@@ -13,6 +13,8 @@
 #import "STMOutletCashingVC.h"
 #import "STMConstants.h"
 #import "STMDebtsCombineVC.h"
+#import "STMCashingProcessController.h"
+#import "STMUI.h"
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
@@ -24,7 +26,7 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
-@property (nonatomic, strong) UIBarButtonItem *cashingButton;
+@property (nonatomic, strong) STMUIBarButtonItemDone *cashingButton;
 
 @end
 
@@ -42,11 +44,11 @@
     
 }
 
-- (UIBarButtonItem *)cashingButton {
+- (STMUIBarButtonItemDone *)cashingButton {
     
     if (!_cashingButton) {
         
-        _cashingButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CASHING", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cashingButtonPressed)];
+        _cashingButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"CASHING", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cashingButtonPressed)];
 
     }
 
@@ -180,29 +182,45 @@
 
 - (void)cashingButtonPressed {
     
-    if (self.isCashingProcessing) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
 
-        [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
-        [self.cashingButton setTintColor:ACTIVE_BLUE_COLOR];
-        self.isCashingProcessing = NO;
+        [[STMCashingProcessController sharedInstance] doneCashingProcess];
 
-    } else {
-    
-        [self.cashingButton setTitle:NSLocalizedString(@"CANCEL", nil)];
-        [self.cashingButton setTintColor:[UIColor redColor]];
-        self.isCashingProcessing = YES;
+    } else if ([STMCashingProcessController sharedInstance].state == STMCashingProcessIdle) {
+        
+        [[STMCashingProcessController sharedInstance] startCashingProcess];
         
     }
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingButtonPressed" object:self userInfo:nil];
     
-//    if ([self.debtsCombineVC isKindOfClass:[STMDebtsCombineVC class]]) {
-//        
-//        [[(STMDebtsCombineVC *)self.debtsCombineVC tableVC] setEditing:self.isCashingProcessing animated:NO];
+//    
+//    if (self.isCashingProcessing) {
+//
+//        [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
+//        [self.cashingButton setTintColor:ACTIVE_BLUE_COLOR];
+//        self.isCashingProcessing = NO;
+//
+//    } else {
+//    
+//        [self.cashingButton setTitle:NSLocalizedString(@"CANCEL", nil)];
+//        [self.cashingButton setTintColor:[UIColor redColor]];
+//        self.isCashingProcessing = YES;
 //        
 //    }
-
+//
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingButtonPressed" object:self userInfo:nil];
     
+}
+
+- (void)cashingProcessStart {
+    
+    [self.cashingButton setTitle:NSLocalizedString(@"DONE", nil)];
+
+}
+
+- (void)cashingProcessDone {
+
+    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
+
 }
 
 #pragma mark - Page View Controller Data Source
@@ -326,7 +344,22 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingProcessStart) name:@"cashingProcessStart" object:[STMCashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingProcessDone) name:@"cashingProcessDone" object:[STMCashingProcessController sharedInstance]];
+    
+}
+
+- (void)removeObsevers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
+    
+    [self addObservers];
     
     self.dataSource = self;
     self.delegate = self;

@@ -18,6 +18,8 @@
 #import "STMCashingControlsVC.h"
 #import "STMDebtsCombineVC.h"
 
+#import "STMCashingProcessController.h"
+
 @interface STMDebtsTVC ()
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
@@ -90,7 +92,7 @@
 
 - (void)cashingButtonPressed {
     
-    if (self.splitVC.detailVC.isCashingProcessing) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
         
         [self performSegueWithIdentifier:@"showCashingControls" sender:self];
         

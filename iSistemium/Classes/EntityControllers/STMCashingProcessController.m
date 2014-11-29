@@ -26,14 +26,23 @@
 
 - (void)startCashingProcess {
     
+    self.state = STMCashingProcessRunning;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessStart" object:self];
+    
 }
 
 - (void)cancelCashingProcess {
-    
+
+    self.state = STMCashingProcessIdle;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessCancel" object:self];
+
 }
 
 - (void)doneCashingProcess {
-    
+
+    self.state = STMCashingProcessIdle;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessDone" object:self];
+
 }
 
 

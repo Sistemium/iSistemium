@@ -8,9 +8,20 @@
 
 #import "STMSingleton.h"
 
+
+typedef enum {
+    STMCashingProcessIdle,
+    STMCashingProcessRunning
+} STMCashingProcessState;
+
+
 @interface STMCashingProcessController : NSObject
 
+
 + (STMCashingProcessController *)sharedInstance;
+
+
+@property (nonatomic) STMCashingProcessState state;
 
 
 - (void)startCashingProcess;
