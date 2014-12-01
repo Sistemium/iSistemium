@@ -22,7 +22,7 @@
 @interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
 
 //@property (weak, nonatomic) IBOutlet UIView *controlsView;
-@property (weak, nonatomic) IBOutlet UIButton *doneButton;
+//@property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
@@ -550,7 +550,7 @@
     
     NSDecimalNumber *sum = [[STMCashingProcessController sharedInstance] debtsSumm];
     
-    self.doneButton.enabled = (sum.floatValue > 0);
+//    self.doneButton.enabled = (sum.floatValue > 0);
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -1031,8 +1031,8 @@
     self.commentTextView.hidden = YES;
     [self wipeCommentText];
     
-    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
-    self.doneButton.enabled = NO;
+//    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
+//    self.doneButton.enabled = NO;
     
 }
 

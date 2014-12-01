@@ -113,19 +113,39 @@
 
 - (void)doneCashingProcess {
 
-    if ([[STMCashingProcessController sharedInstance].remainderSumm doubleValue] == 0) {
-        
-        [self saveCashings];
-        self.state = STMCashingProcessIdle;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessDone" object:self];
-        
-    } else {
+    if ([self.remainderSumm doubleValue] != 0) {
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"REM SUM NOT NULL", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
         [alert show];
         
+    } else {
+
+        if ([[self debtsSumm] doubleValue] == 0) {
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"CASHING SUM IS NULL", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+            [alert show];
+            
+        } else {
+        
+            [self saveCashings];
+            [self flushSelf];
+            self.state = STMCashingProcessIdle;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessDone" object:self];
+
+        }
+        
     }
 
+}
+
+- (void)flushSelf {
+
+    self.debtsArray = nil;
+    self.debtsDictionary = nil;
+    self.commentsDictionary = nil;
+    self.remainderSumm = nil;
+    self.cashingSummLimit = nil;
+    
 }
 
 - (void)addDebt:(STMDebt *)debt {

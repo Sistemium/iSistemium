@@ -97,4 +97,5 @@
 "SELECT UNCASHING PLACE" = "Select cash desk";
 "NO CASH DESK" = "No cash desk";
 "REM SUM NOT NULL" = "Remainder sum is not null";
+"CASHING SUM IS NULL" = "Cashing sum is null";
 

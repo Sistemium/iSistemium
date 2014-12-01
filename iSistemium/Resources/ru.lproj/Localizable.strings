@@ -97,6 +97,7 @@
 "SELECT UNCASHING PLACE" = "Выберите кассу";
 "NO CASH DESK" = "Нет доступных касс";
 "REM SUM NOT NULL" = "Не выбран остаток суммы подбора";
+"CASHING SUM IS NULL" = "Нулевая сумма сбора";
 
 
 

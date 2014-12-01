@@ -253,17 +253,6 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="788"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ttz-JU-f1H">
-                                <rect key="frame" x="20" y="356" width="280" height="41"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Done">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="doneButtonPressed:" destination="Bhj-cs-cfa" eventType="touchUpInside" id="53f-hI-cgM"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qei-aZ-LsZ">
                                 <rect key="frame" x="20" y="253" width="280" height="21"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -342,7 +331,6 @@
                         <outlet property="debtInfoLabel" destination="zVZ-Rf-5oG" id="ynN-xs-5Ms"/>
                         <outlet property="debtSumLabel" destination="8sK-In-b6v" id="OI1-h0-FLw"/>
                         <outlet property="debtSummTextField" destination="Qhg-Ga-ozT" id="ua5-6s-26I"/>
-                        <outlet property="doneButton" destination="ttz-JU-f1H" id="8XV-8I-E4B"/>
                         <outlet property="remainderLabel" destination="v7I-mu-q6E" id="oDc-7u-hGx"/>
                         <outlet property="summLabel" destination="qei-aZ-LsZ" id="tF9-O5-ySt"/>
                     </connections>
