@@ -25,6 +25,11 @@ typedef enum {
 
 @property (nonatomic) STMCashingProcessState state;
 @property (nonatomic, strong) NSDate *selectedDate;
+@property (nonatomic, strong) NSMutableArray *debtsArray;
+@property (nonatomic, strong) NSMutableDictionary *debtsDictionary;
+@property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
+@property (nonatomic, strong) NSDecimalNumber *remainderSumm;
+@property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
 
 
 - (void)startCashingProcessForOutlet:(STMOutlet *)outlet;
@@ -34,5 +39,8 @@ typedef enum {
 - (void)addCashing:(STMDebt *)debt;
 - (void)removeCashing:(STMDebt *)debt;
 
+- (void)setCashingSum:(NSDecimalNumber *)cashingSum forDebt:(STMDebt *)debt;
+
+- (void)setComment:(NSString *)comment forDebt:(STMDebt *)debt;
 
 @end

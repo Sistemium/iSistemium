@@ -17,9 +17,6 @@
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMOutlet *outlet;
-@property (nonatomic, strong) NSMutableDictionary *debtsDictionary;
-@property (nonatomic, strong) NSMutableArray *debtsArray;
-@property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
 
 
 @end
@@ -87,6 +84,18 @@
     
 }
 
+- (void)setCashingSummLimit:(NSDecimalNumber *)cashingSummLimit {
+    
+    if (_cashingSummLimit != cashingSummLimit) {
+
+        _cashingSummLimit = cashingSummLimit;
+        
+        self.remainderSumm = [cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+
+    }
+    
+}
+
 - (void)startCashingProcessForOutlet:(STMOutlet *)outlet {
     
     self.state = STMCashingProcessRunning;
@@ -107,6 +116,40 @@
     self.state = STMCashingProcessIdle;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessDone" object:self];
 
+}
+
+- (void)addCashing:(STMDebt *)debt {
+    
+    [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
+    [self.debtsArray addObject:debt];
+
+    self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
+
+}
+
+- (void)removeCashing:(STMDebt *)debt {
+    
+    [self.debtsDictionary removeObjectForKey:debt.xid];
+    [self.debtsArray removeObject:debt];
+
+    self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+
+}
+
+- (NSDecimalNumber *)debtsSumm {
+    
+    NSDecimalNumber *sum = [NSDecimalNumber zero];
+    
+    for (NSArray *debtValues in [self.debtsDictionary allValues]) {
+        
+        NSDecimalNumber *cashing = debtValues[1];
+        
+        sum = [sum decimalNumberByAdding:cashing];
+        
+    }
+    
+    return sum;
+    
 }
 
 - (void)saveCashings {
@@ -143,5 +186,30 @@
     
 }
 
+- (void)setCashingSum:(NSDecimalNumber *)cashingSum forDebt:(STMDebt *)debt {
+    
+    [self.debtsDictionary setObject:@[debt, cashingSum] forKey:debt.xid];
+    
+    self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+
+}
+
+- (void)setComment:(NSString *)comment forDebt:(STMDebt *)debt {
+    
+    if (debt.xid) {
+
+        if (comment) {
+            
+            [self.commentsDictionary setObject:comment forKey:debt.xid];
+            
+        } else {
+
+            [self.commentsDictionary removeObjectForKey:debt.xid];
+
+        }
+
+    }
+
+}
 
 @end
