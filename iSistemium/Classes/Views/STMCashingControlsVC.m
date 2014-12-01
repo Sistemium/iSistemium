@@ -242,6 +242,29 @@
     
 }
 
+- (void)debtAdded:(NSNotification *)notification {
+    
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    
+    if (debt) {
+        
+        NSMutableArray *debtsArray = [[STMCashingProcessController sharedInstance].debtsArray mutableCopy];
+        [debtsArray removeObject:debtsArray.lastObject];
+        
+        STMDebt *lastDebt = [debtsArray lastObject];
+        
+        self.selectedDebt = debt;
+        
+        [self.tableVC updateRowWithDebt:lastDebt];
+        [self.tableVC updateRowWithDebt:debt];
+        
+        [self updateControlLabels];
+        
+    }
+    
+}
+
+/*
 - (void)addCashing:(STMDebt *)debt {
     
     if (debt) {
@@ -261,7 +284,7 @@
 //        [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
 //        [self.debtsArray addObject:debt];
         
-        [[STMCashingProcessController sharedInstance] addCashing:debt];
+//        [[STMCashingProcessController sharedInstance] addDebt:debt];
         
         self.selectedDebt = debt;
         
@@ -275,7 +298,27 @@
     }
     
 }
+*/
 
+- (void)debtRemoved:(NSNotification *)notification {
+    
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+
+    if (debt) {
+        
+        self.debtSummTextField.delegate = nil;
+        self.debtSummTextField.delegate = self;
+
+        self.selectedDebt = [[STMCashingProcessController sharedInstance].debtsArray lastObject];
+
+        [self.tableVC updateRowWithDebt:debt];
+        [self updateControlLabels];
+
+    }
+    
+}
+
+/*
 - (void)removeCashing:(STMDebt *)debt {
     
     if (debt && [[STMCashingProcessController sharedInstance].debtsArray containsObject:debt]) {
@@ -294,7 +337,7 @@
 //        [self.debtsDictionary removeObjectForKey:debt.xid];
 //        [self.debtsArray removeObject:debt];
 
-        [[STMCashingProcessController sharedInstance] removeCashing:debt];
+//        [[STMCashingProcessController sharedInstance] removeDebt:debt];
         
         self.selectedDebt = [[STMCashingProcessController sharedInstance].debtsArray lastObject];
         
@@ -306,6 +349,7 @@
     }
     
 }
+*/
 
 - (void)cashingProcessCancel {
     
@@ -923,7 +967,17 @@
                                              selector:@selector(cashingProcessDone)
                                                  name:@"cashingProcessDone"
                                                object:[STMCashingProcessController sharedInstance]];
-    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector( )
+                                                 name:@"debtAdded"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector( )
+                                                 name:@"debtRemoved"
+                                               object:[STMCashingProcessController sharedInstance]];
+
 }
 
 - (void)removeObservers {

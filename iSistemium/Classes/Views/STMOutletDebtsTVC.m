@@ -371,7 +371,7 @@
             STMDebt *debt = sectionInfo.objects[indexPath.row];
             
 //            [self.splitVC.controlsVC addCashing:debt];
-            [[STMCashingProcessController sharedInstance] addCashing:debt];
+            [[STMCashingProcessController sharedInstance] addDebt:debt];
 
         }
         
@@ -392,7 +392,7 @@
         STMDebt *debt = sectionInfo.objects[indexPath.row];
         
 //        [self.splitVC.controlsVC removeCashing:debt];
-        [[STMCashingProcessController sharedInstance] removeCashing:debt];
+        [[STMCashingProcessController sharedInstance] removeDebt:debt];
         
     }
 

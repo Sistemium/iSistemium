@@ -118,22 +118,34 @@
 
 }
 
-- (void)addCashing:(STMDebt *)debt {
+- (void)addDebt:(STMDebt *)debt {
     
-    [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
-    [self.debtsArray addObject:debt];
+    if (debt.xid) {
+        
+        [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
+        [self.debtsArray addObject:debt];
+        
+        self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"debtAdded" object:self userInfo:@{@"debt": debt}];
 
-    self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
-
+    }
+    
 }
 
-- (void)removeCashing:(STMDebt *)debt {
+- (void)removeDebt:(STMDebt *)debt {
+
+    if (debt.xid && [self.debtsArray containsObject:debt]) {
+        
+        [self.debtsDictionary removeObjectForKey:debt.xid];
+        [self.debtsArray removeObject:debt];
+        
+        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"debtRemoved" object:self userInfo:@{@"debt": debt}];
+
+    }
     
-    [self.debtsDictionary removeObjectForKey:debt.xid];
-    [self.debtsArray removeObject:debt];
-
-    self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
-
 }
 
 - (NSDecimalNumber *)debtsSumm {

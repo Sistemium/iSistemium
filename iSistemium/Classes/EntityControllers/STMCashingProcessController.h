@@ -36,8 +36,8 @@ typedef enum {
 - (void)cancelCashingProcess;
 - (void)doneCashingProcess;
 
-- (void)addCashing:(STMDebt *)debt;
-- (void)removeCashing:(STMDebt *)debt;
+- (void)addDebt:(STMDebt *)debt;
+- (void)removeDebt:(STMDebt *)debt;
 
 - (void)setCashingSum:(NSDecimalNumber *)cashingSum forDebt:(STMDebt *)debt;
 
