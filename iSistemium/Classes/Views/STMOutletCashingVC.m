@@ -191,7 +191,7 @@
     if (self.wasChanged) {
 
         self.wasChanged = NO;
-        [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendData;
+        [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendDataOnce;
         
     }
     

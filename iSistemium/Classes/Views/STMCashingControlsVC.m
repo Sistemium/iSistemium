@@ -15,6 +15,7 @@
 #import "STMCashing.h"
 #import "STMDebt+Cashing.h"
 #import "STMDatePickerVC.h"
+#import "STMFunctions.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
 
@@ -550,7 +551,7 @@
         if (success) {
 
             STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-            syncer.syncerState = STMSyncerSendData;
+            syncer.syncerState = STMSyncerSendDataOnce;
             
         }
     }];
@@ -626,17 +627,43 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    
+
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+
     NSMutableString *text = [textField.text mutableCopy];
     [text replaceCharactersInRange:range withString:string];
 
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    numberFormatter.maximumFractionDigits = 2;
-    
-    [text replaceOccurrencesOfString:numberFormatter.groupingSeparator withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [text length])];
+    NSArray *textParts = [text componentsSeparatedByString:numberFormatter.decimalSeparator];
 
-    NSNumber *number = [numberFormatter numberFromString:[NSString stringWithFormat:@"%@", text]];
+    NSString *decimalPart = (textParts.count == 2) ? textParts[1] : nil;
+
+    if (decimalPart.length == 3 && ![string isEqualToString:@""]) {
+        
+        return NO;
+        
+    } else {
+        
+        [text replaceOccurrencesOfString:numberFormatter.groupingSeparator withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [text length])];
+
+        [self fillTextField:textField withText:text];
+        
+//        NSInteger offset = range.location + string.length + replaceOccurrences;
+//
+//        UITextPosition *from = [textField positionFromPosition:[textField beginningOfDocument] offset:offset];
+//        UITextPosition *to = [textField positionFromPosition:from offset:0];
+//        [textField setSelectedTextRange:[textField textRangeFromPosition:from toPosition:to]];
+
+        return NO;
+        
+    }
+    
+}
+
+- (void)fillTextField:(UITextField *)textField withText:(NSString *)text {
+    
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+
+    NSNumber *number = [numberFormatter numberFromString:text];
     
     if (!number) {
         
@@ -646,24 +673,42 @@
             
         }
         
-        return NO;
-        
     } else {
-
-        NSString *finalString = [numberFormatter stringFromNumber:number];
-
-        if ([string isEqualToString:numberFormatter.decimalSeparator]) {
+        
+        if ([number doubleValue] == 0) {
             
-            finalString = [finalString stringByAppendingString:numberFormatter.decimalSeparator];
+            textField.text = text;
+            
+        } else {
+            
+            NSString *finalString = [numberFormatter stringFromNumber:number];
+            
+            NSString *appendingString = nil;
+            
+            NSString *suffix = nil;
+            
+            for (int i = 0; i <= 2; i++) {
+                
+                suffix = numberFormatter.decimalSeparator;
+                
+                for (int j = 0; j < i; j++) {
+                    
+                    suffix = [suffix stringByAppendingString:@"0"];
+                    
+                }
+                
+                appendingString = ([text hasSuffix:suffix]) ? suffix : appendingString;
+                
+            }
+
+            finalString = (appendingString) ? [finalString stringByAppendingString:appendingString] : finalString;
+
+            textField.text = finalString;
             
         }
-        
-        textField.text = finalString;
-        
-        return NO;
-
+                
     }
-    
+
 }
 
 - (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
@@ -674,6 +719,177 @@
     NSNumber *number = [numberFormatter numberFromString:textField.text];
     
     return [number boolValue];
+    
+}
+
+
+#pragma mark - UITextViewDelegate
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        self.commentTextView.inputAccessoryView = self.keyboardToolbar;
+        
+    }
+    
+    return YES;
+    
+}
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        self.commentTextView.inputAccessoryView = nil;
+        
+    }
+    
+    return YES;
+    
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        NSString *text = self.commentTextView.text;
+        
+        if ([text isEqualToString:NSLocalizedString(@"ADD COMMENT", nil)]) {
+            
+            self.commentTextView.text = @"";
+            self.commentTextView.textColor = [UIColor blackColor];
+            
+        }
+        
+        self.initialTextFieldValue = self.commentTextView.text;
+        
+    }
+    
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    
+    if ([textView isEqual:self.commentTextView]) {
+        
+        NSString *text = self.commentTextView.text;
+        
+        if ([text isEqualToString:@""]) {
+            
+            [self wipeCommentText];
+            
+            if (self.selectedDebt.xid) {
+                [self.commentsDictionary removeObjectForKey:self.selectedDebt.xid];
+            }
+            
+        } else {
+            
+            if (self.selectedDebt.xid) {
+                [self.commentsDictionary setObject:text forKey:self.selectedDebt.xid];
+            }
+            
+        }
+        
+        if (self.textViewIsShifted) {
+            
+            [self moveTextFieldViewByDictance:-self.textViewShiftDistance];
+            
+            self.textViewIsShifted = NO;
+            
+        }
+        
+    }
+    
+}
+
+- (void)wipeCommentText {
+    
+    self.commentTextView.text = NSLocalizedString(@"ADD COMMENT", nil);
+    self.commentTextView.textColor = GREY_LINE_COLOR;
+
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    UITouch *touch = [[event allTouches] anyObject];
+    
+    if ([self.commentTextView isFirstResponder] && [touch view] != self.commentTextView) {
+        
+        [self.commentTextView resignFirstResponder];
+        
+    }
+    
+    [super touchesBegan:touches withEvent:event];
+    
+}
+
+
+#pragma mark - keyboard show / hide
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    if ([self.commentTextView isFirstResponder] && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        
+        if (!self.textViewIsShifted) {
+            
+            CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+            CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
+            CGFloat textViewHeight = self.commentTextView.frame.size.height;
+            CGFloat textViewOriginY = self.commentTextView.frame.origin.y;
+            CGFloat viewHeight = self.view.frame.size.height;
+            
+            CGFloat distance = textViewOriginY+textViewHeight+keyboardHeight-viewHeight-tabBarHeight;
+            
+            if (distance > 0) {
+                
+                self.textViewShiftDistance = textViewOriginY+textViewHeight+keyboardHeight-viewHeight-tabBarHeight;
+                
+                [self moveTextFieldViewByDictance:self.textViewShiftDistance];
+                
+                self.textViewIsShifted = YES;
+
+            }
+            
+        }
+        
+    }
+    
+}
+
+- (void)keyboardWillBeHidden:(NSNotification *)notification {
+
+    if ([self.commentTextView isFirstResponder] && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        
+        if (self.textViewIsShifted) {
+            
+            [self moveTextFieldViewByDictance:-self.textViewShiftDistance];
+            
+            self.textViewIsShifted = NO;
+
+        }
+
+    }
+    
+}
+
+- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
+    
+    CGRect keyboardRect = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
+    
+    return keyboardRect.size.height;
+    
+}
+
+- (void)moveTextFieldViewByDictance:(CGFloat)distance {
+    
+    const float movementDuration = 0.3f;
+    
+    [UIView beginAnimations:@"animation" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:movementDuration];
+    self.view.frame = CGRectOffset(self.view.frame, 0, -distance);
+    [UIView commitAnimations];
     
 }
 

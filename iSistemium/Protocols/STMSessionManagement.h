@@ -13,6 +13,7 @@
 typedef enum {
     STMSyncerIdle,
     STMSyncerSendData,
+    STMSyncerSendDataOnce,
     STMSyncerReceiveData
 } STMSyncerState;
 

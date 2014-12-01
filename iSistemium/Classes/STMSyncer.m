@@ -38,6 +38,7 @@
 @property (nonatomic) NSUInteger entityCount;
 @property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL checkSending;
+@property (nonatomic) BOOL sendOnce;
 @property (nonatomic, strong) NSData *clientDataXid;
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 
@@ -208,11 +209,19 @@
 
 - (void)setSyncerState:(STMSyncerState)syncerState {
     
+    self.sendOnce = (syncerState != STMSyncerIdle) && ((self.sendOnce) || (self.syncing && syncerState == STMSyncerSendDataOnce))? YES : NO;
+    
+//    NSLog(@"self.sendOnce %d", self.sendOnce);
+    
     if (!self.syncing && syncerState != _syncerState) {
+        
+        syncerState = (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
+        
+//        NSLog(@"syncerState %d", syncerState);
         
         _syncerState = syncerState;
         
-        NSArray *syncStates = @[@"idle", @"sendData", @"receiveData"];
+        NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
         [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]] type:@""];
         
@@ -220,10 +229,18 @@
                 
             case STMSyncerSendData:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                [STMObjectsController checkClientData];
                 self.syncing = YES;
                 [self sendData];
                 break;
-                
+
+            case STMSyncerSendDataOnce:
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                [STMObjectsController checkClientData];
+                self.syncing = YES;
+                [self sendData];
+                break;
+
             case STMSyncerReceiveData:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 self.syncing = YES;
@@ -233,6 +250,7 @@
             case STMSyncerIdle:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 self.syncing = NO;
+                self.sendOnce = NO;
                 [STMObjectsController dataLoadingFinished];
                 [STMObjectsController checkUploadedPhotos];
                 if (self.fetchCompletionHandler) {
@@ -275,7 +293,7 @@
         self.settings = nil;
         self.running = YES;
         [STMObjectsController checkPhotos];
-        [STMObjectsController checkDeviceToken];
+        [STMObjectsController checkClientData];
 //        [STMObjectsController checkAppVersion];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
@@ -428,9 +446,19 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
+<<<<<<< HEAD
 //    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashing"]) {
 //        
 //        NSLog(@"anObject change %@", anObject);
+=======
+//    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashingPicture"]) {
+//        
+//        NSLog(@"anObject %@ change", [anObject valueForKey:@"xid"]);
+//        NSLog(@"href %@", [anObject valueForKey:@"href"]);
+//        NSLog(@"deviceTs %@", [anObject valueForKey:@"deviceTs"]);
+//        NSLog(@"lts %@", [anObject valueForKey:@"lts"]);
+//        NSLog(@"sts %@", [anObject valueForKey:@"sts"]);
+>>>>>>> dev
 //        
 //    }
     
@@ -440,7 +468,7 @@
 
 - (void)sendData {
     
-    if (self.syncerState == STMSyncerSendData) {
+    if (self.syncerState == STMSyncerSendData || self.syncerState == STMSyncerSendDataOnce) {
         
         if (self.resultsController.fetchedObjects.count > 0) {
             
@@ -448,7 +476,7 @@
 
             if (sendData) {
                 
-                self.checkSending = YES;
+                self.checkSending = (self.syncerState == STMSyncerSendData);
                 [self startConnectionForSendData:sendData];
                 
             } else {
@@ -473,7 +501,7 @@
 
     self.syncing = NO;
     
-    if (self.checkSending) {
+    if (self.checkSending || self.syncerState == STMSyncerSendDataOnce) {
         
         self.checkSending = NO;
         self.syncerState = STMSyncerIdle;
@@ -1032,7 +1060,16 @@
                 }
                 
                 self.syncing = NO;
-                self.syncerState = STMSyncerReceiveData;
+
+                if (self.syncerState == STMSyncerSendData) {
+                    
+                    self.syncerState = STMSyncerReceiveData;
+                    
+                } else if (self.syncerState == STMSyncerSendDataOnce) {
+                    
+                    self.syncerState = STMSyncerIdle;
+                    
+                }
                 
             }
             

@@ -7,11 +7,13 @@
 //
 
 #import "STMObjectsController.h"
+#import "STMAuthController.h"
 #import "STMSessionManager.h"
 #import "STMSession.h"
 #import "STMDocument.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
+
 #import <Security/Security.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 
@@ -34,7 +36,10 @@
 #import "STMLocation.h"
 #import "STMUncashingPicture.h"
 #import "STMUncashingPlace.h"
+<<<<<<< HEAD
 #import "STMTrack.h"
+=======
+>>>>>>> dev
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -110,49 +115,77 @@
 
 #pragma mark - checking client state
 
-+ (void)checkDeviceToken {
-
++ (void)checkClientData {
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL clientDataWaitingForSync = [[defaults objectForKey:@"clientDataWaitingForSync"] boolValue];
 
-    if (clientDataWaitingForSync) {
+    STMClientData *clientData = [self clientData];
+    
+    NSString *tokenHash = clientData.tokenHash;
+
+    if (!tokenHash) {
+        
+        tokenHash = [STMAuthController authController].tokenHash;
+        clientDataWaitingForSync = YES;
+        
+    }
+    
+    if (clientDataWaitingForSync && clientData) {
         
         NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
-    
-        NSLog(@"hasDeviceTokenForSync %@", deviceToken);
-        
-        if ([self document].managedObjectContext) {
-            
-            NSString *entityName = NSStringFromClass([STMClientData class]);
-            
-            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-            request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-            
-            NSError *error;
-            NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-            
-            STMClientData *clientData = [fetchResult lastObject];
-            
-            if (!clientData) {
-                
-                clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-                
-            }
-            
-            clientData.deviceToken = deviceToken;
-            
-#ifdef DEBUG
-            
-            clientData.buildType = @"debug";
-            
-#else
-            
-            clientData.buildType = @"release";
-            
-#endif
-            
 
+        if (deviceToken) {
+            clientData.deviceToken = deviceToken;
         }
+        
+        NSDate *lastAuth = [defaults objectForKey:@"lastAuth"];
+        
+        if (lastAuth) {
+            clientData.lastAuth = lastAuth;
+        }
+
+        clientData.tokenHash = tokenHash;
+        
+#ifdef DEBUG
+        
+        clientData.buildType = @"debug";
+        
+#else
+        
+        clientData.buildType = @"release";
+        
+#endif
+        
+    }
+    
+}
+
++ (STMClientData *)clientData {
+    
+    if ([self document].managedObjectContext) {
+        
+        NSString *entityName = NSStringFromClass([STMClientData class]);
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        
+        NSError *error;
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+        STMClientData *clientData = [fetchResult lastObject];
+        
+        if (!clientData) {
+            
+            clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            
+        }
+        
+        return clientData;
+
+    } else {
+        
+        return nil;
         
     }
     
@@ -295,7 +328,7 @@
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
         
-        [[self sharedController] addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
+        [[self sharedController] addUploadOperationForPicture:photo withFileName:fileName data:photoData];
         
     }
     
@@ -524,6 +557,7 @@
             if (![self isWaitingToSyncForObject:object]) {
                 
                 NSDictionary *properties = [dictionary objectForKey:@"properties"];
+                [object setValue:[NSNumber numberWithBool:NO] forKey:@"isFantom"];
                 [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
                 
             }
@@ -535,9 +569,15 @@
         }
             
         completionHandler(YES);
+<<<<<<< HEAD
         
     } else {
         
+=======
+        
+    } else {
+        
+>>>>>>> dev
         completionHandler(NO);
         
     }
@@ -899,7 +939,10 @@
                                        NSStringFromClass([STMClientData class]),
                                        NSStringFromClass([STMRecordStatus class]),
                                        NSStringFromClass([STMUncashingPicture class]),
+<<<<<<< HEAD
                                        NSStringFromClass([STMTrack class]),
+=======
+>>>>>>> dev
                                        NSStringFromClass([STMLocation class])
                                        ];
     
@@ -945,7 +988,7 @@
         
         } else {
             
-            object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            object = [self newObjectForEntityName:entityName];
             [object setValue:xidData forKey:@"xid"];
             
         }
@@ -957,6 +1000,15 @@
         return nil;
         
     }
+    
+}
+
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
+    
+    NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    [object setValue:[NSNumber numberWithBool:YES] forKey:@"isFantom"];
+    
+    return object;
     
 }
 
@@ -1218,27 +1270,31 @@
 
 - (void)repeatUploadOperationForObject:(NSManagedObject *)object {
     
-    if ([object isKindOfClass:[STMPhoto class]]) {
+    if ([object isKindOfClass:[STMPicture class]]) {
         
-        STMPhoto *photo = (STMPhoto *)object;
+        STMPicture *picture = (STMPicture *)object;
         
-        NSString *xid = [STMFunctions xidStringFromXidData:photo.xid];
+        NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        NSData *photoData = [NSData dataWithContentsOfFile:photo.imagePath];
+        NSData *data = [NSData dataWithContentsOfFile:picture.imagePath];
 
-        [self addUploadOperationForPhoto:photo withFileName:fileName data:photoData];
+        [self addUploadOperationForPicture:picture withFileName:fileName data:data];
         
     }
     
 }
 
-- (void)addUploadOperationForPhoto:(STMPhoto *)photo withFileName:(NSString *)filename data:(NSData *)data {
+- (void)addUploadOperationForPicture:(STMPicture *)picture withFileName:(NSString *)filename data:(NSData *)data {
 
     if ([self s3Init]) {
         
         NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
         
+<<<<<<< HEAD
         NSString *entityName = photo.entity.name;
+=======
+        NSString *entityName = picture.entity.name;
+>>>>>>> dev
         
         NSDate *currentDate = [NSDate date];
         
@@ -1280,7 +1336,7 @@
                         NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+                            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
                         });
                         
                     } else {
@@ -1294,8 +1350,14 @@
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
+<<<<<<< HEAD
                             photo.href = href;
                             [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
+=======
+                            picture.href = href;
+                            picture.deviceTs = [NSDate date];
+                            [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendDataOnce];
+>>>>>>> dev
                             
                         });
                         
@@ -1321,7 +1383,7 @@
         
         NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:photo afterDelay:interval];
+            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
         });
 
     }
@@ -1353,7 +1415,7 @@
             NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
             fileName = [xid stringByAppendingString:@".jpg"];
             
-            [[self sharedController] addUploadOperationForPhoto:(STMPhoto *)picture withFileName:fileName data:weakData];
+            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
             
         }
         
@@ -1457,7 +1519,10 @@
                              NSStringFromClass([STMRecordStatus class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+<<<<<<< HEAD
                              NSStringFromClass([STMTrack class]),
+=======
+>>>>>>> dev
                              NSStringFromClass([STMLocation class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;

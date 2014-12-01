@@ -66,7 +66,11 @@
         
         if (success) {
             
+<<<<<<< HEAD
             [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendData;
+=======
+            [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendDataOnce;
+>>>>>>> dev
             
         }
         

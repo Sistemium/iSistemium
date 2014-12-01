@@ -54,7 +54,7 @@
                 
         request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
+        request.predicate = [NSPredicate predicateWithFormat:@"(ANY debts.summ != 0) OR (ANY cashings.summ != 0)"];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"partner.name" cacheName:nil];
         _resultsController.delegate = self;
         
@@ -72,6 +72,18 @@
 }
 
 - (void)cashingIsProcessedChanged:(NSNotification *)notification {
+<<<<<<< HEAD
+=======
+    
+    STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
+    [self reloadRowWithOutlet:outlet];
+    
+}
+
+- (void)reloadRowWithOutlet:(STMOutlet *)outlet {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:outlet];
+>>>>>>> dev
 
     STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
     [self reloadRowWithOutlet:outlet];
@@ -86,6 +98,33 @@
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 
+}
+
+- (void)cashingButtonPressed {
+    
+    if (self.splitVC.detailVC.isCashingProcessing) {
+        
+        [self performSegueWithIdentifier:@"showCashingControls" sender:self];
+        
+    }
+    
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showCashingControls"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMCashingControlsVC class]]) {
+            
+            STMCashingControlsVC *controlsVC = (STMCashingControlsVC *)segue.destinationViewController;
+            
+            controlsVC.outlet = self.splitVC.detailVC.outlet;
+            controlsVC.tableVC = [(STMDebtsCombineVC *)self.splitVC.detailVC.debtsCombineVC tableVC];
+            
+        }
+        
+    }
+    
 }
 
 - (void)cashingButtonPressed {

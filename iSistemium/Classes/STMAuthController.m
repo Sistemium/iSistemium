@@ -18,7 +18,6 @@
 
 @property (nonatomic, strong) NSMutableData *responseData;
 @property (nonatomic, strong) NSString *requestID;
-@property (nonatomic, strong) NSString *userID;
 @property (nonatomic, strong) NSString *accessToken;
 @property (nonatomic, strong) NSString *serviceUri;
 @property (nonatomic, strong) KeychainItemWrapper *keychainItem;
@@ -201,6 +200,7 @@
     if (userID != _userID) {
         
         [self.keychainItem setObject:userID forKey:(__bridge id)(kSecAttrAccount)];
+        NSLog(@"userID %@", userID);
         _userID = userID;
         
     }
@@ -226,8 +226,45 @@
         [self.keychainItem setObject:accessToken forKey:(__bridge id)(kSecValueData)];
         NSLog(@"accessToken %@", accessToken);
         _accessToken = accessToken;
+
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:[NSDate date] forKey:@"lastAuth"];
+        [defaults setObject:[STMFunctions MD5FromString:accessToken] forKey:@"tokenHash"];
+        [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"clientDataWaitingForSync"];
+        [defaults synchronize];
         
     }
+    
+}
+
+- (NSString *)tokenHash {
+    
+    if (!_tokenHash) {
+        
+        NSString *tokenHash = [[NSUserDefaults standardUserDefaults] objectForKey:@"tokenHash"];
+        
+        if (!tokenHash) {
+            
+            tokenHash = [STMFunctions MD5FromString:self.accessToken];
+            
+            if (tokenHash) {
+                
+                [[NSUserDefaults standardUserDefaults] setObject:tokenHash forKey:@"tokenHash"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+            } else {
+                
+                tokenHash = @"tokenHash is empty, should be investigated";
+                
+            }
+            
+        }
+        
+        _tokenHash = tokenHash;
+        
+    }
+    
+    return _tokenHash;
     
 }
 
