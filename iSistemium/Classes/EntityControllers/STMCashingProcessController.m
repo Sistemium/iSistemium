@@ -113,8 +113,18 @@
 
 - (void)doneCashingProcess {
 
-    self.state = STMCashingProcessIdle;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessDone" object:self];
+    if ([[STMCashingProcessController sharedInstance].remainderSumm doubleValue] == 0) {
+        
+        [self saveCashings];
+        self.state = STMCashingProcessIdle;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessDone" object:self];
+        
+    } else {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"REM SUM NOT NULL", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        [alert show];
+        
+    }
 
 }
 
@@ -223,5 +233,39 @@
     }
 
 }
+
+- (NSDecimalNumber *)fillingSumProcessing {
+    
+    NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
+    
+    STMDebt *lastDebt = [self.debtsArray lastObject];
+    if (lastDebt) {
+        
+        NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:lastDebt.xid][1];
+        fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
+        
+    }
+    
+    if ([fillingSumm doubleValue] < 0) {
+        
+        [self.debtsArray removeObject:lastDebt];
+        [self.debtsDictionary removeObjectForKey:lastDebt.xid];
+        self.remainderSumm = fillingSumm;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateDebtsArray" object:self userInfo:@{@"updateDebt": lastDebt, @"selectDebt": self.debtsArray.lastObject}];
+        
+        return [self fillingSumProcessing];
+        
+    } else {
+        
+        [self.debtsDictionary setObject:@[self.debtsArray.lastObject, fillingSumm] forKey:[(STMDebt *)self.debtsArray.lastObject xid]];
+        self.remainderSumm = [NSDecimalNumber zero];
+
+        return fillingSumm;
+        
+    }
+    
+}
+
 
 @end

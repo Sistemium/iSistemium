@@ -40,7 +40,9 @@ typedef enum {
 - (void)removeDebt:(STMDebt *)debt;
 
 - (void)setCashingSum:(NSDecimalNumber *)cashingSum forDebt:(STMDebt *)debt;
-
 - (void)setComment:(NSString *)comment forDebt:(STMDebt *)debt;
+
+- (NSDecimalNumber *)debtsSumm;
+- (NSDecimalNumber *)fillingSumProcessing;
 
 @end

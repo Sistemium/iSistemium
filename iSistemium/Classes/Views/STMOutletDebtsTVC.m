@@ -153,7 +153,7 @@
         UIColor *backgroundColor = [UIColor clearColor];
         UIColor *textColor = [UIColor blackColor];
         
-        if ([[self.splitVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+        if ([[[STMCashingProcessController sharedInstance].debtsArray lastObject] isEqual:debt]) {
             
             textColor = ACTIVE_BLUE_COLOR;
             
@@ -300,7 +300,7 @@
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
     
-    if ([[self.splitVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+    if ([[[STMCashingProcessController sharedInstance].debtsArray lastObject] isEqual:debt]) {
         
         cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
         
@@ -313,9 +313,9 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if ([[self.splitVC.controlsVC.debtsDictionary allKeys] containsObject:debt.xid]) {
+    if ([[[STMCashingProcessController sharedInstance].debtsDictionary allKeys] containsObject:debt.xid]) {
         
-        NSDecimalNumber *cashingSum = [self.splitVC.controlsVC.debtsDictionary objectForKey:debt.xid][1];
+        NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:debt.xid][1];
         
         if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
             
