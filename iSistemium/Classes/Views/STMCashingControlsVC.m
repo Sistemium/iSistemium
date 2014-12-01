@@ -244,6 +244,8 @@
 
 - (void)debtAdded:(NSNotification *)notification {
     
+    [self toolbarDoneButtonPressed];
+
     STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
     
     if (debt) {
@@ -302,6 +304,8 @@
 
 - (void)debtRemoved:(NSNotification *)notification {
     
+    [self toolbarDoneButtonPressed];
+
     STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
 
     if (debt) {
@@ -987,6 +991,11 @@
                                                  name:@"updateDebtsArray"
                                                object:[STMCashingProcessController sharedInstance]];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(toolbarDoneButtonPressed)
+                                                 name:@"textFieldsShouldResignResponder"
+                                               object:nil];
+    
 }
 
 - (void)removeObservers {

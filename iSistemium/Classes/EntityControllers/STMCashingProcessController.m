@@ -106,6 +106,7 @@
 
 - (void)cancelCashingProcess {
 
+    [self flushSelf];
     self.state = STMCashingProcessIdle;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessCancel" object:self];
 

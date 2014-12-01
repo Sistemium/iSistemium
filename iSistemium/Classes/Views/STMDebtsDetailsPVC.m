@@ -184,6 +184,7 @@
     
     if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
 
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"textFieldsShouldResignResponder" object:self];
         [[STMCashingProcessController sharedInstance] doneCashingProcess];
 
     } else if ([STMCashingProcessController sharedInstance].state == STMCashingProcessIdle) {
