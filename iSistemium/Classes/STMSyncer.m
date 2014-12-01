@@ -446,21 +446,6 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-<<<<<<< HEAD
-//    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashing"]) {
-//        
-//        NSLog(@"anObject change %@", anObject);
-=======
-//    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashingPicture"]) {
-//        
-//        NSLog(@"anObject %@ change", [anObject valueForKey:@"xid"]);
-//        NSLog(@"href %@", [anObject valueForKey:@"href"]);
-//        NSLog(@"deviceTs %@", [anObject valueForKey:@"deviceTs"]);
-//        NSLog(@"lts %@", [anObject valueForKey:@"lts"]);
-//        NSLog(@"sts %@", [anObject valueForKey:@"sts"]);
->>>>>>> dev
-//        
-//    }
     
 }
 

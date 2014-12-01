@@ -36,10 +36,7 @@
 #import "STMLocation.h"
 #import "STMUncashingPicture.h"
 #import "STMUncashingPlace.h"
-<<<<<<< HEAD
 #import "STMTrack.h"
-=======
->>>>>>> dev
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -569,15 +566,9 @@
         }
             
         completionHandler(YES);
-<<<<<<< HEAD
         
     } else {
         
-=======
-        
-    } else {
-        
->>>>>>> dev
         completionHandler(NO);
         
     }
@@ -939,10 +930,7 @@
                                        NSStringFromClass([STMClientData class]),
                                        NSStringFromClass([STMRecordStatus class]),
                                        NSStringFromClass([STMUncashingPicture class]),
-<<<<<<< HEAD
                                        NSStringFromClass([STMTrack class]),
-=======
->>>>>>> dev
                                        NSStringFromClass([STMLocation class])
                                        ];
     
@@ -1290,11 +1278,7 @@
         
         NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
         
-<<<<<<< HEAD
-        NSString *entityName = photo.entity.name;
-=======
         NSString *entityName = picture.entity.name;
->>>>>>> dev
         
         NSDate *currentDate = [NSDate date];
         
@@ -1350,14 +1334,9 @@
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
-<<<<<<< HEAD
-                            photo.href = href;
-                            [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData];
-=======
                             picture.href = href;
                             picture.deviceTs = [NSDate date];
                             [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendDataOnce];
->>>>>>> dev
                             
                         });
                         
@@ -1519,10 +1498,7 @@
                              NSStringFromClass([STMRecordStatus class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
-<<<<<<< HEAD
                              NSStringFromClass([STMTrack class]),
-=======
->>>>>>> dev
                              NSStringFromClass([STMLocation class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;

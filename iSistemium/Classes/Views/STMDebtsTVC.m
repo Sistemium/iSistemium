@@ -72,18 +72,6 @@
 }
 
 - (void)cashingIsProcessedChanged:(NSNotification *)notification {
-<<<<<<< HEAD
-=======
-    
-    STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
-    [self reloadRowWithOutlet:outlet];
-    
-}
-
-- (void)reloadRowWithOutlet:(STMOutlet *)outlet {
-    
-    NSIndexPath *indexPath = [self.resultsController indexPathForObject:outlet];
->>>>>>> dev
 
     STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
     [self reloadRowWithOutlet:outlet];
@@ -127,32 +115,6 @@
     
 }
 
-- (void)cashingButtonPressed {
-    
-    if (self.splitVC.detailVC.isCashingProcessing) {
-        
-        [self performSegueWithIdentifier:@"showCashingControls" sender:self];
-        
-    }
-    
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-    if ([segue.identifier isEqualToString:@"showCashingControls"]) {
-        
-        if ([segue.destinationViewController isKindOfClass:[STMCashingControlsVC class]]) {
-            
-            STMCashingControlsVC *controlsVC = (STMCashingControlsVC *)segue.destinationViewController;
-            
-            controlsVC.outlet = self.splitVC.detailVC.outlet;
-            controlsVC.tableVC = [(STMDebtsCombineVC *)self.splitVC.detailVC.debtsCombineVC tableVC];
-            
-        }
-        
-    }
-    
-}
 
 #pragma mark - view lifecycle
 

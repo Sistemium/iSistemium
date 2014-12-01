@@ -278,11 +278,7 @@
         if (success) {
             
             STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-<<<<<<< HEAD
-            syncer.syncerState = STMSyncerSendData;
-=======
             syncer.syncerState = STMSyncerSendDataOnce;
->>>>>>> dev
             
         }
     }];
