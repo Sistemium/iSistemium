@@ -16,7 +16,7 @@
 #import "STMAddDebtVC.h"
 #import "STMDatePickerVC.h"
 
-@interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+@interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIPopoverControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (nonatomic, strong) UIPopoverController *popover;
@@ -175,9 +175,10 @@
     if (!_addDebtPopover) {
         
         STMAddDebtVC *addDebtVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addDebtVC"];
-//        uncashingInfoPopover.uncashing = self.uncashing;
+        addDebtVC.parentVC = self;
         
         _addDebtPopover = [[UIPopoverController alloc] initWithContentViewController:addDebtVC];
+        _addDebtPopover.delegate = self;
         
     }
     
@@ -272,6 +273,11 @@
     
 }
 
+- (void)cancelAddDebt {
+    
+    [self.addDebtPopover dismissPopoverAnimated:YES];
+    
+}
 
 #pragma mark - Page View Controller Data Source
 
@@ -343,6 +349,15 @@
     self.navigationItem.leftBarButtonItem = nil;
     
     self.popover = nil;
+    
+}
+
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    
+    return NO;
     
 }
 

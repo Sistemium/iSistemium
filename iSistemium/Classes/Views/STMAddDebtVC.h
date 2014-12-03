@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "STMDatePickerParent.h"
+#import "STMDebtsDetailsPVC.h"
 
 @interface STMAddDebtVC : UIViewController <STMDatePickerParent>
 
+@property (nonatomic, strong) STMDebtsDetailsPVC *parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
 
 @end

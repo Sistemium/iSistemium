@@ -217,9 +217,17 @@
                                 <rect key="frame" x="0.0" y="212" width="512" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem systemItem="cancel" id="PBW-7s-T5t"/>
+                                    <barButtonItem systemItem="cancel" id="PBW-7s-T5t">
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="I32-0T-zzz" id="tgm-cV-hzs"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="8HG-AE-uqm"/>
-                                    <barButtonItem systemItem="done" id="Wdj-rf-fXh"/>
+                                    <barButtonItem systemItem="done" id="Wdj-rf-fXh">
+                                        <connections>
+                                            <action selector="doneButtonPressed:" destination="I32-0T-zzz" id="hL6-aJ-mdC"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Debt number label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tMG-A6-Rym">

@@ -24,6 +24,8 @@
 
 @implementation STMAddDebtVC
 
+@synthesize selectedDate = _selectedDate;
+
 - (NSDate *)selectedDate {
     
     if (!_selectedDate) {
@@ -33,6 +35,33 @@
     }
     
     return _selectedDate;
+    
+}
+
+- (void)setSelectedDate:(NSDate *)selectedDate {
+    
+    if (_selectedDate != selectedDate) {
+        
+        _selectedDate = selectedDate;
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        dateFormatter.dateStyle = NSDateFormatterLongStyle;
+        
+        [self.dateButton setTitle:[dateFormatter stringFromDate:_selectedDate] forState:UIControlStateNormal];
+        
+    }
+    
+}
+
+
+- (IBAction)cancelButtonPressed:(id)sender {
+    
+    [self.parentVC cancelAddDebt];
+    
+}
+
+- (IBAction)doneButtonPressed:(id)sender {
     
 }
 

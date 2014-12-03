@@ -19,4 +19,6 @@
 
 - (void)cashingButtonPressed;
 
+- (void)cancelAddDebt;
+
 @end
