@@ -917,6 +917,7 @@
                                        NSStringFromClass([STMClientData class]),
                                        NSStringFromClass([STMRecordStatus class]),
                                        NSStringFromClass([STMUncashingPicture class]),
+                                       NSStringFromClass([STMDebt class]),
                                        NSStringFromClass([STMLocation class])
                                        ];
     

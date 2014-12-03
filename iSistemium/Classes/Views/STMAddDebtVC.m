@@ -320,7 +320,7 @@
     
     [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
     
-    self.ndocLabel.text = NSLocalizedString(@"DEBT NUMBER", nil);
+    self.ndocLabel.text = NSLocalizedString(@"DOC NUMBER", nil);
     self.sumLabel.text = NSLocalizedString(@"DEBT SUM", nil);
     
     self.ndocTextField.delegate = self;
