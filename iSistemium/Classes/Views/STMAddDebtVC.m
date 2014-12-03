@@ -7,6 +7,8 @@
 //
 
 #import "STMAddDebtVC.h"
+#import "STMDatePickerVC.h"
+#import "STMFunctions.h"
 
 @interface STMAddDebtVC ()
 
@@ -22,6 +24,31 @@
 
 @implementation STMAddDebtVC
 
+- (NSDate *)selectedDate {
+    
+    if (!_selectedDate) {
+        
+        _selectedDate = [NSDate date];
+        
+    }
+    
+    return _selectedDate;
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
+    
+    [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
+    
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -31,10 +58,11 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -43,15 +71,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showDatePicker"] && [segue.destinationViewController isKindOfClass:[STMDatePickerVC class]]) {
+        
+        STMDatePickerVC *datePickerVC = (STMDatePickerVC *)segue.destinationViewController;
+        datePickerVC.parentVC = self;
+        datePickerVC.selectedDate = self.selectedDate;
+        
+    }
+    
 }
-*/
 
 @end

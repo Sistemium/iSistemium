@@ -10,8 +10,9 @@
 #import "STMOutlet.h"
 #import "STMDebt.h"
 #import "STMOutletDebtsTVC.h"
+#import "STMDatePickerParent.h"
 
-@interface STMCashingControlsVC : UIViewController
+@interface STMCashingControlsVC : UIViewController <STMDatePickerParent>
 
 @property (nonatomic, strong) STMOutlet *outlet;
 @property (nonatomic, strong) STMOutletDebtsTVC *tableVC;

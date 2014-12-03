@@ -382,6 +382,7 @@
 		2CFDD72F1A29D863003515C5 /* STMClientData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMClientData.m; sourceTree = "<group>"; };
 		2CFDD87F1A2EADA0003515C5 /* STMAddDebtVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAddDebtVC.h; sourceTree = "<group>"; };
 		2CFDD8801A2EADA0003515C5 /* STMAddDebtVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAddDebtVC.m; sourceTree = "<group>"; };
+		2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDatePickerParent.h; sourceTree = "<group>"; };
 		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
 		D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "christmas_gift-128.png"; sourceTree = "<group>"; };
@@ -522,6 +523,7 @@
 			children = (
 				2C53B8AD1940A092002298A5 /* STMRequestAuthenticatable.h */,
 				2C53B8AE1940A092002298A5 /* STMSessionManagement.h */,
+				2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
