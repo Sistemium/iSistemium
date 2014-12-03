@@ -10,7 +10,7 @@
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
 
-@interface STMAddDebtVC ()
+@interface STMAddDebtVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *dateButton;
 @property (weak, nonatomic) IBOutlet UILabel *numberLabel;
@@ -19,6 +19,9 @@
 @property (weak, nonatomic) IBOutlet UITextField *sumTextField;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+
+@property (nonatomic, strong) UIToolbar *keyboardToolbar;
+@property (nonatomic, strong) NSString *initialTextFieldValue;
 
 @end
 
@@ -54,6 +57,61 @@
     
 }
 
+- (UIToolbar *)keyboardToolbar {
+    
+    if (!_keyboardToolbar) {
+        
+        UIToolbar *toolbar = [[UIToolbar alloc] init];
+        toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+        
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(toolbarCancelButtonPressed)];
+        UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toolbarDoneButtonPressed)];
+        
+        [cancelButton setTintColor:[UIColor redColor]];
+        
+        [toolbar setItems:@[cancelButton,flexibleSpace,doneButon] animated:YES];
+        
+        _keyboardToolbar = toolbar;
+        
+    }
+    
+    return _keyboardToolbar;
+    
+}
+
+- (void)toolbarCancelButtonPressed {
+    
+    if ([self.sumTextField isFirstResponder]) {
+        
+        self.sumTextField.text = self.initialTextFieldValue;
+        
+    } else if ([self.numberTextField isFirstResponder]) {
+
+        self.numberTextField.text = self.initialTextFieldValue;
+
+    }
+
+    [self.view endEditing:NO];
+
+}
+
+- (void)toolbarDoneButtonPressed {
+    
+    [self.view endEditing:NO];
+    [self checkSumField];
+    
+}
+
+- (void)checkSumField {
+    
+    if ([self.sumTextField.text isEqualToString:@""]) {
+        
+        [self.sumTextField becomeFirstResponder];
+        
+    }
+    
+}
 
 - (IBAction)cancelButtonPressed:(id)sender {
     
@@ -63,7 +121,184 @@
 
 - (IBAction)doneButtonPressed:(id)sender {
     
+    NSString *debtNumber = [self.numberTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    double debtSum = [self.sumTextField.text doubleValue];
+    
+    if ([debtNumber isEqualToString:@""]) {
+        
+        [self.numberTextField becomeFirstResponder];
+        
+    } else if (debtSum == 0) {
+        
+        [self.sumTextField becomeFirstResponder];
+        
+    } else {
+        
+        NSLog(@"OK");
+        
+    }
+    
 }
+
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    textField.inputAccessoryView = self.keyboardToolbar;
+    
+    return YES;
+    
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    
+    if ([textField isEqual:self.sumTextField]) {
+        
+        return ([textField.text isEqualToString:@""] || [self isCorrectDebtSumValueForTextField:textField]);
+        
+    } else {
+        
+        return YES;
+        
+    }
+    
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    self.initialTextFieldValue = textField.text;
+    [textField selectAll:nil];
+    
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.minimumFractionDigits = 2;
+    
+    if ([textField isEqual:self.sumTextField]) {
+        
+        NSNumber *number = [numberFormatter numberFromString:textField.text];
+//        NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
+        
+        textField.text = [numberFormatter stringFromNumber:number];
+        
+    } else if ([textField isEqual:self.numberTextField]) {
+        
+        [self checkSumField];
+        
+    }
+    
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    return YES;
+    
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if ([textField isEqual:self.sumTextField]) {
+
+        NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+        
+        NSMutableString *text = [textField.text mutableCopy];
+        [text replaceCharactersInRange:range withString:string];
+        
+        NSArray *textParts = [text componentsSeparatedByString:numberFormatter.decimalSeparator];
+        
+        NSString *decimalPart = (textParts.count == 2) ? textParts[1] : nil;
+        
+        if (decimalPart.length == 3 && ![string isEqualToString:@""]) {
+            
+            return NO;
+            
+        } else {
+            
+            [text replaceOccurrencesOfString:numberFormatter.groupingSeparator withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [text length])];
+            
+            [self fillTextField:textField withText:text];
+            
+            return NO;
+            
+        }
+
+    } else {
+        
+        return YES;
+    }
+    
+}
+
+- (void)fillTextField:(UITextField *)textField withText:(NSString *)text {
+    
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+    
+    NSNumber *number = [numberFormatter numberFromString:text];
+    
+    if (!number) {
+        
+        if ([text isEqualToString:@""]) {
+            
+            textField.text = text;
+            
+        }
+        
+    } else {
+        
+        if ([number doubleValue] == 0) {
+            
+            textField.text = text;
+            
+        } else {
+            
+            NSString *finalString = [numberFormatter stringFromNumber:number];
+            
+            NSString *appendingString = nil;
+            
+            NSString *suffix = nil;
+            
+            for (int i = 0; i <= 2; i++) {
+                
+                suffix = numberFormatter.decimalSeparator;
+                
+                for (int j = 0; j < i; j++) {
+                    
+                    suffix = [suffix stringByAppendingString:@"0"];
+                    
+                }
+                
+                appendingString = ([text hasSuffix:suffix]) ? suffix : appendingString;
+                
+            }
+            
+            finalString = (appendingString) ? [finalString stringByAppendingString:appendingString] : finalString;
+            
+            textField.text = finalString;
+            
+        }
+        
+    }
+    
+}
+
+- (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    NSNumber *number = [numberFormatter numberFromString:textField.text];
+    
+    return [number boolValue];
+    
+}
+
 
 
 #pragma mark - view lifecycle
@@ -75,6 +310,15 @@
     dateFormatter.dateStyle = NSDateFormatterLongStyle;
     
     [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
+    
+    self.numberLabel.text = NSLocalizedString(@"DEBT NUMBER", nil);
+    self.sumLabel.text = NSLocalizedString(@"DEBT SUM", nil);
+    
+    self.numberTextField.delegate = self;
+    self.numberTextField.keyboardType = UIKeyboardTypeDefault;
+    
+    self.sumTextField.delegate = self;
+    self.sumTextField.keyboardType = UIKeyboardTypeDecimalPad;
     
 }
 
