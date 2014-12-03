@@ -278,8 +278,8 @@
                         <outlet property="cancelButton" destination="PBW-7s-T5t" id="Ac2-hr-VHb"/>
                         <outlet property="dateButton" destination="WhO-wy-dWG" id="973-f1-xDO"/>
                         <outlet property="doneButton" destination="Wdj-rf-fXh" id="eug-2y-bSe"/>
-                        <outlet property="numberLabel" destination="tMG-A6-Rym" id="Tjf-Ac-ibZ"/>
-                        <outlet property="numberTextField" destination="PfT-D3-FOM" id="aGF-8O-dxj"/>
+                        <outlet property="ndocLabel" destination="tMG-A6-Rym" id="Rjy-WO-p2q"/>
+                        <outlet property="ndocTextField" destination="PfT-D3-FOM" id="Dik-ZA-Ed0"/>
                         <outlet property="sumLabel" destination="ROS-yo-IY3" id="fzu-ty-4gX"/>
                         <outlet property="sumTextField" destination="cIq-yA-hOG" id="yq0-yG-OrR"/>
                     </connections>

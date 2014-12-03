@@ -124,6 +124,7 @@
 		2CFDD72C1A29B709003515C5 /* STMPicture+customs.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD72B1A29B709003515C5 /* STMPicture+customs.m */; };
 		2CFDD7301A29D863003515C5 /* STMClientData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD72F1A29D863003515C5 /* STMClientData.m */; };
 		2CFDD8811A2EADA0003515C5 /* STMAddDebtVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD8801A2EADA0003515C5 /* STMAddDebtVC.m */; };
+		2CFDD8851A2F6270003515C5 /* STMDebtsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD8841A2F6270003515C5 /* STMDebtsController.m */; };
 		CEAB4F59717C484083629622 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6311C3BED44E4D598636BF2C /* libPods.a */; };
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
 		D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */; };
@@ -383,6 +384,8 @@
 		2CFDD87F1A2EADA0003515C5 /* STMAddDebtVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAddDebtVC.h; sourceTree = "<group>"; };
 		2CFDD8801A2EADA0003515C5 /* STMAddDebtVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAddDebtVC.m; sourceTree = "<group>"; };
 		2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDatePickerParent.h; sourceTree = "<group>"; };
+		2CFDD8831A2F6270003515C5 /* STMDebtsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebtsController.h; sourceTree = "<group>"; };
+		2CFDD8841A2F6270003515C5 /* STMDebtsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebtsController.m; sourceTree = "<group>"; };
 		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
 		D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "christmas_gift-128.png"; sourceTree = "<group>"; };
@@ -431,6 +434,8 @@
 			children = (
 				2CFDD7271A29AF42003515C5 /* STMPicturesController.h */,
 				2CFDD7281A29AF42003515C5 /* STMPicturesController.m */,
+				2CFDD8831A2F6270003515C5 /* STMDebtsController.h */,
+				2CFDD8841A2F6270003515C5 /* STMDebtsController.m */,
 				2C140AC81A19F5B3002C5C17 /* STMUncashingPlaceController.h */,
 				2C140AC91A19F5B3002C5C17 /* STMUncashingPlaceController.m */,
 				2C140ADA1A1D3016002C5C17 /* STMUncashingController.h */,
@@ -966,6 +971,7 @@
 				2C9051A21A276E9200EFE40D /* STMDataModel.xcdatamodeld in Sources */,
 				2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */,
 				2CD443EB195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m in Sources */,
+				2CFDD8851A2F6270003515C5 /* STMDebtsController.m in Sources */,
 				2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */,
 				2C53B8A319409E71002298A5 /* STMBatteryTracker.m in Sources */,
 				2C80C814198CFD4B0044ADE4 /* STMOutlet.m in Sources */,

@@ -273,9 +273,10 @@
     
 }
 
-- (void)cancelAddDebt {
+- (void)dismissAddDebt {
     
     [self.addDebtPopover dismissPopoverAnimated:YES];
+//    self.addDebtPopover = nil;
     
 }
 

@@ -9,19 +9,23 @@
 #import "STMAddDebtVC.h"
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
+#import "STMDebtsController.h"
 
 @interface STMAddDebtVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *dateButton;
-@property (weak, nonatomic) IBOutlet UILabel *numberLabel;
+@property (weak, nonatomic) IBOutlet UILabel *ndocLabel;
 @property (weak, nonatomic) IBOutlet UILabel *sumLabel;
-@property (weak, nonatomic) IBOutlet UITextField *numberTextField;
+@property (weak, nonatomic) IBOutlet UITextField *ndocTextField;
 @property (weak, nonatomic) IBOutlet UITextField *sumTextField;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
 @property (nonatomic, strong) UIToolbar *keyboardToolbar;
 @property (nonatomic, strong) NSString *initialTextFieldValue;
+
+@property (nonatomic, strong) NSString *debtNdoc;
+@property (nonatomic, strong) NSDecimalNumber *debtSum;
 
 @end
 
@@ -86,9 +90,9 @@
         
         self.sumTextField.text = self.initialTextFieldValue;
         
-    } else if ([self.numberTextField isFirstResponder]) {
+    } else if ([self.ndocTextField isFirstResponder]) {
 
-        self.numberTextField.text = self.initialTextFieldValue;
+        self.ndocTextField.text = self.initialTextFieldValue;
 
     }
 
@@ -115,28 +119,31 @@
 
 - (IBAction)cancelButtonPressed:(id)sender {
     
-    [self.parentVC cancelAddDebt];
+    [self.parentVC dismissAddDebt];
     
 }
 
 - (IBAction)doneButtonPressed:(id)sender {
     
-    NSString *debtNumber = [self.numberTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *debtNumber = [self.ndocTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
     
     double debtSum = [self.sumTextField.text doubleValue];
     
     if ([debtNumber isEqualToString:@""]) {
         
-        [self.numberTextField becomeFirstResponder];
+        [self.ndocTextField becomeFirstResponder];
         
     } else if (debtSum == 0) {
         
         [self.sumTextField becomeFirstResponder];
         
     } else {
-        
-        NSLog(@"OK");
-        
+
+        [self.view endEditing:NO];
+
+        [STMDebtsController addNewDebtWithSum:self.debtSum ndoc:self.debtNdoc date:self.selectedDate outlet:self.parentVC.outlet];
+        [self.parentVC dismissAddDebt];
+
     }
     
 }
@@ -182,11 +189,13 @@
     if ([textField isEqual:self.sumTextField]) {
         
         NSNumber *number = [numberFormatter numberFromString:textField.text];
-//        NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
+        self.debtSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
         
         textField.text = [numberFormatter stringFromNumber:number];
         
-    } else if ([textField isEqual:self.numberTextField]) {
+    } else if ([textField isEqual:self.ndocTextField]) {
+        
+        self.debtNdoc = textField.text;
         
         [self checkSumField];
         
@@ -311,11 +320,11 @@
     
     [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
     
-    self.numberLabel.text = NSLocalizedString(@"DEBT NUMBER", nil);
+    self.ndocLabel.text = NSLocalizedString(@"DEBT NUMBER", nil);
     self.sumLabel.text = NSLocalizedString(@"DEBT SUM", nil);
     
-    self.numberTextField.delegate = self;
-    self.numberTextField.keyboardType = UIKeyboardTypeDefault;
+    self.ndocTextField.delegate = self;
+    self.ndocTextField.keyboardType = UIKeyboardTypeDefault;
     
     self.sumTextField.delegate = self;
     self.sumTextField.keyboardType = UIKeyboardTypeDecimalPad;

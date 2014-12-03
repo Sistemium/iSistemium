@@ -19,6 +19,6 @@
 
 - (void)cashingButtonPressed;
 
-- (void)cancelAddDebt;
+- (void)dismissAddDebt;
 
 @end
