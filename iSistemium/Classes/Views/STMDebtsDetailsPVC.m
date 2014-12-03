@@ -13,6 +13,7 @@
 #import "STMOutletCashingVC.h"
 #import "STMConstants.h"
 #import "STMDebtsCombineVC.h"
+#import "STMAddDebtVC.h"
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
@@ -25,6 +26,9 @@
 @property (nonatomic) NSUInteger nextIndex;
 
 @property (nonatomic, strong) UIBarButtonItem *cashingButton;
+@property (nonatomic, strong) UIBarButtonItem *addDebtButton;
+
+@property (nonatomic, strong) UIPopoverController *addDebtPopover;
 
 @end
 
@@ -92,7 +96,8 @@
             
         }
                 
-        [self editButtonForVC:self.viewControllers[0]];
+//        [self editButtonForVC:self.viewControllers[0]];
+        [self buttonsForVC:self.viewControllers[0]];
 
         [self.popover dismissPopoverAnimated:YES];
 
@@ -152,16 +157,70 @@
     
 }
 
-- (void)editButtonForVC:(UIViewController *)vc {
+- (UIBarButtonItem *)addDebtButton {
     
+    if (!_addDebtButton) {
+        
+        _addDebtButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"ADD DEBT", nil) style:UIBarButtonItemStylePlain target:self action:@selector(addDebtButtonPressed:)];
+        
+    }
+    
+    return _addDebtButton;
+    
+}
+
+- (UIPopoverController *)addDebtPopover {
+    
+    if (!_addDebtPopover) {
+        
+        STMAddDebtVC *addDebtVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addDebtVC"];
+//        uncashingInfoPopover.uncashing = self.uncashing;
+        
+        _addDebtPopover = [[UIPopoverController alloc] initWithContentViewController:addDebtVC];
+        
+    }
+    
+    return _addDebtPopover;
+    
+}
+
+//- (void)editButtonForVC:(UIViewController *)vc {
+//    
+//    if ([vc isKindOfClass:[STMOutletCashingVC class]]) {
+//        
+//        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+//        
+//    } else {
+//        
+//        if (self.outlet) {
+//            self.navigationItem.rightBarButtonItem = self.cashingButton;
+//        }
+//        
+//    }
+//
+//}
+
+- (void)buttonsForVC:(UIViewController *)vc {
+
     if ([vc isKindOfClass:[STMOutletCashingVC class]]) {
         
-        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+        [self setToolbarItems:nil animated:YES];
         
+        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
     } else {
         
         if (self.outlet) {
+            
+            UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+            [self setToolbarItems:@[flexibleSpace, self.addDebtButton] animated:YES];
+            
             self.navigationItem.rightBarButtonItem = self.cashingButton;
+            
+        } else {
+            
+            [self setToolbarItems:nil];
+            
         }
         
     }
@@ -205,6 +264,14 @@
     
 }
 
+- (void)addDebtButtonPressed:(id)sender {
+
+    self.addDebtPopover = nil;
+    [self.addDebtPopover presentPopoverFromBarButtonItem:self.addDebtButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
+
 #pragma mark - Page View Controller Data Source
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
@@ -239,7 +306,9 @@
         
         self.segmentedControl.selectedSegmentIndex = self.currentIndex;
         
-        [self editButtonForVC:pageViewController.viewControllers[0]];
+        [self buttonsForVC:pageViewController.viewControllers[0]];
+//        [self editButtonForVC:pageViewController.viewControllers[0]];
+//        [self toolbarButtonForVC:pageViewController.viewControllers[0]];
         
     }
     
@@ -319,7 +388,8 @@
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:direction animated:YES completion:NULL];
     
-    [self editButtonForVC:vc];
+//    [self editButtonForVC:vc];
+    [self buttonsForVC:vc];
     
 }
 
@@ -327,6 +397,9 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [self setToolbarItems:nil];
+    [self.addDebtButton setTitle:NSLocalizedString(@"ADD DEBT", nil)];
     
     self.dataSource = self;
     self.delegate = self;
