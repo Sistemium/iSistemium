@@ -13,13 +13,11 @@
 #import "STMOutletCashingVC.h"
 #import "STMConstants.h"
 #import "STMDebtsCombineVC.h"
-<<<<<<< HEAD
+
 #import "STMAddDebtVC.h"
 #import "STMDatePickerVC.h"
-=======
 #import "STMCashingProcessController.h"
 #import "STMUI.h"
->>>>>>> extractProcesses
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIPopoverControllerDelegate>
 
@@ -31,15 +29,10 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
-<<<<<<< HEAD
-@property (nonatomic, strong) UIBarButtonItem *cashingButton;
 @property (nonatomic, strong) UIBarButtonItem *addDebtButton;
 @property (nonatomic, strong) UIBarButtonItem *editDebtsButton;
-
 @property (nonatomic, strong) UIPopoverController *addDebtPopover;
-=======
 @property (nonatomic, strong) STMUIBarButtonItemDone *cashingButton;
->>>>>>> extractProcesses
 
 @end
 
@@ -498,13 +491,11 @@
 }
 
 - (void)customInit {
-    
-<<<<<<< HEAD
+
+    [self addObservers];
+
     [self setToolbarItems:nil];
     [self.addDebtButton setTitle:NSLocalizedString(@"ADD DEBT", nil)];
-=======
-    [self addObservers];
->>>>>>> extractProcesses
     
     self.dataSource = self;
     self.delegate = self;

@@ -125,6 +125,9 @@
 		2CFDD7301A29D863003515C5 /* STMClientData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD72F1A29D863003515C5 /* STMClientData.m */; };
 		2CFDD8811A2EADA0003515C5 /* STMAddDebtVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD8801A2EADA0003515C5 /* STMAddDebtVC.m */; };
 		2CFDD8851A2F6270003515C5 /* STMDebtsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD8841A2F6270003515C5 /* STMDebtsController.m */; };
+		2CFDD88A1A308B1C003515C5 /* STMCashingProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD8871A308B1C003515C5 /* STMCashingProcessController.m */; };
+		2CFDD88B1A308B1C003515C5 /* STMUncashingProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD8891A308B1C003515C5 /* STMUncashingProcessController.m */; };
+		2CFDD88E1A308B4C003515C5 /* STMSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD88D1A308B4C003515C5 /* STMSingleton.m */; };
 		CEAB4F59717C484083629622 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6311C3BED44E4D598636BF2C /* libPods.a */; };
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
 		D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */; };
@@ -386,6 +389,12 @@
 		2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDatePickerParent.h; sourceTree = "<group>"; };
 		2CFDD8831A2F6270003515C5 /* STMDebtsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebtsController.h; sourceTree = "<group>"; };
 		2CFDD8841A2F6270003515C5 /* STMDebtsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebtsController.m; sourceTree = "<group>"; };
+		2CFDD8861A308B1C003515C5 /* STMCashingProcessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCashingProcessController.h; sourceTree = "<group>"; };
+		2CFDD8871A308B1C003515C5 /* STMCashingProcessController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCashingProcessController.m; sourceTree = "<group>"; };
+		2CFDD8881A308B1C003515C5 /* STMUncashingProcessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingProcessController.h; sourceTree = "<group>"; };
+		2CFDD8891A308B1C003515C5 /* STMUncashingProcessController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingProcessController.m; sourceTree = "<group>"; };
+		2CFDD88C1A308B4C003515C5 /* STMSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSingleton.h; sourceTree = "<group>"; };
+		2CFDD88D1A308B4C003515C5 /* STMSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSingleton.m; sourceTree = "<group>"; };
 		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
 		D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "christmas_gift-128.png"; sourceTree = "<group>"; };
@@ -432,6 +441,10 @@
 		2C140AC71A19F551002C5C17 /* EntityControllers */ = {
 			isa = PBXGroup;
 			children = (
+				2CFDD8861A308B1C003515C5 /* STMCashingProcessController.h */,
+				2CFDD8871A308B1C003515C5 /* STMCashingProcessController.m */,
+				2CFDD8881A308B1C003515C5 /* STMUncashingProcessController.h */,
+				2CFDD8891A308B1C003515C5 /* STMUncashingProcessController.m */,
 				2CFDD7271A29AF42003515C5 /* STMPicturesController.h */,
 				2CFDD7281A29AF42003515C5 /* STMPicturesController.m */,
 				2CFDD8831A2F6270003515C5 /* STMDebtsController.h */,
@@ -687,6 +700,8 @@
 		2C8EF5D3194085B70021D202 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				2CFDD88C1A308B4C003515C5 /* STMSingleton.h */,
+				2CFDD88D1A308B4C003515C5 /* STMSingleton.m */,
 				2C80C829198FB03C0044ADE4 /* STMConstants.h */,
 				2C297F9519507A01000D9485 /* STMExtendNSLog.h */,
 				2C297F9619507A01000D9485 /* STMExtendNSLog.m */,
@@ -926,6 +941,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CFDD88B1A308B1C003515C5 /* STMUncashingProcessController.m in Sources */,
 				2C8047161A0E381400FEFEFF /* STMUncashingInfoVC.m in Sources */,
 				2C65291019576895008605D9 /* STMArticle.m in Sources */,
 				2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */,
@@ -941,6 +957,7 @@
 				2CA611EC19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m in Sources */,
 				2C53B89F19409E71002298A5 /* STMSession.m in Sources */,
 				2C53B9B019434E1E002298A5 /* STMObjectsController.m in Sources */,
+				2CFDD88E1A308B4C003515C5 /* STMSingleton.m in Sources */,
 				2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */,
 				2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */,
 				2CFDD7291A29AF42003515C5 /* STMPicturesController.m in Sources */,
@@ -962,6 +979,7 @@
 				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,
 				2C8047231A12352F00FEFEFF /* STMUncashingPhotoVC.m in Sources */,
 				2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */,
+				2CFDD88A1A308B1C003515C5 /* STMCashingProcessController.m in Sources */,
 				2CFDD8811A2EADA0003515C5 /* STMAddDebtVC.m in Sources */,
 				2C2968F319A0C31B0038B122 /* STMUncashingSVC.m in Sources */,
 				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,

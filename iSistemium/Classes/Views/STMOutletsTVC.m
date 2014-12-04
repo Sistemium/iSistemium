@@ -17,14 +17,9 @@
 
 #import "STMCashingControlsVC.h"
 #import "STMDebtsCombineVC.h"
-
-<<<<<<< HEAD:iSistemium/Classes/Views/STMOutletsTVC.m
-@interface STMOutletsTVC ()
-=======
 #import "STMCashingProcessController.h"
 
-@interface STMDebtsTVC ()
->>>>>>> extractProcesses:iSistemium/Classes/Views/STMDebtsTVC.m
+@interface STMOutletsTVC ()
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
 //@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
