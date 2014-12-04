@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMDebtsTVC.h"
+#import "STMOutletsTVC.h"
 #import "STMDebtsDetailsPVC.h"
 #import "STMCashingControlsVC.h"
 
 @interface STMDebtsSVC : UISplitViewController
 
-@property (nonatomic, strong) STMDebtsTVC *masterVC;
+@property (nonatomic, strong) STMOutletsTVC *masterVC;
 @property (nonatomic, strong) STMDebtsDetailsPVC *detailVC;
 @property (nonatomic, strong) STMCashingControlsVC *controlsVC;
 

@@ -28,6 +28,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem *cashingButton;
 @property (nonatomic, strong) UIBarButtonItem *addDebtButton;
+@property (nonatomic, strong) UIBarButtonItem *editDebtsButton;
 
 @property (nonatomic, strong) UIPopoverController *addDebtPopover;
 
@@ -170,6 +171,18 @@
     
 }
 
+- (UIBarButtonItem *)editDebtsButton {
+    
+    if (!_editDebtsButton) {
+        
+        _editDebtsButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"EDIT DEBTS", nil) style:UIBarButtonItemStylePlain target:self action:@selector(editDebtsButtonPressed:)];
+        
+    }
+    
+    return _editDebtsButton;
+    
+}
+
 - (UIPopoverController *)addDebtPopover {
     
     if (!_addDebtPopover) {
@@ -215,7 +228,7 @@
         if (self.outlet) {
             
             UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-            [self setToolbarItems:@[flexibleSpace, self.addDebtButton] animated:YES];
+            [self setToolbarItems:@[self.editDebtsButton, flexibleSpace, self.addDebtButton] animated:YES];
             
             self.navigationItem.rightBarButtonItem = self.cashingButton;
             
@@ -233,9 +246,17 @@
     
     [super setEditing:editing animated:animated];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": [NSNumber numberWithBool:editing]}];
+    if (editing) {
+        
+        self.editDebtsButton.title = NSLocalizedString(@"DONE", nil);
+        
+    } else {
+        
+        self.editDebtsButton.title = NSLocalizedString(@"EDIT DEBTS", nil);
+        
+    }
     
-//    NSLog(@"setEditing:editing %d", editing);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": [NSNumber numberWithBool:editing]}];
     
 }
 
@@ -270,6 +291,12 @@
 
     self.addDebtPopover = nil;
     [self.addDebtPopover presentPopoverFromBarButtonItem:self.addDebtButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
+- (void)editDebtsButtonPressed:(id)sender {
+    
+    [self setEditing:!self.editing animated:YES];
     
 }
 

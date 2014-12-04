@@ -79,7 +79,7 @@
 		2C80C826198E505F0044ADE4 /* STMCashingControlsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C825198E505F0044ADE4 /* STMCashingControlsVC.m */; };
 		2C80C8301998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C82F1998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.m */; };
 		2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8369561986714300DA4316 /* STMDebts.storyboard */; };
-		2C83695A1986809900DA4316 /* STMDebtsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8369591986809900DA4316 /* STMDebtsTVC.m */; };
+		2C83695A1986809900DA4316 /* STMOutletsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8369591986809900DA4316 /* STMOutletsTVC.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -282,8 +282,8 @@
 		2C80C82E1998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMFetchedResultsControllerTVC.h; sourceTree = "<group>"; };
 		2C80C82F1998CC7C0044ADE4 /* STMFetchedResultsControllerTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMFetchedResultsControllerTVC.m; sourceTree = "<group>"; };
 		2C8369561986714300DA4316 /* STMDebts.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts.storyboard; sourceTree = "<group>"; };
-		2C8369581986809900DA4316 /* STMDebtsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMDebtsTVC.h; sourceTree = "<group>"; };
-		2C8369591986809900DA4316 /* STMDebtsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMDebtsTVC.m; sourceTree = "<group>"; };
+		2C8369581986809900DA4316 /* STMOutletsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMOutletsTVC.h; sourceTree = "<group>"; };
+		2C8369591986809900DA4316 /* STMOutletsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMOutletsTVC.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -485,8 +485,8 @@
 				2CA4527E195AF6BC00D93CA2 /* STMPhotoVC.m */,
 				2C80C7EF198A3A690044ADE4 /* STMDebtsSVC.h */,
 				2C80C7F0198A3A690044ADE4 /* STMDebtsSVC.m */,
-				2C8369581986809900DA4316 /* STMDebtsTVC.h */,
-				2C8369591986809900DA4316 /* STMDebtsTVC.m */,
+				2C8369581986809900DA4316 /* STMOutletsTVC.h */,
+				2C8369591986809900DA4316 /* STMOutletsTVC.m */,
 				2C80C7F2198A5CF10044ADE4 /* STMDebtsDetailsPVC.h */,
 				2C80C7F3198A5CF10044ADE4 /* STMDebtsDetailsPVC.m */,
 				2C80C815198D1E600044ADE4 /* STMDebtsDetailsVC.h */,
@@ -967,7 +967,7 @@
 				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,
 				2C53B8A619409E71002298A5 /* STMSettingsController.m in Sources */,
 				2CA452E319649C5E00D93CA2 /* STMSetting.m in Sources */,
-				2C83695A1986809900DA4316 /* STMDebtsTVC.m in Sources */,
+				2C83695A1986809900DA4316 /* STMOutletsTVC.m in Sources */,
 				2C9051A21A276E9200EFE40D /* STMDataModel.xcdatamodeld in Sources */,
 				2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */,
 				2CD443EB195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m in Sources */,

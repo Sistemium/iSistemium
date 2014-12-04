@@ -60,6 +60,10 @@
         self.tableVC = (STMOutletDebtsTVC *)[segue destinationViewController];
         self.tableVC.outlet = self.outlet;
         
+        if ([self.parentViewController isKindOfClass:[STMDebtsDetailsPVC class]]) {
+            self.tableVC.parentVC = (STMDebtsDetailsPVC *)self.parentViewController;
+        }
+        
 //    } else if ([segue.identifier isEqualToString: @"controlsVC"]) {
 //     
 //        self.controlsVC = (STMCashingControlsVC *)[segue destinationViewController];

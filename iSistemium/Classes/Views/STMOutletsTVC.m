@@ -1,12 +1,12 @@
 //
-//  STMDebtsTVC.m
+//  STMOutletsTVC.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 28/07/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMDebtsTVC.h"
+#import "STMOutletsTVC.h"
 #import "STMDebtsSVC.h"
 
 #import "STMOutlet.h"
@@ -18,14 +18,14 @@
 #import "STMCashingControlsVC.h"
 #import "STMDebtsCombineVC.h"
 
-@interface STMDebtsTVC ()
+@interface STMOutletsTVC ()
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
 //@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
-@implementation STMDebtsTVC
+@implementation STMOutletsTVC
 
 @synthesize resultsController = _resultsController;
 

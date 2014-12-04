@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--DebtsTVC - Root View Controller-->
+        <!--OutletsTVC - Root View Controller-->
         <scene sceneID="83i-GJ-awZ">
             <objects>
-                <tableViewController clearsSelectionOnViewWillAppear="NO" id="lpz-29-7Oy" customClass="STMDebtsTVC" sceneMemberID="viewController">
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="lpz-29-7Oy" customClass="STMOutletsTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="nB1-6B-azp">
                         <rect key="frame" x="0.0" y="64" width="320" height="788"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

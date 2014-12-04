@@ -127,6 +127,14 @@
     
 }
 
+- (void)editingButtonPressed:(NSNotification *)notification {
+    
+    BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
+    
+    [self.tableView setEditing:editing animated:YES];
+    
+}
+
 
 - (void)updateRowWithDebt:(STMDebt *)debt {
     
@@ -399,7 +407,21 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editingButtonPressed:) name:@"editingButtonPressed" object:self.parentViewController];
+
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
+    
+    [self addObservers];
     
     [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
     self.tableView.allowsSelectionDuringEditing = YES;
@@ -429,7 +451,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
+}
 
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [self.parentVC setEditing:NO animated:YES];
+    
 }
 
 - (void)didReceiveMemoryWarning

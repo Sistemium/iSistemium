@@ -470,8 +470,9 @@
 
             if (sendData) {
                 
-                self.checkSending = (self.syncerState == STMSyncerSendData);
-                [self startConnectionForSendData:sendData];
+//                self.checkSending = (self.syncerState == STMSyncerSendData);
+//                [self startConnectionForSendData:sendData];
+                [self nothingToSend];
                 
             } else {
                 
@@ -567,8 +568,8 @@
         NSError *error;
         NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
         
-//        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-//        NSLog(@"send JSONString %@", JSONString);
+        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+        NSLog(@"send JSONString %@", JSONString);
         
         return JSONData;
 

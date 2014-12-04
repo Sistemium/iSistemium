@@ -1,5 +1,5 @@
 //
-//  STMDebtsTVC.h
+//  STMOutletsTVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 28/07/14.
@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "STMFetchedResultsControllerTVC.h"
 
-@interface STMDebtsTVC : STMFetchedResultsControllerTVC
+@interface STMOutletsTVC : STMFetchedResultsControllerTVC
 
 @end

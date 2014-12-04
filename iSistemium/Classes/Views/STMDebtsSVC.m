@@ -44,7 +44,7 @@
     
 }
 
-- (STMDebtsTVC *)masterVC {
+- (STMOutletsTVC *)masterVC {
     
     if (!_masterVC) {
         
@@ -52,9 +52,9 @@
         
         UIViewController *masterVC = navController.viewControllers[0];
         
-        if ([masterVC isKindOfClass:[STMDebtsTVC class]]) {
+        if ([masterVC isKindOfClass:[STMOutletsTVC class]]) {
             
-            _masterVC = (STMDebtsTVC *)masterVC;
+            _masterVC = (STMOutletsTVC *)masterVC;
             
         }
         
