@@ -408,7 +408,6 @@
             id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
             STMDebt *debt = sectionInfo.objects[indexPath.row];
             
-//            [self.splitVC.controlsVC addCashing:debt];
             [[STMCashingProcessController sharedInstance] addDebt:debt];
 
         }
@@ -429,7 +428,6 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
         STMDebt *debt = sectionInfo.objects[indexPath.row];
         
-//        [self.splitVC.controlsVC removeCashing:debt];
         [[STMCashingProcessController sharedInstance] removeDebt:debt];
         
     }
@@ -467,6 +465,13 @@
 //    
         
     }
+    
+}
+
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    [self.tableView reloadData];
     
 }
 
