@@ -1060,6 +1060,7 @@
     if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
         
         [self updateControlLabels];
+        [self.tableVC.tableView reloadData];
         [self.tableVC.tableView setEditing:YES animated:YES];
         
     }

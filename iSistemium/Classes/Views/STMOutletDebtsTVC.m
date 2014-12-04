@@ -132,6 +132,7 @@
     
     BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
     
+    self.tableView.allowsMultipleSelectionDuringEditing = !editing;
     [self.tableView setEditing:editing animated:YES];
     
 }
@@ -308,48 +309,76 @@
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
     
-    if ([[[STMCashingProcessController sharedInstance].debtsArray lastObject] isEqual:debt]) {
-        
-        cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
-        
-    } else {
-        
-        cell.detailTextLabel.textColor = [UIColor blackColor];
-        
-    }
-
-    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    if ([[[STMCashingProcessController sharedInstance].debtsDictionary allKeys] containsObject:debt.xid]) {
-        
-        NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:debt.xid][1];
-        
-        if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
-            
-            [cell setTintColor:STM_LIGHT_BLUE_COLOR];
-            
-        } else {
-        
-            [cell setTintColor:ACTIVE_BLUE_COLOR];
-
-        }
-        
-        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        
-    } else {
-    
-        [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
-        
-    }
     
     return cell;
     
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
+
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.detailTextLabel.backgroundColor = [UIColor clearColor];
+    
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+        
+        if ([[[STMCashingProcessController sharedInstance].debtsArray lastObject] isEqual:debt]) {
+            
+            cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
+            
+        } else {
+            
+            cell.detailTextLabel.textColor = [UIColor blackColor];
+            
+        }
+        
+        if ([[[STMCashingProcessController sharedInstance].debtsDictionary allKeys] containsObject:debt.xid]) {
+            
+            NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:debt.xid][1];
+            
+            if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
+                
+                [cell setTintColor:STM_LIGHT_BLUE_COLOR];
+                
+            } else {
+                
+                [cell setTintColor:ACTIVE_BLUE_COLOR];
+                
+            }
+            
+            [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            
+        } else {
+            
+            [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+            
+        }
+        
+        CGFloat fillWidth = 0.75 * cell.frame.size.width;
+        CGRect rect = CGRectMake(0, 1, fillWidth, cell.frame.size.height-2);
+        UIView *view = [[UIView alloc] initWithFrame:rect];
+        view.backgroundColor = STM_LIGHT_BLUE_COLOR;
+        view.tag = 1;
+        [[cell.contentView viewWithTag:1] removeFromSuperview];
+        [cell.contentView addSubview:view];
+        [cell.contentView sendSubviewToBack:view];
+        
+    } else {
+        
+        [[cell.contentView viewWithTag:1] removeFromSuperview];
+        cell.textLabel.textColor = [UIColor blackColor];
+        cell.detailTextLabel.textColor = [UIColor blackColor];
+        
+    }
+
+}
+
+
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    if (tableView.editing) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
         
         return UITableViewCellEditingStyleNone;
 
@@ -362,7 +391,14 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    return NO;
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+        
+        return NO;
+        
+    } else {
+        
+        return YES;
+    }
     
 }
 
@@ -410,8 +446,8 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    if (editingStyle == UITableViewCellEditingStyleDelete) {
-//        
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+
 //        STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
 //        
 //        STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:cashing];
@@ -435,8 +471,8 @@
 //            
 //        }
 //    
-//        
-//    }
+        
+    }
     
 }
 
@@ -445,7 +481,7 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editingButtonPressed:) name:@"editingButtonPressed" object:self.parentViewController];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editingButtonPressed:) name:@"editingButtonPressed" object:self.parentVC];
 
 }
 
