@@ -319,6 +319,8 @@
     
     STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
 
+    [[cell.contentView viewWithTag:1] removeFromSuperview];
+
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.detailTextLabel.backgroundColor = [UIColor clearColor];
     
@@ -334,40 +336,32 @@
             
         }
         
+        CGFloat fillWidth = 0;
+        
         if ([[[STMCashingProcessController sharedInstance].debtsDictionary allKeys] containsObject:debt.xid]) {
             
             NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:debt.xid][1];
             
-            if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
-                
-                [cell setTintColor:STM_LIGHT_BLUE_COLOR];
-                
-            } else {
-                
-                [cell setTintColor:ACTIVE_BLUE_COLOR];
-                
-            }
+            fillWidth = [[cashingSum decimalNumberByDividingBy:debt.summ] doubleValue];
             
-            [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-            
-        } else {
-            
-            [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+//            [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
             
         }
-        
-        CGFloat fillWidth = 0.75 * cell.frame.size.width;
-        CGRect rect = CGRectMake(0, 1, fillWidth, cell.frame.size.height-2);
-        UIView *view = [[UIView alloc] initWithFrame:rect];
-        view.backgroundColor = STM_LIGHT_BLUE_COLOR;
-        view.tag = 1;
-        [[cell.contentView viewWithTag:1] removeFromSuperview];
-        [cell.contentView addSubview:view];
-        [cell.contentView sendSubviewToBack:view];
+
+        if (fillWidth != 0) {
+            
+            fillWidth = fillWidth * cell.frame.size.width;
+            CGRect rect = CGRectMake(0, 1, fillWidth, cell.frame.size.height-2);
+            UIView *view = [[UIView alloc] initWithFrame:rect];
+            view.backgroundColor = STM_SUPERLIGHT_BLUE_COLOR;
+            view.tag = 1;
+            [cell.contentView addSubview:view];
+            [cell.contentView sendSubviewToBack:view];
+
+        }
         
     } else {
         
-        [[cell.contentView viewWithTag:1] removeFromSuperview];
         cell.textLabel.textColor = [UIColor blackColor];
         cell.detailTextLabel.textColor = [UIColor blackColor];
         
