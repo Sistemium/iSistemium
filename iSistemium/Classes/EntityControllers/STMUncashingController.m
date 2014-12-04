@@ -23,16 +23,16 @@
 
 @implementation STMUncashingController
 
-+ (STMUncashingController *)sharedController {
++ (STMUncashingController *)sharedInstance {
     
     static dispatch_once_t pred = 0;
-    __strong static id _sharedController = nil;
+    __strong static id _sharedInstance = nil;
     
     dispatch_once(&pred, ^{
-        _sharedController = [[self alloc] init];
+        _sharedInstance = [[self alloc] init];
     });
     
-    return _sharedController;
+    return _sharedInstance;
     
 }
 

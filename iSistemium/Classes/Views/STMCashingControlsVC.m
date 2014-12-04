@@ -9,18 +9,20 @@
 #import "STMCashingControlsVC.h"
 #import "STMConstants.h"
 #import "STMDebtsSVC.h"
-#import "STMDocument.h"
-#import "STMSessionManager.h"
+//#import "STMDocument.h"
+//#import "STMSessionManager.h"
 #import "STMSyncer.h"
 #import "STMCashing.h"
 #import "STMDebt+Cashing.h"
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
+#import "STMCashingProcessController.h"
+#import "STMUI.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
 
 //@property (weak, nonatomic) IBOutlet UIView *controlsView;
-@property (weak, nonatomic) IBOutlet UIButton *doneButton;
+//@property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UILabel *summLabel;
 @property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
 @property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
@@ -37,14 +39,14 @@
 
 @property (nonatomic, strong) UIToolbar *keyboardToolbar;
 
-@property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
-@property (nonatomic, strong) NSDecimalNumber *remainderSumm;
+//@property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
+//@property (nonatomic, strong) NSDecimalNumber *remainderSumm;
 @property (nonatomic, strong) NSString *initialTextFieldValue;
-@property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
+//@property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
 
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
-@property (nonatomic, strong) STMDocument *document;
+//@property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMDebt *selectedDebt;
 
 @end
@@ -67,53 +69,53 @@
     
 }
 
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
-    
-}
+//- (STMDocument *)document {
+//    
+//    if (!_document) {
+//        
+//        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
+//        
+//    }
+//    
+//    return _document;
+//    
+//}
 
-- (NSMutableDictionary *)debtsDictionary {
-    
-    if (!_debtsDictionary) {
-        
-        _debtsDictionary = [NSMutableDictionary dictionary];
-        
-    }
-    
-    return _debtsDictionary;
-    
-}
-
-- (NSMutableDictionary *)commentsDictionary {
-    
-    if (!_commentsDictionary) {
-        
-        _commentsDictionary = [NSMutableDictionary dictionary];
-        
-    }
-    
-    return _commentsDictionary;
-    
-}
-
-- (NSMutableArray *)debtsArray {
-    
-    if (!_debtsArray) {
-        
-        _debtsArray = [NSMutableArray array];
-        
-    }
-    
-    return _debtsArray;
-    
-}
+//- (NSMutableDictionary *)debtsDictionary {
+//    
+//    if (!_debtsDictionary) {
+//        
+//        _debtsDictionary = [NSMutableDictionary dictionary];
+//        
+//    }
+//    
+//    return _debtsDictionary;
+//    
+//}
+//
+//- (NSMutableDictionary *)commentsDictionary {
+//    
+//    if (!_commentsDictionary) {
+//        
+//        _commentsDictionary = [NSMutableDictionary dictionary];
+//        
+//    }
+//    
+//    return _commentsDictionary;
+//    
+//}
+//
+//- (NSMutableArray *)debtsArray {
+//    
+//    if (!_debtsArray) {
+//        
+//        _debtsArray = [NSMutableArray array];
+//        
+//    }
+//    
+//    return _debtsArray;
+//    
+//}
 
 - (UIToolbar *)keyboardToolbar {
     
@@ -146,7 +148,7 @@
         
         if (_outlet) {
             
-            self.debtsDictionary = nil;
+//            self.debtsDictionary = nil;
             self.debtSummTextField.delegate = nil;
 //            [self.controlsView endEditing:YES];
             self.debtSummTextField.delegate = self;
@@ -162,6 +164,8 @@
     if (_selectedDate != selectedDate) {
         
         _selectedDate = selectedDate;
+        
+        [STMCashingProcessController sharedInstance].selectedDate = selectedDate;
         
         [self refreshDateButtonTitle];
         
@@ -189,7 +193,7 @@
             
             self.debtInfoLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
 
-            NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:selectedDebt.xid][1];
+            NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:selectedDebt.xid][1];
             
             NSMutableString *cashingSumString = [[numberFormatter stringFromNumber:cashingSum] mutableCopy];
             
@@ -198,7 +202,7 @@
             self.debtSumLabel.hidden = NO;
             self.commentTextView.hidden = NO;
             
-            NSString *commentText = [self.commentsDictionary objectForKey:selectedDebt.xid];
+            NSString *commentText = [[STMCashingProcessController sharedInstance].commentsDictionary objectForKey:selectedDebt.xid];
             
             if (commentText) {
                 
@@ -234,10 +238,35 @@
     dateFormatter.dateStyle = NSDateFormatterLongStyle;
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
-    [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
+    [self.dateButton setTitle:[dateFormatter stringFromDate:[STMCashingProcessController sharedInstance].selectedDate] forState:UIControlStateNormal];
     
 }
 
+- (void)debtAdded:(NSNotification *)notification {
+    
+    [self toolbarDoneButtonPressed];
+
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    
+    if (debt) {
+        
+        NSMutableArray *debtsArray = [[STMCashingProcessController sharedInstance].debtsArray mutableCopy];
+        [debtsArray removeObject:debtsArray.lastObject];
+        
+        STMDebt *lastDebt = [debtsArray lastObject];
+        
+        self.selectedDebt = debt;
+        
+        [self.tableVC updateRowWithDebt:lastDebt];
+        [self.tableVC updateRowWithDebt:debt];
+        
+        [self updateControlLabels];
+        
+    }
+    
+}
+
+/*
 - (void)addCashing:(STMDebt *)debt {
     
     if (debt) {
@@ -252,14 +281,16 @@
 //        self.debtSummTextField.hidden = NO;
 //        self.debtSumLabel.hidden = NO;
 
-        STMDebt *lastDebt = [self.debtsArray lastObject];
+        STMDebt *lastDebt = [[STMCashingProcessController sharedInstance].debtsArray lastObject];
 
-        [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
-        [self.debtsArray addObject:debt];
+//        [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
+//        [self.debtsArray addObject:debt];
+        
+//        [[STMCashingProcessController sharedInstance] addDebt:debt];
         
         self.selectedDebt = debt;
         
-        self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
+//        self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
         
         [self.tableVC updateRowWithDebt:lastDebt];
         [self.tableVC updateRowWithDebt:debt];
@@ -269,10 +300,32 @@
     }
     
 }
+*/
 
+- (void)debtRemoved:(NSNotification *)notification {
+    
+    [self toolbarDoneButtonPressed];
+
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+
+    if (debt) {
+        
+        self.debtSummTextField.delegate = nil;
+        self.debtSummTextField.delegate = self;
+
+        self.selectedDebt = [[STMCashingProcessController sharedInstance].debtsArray lastObject];
+
+        [self.tableVC updateRowWithDebt:debt];
+        [self updateControlLabels];
+
+    }
+    
+}
+
+/*
 - (void)removeCashing:(STMDebt *)debt {
     
-    if (debt && [[self.debtsDictionary allKeys] containsObject:debt.xid]) {
+    if (debt && [[STMCashingProcessController sharedInstance].debtsArray containsObject:debt]) {
         
 //        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
 //        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
@@ -285,12 +338,14 @@
 //        [self.controlsView endEditing:YES];
         self.debtSummTextField.delegate = self;
 
-        [self.debtsDictionary removeObjectForKey:debt.xid];
-        [self.debtsArray removeObject:debt];
+//        [self.debtsDictionary removeObjectForKey:debt.xid];
+//        [self.debtsArray removeObject:debt];
+
+//        [[STMCashingProcessController sharedInstance] removeDebt:debt];
         
-        self.selectedDebt = [self.debtsArray lastObject];
+        self.selectedDebt = [[STMCashingProcessController sharedInstance].debtsArray lastObject];
         
-        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+//        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
         
         [self.tableVC updateRowWithDebt:debt];
         [self updateControlLabels];
@@ -298,23 +353,27 @@
     }
     
 }
+*/
 
-
-#pragma mark - buttons pressed
-
-- (IBAction)cashingButtonPressed:(id)sender {
-
-    if (self.splitVC.detailVC.isCashingProcessing) {
-        
-        [self updateControlLabels];
-        [self.tableVC.tableView setEditing:YES animated:YES];
-
-    } else {
-        
-        [self dismissSelf];
-        
-    }
+- (void)updateDebtsArray:(NSNotification *)notification {
     
+    STMDebt *updateDebt = [notification.userInfo objectForKey:@"updateDebt"];
+    STMDebt *selectDebt = [notification.userInfo objectForKey:@"selectDebt"];
+    
+    [self.tableVC updateRowWithDebt:updateDebt];
+    self.selectedDebt = selectDebt;
+
+}
+
+- (void)cashingProcessCancel {
+    
+    [self dismissSelf];
+    
+}
+
+- (void)cashingProcessDone {
+    
+    [self dismissSelf];
     
 }
 
@@ -327,6 +386,10 @@
     
 }
 
+
+#pragma mark - buttons pressed
+
+/*
 - (IBAction)doneButtonPressed:(id)sender {
 
     if ([self.debtSummTextField isFirstResponder]) {
@@ -335,7 +398,7 @@
         
     } else {
         
-        if ([self.remainderSumm doubleValue] == 0) {
+        if ([[STMCashingProcessController sharedInstance].remainderSumm doubleValue] == 0) {
             
             [self saveCashings];
             [self dismissSelf];
@@ -352,6 +415,7 @@
     }
     
 }
+*/
 
 - (void)toolbarDoneButtonPressed {
     
@@ -393,7 +457,7 @@
 
 - (void)updateControlLabels {
     
-    if ([self.cashingSummLimit doubleValue] > 0) {
+    if ([[STMCashingProcessController sharedInstance].cashingSummLimit doubleValue] > 0) {
 
         [self controlLabelsWithCashingLimit];
         
@@ -405,35 +469,35 @@
     
 }
 
-- (NSDecimalNumber *)fillingSumProcessing {
-
-    NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
-
-    STMDebt *lastDebt = [self.debtsArray lastObject];    
-    if (lastDebt) {
-        
-        NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:lastDebt.xid][1];
-        fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
-        
-    }
-    
-    if ([fillingSumm doubleValue] < 0) {
-        
-        [self.debtsArray removeObject:lastDebt];
-        [self.debtsDictionary removeObjectForKey:lastDebt.xid];
-        [self.tableVC updateRowWithDebt:lastDebt];
-        self.remainderSumm = fillingSumm;
-        self.selectedDebt = [self.debtsArray lastObject];
-        
-        return [self fillingSumProcessing];
-        
-    } else {
-        
-        return fillingSumm;
-        
-    }
-    
-}
+//- (NSDecimalNumber *)fillingSumProcessing {
+//
+//    NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
+//
+//    STMDebt *lastDebt = [self.debtsArray lastObject];    
+//    if (lastDebt) {
+//        
+//        NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:lastDebt.xid][1];
+//        fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
+//        
+//    }
+//    
+//    if ([fillingSumm doubleValue] < 0) {
+//        
+//        [self.debtsArray removeObject:lastDebt];
+//        [self.debtsDictionary removeObjectForKey:lastDebt.xid];
+//        [self.tableVC updateRowWithDebt:lastDebt];
+//        self.remainderSumm = fillingSumm;
+//        self.selectedDebt = [self.debtsArray lastObject];
+//        
+//        return [self fillingSumProcessing];
+//        
+//    } else {
+//        
+//        return fillingSumm;
+//        
+//    }
+//    
+//}
 
 - (void)controlLabelsWithCashingLimit {
     
@@ -442,15 +506,15 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     
-    if ([self.remainderSumm doubleValue] <= 0) {
+    if ([[STMCashingProcessController sharedInstance].remainderSumm doubleValue] <= 0) {
         
-        NSDecimalNumber *fillingSumm = [self fillingSumProcessing];
+        NSDecimalNumber *fillingSumm = [[STMCashingProcessController sharedInstance] fillingSumProcessing];
 
         numberFormatter.minimumFractionDigits = 2;
         self.debtSummTextField.text = [numberFormatter stringFromNumber:fillingSumm];
         self.remainderLabel.textColor = [UIColor redColor];
         
-        [self.debtsDictionary setObject:@[self.selectedDebt, fillingSumm] forKey:self.selectedDebt.xid];
+//        [[STMCashingProcessController sharedInstance].debtsDictionary setObject:@[self.selectedDebt, fillingSumm] forKey:self.selectedDebt.xid];
         [self.tableVC updateRowWithDebt:self.selectedDebt];
         
         numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -459,12 +523,12 @@
         
         self.cashingLimitIsReached = YES;
         
-        self.remainderSumm = [NSDecimalNumber zero];
+//        [STMCashingProcessController sharedInstance].remainderSumm = [NSDecimalNumber zero];
         
     } else {
         
         numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-        NSString *remainderSumString = [numberFormatter stringFromNumber:self.remainderSumm];
+        NSString *remainderSumString = [numberFormatter stringFromNumber:[STMCashingProcessController sharedInstance].remainderSumm];
         self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
         self.remainderLabel.textColor = [UIColor blackColor];
         
@@ -488,17 +552,9 @@
 
 - (void)showCashingSumLabel {
     
-    NSDecimalNumber *sum = [NSDecimalNumber zero];
+    NSDecimalNumber *sum = [[STMCashingProcessController sharedInstance] debtsSumm];
     
-    for (NSArray *debtValues in [self.debtsDictionary allValues]) {
-        
-        NSDecimalNumber *cashing = debtValues[1];
-        
-        sum = [sum decimalNumberByAdding:cashing];
-        
-    }
-    
-    self.doneButton.enabled = (sum.floatValue > 0);
+//    self.doneButton.enabled = (sum.floatValue > 0);
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -507,22 +563,22 @@
 
 }
 
-- (NSDecimalNumber *)debtsSumm {
-    
-    NSDecimalNumber *sum = [NSDecimalNumber zero];
-
-    for (NSArray *debtValues in [self.debtsDictionary allValues]) {
-        
-        NSDecimalNumber *cashing = debtValues[1];
-        
-        sum = [sum decimalNumberByAdding:cashing];
-        
-    }
-    
-    return sum;
-    
-}
-
+//- (NSDecimalNumber *)debtsSumm {
+//    
+//    NSDecimalNumber *sum = [NSDecimalNumber zero];
+//
+//    for (NSArray *debtValues in [self.debtsDictionary allValues]) {
+//        
+//        NSDecimalNumber *cashing = debtValues[1];
+//        
+//        sum = [sum decimalNumberByAdding:cashing];
+//        
+//    }
+//    
+//    return sum;
+//    
+//}
+/*
 #pragma mark - save cashings
 
 - (void)saveCashings {
@@ -558,7 +614,7 @@
 
     
 }
-
+*/
 
 #pragma mark - UITextFieldDelegate
 
@@ -598,20 +654,18 @@
         NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
         NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
         
-        [self.debtsDictionary setObject:@[self.selectedDebt, cashingSum] forKey:self.selectedDebt.xid];
+        [[STMCashingProcessController sharedInstance] setCashingSum:cashingSum forDebt:self.selectedDebt];
         
         [self.tableVC updateRowWithDebt:self.selectedDebt];
         
         self.debtSummTextField.text = [numberFormatter stringFromNumber:number];
         
-        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
-        
     } else if ([textField isEqual:self.cashingSummTextField]) {
         
         NSNumber *number = [numberFormatter numberFromString:self.cashingSummTextField.text];
         self.cashingSummTextField.text = [numberFormatter stringFromNumber:number];
-        self.cashingSummLimit = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
-        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+
+        [STMCashingProcessController sharedInstance].cashingSummLimit = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
         
     }
     
@@ -778,17 +832,21 @@
             
             [self wipeCommentText];
             
-            if (self.selectedDebt.xid) {
-                [self.commentsDictionary removeObjectForKey:self.selectedDebt.xid];
-            }
+            text = nil;
             
-        } else {
-            
-            if (self.selectedDebt.xid) {
-                [self.commentsDictionary setObject:text forKey:self.selectedDebt.xid];
-            }
+//            if (self.selectedDebt.xid) {
+//                [self.commentsDictionary removeObjectForKey:self.selectedDebt.xid];
+//            }
+//            
+//        } else {
+//            
+//            if (self.selectedDebt.xid) {
+//                [self.commentsDictionary setObject:text forKey:self.selectedDebt.xid];
+//            }
             
         }
+
+        [[STMCashingProcessController sharedInstance] setComment:text forDebt:self.selectedDebt];
         
         if (self.textViewIsShifted) {
             
@@ -898,9 +956,45 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed:) name:@"cashingButtonPressed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessCancel)
+                                                 name:@"cashingProcessCancel"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessDone)
+                                                 name:@"cashingProcessDone"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(debtAdded:)
+                                                 name:@"debtAdded"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(debtRemoved:)
+                                                 name:@"debtRemoved"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateDebtsArray:)
+                                                 name:@"updateDebtsArray"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(toolbarDoneButtonPressed)
+                                                 name:@"textFieldsShouldResignResponder"
+                                               object:nil];
     
 }
 
@@ -912,16 +1006,9 @@
 
 #pragma mark - view lifecycle
 
-- (void)customInit {
+- (void)labelsInit {
     
-    self.title = NSLocalizedString(@"CASHING", nil);
-    
-    self.splitVC.controlsVC = self;
-
-    [self.navigationItem setHidesBackButton:YES animated:YES];
-
     self.selectedDate = [NSDate date];
-    
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -932,7 +1019,7 @@
     //    self.cashingSummTextField.hidden = YES;
     self.cashingSummTextField.placeholder = NSLocalizedString(@"CASHING SUMM PLACEHOLDER", nil);
     self.cashingSummTextField.delegate = self;
-        
+    
     self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), @""];
     
     self.debtInfoLabel.text = nil;
@@ -943,20 +1030,39 @@
     self.debtSummTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.debtSummTextField.hidden = YES;
     self.debtSummTextField.delegate = self;
-
+    
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), [numberFormatter stringFromNumber:[NSDecimalNumber zero]]];
-
+    
     self.commentTextView.delegate = self;
     self.commentTextView.layer.borderWidth = 1.0f;
     self.commentTextView.layer.borderColor = [GREY_LINE_COLOR CGColor];
     self.commentTextView.layer.cornerRadius = 5.0f;
     self.commentTextView.hidden = YES;
     [self wipeCommentText];
+    
+//    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
+//    self.doneButton.enabled = NO;
+    
+}
 
-    [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
-    self.doneButton.enabled = NO;
+- (void)customInit {
+    
+    self.title = NSLocalizedString(@"CASHING", nil);
+    
+    self.splitVC.controlsVC = self;
 
-    [self cashingButtonPressed:nil];
+    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:[STMCashingProcessController sharedInstance] action:@selector(cancelCashingProcess)];
+
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+
+    [self labelsInit];
+
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+        
+        [self updateControlLabels];
+        [self.tableVC.tableView setEditing:YES animated:YES];
+        
+    }
 
 }
 

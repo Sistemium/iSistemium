@@ -97,10 +97,14 @@
 "SELECT UNCASHING PLACE" = "Выберите кассу";
 "NO CASH DESK" = "Нет доступных касс";
 "REM SUM NOT NULL" = "Не выбран остаток суммы подбора";
+<<<<<<< HEAD
 "ADD DEBT" = "Добавить долг";
 "DOC NUMBER" = "Номер документа: ";
 "DEBT SUM" = "Сумма долга: ";
 "EDIT DEBTS" = "Удалить долг";
+=======
+"CASHING SUM IS NULL" = "Нулевая сумма сбора";
+>>>>>>> extractProcesses
 
 
 

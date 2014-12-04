@@ -16,6 +16,7 @@
 #import "STMObjectsController.h"
 #import "STMUncashingInfoVC.h"
 #import "STMTableViewCell.h"
+#import "STMUncashingProcessController.h"
 
 @interface STMUncashingDetailsTVC ()
 
@@ -56,11 +57,11 @@
         
         if (_uncashing) {
             
-            self.handOverButton.enabled = NO;
+            self.uncashingProcessButton.enabled = NO;
             
         } else {
             
-            self.handOverButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
+            self.uncashingProcessButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
 
         }
         
@@ -149,18 +150,6 @@
     
 }
 
-- (NSMutableDictionary *)cashingDictionary {
-    
-    if (!_cashingDictionary) {
-        
-        _cashingDictionary = [NSMutableDictionary dictionary];
-        
-    }
-    
-    return _cashingDictionary;
-    
-}
-
 - (UIPopoverController *)uncashingInfoPopover {
     
     if (!_uncashingInfoPopover) {
@@ -183,27 +172,27 @@
     
 }
 
-- (void)handOverButtonPressed {
-    
-    if (!self.splitVC.isUncashingHandOverProcessing) {
+- (void)uncashingProcessButtonPressed {
 
-        [self startUncashingProcess];
+    if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessIdle) {
         
-    } else {
-
+        [[STMUncashingProcessController sharedInstance] startWithCashings:self.resultsController.fetchedObjects];
+        
+    } else if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessRunning) {
+        
+        [[STMUncashingProcessController sharedInstance] checkUncashing];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingDoneButtonPressed" object:self userInfo:nil];
         
     }
     
 }
 
-- (void)startUncashingProcess {
+- (void)uncashingProcessStart {
     
     [self.tableView setEditing:YES animated:YES];
     
     for (STMCashing *cashing in self.resultsController.fetchedObjects) {
         
-        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
         
         [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
@@ -211,7 +200,7 @@
         
     }
     
-    [self.handOverButton setTitle:NSLocalizedString(@"DONE", nil)];
+    [self.uncashingProcessButton setTitle:NSLocalizedString(@"DONE", nil)];
     
     if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
         
@@ -219,73 +208,20 @@
 
     }
     
-    self.splitVC.isUncashingHandOverProcessing = YES;
-    
 }
 
-- (void)cancelUncashingProcess {
+- (void)uncashingProcessCancel {
     
-    self.cashingDictionary = nil;
-    [self finishUncashingProcess];
+    [self uncashingProcessDone];
 
 }
 
-- (void)finishUncashingProcess {
+- (void)uncashingProcessDone {
     
     [self.tableView setEditing:NO animated:YES];
-    [self.handOverButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
-    
-    self.splitVC.isUncashingHandOverProcessing = NO;
-    
-}
-
-- (void)uncashingDoneWithSum:(NSDecimalNumber *)summ image:(UIImage *)image type:(NSString *)type comment:(NSString *)comment place:(STMUncashingPlace *)place {
-    
-    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
-    
-    NSArray *cashings = [self.cashingDictionary allValues];
-    
-    for (STMCashing *cashing in cashings) {
-        
-        cashing.uncashing = uncashing;
-        
-    }
-    
-    uncashing.summOrigin = self.splitVC.masterVC.cashingSum;
-    uncashing.summ = summ;
-    uncashing.date = [NSDate date];
-    
-    if (image) {
-
-        STMUncashingPicture *picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
-        
-        [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
-        
-        [uncashing addPicturesObject:picture];
-
-    }
-    
-    if (place) {
-        
-        uncashing.uncashingPlace = place;
-        
-    }
-    
-    uncashing.type = type;
-    uncashing.commentText = comment;
-    
-    [self.document saveDocument:^(BOOL success) {
-        if (success) {
-            
-            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-            syncer.syncerState = STMSyncerSendDataOnce;
-            
-        }
-    }];
+    [self.uncashingProcessButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
     
     [self setInfoLabelTitle];
-//    [self handOverButtonPressed];
-    [self finishUncashingProcess];
     [self.splitVC.masterVC selectRowWithUncashing:nil];
     
 }
@@ -419,7 +355,7 @@
     cell.detailTextLabel.attributedText = text;
     
     
-    if ([[self.cashingDictionary allKeys] containsObject:cashing.xid]) {
+    if ([[STMUncashingProcessController sharedInstance] hasCashingWithXid:cashing.xid]) {
         
         cell.tintColor = ACTIVE_BLUE_COLOR;
         
@@ -460,10 +396,8 @@
     if (tableView.editing) {
 
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
-        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+        [[STMUncashingProcessController sharedInstance] addCashing:cashing];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
         
     }
     
@@ -476,10 +410,8 @@
     if (tableView.editing) {
         
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
-        [self.cashingDictionary removeObjectForKey:cashing.xid];
+        [[STMUncashingProcessController sharedInstance] removeCashing:cashing];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
 
     }
     
@@ -500,11 +432,27 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessStart) name:@"uncashingProcessStart" object:[STMUncashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessCancel) name:@"uncashingProcessCancel" object:[STMUncashingProcessController sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessDone) name:@"uncashingProcessDone" object:[STMUncashingProcessController sharedInstance]];    
+
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
     
-    self.handOverButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(handOverButtonPressed)];
+    [self addObservers];
     
-    self.navigationItem.rightBarButtonItem = self.handOverButton;
+    self.uncashingProcessButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(uncashingProcessButtonPressed)];
+    
+    self.navigationItem.rightBarButtonItem = self.uncashingProcessButton;
 
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
