@@ -405,6 +405,39 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+//    if (editingStyle == UITableViewCellEditingStyleDelete) {
+//        
+//        STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
+//        
+//        STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:cashing];
+//        recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+//        
+//        [self.document.managedObjectContext deleteObject:cashing];
+//        
+//        [self.document saveDocument:^(BOOL success) {
+//            
+//            if (success) {
+//                
+//            }
+//            
+//        }];
+//        
+//        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+//            
+//            STMDebtsSVC *splitVC = (STMDebtsSVC *)self.splitViewController;
+//            NSIndexPath *indexPath = [splitVC.masterVC.resultsController indexPathForObject:self.outlet];
+//            [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+//            
+//        }
+//    
+//        
+//    }
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
