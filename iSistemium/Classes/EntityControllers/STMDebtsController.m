@@ -37,5 +37,11 @@
     
 }
 
++ (void)removeDebt:(STMDebt *)debt {
+
+    [STMObjectsController removeObject:debt];
+
+}
+
 
 @end

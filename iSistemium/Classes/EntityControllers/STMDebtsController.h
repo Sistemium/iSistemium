@@ -16,4 +16,6 @@
                           date:(NSDate *)date
                         outlet:(STMOutlet *)outlet;
 
++ (void)removeDebt:(STMDebt *)debt;
+
 @end

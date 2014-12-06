@@ -17,10 +17,10 @@
 #import "STMTableViewCell.h"
 #import "STMDebtsSVC.h"
 #import "STMCashingProcessController.h"
+#import "STMDebtsController.h"
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
-//@property (nonatomic, strong) STMDebtsCombineVC *parentVC;
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
@@ -31,12 +31,6 @@
 @implementation STMOutletDebtsTVC
 
 @synthesize resultsController = _resultsController;
-
-//- (STMDebtsCombineVC *)parentVC {
-//    
-//    return (STMDebtsCombineVC *)self.parentViewController;
-//    
-//}
 
 - (STMDebtsSVC *)splitVC {
     
@@ -65,34 +59,9 @@
     
 }
 
-/*
-- (NSDecimalNumber *)totalSum {
-    
-    if (!_totalSum) {
-    
-        NSDecimalNumber *totalSum = [NSDecimalNumber zero];
-        
-        for (STMDebt *debt in self.resultsController.fetchedObjects) {
-            
-            totalSum = [totalSum decimalNumberByAdding:debt.calculatedSum];
-            
-        }
-        
-//        NSLog(@"totalSum %@", totalSum);
-        
-        _totalSum = totalSum;
-        
-    }
-    
-    return _totalSum;
-    
-}
-*/
-
 - (void)performFetch {
     
     self.resultsController = nil;
-//    self.totalSum = nil;
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
@@ -451,29 +420,18 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
 
-//        STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
-//        
-//        STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:cashing];
-//        recordStatus.isRemoved = [NSNumber numberWithBool:YES];
-//        
-//        [self.document.managedObjectContext deleteObject:cashing];
-//        
-//        [self.document saveDocument:^(BOOL success) {
-//            
-//            if (success) {
-//                
-//            }
-//            
-//        }];
-//        
-//        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
-//            
-//            STMDebtsSVC *splitVC = (STMDebtsSVC *)self.splitViewController;
-//            NSIndexPath *indexPath = [splitVC.masterVC.resultsController indexPathForObject:self.outlet];
-//            [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-//            
-//        }
-//    
+        STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
+
+        [STMDebtsController removeDebt:debt];
+        
+        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+            
+            STMDebtsSVC *splitVC = (STMDebtsSVC *)self.splitViewController;
+            NSIndexPath *indexPath = [splitVC.masterVC.resultsController indexPathForObject:self.outlet];
+            [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            
+        }
+    
         
     }
     

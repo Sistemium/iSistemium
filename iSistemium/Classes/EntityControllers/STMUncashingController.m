@@ -49,29 +49,10 @@
 
 - (void)removeUncashing:(STMUncashing *)uncashing {
 
-    STMRecordStatus *uncashingRecordStatus = [STMObjectsController recordStatusForObject:uncashing];
-    uncashingRecordStatus.isRemoved = [NSNumber numberWithBool:YES];
-    
-    for (STMUncashingPicture *picture in uncashing.pictures) {
+    for (STMUncashingPicture *picture in uncashing.pictures) [STMObjectsController removeObject:picture];
+
+    [STMObjectsController removeObject:uncashing];
         
-        STMRecordStatus *pictureRecordStatus = [STMObjectsController recordStatusForObject:picture];
-        pictureRecordStatus.isRemoved = [NSNumber numberWithBool:YES];
-        
-        [self.document.managedObjectContext deleteObject:picture];
-        
-    }
-    
-    [self.document.managedObjectContext deleteObject:uncashing];
-    [self.document saveDocument:^(BOOL success) {
-        
-        if (success) {
-            
-            [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendDataOnce;
-            
-        }
-        
-    }];
-    
 }
 
 @end

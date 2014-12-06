@@ -28,6 +28,7 @@
 
 + (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
 
++ (STMRecordStatus *)removeObject:(NSManagedObject *)object;
 + (void)removeAllObjects;
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
@@ -36,6 +37,7 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
+
 + (NSUInteger)unreadMessagesCount;
 + (NSArray *)entityNamesForSyncing;
 + (NSArray *)localDataModelEntityNames;

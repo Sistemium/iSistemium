@@ -1096,6 +1096,27 @@
 
 #pragma mark - flushing
 
++ (STMRecordStatus *)removeObject:(NSManagedObject *)object {
+    
+    STMRecordStatus *recordStatus = [self recordStatusForObject:object];
+    recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    
+    [self.document.managedObjectContext deleteObject:object];
+    [self.document saveDocument:^(BOOL success) {
+        
+        if (success) {
+            
+            [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendDataOnce;
+            
+        }
+        
+    }];
+
+    return recordStatus;
+
+}
+
+
 + (void)removeAllObjects {
     
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:@"reload data" type:nil];
