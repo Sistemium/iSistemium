@@ -91,7 +91,24 @@
         _cashingSummLimit = cashingSummLimit;
         
         self.remainderSumm = [cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+        
+    }
+    
+}
 
+- (void)setRemainderSumm:(NSDecimalNumber *)remainderSumm {
+    
+    if (_remainderSumm != remainderSumm) {
+        
+        _remainderSumm = remainderSumm;
+        
+        if ([remainderSumm doubleValue] < 0) {
+            
+            [self fillingSumProcessing];
+            
+        }
+
+        
     }
     
 }
@@ -151,29 +168,56 @@
 
 - (void)addDebt:(STMDebt *)debt {
     
-    if (debt.xid) {
+    NSLog(@"addDebt %@ %@", debt.summ, debt.calculatedSum);
+    
+    if (![self.debtsArray containsObject:debt]) {
         
-        [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
+        if (debt.xid) {
+            
+            [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
+            [self.debtsArray addObject:debt];
+            
+            STMDebt *previousDebt = (self.debtsArray.lastObject) ? self.debtsArray.lastObject : [NSNull null];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"debtAdded" object:self userInfo:@{@"debt": debt, @"previousDebt": previousDebt}];
+
+            self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
+            
+        }
+        
+    } else {
+        
+        [self.debtsArray removeObject:debt];
         [self.debtsArray addObject:debt];
         
-        self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"debtAdded" object:self userInfo:@{@"debt": debt}];
-
     }
     
 }
 
+- (void)setCashingSum:(NSDecimalNumber *)cashingSum forDebt:(STMDebt *)debt {
+    
+    [self.debtsDictionary setObject:@[debt, cashingSum] forKey:debt.xid];
+    
+    self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingSumChanged" object:self userInfo:@{@"debt": debt, @"cashingSum": cashingSum}];
+    
+}
+
 - (void)removeDebt:(STMDebt *)debt {
+
+    NSLog(@"removeDebt %@", debt.summ);
 
     if (debt.xid && [self.debtsArray containsObject:debt]) {
         
         [self.debtsDictionary removeObjectForKey:debt.xid];
         [self.debtsArray removeObject:debt];
         
+        STMDebt *selectedDebt = (self.debtsArray.lastObject) ? self.debtsArray.lastObject : [NSNull null];
+        
         self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"debtRemoved" object:self userInfo:@{@"debt": debt}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"debtRemoved" object:self userInfo:@{@"debt": debt, @"selectedDebt": selectedDebt}];
 
     }
     
@@ -229,14 +273,6 @@
     
 }
 
-- (void)setCashingSum:(NSDecimalNumber *)cashingSum forDebt:(STMDebt *)debt {
-    
-    [self.debtsDictionary setObject:@[debt, cashingSum] forKey:debt.xid];
-    
-    self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
-
-}
-
 - (void)setComment:(NSString *)comment forDebt:(STMDebt *)debt {
     
     if (debt.xid) {
@@ -255,35 +291,41 @@
 
 }
 
-- (NSDecimalNumber *)fillingSumProcessing {
+- (void)fillingSumProcessing {
     
     NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
     
     STMDebt *lastDebt = [self.debtsArray lastObject];
+    
     if (lastDebt) {
         
         NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:lastDebt.xid][1];
         fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
-        
-    }
     
-    if ([fillingSumm doubleValue] < 0) {
-        
-        [self.debtsArray removeObject:lastDebt];
-        [self.debtsDictionary removeObjectForKey:lastDebt.xid];
-        self.remainderSumm = fillingSumm;
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateDebtsArray" object:self userInfo:@{@"updateDebt": lastDebt, @"selectDebt": self.debtsArray.lastObject}];
-        
-        return [self fillingSumProcessing];
-        
-    } else {
-        
-        [self.debtsDictionary setObject:@[self.debtsArray.lastObject, fillingSumm] forKey:[(STMDebt *)self.debtsArray.lastObject xid]];
-        self.remainderSumm = [NSDecimalNumber zero];
+        if ([fillingSumm doubleValue] < 0) {
+            
+            [self removeDebt:lastDebt];
+            
+//            [self.debtsArray removeObject:lastDebt];
+//            [self.debtsDictionary removeObjectForKey:lastDebt.xid];
+//            
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateDebtsArray" object:self userInfo:@{@"updateDebt": lastDebt, @"selectDebt": self.debtsArray.lastObject}];
+//            
+//            self.remainderSumm = fillingSumm;
+            
+            //        return [self fillingSumProcessing];
+            
+        } else {
+            
+            [self setCashingSum:fillingSumm forDebt:lastDebt];
+            
+//            [self.debtsDictionary setObject:@[lastDebt, fillingSumm] forKey:lastDebt.xid];
+//            self.remainderSumm = [NSDecimalNumber zero];
+            
+            //        return fillingSumm;
+            
+        }
 
-        return fillingSumm;
-        
     }
     
 }

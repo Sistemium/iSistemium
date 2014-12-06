@@ -30,6 +30,7 @@ typedef enum {
 @property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;
+@property (nonatomic) BOOL cashingLimitIsReached;
 
 
 - (void)startCashingProcessForOutlet:(STMOutlet *)outlet;
@@ -43,6 +44,6 @@ typedef enum {
 - (void)setComment:(NSString *)comment forDebt:(STMDebt *)debt;
 
 - (NSDecimalNumber *)debtsSumm;
-- (NSDecimalNumber *)fillingSumProcessing;
+- (void)fillingSumProcessing;
 
 @end

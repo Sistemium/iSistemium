@@ -402,13 +402,12 @@
         
         if (!self.splitVC.controlsVC.cashingLimitIsReached) {
             
-            STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-            [cell setTintColor:ACTIVE_BLUE_COLOR];
+//            STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+//            [cell setTintColor:ACTIVE_BLUE_COLOR];
             
-            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-            STMDebt *debt = sectionInfo.objects[indexPath.row];
-            
+            STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
             [[STMCashingProcessController sharedInstance] addDebt:debt];
+            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
         }
         
@@ -422,14 +421,13 @@
 
     if (tableView.editing) {
         
-        STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-        [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+//        STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+//        [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
         
-        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-        STMDebt *debt = sectionInfo.objects[indexPath.row];
-        
+        STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
         [[STMCashingProcessController sharedInstance] removeDebt:debt];
-        
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
     }
 
     return indexPath;
