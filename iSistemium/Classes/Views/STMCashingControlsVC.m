@@ -215,7 +215,7 @@
                 
             }
 
-            [self.tableVC updateRowWithDebt:selectedDebt];
+//            [self.tableVC updateRowWithDebt:selectedDebt];
 
         } else {
 
@@ -1046,9 +1046,9 @@
     if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
         
         [self updateControlLabels];
-        [self.tableVC.tableView reloadData];
-        self.tableVC.tableView.allowsMultipleSelectionDuringEditing = YES;
-        [self.tableVC.tableView setEditing:YES animated:YES];
+//        [self.tableVC.tableView reloadData];
+//        self.tableVC.tableView.allowsMultipleSelectionDuringEditing = YES;
+//        [self.tableVC.tableView setEditing:YES animated:YES];
         
     }
 

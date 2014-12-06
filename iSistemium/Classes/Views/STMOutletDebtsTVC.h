@@ -15,7 +15,7 @@
 
 @property (nonatomic, strong) STMOutlet *outlet;
 @property (nonatomic, weak) STMDebtsDetailsPVC *parentVC;
-@property (nonatomic, strong) NSDecimalNumber *totalSum;
+//@property (nonatomic, strong) NSDecimalNumber *totalSum;
 
 - (void)updateRowWithDebt:(STMDebt *)debt;
 

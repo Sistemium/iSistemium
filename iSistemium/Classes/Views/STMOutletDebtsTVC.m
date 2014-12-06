@@ -65,6 +65,7 @@
     
 }
 
+/*
 - (NSDecimalNumber *)totalSum {
     
     if (!_totalSum) {
@@ -86,11 +87,12 @@
     return _totalSum;
     
 }
+*/
 
 - (void)performFetch {
     
     self.resultsController = nil;
-    self.totalSum = nil;
+//    self.totalSum = nil;
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
@@ -128,25 +130,27 @@
     
 }
 
-- (void)editingButtonPressed:(NSNotification *)notification {
-    
-    BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
-    
-    self.tableView.allowsMultipleSelectionDuringEditing = !editing;
-    [self.tableView setEditing:editing animated:YES];
-    
-}
-
-
 - (void)updateRowWithDebt:(STMDebt *)debt {
     
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:debt];
     
-    if ([self.tableView cellForRowAtIndexPath:indexPath]) {
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    
+    if (cell) {
+        
+        NSArray *selectedIndexPaths = self.tableView.indexPathsForSelectedRows;
         
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
+        if ([selectedIndexPaths containsObject:indexPath]) {
+            
+            [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            
+        }
+        
     }
+    
+//    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
     
 }
 
@@ -398,32 +402,34 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (tableView.editing) {
+//    STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+//    [cell setTintColor:ACTIVE_BLUE_COLOR];
+    
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
         
-        if (!self.splitVC.controlsVC.cashingLimitIsReached) {
-            
-//            STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-//            [cell setTintColor:ACTIVE_BLUE_COLOR];
-            
-            STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
-            [[STMCashingProcessController sharedInstance] addDebt:debt];
-            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
+        [[STMCashingProcessController sharedInstance] addDebt:debt];
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
-        }
-        
     }
     
     return indexPath;
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
+
+}
+
 - (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    if (tableView.editing) {
-        
-//        STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-//        [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
-        
+//    STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+//    [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+
         STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
         [[STMCashingProcessController sharedInstance] removeDebt:debt];
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -432,6 +438,12 @@
 
     return indexPath;
     
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
+
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -474,12 +486,81 @@
 }
 
 
+#pragma mark - observers methods
+
+- (void)editingButtonPressed:(NSNotification *)notification {
+    
+    BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
+    
+    //    self.tableView.allowsMultipleSelectionDuringEditing = !editing;
+    [self.tableView setEditing:editing animated:YES];
+    
+}
+
+- (void)cashingProcessStart {
+    
+}
+
+- (void)cashingProcessCancel {
+    
+}
+
+- (void)cashingProcessDone {
+    
+}
+
+- (void)debtAdded:(NSNotification *)notification {
+    
+}
+
+- (void)debtRemoved:(NSNotification *)notification {
+    
+}
+
+- (void)cashingSumChanged:(NSNotification *)notification {
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editingButtonPressed:) name:@"editingButtonPressed" object:self.parentVC];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(editingButtonPressed:)
+                                                 name:@"editingButtonPressed"
+                                               object:self.parentVC];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessStart)
+                                                 name:@"cashingProcessStart"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessCancel)
+                                                 name:@"cashingProcessCancel"
+                                               object:[STMCashingProcessController sharedInstance]];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessDone)
+                                                 name:@"cashingProcessDone"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(debtAdded:)
+                                                 name:@"debtAdded"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(debtRemoved:)
+                                                 name:@"debtRemoved"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingSumChanged:)
+                                                 name:@"cashingSumChanged"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
 }
 
 - (void)removeObservers {
@@ -493,9 +574,9 @@
     [self addObservers];
     
     [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
-    self.tableView.allowsSelectionDuringEditing = YES;
-    self.tableView.allowsMultipleSelectionDuringEditing = YES;
-    
+//    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
+    self.tableView.allowsMultipleSelection = YES;
     self.clearsSelectionOnViewWillAppear = NO;
     
 }
