@@ -19,7 +19,7 @@
 //@property (nonatomic, strong) NSMutableDictionary *debtsDictionary;
 //@property (nonatomic, strong) NSMutableArray *debtsArray;
 @property (nonatomic, strong) NSDate *selectedDate;
-@property (nonatomic) BOOL cashingLimitIsReached;
+//@property (nonatomic) BOOL cashingLimitIsReached;
 
 //- (void)addCashing:(STMDebt *)debt;
 //- (void)removeCashing:(STMDebt *)debt;

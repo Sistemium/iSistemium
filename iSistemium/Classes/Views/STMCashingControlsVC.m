@@ -247,18 +247,18 @@
     [self toolbarDoneButtonPressed];
 
     STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
-    STMDebt *previousDebt = [notification.userInfo objectForKey:@"previousDebt"];
-
-    if (previousDebt) {
-        
-        [self.tableVC updateRowWithDebt:previousDebt];
-
-    }
+//    STMDebt *previousDebt = [notification.userInfo objectForKey:@"previousDebt"];
+//
+//    if (previousDebt) {
+//        
+//        [self.tableVC updateRowWithDebt:previousDebt];
+//
+//    }
 
     if (debt) {
         
         self.selectedDebt = debt;
-        [self.tableVC updateRowWithDebt:debt];
+//        [self.tableVC updateRowWithDebt:debt];
         [self updateControlLabels];
         
     }
@@ -315,7 +315,7 @@
 
         self.selectedDebt = (![selectedDebt isEqual:[NSNull null]]) ? selectedDebt : nil;
         
-        [self.tableVC updateRowWithDebt:debt];
+//        [self.tableVC updateRowWithDebt:debt];
         [self updateControlLabels];
 
     }
@@ -360,7 +360,7 @@
     STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
     NSDecimalNumber *cashingSum = [notification.userInfo objectForKey:@"cashingSum"];
     
-    [self.tableVC updateRowWithDebt:debt];
+//    [self.tableVC updateRowWithDebt:debt];
     
     if ([self.selectedDebt isEqual:debt]) {
         
@@ -389,8 +389,8 @@
 - (void)dismissSelf {
     
     self.splitVC.controlsVC = nil;
-    [self.tableVC.tableView setEditing:NO animated:YES];
-    [self.tableVC.tableView reloadData];
+//    [self.tableVC.tableView setEditing:NO animated:YES];
+//    [self.tableVC.tableView reloadData];
     [self.navigationController popViewControllerAnimated:YES];
     
 }
@@ -530,7 +530,7 @@
     
     self.remainderLabel.hidden = YES;
     
-    self.cashingLimitIsReached = NO;
+//    self.cashingLimitIsReached = NO;
 
     [self showCashingSumLabel];
 
@@ -642,7 +642,7 @@
         
         [[STMCashingProcessController sharedInstance] setCashingSum:cashingSum forDebt:self.selectedDebt];
         
-        [self.tableVC updateRowWithDebt:self.selectedDebt];
+//        [self.tableVC updateRowWithDebt:self.selectedDebt];
         
         self.debtSummTextField.text = [numberFormatter stringFromNumber:number];
         

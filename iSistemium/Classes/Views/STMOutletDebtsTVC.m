@@ -150,8 +150,6 @@
         
     }
     
-//    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
-    
 }
 
 - (NSMutableAttributedString *)textLabelForDebt:(STMDebt *)debt withFont:(UIFont *)font {
@@ -348,13 +346,14 @@
             
             fillWidth = [[cashingSum decimalNumberByDividingBy:debt.summ] doubleValue];
             
-//            [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-            
         }
 
         if (fillWidth != 0) {
             
             fillWidth = fillWidth * cell.frame.size.width;
+            
+            if (fillWidth < 10) fillWidth = 10;
+            
             CGRect rect = CGRectMake(0, 1, fillWidth, cell.frame.size.height-2);
             UIView *view = [[UIView alloc] initWithFrame:rect];
             view.backgroundColor = STM_SUPERLIGHT_BLUE_COLOR;
@@ -402,31 +401,29 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-//    [cell setTintColor:ACTIVE_BLUE_COLOR];
-    
-    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning && ![STMCashingProcessController sharedInstance].cashingLimitIsReached) {
         
         STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
         [[STMCashingProcessController sharedInstance] addDebt:debt];
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
+        return indexPath;
+
+    } else {
+        
+        return nil;
+        
     }
-    
-    return indexPath;
     
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
+//    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
 
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-//    STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-//    [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
 
     if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
 
@@ -434,15 +431,19 @@
         [[STMCashingProcessController sharedInstance] removeDebt:debt];
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
-    }
+        return indexPath;
 
-    return indexPath;
+    } else {
+        
+        return nil;
+        
+    }
     
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
+//    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
 
 }
 
@@ -503,22 +504,44 @@
 
 - (void)cashingProcessCancel {
     
+    [self.tableView reloadData];
+
 }
 
 - (void)cashingProcessDone {
-    
+
+    [self.tableView reloadData];
+
 }
 
 - (void)debtAdded:(NSNotification *)notification {
     
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    STMDebt *previousDebt = [notification.userInfo objectForKey:@"previousDebt"];
+
+    if (debt) [self updateRowWithDebt:debt];
+    if (previousDebt) [self updateRowWithDebt:previousDebt];
+
 }
 
 - (void)debtRemoved:(NSNotification *)notification {
+    
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    STMDebt *selectedDebt = [notification.userInfo objectForKey:@"selectedDebt"];
+    
+    if (debt) [self updateRowWithDebt:debt];
+    if (selectedDebt) [self updateRowWithDebt:selectedDebt];
+
+    NSIndexPath *removedDebtIndexPath = [self.resultsController indexPathForObject:debt];
+    [self.tableView deselectRowAtIndexPath:removedDebtIndexPath animated:NO];
     
 }
 
 - (void)cashingSumChanged:(NSNotification *)notification {
     
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    [self updateRowWithDebt:debt];
+
 }
 
 
