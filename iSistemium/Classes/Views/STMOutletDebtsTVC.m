@@ -500,6 +500,8 @@
 
 - (void)cashingProcessStart {
     
+    [self.tableView setEditing:NO animated:YES];
+    
 }
 
 - (void)cashingProcessCancel {
@@ -520,7 +522,7 @@
     STMDebt *previousDebt = [notification.userInfo objectForKey:@"previousDebt"];
 
     if (debt) [self updateRowWithDebt:debt];
-    if (previousDebt) [self updateRowWithDebt:previousDebt];
+    if (previousDebt && ![previousDebt isEqual:[NSNull null]]) [self updateRowWithDebt:previousDebt];
 
 }
 
@@ -530,7 +532,7 @@
     STMDebt *selectedDebt = [notification.userInfo objectForKey:@"selectedDebt"];
     
     if (debt) [self updateRowWithDebt:debt];
-    if (selectedDebt) [self updateRowWithDebt:selectedDebt];
+    if (selectedDebt && ![selectedDebt isEqual:[NSNull null]]) [self updateRowWithDebt:selectedDebt];
 
     NSIndexPath *removedDebtIndexPath = [self.resultsController indexPathForObject:debt];
     [self.tableView deselectRowAtIndexPath:removedDebtIndexPath animated:NO];

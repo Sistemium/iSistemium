@@ -271,44 +271,32 @@
 
     } else if ([STMCashingProcessController sharedInstance].state == STMCashingProcessIdle) {
         
+        [self setEditing:NO animated:YES];
         [[STMCashingProcessController sharedInstance] startCashingProcessForOutlet:self.outlet];
         
     }
-    
-//    
-//    if (self.isCashingProcessing) {
-//
-//        [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
-//        [self.cashingButton setTintColor:ACTIVE_BLUE_COLOR];
-//        self.isCashingProcessing = NO;
-//
-//    } else {
-//    
-//        [self.cashingButton setTitle:NSLocalizedString(@"CANCEL", nil)];
-//        [self.cashingButton setTintColor:[UIColor redColor]];
-//        self.isCashingProcessing = YES;
-//        
-//    }
-//
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingButtonPressed" object:self userInfo:nil];
     
 }
 
 - (void)cashingProcessStart {
     
     [self.cashingButton setTitle:NSLocalizedString(@"DONE", nil)];
-
+    self.addDebtButton.enabled = NO;
+    self.editDebtsButton.enabled = NO;
+    
 }
 
 - (void)cashingProcessDone {
 
     [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
+    self.addDebtButton.enabled = YES;
+    self.editDebtsButton.enabled = YES;
 
 }
 
 - (void)cashingProcessCancel {
 
-    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
+    [self cashingProcessDone];
 
 }
 
