@@ -313,7 +313,7 @@
             
             NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:debt.xid][1];
             
-            fillWidth = [[cashingSum decimalNumberByDividingBy:debt.summ] doubleValue];
+            fillWidth = [[cashingSum decimalNumberByDividingBy:debt.calculatedSum] doubleValue];
             
         }
 
