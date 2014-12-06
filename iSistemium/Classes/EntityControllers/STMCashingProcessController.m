@@ -189,7 +189,7 @@
 
 - (void)addDebt:(STMDebt *)debt {
     
-    NSLog(@"addDebt %@ %@", debt.summ, debt.calculatedSum);
+//    NSLog(@"addDebt %@ %@", debt.summ, debt.calculatedSum);
     
     if (![self.debtsArray containsObject:debt]) {
         
@@ -200,12 +200,12 @@
             [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
             [self.debtsArray addObject:debt];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"debtAdded" object:self userInfo:@{@"debt": debt, @"previousDebt": previousDebt}];
-
             if ([self.cashingSummLimit doubleValue] > 0) {
                 self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
             }
             
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"debtAdded" object:self userInfo:@{@"debt": debt, @"previousDebt": previousDebt}];
+
         }
         
     } else {
@@ -231,7 +231,7 @@
 
 - (void)removeDebt:(STMDebt *)debt {
 
-    NSLog(@"removeDebt %@", debt.summ);
+//    NSLog(@"removeDebt %@", debt.summ);
 
     if (debt.xid && [self.debtsArray containsObject:debt]) {
         
@@ -333,23 +333,9 @@
             
             [self removeDebt:lastDebt];
             
-//            [self.debtsArray removeObject:lastDebt];
-//            [self.debtsDictionary removeObjectForKey:lastDebt.xid];
-//            
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateDebtsArray" object:self userInfo:@{@"updateDebt": lastDebt, @"selectDebt": self.debtsArray.lastObject}];
-//            
-//            self.remainderSumm = fillingSumm;
-            
-            //        return [self fillingSumProcessing];
-            
         } else {
             
             [self setCashingSum:fillingSumm forDebt:lastDebt];
-            
-//            [self.debtsDictionary setObject:@[lastDebt, fillingSumm] forKey:lastDebt.xid];
-//            self.remainderSumm = [NSDecimalNumber zero];
-            
-            //        return fillingSumm;
             
         }
 
