@@ -13,6 +13,7 @@
 
 @interface STMAddDebtVC () <UITextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton;
 @property (weak, nonatomic) IBOutlet UILabel *ndocLabel;
 @property (weak, nonatomic) IBOutlet UILabel *sumLabel;
@@ -320,6 +321,7 @@
     
     [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
     
+    self.dateLabel.text = NSLocalizedString(@"DOC DATE", nil);
     self.ndocLabel.text = NSLocalizedString(@"DOC NUMBER", nil);
     self.sumLabel.text = NSLocalizedString(@"DEBT SUM", nil);
     

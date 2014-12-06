@@ -256,8 +256,8 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="WhO-wy-dWG">
-                                <rect key="frame" x="20" y="30" width="472" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="WhO-wy-dWG">
+                                <rect key="frame" x="291" y="30" width="201" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Date">
@@ -269,6 +269,12 @@
                                     </segue>
                                 </connections>
                             </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="st8-Kq-q2t">
+                                <rect key="frame" x="20" y="34" width="263" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -277,6 +283,7 @@
                     <connections>
                         <outlet property="cancelButton" destination="PBW-7s-T5t" id="Ac2-hr-VHb"/>
                         <outlet property="dateButton" destination="WhO-wy-dWG" id="973-f1-xDO"/>
+                        <outlet property="dateLabel" destination="st8-Kq-q2t" id="zUv-OP-nrv"/>
                         <outlet property="doneButton" destination="Wdj-rf-fXh" id="eug-2y-bSe"/>
                         <outlet property="ndocLabel" destination="tMG-A6-Rym" id="Rjy-WO-p2q"/>
                         <outlet property="ndocTextField" destination="PfT-D3-FOM" id="Dik-ZA-Ed0"/>
