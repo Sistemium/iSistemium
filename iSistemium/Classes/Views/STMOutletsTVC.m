@@ -116,64 +116,7 @@
     
 }
 
-<<<<<<< HEAD:iSistemium/Classes/Views/STMOutletsTVC.m
-=======
 
-#pragma mark - view lifecycle
-
-- (void)addObservers {
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debtSummChanged:) name:@"debtSummChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingIsProcessedChanged:) name:@"cashingIsProcessedChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingButtonPressed) name:@"cashingButtonPressed" object:self.splitVC.detailVC];
-
-}
-
-- (void)removeObservers {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-}
-
-- (void)customInit {
-    
-    self.clearsSelectionOnViewWillAppear = NO;
-
-    NSError *error;
-    if (![self.resultsController performFetch:&error]) {
-        NSLog(@"performFetch error %@", error);
-    }
-
-    self.title = NSLocalizedString(@"OUTLETS", nil);
-    
-    [self addObservers];
-    
-}
-
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)viewDidLoad {
-    
-    [super viewDidLoad];
-    [self customInit];
-    
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
->>>>>>> geotracking:iSistemium/Classes/Views/STMDebtsTVC.m
 #pragma mark - Table view data source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

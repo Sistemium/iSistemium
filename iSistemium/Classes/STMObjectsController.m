@@ -930,11 +930,8 @@
                                        NSStringFromClass([STMClientData class]),
                                        NSStringFromClass([STMRecordStatus class]),
                                        NSStringFromClass([STMUncashingPicture class]),
-<<<<<<< HEAD
                                        NSStringFromClass([STMDebt class]),
-=======
                                        NSStringFromClass([STMTrack class]),
->>>>>>> geotracking
                                        NSStringFromClass([STMLocation class])
                                        ];
     
