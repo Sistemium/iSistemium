@@ -60,6 +60,12 @@
     
 }
 
+- (void) application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    NSLog(@"didReceiveLocalNotification: %@", notification);
+    
+}
+
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
     
 	NSLog(@"deviceToken: %@", deviceToken);
@@ -215,11 +221,23 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
     
-    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+    NSLog(@"application didReceiveRemoteNotification userInfo: %@", userInfo);
     
-    if ([[session status] isEqualToString:@"running"]) {
+    if ([userInfo objectForKey: @"locationTracker"]) {
         
-        [[session syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler: handler];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"locationTrackerDidReceiveRemoteNotification" object:application userInfo: [userInfo objectForKey: @"locationTracker"]];
+        
+        handler (UIBackgroundFetchResultNoData);
+        
+    } else {
+    
+        id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+        
+        if ([[session status] isEqualToString:@"running"]) {
+            
+            [[session syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler: handler];
+            
+        }
         
     }
 

@@ -39,6 +39,7 @@ typedef enum {
 - (NSArray *)currentSettings;
 - (NSMutableDictionary *)currentSettingsForGroup:(NSString *)group;
 - (NSString *)setNewSettings:(NSDictionary *)newSettings forGroup:(NSString *)group;
+- (id)settingForDictionary:(NSDictionary *)dictionary;
 
 @end
 

@@ -7,7 +7,6 @@
 //
 
 #import "STMSettingsController.h"
-#import "STMSetting.h"
 #import "STMSession.h"
 #import "STMSettingsData.h"
 
@@ -58,7 +57,7 @@
 
 - (NSString *)normalizeValue:(NSString *)value forKey:(NSString *)key {
     
-    NSArray *positiveDoubleValues = [NSArray arrayWithObjects:@"trackDetectionTime", @"trackSeparationDistance", @"fetchLimit", @"syncInterval", @"deviceMotionUpdateInterval", nil];
+    NSArray *positiveDoubleValues = [NSArray arrayWithObjects:@"trackDetectionTime", @"trackSeparationDistance", @"fetchLimit", @"syncInterval", @"deviceMotionUpdateInterval", @"maxSpeedThreshold", nil];
     
     NSArray *boolValues = [NSArray arrayWithObjects:@"localAccessToSettings", @"deviceMotionUpdate", nil];
     NSArray *boolValueSuffixes = [NSArray arrayWithObjects:@"TrackerAutoStart", nil];
@@ -211,6 +210,26 @@
 //    NSLog(@"settings for %@: %@", group, settingsDictionary);
     
     return settingsDictionary;
+    
+}
+
+- (STMSetting *)settingForDictionary:(NSDictionary *)dictionary {
+    
+    NSDictionary *properties = [dictionary objectForKey:@"properties"];
+    NSString *settingName = [properties valueForKey:@"name"];
+    NSString *settingGroup = [properties valueForKey:@"group"];
+    
+    NSPredicate *settingPredicate = [NSPredicate predicateWithFormat:@"name == %@ AND group == %@", settingName, settingGroup];
+    
+    NSArray *result = [self.fetchedSettingsResultController.fetchedObjects filteredArrayUsingPredicate:settingPredicate];
+    
+    if (result.count > 1) {
+        NSLog(@"More than one setting with name %@ and group %@, get lastObject", settingName, settingGroup);
+    }
+    
+    STMSetting *setting = [result lastObject];
+    
+    return setting;
     
 }
 

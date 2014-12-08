@@ -673,6 +673,7 @@
 }
 
 
+
 #pragma mark - observers
 
 - (void)addObservers {
@@ -724,6 +725,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 }
+
 
 #pragma mark - view lifecycle
 

@@ -83,7 +83,9 @@
         for (NSString *settingName in [_settings allKeys]) {
             [_settings addObserver:self forKeyPath:settingName options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
         }
-        
+    
+//        NSLog(@"_settings %@", _settings);
+
     }
     
     return _settings;
@@ -119,6 +121,16 @@
     
 }
 
+- (void) didReceiveRemoteNotification:(NSNotification *) notification {
+    
+    if ([notification.userInfo isEqual:@"stop"]) {
+        [self stopTracking];
+    } else if ([notification.userInfo isEqual:@"start"]) {
+        [self startTracking];
+    }
+    
+}
+
 #pragma mark - tracker settings
 
 - (BOOL)trackerAutoStart {
@@ -143,12 +155,9 @@
 
 - (void)initTimers {
     
-    UIBackgroundTaskIdentifier bgTask = 0;
-    UIApplication *app = [UIApplication sharedApplication];
-    
-    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
-        [app endBackgroundTask:bgTask];
-    }];
+    if (self.startTimer || self.finishTimer) {
+        [self releaseTimers];
+    }
     
     [[NSRunLoop currentRunLoop] addTimer:self.startTimer forMode:NSRunLoopCommonModes];
     [[NSRunLoop currentRunLoop] addTimer:self.finishTimer forMode:NSRunLoopCommonModes];
@@ -176,7 +185,7 @@
                 startTime = [NSDate dateWithTimeInterval:24*3600 sinceDate:startTime];
             }
             
-//            NSLog(@"startTime %@", startTime);
+//            NSLog(@"%@ startTime %@", [[self class] description], startTime);
             _startTimer = [[NSTimer alloc] initWithFireDate:startTime interval:24*3600 target:self selector:@selector(startTracking) userInfo:nil repeats:YES];
             
         }
@@ -200,7 +209,7 @@
                 finishTime = [NSDate dateWithTimeInterval:24*3600 sinceDate:finishTime];
             }
             
-//            NSLog(@"finishTime %@", finishTime);
+//            NSLog(@"%@ finishTime %@", [[self class] description], finishTime);
             _finishTimer = [[NSTimer alloc] initWithFireDate:finishTime interval:24*3600 target:self selector:@selector(stopTracking) userInfo:nil repeats:YES];
             
         }
@@ -312,6 +321,8 @@
 
 - (void)stopTracking {
     
+//    NSLog(@"%@ stopTracking %@", self.group, [NSDate date]);
+
     if (self.tracking) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStop", self.group] object:self];
