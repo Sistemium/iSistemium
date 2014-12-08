@@ -482,6 +482,11 @@
 
     [self addObservers];
 
+    NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL toolbarHidden = [[settings valueForKey:@"disableDebtsEditing"] boolValue];
+    
+    self.navigationController.toolbarHidden = toolbarHidden;
+    
     [self setToolbarItems:nil];
     [self.addDebtButton setTitle:NSLocalizedString(@"ADD DEBT", nil)];
     

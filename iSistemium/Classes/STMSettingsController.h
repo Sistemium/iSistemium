@@ -21,6 +21,7 @@
 - (NSArray *)currentSettings;
 - (NSString *)normalizeValue:(NSString *)value forKey:(NSString *)key;
 - (NSString *)setNewSettings:(NSDictionary *)newSettings forGroup:(NSString *)group;
+
 - (NSMutableDictionary *)currentSettingsForGroup:(NSString *)group;
 
 - (STMSetting *)settingForDictionary:(NSDictionary *)dictionary;
