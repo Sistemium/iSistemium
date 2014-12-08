@@ -292,6 +292,9 @@
 
     [[cell.contentView viewWithTag:1] removeFromSuperview];
 
+    cell.tintColor = ACTIVE_BLUE_COLOR;
+    cell.accessoryType = UITableViewCellAccessoryNone;
+
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.detailTextLabel.backgroundColor = [UIColor clearColor];
     
@@ -315,6 +318,12 @@
             
             fillWidth = [[cashingSum decimalNumberByDividingBy:debt.calculatedSum] doubleValue];
             
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            
+        } else {
+
+            cell.accessoryType = UITableViewCellAccessoryNone;
+
         }
 
         if (fillWidth != 0) {
