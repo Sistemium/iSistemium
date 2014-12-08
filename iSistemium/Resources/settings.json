@@ -12,6 +12,17 @@
         }
       ]
     },
+       {
+           "group": "appSettings",
+           "data":
+           [
+                {
+                    "name": "disableDebtsEditing",
+                    "value": false,
+                    "control": "switch"
+                }
+            ]
+       },
     {
       "group": "location",
       "data":
