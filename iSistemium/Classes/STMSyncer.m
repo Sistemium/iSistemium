@@ -391,14 +391,11 @@
 
 - (void)initTimer {
     
-//    UIBackgroundTaskIdentifier bgTask = 0;
-//    UIApplication  *app = [UIApplication sharedApplication];
-//    
-//    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
-//        [app endBackgroundTask:bgTask];
-//    }];
-//    
-    [[NSRunLoop currentRunLoop] addTimer:self.syncTimer forMode:NSRunLoopCommonModes];
+    if (self.syncTimer) {
+        [self releaseTimer];
+    }
+    
+    [[NSRunLoop currentRunLoop] addTimer:self.syncTimer forMode: NSRunLoopCommonModes];
     
 }
 
@@ -411,7 +408,9 @@
 
 - (void)onTimerTick:(NSTimer *)timer {
     
-    //    NSLog(@"syncTimer tick at %@", [NSDate date]);
+    NSTimeInterval bgTR = [[UIApplication sharedApplication] backgroundTimeRemaining];
+    
+    NSLog(@"syncTimer tick at %@, bgTimeRemaining %.0f", [NSDate date], bgTR > 3600 ? -1 : bgTR);
     self.syncerState = STMSyncerSendData;
     
 }

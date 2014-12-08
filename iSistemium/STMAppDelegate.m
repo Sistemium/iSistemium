@@ -60,6 +60,12 @@
     
 }
 
+- (void) application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    NSLog(@"didReceiveLocalNotification: %@", notification);
+    
+}
+
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
     
 	NSLog(@"deviceToken: %@", deviceToken);

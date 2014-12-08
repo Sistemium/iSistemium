@@ -155,12 +155,9 @@
 
 - (void)initTimers {
     
-    UIBackgroundTaskIdentifier bgTask = 0;
-    UIApplication *app = [UIApplication sharedApplication];
-    
-    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
-        [app endBackgroundTask:bgTask];
-    }];
+    if (self.startTimer || self.finishTimer) {
+        [self releaseTimers];
+    }
     
     [[NSRunLoop currentRunLoop] addTimer:self.startTimer forMode:NSRunLoopCommonModes];
     [[NSRunLoop currentRunLoop] addTimer:self.finishTimer forMode:NSRunLoopCommonModes];
@@ -188,7 +185,7 @@
                 startTime = [NSDate dateWithTimeInterval:24*3600 sinceDate:startTime];
             }
             
-//            NSLog(@"startTime %@", startTime);
+//            NSLog(@"%@ startTime %@", [[self class] description], startTime);
             _startTimer = [[NSTimer alloc] initWithFireDate:startTime interval:24*3600 target:self selector:@selector(startTracking) userInfo:nil repeats:YES];
             
         }
@@ -212,7 +209,7 @@
                 finishTime = [NSDate dateWithTimeInterval:24*3600 sinceDate:finishTime];
             }
             
-//            NSLog(@"finishTime %@", finishTime);
+//            NSLog(@"%@ finishTime %@", [[self class] description], finishTime);
             _finishTimer = [[NSTimer alloc] initWithFireDate:finishTime interval:24*3600 target:self selector:@selector(stopTracking) userInfo:nil repeats:YES];
             
         }
