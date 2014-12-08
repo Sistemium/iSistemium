@@ -121,6 +121,16 @@
     
 }
 
+- (void) didReceiveRemoteNotification:(NSNotification *) notification {
+    
+    if ([notification.userInfo isEqual:@"stop"]) {
+        [self stopTracking];
+    } else if ([notification.userInfo isEqual:@"start"]) {
+        [self startTracking];
+    }
+    
+}
+
 #pragma mark - tracker settings
 
 - (BOOL)trackerAutoStart {
