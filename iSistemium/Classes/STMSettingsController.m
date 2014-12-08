@@ -223,7 +223,7 @@
     
     NSArray *result = [self.fetchedSettingsResultController.fetchedObjects filteredArrayUsingPredicate:settingPredicate];
     
-    if (result.count > 0) {
+    if (result.count > 1) {
         NSLog(@"More than one setting with name %@ and group %@, get lastObject", settingName, settingGroup);
     }
     
