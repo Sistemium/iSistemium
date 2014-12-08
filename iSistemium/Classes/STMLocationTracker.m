@@ -152,6 +152,7 @@
     
     if (self.tracking) {
         [[self locationManager] startUpdatingLocation];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidResumeLocationUpdates" object:self];
     }
     
 }
@@ -159,6 +160,7 @@
 - (void)stopTracking {
     
     [[self locationManager] stopUpdatingLocation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidPauseLocationUpdates" object:self];
     self.locationManager.delegate = nil;
     self.locationManager = nil;
     [super stopTracking];
@@ -258,6 +260,19 @@
     }
     
 }
+
+
+- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager {
+    [self.session.logger saveLogMessageWithText:@"locationManagerDidResumeLocationUpdates" type:@""];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidResumeLocationUpdates" object:self];
+}
+
+- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager {
+    [self.session.logger saveLogMessageWithText:@"locationManagerDidPauseLocationUpdates" type:@""];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidPauseLocationUpdates" object:self];
+}
+
+
 
 #pragma mark - track management
 
