@@ -182,7 +182,8 @@
 }
 
 - (void)NSLogSettings {
-    
+
+#ifdef DEBUG
 //    NSLog(@"self.currentSettings %@", self.currentSettings);
     
     for (STMSetting *setting in self.currentSettings) {
@@ -190,7 +191,7 @@
         NSLog(@"setting %@", setting);
         
     }
-    
+#endif
 }
 
 - (NSArray *)currentSettings {

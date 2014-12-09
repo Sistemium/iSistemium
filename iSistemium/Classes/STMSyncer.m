@@ -429,9 +429,11 @@
 
 - (void)onTimerTick:(NSTimer *)timer {
     
+#ifdef DEBUG
     NSTimeInterval bgTR = [[UIApplication sharedApplication] backgroundTimeRemaining];
-    
     NSLog(@"syncTimer tick at %@, bgTimeRemaining %.0f", [NSDate date], bgTR > 3600 ? -1 : bgTR);
+#endif
+    
     self.syncerState = STMSyncerSendData;
     
 }
@@ -1091,12 +1093,12 @@
             [self notAuthorized];
             
         } else {
-            
+#ifdef DEBUG
             NSString *requestBody = [[NSString alloc] initWithData:connection.originalRequest.HTTPBody encoding:NSUTF8StringEncoding];
             NSLog(@"originalRequest %@", connection.originalRequest);
             NSLog(@"requestBody %@", requestBody);
             NSLog(@"responseJSON %@", responseJSON);
-            
+#endif
 //            if (self.syncerState == STMSyncerSendData) {
 //                
 //                self.syncing = NO;

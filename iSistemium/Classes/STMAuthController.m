@@ -437,8 +437,10 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
 
+#ifdef DEBUG
     NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error];
     NSLog(@"%@", errorMessage);
+#endif
     
     self.controllerState = STMAuthEnterPhoneNumber;
 
