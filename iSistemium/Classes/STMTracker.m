@@ -51,6 +51,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackerSettingsChanged:) name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkTimeForTracking) name: @"applicationDidBecomeActive" object:nil];
 
 }
 
@@ -249,6 +250,8 @@
 - (void)checkTimeForTracking {
     
     double currentTime = [self currentTimeInDouble];
+    
+    if (!self.trackerAutoStart) return;
     
     if (self.trackerStartTime < self.trackerFinishTime) {
         
