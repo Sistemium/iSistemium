@@ -324,7 +324,8 @@
                       @"desiredAccuracy"          : @"10",
                       @"timeFilter"               : @"60",
                       @"maxSpeedThreshold"        : @"60",
-                      @"locationTrackerAutoStart" : [NSNumber numberWithBool:YES]
+                      @"locationTrackerAutoStart" : [NSNumber numberWithBool:YES],
+                      @"enableDebtsEditing"       : [NSNumber numberWithBool:YES]
                       };
 
 #else

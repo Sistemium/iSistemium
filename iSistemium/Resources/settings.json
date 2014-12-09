@@ -17,7 +17,7 @@
            "data":
            [
                 {
-                    "name": "disableDebtsEditing",
+                    "name": "enableDebtsEditing",
                     "value": false,
                     "control": "switch"
                 }
