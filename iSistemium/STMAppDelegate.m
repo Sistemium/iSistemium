@@ -186,6 +186,16 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     
+    __block UIBackgroundTaskIdentifier bgTask;
+    
+    bgTask = [application beginBackgroundTaskWithExpirationHandler: ^{
+        NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+        [application endBackgroundTask: bgTask];
+    }];
+    
+    NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+    NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
+    
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
     
@@ -197,7 +207,6 @@
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillEnterForeground"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData];
     
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
@@ -224,21 +233,24 @@
     
     NSLog(@"application didReceiveRemoteNotification userInfo: %@", userInfo);
     
+    __block UIBackgroundTaskIdentifier bgTask;
+    
+    bgTask = [application beginBackgroundTaskWithExpirationHandler: ^{
+        NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+        [application endBackgroundTask: bgTask];
+        handler (UIBackgroundFetchResultNewData);
+    }];
+    
+    NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+    NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
+    
     if ([userInfo objectForKey: @"locationTracker"]) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"locationTrackerDidReceiveRemoteNotification" object:application userInfo: [userInfo objectForKey: @"locationTracker"]];
         
-        handler (UIBackgroundFetchResultNoData);
-        
     } else {
-    
-        id <STMSession> session = [STMSessionManager sharedManager].currentSession;
         
-        if ([[session status] isEqualToString:@"running"]) {
-            
-            [[session syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler: handler];
-            
-        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidReceiveRemoteNotification" object:application userInfo: userInfo];
         
     }
 
