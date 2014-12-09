@@ -489,7 +489,7 @@
     [self addObservers];
 
     NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
-    BOOL toolbarHidden = [[settings valueForKey:@"enableDebtsEditing"] boolValue];
+    BOOL toolbarHidden = ![[settings valueForKey:@"enableDebtsEditing"] boolValue];
     
     self.navigationController.toolbarHidden = toolbarHidden;
     
