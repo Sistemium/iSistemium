@@ -56,6 +56,8 @@
     self.window.rootViewController = [STMRootTBC sharedRootVC];
     [self.window makeKeyAndVisible];
 
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+
     return YES;
     
 }
@@ -100,12 +102,6 @@
 
 }
 
-//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//
-//    [self receiveRemoteNotification:userInfo];
-//
-//}
-
 - (void)receiveRemoteNotification:(NSDictionary *)remoteNotification {
     
     NSString *msg = [NSString stringWithFormat:@"%@", [[remoteNotification objectForKey:@"aps"] objectForKey:@"alert"]];
@@ -122,59 +118,6 @@
     
 }
 
-/*
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    
-    NSLog(@"didReceiveRemoteNotification");
-    
-    application.applicationIconBadgeNumber = 0;
-    NSString *msg = [NSString stringWithFormat:@"%@", userInfo];
-
-    NSString *logMessage = [NSString stringWithFormat:@"recieve notification: %@", msg];
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-
-    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    localNotification.fireDate = nil;
-    localNotification.alertAction = @"TEST";
-    localNotification.alertBody = @"ALERT!";
-    
-    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-    
-    completionHandler(UIBackgroundFetchResultNewData);
-    
-}
-
-- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    
-    NSLog(@"performFetchWithCompletionHandler");
-    
-    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    localNotification.fireDate = nil;
-    localNotification.timeZone = nil;
-    localNotification.alertAction = @"TEST";
-    localNotification.alertBody = @"ALERT!";
-    
-    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-
-    completionHandler(UIBackgroundFetchResultNewData);
-    
-}
-
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-
-    [self createAlert:notification.alertBody];
-    
-}
-
-- (void)createAlert:(NSString *)msg {
-    
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Message Received" message:[NSString stringWithFormat:@"%@", msg]delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alertView show];
-    
-}
-*/
-
-							
 - (void)applicationWillResignActive:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillResignActive"];
@@ -253,6 +196,34 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidReceiveRemoteNotification" object:application userInfo: userInfo];
         
     }
+
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+    NSString *logMessage = [NSString stringWithFormat:@"applicationPerformFetchWithCompletionHandler"];
+    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+
+//    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+//    localNotification.fireDate = nil;
+//    localNotification.timeZone = nil;
+//    localNotification.alertAction = @"TEST";
+//    localNotification.alertBody = [NSString stringWithFormat:@"%@", [NSDate date]];
+//    
+//    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    
+    __block UIBackgroundTaskIdentifier bgTask;
+    
+    bgTask = [application beginBackgroundTaskWithExpirationHandler: ^{
+        NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+        [application endBackgroundTask: bgTask];
+        completionHandler(UIBackgroundFetchResultNewData);
+    }];
+    
+    NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+    NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationPerformFetchWithCompletionHandler" object:application];
 
 }
 

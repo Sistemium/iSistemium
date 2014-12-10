@@ -351,6 +351,7 @@
     [nc addObserver:self selector:@selector(syncerSettingsChanged) name:@"syncerSettingsChanged" object:self.session];
     [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationDidReceiveRemoteNotification" object: nil];
     [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationDidBecomeActive" object: nil];
+    [nc addObserver:self selector:@selector(didEnterBackground) name:@"applicationPerformFetchWithCompletionHandler" object:nil];
     [nc addObserver:self selector:@selector(didEnterBackground) name:@"applicationDidEnterBackground" object: nil];
 
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenReceived:) name:@"tokenReceived" object: self.authDelegate];
