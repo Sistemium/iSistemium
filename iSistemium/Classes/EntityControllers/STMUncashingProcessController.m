@@ -154,9 +154,13 @@
 }
 
 - (void)addCashing:(STMCashing *)cashing {
-    
-    [self.cashingDictionary setObject:cashing forKey:cashing.xid];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
+
+    if (cashing && cashing.xid) {
+        
+        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
+
+    }
     
 }
 
@@ -168,9 +172,13 @@
 
 - (void)removeCashing:(STMCashing *)cashing {
     
-    [self.cashingDictionary removeObjectForKey:cashing.xid];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
+    if (cashing.xid) {
+        
+        [self.cashingDictionary removeObjectForKey:cashing.xid];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
 
+    }
+    
 }
 
 - (void)checkUncashing {

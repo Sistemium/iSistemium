@@ -122,7 +122,7 @@
         
         request.sortDescriptors = @[outletNameSortDescriptor, dateSortDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", self.uncashing];
+        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@ AND debt.outlet.name != %@", self.uncashing, nil];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"debt.outlet.name" cacheName:nil];
         _resultsController.delegate = self;
 
@@ -195,8 +195,12 @@
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
         
-        [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
-        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        if (indexPath) {
+            
+            [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+
+        }
         
     }
     
@@ -284,7 +288,6 @@
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
     STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
-    
     
     NSString *sumString = [[numberFormatter stringFromNumber:cashing.summ] stringByAppendingString:@" "];
     
@@ -396,6 +399,7 @@
     if (tableView.editing) {
 
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
+        
         [[STMUncashingProcessController sharedInstance] addCashing:cashing];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
