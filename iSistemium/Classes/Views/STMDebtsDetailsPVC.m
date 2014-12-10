@@ -310,6 +310,7 @@
 
     self.addDebtPopover = nil;
     [self.addDebtPopover presentPopoverFromBarButtonItem:self.addDebtButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    self.editDebtsButton.enabled = NO;
     
 }
 
@@ -322,7 +323,8 @@
 - (void)dismissAddDebt {
     
     [self.addDebtPopover dismissPopoverAnimated:YES];
-//    self.addDebtPopover = nil;
+    self.addDebtPopover = nil;
+    self.editDebtsButton.enabled = YES;
     
 }
 
