@@ -2,7 +2,7 @@
 //  STMClientData.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 29/11/14.
+//  Created by Maxim Grigoriev on 10/12/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
@@ -18,5 +18,6 @@
 @property (nonatomic, retain) NSData * deviceToken;
 @property (nonatomic, retain) NSDate * lastAuth;
 @property (nonatomic, retain) NSString * tokenHash;
+@property (nonatomic, retain) NSString * deviceName;
 
 @end

@@ -120,10 +120,17 @@
     STMClientData *clientData = [self clientData];
     
     NSString *tokenHash = clientData.tokenHash;
-
     if (!tokenHash) {
         
         tokenHash = [STMAuthController authController].tokenHash;
+        clientDataWaitingForSync = YES;
+        
+    }
+    
+    NSString *deviceName = clientData.deviceName;
+    if (!deviceName) {
+
+        deviceName = [[UIDevice currentDevice] name];
         clientDataWaitingForSync = YES;
         
     }
@@ -143,6 +150,7 @@
         }
 
         clientData.tokenHash = tokenHash;
+        clientData.deviceName = deviceName;
         
 #ifdef DEBUG
         
