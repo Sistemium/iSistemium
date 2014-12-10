@@ -10,17 +10,13 @@
 #import "STMOutlet.h"
 #import "STMDebt.h"
 #import "STMOutletDebtsTVC.h"
+#import "STMDatePickerParent.h"
 
-@interface STMCashingControlsVC : UIViewController
+@interface STMCashingControlsVC : UIViewController <STMDatePickerParent>
 
 @property (nonatomic, strong) STMOutlet *outlet;
 @property (nonatomic, strong) STMOutletDebtsTVC *tableVC;
-@property (nonatomic, strong) NSMutableDictionary *debtsDictionary;
-@property (nonatomic, strong) NSMutableArray *debtsArray;
 @property (nonatomic, strong) NSDate *selectedDate;
-@property (nonatomic) BOOL cashingLimitIsReached;
 
-- (void)addCashing:(STMDebt *)debt;
-- (void)removeCashing:(STMDebt *)debt;
 
 @end

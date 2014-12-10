@@ -12,6 +12,17 @@
         }
       ]
     },
+       {
+           "group": "appSettings",
+           "data":
+           [
+                {
+                    "name": "enableDebtsEditing",
+                    "value": false,
+                    "control": "switch"
+                }
+            ]
+       },
     {
       "group": "location",
       "data":
@@ -42,7 +53,7 @@
         },
         {
           "name": "timeFilter",
-          "value": 0,
+          "value": 60,
           "control": "slider",
           "min": 1,
           "max": 60,
@@ -92,7 +103,7 @@
         },
         {
            "name": "maxSpeedThreshold",
-           "value": 20,
+           "value": 60,
            "control": "slider",
            "min": 0,
            "max": 120,
@@ -133,7 +144,7 @@
       [
         {
           "name": "fetchLimit",
-          "value": 20,
+          "value": 50,
           "control": "slider",
           "min": 10,
           "max": 200,
@@ -141,7 +152,7 @@
         },
         {
           "name": "syncInterval",
-          "value": 240,
+          "value": 600,
           "control": "slider",
           "min": 10,
           "max": 3600,

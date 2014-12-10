@@ -80,6 +80,14 @@
         
     }
     
+//    if ([self.entity.name isEqualToString:@"STMDebt"]) {
+//        
+//        NSLog(@"changedKeys %@", changedKeys);
+//        NSLog(@"self.changedValues %@", self.changedValues);
+//        
+//    }
+    
+    
     if (changedKeys.count == 1) {
         
         NSString *key = [changedKeys lastObject];

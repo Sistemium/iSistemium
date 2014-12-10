@@ -13,10 +13,11 @@
 @interface STMDebtsDetailsPVC : UIPageViewController <UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMOutlet *outlet;
-@property (nonatomic) BOOL isCashingProcessing;
 @property (nonatomic, strong) STMDebtsDetailsVC *debtsCombineVC;
 @property (nonatomic, strong) STMDebtsDetailsVC *outletCashingVC;
 
 - (void)cashingButtonPressed;
+
+- (void)dismissAddDebt;
 
 @end

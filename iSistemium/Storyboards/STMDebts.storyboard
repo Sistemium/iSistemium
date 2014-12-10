@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--DebtsTVC - Root View Controller-->
+        <!--OutletsTVC - Root View Controller-->
         <scene sceneID="83i-GJ-awZ">
             <objects>
-                <tableViewController clearsSelectionOnViewWillAppear="NO" id="lpz-29-7Oy" customClass="STMDebtsTVC" sceneMemberID="viewController">
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="lpz-29-7Oy" customClass="STMOutletsTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="nB1-6B-azp">
                         <rect key="frame" x="0.0" y="64" width="320" height="788"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -85,13 +85,17 @@
         <!--Navigation Controller-->
         <scene sceneID="nA2-Sr-vV4">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Oj9-GA-d82" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="Oj9-GA-d82" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="IH9-Qa-wsf">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="vBe-Ou-6ez">
+                        <rect key="frame" x="0.0" y="980" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="bgh-g1-H2H" kind="relationship" relationship="rootViewController" id="zYC-2q-iZr"/>
                     </connections>
@@ -105,6 +109,7 @@
             <objects>
                 <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="bgh-g1-H2H" customClass="STMDebtsDetailsPVC" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="BaV-5U-UlA">
                         <nil key="title"/>
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="kM0-Ga-LQl">
@@ -200,6 +205,96 @@
             </objects>
             <point key="canvasLocation" x="2060" y="-334"/>
         </scene>
+        <!--Add DebtVC-->
+        <scene sceneID="KWx-XN-APc">
+            <objects>
+                <viewController storyboardIdentifier="addDebtVC" id="I32-0T-zzz" customClass="STMAddDebtVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UxN-eD-WNw">
+                        <rect key="frame" x="0.0" y="0.0" width="512" height="256"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="UVF-SV-01s">
+                                <rect key="frame" x="0.0" y="212" width="512" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items>
+                                    <barButtonItem systemItem="cancel" id="PBW-7s-T5t">
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="I32-0T-zzz" id="tgm-cV-hzs"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="8HG-AE-uqm"/>
+                                    <barButtonItem systemItem="done" id="Wdj-rf-fXh">
+                                        <connections>
+                                            <action selector="doneButtonPressed:" destination="I32-0T-zzz" id="hL6-aJ-mdC"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Debt number label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tMG-A6-Rym">
+                                <rect key="frame" x="20" y="89" width="263" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="PfT-D3-FOM">
+                                <rect key="frame" x="291" y="85" width="201" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Debt sum label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ROS-yo-IY3">
+                                <rect key="frame" x="20" y="144" width="263" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="cIq-yA-hOG">
+                                <rect key="frame" x="291" y="140" width="201" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="WhO-wy-dWG">
+                                <rect key="frame" x="291" y="30" width="201" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Date">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="YtY-FD-2dJ" kind="popover" identifier="showDatePicker" popoverAnchorView="WhO-wy-dWG" id="E8g-Rh-XwD">
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                    </segue>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="st8-Kq-q2t">
+                                <rect key="frame" x="20" y="34" width="263" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="512" height="256"/>
+                    <connections>
+                        <outlet property="cancelButton" destination="PBW-7s-T5t" id="Ac2-hr-VHb"/>
+                        <outlet property="dateButton" destination="WhO-wy-dWG" id="973-f1-xDO"/>
+                        <outlet property="dateLabel" destination="st8-Kq-q2t" id="zUv-OP-nrv"/>
+                        <outlet property="doneButton" destination="Wdj-rf-fXh" id="eug-2y-bSe"/>
+                        <outlet property="ndocLabel" destination="tMG-A6-Rym" id="Rjy-WO-p2q"/>
+                        <outlet property="ndocTextField" destination="PfT-D3-FOM" id="Dik-ZA-Ed0"/>
+                        <outlet property="sumLabel" destination="ROS-yo-IY3" id="fzu-ty-4gX"/>
+                        <outlet property="sumTextField" destination="cIq-yA-hOG" id="yq0-yG-OrR"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vUd-B3-FwX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3078" y="-731"/>
+        </scene>
         <!--Outlet DebtsTVC-->
         <scene sceneID="bbL-HP-ZSE">
             <objects>
@@ -209,7 +304,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="debtDetailsCell" editingAccessoryType="checkmark" textLabel="0Vy-Uu-bk6" detailTextLabel="v8g-Iy-5Pe" style="IBUITableViewCellStyleSubtitle" id="RL8-KJ-9dM" customClass="STMTableViewCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="debtDetailsCell" textLabel="0Vy-Uu-bk6" detailTextLabel="v8g-Iy-5Pe" style="IBUITableViewCellStyleSubtitle" id="RL8-KJ-9dM" customClass="STMTableViewCell">
                                 <rect key="frame" x="0.0" y="22" width="768" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RL8-KJ-9dM" id="Him-4f-X4W">
@@ -253,17 +348,6 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="788"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ttz-JU-f1H">
-                                <rect key="frame" x="20" y="356" width="280" height="41"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Done">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="doneButtonPressed:" destination="Bhj-cs-cfa" eventType="touchUpInside" id="53f-hI-cgM"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qei-aZ-LsZ">
                                 <rect key="frame" x="20" y="253" width="280" height="21"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -342,7 +426,6 @@
                         <outlet property="debtInfoLabel" destination="zVZ-Rf-5oG" id="ynN-xs-5Ms"/>
                         <outlet property="debtSumLabel" destination="8sK-In-b6v" id="OI1-h0-FLw"/>
                         <outlet property="debtSummTextField" destination="Qhg-Ga-ozT" id="ua5-6s-26I"/>
-                        <outlet property="doneButton" destination="ttz-JU-f1H" id="8XV-8I-E4B"/>
                         <outlet property="remainderLabel" destination="v7I-mu-q6E" id="oDc-7u-hGx"/>
                         <outlet property="summLabel" destination="qei-aZ-LsZ" id="tF9-O5-ySt"/>
                     </connections>
@@ -410,4 +493,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="E8g-Rh-XwD"/>
+    </inferredMetricsTieBreakers>
 </document>

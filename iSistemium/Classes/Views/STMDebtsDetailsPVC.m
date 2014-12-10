@@ -14,7 +14,12 @@
 #import "STMConstants.h"
 #import "STMDebtsCombineVC.h"
 
-@interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+#import "STMAddDebtVC.h"
+#import "STMDatePickerVC.h"
+#import "STMCashingProcessController.h"
+#import "STMUI.h"
+
+@interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIPopoverControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (nonatomic, strong) UIPopoverController *popover;
@@ -24,7 +29,10 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
-@property (nonatomic, strong) UIBarButtonItem *cashingButton;
+@property (nonatomic, strong) UIBarButtonItem *addDebtButton;
+@property (nonatomic, strong) UIBarButtonItem *editDebtsButton;
+@property (nonatomic, strong) UIPopoverController *addDebtPopover;
+@property (nonatomic, strong) STMUIBarButtonItemDone *cashingButton;
 
 @end
 
@@ -42,11 +50,11 @@
     
 }
 
-- (UIBarButtonItem *)cashingButton {
+- (STMUIBarButtonItemDone *)cashingButton {
     
     if (!_cashingButton) {
         
-        _cashingButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CASHING", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cashingButtonPressed)];
+        _cashingButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"CASHING", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cashingButtonPressed)];
 
     }
 
@@ -92,7 +100,8 @@
             
         }
                 
-        [self editButtonForVC:self.viewControllers[0]];
+//        [self editButtonForVC:self.viewControllers[0]];
+        [self buttonsForVC:self.viewControllers[0]];
 
         [self.popover dismissPopoverAnimated:YES];
 
@@ -152,16 +161,83 @@
     
 }
 
-- (void)editButtonForVC:(UIViewController *)vc {
+- (UIBarButtonItem *)addDebtButton {
     
+    if (!_addDebtButton) {
+        
+        _addDebtButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"ADD DEBT", nil) style:UIBarButtonItemStylePlain target:self action:@selector(addDebtButtonPressed:)];
+        
+    }
+    
+    return _addDebtButton;
+    
+}
+
+- (UIBarButtonItem *)editDebtsButton {
+    
+    if (!_editDebtsButton) {
+        
+        _editDebtsButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"EDIT DEBTS", nil) style:UIBarButtonItemStylePlain target:self action:@selector(editDebtsButtonPressed:)];
+        
+    }
+    
+    return _editDebtsButton;
+    
+}
+
+- (UIPopoverController *)addDebtPopover {
+    
+    if (!_addDebtPopover) {
+        
+        STMAddDebtVC *addDebtVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addDebtVC"];
+        addDebtVC.parentVC = self;
+        
+        _addDebtPopover = [[UIPopoverController alloc] initWithContentViewController:addDebtVC];
+        _addDebtPopover.delegate = self;
+        
+    }
+    
+    return _addDebtPopover;
+    
+}
+
+//- (void)editButtonForVC:(UIViewController *)vc {
+//    
+//    if ([vc isKindOfClass:[STMOutletCashingVC class]]) {
+//        
+//        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+//        
+//    } else {
+//        
+//        if (self.outlet) {
+//            self.navigationItem.rightBarButtonItem = self.cashingButton;
+//        }
+//        
+//    }
+//
+//}
+
+- (void)buttonsForVC:(UIViewController *)vc {
+
     if ([vc isKindOfClass:[STMOutletCashingVC class]]) {
         
-        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+        [self setToolbarItems:nil animated:YES];
         
+        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
     } else {
         
         if (self.outlet) {
+            
+            UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+            [self setToolbarItems:@[self.editDebtsButton, flexibleSpace, self.addDebtButton] animated:YES];
+            
             self.navigationItem.rightBarButtonItem = self.cashingButton;
+            
+        } else {
+            
+            [self setToolbarItems:nil];
+            
         }
         
     }
@@ -172,36 +248,81 @@
     
     [super setEditing:editing animated:animated];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": [NSNumber numberWithBool:editing]}];
+    if (editing) {
+        
+        self.editDebtsButton.title = NSLocalizedString(@"DONE", nil);
+        
+    } else {
+        
+        self.editDebtsButton.title = NSLocalizedString(@"EDIT DEBTS", nil);
+        
+    }
     
-//    NSLog(@"setEditing:editing %d", editing);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": [NSNumber numberWithBool:editing]}];
     
 }
 
 - (void)cashingButtonPressed {
     
-    if (self.isCashingProcessing) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
 
-        [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
-        [self.cashingButton setTintColor:ACTIVE_BLUE_COLOR];
-        self.isCashingProcessing = NO;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"textFieldsShouldResignResponder" object:self];
+        [[STMCashingProcessController sharedInstance] doneCashingProcess];
 
-    } else {
+    } else if ([STMCashingProcessController sharedInstance].state == STMCashingProcessIdle) {
+        
+        [self setEditing:NO animated:YES];
+        [[STMCashingProcessController sharedInstance] startCashingProcessForOutlet:self.outlet];
+        
+    }
     
-        [self.cashingButton setTitle:NSLocalizedString(@"CANCEL", nil)];
-        [self.cashingButton setTintColor:[UIColor redColor]];
-        self.isCashingProcessing = YES;
+}
+
+- (void)cashingProcessStart {
+    
+    [self.cashingButton setTitle:NSLocalizedString(@"DONE", nil)];
+    self.addDebtButton.enabled = NO;
+    self.editDebtsButton.enabled = NO;
+    
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        
+        [self.popover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
         
     }
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingButtonPressed" object:self userInfo:nil];
-    
-//    if ([self.debtsCombineVC isKindOfClass:[STMDebtsCombineVC class]]) {
-//        
-//        [[(STMDebtsCombineVC *)self.debtsCombineVC tableVC] setEditing:self.isCashingProcessing animated:NO];
-//        
-//    }
+}
 
+- (void)cashingProcessDone {
+
+    [self.cashingButton setTitle:NSLocalizedString(@"CASHING", nil)];
+    self.addDebtButton.enabled = YES;
+    self.editDebtsButton.enabled = YES;
+
+}
+
+- (void)cashingProcessCancel {
+
+    [self cashingProcessDone];
+
+}
+
+- (void)addDebtButtonPressed:(id)sender {
+
+    self.addDebtPopover = nil;
+    [self.addDebtPopover presentPopoverFromBarButtonItem:self.addDebtButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
+- (void)editDebtsButtonPressed:(id)sender {
+    
+    [self setEditing:!self.editing animated:YES];
+    
+}
+
+- (void)dismissAddDebt {
+    
+    [self.addDebtPopover dismissPopoverAnimated:YES];
+//    self.addDebtPopover = nil;
     
 }
 
@@ -239,7 +360,9 @@
         
         self.segmentedControl.selectedSegmentIndex = self.currentIndex;
         
-        [self editButtonForVC:pageViewController.viewControllers[0]];
+        [self buttonsForVC:pageViewController.viewControllers[0]];
+//        [self editButtonForVC:pageViewController.viewControllers[0]];
+//        [self toolbarButtonForVC:pageViewController.viewControllers[0]];
         
     }
     
@@ -273,6 +396,15 @@
     self.navigationItem.leftBarButtonItem = nil;
     
     self.popover = nil;
+    
+}
+
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    
+    return NO;
     
 }
 
@@ -319,14 +451,50 @@
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:direction animated:YES completion:NULL];
     
-    [self editButtonForVC:vc];
+//    [self editButtonForVC:vc];
+    [self buttonsForVC:vc];
     
 }
 
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessStart)
+                                                 name:@"cashingProcessStart"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessDone)
+                                                 name:@"cashingProcessDone"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessCancel)
+                                                 name:@"cashingProcessCancel"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+}
+
+- (void)removeObsevers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
+
+    [self addObservers];
+
+    NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL toolbarHidden = ![[settings valueForKey:@"enableDebtsEditing"] boolValue];
+    
+    self.navigationController.toolbarHidden = toolbarHidden;
+    
+    [self setToolbarItems:nil];
+    [self.addDebtButton setTitle:NSLocalizedString(@"ADD DEBT", nil)];
     
     self.dataSource = self;
     self.delegate = self;
@@ -362,15 +530,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

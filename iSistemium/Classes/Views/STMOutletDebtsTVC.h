@@ -9,12 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "STMOutlet.h"
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMDebtsDetailsPVC.h"
 
 @interface STMOutletDebtsTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, strong) STMOutlet *outlet;
-
-@property (nonatomic, strong) NSDecimalNumber *totalSum;
+@property (nonatomic, weak) STMDebtsDetailsPVC *parentVC;
 
 - (void)updateRowWithDebt:(STMDebt *)debt;
 

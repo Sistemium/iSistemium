@@ -6,12 +6,12 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMSingleton.h"
 #import "STMUncashing.h"
 
 @interface STMUncashingController : NSObject
 
-+ (STMUncashingController *)sharedController;
++ (STMUncashingController *)sharedInstance;
 
 - (void)removeUncashing:(STMUncashing *)uncashing;
 

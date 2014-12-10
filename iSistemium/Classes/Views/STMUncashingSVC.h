@@ -15,6 +15,4 @@
 @property (nonatomic, strong) STMUncashingMasterTVC *masterVC;
 @property (nonatomic, strong) STMUncashingDetailsTVC *detailVC;
 
-@property (nonatomic) BOOL isUncashingHandOverProcessing;
-
 @end

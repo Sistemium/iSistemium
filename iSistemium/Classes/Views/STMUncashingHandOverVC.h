@@ -8,9 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "STMUncashingSVC.h"
-
-#define BANK_OFFICE_TYPE @"bankOffice"
-#define CASH_DESK_TYPE @"cashDesk"
+#import "STMUncashingProcessController.h"
 
 @interface STMUncashingHandOverVC : UIViewController
 

@@ -97,6 +97,10 @@
 "SELECT UNCASHING PLACE" = "Выберите кассу";
 "NO CASH DESK" = "Нет доступных касс";
 "REM SUM NOT NULL" = "Не выбран остаток суммы подбора";
-
-
+"ADD DEBT" = "Добавить долг";
+"DOC NUMBER" = "Номер документа: ";
+"DEBT SUM" = "Остаток долга: ";
+"EDIT DEBTS" = "Удалить долг";
+"CASHING SUM IS NULL" = "Нулевая сумма сбора";
+"DOC DATE" = "Дата документа: ";
 

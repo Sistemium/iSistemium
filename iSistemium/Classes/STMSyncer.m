@@ -42,6 +42,9 @@
 @property (nonatomic, strong) NSData *clientDataXid;
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 
+- (void) didReceiveRemoteNotification;
+- (void) didEnterBackground;
+
 @end
 
 @implementation STMSyncer
@@ -327,10 +330,28 @@
     }
 }
 
+
+- (void) didReceiveRemoteNotification {
+    
+    [self setSyncerState: STMSyncerSendData];
+    
+}
+
+- (void) didEnterBackground {
+    
+    [self setSyncerState: STMSyncerSendDataOnce];
+    
+}
+
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerSettingsChanged) name:@"syncerSettingsChanged" object:self.session];
+    NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
+    [nc addObserver:self selector:@selector(syncerSettingsChanged) name:@"syncerSettingsChanged" object:self.session];
+    [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationDidReceiveRemoteNotification" object: nil];
+    [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationDidBecomeActive" object: nil];
+    [nc addObserver:self selector:@selector(didEnterBackground) name:@"applicationDidEnterBackground" object: nil];
 
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenReceived:) name:@"tokenReceived" object: self.authDelegate];
     
@@ -391,14 +412,11 @@
 
 - (void)initTimer {
     
-//    UIBackgroundTaskIdentifier bgTask = 0;
-//    UIApplication  *app = [UIApplication sharedApplication];
-//    
-//    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
-//        [app endBackgroundTask:bgTask];
-//    }];
-//    
-    [[NSRunLoop currentRunLoop] addTimer:self.syncTimer forMode:NSRunLoopCommonModes];
+    if (self.syncTimer) {
+        [self releaseTimer];
+    }
+    
+    [[NSRunLoop currentRunLoop] addTimer:self.syncTimer forMode: NSRunLoopCommonModes];
     
 }
 
@@ -411,7 +429,11 @@
 
 - (void)onTimerTick:(NSTimer *)timer {
     
-    //    NSLog(@"syncTimer tick at %@", [NSDate date]);
+#ifdef DEBUG
+    NSTimeInterval bgTR = [[UIApplication sharedApplication] backgroundTimeRemaining];
+    NSLog(@"syncTimer tick at %@, bgTimeRemaining %.0f", [NSDate date], bgTR > 3600 ? -1 : bgTR);
+#endif
+    
     self.syncerState = STMSyncerSendData;
     
 }
@@ -446,15 +468,6 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-//    if ([[(NSManagedObject *)anObject entity].name isEqualToString:@"STMUncashingPicture"]) {
-//        
-//        NSLog(@"anObject %@ change", [anObject valueForKey:@"xid"]);
-//        NSLog(@"href %@", [anObject valueForKey:@"href"]);
-//        NSLog(@"deviceTs %@", [anObject valueForKey:@"deviceTs"]);
-//        NSLog(@"lts %@", [anObject valueForKey:@"lts"]);
-//        NSLog(@"sts %@", [anObject valueForKey:@"sts"]);
-//        
-//    }
     
 }
 
@@ -472,6 +485,7 @@
                 
                 self.checkSending = (self.syncerState == STMSyncerSendData);
                 [self startConnectionForSendData:sendData];
+//                [self nothingToSend];
                 
             } else {
                 
@@ -1079,12 +1093,12 @@
             [self notAuthorized];
             
         } else {
-            
+#ifdef DEBUG
             NSString *requestBody = [[NSString alloc] initWithData:connection.originalRequest.HTTPBody encoding:NSUTF8StringEncoding];
             NSLog(@"originalRequest %@", connection.originalRequest);
             NSLog(@"requestBody %@", requestBody);
             NSLog(@"responseJSON %@", responseJSON);
-            
+#endif
 //            if (self.syncerState == STMSyncerSendData) {
 //                
 //                self.syncing = NO;

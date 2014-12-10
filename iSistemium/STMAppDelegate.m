@@ -60,6 +60,12 @@
     
 }
 
+- (void) application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    NSLog(@"didReceiveLocalNotification: %@", notification);
+    
+}
+
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
     
 	NSLog(@"deviceToken: %@", deviceToken);
@@ -180,18 +186,27 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     
+    __block UIBackgroundTaskIdentifier bgTask;
+    
+    bgTask = [application beginBackgroundTaskWithExpirationHandler: ^{
+        NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+        [application endBackgroundTask: bgTask];
+    }];
+    
+    NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+    NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
+    
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
     
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidEnterBackground" object:application];
+    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillEnterForeground"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData];
     
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
@@ -200,8 +215,9 @@
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidBecomeActive"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidBecomeActive" object:application];
 
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -215,11 +231,26 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
     
-    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+    NSLog(@"application didReceiveRemoteNotification userInfo: %@", userInfo);
     
-    if ([[session status] isEqualToString:@"running"]) {
+    __block UIBackgroundTaskIdentifier bgTask;
+    
+    bgTask = [application beginBackgroundTaskWithExpirationHandler: ^{
+        NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+        [application endBackgroundTask: bgTask];
+        handler (UIBackgroundFetchResultNewData);
+    }];
+    
+    NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
+    NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
+    
+    if ([userInfo objectForKey: @"locationTracker"]) {
         
-        [[session syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler: handler];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"locationTrackerDidReceiveRemoteNotification" object:application userInfo: [userInfo objectForKey: @"locationTracker"]];
+        
+    } else {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidReceiveRemoteNotification" object:application userInfo: userInfo];
         
     }
 

@@ -36,6 +36,7 @@
 #import "STMLocation.h"
 #import "STMUncashingPicture.h"
 #import "STMUncashingPlace.h"
+#import "STMTrack.h"
 
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
@@ -536,7 +537,19 @@
         
         if (![recordStatus.isRemoved boolValue]) {
             
-            NSManagedObject *object = [self objectForEntityName:entityName andXid:xid];
+            NSManagedObject *object = nil;
+            
+            if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
+                
+                object = [[[STMSessionManager sharedManager].currentSession settingsController] settingForDictionary:dictionary];
+                
+            }
+            
+            if (!object) {
+            
+                object = [self objectForEntityName:entityName andXid:xid];
+
+            }
             
             if (![self isWaitingToSyncForObject:object]) {
                 
@@ -917,6 +930,8 @@
                                        NSStringFromClass([STMClientData class]),
                                        NSStringFromClass([STMRecordStatus class]),
                                        NSStringFromClass([STMUncashingPicture class]),
+                                       NSStringFromClass([STMDebt class]),
+                                       NSStringFromClass([STMTrack class]),
                                        NSStringFromClass([STMLocation class])
                                        ];
     
@@ -1094,6 +1109,27 @@
 
 
 #pragma mark - flushing
+
++ (STMRecordStatus *)removeObject:(NSManagedObject *)object {
+    
+    STMRecordStatus *recordStatus = [self recordStatusForObject:object];
+    recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    
+    [self.document.managedObjectContext deleteObject:object];
+    [self.document saveDocument:^(BOOL success) {
+        
+        if (success) {
+            
+            [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendDataOnce;
+            
+        }
+        
+    }];
+
+    return recordStatus;
+
+}
+
 
 + (void)removeAllObjects {
     
@@ -1484,6 +1520,7 @@
                              NSStringFromClass([STMRecordStatus class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMLocation class])];
     
     NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;

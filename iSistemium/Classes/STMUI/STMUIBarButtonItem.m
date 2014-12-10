@@ -66,6 +66,14 @@
 
     } else if ([self isKindOfClass:[STMUIBarButtonItemCancel class]]) {
         
+//        UIColor *color = [UIColor redColor];
+        UIColor *color = ACTIVE_BLUE_COLOR;
+        
+        NSDictionary *textAttributes = @{
+                                         NSForegroundColorAttributeName:color
+                                         };
+        
+        [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
 
         
     }

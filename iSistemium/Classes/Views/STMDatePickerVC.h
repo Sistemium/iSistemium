@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "STMCashingControlsVC.h"
+#import "STMDatePickerParent.h"
 
 @interface STMDatePickerVC : UIViewController
 
-@property (nonatomic, strong) STMCashingControlsVC *parentVC;
+@property (nonatomic, strong) id <STMDatePickerParent> parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
 
 @end

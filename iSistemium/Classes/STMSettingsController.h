@@ -10,6 +10,7 @@
 #import <CoreData/CoreData.h>
 #import <CoreLocation/CoreLocation.h>
 #import "STMSessionManagement.h"
+#import "STMSetting.h"
 
 @interface STMSettingsController : NSObject <STMSettingsController>
 
@@ -20,7 +21,10 @@
 - (NSArray *)currentSettings;
 - (NSString *)normalizeValue:(NSString *)value forKey:(NSString *)key;
 - (NSString *)setNewSettings:(NSDictionary *)newSettings forGroup:(NSString *)group;
+
 - (NSMutableDictionary *)currentSettingsForGroup:(NSString *)group;
+
+- (STMSetting *)settingForDictionary:(NSDictionary *)dictionary;
 
 - (BOOL)isPositiveDouble:(NSString *)value;
 - (BOOL)isBool:(NSString *)value;

@@ -28,18 +28,18 @@
 
 + (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
 
++ (STMRecordStatus *)removeObject:(NSManagedObject *)object;
 + (void)removeAllObjects;
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)dataLoadingFinished;
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
 
 + (NSUInteger)unreadMessagesCount;
-
 + (NSArray *)entityNamesForSyncing;
-
 + (NSArray *)localDataModelEntityNames;
 
 @end

@@ -16,10 +16,11 @@
 #import "STMFunctions.h"
 #import "STMTableViewCell.h"
 #import "STMDebtsSVC.h"
+#import "STMCashingProcessController.h"
+#import "STMDebtsController.h"
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
-//@property (nonatomic, strong) STMDebtsCombineVC *parentVC;
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
@@ -30,12 +31,6 @@
 @implementation STMOutletDebtsTVC
 
 @synthesize resultsController = _resultsController;
-
-//- (STMDebtsCombineVC *)parentVC {
-//    
-//    return (STMDebtsCombineVC *)self.parentViewController;
-//    
-//}
 
 - (STMDebtsSVC *)splitVC {
     
@@ -64,32 +59,9 @@
     
 }
 
-- (NSDecimalNumber *)totalSum {
-    
-    if (!_totalSum) {
-    
-        NSDecimalNumber *totalSum = [NSDecimalNumber zero];
-        
-        for (STMDebt *debt in self.resultsController.fetchedObjects) {
-            
-            totalSum = [totalSum decimalNumberByAdding:debt.calculatedSum];
-            
-        }
-        
-//        NSLog(@"totalSum %@", totalSum);
-        
-        _totalSum = totalSum;
-        
-    }
-    
-    return _totalSum;
-    
-}
-
 - (void)performFetch {
     
     self.resultsController = nil;
-    self.totalSum = nil;
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
@@ -127,15 +99,24 @@
     
 }
 
-
 - (void)updateRowWithDebt:(STMDebt *)debt {
     
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:debt];
     
-    if ([self.tableView cellForRowAtIndexPath:indexPath]) {
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    
+    if (cell) {
+        
+        NSArray *selectedIndexPaths = self.tableView.indexPathsForSelectedRows;
         
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
+        if ([selectedIndexPaths containsObject:indexPath]) {
+            
+            [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            
+        }
+        
     }
     
 }
@@ -152,7 +133,7 @@
         UIColor *backgroundColor = [UIColor clearColor];
         UIColor *textColor = [UIColor blackColor];
         
-        if ([[self.splitVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
+        if ([[[STMCashingProcessController sharedInstance].debtsArray lastObject] isEqual:debt]) {
             
             textColor = ACTIVE_BLUE_COLOR;
             
@@ -299,48 +280,80 @@
     
     cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
     
-    if ([[self.splitVC.controlsVC.debtsArray lastObject] isEqual:debt]) {
-        
-        cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
-        
-    } else {
-        
-        cell.detailTextLabel.textColor = [UIColor blackColor];
-        
-    }
-
-    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    if ([[self.splitVC.controlsVC.debtsDictionary allKeys] containsObject:debt.xid]) {
-        
-        NSDecimalNumber *cashingSum = [self.splitVC.controlsVC.debtsDictionary objectForKey:debt.xid][1];
-        
-        if ([cashingSum compare:debt.summ] == NSOrderedAscending) {
-            
-            [cell setTintColor:STM_LIGHT_BLUE_COLOR];
-            
-        } else {
-        
-            [cell setTintColor:ACTIVE_BLUE_COLOR];
-
-        }
-        
-        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        
-    } else {
-    
-        [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
-        
-    }
     
     return cell;
     
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
+
+    [[cell.contentView viewWithTag:1] removeFromSuperview];
+
+    cell.tintColor = ACTIVE_BLUE_COLOR;
+    cell.accessoryType = UITableViewCellAccessoryNone;
+
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.detailTextLabel.backgroundColor = [UIColor clearColor];
+    
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+        
+        if ([[[STMCashingProcessController sharedInstance].debtsArray lastObject] isEqual:debt]) {
+            
+            cell.detailTextLabel.textColor = ACTIVE_BLUE_COLOR;
+            
+        } else {
+            
+            cell.detailTextLabel.textColor = [UIColor blackColor];
+            
+        }
+        
+        CGFloat fillWidth = 0;
+        
+        if ([[[STMCashingProcessController sharedInstance].debtsDictionary allKeys] containsObject:debt.xid]) {
+            
+            NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:debt.xid][1];
+            
+            fillWidth = [[cashingSum decimalNumberByDividingBy:debt.calculatedSum] doubleValue];
+            
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            
+        } else {
+
+            cell.accessoryType = UITableViewCellAccessoryNone;
+
+        }
+
+        if (fillWidth != 0) {
+            
+            fillWidth = fillWidth * cell.frame.size.width;
+            
+            if (fillWidth < 10) fillWidth = 10;
+            
+            CGRect rect = CGRectMake(0, 1, fillWidth, cell.frame.size.height-2);
+            UIView *view = [[UIView alloc] initWithFrame:rect];
+            view.backgroundColor = STM_SUPERLIGHT_BLUE_COLOR;
+            view.tag = 1;
+            [cell.contentView addSubview:view];
+            [cell.contentView sendSubviewToBack:view];
+
+        }
+        
+    } else {
+        
+        cell.textLabel.textColor = [UIColor blackColor];
+        cell.detailTextLabel.textColor = [UIColor blackColor];
+        
+    }
+
+}
+
+
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    if (tableView.editing) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
         
         return UITableViewCellEditingStyleNone;
 
@@ -353,58 +366,209 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    return NO;
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+        
+        return NO;
+        
+    } else {
+        
+        return YES;
+    }
     
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (tableView.editing) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning && ![STMCashingProcessController sharedInstance].cashingLimitIsReached) {
         
-        if (!self.splitVC.controlsVC.cashingLimitIsReached) {
-            
-            STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-            [cell setTintColor:ACTIVE_BLUE_COLOR];
-            
-            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-            STMDebt *debt = sectionInfo.objects[indexPath.row];
-            
-            [self.splitVC.controlsVC addCashing:debt];
+        STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
+        [[STMCashingProcessController sharedInstance] addDebt:debt];
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
-        }
+        return indexPath;
+
+    } else {
+        
+        return nil;
         
     }
     
-    return indexPath;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+//    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
+
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    if (tableView.editing) {
+    if ([STMCashingProcessController sharedInstance].state == STMCashingProcessRunning) {
+
+        STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
+        [[STMCashingProcessController sharedInstance] removeDebt:debt];
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+        return indexPath;
+
+    } else {
         
-        STMTableViewCell *cell = (STMTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-        [cell setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
-        
-        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
-        STMDebt *debt = sectionInfo.objects[indexPath.row];
-        
-        [self.splitVC.controlsVC removeCashing:debt];
+        return nil;
         
     }
-
-    return indexPath;
     
 }
 
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+//    NSLog(@"indexPathsForSelectedRows %@", self.tableView.indexPathsForSelectedRows);
+
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+
+        STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
+
+        [STMDebtsController removeDebt:debt];
+        
+        if ([self.splitViewController isKindOfClass:[STMDebtsSVC class]]) {
+            
+            STMDebtsSVC *splitVC = (STMDebtsSVC *)self.splitViewController;
+            NSIndexPath *indexPath = [splitVC.masterVC.resultsController indexPathForObject:self.outlet];
+            [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            
+        }
+    
+        
+    }
+    
+}
+
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    [self.tableView reloadData];
+    
+}
+
+
+#pragma mark - observers methods
+
+- (void)editingButtonPressed:(NSNotification *)notification {
+    
+    BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
+    
+    //    self.tableView.allowsMultipleSelectionDuringEditing = !editing;
+    [self.tableView setEditing:editing animated:YES];
+    
+}
+
+- (void)cashingProcessStart {
+    
+    [self.tableView setEditing:NO animated:YES];
+    
+}
+
+- (void)cashingProcessCancel {
+    
+    [self.tableView reloadData];
+
+}
+
+- (void)cashingProcessDone {
+
+    [self.tableView reloadData];
+
+}
+
+- (void)debtAdded:(NSNotification *)notification {
+    
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    STMDebt *previousDebt = [notification.userInfo objectForKey:@"previousDebt"];
+
+    if (debt) [self updateRowWithDebt:debt];
+    if (previousDebt && ![previousDebt isEqual:[NSNull null]]) [self updateRowWithDebt:previousDebt];
+
+}
+
+- (void)debtRemoved:(NSNotification *)notification {
+    
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    STMDebt *selectedDebt = [notification.userInfo objectForKey:@"selectedDebt"];
+    
+    if (debt) [self updateRowWithDebt:debt];
+    if (selectedDebt && ![selectedDebt isEqual:[NSNull null]]) [self updateRowWithDebt:selectedDebt];
+
+    NSIndexPath *removedDebtIndexPath = [self.resultsController indexPathForObject:debt];
+    [self.tableView deselectRowAtIndexPath:removedDebtIndexPath animated:NO];
+    
+}
+
+- (void)cashingSumChanged:(NSNotification *)notification {
+    
+    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    [self updateRowWithDebt:debt];
+
+}
+
+
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(editingButtonPressed:)
+                                                 name:@"editingButtonPressed"
+                                               object:self.parentVC];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessStart)
+                                                 name:@"cashingProcessStart"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessCancel)
+                                                 name:@"cashingProcessCancel"
+                                               object:[STMCashingProcessController sharedInstance]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingProcessDone)
+                                                 name:@"cashingProcessDone"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(debtAdded:)
+                                                 name:@"debtAdded"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(debtRemoved:)
+                                                 name:@"debtRemoved"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cashingSumChanged:)
+                                                 name:@"cashingSumChanged"
+                                               object:[STMCashingProcessController sharedInstance]];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
 
 - (void)customInit {
     
-    [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
-    self.tableView.allowsSelectionDuringEditing = YES;
-    self.tableView.allowsMultipleSelectionDuringEditing = YES;
+    [self addObservers];
     
+    [self.tableView setTintColor:STM_LIGHT_LIGHT_GREY_COLOR];
+//    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
+    self.tableView.allowsMultipleSelection = YES;
     self.clearsSelectionOnViewWillAppear = NO;
     
 }
@@ -429,7 +593,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
+}
 
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [self.parentVC setEditing:NO animated:YES];
+    
 }
 
 - (void)didReceiveMemoryWarning
