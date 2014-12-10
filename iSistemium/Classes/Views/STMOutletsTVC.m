@@ -55,13 +55,28 @@
                 
         request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"(ANY debts.summ != 0) OR (ANY cashings.summ != 0)"];
+        if ([self debtsEditingIsEnabled]) {
+            
+            request.predicate = [NSPredicate predicateWithFormat:@"partner.name != %@", nil];
+            
+        } else {
+            
+            request.predicate = [NSPredicate predicateWithFormat:@"((ANY debts.summ != 0) OR (ANY cashings.summ != 0)) AND partner.name != %@", nil];
+
+        }
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"partner.name" cacheName:nil];
         _resultsController.delegate = self;
         
     }
     
     return _resultsController;
+    
+}
+
+- (BOOL)debtsEditingIsEnabled {
+    
+    NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    return [[settings valueForKey:@"enableDebtsEditing"] boolValue];
     
 }
 
