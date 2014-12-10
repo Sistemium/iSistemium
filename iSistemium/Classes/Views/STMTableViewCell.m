@@ -18,7 +18,7 @@
     
     [super setEditing:editing animated:animated];
     
-    if (editing && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+    if (editing && self.editingStyle != UITableViewCellEditingStyleDelete && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
         
         for (UIView *subview in self.subviews) {
             
