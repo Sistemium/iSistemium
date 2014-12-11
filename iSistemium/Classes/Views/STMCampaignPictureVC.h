@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "STMCampaignPicture.h"
+#import "STMObjectsController.h"
 
 @interface STMCampaignPictureVC : UIViewController
 

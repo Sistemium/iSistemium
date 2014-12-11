@@ -91,6 +91,9 @@
     [self addObservers];
     
     self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
+    if (!self.image) {
+        [STMObjectsController hrefProcessingForObject:self.picture];
+    }
     [self showImage];
 
 }
