@@ -318,8 +318,8 @@
     startSettings = @{
                       @"restServerURI"            : self.serviceUri,
                       @"dataModelName"            : @"STMDataModel",
-                      @"fetchLimit"               : @"50",
-                      @"syncInterval"             : @"600",
+//                      @"fetchLimit"               : @"50",
+//                      @"syncInterval"             : @"600",
                       @"requiredAccuracy"         : @"100",
                       @"desiredAccuracy"          : @"10",
                       @"timeFilter"               : @"60",
