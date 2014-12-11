@@ -367,6 +367,16 @@
     
 }
 
+- (void)syncerDidReceiveRemoteNotification:(NSNotification *)notification {
+    
+    if ([[notification.userInfo objectForKey:@"syncer"] isEqualToString:@"upload"]) {
+        
+        [self setSyncerState: STMSyncerSendDataOnce];
+        
+    }
+    
+}
+
 - (void)addObservers {
     
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
@@ -377,7 +387,8 @@
     [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationDidBecomeActive" object: nil];
     [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationPerformFetchWithCompletionHandler" object:nil];
     [nc addObserver:self selector:@selector(didEnterBackground) name:@"applicationDidEnterBackground" object: nil];
-
+    [nc addObserver:self selector:@selector(syncerDidReceiveRemoteNotification:) name:@"syncerDidReceiveRemoteNotification" object:nil];
+    
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenReceived:) name:@"tokenReceived" object: self.authDelegate];
     
 }

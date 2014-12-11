@@ -191,6 +191,10 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"locationTrackerDidReceiveRemoteNotification" object:application userInfo: [userInfo objectForKey: @"locationTracker"]];
         
+    } else if ([userInfo objectForKey:@"syncer"]) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidReceiveRemoteNotification" object:application userInfo:userInfo];
+
     } else {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidReceiveRemoteNotification" object:application userInfo: userInfo];
