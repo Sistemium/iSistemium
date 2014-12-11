@@ -30,6 +30,8 @@
 @property (nonatomic, strong) NSString *restServerURI;
 @property (nonatomic, strong) NSString *apiUrlString;
 @property (nonatomic, strong) NSString *xmlNamespace;
+@property (nonatomic) NSTimeInterval httpTimeoutForeground;
+@property (nonatomic) NSTimeInterval httpTimeoutBackground;
 @property (nonatomic, strong) NSTimer *syncTimer;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) NSMutableDictionary *settings;
@@ -137,6 +139,28 @@
         _xmlNamespace = [self.settings valueForKey:@"xmlNamespace"];
     }
     return _xmlNamespace;
+}
+
+- (NSTimeInterval)httpTimeoutForeground {
+    if (!_httpTimeoutForeground) {
+        _httpTimeoutForeground = [[self.settings valueForKey:@"http.timeout.foreground"] doubleValue];
+    }
+    return _httpTimeoutForeground;
+}
+
+- (NSTimeInterval)httpTimeoutBackground {
+    if (!_httpTimeoutBackground) {
+        _httpTimeoutBackground = [[self.settings valueForKey:@"http.timeout.background"] doubleValue];
+    }
+    return _httpTimeoutBackground;
+}
+
+- (NSTimeInterval)timeout {
+    
+    NSTimeInterval timeout = ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) ? self.httpTimeoutBackground : self.httpTimeoutForeground;
+    
+    return timeout;
+    
 }
 
 - (NSMutableDictionary *)entitySyncInfo {
@@ -378,8 +402,21 @@
 
 - (void)syncerSettingsChanged {
     
-    self.settings = nil;
+    [self flushSettings];
     
+}
+
+- (void)flushSettings {
+    
+    self.settings = nil;
+
+    self.fetchLimit = 0;
+    self.restServerURI = nil;
+    self.apiUrlString = nil;
+    self.xmlNamespace = nil;
+    self.httpTimeoutForeground = 0;
+    self.httpTimeoutBackground = 0;
+
 }
 
 - (void)prepareToDestroy {
@@ -692,6 +729,7 @@
         
         if ([request valueForHTTPHeaderField:@"Authorization"]) {
             
+            request.timeoutInterval = [self timeout];
             request.HTTPShouldHandleCookies = NO;
             //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
             [request setHTTPMethod:@"POST"];
@@ -767,6 +805,7 @@
         
         if ([request valueForHTTPHeaderField:@"Authorization"]) {
             
+            request.timeoutInterval = [self timeout];
             request.HTTPShouldHandleCookies = NO;
             //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
             [request setHTTPMethod:@"GET"];
@@ -784,7 +823,7 @@
                 
             } else {
                 
-                //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+//            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
                 
             }
             
@@ -850,20 +889,29 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
-    NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error];
+    NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error.localizedDescription];
     [self.session.logger saveLogMessageWithText:errorMessage type:@"error"];
 
-    self.syncing = NO;
-    
-    if (self.syncerState == STMSyncerSendData) {
+    if (error.code == NSURLErrorTimedOut) {
         
-        self.syncerState = STMSyncerReceiveData;
-
-    } else {
+        NSLog(@"NSURLErrorFailingURLStringErrorKey %@", [error.userInfo valueForKey:NSURLErrorFailingURLStringErrorKey]);
         
-        self.syncerState = STMSyncerIdle;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"NSURLErrorTimedOut" object:self userInfo:error.userInfo];
         
     }
+    
+    self.syncing = NO;
+    self.syncerState = STMSyncerIdle;
+    
+//    if (self.syncerState == STMSyncerSendData) {
+//        
+//        self.syncerState = STMSyncerReceiveData;
+//
+//    } else {
+//        
+//        self.syncerState = STMSyncerIdle;
+//        
+//    }
     
 }
 
