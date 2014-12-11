@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "STMUncashingMasterTVC.h"
 #import "STMUncashingDetailsTVC.h"
+#import "STMUI.h"
 
-@interface STMUncashingSVC : UISplitViewController
+@interface STMUncashingSVC : STMUISplitViewController
 
 @property (nonatomic, strong) STMUncashingMasterTVC *masterVC;
 @property (nonatomic, strong) STMUncashingDetailsTVC *detailVC;

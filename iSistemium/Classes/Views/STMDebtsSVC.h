@@ -10,8 +10,9 @@
 #import "STMOutletsTVC.h"
 #import "STMDebtsDetailsPVC.h"
 #import "STMCashingControlsVC.h"
+#import "STMUI.h"
 
-@interface STMDebtsSVC : UISplitViewController
+@interface STMDebtsSVC : STMUISplitViewController
 
 @property (nonatomic, strong) STMOutletsTVC *masterVC;
 @property (nonatomic, strong) STMDebtsDetailsPVC *detailVC;

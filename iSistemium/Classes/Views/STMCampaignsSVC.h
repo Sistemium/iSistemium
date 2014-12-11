@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "STMCampaignsTVC.h"
 #import "STMCampaignDetailsPVC.h"
+#import "STMUI.h"
 
-@interface STMCampaignsSVC : UISplitViewController
+@interface STMCampaignsSVC : STMUISplitViewController
 
 @property (nonatomic, strong) STMCampaignDetailsPVC *detailVC;
 @property (nonatomic, strong) STMCampaignsTVC *masterVC;

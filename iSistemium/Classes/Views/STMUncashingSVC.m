@@ -57,8 +57,6 @@
 
 - (void)customInit {
     
-    self.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
-
     if ([self.detailVC conformsToProtocol:@protocol(UISplitViewControllerDelegate)]) {
         self.delegate = (id <UISplitViewControllerDelegate>)self.detailVC;
     }
