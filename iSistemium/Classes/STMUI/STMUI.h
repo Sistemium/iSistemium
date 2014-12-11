@@ -10,6 +10,7 @@
 #define iSistemium_STMUI_h
 
 #include "STMUIBarButtonItem.h"
+#include "STMUISplitViewController.h"
 
 
 #endif

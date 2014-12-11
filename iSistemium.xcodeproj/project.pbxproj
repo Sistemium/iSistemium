@@ -132,6 +132,7 @@
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
 		D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */; };
 		D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC56B198BC6A300D8CD63 /* password2-128.png */; };
+		D9527F6D1A3A504D0098885D /* STMUISplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9527F6C1A3A504D0098885D /* STMUISplitViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -400,6 +401,8 @@
 		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
 		D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "christmas_gift-128.png"; sourceTree = "<group>"; };
 		D94AC56B198BC6A300D8CD63 /* password2-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "password2-128.png"; sourceTree = "<group>"; };
+		D9527F6B1A3A504D0098885D /* STMUISplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUISplitViewController.h; sourceTree = "<group>"; };
+		D9527F6C1A3A504D0098885D /* STMUISplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUISplitViewController.m; sourceTree = "<group>"; };
 		E8B7BD87EDED486BA6D4F962 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -435,6 +438,8 @@
 				2C140AB91A18991B002C5C17 /* STMUI.h */,
 				2C140AB61A189772002C5C17 /* STMUIBarButtonItem.h */,
 				2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */,
+				D9527F6B1A3A504D0098885D /* STMUISplitViewController.h */,
+				D9527F6C1A3A504D0098885D /* STMUISplitViewController.m */,
 			);
 			path = STMUI;
 			sourceTree = "<group>";
@@ -974,6 +979,7 @@
 				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
 				2C140ACA1A19F5B3002C5C17 /* STMUncashingPlaceController.m in Sources */,
 				2C734B8519B4E8DC00EE33FA /* STMLogsTVC.m in Sources */,
+				D9527F6D1A3A504D0098885D /* STMUISplitViewController.m in Sources */,
 				2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */,
 				2CD443E5195AAD72004ADE58 /* STMCampaignDetailsPVC.m in Sources */,
 				2CD443EE195AB4D6004ADE58 /* STMCampaignPageCVC.m in Sources */,
