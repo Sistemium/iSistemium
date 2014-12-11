@@ -55,6 +55,7 @@
     [nc addObserver:self selector:@selector(trackerSettingsChanged:) name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
     [nc addObserver:self selector:@selector(checkTimeForTracking) name:@"applicationDidBecomeActive" object:nil];
     [nc addObserver:self selector:@selector(checkTimeForTracking) name:@"applicationPerformFetchWithCompletionHandler" object:nil];
+    [nc addObserver:self selector:@selector(didReceiveRemoteNotification:) name:@"applicationDidReceiveRemoteNotification" object: nil];
 
 }
 
@@ -127,9 +128,11 @@
 
 - (void) didReceiveRemoteNotification:(NSNotification *) notification {
     
-    if ([notification.userInfo isEqual:@"stop"]) {
+    id command = [[notification userInfo] objectForKey: [[self class] description]];
+    
+    if ([command isEqual:@"stop"]) {
         [self stopTracking];
-    } else if ([notification.userInfo isEqual:@"start"]) {
+    } else if ([command isEqual:@"start"]) {
         [self startTracking];
     }
     

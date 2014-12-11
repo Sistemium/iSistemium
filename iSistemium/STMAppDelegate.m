@@ -187,11 +187,7 @@
     NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
     
-    if ([userInfo objectForKey: @"locationTracker"]) {
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"locationTrackerDidReceiveRemoteNotification" object:application userInfo: [userInfo objectForKey: @"locationTracker"]];
-        
-    } else if ([userInfo objectForKey:@"syncer"]) {
+    if ([userInfo objectForKey:@"syncer"]) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidReceiveRemoteNotification" object:application userInfo:userInfo];
 

@@ -120,9 +120,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentReady:) name:@"documentReady" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentNotReady:) name:@"documentNotReady" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsLoadComplete) name:@"settingsLoadComplete" object:self.settingsController];
-    if (self.locationTracker) {
-        [[NSNotificationCenter defaultCenter] addObserver:self.locationTracker selector:@selector(didReceiveRemoteNotification:) name:@"locationTrackerDidReceiveRemoteNotification" object: nil];
-    }
 
 }
 
