@@ -176,9 +176,16 @@
             [defaults setObject:serverDataModel forKey:@"serverDataModel"];
             [defaults synchronize];
             
+            _entitySyncInfo = serverDataModel;
+            
+        } else {
+            
+            _entitySyncInfo = [[NSMutableDictionary alloc] init];
+            
+            for (NSString * key in serverDataModel) {
+                [_entitySyncInfo setObject: [[serverDataModel objectForKey:key] mutableCopy] forKey: key];
+            }
         }
-        
-        _entitySyncInfo = serverDataModel;
         
     }
     
