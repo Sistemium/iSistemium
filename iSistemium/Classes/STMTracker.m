@@ -49,9 +49,12 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackerSettingsChanged:) name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkTimeForTracking) name: @"applicationDidBecomeActive" object:nil];
+    NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
+    [nc addObserver:self selector:@selector(trackerSettingsChanged:) name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
+    [nc addObserver:self selector:@selector(checkTimeForTracking) name:@"applicationDidBecomeActive" object:nil];
+    [nc addObserver:self selector:@selector(checkTimeForTracking) name:@"applicationPerformFetchWithCompletionHandler" object:nil];
 
 }
 
