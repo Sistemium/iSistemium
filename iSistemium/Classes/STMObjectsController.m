@@ -41,7 +41,6 @@
 #import <AWSiOSSDKv2/AWSCore.h>
 #import <AWSiOSSDKv2/S3.h>
 #import <objc/runtime.h>
-#import "AWXMLRequestSerializerFixed.h"
 
 
 @interface STMObjectsController()
@@ -94,12 +93,6 @@
         AWSStaticCredentialsProvider *credentialsProvider = [AWSStaticCredentialsProvider credentialsWithAccessKey:self.accessKey secretKey:self.secretKey];
         AWSServiceConfiguration *configuration = [AWSServiceConfiguration configurationWithRegion:AWSRegionEUWest1 credentialsProvider:credentialsProvider];
         [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
-        
-        
-        // Get both the methods from the object by its selectors
-        Method originalMethod = class_getInstanceMethod(NSClassFromString(@"AWSS3RequestSerializer"), @selector(serializeRequest:headers:parameters:error:));
-        Method newMethod = class_getInstanceMethod([AWXMLRequestSerializerFixed class], @selector(__serializeRequest:headers:parameters:error:));
-        method_exchangeImplementations(originalMethod, newMethod);
         
         self.s3Initialized = YES;
         
@@ -1357,7 +1350,7 @@
                         
                         //                    NSLog(@"Got here: %@", task.result);
                         
-                        NSArray *urlArray = [NSArray arrayWithObjects:transferManager.endpoint.URL, bucket, filename, nil];
+                        NSArray *urlArray = [NSArray arrayWithObjects:transferManager.configuration.endpoint.URL, bucket, filename, nil];
                         NSString *href = [urlArray componentsJoinedByString:@"/"];
                         
                         NSLog(@"%@ upload successefully", href);
