@@ -232,7 +232,6 @@
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     toViewController.view.frame = [transitionContext finalFrameForViewController:toViewController];
-    [toViewController.view layoutIfNeeded];
     
     [UIView transitionFromView:fromViewController.view
                         toView:toViewController.view
@@ -240,6 +239,7 @@
                        options:UIViewAnimationOptionTransitionFlipFromLeft
                     completion:^(BOOL finished) {
                         [transitionContext completeTransition:YES];
+                        [toViewController.view layoutIfNeeded];
                     }];
 
 }
