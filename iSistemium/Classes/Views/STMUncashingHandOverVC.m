@@ -15,6 +15,7 @@
 #import "STMUncashingPlaceController.h"
 #import "STMFunctions.h"
 #import "STMObjectsController.h"
+#import "STMUIImagePickerController.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate>
 
@@ -33,7 +34,7 @@
 @property (nonatomic, strong) NSString *initialCommentText;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
-@property (nonatomic, strong) UIImagePickerController *imagePickerController;
+@property (nonatomic, strong) STMUIImagePickerController *imagePickerController;
 @property (nonatomic, strong) UIView *spinnerView;
 @property (nonatomic, strong) UIView *cameraOverlayView;
 
@@ -46,6 +47,9 @@
 
 @property (nonatomic, strong) STMUncashingPlace *defaultUncashingPlace;
 
+@property (nonatomic, strong) NSMutableArray *availableSourceTypes;
+@property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
+
 @end
 
 
@@ -53,37 +57,51 @@
 
 //@synthesize uncashingType = _uncashingType;
 
-- (UIImagePickerController *)imagePickerController {
+- (STMUIImagePickerController *)imagePickerController {
     
     if (!_imagePickerController) {
         
-        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+        STMUIImagePickerController *imagePickerController = [[STMUIImagePickerController alloc] init];
         imagePickerController.delegate = self;
         
-        imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-        imagePickerController.showsCameraControls = NO;
+        imagePickerController.sourceType = self.selectedSourceType;
         
-        [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
-        self.cameraOverlayView.backgroundColor = [UIColor clearColor];
-        self.cameraOverlayView.autoresizesSubviews = YES;
-        self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-        
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        if (imagePickerController.sourceType == UIImagePickerControllerSourceTypeCamera) {
             
-            UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
-            CGRect originalFrame = [[UIScreen mainScreen] bounds];
-            CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
-            self.cameraOverlayView.frame = screenFrame;
+            imagePickerController.showsCameraControls = NO;
+            
+            [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
+            self.cameraOverlayView.backgroundColor = [UIColor clearColor];
+            self.cameraOverlayView.autoresizesSubviews = YES;
+            self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+            
+            if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+                
+                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+                CGRect originalFrame = [[UIScreen mainScreen] bounds];
+                CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
+                self.cameraOverlayView.frame = screenFrame;
+                
+            }
+            
+            imagePickerController.cameraOverlayView = self.cameraOverlayView;
             
         }
-        
-        imagePickerController.cameraOverlayView = self.cameraOverlayView;
         
         _imagePickerController = imagePickerController;
         
     }
     
     return _imagePickerController;
+    
+}
+
+- (NSMutableArray *)availableSourceTypes {
+    
+    if (!_availableSourceTypes) {
+        _availableSourceTypes = [NSMutableArray array];
+    }
+    return _availableSourceTypes;
     
 }
 
@@ -436,15 +454,7 @@
     
 //    NSLog(@"cancelButtonPressed");
     
-    [self cancelBankOffice];
-    
-    [self.imagePickerController dismissViewControllerAnimated:NO completion:^{
-        
-        [self.spinnerView removeFromSuperview];
-        
-        self.imagePickerController = nil;
-        
-    }];
+    [self imagePickerControllerDidCancel:self.imagePickerController];
     
 }
 
@@ -507,11 +517,20 @@
             
         } else if (buttonIndex == 1) {
             
-            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+            [self showImagePickerSelector];
+            
+        }
+        
+    } else if (alertView.tag == 3) {
+        
+        if (buttonIndex > 0) {
+            
+            [self showImagePickerForSourceType:[self.availableSourceTypes[buttonIndex-1] intValue]];
             
         }
         
     }
+
     
 }
 
@@ -585,10 +604,48 @@
     
 }
 
+- (void)showImagePickerSelector {
+    
+    self.availableSourceTypes = nil;
+    
+    BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
+    BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+//    BOOL savedPhotosAlbum = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMAGE SOURCE", nil) message:NSLocalizedString(@"CHOOSE TYPE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+    alert.tag = 3;
+    
+    if (photoLibrary) {
+        
+        [alert addButtonWithTitle:NSLocalizedString(@"PHOTO LIBRARY", nil)];
+        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypePhotoLibrary]];
+        
+    }
+    
+    if (camera) {
+        
+        [alert addButtonWithTitle:NSLocalizedString(@"CAMERA", nil)];
+        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeCamera]];
+        
+    }
+    
+//    if (savedPhotosAlbum) {
+//        
+//        [alert addButtonWithTitle:NSLocalizedString(@"SAVED PHOTOS ALBUM", nil)];
+//        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeSavedPhotosAlbum]];
+//        
+//    }
+    
+    [alert show];
+    
+}
+
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
     
     if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
         
+        self.selectedSourceType = imageSourceType;
+
         [self.splitViewController presentViewController:self.imagePickerController animated:YES completion:^{
             
             [self.splitViewController.view addSubview:self.spinnerView];
@@ -690,9 +747,15 @@
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+
+    [self cancelBankOffice];
     
     [picker dismissViewControllerAnimated:NO completion:^{
+
+        [self.spinnerView removeFromSuperview];
         
+        self.imagePickerController = nil;
+
 //        NSLog(@"imagePickerControllerDidCancel");
         
     }];
