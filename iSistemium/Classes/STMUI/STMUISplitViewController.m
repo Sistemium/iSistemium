@@ -8,21 +8,42 @@
 
 #import "STMUISplitViewController.h"
 
-@interface STMUISplitViewController ()
+@interface STMUISplitViewController () <UISplitViewControllerDelegate>
 
 @end
 
 @implementation STMUISplitViewController
 
-- (void) setPreferredDisplayMode: (UISplitViewControllerDisplayMode) mode {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-        [super setPreferredDisplayMode: mode];
-    }
+#pragma mark - UISplitViewControllerDelegate
+
+- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation {
+    
+    return NO;
+    
 }
 
+//- (void) setPreferredDisplayMode: (UISplitViewControllerDisplayMode) mode {
+//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+//        [super setPreferredDisplayMode: mode];
+//    }
+//}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    self.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
+    
+    float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+    
+    if (systemVersion >= 8.0) {
+        
+        self.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
+        
+    } else if (systemVersion >= 5.0 && systemVersion < 8.0) {
+        
+        self.delegate = self;
+        
+    }
+    
 }
 
 @end

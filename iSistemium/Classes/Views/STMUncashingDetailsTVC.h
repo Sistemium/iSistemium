@@ -10,7 +10,7 @@
 #import "STMUncashing.h"
 #import "STMUI.h"
 
-@interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC <UISplitViewControllerDelegate>
+@interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC //<UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMUncashing *uncashing;
 @property (nonatomic, strong) STMUIBarButtonItem *uncashingProcessButton;

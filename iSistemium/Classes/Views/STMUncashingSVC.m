@@ -57,9 +57,9 @@
 
 - (void)customInit {
     
-    if ([self.detailVC conformsToProtocol:@protocol(UISplitViewControllerDelegate)]) {
-        self.delegate = (id <UISplitViewControllerDelegate>)self.detailVC;
-    }
+//    if ([self.detailVC conformsToProtocol:@protocol(UISplitViewControllerDelegate)]) {
+//        self.delegate = (id <UISplitViewControllerDelegate>)self.detailVC;
+//    }
     
 }
 

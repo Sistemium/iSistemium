@@ -22,7 +22,7 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
-@property (nonatomic, strong) UIPopoverController *popover;
+//@property (nonatomic, strong) UIPopoverController *popover;
 
 @end
 
@@ -68,7 +68,7 @@
         }
         
         self.navigationItem.leftBarButtonItem.title = self.campaign.name;
-        [self.popover dismissPopoverAnimated:YES];
+//        [self.popover dismissPopoverAnimated:YES];
         
     }
     
@@ -88,7 +88,7 @@
     return _homeButton;
     
 }
-*/
+
 
 - (void)homeButtonPressed {
     
@@ -97,6 +97,7 @@
     
     
 }
+*/
 
 - (STMCampaignPageCVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
@@ -163,7 +164,14 @@
     }
 }
 
+/*
 #pragma mark - UISplitViewControllerDelegate
+
+- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation {
+    
+    return NO;
+    
+}
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
     
@@ -184,7 +192,7 @@
     self.popover = nil;
     
 }
-
+*/
 
 #pragma mark
 

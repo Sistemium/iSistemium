@@ -21,7 +21,7 @@
 @interface STMUncashingDetailsTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
-@property (nonatomic, strong) UIPopoverController *uncashingPopover;
+//@property (nonatomic, strong) UIPopoverController *uncashingPopover;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
 
@@ -66,7 +66,7 @@
         }
         
         [self performFetch];
-        [self.uncashingPopover dismissPopoverAnimated:YES];
+//        [self.uncashingPopover dismissPopoverAnimated:YES];
         
     }
     
@@ -206,11 +206,11 @@
     
     [self.uncashingProcessButton setTitle:NSLocalizedString(@"DONE", nil)];
     
-    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
-        
-        [self.uncashingPopover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-
-    }
+//    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+//        
+//        [self.uncashingPopover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+//
+//    }
     
 }
 
@@ -230,7 +230,7 @@
     
 }
 
-
+/*
 #pragma mark - UISplitViewControllerDelegate
 
 //- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation {
@@ -272,7 +272,7 @@
     self.uncashingPopover = nil;
     
 }
-
+*/
 
 #pragma mark - table view data source
 

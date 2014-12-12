@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "STMCampaign.h"
 
-@interface STMCampaignDetailsPVC : UIPageViewController <UISplitViewControllerDelegate>
+@interface STMCampaignDetailsPVC : UIPageViewController //<UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMCampaign *campaign;
 

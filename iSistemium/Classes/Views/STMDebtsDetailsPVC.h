@@ -10,7 +10,7 @@
 #import "STMOutlet.h"
 #import "STMDebtsDetailsVC.h"
 
-@interface STMDebtsDetailsPVC : UIPageViewController <UISplitViewControllerDelegate>
+@interface STMDebtsDetailsPVC : UIPageViewController //<UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMOutlet *outlet;
 @property (nonatomic, strong) STMDebtsDetailsVC *debtsCombineVC;

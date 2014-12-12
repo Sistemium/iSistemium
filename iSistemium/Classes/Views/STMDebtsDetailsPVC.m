@@ -22,7 +22,7 @@
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIPopoverControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
-@property (nonatomic, strong) UIPopoverController *popover;
+//@property (nonatomic, strong) UIPopoverController *popover;
 
 @property (nonatomic, strong) STMDocument *document;
 
@@ -103,7 +103,7 @@
 //        [self editButtonForVC:self.viewControllers[0]];
         [self buttonsForVC:self.viewControllers[0]];
 
-        [self.popover dismissPopoverAnimated:YES];
+//        [self.popover dismissPopoverAnimated:YES];
 
     }
     
@@ -284,11 +284,11 @@
     self.addDebtButton.enabled = NO;
     self.editDebtsButton.enabled = NO;
     
-    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
-        
-        [self.popover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-        
-    }
+//    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+//        
+//        [self.popover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+//        
+//    }
 
 }
 
@@ -370,6 +370,7 @@
     
 }
 
+/*
 #pragma mark - UISplitViewControllerDelegate
 
 - (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
@@ -400,6 +401,7 @@
     self.popover = nil;
     
 }
+*/
 
 
 #pragma mark - UIPopoverControllerDelegate
