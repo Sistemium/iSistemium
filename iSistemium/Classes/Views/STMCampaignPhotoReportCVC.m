@@ -22,7 +22,7 @@
 #import "STMEntityDescription.h"
 
 
-@interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
@@ -40,6 +40,8 @@
 @property (nonatomic, strong) UIImagePickerController *imagePickerController;
 @property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
 
+@property (nonatomic, strong) NSMutableArray *availableSourceTypes;
+@property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
 @end
 
@@ -59,6 +61,15 @@
     }
     
     return _document;
+    
+}
+
+- (NSMutableArray *)availableSourceTypes {
+
+    if (!_availableSourceTypes) {
+        _availableSourceTypes = [NSMutableArray array];
+    }
+    return _availableSourceTypes;
     
 }
 
@@ -97,8 +108,6 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
         
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
-//
-//        request.sortDescriptors = [NSArray arrayWithObject:nameSortDescriptor];
         
         NSError *error;
         NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
@@ -133,10 +142,6 @@
         
         [outletsWPR addObjectsFromArray:outletsWOPR];
         outlets = outletsWPR;
-        
-//        NSSortDescriptor *photoReportsCountSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"photoReportsArePresent" ascending:NO selector:@selector(compare:)];
-
-//        outlets = [outlets sortedArrayUsingDescriptors:[NSArray arrayWithObject:photoReportsCountSortDescriptor]];
         
         _outlets = outlets;
         
@@ -181,15 +186,8 @@
         
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:currentSection];
         
-//        if ([self.collectionView cellForItemAtIndexPath:indexPath]) {
-        
-//            [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-        
-            UICollectionViewLayoutAttributes *headerAttribute = [self.collectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
-            [self.collectionView scrollRectToVisible:headerAttribute.frame animated:YES];
-
-        
-//        }
+        UICollectionViewLayoutAttributes *headerAttribute = [self.collectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
+        [self.collectionView scrollRectToVisible:headerAttribute.frame animated:YES];
         
     }
     
@@ -202,24 +200,29 @@
         UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
         imagePickerController.delegate = self;
         
-        imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-        imagePickerController.showsCameraControls = NO;
-
-        [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
-        self.cameraOverlayView.backgroundColor = [UIColor clearColor];
-        self.cameraOverlayView.autoresizesSubviews = YES;
-        self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-
-            UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
-            CGRect originalFrame = [[UIScreen mainScreen] bounds];
-            CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
-            self.cameraOverlayView.frame = screenFrame;
+        imagePickerController.sourceType = self.selectedSourceType;
+        
+        if (imagePickerController.sourceType == UIImagePickerControllerSourceTypeCamera) {
+            
+            imagePickerController.showsCameraControls = NO;
+            
+            [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
+            self.cameraOverlayView.backgroundColor = [UIColor clearColor];
+            self.cameraOverlayView.autoresizesSubviews = YES;
+            self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+            
+            if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+                
+                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+                CGRect originalFrame = [[UIScreen mainScreen] bounds];
+                CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
+                self.cameraOverlayView.frame = screenFrame;
+                
+            }
+            
+            imagePickerController.cameraOverlayView = self.cameraOverlayView;
 
         }
-        
-        imagePickerController.cameraOverlayView = self.cameraOverlayView;
         
         _imagePickerController = imagePickerController;
         
@@ -268,17 +271,8 @@
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
-    
-    [self.imagePickerController dismissViewControllerAnimated:NO completion:^{
-        
-        [self.spinnerView removeFromSuperview];
-        
-        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
 
-        self.imagePickerController = nil;
-//        NSLog(@"cancel button pressed");
-        
-    }];
+    [self imagePickerControllerDidCancel:self.imagePickerController];
     
 }
 
@@ -343,15 +337,52 @@
     self.currentSection = tag;
 
     [(UIView *)[sender view] setBackgroundColor:ACTIVE_BLUE_COLOR];
-//    [(UIView *)[sender view] setBackgroundColor:STM_YELLOW_COLOR];
     
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+    [self showImagePickerSelector];
+    
+}
+
+- (void)showImagePickerSelector {
+
+    self.availableSourceTypes = nil;
+    
+    BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
+    BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+    BOOL savedPhotosAlbum = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMAGE SOURCE", nil) message:NSLocalizedString(@"CHOOSE TYPE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+    alert.tag = 1;
+    
+    if (photoLibrary) {
+     
+        [alert addButtonWithTitle:NSLocalizedString(@"PHOTO LIBRARY", nil)];
+        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypePhotoLibrary]];
+        
+    }
+    
+    if (camera) {
+        
+        [alert addButtonWithTitle:NSLocalizedString(@"CAMERA", nil)];
+        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeCamera]];
+
+    }
+    
+    if (savedPhotosAlbum) {
+        
+        [alert addButtonWithTitle:NSLocalizedString(@"SAVED PHOTOS ALBUM", nil)];
+        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeSavedPhotosAlbum]];
+
+    }
+    
+    [alert show];
     
 }
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
     
     if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
+        
+        self.selectedSourceType = imageSourceType;
         
         [self.splitViewController presentViewController:self.imagePickerController animated:YES completion:^{
             
@@ -414,8 +445,6 @@
 
         STMLocation *location = [self.locationTracker locationObjectFromCLLocation:currentLocation];
         
-        //        NSArray *waitingLocationPhotos = [self.waitingLocationPhotos copy];
-        
         for (STMPhoto *photo in self.waitingLocationPhotos) {
             
             photo.location = location;
@@ -424,6 +453,23 @@
             
         }
 
+    }
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (alertView.tag == 1) {
+        
+        if (buttonIndex > 0) {
+            
+            [self showImagePickerForSourceType:[self.availableSourceTypes[buttonIndex-1] intValue]];
+            
+        }
+        
     }
     
 }
@@ -449,9 +495,11 @@
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
+        [self.spinnerView removeFromSuperview];
+        
         [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
         
-        NSLog(@"imagePickerControllerDidCancel");
+        self.imagePickerController = nil;
         
     }];
     
@@ -462,7 +510,6 @@
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
   
     return self.outlets.count;
-//    return self.photoReportPicturesResultsController.fetchedObjects.count;
     
 }
 
@@ -477,10 +524,6 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
-    //    if (kind == UICollectionElementKindSectionHeader) {
-    //
-    //    }
-    
     UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"outletHeader" forIndexPath:indexPath];
     
     headerView.tag = indexPath.section;
@@ -488,7 +531,6 @@
     if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
 
         headerView.backgroundColor = ACTIVE_BLUE_COLOR;
-//        headerView.backgroundColor = STM_YELLOW_COLOR;
 
     } else {
      
@@ -616,14 +658,6 @@
         
     }
     
-//    [self.document saveDocument:^(BOOL success) {
-//        if (success) {
-//            
-//        }
-//    }];
-    
-//    [self fetchPhotoReport];
-    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
@@ -741,7 +775,6 @@
 
     if ([segue.identifier isEqualToString:@"showPhotoReport"] && [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]]) {
         
-//        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoReport:self.selectedPhotoReport];
         [(STMPhotoReportPVC *)segue.destinationViewController setPhotoArray:[[self photoReportsInOutlet:self.selectedPhotoReport.outlet] mutableCopy]];
         [(STMPhotoReportPVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
 
