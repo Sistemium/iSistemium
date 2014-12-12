@@ -20,7 +20,7 @@
 #import "STMCampaignsSVC.h"
 #import "STMConstants.h"
 #import "STMEntityDescription.h"
-
+#import "STMUIImagePickerController.h"
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 
@@ -37,7 +37,7 @@
 @property (nonatomic, strong) NSMutableArray *waitingLocationPhotos;
 @property (nonatomic, strong) STMLocationTracker *locationTracker;
 
-@property (nonatomic, strong) UIImagePickerController *imagePickerController;
+@property (nonatomic, strong) STMUIImagePickerController *imagePickerController;
 @property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
 
 @property (nonatomic, strong) NSMutableArray *availableSourceTypes;
@@ -193,13 +193,13 @@
     
 }
 
-- (UIImagePickerController *)imagePickerController {
+- (STMUIImagePickerController *)imagePickerController {
     
     if (!_imagePickerController) {
         
-        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+        STMUIImagePickerController *imagePickerController = [[STMUIImagePickerController alloc] init];
         imagePickerController.delegate = self;
-        
+                
         imagePickerController.sourceType = self.selectedSourceType;
         
         if (imagePickerController.sourceType == UIImagePickerControllerSourceTypeCamera) {

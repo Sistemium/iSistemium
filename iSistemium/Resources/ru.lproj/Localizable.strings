@@ -103,4 +103,9 @@
 "EDIT DEBTS" = "Удалить долг";
 "CASHING SUM IS NULL" = "Нулевая сумма сбора";
 "DOC DATE" = "Дата документа: ";
+"PHOTO LIBRARY" = "Фотоальбомы";
+"CAMERA" = "Камера";
+"SAVED PHOTOS ALBUM" = "Фотоплёнка";
+"IMAGE SOURCE" = "Выберите";
+"CHOOSE TYPE" = "источник картинки:";
 
