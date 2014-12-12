@@ -10,4 +10,6 @@
 
 @interface STMLogMessage (dayAsString)
 
+- (NSString *)dayAsString;
+
 @end

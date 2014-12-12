@@ -7,7 +7,7 @@
 //
 
 #import "STMLogger.h"
-#import "STMLogMessage.h"
+#import "STMLogMessage+dayAsString.h"
 #import "STMDocument.h"
 #import "STMEntityDescription.h"
 
@@ -164,10 +164,10 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
     NSDateFormatter *startDateFormatter = [[NSDateFormatter alloc] init];
-    [startDateFormatter setDateStyle:NSDateFormatterShortStyle];
+    [startDateFormatter setDateStyle:NSDateFormatterMediumStyle];
     [startDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
     
-    STMLogMessage *logMessage = [self.resultsController.fetchedObjects objectAtIndex:indexPath.row];
+    STMLogMessage *logMessage = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = logMessage.text;
     
