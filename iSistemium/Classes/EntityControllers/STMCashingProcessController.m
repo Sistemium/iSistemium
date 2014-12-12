@@ -11,6 +11,7 @@
 #import "STMSessionManager.h"
 #import "STMSyncer.h"
 #import "STMCashing.h"
+#import "STMEntityDescription.h"
 
 
 @interface STMCashingProcessController()
@@ -276,7 +277,7 @@
         NSDecimalNumber *summ = debtArray[1];
         NSString *commentText = [self.commentsDictionary objectForKey:debt.xid];
         
-        STMCashing *cashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:self.document.managedObjectContext];
+        STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:self.document.managedObjectContext];
         
         cashing.date = date;
         cashing.summ = summ;

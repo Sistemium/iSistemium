@@ -9,6 +9,7 @@
 #import "STMLogger.h"
 #import "STMLogMessage.h"
 #import "STMDocument.h"
+#import "STMEntityDescription.h"
 
 @interface STMLogger() <NSFetchedResultsControllerDelegate>
 
@@ -100,7 +101,7 @@
 
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type {
     
-    STMLogMessage *logMessage = (STMLogMessage *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
+    STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
     logMessage.text = text;
     logMessage.type = type;
     

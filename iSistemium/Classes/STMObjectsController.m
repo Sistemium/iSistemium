@@ -13,6 +13,7 @@
 #import "STMDocument.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
+#import "STMEntityDescription.h"
 
 #import <Security/Security.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
@@ -175,7 +176,7 @@
         
         if (!clientData) {
             
-            clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            clientData = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
             
         }
         
@@ -205,7 +206,7 @@
         
         if (!clientData) {
             
-            clientData = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+            clientData = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
             
         }
         
@@ -580,7 +581,7 @@
     
     NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
     
-    NSEntityDescription *currentEntity = [object entity];
+    STMEntityDescription *currentEntity = (STMEntityDescription *)[object entity];
     NSDictionary *entityAttributes = [currentEntity attributesByName];
     
     for (NSString *key in ownObjectKeys) {
@@ -995,7 +996,7 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
     
-    NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
     [object setValue:[NSNumber numberWithBool:YES] forKey:@"isFantom"];
     
     return object;
@@ -1025,7 +1026,7 @@
     
     if (!recordStatus) {
         
-        recordStatus = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].managedObjectContext];
+        recordStatus = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].managedObjectContext];
         recordStatus.objectXid = objectXid;
         
     }
@@ -1039,10 +1040,10 @@
 
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName {
     
-    NSEntityDescription *coreEntity = [NSEntityDescription entityForName:@"STMComment" inManagedObjectContext:[self document].managedObjectContext];
+    STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMComment class]) inManagedObjectContext:[self document].managedObjectContext];
     NSSet *coreKeys = [NSSet setWithArray:[[coreEntity attributesByName] allKeys]];
 
-    NSEntityDescription *objectEntity = [NSEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
     NSMutableSet *objectKeys = [NSMutableSet setWithArray:[[objectEntity attributesByName] allKeys]];
 
     [objectKeys minusSet:coreKeys];
@@ -1053,10 +1054,10 @@
 
 + (NSDictionary *)ownObjectRelationshipsForEntityName:(NSString *)entityName {
     
-    NSEntityDescription *coreEntity = [NSEntityDescription entityForName:@"STMComment" inManagedObjectContext:[self document].managedObjectContext];
+    STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMComment class]) inManagedObjectContext:[self document].managedObjectContext];
     NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
     
-    NSEntityDescription *objectEntity = [NSEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
     NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
     
     [objectRelationshipNames minusSet:coreRelationshipNames];
@@ -1078,10 +1079,10 @@
 
 + (NSDictionary *)singleRelationshipsForEntityName:(NSString *)entityName {
     
-    NSEntityDescription *coreEntity = [NSEntityDescription entityForName:@"STMComment" inManagedObjectContext:[self document].managedObjectContext];
+    STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMComment class]) inManagedObjectContext:[self document].managedObjectContext];
     NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
     
-    NSEntityDescription *objectEntity = [NSEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
     NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
     
     [objectRelationshipNames minusSet:coreRelationshipNames];
@@ -1479,7 +1480,7 @@
             
             if (photoReports.count == 0) {
                 
-                STMPhotoReport *photoReport = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
+                STMPhotoReport *photoReport = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
                 photoReport.outlet = outlet;
                 photoReport.campaign = campaign;
                 

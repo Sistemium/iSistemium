@@ -19,6 +19,7 @@
 #import "STMObjectsController.h"
 #import "STMCampaignsSVC.h"
 #import "STMConstants.h"
+#import "STMEntityDescription.h"
 
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
@@ -328,7 +329,7 @@
     
     STMOutlet *outlet = self.outlets[tag];
     
-    STMPhotoReport *photoReport = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
+    STMPhotoReport *photoReport = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
     photoReport.outlet = outlet;
 
     [self.document saveDocument:^(BOOL success) {

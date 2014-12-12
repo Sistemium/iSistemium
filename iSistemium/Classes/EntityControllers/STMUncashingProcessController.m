@@ -10,6 +10,7 @@
 #import "STMUncashingPicture.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
+#import "STMEntityDescription.h"
 
 @interface STMUncashingProcessController ()
 
@@ -103,7 +104,7 @@
         
     }
     
-    STMUncashing *uncashing = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
+    STMUncashing *uncashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
     
     NSArray *cashings = [self.cashingDictionary allValues];
     
@@ -119,7 +120,7 @@
     
     if (image) {
         
-        STMUncashingPicture *picture = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
+        STMUncashingPicture *picture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
         
         [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
         

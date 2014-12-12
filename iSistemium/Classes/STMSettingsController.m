@@ -9,6 +9,7 @@
 #import "STMSettingsController.h"
 #import "STMSession.h"
 #import "STMSettingsData.h"
+#import "STMEntityDescription.h"
 
 @interface STMSettingsController() <NSFetchedResultsControllerDelegate>
 
@@ -268,7 +269,7 @@
             if (!settingToCheck) {
                 
 //                    NSLog(@"settingName %@", settingName);
-                STMSetting *newSetting = (STMSetting *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
+                STMSetting *newSetting = (STMSetting *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
                 newSetting.group = settingsGroupName;
                 newSetting.name = settingName;
                 newSetting.value = settingValue;
@@ -315,7 +316,7 @@
             
             if (!setting) {
                 
-                setting = (STMSetting *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
+                setting = (STMSetting *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
                 setting.group = group;
                 setting.name = settingName;
                 
