@@ -281,7 +281,8 @@
     }
     
     cell.textLabel.text = title;
-    cell.textLabel.textColor = [UIColor lightGrayColor];
+//    cell.textLabel.textColor = [UIColor lightGrayColor];
+    cell.textLabel.textColor = self.activeButtonColor;
     
     return cell;
     
@@ -466,7 +467,8 @@
             self.progressBar.hidden = NO;
             
         }
-        
+
+/*
         STMAuthController *authController = [STMAuthController authController];
 
         if (authController.controllerState == STMAuthSuccess) {
@@ -480,10 +482,11 @@
                 
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
                 cell.textLabel.textColor = (textColorSelector) ? self.activeButtonColor : [UIColor lightGrayColor];
-                
+
             }
 
         }
+*/
         
     }
     
@@ -530,11 +533,27 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncerStatusChanged:) name:@"syncStatusChanged" object:[[STMSessionManager sharedManager].currentSession syncer]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(entityCountdownChange:) name:@"entityCountdownChange" object:[[STMSessionManager sharedManager].currentSession syncer]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"newAppVersionAvailable" object:nil];
-
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(authControllerStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
+    
+    [nc addObserver:self
+           selector:@selector(syncerStatusChanged:)
+               name:@"syncStatusChanged"
+             object:[[STMSessionManager sharedManager].currentSession syncer]];
+    
+    [nc addObserver:self
+           selector:@selector(entityCountdownChange:)
+               name:@"entityCountdownChange"
+             object:[[STMSessionManager sharedManager].currentSession syncer]];
+    
+    [nc addObserver:self
+           selector:@selector(newAppVersionAvailable:)
+               name:@"newAppVersionAvailable"
+             object:nil];
     
 }
 
@@ -601,7 +620,7 @@
 
     if ([STMAuthController authController].controllerState == STMAuthSuccess) {
         
-        return 2; // set to 3 to show reloadDataCell
+        return 1; // set 3 to show reloadDataCell; set 2 to show tabBar selection cell; set 1 to show only user info
         
     } else {
         
