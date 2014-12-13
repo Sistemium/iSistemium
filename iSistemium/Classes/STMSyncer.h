@@ -15,12 +15,13 @@
 
 @property (nonatomic, strong) id <STMSession> session;
 @property (nonatomic, strong) id <STMRequestAuthenticatable> authDelegate;
-@property (nonatomic, strong) NSMutableDictionary *entitySyncInfo;
+//@property (nonatomic, strong) NSMutableDictionary *entitySyncInfo;
+@property (nonatomic, strong) NSMutableDictionary *stcEntities;
 @property (nonatomic) double syncInterval;
 @property (nonatomic) STMSyncerState syncerState;
 
 - (void)prepareToDestroy;
-- (void)flushEntitySyncInfo;
+//- (void)flushEntitySyncInfo;
 - (void) setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler;
 
 @end

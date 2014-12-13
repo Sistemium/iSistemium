@@ -498,7 +498,8 @@
         
         STMSyncer *syncer = notification.object;
         
-        float totalCount = (float)syncer.entitySyncInfo.allKeys.count;
+//        float totalCount = (float)syncer.entitySyncInfo.allKeys.count;
+        float totalCount = (float)syncer.stcEntities.allKeys.count;
         float countdownValue = [[notification.userInfo objectForKey:@"countdownValue"] floatValue];
         
         self.progressBar.progress = (totalCount - countdownValue) / totalCount;

@@ -45,7 +45,7 @@
 @property (nonatomic) BOOL sendOnce;
 @property (nonatomic, strong) NSData *clientDataXid;
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
-@property (nonatomic, strong) NSMutableDictionary *stcEntities;
+@property (nonatomic, strong) NSMutableDictionary *temporaryETag;
 
 - (void) didReceiveRemoteNotification;
 - (void) didEnterBackground;
@@ -55,7 +55,7 @@
 @implementation STMSyncer
 
 @synthesize syncInterval = _syncInterval;
-@synthesize entitySyncInfo = _entitySyncInfo;
+//@synthesize entitySyncInfo = _entitySyncInfo;
 @synthesize syncerState = _syncerState;
 
 
@@ -165,7 +165,7 @@
     return timeout;
     
 }
-
+/*
 - (NSMutableDictionary *)entitySyncInfo {
     
     if (!_entitySyncInfo) {
@@ -225,7 +225,7 @@
     [defaults synchronize];
     
 }
-
+*/
 - (STMSyncerState)syncerState {
     
     if (!_syncerState) {
@@ -323,8 +323,39 @@
 
 - (NSMutableDictionary *)stcEntities {
     
-    if (!_stcEntities) _stcEntities = [[STMEntityController stcEntities] copy];
+    if (!_stcEntities) {
+        
+        NSDictionary *stcEntities = [STMEntityController stcEntities];
+        
+        if (![stcEntities objectForKey:@"STMEntity"]) {
+            
+            NSDictionary *coreEntityDic = @{
+                                            @"name": @"stc.entity",
+                                            @"properties": @{
+                                                    @"name": @"Entity",
+                                                    @"url": self.restServerURI
+                                                    }
+                                            };
+            
+            [STMObjectsController insertObjectFromDictionary:coreEntityDic withCompletionHandler:^(BOOL success) {
+                if (success) _stcEntities = [[STMEntityController stcEntities] mutableCopy];
+            }];
+            
+        }
+        
+        _stcEntities = [stcEntities mutableCopy];
+
+    }
     return _stcEntities;
+    
+}
+
+- (NSMutableDictionary *)temporaryETag {
+    
+    if (!_temporaryETag) {
+        _temporaryETag = [NSMutableDictionary dictionary];
+    }
+    return _temporaryETag;
     
 }
 
@@ -340,7 +371,6 @@
         [STMObjectsController checkClientData];
 //        [STMObjectsController checkAppVersion];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
-        [self checkStcEntities];
         [self initTimer];
         [self addObservers];
         
@@ -370,30 +400,6 @@
         self.running = NO;
         
     }
-}
-
-- (void)checkStcEntities {
-    
-    STMEntity *coreEntity = [self.stcEntities objectForKey:@"STMEntity"];
-    
-    if (!coreEntity) {
-        
-        NSDictionary *coreEntityDic = @{
-                                        @"name": @"stc.entity",
-                                        @"properties": @{
-                                                         @"name": @"Entity",
-                                                         @"url": self.restServerURI
-                                                         }
-                                        };
-        
-        [STMObjectsController insertObjectFromDictionary:coreEntityDic withCompletionHandler:^(BOOL success) {
-
-        }];
-        
-        self.stcEntities = nil;
-        
-    }
-    
 }
 
 - (void) didReceiveRemoteNotification {
@@ -839,17 +845,15 @@
     
     if (self.syncerState != STMSyncerIdle) {
         
-        NSDictionary *entity = [self.entitySyncInfo objectForKey:entityName];
-        NSString *url = [entity objectForKey:@"url"];
-        NSString *eTag = [entity objectForKey:@"eTag"];
-        eTag = eTag ? eTag : @"*";
+//        NSDictionary *entity = [self.entitySyncInfo objectForKey:entityName];
+//        NSString *url = [entity objectForKey:@"url"];
+//        NSString *eTag = [entity objectForKey:@"eTag"];
+//        eTag = eTag ? eTag : @"*";
         
-//        if ([entityName isEqualToString:@"STMUncashingPlace"]) {
-//            NSLog(@"eTag %@", eTag);
-//        }
-//        
-//        NSLog(@"entityName %@", entityName);
-//        NSLog(@"url %@", url);
+        STMEntity *entity = [self.stcEntities objectForKey:entityName];
+        NSString *url = entity.url;
+        NSString *eTag = entity.eTag;
+        eTag = eTag ? eTag : @"*";
         
         NSURL *requestURL = [NSURL URLWithString:url];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
@@ -902,18 +906,28 @@
     
     NSString *entityName = nil;
     
-    for (NSString *name in self.entitySyncInfo.allKeys) {
+//    for (NSString *name in self.entitySyncInfo.allKeys) {
+//        
+//        NSDictionary *entityDic = [self.entitySyncInfo objectForKey:name];
+//        
+//        if ([[entityDic objectForKey:@"url"] isEqualToString:connection.currentRequest.URL.absoluteString]) {
+//            
+//            entityName = name;
+//            
+//        }
+//        
+//    }
+
+    for (STMEntity *entity in self.stcEntities) {
         
-        NSDictionary *entityDic = [self.entitySyncInfo objectForKey:name];
-        
-        if ([[entityDic objectForKey:@"url"] isEqualToString:connection.currentRequest.URL.absoluteString]) {
+        if ([entity.url isEqualToString:connection.currentRequest.URL.absoluteString]) {
             
-            entityName = name;
+            entityName = [[self.stcEntities allKeysForObject:entity] lastObject];
             
         }
         
     }
-    
+
     if ([connection.currentRequest.URL.absoluteString isEqualToString:self.apiUrlString]) {
         entityName = @"SEND_DATA";
     }
@@ -984,8 +998,9 @@
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) {
             
-            [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"temporaryETag"];
-            [self saveServerDataModel];
+            [self.temporaryETag setValue:eTag forKey:entityName];
+//            [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"temporaryETag"];
+//            [self saveServerDataModel];
             
         }
         
@@ -1001,7 +1016,8 @@
         
         if ([entityName isEqualToString:@"STMEntity"]) {
             
-            NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
+//            NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
+            NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
             [entityNames removeObject:entityName];
 
             self.entityCount = entityNames.count;
@@ -1087,24 +1103,36 @@
             
 //            NSLog(@"responseJSON %@", responseJSON);
             
-            for (NSDictionary *datum in dataArray) {
+            [STMObjectsController insertObjectsFromArray:dataArray withCompletionHandler:^(BOOL success) {
                 
-                NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
-                NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
-                [self.entitySyncInfo setObject:entityProperties forKey:entityName];
-                [self saveServerDataModel];
-                
-            }
+                if (success) {
+                    [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+                } else {
+                    NSLog(@"insert %@ not success, possible reason: there is no such entity in local dataModel", connectionEntityName);
+                }
+
+            }];
             
-            [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+//            for (NSDictionary *datum in dataArray) {
+//                
+//                NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
+//                NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
+//                [self.entitySyncInfo setObject:entityProperties forKey:entityName];
+//                [self saveServerDataModel];
+//                
+//            }
+//            
+//            [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
             
             
         } else {
             
-            NSDictionary *entityModel = [self.entitySyncInfo objectForKey:connectionEntityName];
+//            NSDictionary *entityModel = [self.entitySyncInfo objectForKey:connectionEntityName];
+            STMEntity *entity = [self.stcEntities objectForKey:connectionEntityName];
             
-            if ([entityModel objectForKey:@"roleName"]) {
-                
+//            if ([entityModel objectForKey:@"roleName"]) {
+            if (entity.roleName) {
+            
                 [STMObjectsController setRelationshipsFromArray:dataArray withCompletionHandler:^(BOOL success) {
                     
                     if (success) {
@@ -1120,7 +1148,8 @@
                     
                 }];
                 
-            } else if (entityModel) {
+//            } else if (entityModel) {
+            } else if (entity) {
                 
                 [STMObjectsController insertObjectsFromArray:dataArray withCompletionHandler:^(BOOL success) {
                     
@@ -1191,10 +1220,15 @@
 }
 
 - (void)fillETagWithTemporaryValueForEntityName:(NSString *)entityName {
+
+    NSString *eTag = [self.temporaryETag valueForKey:entityName];
+    STMEntity *entity = [self.stcEntities objectForKey:entityName];
+    entity.eTag = eTag;
     
-    NSString *eTag = [[self.entitySyncInfo objectForKey:entityName] objectForKey:@"temporaryETag"];
-    [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
-    [self saveServerDataModel];
+//    NSString *eTag = [[self.entitySyncInfo objectForKey:entityName] objectForKey:@"temporaryETag"];
+//    [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
+//    [self saveServerDataModel];
+    
     [self startConnectionForReceiveEntitiesWithName:entityName];
     
 }

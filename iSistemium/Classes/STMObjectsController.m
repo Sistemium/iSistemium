@@ -14,6 +14,7 @@
 #import "STMFunctions.h"
 #import "STMSyncer.h"
 #import "STMEntityDescription.h"
+#import "STMEntityController.h"
 
 #import <Security/Security.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
@@ -835,14 +836,18 @@
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
 
-    NSDictionary *serverDataModel = [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer entitySyncInfo];
+//    NSDictionary *serverDataModel = [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer entitySyncInfo];
+    NSDictionary *serverDataModel = [[STMEntityController stcEntities] copy];
 
     if ([[serverDataModel allKeys] containsObject:entityName]) {
         
-        NSDictionary *modelProperties = [serverDataModel objectForKey:entityName];
-        NSString *roleOwner = [modelProperties objectForKey:@"roleOwner"];
+//        NSDictionary *modelProperties = [serverDataModel objectForKey:entityName];
+        STMEntity *entityModel = [serverDataModel objectForKey:entityName];
+//        NSString *roleOwner = [modelProperties objectForKey:@"roleOwner"];
+        NSString *roleOwner = entityModel.roleOwner;
         NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
-        NSString *roleName = [modelProperties objectForKey:@"roleName"];
+//        NSString *roleName = [modelProperties objectForKey:@"roleName"];
+        NSString *roleName = entityModel.roleName;
         NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
         NSString *destinationEntityName = [ownerRelationships objectForKey:roleName];
         NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
@@ -1199,7 +1204,7 @@
     
 }
 
-
+/*
 + (void)removeAllObjects {
     
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:@"reload data" type:nil];
@@ -1231,11 +1236,11 @@
     }
     
     STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
-    [syncer flushEntitySyncInfo];
+//    [syncer flushEntitySyncInfo];
     syncer.syncerState = STMSyncerReceiveData;
     
 }
-
+*/
 
 #pragma mark - picture processing
 
