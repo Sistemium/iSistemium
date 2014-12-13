@@ -19,6 +19,7 @@
 + (void)checkClientData;
 + (void)checkAppVersion;
 + (void)checkUploadedPhotos;
++ (void)checkObjectsForFlushing;
 
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
@@ -29,7 +30,6 @@
 + (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
 
 + (STMRecordStatus *)removeObject:(NSManagedObject *)object;
-+ (void)removeAllObjects;
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)dataLoadingFinished;
@@ -37,7 +37,6 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
-
 + (NSUInteger)unreadMessagesCount;
 + (NSArray *)entityNamesForSyncing;
 + (NSArray *)localDataModelEntityNames;

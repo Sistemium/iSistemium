@@ -941,6 +941,18 @@
 
 }
 
++ (NSArray *)entityNamesForFlushing {
+    
+    NSArray *entityNamesForFlushing = @[
+                                       NSStringFromClass([STMTrack class]),
+                                       NSStringFromClass([STMLocation class]),
+                                       NSStringFromClass([STMLogMessage class])
+                                       ];
+    
+    return entityNamesForFlushing;
+
+}
+
 #pragma mark - getting specified objects
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
@@ -1130,6 +1142,60 @@
 
     return recordStatus;
 
+}
+
++ (void)checkObjectsForFlushing {
+
+    NSArray *entityNamesForFlushing = [self entityNamesForFlushing];
+    
+    NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
+    
+    double lifeTime = [[appSettings valueForKey:@"objectsLifeTime"] doubleValue];
+
+    NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
+    
+    NSMutableSet *objectsSet = [NSMutableSet set];
+    
+    for (NSString *entityName in entityNamesForFlushing) {
+        
+        NSError *error;
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        
+        for (NSManagedObject *object in fetchResult) {
+            if (![self isWaitingToSyncForObject:object]) [objectsSet addObject:object];
+        }
+        
+    }
+    
+    if (objectsSet.count > 0) {
+        
+        NSLog(@"flush %d objects with expired lifetime", objectsSet.count);
+        
+        for (NSManagedObject *object in objectsSet) {
+            
+            if ([object isKindOfClass:[STMLocation class]]) {
+                
+                STMLocation *location = (STMLocation *)object;
+                
+                if (location.photos.count == 0) {
+                    [[[self document] managedObjectContext] deleteObject:object];
+                } else {
+                    NSLog(@"location %@ linked with picture, flush canceled", location.xid);
+                }
+                
+            } else {
+                
+                [[[self document] managedObjectContext] deleteObject:object];
+                
+            }
+            
+        }
+
+    }
+    
 }
 
 

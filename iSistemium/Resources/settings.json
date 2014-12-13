@@ -23,7 +23,7 @@
                 },
                 {
                     "name": "objectsLifeTime",
-                    "value": 24,
+                    "value": 72,
                     "control": "slider",
                     "min": 1,
                     "max": 240,

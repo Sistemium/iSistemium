@@ -7,6 +7,7 @@
 //
 
 #import "STMDocument.h"
+#import "STMObjectsController.h"
 
 @interface STMDocument()
 
@@ -66,6 +67,7 @@
                 if (success) {
                     
 //                    NSLog(@"UIDocumentSaveForOverwriting success");
+                    [STMObjectsController checkObjectsForFlushing];
                     completionHandler(YES);
                     
                 } else {
