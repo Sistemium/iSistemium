@@ -58,7 +58,7 @@
 
 - (NSString *)normalizeValue:(NSString *)value forKey:(NSString *)key {
     
-    NSArray *positiveDoubleValues = [NSArray arrayWithObjects:@"trackDetectionTime", @"trackSeparationDistance", @"fetchLimit", @"syncInterval", @"deviceMotionUpdateInterval", @"maxSpeedThreshold", @"http.timeout.foreground", @"http.timeout.background", nil];
+    NSArray *positiveDoubleValues = [NSArray arrayWithObjects:@"trackDetectionTime", @"trackSeparationDistance", @"fetchLimit", @"syncInterval", @"deviceMotionUpdateInterval", @"maxSpeedThreshold", @"http.timeout.foreground", @"http.timeout.background", @"objectsLifeTime", nil];
     
     NSArray *boolValues = [NSArray arrayWithObjects:@"localAccessToSettings", @"deviceMotionUpdate", @"enableDebtsEditing", nil];
     NSArray *boolValueSuffixes = [NSArray arrayWithObjects:@"TrackerAutoStart", nil];
