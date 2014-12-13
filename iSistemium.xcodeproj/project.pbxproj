@@ -14,6 +14,9 @@
 		2C140ADC1A1D3016002C5C17 /* STMUncashingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140ADB1A1D3016002C5C17 /* STMUncashingController.m */; };
 		2C14D4381A3B1C3700747844 /* STMEntityDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C14D4371A3B1C3700747844 /* STMEntityDescription.m */; };
 		2C14D43B1A3B396300747844 /* STMUIImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C14D43A1A3B396300747844 /* STMUIImagePickerController.m */; };
+		2C14D43E1A3B737E00747844 /* STMLogMessagesSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C14D43D1A3B737E00747844 /* STMLogMessagesSVC.m */; };
+		2C14D4411A3B73A000747844 /* STMLogMessagesMasterTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C14D4401A3B73A000747844 /* STMLogMessagesMasterTVC.m */; };
+		2C14D4441A3B73B400747844 /* STMLogMessagesDetailTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C14D4431A3B73B400747844 /* STMLogMessagesDetailTVC.m */; };
 		2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */; };
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
 		2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */; };
@@ -162,6 +165,12 @@
 		2C14D4371A3B1C3700747844 /* STMEntityDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMEntityDescription.m; sourceTree = "<group>"; };
 		2C14D4391A3B396300747844 /* STMUIImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUIImagePickerController.h; sourceTree = "<group>"; };
 		2C14D43A1A3B396300747844 /* STMUIImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUIImagePickerController.m; sourceTree = "<group>"; };
+		2C14D43C1A3B737E00747844 /* STMLogMessagesSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLogMessagesSVC.h; sourceTree = "<group>"; };
+		2C14D43D1A3B737E00747844 /* STMLogMessagesSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLogMessagesSVC.m; sourceTree = "<group>"; };
+		2C14D43F1A3B73A000747844 /* STMLogMessagesMasterTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLogMessagesMasterTVC.h; sourceTree = "<group>"; };
+		2C14D4401A3B73A000747844 /* STMLogMessagesMasterTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLogMessagesMasterTVC.m; sourceTree = "<group>"; };
+		2C14D4421A3B73B400747844 /* STMLogMessagesDetailTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLogMessagesDetailTVC.h; sourceTree = "<group>"; };
+		2C14D4431A3B73B400747844 /* STMLogMessagesDetailTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLogMessagesDetailTVC.m; sourceTree = "<group>"; };
 		2C27B5A4196FC6D200D26D58 /* STMPhotoReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReport.h; sourceTree = "<group>"; };
 		2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReport.m; sourceTree = "<group>"; };
 		2C27B5AA196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMOutlet+photoReportsArePresent.h"; sourceTree = "<group>"; };
@@ -543,6 +552,12 @@
 				2C29691819B1CFAB0038B122 /* STMMessagesTVC.m */,
 				2C734B8319B4E8DC00EE33FA /* STMLogsTVC.h */,
 				2C734B8419B4E8DC00EE33FA /* STMLogsTVC.m */,
+				2C14D43C1A3B737E00747844 /* STMLogMessagesSVC.h */,
+				2C14D43D1A3B737E00747844 /* STMLogMessagesSVC.m */,
+				2C14D43F1A3B73A000747844 /* STMLogMessagesMasterTVC.h */,
+				2C14D4401A3B73A000747844 /* STMLogMessagesMasterTVC.m */,
+				2C14D4421A3B73B400747844 /* STMLogMessagesDetailTVC.h */,
+				2C14D4431A3B73B400747844 /* STMLogMessagesDetailTVC.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -981,6 +996,8 @@
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
 				2C8EF5DE1940860A0021D202 /* STMAuthController.m in Sources */,
 				2C53B8D91940A1B8002298A5 /* STMLogMessage+dayAsString.m in Sources */,
+				2C14D43E1A3B737E00747844 /* STMLogMessagesSVC.m in Sources */,
+				2C14D4441A3B73B400747844 /* STMLogMessagesDetailTVC.m in Sources */,
 				2C8EF5DF1940860A0021D202 /* STMFunctions.m in Sources */,
 				2C140ACA1A19F5B3002C5C17 /* STMUncashingPlaceController.m in Sources */,
 				2C734B8519B4E8DC00EE33FA /* STMLogsTVC.m in Sources */,
@@ -1000,6 +1017,7 @@
 				2CA452E319649C5E00D93CA2 /* STMSetting.m in Sources */,
 				2C14D43B1A3B396300747844 /* STMUIImagePickerController.m in Sources */,
 				2C83695A1986809900DA4316 /* STMOutletsTVC.m in Sources */,
+				2C14D4411A3B73A000747844 /* STMLogMessagesMasterTVC.m in Sources */,
 				2C9051A21A276E9200EFE40D /* STMDataModel.xcdatamodeld in Sources */,
 				2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */,
 				2CD443EB195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m in Sources */,
