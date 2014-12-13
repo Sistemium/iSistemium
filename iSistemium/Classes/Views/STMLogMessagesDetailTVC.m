@@ -7,21 +7,123 @@
 //
 
 #import "STMLogMessagesDetailTVC.h"
+#import <CoreData/CoreData.h>
+#import "STMLogMessage+dayAsString.h"
 
 @interface STMLogMessagesDetailTVC ()
 
 @end
 
+
 @implementation STMLogMessagesDetailTVC
 
+@synthesize resultsController = _resultsController;
+@synthesize selectedDate = _selectedDate;
+
+- (NSDate *)selectedDate {
+    
+    if (!_selectedDate) {
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        NSString *stringDate = [dateFormatter stringFromDate:[NSDate date]];
+        
+        _selectedDate = [dateFormatter dateFromString:stringDate];
+        
+    }
+    
+    return _selectedDate;
+    
+}
+
+- (void)setSelectedDate:(NSDate *)selectedDate {
+    
+    if (_selectedDate != selectedDate) {
+        
+        _selectedDate = selectedDate;
+        
+        [self performFetch];
+        
+    }
+    
+}
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLogMessage class])];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
+        
+        NSDate *startDate = self.selectedDate;
+        NSDate *endDate = [NSDate dateWithTimeInterval:24*3600 sinceDate:startDate];
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"(deviceCts >= %@) AND (deviceCts < %@)", startDate, endDate];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController.delegate = self;
+        
+    }
+    
+    return _resultsController;
+    
+}
+
+- (void)performFetch {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+        
+        NSLog(@"performFetch error %@", error);
+        
+    } else {
+        
+        [self.tableView reloadData];
+        
+    }
+    
+}
+
+
+#pragma mark - Table view data source
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailLogCell" forIndexPath:indexPath];
+    
+    NSDateFormatter *startDateFormatter = [[NSDateFormatter alloc] init];
+    [startDateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [startDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    
+    STMLogMessage *logMessage = [self.resultsController objectAtIndexPath:indexPath];
+    
+    cell.textLabel.text = logMessage.text;
+    
+    if ([logMessage.type isEqualToString:@"error"]) {
+        cell.textLabel.textColor = [UIColor redColor];
+    } else if ([logMessage.type isEqualToString:@"blue"]) {
+        cell.textLabel.textColor = [UIColor blueColor];
+    } else {
+        cell.textLabel.textColor = [UIColor blackColor];
+    }
+    
+    cell.detailTextLabel.text = [startDateFormatter stringFromDate:logMessage.deviceCts];
+    
+    return cell;
+    
+    
+}
+
+
+#pragma mark - view lifecycle
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -29,72 +131,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
-}
-
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

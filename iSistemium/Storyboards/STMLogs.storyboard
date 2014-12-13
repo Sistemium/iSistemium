@@ -5,16 +5,16 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <scenes>
-        <!--LogsTVC-->
+        <!--Log Messages DetailTVC-->
         <scene sceneID="tbL-Ul-n3d">
             <objects>
-                <tableViewController id="OgI-fp-zwD" customClass="STMLogsTVC" sceneMemberID="viewController">
+                <tableViewController id="OgI-fp-zwD" customClass="STMLogMessagesDetailTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="aAe-NQ-DCf">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="logCell" textLabel="QdA-fT-ljN" detailTextLabel="1VT-bz-fTA" style="IBUITableViewCellStyleSubtitle" id="qZK-gC-vTp">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="detailLogCell" textLabel="QdA-fT-ljN" detailTextLabel="1VT-bz-fTA" style="IBUITableViewCellStyleSubtitle" id="qZK-gC-vTp">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qZK-gC-vTp" id="029-D1-3tR">
                                     <autoresizingMask key="autoresizingMask"/>

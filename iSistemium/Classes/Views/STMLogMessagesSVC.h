@@ -7,7 +7,12 @@
 //
 
 #import "STMUISplitViewController.h"
+#import "STMLogMessagesMasterTVC.h"
+#import "STMLogMessagesDetailTVC.h"
 
 @interface STMLogMessagesSVC : STMUISplitViewController
+
+@property (nonatomic, strong) STMLogMessagesMasterTVC *masterTVC;
+@property (nonatomic, strong) STMLogMessagesDetailTVC *detailTVC;
 
 @end

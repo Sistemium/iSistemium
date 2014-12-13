@@ -6,8 +6,11 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "STMFetchedResultsControllerTVC.h"
 
-@interface STMLogMessagesDetailTVC : UITableViewController
+@interface STMLogMessagesDetailTVC : STMFetchedResultsControllerTVC
+
+@property (nonatomic, strong) NSDate *selectedDate;
+
 
 @end

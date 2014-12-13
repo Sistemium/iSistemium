@@ -9,14 +9,36 @@
 #import "STMLogMessagesMasterTVC.h"
 #import <CoreData/CoreData.h>
 #import "STMLogMessage+dayAsString.h"
+#import "STMLogMessagesSVC.h"
 
 @interface STMLogMessagesMasterTVC ()
 
+@property (nonatomic, strong) STMLogMessagesSVC *splitVC;
+
+
 @end
+
 
 @implementation STMLogMessagesMasterTVC
 
 @synthesize resultsController = _resultsController;
+
+
+- (STMLogMessagesSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMLogMessagesSVC class]]) {
+            
+            _splitVC = (STMLogMessagesSVC *)self.splitViewController;
+            
+        }
+        
+    }
+    
+    return _splitVC;
+    
+}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -77,7 +99,7 @@
 
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
 
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.row];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy/MM/dd";
@@ -90,6 +112,21 @@
     cell.textLabel.text = [dateFormatter stringFromDate:date];
     
     return cell;
+    
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.row];
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy/MM/dd";
+    
+    NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
+    
+    self.splitVC.detailTVC.selectedDate = date;
+    
+    return indexPath;
     
 }
 
