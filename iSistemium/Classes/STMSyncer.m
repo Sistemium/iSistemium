@@ -11,6 +11,7 @@
 #import "STMObjectsController.h"
 #import "STMPhotoReport.h"
 #import "STMFunctions.h"
+#import "STMEntityController.h"
 
 #import "STMPhotoReport.h"
 #import "STMCashing.h"
@@ -966,30 +967,6 @@
         [self.responses removeObjectForKey:entityName];
         
         if ([entityName isEqualToString:@"STMEntity"]) {
-            
-//            NSLog(@"entityName %@", entityName);
-//            NSLog(@"dataModelEntityNames %@", [STMObjectsController dataModelEntityNames]);
-//            
-//            BOOL entityIsInLocalDataModel = [[STMObjectsController dataModelEntityNames] containsObject:entityName];
-//            
-//            NSLog(@"entityIsInLocalDataModel %d", entityIsInLocalDataModel);
-//            
-//            NSMutableSet *entityNames = [NSMutableSet setWithArray:[STMObjectsController dataModelEntityNames]];
-//            
-//            NSLog(@"entityNames.count %d", entityNames.count);
-//            NSLog(@"entityNames %@", entityNames);
-//            NSLog(@"self.entitySyncInfo.allKeys.count %d", self.entitySyncInfo.allKeys.count);
-//            NSLog(@"self.entitySyncInfo.allKeys %@", self.entitySyncInfo.allKeys);
-//            
-//            [entityNames intersectSet:[NSSet setWithArray:self.entitySyncInfo.allKeys]];
-//            
-//            NSLog(@"entityNames.count %d", entityNames.count);
-//            NSLog(@"entityNames %@", entityNames);
-//            
-//            self.entityCount = entityNames.count;
-//            
-//            NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
-//            [entityNames removeObject:entityName];
             
             NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             [entityNames removeObject:entityName];
