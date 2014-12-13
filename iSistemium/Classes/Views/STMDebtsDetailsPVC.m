@@ -88,18 +88,18 @@
             self.dataSource = self;
         }
         
-        NSUInteger maxLength = 36;
+//        NSUInteger maxLength = 36;
+//        
+//        if (self.outlet.name.length > maxLength) {
+//            
+//            self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%@…", [self.outlet.name substringToIndex:maxLength]];
+//            
+//        } else {
+//            
+//            self.navigationItem.leftBarButtonItem.title = self.outlet.name;
+//            
+//        }
         
-        if (self.outlet.name.length > maxLength) {
-            
-            self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%@…", [self.outlet.name substringToIndex:maxLength]];
-            
-        } else {
-            
-            self.navigationItem.leftBarButtonItem.title = self.outlet.name;
-            
-        }
-                
 //        [self editButtonForVC:self.viewControllers[0]];
         [self buttonsForVC:self.viewControllers[0]];
 
