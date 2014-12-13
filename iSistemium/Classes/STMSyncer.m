@@ -20,6 +20,7 @@
 #import "STMClientData.h"
 #import "STMRecordStatus.h"
 #import "STMLocation.h"
+#import "STMEntity.h"
 
 //#define SEND_URL @"https://nginx.sistemium.com/api/v1/dev/"
 //#define SEND_URL @"https://sistemium.com/api/chest/dev/"
@@ -44,6 +45,7 @@
 @property (nonatomic) BOOL sendOnce;
 @property (nonatomic, strong) NSData *clientDataXid;
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
+@property (nonatomic, strong) NSMutableDictionary *stcEntities;
 
 - (void) didReceiveRemoteNotification;
 - (void) didEnterBackground;
@@ -319,6 +321,13 @@
     
 }
 
+- (NSMutableDictionary *)stcEntities {
+    
+    if (!_stcEntities) _stcEntities = [[STMEntityController stcEntities] copy];
+    return _stcEntities;
+    
+}
+
 #pragma mark - syncer methods
 
 - (void)startSyncer {
@@ -331,6 +340,7 @@
         [STMObjectsController checkClientData];
 //        [STMObjectsController checkAppVersion];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
+        [self checkStcEntities];
         [self initTimer];
         [self addObservers];
         
@@ -362,6 +372,29 @@
     }
 }
 
+- (void)checkStcEntities {
+    
+    STMEntity *coreEntity = [self.stcEntities objectForKey:@"STMEntity"];
+    
+    if (!coreEntity) {
+        
+        NSDictionary *coreEntityDic = @{
+                                        @"name": @"stc.entity",
+                                        @"properties": @{
+                                                         @"name": @"Entity",
+                                                         @"url": self.restServerURI
+                                                         }
+                                        };
+        
+        [STMObjectsController insertObjectFromDictionary:coreEntityDic withCompletionHandler:^(BOOL success) {
+
+        }];
+        
+        self.stcEntities = nil;
+        
+    }
+    
+}
 
 - (void) didReceiveRemoteNotification {
     
