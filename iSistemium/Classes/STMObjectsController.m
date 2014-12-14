@@ -528,14 +528,17 @@
     
     NSString *name = [dictionary objectForKey:@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-    NSString *entityName = [@"STM" stringByAppendingString:[[nameExplode objectAtIndex:1] capitalizedString]];
+    NSString *nameTail = (nameExplode.count > 1) ? [nameExplode objectAtIndex:1] : name;
+    NSString *capEntityName = [nameTail stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[nameTail substringToIndex:1] capitalizedString]];
+
+    NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
     
     NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
         NSString *xid = [dictionary objectForKey:@"xid"];
-        NSData *xidData = [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]];
+        NSData *xidData = (xid) ? [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]] : nil;
         
         STMRecordStatus *recordStatus = [self existingRecordStatusForXid:xidData];
         
@@ -551,7 +554,7 @@
             
             if (!object) {
             
-                object = [self objectForEntityName:entityName andXid:xid];
+                object = (xid) ? [self objectForEntityName:entityName andXid:xid] : [self newObjectForEntityName:entityName];
 
             }
             
@@ -932,6 +935,7 @@
 + (NSArray *)entityNamesForSyncing {
     
     NSArray *entityNamesForSyncing = @[
+                                       NSStringFromClass([STMEntity class]),
                                        NSStringFromClass([STMPhotoReport class]),
                                        NSStringFromClass([STMCashing class]),
                                        NSStringFromClass([STMUncashing class]),

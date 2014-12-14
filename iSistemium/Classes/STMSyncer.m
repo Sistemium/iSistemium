@@ -349,6 +349,7 @@
         _stcEntities = [stcEntities mutableCopy];
 
     }
+    
     return _stcEntities;
     
 }
@@ -1021,6 +1022,7 @@
         
         if ([entityName isEqualToString:@"STMEntity"]) {
             
+            self.stcEntities = nil;
 //            NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
             [entityNames removeObject:entityName];

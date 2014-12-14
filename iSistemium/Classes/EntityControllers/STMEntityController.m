@@ -47,7 +47,15 @@
     NSError *error;
     NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
     
-    for (STMEntity *entity in result) [stcEntities setObject:entity forKey:[@"STM" stringByAppendingString:[entity.name capitalizedString]]];
+    for (STMEntity *entity in result) {
+    
+        NSString *capFirstLetter = (entity.name) ? [[entity.name substringToIndex:1] capitalizedString] : nil;
+        
+        NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
+        
+        [stcEntities setObject:entity forKey:[@"STM" stringByAppendingString:capEntityName]];
+        
+    }
     
     return (stcEntities.count > 0) ? stcEntities : nil;
     
