@@ -9,7 +9,6 @@
 #import "STMEntityController.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
-#import "STMEntity.h"
 
 @interface STMEntityController()
 
@@ -61,5 +60,17 @@
     
 }
 
++ (STMEntity *)entityWithName:(NSString *)name {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMEntity class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
+
+    NSError *error;
+    NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
+
+    return [result lastObject];
+    
+}
 
 @end

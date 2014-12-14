@@ -7,9 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "STMEntity.h"
 
 @interface STMEntityController : NSObject
 
 + (NSDictionary *)stcEntities;
++ (STMEntity *)entityWithName:(NSString *)name;
+
 
 @end

@@ -527,6 +527,8 @@
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     NSString *name = [dictionary objectForKey:@"name"];
+    NSDictionary *properties = [dictionary objectForKey:@"properties"];
+
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *nameTail = (nameExplode.count > 1) ? [nameExplode objectAtIndex:1] : name;
     NSString *capEntityName = [nameTail stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[nameTail substringToIndex:1] capitalizedString]];
@@ -550,6 +552,11 @@
                 
                 object = [[[STMSessionManager sharedManager].currentSession settingsController] settingForDictionary:dictionary];
                 
+            } else if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
+                
+                NSString *internalName = [properties objectForKey:@"name"];
+                object = [STMEntityController entityWithName:internalName];
+                
             }
             
             if (!object) {
@@ -560,7 +567,6 @@
             
             if (![self isWaitingToSyncForObject:object]) {
                 
-                NSDictionary *properties = [dictionary objectForKey:@"properties"];
                 [object setValue:[NSNumber numberWithBool:NO] forKey:@"isFantom"];
                 [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
                 
@@ -568,7 +574,7 @@
 
         } else {
             
-            NSLog(@"object with xid %@ have recordStatus.isRemoved == YES", xid);
+            NSLog(@"object %@ with xid %@ have recordStatus.isRemoved == YES", entityName, xid);
             
         }
             
