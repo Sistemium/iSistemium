@@ -752,12 +752,78 @@
         //        NSLog(@"receiveData");
         self.entityCount = 1;
         self.errorOccured = NO;
-        [self startConnectionForReceiveEntitiesWithName:@"STMEntity"];
+//        [self startConnectionForReceiveEntitiesWithName:@"STMEntity"];
+        [self checkConditionForReceivingEntityWithName:@"STMEntity"];
         
     }
     
 }
 
+- (void)checkConditionForReceivingEntityWithName:(NSString *)entityName {
+    
+    if (self.syncerState != STMSyncerIdle) {
+
+        STMEntity *entity = [self.stcEntities objectForKey:entityName];
+        NSString *url = entity.url;
+        
+        if (url) {
+            
+            NSString *eTag = entity.eTag;
+            eTag = eTag ? eTag : @"*";
+            
+            NSURL *requestURL = [NSURL URLWithString:url];
+            
+            [self startReceiveDataFromURL:requestURL withETag:eTag];
+            
+        } else {
+            
+            NSLog(@"have no url for %@", entityName);
+            [self entityCountDecrease];
+            
+        }
+        
+    }
+    
+}
+
+- (void)startReceiveDataFromURL:(NSURL *)requestURL withETag:(NSString *)eTag {
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+    
+    request = [[self.authDelegate authenticateRequest:request] mutableCopy];
+    
+    if ([request valueForHTTPHeaderField:@"Authorization"]) {
+        
+        request.timeoutInterval = [self timeout];
+        request.HTTPShouldHandleCookies = NO;
+        //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+        [request setHTTPMethod:@"GET"];
+        
+        [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
+        [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
+        
+        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        
+        if (!connection) {
+            
+            [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
+            self.syncing = NO;
+            self.syncerState = STMSyncerIdle;
+            
+        } else {
+//            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
+        }
+        
+    } else {
+        
+        [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
+        [self notAuthorized];
+        
+    }
+    
+}
+
+/*
 - (void)startConnectionForReceiveEntitiesWithName:(NSString *)entityName {
     
     if (self.syncerState != STMSyncerIdle) {
@@ -806,6 +872,7 @@
     }
     
 }
+*/
 
 - (void)notAuthorized {
     
@@ -917,7 +984,8 @@
             self.entityCount = entityNames.count;
 
             for (NSString *name in entityNames) {
-                [self startConnectionForReceiveEntitiesWithName:name];
+//                [self startConnectionForReceiveEntitiesWithName:name];
+                [self checkConditionForReceivingEntityWithName:name];
             }
             
         } else {
@@ -1076,7 +1144,8 @@
     STMEntity *entity = [self.stcEntities objectForKey:entityName];
     entity.eTag = eTag;
     
-    [self startConnectionForReceiveEntitiesWithName:entityName];
+//    [self startConnectionForReceiveEntitiesWithName:entityName];
+    [self checkConditionForReceivingEntityWithName:entityName];
     
 }
 
