@@ -839,17 +839,13 @@
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
 
-//    NSDictionary *serverDataModel = [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer entitySyncInfo];
     NSDictionary *serverDataModel = [[STMEntityController stcEntities] copy];
 
     if ([[serverDataModel allKeys] containsObject:entityName]) {
         
-//        NSDictionary *modelProperties = [serverDataModel objectForKey:entityName];
         STMEntity *entityModel = [serverDataModel objectForKey:entityName];
-//        NSString *roleOwner = [modelProperties objectForKey:@"roleOwner"];
         NSString *roleOwner = entityModel.roleOwner;
         NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
-//        NSString *roleName = [modelProperties objectForKey:@"roleName"];
         NSString *roleName = entityModel.roleName;
         NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
         NSString *destinationEntityName = [ownerRelationships objectForKey:roleName];
@@ -1208,43 +1204,6 @@
     
 }
 
-/*
-+ (void)removeAllObjects {
-    
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:@"reload data" type:nil];
-
-    NSError *error;
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    NSArray *datumFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSetting class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    NSArray *settingsFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLogMessage class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    NSArray *logMessageFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-
-    NSMutableSet *datumSet = [NSMutableSet setWithArray:datumFetchResult];
-    NSSet *settingsSet = [NSSet setWithArray:settingsFetchResult];
-    NSSet *logMessagesSet = [NSSet setWithArray:logMessageFetchResult];
-
-    [datumSet minusSet:settingsSet];
-    [datumSet minusSet:logMessagesSet];
-        
-    for (id datum in datumSet) {
-        
-        [[self document].managedObjectContext deleteObject:datum];
-        
-    }
-    
-    STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
-//    [syncer flushEntitySyncInfo];
-    syncer.syncerState = STMSyncerReceiveData;
-    
-}
-*/
 
 #pragma mark - picture processing
 

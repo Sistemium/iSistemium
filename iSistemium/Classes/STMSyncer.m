@@ -22,8 +22,6 @@
 #import "STMLocation.h"
 #import "STMEntity.h"
 
-//#define SEND_URL @"https://nginx.sistemium.com/api/v1/dev/"
-//#define SEND_URL @"https://sistemium.com/api/chest/dev/"
 
 @interface STMSyncer() <NSFetchedResultsControllerDelegate>
 
@@ -56,7 +54,6 @@
 @implementation STMSyncer
 
 @synthesize syncInterval = _syncInterval;
-//@synthesize entitySyncInfo = _entitySyncInfo;
 @synthesize syncerState = _syncerState;
 
 
@@ -166,67 +163,7 @@
     return timeout;
     
 }
-/*
-- (NSMutableDictionary *)entitySyncInfo {
-    
-    if (!_entitySyncInfo) {
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        id serverDataModel = [defaults objectForKey:@"serverDataModel"];
-        
-        if (!serverDataModel) {
-            
-            serverDataModel = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.restServerURI, @"url", nil], @"STMEntity", nil];
-            [defaults setObject:serverDataModel forKey:@"serverDataModel"];
-            [defaults synchronize];
-            
-            _entitySyncInfo = serverDataModel;
-            
-        } else {
-            
-            _entitySyncInfo = [[NSMutableDictionary alloc] init];
-            
-            for (NSString * key in serverDataModel) {
-                [_entitySyncInfo setObject: [[serverDataModel objectForKey:key] mutableCopy] forKey: key];
-            }
-        }
-        
-    }
-    
-    //    NSLog(@"_serverDataModel %@", _serverDataModel);
-    
-    return _entitySyncInfo;
-    
-}
 
-- (void)setEntitySyncInfo:(NSMutableDictionary *)serverDataModel {
-    
-    if (serverDataModel != _entitySyncInfo) {
-        
-        _entitySyncInfo = serverDataModel;
-        [self saveServerDataModel];
-        
-    }
-    
-}
-
-- (void)flushEntitySyncInfo {
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:@"serverDataModel"];
-    [defaults synchronize];
-    self.entitySyncInfo = nil;
-    
-}
-
-- (void)saveServerDataModel {
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:self.entitySyncInfo forKey:@"serverDataModel"];
-    [defaults synchronize];
-    
-}
-*/
 - (STMSyncerState)syncerState {
     
     if (!_syncerState) {
@@ -339,7 +276,7 @@
                                             };
             
             [STMObjectsController insertObjectFromDictionary:coreEntityDic withCompletionHandler:^(BOOL success) {
-//                if (success) _stcEntities = [[STMEntityController stcEntities] mutableCopy];
+
             }];
             
             stcEntities = [STMEntityController stcEntities];
@@ -626,21 +563,9 @@
 
 - (NSData *)JSONFrom:(NSArray *)dataForSyncing {
     
-//    NSLog(@"current time: %@", [[STMFunctions dateFormatter] stringFromDate:[NSDate date]]);
-
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
     for (NSManagedObject *object in dataForSyncing) {
-        
-//        NSArray *entityNamesForSending = @[
-//                                           NSStringFromClass([STMPhotoReport class]),
-//                                           NSStringFromClass([STMCashing class]),
-//                                           NSStringFromClass([STMUncashing class]),
-//                                           NSStringFromClass([STMMessage class]),
-//                                           NSStringFromClass([STMClientData class]),
-//                                           NSStringFromClass([STMRecordStatus class]),
-//                                           NSStringFromClass([STMLocation class])
-//                                           ];
         
         NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
         
@@ -648,23 +573,15 @@
         
         if (isInSyncList) {
             
-//            BOOL hasHref = [object.entity.propertiesByName.allKeys containsObject:@"href"];
-//            
-//            BOOL hrefIsNil = hasHref ? ([object valueForKey:@"href"] == nil) : YES;
-//            
-//            if (!hasHref || (hasHref && !hrefIsNil)) {
+            NSDate *currentDate = [NSDate date];
+            [object setPrimitiveValue:currentDate forKey:@"sts"];
             
-                NSDate *currentDate = [NSDate date];
-                [object setPrimitiveValue:currentDate forKey:@"sts"];
-                
-                NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
-                NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
-                
-                [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
-                [syncDataArray addObject:objectDictionary];
-                
-//            }
-
+            NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
+            NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+            
+            [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
+            [syncDataArray addObject:objectDictionary];
+            
         }
         
     }
@@ -759,11 +676,7 @@
                 if (xidData.length != 0) {
                     
                     NSString *xid = [STMFunctions xidStringFromXidData:xidData];
-        
-//                    NSString *entityName = [@"stc." stringByAppendingString:[relationshipObject.entity.name stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
-                    
                     NSString *entityName = key;
-                    
                     [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
                     
                 }
@@ -782,8 +695,6 @@
 - (void)startConnectionForSendData:(NSData *)sendData {
     
     if (self.apiUrlString) {
-        
-//        self.noApiUrl = NO;
         
         NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
@@ -851,11 +762,6 @@
     
     if (self.syncerState != STMSyncerIdle) {
         
-//        NSDictionary *entity = [self.entitySyncInfo objectForKey:entityName];
-//        NSString *url = [entity objectForKey:@"url"];
-//        NSString *eTag = [entity objectForKey:@"eTag"];
-//        eTag = eTag ? eTag : @"*";
-        
         STMEntity *entity = [self.stcEntities objectForKey:entityName];
         NSString *url = entity.url;
         NSString *eTag = entity.eTag;
@@ -912,18 +818,6 @@
     
     NSString *entityName = nil;
     
-//    for (NSString *name in self.entitySyncInfo.allKeys) {
-//        
-//        NSDictionary *entityDic = [self.entitySyncInfo objectForKey:name];
-//        
-//        if ([[entityDic objectForKey:@"url"] isEqualToString:connection.currentRequest.URL.absoluteString]) {
-//            
-//            entityName = name;
-//            
-//        }
-//        
-//    }
-
     for (STMEntity *entity in [self.stcEntities allValues]) {
         
         if ([entity.url isEqualToString:connection.currentRequest.URL.absoluteString]) {
@@ -1002,13 +896,7 @@
         
         NSString *eTag = [headers objectForKey:@"eTag"];
         
-        if (eTag && entityName && self.syncerState != STMSyncerIdle) {
-            
-            [self.temporaryETag setValue:eTag forKey:entityName];
-//            [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"temporaryETag"];
-//            [self saveServerDataModel];
-            
-        }
+        if (eTag && entityName && self.syncerState != STMSyncerIdle) [self.temporaryETag setValue:eTag forKey:entityName];
         
     } else if (statusCode == 304) {
         
@@ -1023,7 +911,6 @@
         if ([entityName isEqualToString:@"STMEntity"]) {
             
             self.stcEntities = nil;
-//            NSMutableArray *entityNames = [self.entitySyncInfo.allKeys mutableCopy];
             NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
             [entityNames removeObject:entityName];
 
@@ -1122,24 +1009,11 @@
 
             }];
             
-//            for (NSDictionary *datum in dataArray) {
-//                
-//                NSMutableDictionary *entityProperties = [datum objectForKey:@"properties"];
-//                NSString *entityName = [@"STM" stringByAppendingString:[entityProperties objectForKey:@"name"]];
-//                [self.entitySyncInfo setObject:entityProperties forKey:entityName];
-//                [self saveServerDataModel];
-//                
-//            }
-//            
-//            [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
-            
             
         } else {
             
-//            NSDictionary *entityModel = [self.entitySyncInfo objectForKey:connectionEntityName];
             STMEntity *entity = [self.stcEntities objectForKey:connectionEntityName];
             
-//            if ([entityModel objectForKey:@"roleName"]) {
             if (entity.roleName) {
             
                 [STMObjectsController setRelationshipsFromArray:dataArray withCompletionHandler:^(BOOL success) {
@@ -1157,7 +1031,6 @@
                     
                 }];
                 
-//            } else if (entityModel) {
             } else if (entity) {
                 
                 [STMObjectsController insertObjectsFromArray:dataArray withCompletionHandler:^(BOOL success) {
@@ -1209,18 +1082,13 @@
             [self notAuthorized];
             
         } else {
+
 #ifdef DEBUG
             NSString *requestBody = [[NSString alloc] initWithData:connection.originalRequest.HTTPBody encoding:NSUTF8StringEncoding];
             NSLog(@"originalRequest %@", connection.originalRequest);
             NSLog(@"requestBody %@", requestBody);
             NSLog(@"responseJSON %@", responseJSON);
 #endif
-//            if (self.syncerState == STMSyncerSendData) {
-//                
-//                self.syncing = NO;
-//                self.syncerState = STMSyncerIdle;
-//                
-//            }
             
         }
         
@@ -1233,10 +1101,6 @@
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = [self.stcEntities objectForKey:entityName];
     entity.eTag = eTag;
-    
-//    NSString *eTag = [[self.entitySyncInfo objectForKey:entityName] objectForKey:@"temporaryETag"];
-//    [[self.entitySyncInfo objectForKey:entityName] setValue:eTag forKey:@"eTag"];
-//    [self saveServerDataModel];
     
     [self startConnectionForReceiveEntitiesWithName:entityName];
     
