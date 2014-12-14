@@ -47,9 +47,9 @@
     NSError *error;
     NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
     
-    for (STMEntity *entity in result) [stcEntities setObject:entity forKey:entity.name];
+    for (STMEntity *entity in result) [stcEntities setObject:entity forKey:[@"STM" stringByAppendingString:[entity.name capitalizedString]]];
     
-    return stcEntities;
+    return (stcEntities.count > 0) ? stcEntities : nil;
     
 }
 

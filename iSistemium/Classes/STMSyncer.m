@@ -46,6 +46,7 @@
 @property (nonatomic, strong) NSData *clientDataXid;
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
+@property (nonatomic) BOOL errorOccured;
 
 - (void) didReceiveRemoteNotification;
 - (void) didEnterBackground;
@@ -338,8 +339,10 @@
                                             };
             
             [STMObjectsController insertObjectFromDictionary:coreEntityDic withCompletionHandler:^(BOOL success) {
-                if (success) _stcEntities = [[STMEntityController stcEntities] mutableCopy];
+//                if (success) _stcEntities = [[STMEntityController stcEntities] mutableCopy];
             }];
+            
+            stcEntities = [STMEntityController stcEntities];
             
         }
         
@@ -835,6 +838,8 @@
     if (self.syncerState == STMSyncerReceiveData) {
         
         //        NSLog(@"receiveData");
+        self.entityCount = 1;
+        self.errorOccured = NO;
         [self startConnectionForReceiveEntitiesWithName:@"STMEntity"];
         
     }
@@ -918,7 +923,7 @@
 //        
 //    }
 
-    for (STMEntity *entity in self.stcEntities) {
+    for (STMEntity *entity in [self.stcEntities allValues]) {
         
         if ([entity.url isEqualToString:connection.currentRequest.URL.absoluteString]) {
             
@@ -945,7 +950,7 @@
     if (self.entityCount == 0) {
         
         self.syncing = NO;
-        self.syncerState = STMSyncerSendData;
+        self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
         
     }
     
@@ -1109,6 +1114,8 @@
                     [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
                 } else {
                     NSLog(@"insert %@ not success, possible reason: there is no such entity in local dataModel", connectionEntityName);
+                    self.errorOccured = YES;
+                    [self entityCountDecrease];
                 }
 
             }];
@@ -1141,7 +1148,7 @@
                         [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
                         
                     } else {
-                        
+                        self.errorOccured = YES;
                         [self entityCountDecrease];
                         
                     }
@@ -1161,7 +1168,7 @@
                     } else {
                         
                         NSLog(@"insert %@ not success, possible reason: there is no such entity in local dataModel", connectionEntityName);
-                        
+                        self.errorOccured = YES;
                         [self entityCountDecrease];
                         
                     }

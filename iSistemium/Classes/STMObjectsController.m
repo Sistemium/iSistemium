@@ -528,7 +528,7 @@
     
     NSString *name = [dictionary objectForKey:@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-    NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
+    NSString *entityName = [@"STM" stringByAppendingString:[[nameExplode objectAtIndex:1] capitalizedString]];
     
     NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
