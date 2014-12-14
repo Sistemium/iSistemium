@@ -60,6 +60,18 @@
     
 }
 
++ (NSSet *)entityNamesWithLifeTime {
+    
+    NSMutableDictionary *stcEntities = [[self stcEntities] mutableCopy];
+    
+    NSSet *filteredKeys = [stcEntities keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
+        return ([[obj valueForKey:@"lifeTime"] doubleValue] > 0);
+    }];
+
+    return filteredKeys;
+    
+}
+
 + (STMEntity *)entityWithName:(NSString *)name {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMEntity class])];

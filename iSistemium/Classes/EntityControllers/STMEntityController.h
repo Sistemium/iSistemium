@@ -12,6 +12,7 @@
 @interface STMEntityController : NSObject
 
 + (NSDictionary *)stcEntities;
++ (NSSet *)entityNamesWithLifeTime;
 + (STMEntity *)entityWithName:(NSString *)name;
 
 

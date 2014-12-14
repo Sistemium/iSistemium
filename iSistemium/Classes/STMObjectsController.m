@@ -953,7 +953,11 @@
 
 }
 
+/*
 + (NSArray *)entityNamesForFlushing {
+    
+    NSDictionary *entitisDic = [STMEntityController stcEntities];
+    
     
     NSArray *entityNamesForFlushing = @[
                                        NSStringFromClass([STMTrack class]),
@@ -964,6 +968,8 @@
     return entityNamesForFlushing;
 
 }
+*/
+
 
 #pragma mark - getting specified objects
 
@@ -1158,18 +1164,20 @@
 
 + (void)checkObjectsForFlushing {
 
-    NSArray *entityNamesForFlushing = [self entityNamesForFlushing];
+    NSSet *entityNamesForFlushing = [STMEntityController entityNamesWithLifeTime];
     
-    NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
-    
-    double lifeTime = [[appSettings valueForKey:@"objectsLifeTime"] doubleValue];
-
-    NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
+//    NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
+//    
+//    double lifeTime = [[appSettings valueForKey:@"objectsLifeTime"] doubleValue];
     
     NSMutableSet *objectsSet = [NSMutableSet set];
     
     for (NSString *entityName in entityNamesForFlushing) {
-        
+
+        STMEntity *entity = [[STMEntityController stcEntities] objectForKey:entityName];
+        double lifeTime = [entity.lifeTime doubleValue];
+        NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
+
         NSError *error;
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
