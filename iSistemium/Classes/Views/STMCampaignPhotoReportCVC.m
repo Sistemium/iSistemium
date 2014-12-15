@@ -40,7 +40,7 @@
 @property (nonatomic, strong) STMUIImagePickerController *imagePickerController;
 @property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
 
-@property (nonatomic, strong) NSMutableArray *availableSourceTypes;
+//@property (nonatomic, strong) NSMutableArray *availableSourceTypes;
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
 @end
@@ -64,6 +64,7 @@
     
 }
 
+/*
 - (NSMutableArray *)availableSourceTypes {
 
     if (!_availableSourceTypes) {
@@ -72,6 +73,7 @@
     return _availableSourceTypes;
     
 }
+*/
 
 - (NSFetchedResultsController *)photoReportPicturesResultsController {
     
@@ -254,6 +256,9 @@
     
 }
 
+
+#pragma mark - image picker view buttons
+
 - (IBAction)cameraButtonPressed:(id)sender {
     
     UIView *view = [[UIView alloc] initWithFrame:self.imagePickerController.cameraOverlayView.frame];
@@ -276,6 +281,18 @@
     
 }
 
+- (IBAction)photoLibraryButtonPressed:(id)sender {
+    
+    [self cancelButtonPressed:sender];
+    
+    STMOutlet *outlet = self.outlets[self.currentSection];
+    STMPhotoReport *photoReport = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
+    photoReport.outlet = outlet;
+    self.selectedPhotoReport = photoReport;
+
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    
+}
 
 
 #pragma mark - methods
@@ -326,11 +343,11 @@
     STMPhotoReport *photoReport = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
     photoReport.outlet = outlet;
 
-    [self.document saveDocument:^(BOOL success) {
-        if (success) {
+//    [self.document saveDocument:^(BOOL success) {
+//        if (success) {
 //                NSLog(@"create new photoReport");
-        }
-    }];
+//        }
+//    }];
     
     self.selectedPhotoReport = photoReport;
 
@@ -338,10 +355,28 @@
 
     [(UIView *)[sender view] setBackgroundColor:ACTIVE_BLUE_COLOR];
     
-    [self showImagePickerSelector];
+//    [self showImagePickerSelector];
+    
+    BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+    BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
+
+    if (camera) {
+        
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+        
+    } else if (photoLibrary) {
+        
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+        
+    } else {
+        
+        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+
+    }
     
 }
 
+/*
 - (void)showImagePickerSelector {
 
     self.availableSourceTypes = nil;
@@ -377,6 +412,7 @@
     [alert show];
     
 }
+*/
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
     
@@ -461,7 +497,8 @@
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
+
+/*
     if (alertView.tag == 1) {
         
         if (buttonIndex > 0) {
@@ -471,6 +508,7 @@
         }
         
     }
+*/
     
 }
 
