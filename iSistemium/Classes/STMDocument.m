@@ -67,7 +67,7 @@
                 if (success) {
                     
 //                    NSLog(@"UIDocumentSaveForOverwriting success");
-                    [STMObjectsController checkObjectsForFlushing];
+//                    [STMObjectsController checkObjectsForFlushing];
                     completionHandler(YES);
                     
                 } else {
@@ -110,10 +110,29 @@
 
 }
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground) name:@"applicationDidEnterBackground" object:nil];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
+- (void)applicationDidEnterBackground {
+    
+    [STMObjectsController checkObjectsForFlushing];
+    
+}
+
 + (STMDocument *)initWithFileURL:(NSURL *)url andDataModelName:(NSString *)dataModelName {
     
     STMDocument *document = [STMDocument alloc];
-    document.dataModelName = dataModelName;
+    [document setDataModelName:dataModelName];
+    [document addObservers];
     return [document initWithFileURL:url];
     
 }
