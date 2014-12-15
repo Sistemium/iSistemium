@@ -458,6 +458,13 @@
     
 }
 
+- (IBAction)photoLibraryButtonPressed:(id)sender {
+    
+    [self cancelButtonPressed:sender];
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    
+}
+
 
 #pragma mark - info popover buttons
 
@@ -517,17 +524,18 @@
             
         } else if (buttonIndex == 1) {
             
-            [self showImagePickerSelector];
+//            [self showImagePickerSelector];
+            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
             
         }
         
-    } else if (alertView.tag == 3) {
-        
-        if (buttonIndex > 0) {
-            
-            [self showImagePickerForSourceType:[self.availableSourceTypes[buttonIndex-1] intValue]];
-            
-        }
+//    } else if (alertView.tag == 3) {
+//        
+//        if (buttonIndex > 0) {
+//            
+//            [self showImagePickerForSourceType:[self.availableSourceTypes[buttonIndex-1] intValue]];
+//            
+//        }
         
     }
 
@@ -604,6 +612,7 @@
     
 }
 
+/*
 - (void)showImagePickerSelector {
     
     self.availableSourceTypes = nil;
@@ -639,6 +648,7 @@
     [alert show];
     
 }
+*/
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
     
