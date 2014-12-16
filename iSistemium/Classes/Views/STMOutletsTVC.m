@@ -144,6 +144,43 @@
     
 }
 
+- (void)showAddPartnerPopover {
+    
+    NSLog(@"showAddPartnerPopover");
+    
+}
+
+- (void)showAddOutletPopover {
+    
+    NSLog(@"showAddOutletPopover");
+    
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag == 1) {
+
+        switch (buttonIndex) {
+
+            case 0:
+                [self showAddPartnerPopover];
+                break;
+
+            case 1:
+                [self showAddOutletPopover];
+                break;
+
+            default:
+                break;
+
+        }
+        
+    }
+    
+}
+
 
 #pragma mark - Table view data source
 
