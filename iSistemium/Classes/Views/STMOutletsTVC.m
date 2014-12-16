@@ -19,16 +19,28 @@
 #import "STMDebtsCombineVC.h"
 #import "STMCashingProcessController.h"
 
-@interface STMOutletsTVC ()
+@interface STMOutletsTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
 //@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
 
 @end
 
 @implementation STMOutletsTVC
 
 @synthesize resultsController = _resultsController;
+
+- (IBAction)addButtonPressed:(id)sender {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"ADD", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"PARTNER", nil), NSLocalizedString(@"OUTLET", nil), nil];
+    
+    actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
+    actionSheet.tag = 1;
+    [actionSheet showFromBarButtonItem:self.addButton animated:YES];
+    
+}
+
 
 - (STMDebtsSVC *)splitVC {
     
@@ -255,6 +267,11 @@
 }
 
 - (void)customInit {
+    
+    NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL toolbarHidden = ![[settings valueForKey:@"enableDebtsEditing"] boolValue];
+    
+    self.navigationController.toolbarHidden = toolbarHidden;
     
     self.clearsSelectionOnViewWillAppear = NO;
 
