@@ -221,15 +221,25 @@
     NSString *settingName = [properties valueForKey:@"name"];
     NSString *settingGroup = [properties valueForKey:@"group"];
     
-    NSPredicate *settingPredicate = [NSPredicate predicateWithFormat:@"name == %@ AND group == %@", settingName, settingGroup];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@ AND group == %@", settingName, settingGroup];
     
-    NSArray *result = [self.fetchedSettingsResultController.fetchedObjects filteredArrayUsingPredicate:settingPredicate];
-    
-    if (result.count > 1) {
-        NSLog(@"More than one setting with name %@ and group %@, get lastObject", settingName, settingGroup);
-    }
+    NSArray *result = [self.fetchedSettingsResultController.fetchedObjects filteredArrayUsingPredicate:predicate];
     
     STMSetting *setting = [result lastObject];
+    
+    if (result.count > 1) {
+        
+        NSLog(@"More than one setting with name %@ and group %@, get lastObject", settingName, settingGroup);
+        NSLog(@"remove all other setting objects with name %@ and group", settingName, settingGroup);
+        
+        predicate = [NSPredicate predicateWithFormat:@"SELF != %@", setting];
+        result = [result filteredArrayUsingPredicate:predicate];
+        
+        for (STMSetting *settingObject in result) {
+            [self.session.document.managedObjectContext deleteObject:settingObject];
+        }
+        
+    }
     
     return setting;
     
