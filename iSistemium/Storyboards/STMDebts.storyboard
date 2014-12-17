@@ -448,6 +448,40 @@
             </objects>
             <point key="canvasLocation" x="1251" y="-1266"/>
         </scene>
+        <!--Add PartnerVC-->
+        <scene sceneID="zEc-F4-DKk">
+            <objects>
+                <viewController id="LYy-RD-p4s" customClass="STMAddPartnerVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SfU-Tn-3MU">
+                        <rect key="frame" x="0.0" y="0.0" width="512" height="256"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="pRo-v6-STm">
+                                <rect key="frame" x="144" y="113" width="352" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="nameLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cY9-rY-9Zc">
+                                <rect key="frame" x="16" y="116" width="120" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="t9R-8q-9vw"/>
+                    <connections>
+                        <outlet property="nameLabel" destination="cY9-rY-9Zc" id="pGq-1z-RRX"/>
+                        <outlet property="nameTextField" destination="pRo-v6-STm" id="xgj-RW-YuG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3uA-gt-JEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2543" y="-1494"/>
+        </scene>
         <!--Date PickerVC-->
         <scene sceneID="DJ4-YX-AuF">
             <objects>
@@ -479,6 +513,29 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="auE-u9-Ukm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1847" y="-948"/>
+        </scene>
+        <!--Add PartnerNC-->
+        <scene sceneID="Vdq-pq-4NR">
+            <objects>
+                <navigationController storyboardIdentifier="addPartnerPopover" automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="WRK-aq-QMi" customClass="STMAddPartnerNC" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="512" height="256"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Stn-ym-TUF">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="I0c-UK-Eu5">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="LYy-RD-p4s" kind="relationship" relationship="rootViewController" id="fiy-Er-a95"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YbH-ca-oag" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1905" y="-1494"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

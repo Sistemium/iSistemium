@@ -18,12 +18,14 @@
 #import "STMCashingControlsVC.h"
 #import "STMDebtsCombineVC.h"
 #import "STMCashingProcessController.h"
+#import "STMAddPartnerNC.h"
 
-@interface STMOutletsTVC () <UIActionSheetDelegate>
+@interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
 //@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
+@property (nonatomic, strong) UIPopoverController *addPartnerPopover;
 
 @end
 
@@ -83,6 +85,21 @@
     }
     
     return _resultsController;
+    
+}
+
+- (UIPopoverController *)addPartnerPopover {
+    
+    if (!_addPartnerPopover) {
+        
+        STMAddPartnerNC *addPartnerPopoverNC = [self.storyboard instantiateViewControllerWithIdentifier:@"addPartnerPopover"];
+        
+        _addPartnerPopover = [[UIPopoverController alloc] initWithContentViewController:addPartnerPopoverNC];
+        _addPartnerPopover.delegate = self;
+
+    }
+    
+    return _addPartnerPopover;
     
 }
 
@@ -148,6 +165,9 @@
     
     NSLog(@"showAddPartnerPopover");
     
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    [self.addPartnerPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+    
 }
 
 - (void)showAddOutletPopover {
@@ -155,6 +175,16 @@
     NSLog(@"showAddOutletPopover");
     
 }
+
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    
+    return NO;
+    
+}
+
 
 #pragma mark - UIActionSheetDelegate
 
