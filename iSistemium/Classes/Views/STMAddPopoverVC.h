@@ -10,4 +10,7 @@
 
 @interface STMAddPopoverVC : UIViewController
 
+- (void)doneButtonPressed;
+- (BOOL)textFieldIsFilled:(UITextField *)textField;
+
 @end

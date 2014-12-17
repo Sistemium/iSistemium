@@ -38,6 +38,21 @@
     
 }
 
+- (void)doneButtonPressed {
+    
+    [self.view endEditing:NO];
+    
+}
+
+- (BOOL)textFieldIsFilled:(UITextField *)textField {
+    
+    NSString *textFieldString = textField.text;
+    
+    textFieldString = [textFieldString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    return ![textFieldString isEqualToString:@""];
+    
+}
 
 #pragma mark - view lifecycle
 
@@ -47,8 +62,9 @@
     
     STMUIBarButtonItemCancel *cancelButton = [[STMUIBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed)];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    STMUIBarButtonItemDone *doneButton = [[STMUIBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneButtonPressed)];
     
-    [self setToolbarItems:@[cancelButton, flexibleSpace]];
+    [self setToolbarItems:@[cancelButton, flexibleSpace, doneButton]];
     
 }
 

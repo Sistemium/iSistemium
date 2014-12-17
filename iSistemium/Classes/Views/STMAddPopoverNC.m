@@ -15,7 +15,8 @@
 @implementation STMAddPopoverNC
 
 - (void)dissmissSelf {
-    
+
+    [self popViewControllerAnimated:NO];
     [self.parentVC dissmissPopover];
     
 }

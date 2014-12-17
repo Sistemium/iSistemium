@@ -178,7 +178,12 @@
 
 - (void)dissmissPopover {
     
-    (self.addPartnerPopover.isPopoverVisible) ? [self.addPartnerPopover dismissPopoverAnimated:YES] : nil;
+    if (self.addPartnerPopover.isPopoverVisible) {
+        
+        [self.addPartnerPopover dismissPopoverAnimated:YES];
+        [self popoverControllerDidDismissPopover:self.addPartnerPopover];
+        
+    }
     
 }
 

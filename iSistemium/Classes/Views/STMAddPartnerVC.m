@@ -7,6 +7,7 @@
 //
 
 #import "STMAddPartnerVC.h"
+#import "STMAddOutletVC.h"
 #import "STMUI.h"
 
 @interface STMAddPartnerVC ()
@@ -19,6 +20,29 @@
 
 - (void)doneButtonPressed {
     
+    [super doneButtonPressed];
+    
+    if ([self textFieldIsFilled:self.nameTextField]) {
+        [self performSegueWithIdentifier:@"showAddOutlet" sender:self];
+    } else {
+        [self.nameTextField becomeFirstResponder];
+    }
+    
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showAddOutlet"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMAddOutletVC class]]) {
+            
+            STMAddOutletVC *addOutletVC = (STMAddOutletVC *)segue.destinationViewController;
+            addOutletVC.partnerName = self.nameTextField.text;
+            
+        }
+        
+    }
+    
 }
 
 #pragma mark - view lifecycle
@@ -30,11 +54,11 @@
     self.nameTextField.keyboardType = UIKeyboardTypeDefault;
     [self.nameTextField becomeFirstResponder];
 
-    STMUIBarButtonItemDone *doneButton = [[STMUIBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:nil];
-
-    NSMutableArray *toolBarItems = [self.toolbarItems mutableCopy];
-    [toolBarItems addObject:doneButton];
-    [self setToolbarItems:toolBarItems];
+//    STMUIBarButtonItemDone *doneButton = [[STMUIBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:nil];
+//
+//    NSMutableArray *toolBarItems = [self.toolbarItems mutableCopy];
+//    [toolBarItems addObject:doneButton];
+//    [self setToolbarItems:toolBarItems];
 
 }
 
