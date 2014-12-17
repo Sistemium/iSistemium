@@ -647,6 +647,8 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="LTI-Uf-NHY"/>
                     <connections>
+                        <outlet property="nameLabel" destination="e1F-1g-YV8" id="hd8-Yj-VY5"/>
+                        <outlet property="nameTextField" destination="PDt-Zp-T66" id="oAE-QY-w4K"/>
                         <outlet property="partnerNameLabel" destination="iVy-jZ-qCQ" id="v3x-Ud-GL8"/>
                     </connections>
                 </viewController>

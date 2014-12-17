@@ -39,6 +39,8 @@
 
     }];
     
+    NSLog(@"outlet %@", outlet);
+    
     return outlet;
     
 }

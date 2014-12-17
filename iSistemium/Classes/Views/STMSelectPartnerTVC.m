@@ -8,6 +8,8 @@
 
 #import "STMSelectPartnerTVC.h"
 #import "STMAddPopoverNC.h"
+#import "STMAddOutletVC.h"
+
 #import "STMPartner.h"
 #import "STMUI.h"
 
@@ -67,6 +69,43 @@
 
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showAddOutlet"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMAddOutletVC class]] && [sender isKindOfClass:[STMPartner class]]) {
+            
+            [(STMAddOutletVC *)segue.destinationViewController setPartner:(STMPartner *)sender];
+            
+        }
+        
+    }
+    
+}
+
+#pragma mark - Table view data source & delegate
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"partnerCell" forIndexPath:indexPath];
+    
+    STMPartner *partner = [self.resultsController objectAtIndexPath:indexPath];
+    
+    cell.textLabel.text = partner.name;
+    
+    return cell;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMPartner *partner = [self.resultsController objectAtIndexPath:indexPath];
+    
+    [self performSegueWithIdentifier:@"showAddOutlet" sender:partner];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -91,21 +130,6 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-
-#pragma mark - Table view data source
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"partnerCell" forIndexPath:indexPath];
-    
-    STMPartner *partner = [self.resultsController objectAtIndexPath:indexPath];
-    
-    cell.textLabel.text = partner.name;
-    
-    return cell;
-    
 }
 
 

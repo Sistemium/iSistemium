@@ -17,8 +17,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 
 
-
 @end
+
 
 @implementation STMAddOutletVC
 
@@ -39,14 +39,21 @@
     [super doneButtonPressed];
     
     if ([self textFieldIsFilled:self.nameTextField]) {
+        
+        [self.nameTextField resignFirstResponder];
         [self saveOutlet];
+        
     } else {
+        
         [self.nameTextField becomeFirstResponder];
+        
     }
 
 }
 
 - (void)saveOutlet {
+    
+    NSLog(@"self.nameTextField.text %@", self.nameTextField.text);
     
     self.partner = (!self.partner) ? [STMPartnerController addPartnerWithName:self.partnerName] : self.partner;
     [STMOutletController addOutletWithShortName:self.nameTextField.text forPartner:self.partner];
