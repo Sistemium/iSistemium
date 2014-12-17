@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMAddPopoverNC.h"
 
 @interface STMAddPopoverVC : UIViewController <UITextFieldDelegate>
+
+@property (nonatomic, strong) STMAddPopoverNC *parentNC;
 
 - (void)doneButtonPressed;
 - (BOOL)textFieldIsFilled:(UITextField *)textField;

@@ -7,6 +7,8 @@
 //
 
 #import "STMAddOutletVC.h"
+#import "STMPartnerController.h"
+#import "STMOutletController.h"
 
 @interface STMAddOutletVC ()
 
@@ -28,12 +30,30 @@
         
     }
     
-    NSLog(@"_partnerName %@", _partnerName);
-    
     return _partnerName;
     
 }
 
+- (void)doneButtonPressed {
+    
+    [super doneButtonPressed];
+    
+    if ([self textFieldIsFilled:self.nameTextField]) {
+        [self saveOutlet];
+    } else {
+        [self.nameTextField becomeFirstResponder];
+    }
+
+}
+
+- (void)saveOutlet {
+    
+    if (!self.partner) [STMPartnerController addPartnerWithName:self.partnerName];
+    [STMOutletController addOutletWithShortName:self.nameTextField.text];
+    
+    [self.parentNC dismissSelf];
+
+}
 
 #pragma mark - view lifecycle
 

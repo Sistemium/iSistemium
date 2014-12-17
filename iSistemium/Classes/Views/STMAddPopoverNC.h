@@ -13,7 +13,6 @@
 
 @property (nonatomic, strong) STMOutletsTVC *parentVC;
 
-- (void)dissmissSelf;
-
+- (void)dismissSelf;
 
 @end

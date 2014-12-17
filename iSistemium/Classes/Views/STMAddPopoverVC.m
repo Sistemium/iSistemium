@@ -7,12 +7,10 @@
 //
 
 #import "STMAddPopoverVC.h"
-#import "STMAddPopoverNC.h"
 #import "STMUI.h"
 
 @interface STMAddPopoverVC ()
 
-@property (nonatomic, strong) STMAddPopoverNC *parentNC;
 @property (nonatomic, strong) NSString *initialTextFieldText;
 
 @end
@@ -35,7 +33,7 @@
 
 - (void)cancelButtonPressed {
     
-    [self.parentNC dissmissSelf];
+    [self.parentNC dismissSelf];
     
 }
 
