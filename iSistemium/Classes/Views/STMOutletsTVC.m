@@ -176,12 +176,29 @@
     
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+
+    if (self.addPartnerPopover.isPopoverVisible) {
+        [self showAddPartnerPopover];
+    }
+    
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    
+}
 
 #pragma mark - UIPopoverControllerDelegate
 
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
     
     return NO;
+    
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    
+    self.addPartnerPopover = nil;
     
 }
 
