@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMAddPopoverVC : UIViewController
+@interface STMAddPopoverVC : UIViewController <UITextFieldDelegate>
 
 - (void)doneButtonPressed;
 - (BOOL)textFieldIsFilled:(UITextField *)textField;

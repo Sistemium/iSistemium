@@ -51,14 +51,9 @@
     
     self.title = NSLocalizedString(@"ADD PARTNER", nil);
     self.nameLabel.text = NSLocalizedString(@"PARTNER NAME LABEL", nil);
+    self.nameTextField.delegate = self;
     self.nameTextField.keyboardType = UIKeyboardTypeDefault;
     [self.nameTextField becomeFirstResponder];
-
-//    STMUIBarButtonItemDone *doneButton = [[STMUIBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:nil];
-//
-//    NSMutableArray *toolBarItems = [self.toolbarItems mutableCopy];
-//    [toolBarItems addObject:doneButton];
-//    [self setToolbarItems:toolBarItems];
 
 }
 

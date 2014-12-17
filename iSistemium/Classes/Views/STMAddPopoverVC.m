@@ -13,6 +13,7 @@
 @interface STMAddPopoverVC ()
 
 @property (nonatomic, strong) STMAddPopoverNC *parentNC;
+@property (nonatomic, strong) NSString *initialTextFieldText;
 
 @end
 
@@ -53,6 +54,76 @@
     return ![textFieldString isEqualToString:@""];
     
 }
+
+- (id)firstResponder {
+    
+    if (self.isFirstResponder) return self;
+    
+    for (UIView *subView in self.view.subviews) {
+        if ([subView isFirstResponder]) return subView;
+    }
+    
+    return nil;
+    
+}
+
+#pragma mark - keyboard toolbar buttons
+
+- (void)toolbarDoneButtonPressed {
+    
+    [self.view endEditing:NO];
+    
+}
+
+- (void)toolbarCancelButtonPressed {
+    
+    id firstResponder = [self firstResponder];
+    
+    if ([firstResponder isKindOfClass:[UITextField class]]) {
+        [(UITextField *)firstResponder setText:self.initialTextFieldText];
+    }
+    
+    [self toolbarDoneButtonPressed];
+    
+}
+
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    self.initialTextFieldText = textField.text;
+
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(toolbarCancelButtonPressed)];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *doneButon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toolbarDoneButtonPressed)];
+    
+    [cancelButton setTintColor:[UIColor redColor]];
+    
+    [toolbar setItems:@[cancelButton,flexibleSpace,doneButon] animated:YES];
+    
+    textField.inputAccessoryView = toolbar;
+    
+    return YES;
+    
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    [textField selectAll:nil];
+
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    return YES;
+    
+}
+
 
 #pragma mark - view lifecycle
 
