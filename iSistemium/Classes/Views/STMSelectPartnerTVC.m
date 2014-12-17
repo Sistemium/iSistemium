@@ -117,6 +117,8 @@
     
     [self setToolbarItems:@[cancelButton, flexibleSpace]];
     
+    [self.navigationItem setTitle:NSLocalizedString(@"PARTNERS", nil)];
+
 }
 
 - (void)viewDidLoad {

@@ -36,7 +36,7 @@
 
 - (IBAction)addButtonPressed:(id)sender {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"ADD", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"PARTNER", nil), NSLocalizedString(@"OUTLET", nil), nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"ADD", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"addPARTNER", nil), NSLocalizedString(@"addOUTLET", nil), nil];
     
     actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
     actionSheet.tag = 1;

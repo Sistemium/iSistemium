@@ -51,9 +51,11 @@
     
     self.title = NSLocalizedString(@"ADD PARTNER", nil);
     self.nameLabel.text = NSLocalizedString(@"PARTNER NAME LABEL", nil);
+
+    [self.navigationItem setTitle:NSLocalizedString(@"PARTNER", nil)];
+
     self.nameTextField.delegate = self;
     self.nameTextField.keyboardType = UIKeyboardTypeDefault;
-    [self.nameTextField becomeFirstResponder];
 
 }
 
@@ -61,6 +63,12 @@
     
     [super viewDidLoad];
     [self customInit];
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [self.nameTextField becomeFirstResponder];    
     
 }
 

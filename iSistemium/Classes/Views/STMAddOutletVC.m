@@ -13,6 +13,7 @@
 @interface STMAddOutletVC ()
 
 @property (weak, nonatomic) IBOutlet UILabel *partnerNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *partnerLabel;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 
@@ -68,6 +69,9 @@
     
     self.title = NSLocalizedString(@"ADD OUTLET", nil);
     self.partnerNameLabel.text = self.partnerName;
+    self.nameLabel.text = NSLocalizedString(@"OUTLET NAME LABEL", nil);
+    self.partnerLabel.text = NSLocalizedString(@"PARTNER LABEL", nil);
+    
     self.nameTextField.delegate = self;
     self.nameTextField.keyboardType = UIKeyboardTypeDefault;
     [self.nameTextField becomeFirstResponder];

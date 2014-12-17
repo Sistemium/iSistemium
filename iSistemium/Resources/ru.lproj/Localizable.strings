@@ -108,4 +108,16 @@
 "SAVED PHOTOS ALBUM" = "Фотоплёнка";
 "IMAGE SOURCE" = "Выберите";
 "CHOOSE TYPE" = "источник картинки:";
+"ADD" = "Добавить";
+"addPARTNER" = "Партнёра";
+"addOUTLET" = "Точку";
+"ADD PARTNER" = "Добавить партнёра";
+"PARTNER NAME LABEL" = "Имя: ";
+"SELECT PARTNER" = "Выберите партнёра";
+"ADD OUTLET" = "Добавить точку";
+"OUTLET NAME LABEL" = "Название: ";
+"PARTNER" = "Партнёр";
+"PARTNERS" = "Партнёры";
+"PARTNER LABEL" = "Партнёр: ";
+
 
