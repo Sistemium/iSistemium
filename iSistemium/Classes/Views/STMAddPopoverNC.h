@@ -1,5 +1,5 @@
 //
-//  STMAddPartnerNC.h
+//  STMAddPopoverNC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 17/12/14.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "STMOutletsTVC.h"
 
-@interface STMAddPartnerNC : UINavigationController
+@interface STMAddPopoverNC : UINavigationController
 
 @property (nonatomic, strong) STMOutletsTVC *parentVC;
 

@@ -1,18 +1,18 @@
 //
-//  STMAddPartnerNC.m
+//  STMAddPopoverNC.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 17/12/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMAddPartnerNC.h"
+#import "STMAddPopoverNC.h"
 
-@interface STMAddPartnerNC ()
+@interface STMAddPopoverNC ()
 
 @end
 
-@implementation STMAddPartnerNC
+@implementation STMAddPopoverNC
 
 - (void)dissmissSelf {
     

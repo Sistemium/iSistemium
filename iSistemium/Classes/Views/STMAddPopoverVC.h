@@ -1,13 +1,13 @@
 //
-//  STMAddPartnerVC.h
+//  STMAddPopoverVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 17/12/14.
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMAddPopoverVC.h"
+#import <UIKit/UIKit.h>
 
-@interface STMAddPartnerVC : STMAddPopoverVC
+@interface STMAddPopoverVC : UIViewController
 
 @end

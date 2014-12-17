@@ -18,7 +18,7 @@
 #import "STMCashingControlsVC.h"
 #import "STMDebtsCombineVC.h"
 #import "STMCashingProcessController.h"
-#import "STMAddPartnerNC.h"
+#import "STMAddPopoverNC.h"
 
 @interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
 
@@ -92,7 +92,7 @@
     
     if (!_addPartnerPopover) {
         
-        STMAddPartnerNC *addPartnerPopoverNC = [self.storyboard instantiateViewControllerWithIdentifier:@"addPartnerPopover"];
+        STMAddPopoverNC *addPartnerPopoverNC = [self.storyboard instantiateViewControllerWithIdentifier:@"addPartnerPopover"];
         addPartnerPopoverNC.parentVC = self;
         _addPartnerPopover = [[UIPopoverController alloc] initWithContentViewController:addPartnerPopoverNC];
         _addPartnerPopover.delegate = self;
