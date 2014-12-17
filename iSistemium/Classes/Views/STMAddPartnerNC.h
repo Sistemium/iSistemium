@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "STMOutletsTVC.h"
 
 @interface STMAddPartnerNC : UINavigationController
 
+@property (nonatomic, strong) STMOutletsTVC *parentVC;
+
+- (void)dissmissSelf;
 
 
 @end

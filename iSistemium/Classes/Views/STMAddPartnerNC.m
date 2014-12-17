@@ -14,6 +14,12 @@
 
 @implementation STMAddPartnerNC
 
+- (void)dissmissSelf {
+    
+    [self.parentVC dissmissPopover];
+    
+}
+
 
 #pragma mark - view lifecycle
 

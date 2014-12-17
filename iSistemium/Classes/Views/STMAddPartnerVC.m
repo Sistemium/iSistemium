@@ -7,14 +7,42 @@
 //
 
 #import "STMAddPartnerVC.h"
+#import "STMAddPartnerNC.h"
+#import "STMUI.h"
 
 @interface STMAddPartnerVC ()
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
+@property (nonatomic, strong) STMAddPartnerNC *parentNC;
 
 @end
 
 @implementation STMAddPartnerVC
+
+- (STMAddPartnerNC *)parentNC {
+    
+    if (!_parentNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMAddPartnerNC class]]) {
+            _parentNC = (STMAddPartnerNC *)self.navigationController;
+        }
+        
+    }
+    return _parentNC;
+    
+}
+
+- (void)cancelButtonPressed {
+    
+    [self.parentNC dissmissSelf];
+    
+}
+
+- (void)doneButtonPressed {
+    
+}
+
+#pragma mark - view lifecycle
 
 - (void)customInit {
     
@@ -23,7 +51,11 @@
     self.nameTextField.keyboardType = UIKeyboardTypeDefault;
     [self.nameTextField becomeFirstResponder];
     
-    NSLog(@"height %f, width %f", self.view.frame.size.height, self.view.frame.size.width);
+    STMUIBarButtonItemCancel *cancelButton = [[STMUIBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed)];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    STMUIBarButtonItemDone *doneButton = [[STMUIBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:nil];
+    
+    [self setToolbarItems:@[cancelButton, flexibleSpace, doneButton]];
     
 }
 
