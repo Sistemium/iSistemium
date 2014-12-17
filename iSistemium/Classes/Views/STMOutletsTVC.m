@@ -26,6 +26,7 @@
 //@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
 @property (nonatomic, strong) UIPopoverController *addPartnerPopover;
+@property (nonatomic, strong) UIPopoverController *addOutletPopover;
 
 @end
 
@@ -98,8 +99,21 @@
         _addPartnerPopover.delegate = self;
 
     }
-    
     return _addPartnerPopover;
+    
+}
+
+- (UIPopoverController *)addOutletPopover {
+    
+    if (!_addOutletPopover) {
+        
+        STMAddPopoverNC *addOutletPopoverNC = [self.storyboard instantiateViewControllerWithIdentifier:@"addOutletPopover"];
+        addOutletPopoverNC.parentVC = self;
+        _addOutletPopover = [[UIPopoverController alloc] initWithContentViewController:addOutletPopoverNC];
+        _addOutletPopover.delegate = self;
+        
+    }
+    return _addOutletPopover;
     
 }
 
@@ -163,7 +177,7 @@
 
 - (void)showAddPartnerPopover {
     
-    NSLog(@"showAddPartnerPopover");
+//    NSLog(@"showAddPartnerPopover");
     
     CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
     [self.addPartnerPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
@@ -172,8 +186,11 @@
 
 - (void)showAddOutletPopover {
     
-    NSLog(@"showAddOutletPopover");
-    
+//    NSLog(@"showAddOutletPopover");
+
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    [self.addOutletPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+
 }
 
 - (void)dissmissPopover {
@@ -185,12 +202,23 @@
         
     }
     
+    if (self.addOutletPopover.isPopoverVisible) {
+        
+        [self.addOutletPopover dismissPopoverAnimated:YES];
+        [self popoverControllerDidDismissPopover:self.addOutletPopover];
+        
+    }
+    
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 
     if (self.addPartnerPopover.isPopoverVisible) {
         [self showAddPartnerPopover];
+    }
+    
+    if (self.addOutletPopover.isPopoverVisible) {
+        [self showAddOutletPopover];
     }
     
 }
@@ -210,6 +238,7 @@
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
     
     self.addPartnerPopover = nil;
+    self.addOutletPopover = nil;
     
 }
 
