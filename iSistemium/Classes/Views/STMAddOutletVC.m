@@ -48,8 +48,8 @@
 
 - (void)saveOutlet {
     
-    if (!self.partner) [STMPartnerController addPartnerWithName:self.partnerName];
-    [STMOutletController addOutletWithShortName:self.nameTextField.text];
+    self.partner = (!self.partner) ? [STMPartnerController addPartnerWithName:self.partnerName] : self.partner;
+    [STMOutletController addOutletWithShortName:self.nameTextField.text forPartner:self.partner];
     
     [self.parentNC dismissSelf];
 
@@ -61,7 +61,9 @@
     
     self.title = NSLocalizedString(@"ADD OUTLET", nil);
     self.partnerNameLabel.text = self.partnerName;
-    
+    self.nameTextField.delegate = self;
+    self.nameTextField.keyboardType = UIKeyboardTypeDefault;
+    [self.nameTextField becomeFirstResponder];
     
 }
 

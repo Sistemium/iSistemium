@@ -26,11 +26,12 @@
     
 }
 
-+ (STMOutlet *)addOutletWithShortName:(NSString *)shortName {
++ (STMOutlet *)addOutletWithShortName:(NSString *)shortName forPartner:(STMPartner *)partner {
     
     STMOutlet *outlet = (STMOutlet *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMOutlet class])];
 
     outlet.shortName = shortName;
+    outlet.partner = partner;
     
     [[self document] saveDocument:^(BOOL success) {
     

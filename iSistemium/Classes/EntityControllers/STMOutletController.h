@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "STMOutlet.h"
+#import "STMPartner.h"
 
 @interface STMOutletController : NSObject
 
-+ (STMOutlet *)addOutletWithShortName:(NSString *)shortName;
++ (STMOutlet *)addOutletWithShortName:(NSString *)shortName forPartner:(STMPartner *)partner;
 
 @end
