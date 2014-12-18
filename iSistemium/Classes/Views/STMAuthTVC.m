@@ -13,6 +13,7 @@
 #import "STMObjectsController.h"
 #import "STMSessionManager.h"
 #import "STMSyncer.h"
+#import "STMEntityController.h"
 
 @interface STMAuthTVC () <UITextFieldDelegate>
 
@@ -496,9 +497,10 @@
     
     if ([notification.object isKindOfClass:[STMSyncer class]]) {
         
-        STMSyncer *syncer = notification.object;
+//        STMSyncer *syncer = notification.object;
         
-        float totalCount = (float)syncer.entitySyncInfo.allKeys.count;
+//        float totalCount = (float)syncer.entitySyncInfo.allKeys.count;
+        float totalCount = (float)[STMEntityController stcEntities].allKeys.count;
         float countdownValue = [[notification.userInfo objectForKey:@"countdownValue"] floatValue];
         
         self.progressBar.progress = (totalCount - countdownValue) / totalCount;

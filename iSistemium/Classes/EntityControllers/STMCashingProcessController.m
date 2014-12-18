@@ -16,8 +16,8 @@
 
 @interface STMCashingProcessController()
 
-@property (nonatomic, strong) STMDocument *document;
-@property (nonatomic, strong) STMOutlet *outlet;
+@property (nonatomic, weak) STMDocument *document;
+@property (nonatomic, weak) STMOutlet *outlet;
 
 
 @end

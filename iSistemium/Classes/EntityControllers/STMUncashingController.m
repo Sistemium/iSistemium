@@ -15,7 +15,7 @@
 
 @interface STMUncashingController()
 
-@property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, weak) STMDocument *document;
 
 
 @end

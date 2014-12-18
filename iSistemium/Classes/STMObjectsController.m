@@ -14,6 +14,7 @@
 #import "STMFunctions.h"
 #import "STMSyncer.h"
 #import "STMEntityDescription.h"
+#import "STMEntityController.h"
 
 #import <Security/Security.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
@@ -526,15 +527,20 @@
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     NSString *name = [dictionary objectForKey:@"name"];
+    NSDictionary *properties = [dictionary objectForKey:@"properties"];
+
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-    NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
+    NSString *nameTail = (nameExplode.count > 1) ? [nameExplode objectAtIndex:1] : name;
+    NSString *capEntityName = [nameTail stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[nameTail substringToIndex:1] capitalizedString]];
+
+    NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
     
     NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
         NSString *xid = [dictionary objectForKey:@"xid"];
-        NSData *xidData = [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]];
+        NSData *xidData = (xid) ? [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]] : nil;
         
         STMRecordStatus *recordStatus = [self existingRecordStatusForXid:xidData];
         
@@ -546,17 +552,21 @@
                 
                 object = [[[STMSessionManager sharedManager].currentSession settingsController] settingForDictionary:dictionary];
                 
+            } else if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
+                
+                NSString *internalName = [properties objectForKey:@"name"];
+                object = [STMEntityController entityWithName:internalName];
+                
             }
             
             if (!object) {
             
-                object = [self objectForEntityName:entityName andXid:xid];
+                object = (xid) ? [self objectForEntityName:entityName andXid:xid] : [self newObjectForEntityName:entityName];
 
             }
             
             if (![self isWaitingToSyncForObject:object]) {
                 
-                NSDictionary *properties = [dictionary objectForKey:@"properties"];
                 [object setValue:[NSNumber numberWithBool:NO] forKey:@"isFantom"];
                 [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
                 
@@ -564,7 +574,7 @@
 
         } else {
             
-            NSLog(@"object with xid %@ have recordStatus.isRemoved == YES", xid);
+            NSLog(@"object %@ with xid %@ have recordStatus.isRemoved == YES", entityName, xid);
             
         }
             
@@ -835,14 +845,14 @@
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
 
-    NSDictionary *serverDataModel = [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer entitySyncInfo];
+    NSDictionary *serverDataModel = [[STMEntityController stcEntities] copy];
 
     if ([[serverDataModel allKeys] containsObject:entityName]) {
         
-        NSDictionary *modelProperties = [serverDataModel objectForKey:entityName];
-        NSString *roleOwner = [modelProperties objectForKey:@"roleOwner"];
+        STMEntity *entityModel = [serverDataModel objectForKey:entityName];
+        NSString *roleOwner = entityModel.roleOwner;
         NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
-        NSString *roleName = [modelProperties objectForKey:@"roleName"];
+        NSString *roleName = entityModel.roleName;
         NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
         NSString *destinationEntityName = [ownerRelationships objectForKey:roleName];
         NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
@@ -927,6 +937,7 @@
 + (NSArray *)entityNamesForSyncing {
     
     NSArray *entityNamesForSyncing = @[
+                                       NSStringFromClass([STMEntity class]),
                                        NSStringFromClass([STMPhotoReport class]),
                                        NSStringFromClass([STMCashing class]),
                                        NSStringFromClass([STMUncashing class]),
@@ -944,7 +955,11 @@
 
 }
 
+/*
 + (NSArray *)entityNamesForFlushing {
+    
+    NSDictionary *entitisDic = [STMEntityController stcEntities];
+    
     
     NSArray *entityNamesForFlushing = @[
                                        NSStringFromClass([STMTrack class]),
@@ -955,6 +970,8 @@
     return entityNamesForFlushing;
 
 }
+*/
+
 
 #pragma mark - getting specified objects
 
@@ -1149,18 +1166,20 @@
 
 + (void)checkObjectsForFlushing {
 
-    NSArray *entityNamesForFlushing = [self entityNamesForFlushing];
+    NSSet *entityNamesForFlushing = [STMEntityController entityNamesWithLifeTime];
     
-    NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
-    
-    double lifeTime = [[appSettings valueForKey:@"objectsLifeTime"] doubleValue];
-
-    NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
+//    NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
+//    
+//    double lifeTime = [[appSettings valueForKey:@"objectsLifeTime"] doubleValue];
     
     NSMutableSet *objectsSet = [NSMutableSet set];
     
     for (NSString *entityName in entityNamesForFlushing) {
-        
+
+        STMEntity *entity = [[STMEntityController stcEntities] objectForKey:entityName];
+        double lifeTime = [entity.lifeTime doubleValue];
+        NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
+
         NSError *error;
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
@@ -1198,43 +1217,6 @@
         }
 
     }
-    
-}
-
-
-+ (void)removeAllObjects {
-    
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:@"reload data" type:nil];
-
-    NSError *error;
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    NSArray *datumFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSetting class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    NSArray *settingsFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLogMessage class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    NSArray *logMessageFetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-
-    NSMutableSet *datumSet = [NSMutableSet setWithArray:datumFetchResult];
-    NSSet *settingsSet = [NSSet setWithArray:settingsFetchResult];
-    NSSet *logMessagesSet = [NSSet setWithArray:logMessageFetchResult];
-
-    [datumSet minusSet:settingsSet];
-    [datumSet minusSet:logMessagesSet];
-        
-    for (id datum in datumSet) {
-        
-        [[self document].managedObjectContext deleteObject:datum];
-        
-    }
-    
-    STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
-    [syncer flushEntitySyncInfo];
-    syncer.syncerState = STMSyncerReceiveData;
     
 }
 

@@ -13,7 +13,7 @@
 @interface STMUncashingPlaceController() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
-@property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, weak) STMDocument *document;
 
 @end
 
