@@ -416,10 +416,10 @@
 
             STMPartner *partner = self.outletToDelete.partner;
             
-            [self.document.managedObjectContext deleteObject:self.outletToDelete];
+            [STMObjectsController removeObject:self.outletToDelete];
             
             if (partner.outlets.count == 0) {
-                [self.document.managedObjectContext deleteObject:partner];
+                [STMObjectsController removeObject:partner];
             }
             
         }
