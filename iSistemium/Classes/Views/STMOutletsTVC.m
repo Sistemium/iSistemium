@@ -20,13 +20,14 @@
 #import "STMCashingProcessController.h"
 #import "STMAddPopoverNC.h"
 
-@interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
+@interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
 @property (nonatomic, strong) UIPopoverController *addPartnerPopover;
 @property (nonatomic, strong) UIPopoverController *addOutletPopover;
 @property (nonatomic, strong) STMPartner *selectedPartner;
+@property (nonatomic, strong) STMOutlet *outletToDelete;
 
 @end
 
@@ -315,6 +316,27 @@
     
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+
+        self.outletToDelete = [self.resultsController objectAtIndexPath:indexPath];
+        
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ %@?", NSLocalizedString(@"DELETE OUTLET", nil), self.outletToDelete.shortName];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ATTENTION" message:alertMessage delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        alert.tag = 1;
+        [alert show];
+        
+    }
+    
+}
+
+
 /*
  - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
  
@@ -376,6 +398,27 @@
      
      return detailedText;
      */
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (alertView.tag == 1) {
+        
+        if (buttonIndex == 0) {
+            
+            self.outletToDelete = nil;
+            
+        } else if (buttonIndex == 1) {
+
+            [self.document.managedObjectContext deleteObject:self.outletToDelete];
+            
+        }
+        
+    }
     
 }
 
