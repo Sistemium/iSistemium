@@ -183,7 +183,7 @@
 //    NSLog(@"showAddPartnerPopover");
     
     CGFloat x = self.splitVC.view.frame.size.width/2;
-    CGFloat y = self.addPartnerPopover.popoverContentSize.height;
+    CGFloat y = self.addPartnerPopover.popoverContentSize.height/2;
     CGRect rect = CGRectMake(x, y, 1, 1);
     [self.addPartnerPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
     
@@ -193,7 +193,7 @@
     
 //    NSLog(@"showAddOutletPopover");
     CGFloat x = self.splitVC.view.frame.size.width/2;
-    CGFloat y = self.addPartnerPopover.popoverContentSize.height;
+    CGFloat y = self.addOutletPopover.popoverContentSize.height/2;
     CGRect rect = CGRectMake(x, y, 1, 1);
     [self.addOutletPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
 
