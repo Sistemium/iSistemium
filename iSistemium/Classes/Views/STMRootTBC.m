@@ -89,6 +89,7 @@
                              @"STMDebts",
                              @"STMUncashing",
                              @"STMMessages",
+                             @"STMWebView",
 #ifdef DEBUG
                              @"STMSettings",
                              @"STMLogs"
@@ -101,6 +102,7 @@
                               NSLocalizedString(@"DEBTS", nil),
                               NSLocalizedString(@"UNCASHING", nil),
                               NSLocalizedString(@"MESSAGES", nil),
+                              NSLocalizedString(@"IORDERS", nil),
 #ifdef DEBUG
                               NSLocalizedString(@"SETTINGS", nil),
                               NSLocalizedString(@"LOGS", nil)
@@ -113,6 +115,7 @@
                        [UIImage imageNamed:@"cash_receiving-128.png"],
                        [UIImage imageNamed:@"banknotes-128.png"],
                        [UIImage imageNamed:@"message-128.png"],
+                       [UIImage imageNamed:@"purchase_order-128.png"],
 #ifdef DEBUG
                        [UIImage imageNamed:@"settings3-128.png"],
                        [UIImage imageNamed:@"archive-128.png"]
