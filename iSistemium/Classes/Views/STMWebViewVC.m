@@ -10,8 +10,10 @@
 #import "STMSessionManager.h"
 #import "STMAuthController.h"
 
-@interface STMWebViewVC ()
+@interface STMWebViewVC () <UIWebViewDelegate>
+
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (nonatomic) BOOL isAuthorizing;
 
 @end
 
@@ -33,32 +35,72 @@
 
 - (void)loadWebView {
 
-    NSString *accessToken = [STMAuthController authController].accessToken;
-    
     NSString *urlString = [self webViewUrlString];
-    urlString = @"https://sis.bis100.ru/bs/tp/";
-    
-//    urlString = [NSString stringWithFormat:@"%@?access-token=%@", urlString, accessToken];
-    
-    NSLog(@"urlString %@", urlString);
     
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [self.webView loadRequest:request];
     
-    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+}
+
+- (void)authLoadWebView {
+
+    NSString *accessToken = [STMAuthController authController].accessToken;
     
-    for (NSHTTPCookie *cookie in [cookieJar cookies]) {
-        NSLog(@"cookie %@", cookie);
-    }
+    NSLog(@"accessToken %@", accessToken);
+
+    NSString *urlString = [self webViewUrlString];
+    urlString = [NSString stringWithFormat:@"%@?access-token=%@", urlString, accessToken];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    [self.webView loadRequest:request];
     
 }
+
+- (void)flushCookie {
+    
+    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+
+    for (NSHTTPCookie *cookie in [cookieJar cookies]) {
+        
+        NSLog(@"cookie %@", cookie);
+        [cookieJar deleteCookie:cookie];
+        
+    }
+
+    NSLog(@"cookies %@", [cookieJar cookies]);
+
+}
+
+#pragma mark - UIWebViewDelegate
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    
+    NSString *bsAccessToken = [self.webView stringByEvaluatingJavaScriptFromString:@"localStorage.getItem('bs.accessToken')"];
+
+    NSLog(@"bsAccessToken %@", bsAccessToken);
+    
+    if ([bsAccessToken isEqualToString:@""] && !self.isAuthorizing) {
+    
+        NSLog(@"no bsAccessToken, go to authorization");
+
+        self.isAuthorizing = YES;
+        [self authLoadWebView];
+        
+    }
+
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
+
+//    [self flushCookie];
+
+    self.webView.delegate = self;
     [self loadWebView];
     
 }
