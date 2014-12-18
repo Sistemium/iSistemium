@@ -33,6 +33,7 @@
 		2C29691919B1CFAB0038B122 /* STMMessagesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29691819B1CFAB0038B122 /* STMMessagesTVC.m */; };
 		2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C297F9619507A01000D9485 /* STMExtendNSLog.m */; };
 		2C49731E1A3893EE006CDF06 /* STMClientData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C49731D1A3893EE006CDF06 /* STMClientData.m */; };
+		2C4BA3D11A43063B007F1D0A /* STMWebView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4BA3D01A43063B007F1D0A /* STMWebView.storyboard */; };
 		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
 		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
 		2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B88D19409E71002298A5 /* STMSessionManager.m */; };
@@ -201,6 +202,7 @@
 		2C49731B1A3893C7006CDF06 /* STMDataModel 27.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 27.xcdatamodel"; sourceTree = "<group>"; };
 		2C49731C1A3893EE006CDF06 /* STMClientData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMClientData.h; sourceTree = "<group>"; };
 		2C49731D1A3893EE006CDF06 /* STMClientData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMClientData.m; sourceTree = "<group>"; };
+		2C4BA3D01A43063B007F1D0A /* STMWebView.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMWebView.storyboard; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
 		2C53B88919409E42002298A5 /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
 		2C53B88C19409E71002298A5 /* STMSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSessionManager.h; sourceTree = "<group>"; };
@@ -804,6 +806,7 @@
 				2C29690319B1B2B50038B122 /* STMMessages.storyboard */,
 				2C734B7D19B4E5C400EE33FA /* STMLogs.storyboard */,
 				2CF365AB19EE884D00F078BD /* STMSettings.storyboard */,
+				2C4BA3D01A43063B007F1D0A /* STMWebView.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -915,6 +918,7 @@
 				2C2968EE19A0BFD10038B122 /* STMUncashing.storyboard in Resources */,
 				2C53B88A19409E42002298A5 /* settings_schema.json in Resources */,
 				2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */,
+				2C4BA3D11A43063B007F1D0A /* STMWebView.storyboard in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */,
 			);
