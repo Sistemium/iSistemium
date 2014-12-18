@@ -22,6 +22,7 @@ typedef enum STMAuthState {
 @property (nonatomic, strong) NSString *phoneNumber;
 @property (nonatomic, strong) NSString *userName;
 @property (nonatomic, strong) NSString *userID;
+@property (nonatomic, strong) NSString *accessToken;
 @property (nonatomic, strong) NSString *tokenHash;
 @property (nonatomic) STMAuthState controllerState;
 

@@ -108,6 +108,7 @@
 "SAVED PHOTOS ALBUM" = "Фотоплёнка";
 "IMAGE SOURCE" = "Выберите";
 "CHOOSE TYPE" = "источник картинки:";
+<<<<<<< HEAD
 "ADD" = "Добавить";
 "addPARTNER" = "Партнёра";
 "addOUTLET" = "Точку";
@@ -120,4 +121,7 @@
 "PARTNERS" = "Партнёры";
 "PARTNER LABEL" = "Партнёр: ";
 
+=======
+"IORDERS" = "Заказы";
+>>>>>>> webView
 

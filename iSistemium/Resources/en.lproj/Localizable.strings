@@ -108,6 +108,7 @@
 "SAVED PHOTOS ALBUM" = "Saved photos album";
 "IMAGE SOURCE" = "Image source";
 "CHOOSE TYPE" = "Choose type";
+<<<<<<< HEAD
 "ADD" = "Add";
 "addPARTNER" = "Partner";
 "addOUTLET" = "Outlet";
@@ -119,3 +120,6 @@
 "PARTNER" = "Partner";
 "PARTNERS" = "Partners";
 "PARTNER LABEL" = "Partner: ";
+=======
+"IORDERS" = "Orders";
+>>>>>>> webView
