@@ -85,6 +85,14 @@
 
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    NSLog(@"self.view %@", self.view);
+    
+}
+
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];

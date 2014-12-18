@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "STMOutletsTVC.h"
+#import "STMPartner.h"
 
 @interface STMAddPopoverNC : UINavigationController
 
 @property (nonatomic, strong) STMOutletsTVC *parentVC;
+@property (nonatomic, strong) STMPartner *partner;
 
 - (void)dismissSelf;
 

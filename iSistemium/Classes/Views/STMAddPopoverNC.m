@@ -7,6 +7,7 @@
 //
 
 #import "STMAddPopoverNC.h"
+#import "STMSelectPartnerTVC.h"
 
 @interface STMAddPopoverNC ()
 
@@ -27,7 +28,17 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-
+        
+    if (self.partner) {
+        
+        if ([self.visibleViewController isKindOfClass:[STMSelectPartnerTVC class]]) {
+            
+            [(STMSelectPartnerTVC *)self.visibleViewController setPartner:self.partner];
+            
+        }
+        
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {

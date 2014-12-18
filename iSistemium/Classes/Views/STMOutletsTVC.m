@@ -23,10 +23,10 @@
 @interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
 
 @property (nonatomic, strong) STMDebtsSVC *splitVC;
-//@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
 @property (nonatomic, strong) UIPopoverController *addPartnerPopover;
 @property (nonatomic, strong) UIPopoverController *addOutletPopover;
+@property (nonatomic, strong) STMPartner *selectedPartner;
 
 @end
 
@@ -108,7 +108,10 @@
     if (!_addOutletPopover) {
         
         STMAddPopoverNC *addOutletPopoverNC = [self.storyboard instantiateViewControllerWithIdentifier:@"addOutletPopover"];
+        
         addOutletPopoverNC.parentVC = self;
+        if (self.selectedPartner) addOutletPopoverNC.partner = self.selectedPartner;
+        
         _addOutletPopover = [[UIPopoverController alloc] initWithContentViewController:addOutletPopoverNC];
         _addOutletPopover.delegate = self;
         
@@ -306,7 +309,7 @@
     
     self.splitVC.detailVC.outlet = outlet;
     
-    //    self.selectedIndexPath = indexPath;
+    self.selectedPartner = outlet.partner;
     
     return indexPath;
     

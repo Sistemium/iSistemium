@@ -7,7 +7,10 @@
 //
 
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMPartner.h"
 
 @interface STMSelectPartnerTVC : STMFetchedResultsControllerTVC
+
+@property (nonatomic, strong) STMPartner *partner;
 
 @end

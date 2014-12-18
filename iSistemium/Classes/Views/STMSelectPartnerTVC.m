@@ -10,7 +10,6 @@
 #import "STMAddPopoverNC.h"
 #import "STMAddOutletVC.h"
 
-#import "STMPartner.h"
 #import "STMUI.h"
 
 @interface STMSelectPartnerTVC ()
@@ -51,6 +50,17 @@
         
     }
     return _parentNC;
+    
+}
+
+- (void)setPartner:(STMPartner *)partner {
+    
+    if (_partner != partner) {
+        
+        _partner = partner;
+//        [self performSegueWithIdentifier:@"showAddOutlet" sender:partner];
+        
+    }
     
 }
 
@@ -126,6 +136,10 @@
     [super viewDidLoad];
     [self customInit];
     [self performFetch];
+    
+    if (self.partner) {
+        [self performSegueWithIdentifier:@"showAddOutlet" sender:self.partner];
+    }
     
 }
 
