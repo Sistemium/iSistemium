@@ -307,7 +307,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vUd-B3-FwX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3078" y="-731"/>
+            <point key="canvasLocation" x="3448" y="-1020"/>
         </scene>
         <!--Outlet DebtsTVC-->
         <scene sceneID="bbL-HP-ZSE">
@@ -489,7 +489,7 @@
             <objects>
                 <tableViewController id="q85-PT-dNw" customClass="STMSelectPartnerTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="keb-i5-EdD">
-                        <rect key="frame" x="0.0" y="64" width="512" height="148"/>
+                        <rect key="frame" x="0.0" y="64" width="512" height="404"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -507,13 +507,15 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="jJe-2e-cZb"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="512" height="512"/>
                     <connections>
                         <segue destination="9Ie-0t-h1s" kind="push" identifier="showAddOutlet" id="yPv-KK-Olv"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O1F-Ku-QBe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2570" y="-1322"/>
+            <point key="canvasLocation" x="2570" y="-1194"/>
         </scene>
         <!--Add OutletVC-->
         <scene sceneID="hWL-iu-9kw">
@@ -661,6 +663,8 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="LTI-Uf-NHY"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="512" height="256"/>
                     <connections>
                         <outlet property="nameLabel" destination="e1F-1g-YV8" id="hd8-Yj-VY5"/>
                         <outlet property="nameTextField" destination="PDt-Zp-T66" id="oAE-QY-w4K"/>
