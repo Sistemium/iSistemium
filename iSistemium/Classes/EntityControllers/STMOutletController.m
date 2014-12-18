@@ -11,6 +11,9 @@
 #import "STMDocument.h"
 #import "STMObjectsController.h"
 #import "STMSyncer.h"
+#import "STMDebtsController.h"
+#import "STMPartnerController.h"
+#import "STMCashing.h"
 
 @implementation STMOutletController
 
@@ -43,6 +46,27 @@
     NSLog(@"outlet %@", outlet);
     
     return outlet;
+    
+}
+
++ (void)removeOutlet:(STMOutlet *)outlet {
+    
+    STMPartner *partner = outlet.partner;
+    
+    for (STMDebt *debt in outlet.debts) {
+        [STMDebtsController removeDebt:debt];
+    }
+    
+    for (STMCashing *cashing in outlet.cashings) {
+        [STMObjectsController removeObject:cashing];
+    }
+    
+    [STMObjectsController removeObject:outlet];
+    
+    if (partner.outlets.count == 0) {
+        [STMPartnerController removePartner:partner];
+    }
+
     
 }
 

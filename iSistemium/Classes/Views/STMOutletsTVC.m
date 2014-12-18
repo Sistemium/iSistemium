@@ -19,6 +19,7 @@
 #import "STMDebtsCombineVC.h"
 #import "STMCashingProcessController.h"
 #import "STMAddPopoverNC.h"
+#import "STMOutletController.h"
 
 @interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>
 
@@ -414,13 +415,7 @@
             
         } else if (buttonIndex == 1) {
 
-            STMPartner *partner = self.outletToDelete.partner;
-            
-            [STMObjectsController removeObject:self.outletToDelete];
-            
-            if (partner.outlets.count == 0) {
-                [STMObjectsController removeObject:partner];
-            }
+            [STMOutletController removeOutlet:self.outletToDelete];
             
         }
         

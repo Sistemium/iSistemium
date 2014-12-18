@@ -11,6 +11,7 @@
 #import "STMDocument.h"
 #import "STMObjectsController.h"
 #import "STMSyncer.h"
+#import "STMOutletController.h"
 
 @implementation STMPartnerController
 
@@ -40,6 +41,16 @@
     }];
     
     return partner;
+    
+}
+
++ (void)removePartner:(STMPartner *)partner {
+    
+    for (STMOutlet *outlet in partner.outlets) {
+        [STMOutletController removeOutlet:outlet];
+    }
+    
+    [STMObjectsController removeObject:partner];
     
 }
 

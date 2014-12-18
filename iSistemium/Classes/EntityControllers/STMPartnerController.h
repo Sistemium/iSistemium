@@ -13,4 +13,6 @@
 
 + (STMPartner *)addPartnerWithName:(NSString *)name;
 
++ (void)removePartner:(STMPartner *)partner;
+
 @end

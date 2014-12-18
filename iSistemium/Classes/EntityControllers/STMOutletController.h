@@ -14,4 +14,6 @@
 
 + (STMOutlet *)addOutletWithShortName:(NSString *)shortName forPartner:(STMPartner *)partner;
 
++ (void)removeOutlet:(STMOutlet *)outlet;
+
 @end
