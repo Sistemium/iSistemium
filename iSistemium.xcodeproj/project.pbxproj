@@ -63,6 +63,7 @@
 		2C5797ED1A432CDF00EEFBA7 /* STMWebView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */; };
 		2C5797F01A432CFF00EEFBA7 /* STMWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C5797EF1A432CFF00EEFBA7 /* STMWebViewVC.m */; };
 		2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C5797F11A43608300EEFBA7 /* purchase_order-128.png */; };
+		2C5797F51A436A4300EEFBA7 /* STMEntityController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C5797F41A436A4300EEFBA7 /* STMEntityController.m */; };
 		2C65284219571C4B008605D9 /* STMCampaignsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65284119571C4B008605D9 /* STMCampaignsSVC.m */; };
 		2C6528F219576894008605D9 /* STMPartner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F119576894008605D9 /* STMPartner.m */; };
 		2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F419576894008605D9 /* STMCampaignPicture.m */; };
@@ -270,6 +271,8 @@
 		2C5797EE1A432CFE00EEFBA7 /* STMWebViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWebViewVC.h; sourceTree = "<group>"; };
 		2C5797EF1A432CFF00EEFBA7 /* STMWebViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWebViewVC.m; sourceTree = "<group>"; };
 		2C5797F11A43608300EEFBA7 /* purchase_order-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purchase_order-128.png"; sourceTree = "<group>"; };
+		2C5797F31A436A4300EEFBA7 /* STMEntityController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMEntityController.h; sourceTree = "<group>"; };
+		2C5797F41A436A4300EEFBA7 /* STMEntityController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMEntityController.m; sourceTree = "<group>"; };
 		2C65284019571C4B008605D9 /* STMCampaignsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignsSVC.h; sourceTree = "<group>"; };
 		2C65284119571C4B008605D9 /* STMCampaignsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignsSVC.m; sourceTree = "<group>"; };
 		2C6528F019576894008605D9 /* STMPartner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPartner.h; sourceTree = "<group>"; };
@@ -490,6 +493,8 @@
 		2C140AC71A19F551002C5C17 /* EntityControllers */ = {
 			isa = PBXGroup;
 			children = (
+				2C5797F31A436A4300EEFBA7 /* STMEntityController.h */,
+				2C5797F41A436A4300EEFBA7 /* STMEntityController.m */,
 				2CFDD8861A308B1C003515C5 /* STMCashingProcessController.h */,
 				2CFDD8871A308B1C003515C5 /* STMCashingProcessController.m */,
 				2CFDD8881A308B1C003515C5 /* STMUncashingProcessController.h */,
@@ -1077,6 +1082,7 @@
 				2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */,
 				2C53B8A319409E71002298A5 /* STMBatteryTracker.m in Sources */,
 				2C80C814198CFD4B0044ADE4 /* STMOutlet.m in Sources */,
+				2C5797F51A436A4300EEFBA7 /* STMEntityController.m in Sources */,
 				2C65290D19576895008605D9 /* STMComment.m in Sources */,
 				2CB4052319BF3A9600813E88 /* STMRecordStatus.m in Sources */,
 				2C65291619576895008605D9 /* STMArticlePicture.m in Sources */,
