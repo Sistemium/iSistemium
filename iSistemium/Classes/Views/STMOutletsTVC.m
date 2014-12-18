@@ -414,7 +414,13 @@
             
         } else if (buttonIndex == 1) {
 
+            STMPartner *partner = self.outletToDelete.partner;
+            
             [self.document.managedObjectContext deleteObject:self.outletToDelete];
+            
+            if (partner.outlets.count == 0) {
+                [self.document.managedObjectContext deleteObject:partner];
+            }
             
         }
         

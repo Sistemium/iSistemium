@@ -935,6 +935,8 @@
                                        NSStringFromClass([STMUncashingPicture class]),
                                        NSStringFromClass([STMDebt class]),
                                        NSStringFromClass([STMTrack class]),
+                                       NSStringFromClass([STMOutlet class]),
+                                       NSStringFromClass([STMPartner class]),
                                        NSStringFromClass([STMLocation class])
                                        ];
     
