@@ -62,6 +62,7 @@
 		2C53B9BC19472D28002298A5 /* STMArticlesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B9BB19472D28002298A5 /* STMArticlesTVC.m */; };
 		2C5797ED1A432CDF00EEFBA7 /* STMWebView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */; };
 		2C5797F01A432CFF00EEFBA7 /* STMWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C5797EF1A432CFF00EEFBA7 /* STMWebViewVC.m */; };
+		2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C5797F11A43608300EEFBA7 /* purchase_order-128.png */; };
 		2C65284219571C4B008605D9 /* STMCampaignsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65284119571C4B008605D9 /* STMCampaignsSVC.m */; };
 		2C6528F219576894008605D9 /* STMPartner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F119576894008605D9 /* STMPartner.m */; };
 		2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F419576894008605D9 /* STMCampaignPicture.m */; };
@@ -268,6 +269,7 @@
 		2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMWebView.storyboard; sourceTree = "<group>"; };
 		2C5797EE1A432CFE00EEFBA7 /* STMWebViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWebViewVC.h; sourceTree = "<group>"; };
 		2C5797EF1A432CFF00EEFBA7 /* STMWebViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWebViewVC.m; sourceTree = "<group>"; };
+		2C5797F11A43608300EEFBA7 /* purchase_order-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purchase_order-128.png"; sourceTree = "<group>"; };
 		2C65284019571C4B008605D9 /* STMCampaignsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignsSVC.h; sourceTree = "<group>"; };
 		2C65284119571C4B008605D9 /* STMCampaignsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignsSVC.m; sourceTree = "<group>"; };
 		2C6528F019576894008605D9 /* STMPartner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPartner.h; sourceTree = "<group>"; };
@@ -823,6 +825,7 @@
 		2CD443EF195AD741004ADE58 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2C5797F11A43608300EEFBA7 /* purchase_order-128.png */,
 				D94AC56B198BC6A300D8CD63 /* password2-128.png */,
 				D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */,
 				D94AC565198BC66700D8CD63 /* cash_receiving-128.png */,
@@ -960,6 +963,7 @@
 				2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */,
 				2C5797ED1A432CDF00EEFBA7 /* STMWebView.storyboard in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
+				2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */,
 				2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
