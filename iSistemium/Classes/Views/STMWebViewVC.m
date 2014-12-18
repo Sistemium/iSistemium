@@ -44,6 +44,12 @@
     
 }
 
+- (NSString *)webViewTitle {
+    
+    return [[self webViewSettings] valueForKey:@"wv.title"];
+    
+}
+
 
 - (void)loadWebView {
 
@@ -112,6 +118,8 @@
 
 //    [self flushCookie];
 
+    self.tabBarItem.title = [self webViewTitle];
+    
     self.webView.delegate = self;
     [self loadWebView];
     
