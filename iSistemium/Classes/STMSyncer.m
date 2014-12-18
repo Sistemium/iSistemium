@@ -1023,7 +1023,7 @@
         } else if (! -- self.entityCount) {
             
             self.syncing = NO;
-            self.syncerState = STMSyncerSendData;
+            self.syncerState = STMSyncerIdle;
             
         }
     }
