@@ -18,7 +18,6 @@
 
 @property (nonatomic, strong) NSMutableData *responseData;
 @property (nonatomic, strong) NSString *requestID;
-@property (nonatomic, strong) NSString *accessToken;
 @property (nonatomic, strong) NSString *serviceUri;
 @property (nonatomic, strong) KeychainItemWrapper *keychainItem;
 
