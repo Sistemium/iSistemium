@@ -453,11 +453,11 @@
             <objects>
                 <viewController id="LYy-RD-p4s" customClass="STMAddPartnerVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="SfU-Tn-3MU">
-                        <rect key="frame" x="0.0" y="64" width="512" height="252"/>
+                        <rect key="frame" x="0.0" y="64" width="640" height="252"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="pRo-v6-STm">
-                                <rect key="frame" x="144" y="59" width="352" height="30"/>
+                                <rect key="frame" x="144" y="59" width="480" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -489,7 +489,7 @@
             <objects>
                 <tableViewController id="q85-PT-dNw" customClass="STMSelectPartnerTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="keb-i5-EdD">
-                        <rect key="frame" x="0.0" y="64" width="512" height="252"/>
+                        <rect key="frame" x="0.0" y="64" width="640" height="252"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -520,24 +520,11 @@
             <objects>
                 <viewController id="37o-4n-irt" customClass="STMAddOutletVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GLL-7N-2bY">
-                        <rect key="frame" x="0.0" y="64" width="512" height="252"/>
+                        <rect key="frame" x="0.0" y="64" width="640" height="252"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="partnerNameLabel" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tEe-5r-WTz">
-                                <rect key="frame" x="144" y="20" width="352" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="cEO-3W-RRu">
-                                <rect key="frame" x="144" y="59" width="352" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="outletName" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ouD-fp-nqb">
-                                <rect key="frame" x="16" y="62" width="120" height="21"/>
+                                <rect key="frame" x="144" y="20" width="480" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -545,6 +532,19 @@
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="partnerName" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pJv-nn-2cZ">
                                 <rect key="frame" x="16" y="20" width="120" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="cEO-3W-RRu">
+                                <rect key="frame" x="144" y="49" width="480" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="outletName" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ouD-fp-nqb">
+                                <rect key="frame" x="16" y="52" width="120" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -564,7 +564,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bPI-ik-1lf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3189" y="-1846"/>
+            <point key="canvasLocation" x="3287" y="-1846"/>
         </scene>
         <!--Date PickerVC-->
         <scene sceneID="DJ4-YX-AuF">
@@ -604,7 +604,7 @@
                 <navigationController storyboardIdentifier="addPartnerPopover" automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="WRK-aq-QMi" customClass="STMAddPopoverNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="512" height="360"/>
+                    <size key="freeformSize" width="640" height="360"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Stn-ym-TUF">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -619,25 +619,25 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YbH-ca-oag" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1932" y="-1846"/>
+            <point key="canvasLocation" x="1847" y="-1846"/>
         </scene>
         <!--Add OutletVC-->
         <scene sceneID="4rj-aG-1qf">
             <objects>
                 <viewController id="9Ie-0t-h1s" customClass="STMAddOutletVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="LzK-u0-lDm">
-                        <rect key="frame" x="0.0" y="64" width="512" height="252"/>
+                        <rect key="frame" x="0.0" y="64" width="640" height="252"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="partnerNameLabel" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="iVy-jZ-qCQ">
-                                <rect key="frame" x="144" y="20" width="352" height="21"/>
+                                <rect key="frame" x="144" y="20" width="480" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="PDt-Zp-T66">
-                                <rect key="frame" x="144" y="59" width="352" height="30"/>
+                                <rect key="frame" x="144" y="59" width="480" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -670,7 +670,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J9x-c9-wpY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3189" y="-1402"/>
+            <point key="canvasLocation" x="3287" y="-1402"/>
         </scene>
         <!--Add PopoverNC-->
         <scene sceneID="vvp-96-qnq">
@@ -678,7 +678,7 @@
                 <navigationController storyboardIdentifier="addOutletPopover" automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="hny-yh-xrC" customClass="STMAddPopoverNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="512" height="360"/>
+                    <size key="freeformSize" width="640" height="360"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="JkI-6z-JtJ">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -693,7 +693,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DCO-K2-8D3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1932" y="-1402"/>
+            <point key="canvasLocation" x="1847" y="-1402"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
