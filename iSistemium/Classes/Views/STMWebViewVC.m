@@ -32,6 +32,18 @@
     
 }
 
+- (NSString *)webViewSessionCheckJS {
+    
+    return [[self webViewSettings] valueForKey:@"wv.session.check"];
+    
+}
+
+- (NSString *)webViewSessionCookie {
+    
+    return [[self webViewSettings] valueForKey:@"wv.session.cookie"];
+    
+}
+
 
 - (void)loadWebView {
 
@@ -48,7 +60,7 @@
 
     NSString *accessToken = [STMAuthController authController].accessToken;
     
-    NSLog(@"accessToken %@", accessToken);
+//    NSLog(@"accessToken %@", accessToken);
 
     NSString *urlString = [self webViewUrlString];
     urlString = [NSString stringWithFormat:@"%@?access-token=%@", urlString, accessToken];
@@ -78,9 +90,9 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
-    NSString *bsAccessToken = [self.webView stringByEvaluatingJavaScriptFromString:@"localStorage.getItem('bs.accessToken')"];
+    NSString *bsAccessToken = [self.webView stringByEvaluatingJavaScriptFromString:[self webViewSessionCheckJS]];
 
-    NSLog(@"bsAccessToken %@", bsAccessToken);
+//    NSLog(@"bsAccessToken %@", bsAccessToken);
     
     if ([bsAccessToken isEqualToString:@""] && !self.isAuthorizing) {
     
