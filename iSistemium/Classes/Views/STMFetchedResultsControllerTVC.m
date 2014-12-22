@@ -121,6 +121,90 @@
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView nearestIndexPathFor:(NSIndexPath *)indexPath {
+    
+    NSIndexPath *nearestIndexPath;
+    
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    NSInteger numberOfSections = [tableView numberOfSections];
+    NSInteger numberOfRows = [tableView numberOfRowsInSection:section];
+    
+    switch (numberOfSections) {
+        case 0:
+            nearestIndexPath = nil;
+            break;
+
+        case 1:
+            switch (numberOfRows) {
+                case (0 || 1):
+                    nearestIndexPath = nil;
+                    break;
+
+                default:
+                    switch (row) {
+                        case 0:
+                            nearestIndexPath = [NSIndexPath indexPathForRow:row+1 inSection:section];
+                            break;
+                            
+                        default:
+                            nearestIndexPath = [NSIndexPath indexPathForRow:row-1 inSection:section];
+                            break;
+                    }
+                    break;
+            }
+            break;
+
+        default:
+            switch (section) {
+                case 0:
+                    switch (numberOfRows) {
+                        case (0 || 1):
+                            nearestIndexPath = [NSIndexPath indexPathForRow:0 inSection:section+1];
+                            break;
+                            
+                        default:
+                            switch (row) {
+                                case 0:
+                                    nearestIndexPath = [NSIndexPath indexPathForRow:row+1 inSection:section];
+                                    break;
+                                    
+                                default:
+                                    nearestIndexPath = [NSIndexPath indexPathForRow:row-1 inSection:section];
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                    
+                default:
+                    switch (numberOfRows) {
+                        case (0 || 1):
+                            nearestIndexPath = [NSIndexPath indexPathForRow:[tableView numberOfRowsInSection:section-1]-1 inSection:section-1];
+                            break;
+                            
+                        default:
+                            switch (row) {
+                                case 0:
+                                    nearestIndexPath = [NSIndexPath indexPathForRow:row+1 inSection:section];
+                                    break;
+                                    
+                                default:
+                                    nearestIndexPath = [NSIndexPath indexPathForRow:row-1 inSection:section];
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+            
+            break;
+    }
+    
+    return nearestIndexPath;
+    
+}
+
 
 #pragma mark - NSFetchedResultsController delegate
 
