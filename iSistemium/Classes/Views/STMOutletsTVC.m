@@ -29,6 +29,7 @@
 @property (nonatomic, strong) UIPopoverController *addOutletPopover;
 @property (nonatomic, strong) STMPartner *selectedPartner;
 @property (nonatomic, strong) STMOutlet *outletToDelete;
+@property (nonatomic, strong) STMOutlet *nextSelectOutlet;
 
 @end
 
@@ -333,13 +334,15 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    return [self partnersEditingIsEnabled];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
 
+        NSIndexPath *nearestIndexPath = [self tableView:tableView nearestIndexPathFor:indexPath];
+        self.nextSelectOutlet = [self.resultsController objectAtIndexPath:nearestIndexPath];
         self.outletToDelete = [self.resultsController objectAtIndexPath:indexPath];
         
         NSString *alertMessage = [NSString stringWithFormat:@"%@ %@?", NSLocalizedString(@"DELETE OUTLET", nil), self.outletToDelete.shortName];
@@ -427,9 +430,13 @@
         if (buttonIndex == 0) {
             
             self.outletToDelete = nil;
+            self.nextSelectOutlet = nil;
             
         } else if (buttonIndex == 1) {
 
+            NSIndexPath *selectIndexPath = [self.resultsController indexPathForObject:self.nextSelectOutlet];
+            [self tableView:self.tableView willSelectRowAtIndexPath:selectIndexPath];
+            [self.tableView selectRowAtIndexPath:selectIndexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
             [STMOutletController removeOutlet:self.outletToDelete];
             
         }

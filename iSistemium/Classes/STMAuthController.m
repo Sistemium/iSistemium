@@ -324,8 +324,8 @@
                       @"timeFilter"               : @"60",
                       @"maxSpeedThreshold"        : @"60",
                       @"locationTrackerAutoStart" : [NSNumber numberWithBool:YES],
-//                      @"enableDebtsEditing"       : [NSNumber numberWithBool:NO],
-//                      @"enablePartnersEditing"    : [NSNumber numberWithBool:NO],
+                      @"enableDebtsEditing"       : [NSNumber numberWithBool:YES],
+                      @"enablePartnersEditing"    : [NSNumber numberWithBool:YES],
                       @"http.timeout.foreground"  : @"15"
                       };
 
