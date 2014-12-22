@@ -124,8 +124,19 @@
 
 - (BOOL)debtsEditingIsEnabled {
     
-    NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
-    return [[settings valueForKey:@"enableDebtsEditing"] boolValue];
+    return [[[self appSettings] valueForKey:@"enableDebtsEditing"] boolValue];
+    
+}
+
+- (BOOL)partnersEditingIsEnabled {
+
+    return [[[self appSettings] valueForKey:@"enablePartnersEditing"] boolValue];
+
+}
+
+- (NSDictionary *)appSettings {
+    
+    return [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
     
 }
 
@@ -446,8 +457,7 @@
 
 - (void)customInit {
     
-    NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
-    BOOL toolbarHidden = ![[settings valueForKey:@"enableDebtsEditing"] boolValue];
+    BOOL toolbarHidden = ![self partnersEditingIsEnabled];
     
     self.navigationController.toolbarHidden = toolbarHidden;
     

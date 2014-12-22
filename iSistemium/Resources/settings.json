@@ -22,6 +22,11 @@
                     "control": "switch"
                 },
                 {
+                    "name": "enablePartnersEditing",
+                    "value": false,
+                    "control": "switch"
+                },
+                {
                     "name": "objectsLifeTime",
                     "value": 72,
                     "control": "slider",
