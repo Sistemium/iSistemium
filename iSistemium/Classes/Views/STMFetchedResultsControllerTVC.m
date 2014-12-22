@@ -210,6 +210,8 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     
+//    NSLog(@"self class1 %@", NSStringFromClass([self class]));
+    
     self.selectedObjects = [NSMutableArray array];
     
     for (NSIndexPath *indexPath in self.tableView.indexPathsForSelectedRows) {
@@ -219,15 +221,21 @@
             [self.selectedObjects addObject:object];
         }
         @catch (NSException *exception) {
-            [self.tableView deselectRowAtIndexPath: indexPath animated: true];
+            [self.tableView deselectRowAtIndexPath:indexPath animated: true];
         }
         
+//        NSLog(@"indexPath1 %@", indexPath);
+        
     }
+    
+//    NSLog(@"self.selectedObjects.count1 %d", self.selectedObjects.count);
  
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
+//    NSLog(@"self class2 %@", NSStringFromClass([self class]));
+
     [self.tableView beginUpdates];
     
     [self.tableView deleteSections:self.deletedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
@@ -249,8 +257,11 @@
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:object];
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+//        NSLog(@"indexPath2 %@", indexPath);
         
     }
+    
+//    NSLog(@"self.selectedObjects.count2 %d", self.selectedObjects.count);
  
 }
 

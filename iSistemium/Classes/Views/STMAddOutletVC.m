@@ -54,7 +54,7 @@
 
 - (void)saveOutlet {
     
-    NSLog(@"self.nameTextField.text %@", self.nameTextField.text);
+//    NSLog(@"self.nameTextField.text %@", self.nameTextField.text);
     
     self.partner = (!self.partner) ? [STMPartnerController addPartnerWithName:self.partnerName] : self.partner;
     [STMOutletController addOutletWithShortName:self.nameTextField.text forPartner:self.partner];
@@ -89,7 +89,7 @@
     
     [super viewWillAppear:animated];
     
-    NSLog(@"self.view %@", self.view);
+//    NSLog(@"self.view %@", self.view);
     
 }
 

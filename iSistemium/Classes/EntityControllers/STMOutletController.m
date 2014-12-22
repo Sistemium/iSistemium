@@ -43,7 +43,7 @@
 
     }];
     
-    NSLog(@"outlet %@", outlet);
+//    NSLog(@"outlet %@", outlet);
     
     return outlet;
     
@@ -53,14 +53,16 @@
     
     STMPartner *partner = outlet.partner;
     
-    for (STMDebt *debt in outlet.debts) {
+    NSArray *debts = [outlet.debts copy];
+    for (STMDebt *debt in debts) {
         [STMDebtsController removeDebt:debt];
     }
-    
-    for (STMCashing *cashing in outlet.cashings) {
+
+    NSArray *cashings = [outlet.cashings copy];
+    for (STMCashing *cashing in cashings) {
         [STMObjectsController removeObject:cashing];
     }
-    
+
     [STMObjectsController removeObject:outlet];
     
     if (partner.outlets.count == 0) {

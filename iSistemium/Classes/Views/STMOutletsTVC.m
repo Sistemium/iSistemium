@@ -316,6 +316,11 @@
     cell.textLabel.highlightedTextColor = highlightedTextColor;
     cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
     
+    if ([outlet isEqual:self.splitVC.detailVC.outlet]) {
+        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        NSLog(@"select indexPath %@", indexPath);
+    }
+    
     return cell;
     
 }
@@ -330,6 +335,12 @@
     self.selectedPartner = outlet.partner;
     
     return indexPath;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSLog(@"didSelectRowAtIndexPath %@", indexPath);
     
 }
 
@@ -421,6 +432,25 @@
 }
 
 
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+
+    [super controllerDidChangeContent:controller];
+    
+    if (self.nextSelectOutlet) {
+        
+        NSIndexPath *selectIndexPath = [self.resultsController indexPathForObject:self.nextSelectOutlet];
+        [self tableView:self.tableView willSelectRowAtIndexPath:selectIndexPath];
+        [self.tableView selectRowAtIndexPath:selectIndexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        [self tableView:self.tableView didSelectRowAtIndexPath:selectIndexPath];
+        
+        self.nextSelectOutlet = nil;
+        
+    }
+    
+}
+
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -434,9 +464,6 @@
             
         } else if (buttonIndex == 1) {
 
-            NSIndexPath *selectIndexPath = [self.resultsController indexPathForObject:self.nextSelectOutlet];
-            [self tableView:self.tableView willSelectRowAtIndexPath:selectIndexPath];
-            [self.tableView selectRowAtIndexPath:selectIndexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
             [STMOutletController removeOutlet:self.outletToDelete];
             
         }
