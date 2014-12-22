@@ -318,7 +318,7 @@
     
     if ([outlet isEqual:self.splitVC.detailVC.outlet]) {
         [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        NSLog(@"select indexPath %@", indexPath);
+//        NSLog(@"select indexPath %@", indexPath);
     }
     
     return cell;
@@ -340,7 +340,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"didSelectRowAtIndexPath %@", indexPath);
+//    NSLog(@"didSelectRowAtIndexPath %@", indexPath);
     
 }
 
