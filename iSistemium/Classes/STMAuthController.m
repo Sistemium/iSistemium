@@ -18,7 +18,6 @@
 
 @property (nonatomic, strong) NSMutableData *responseData;
 @property (nonatomic, strong) NSString *requestID;
-@property (nonatomic, strong) NSString *accessToken;
 @property (nonatomic, strong) NSString *serviceUri;
 @property (nonatomic, strong) KeychainItemWrapper *keychainItem;
 
@@ -326,6 +325,7 @@
                       @"maxSpeedThreshold"        : @"60",
                       @"locationTrackerAutoStart" : [NSNumber numberWithBool:YES],
                       @"enableDebtsEditing"       : [NSNumber numberWithBool:YES],
+                      @"enablePartnersEditing"    : [NSNumber numberWithBool:YES],
                       @"http.timeout.foreground"  : @"15"
                       };
 

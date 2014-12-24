@@ -60,7 +60,7 @@
     
     NSArray *positiveDoubleValues = [NSArray arrayWithObjects:@"trackDetectionTime", @"trackSeparationDistance", @"fetchLimit", @"syncInterval", @"deviceMotionUpdateInterval", @"maxSpeedThreshold", @"http.timeout.foreground", @"http.timeout.background", @"objectsLifeTime", nil];
     
-    NSArray *boolValues = [NSArray arrayWithObjects:@"localAccessToSettings", @"deviceMotionUpdate", @"enableDebtsEditing", nil];
+    NSArray *boolValues = [NSArray arrayWithObjects:@"localAccessToSettings", @"deviceMotionUpdate", @"enableDebtsEditing", @"enablePartnersEditing", nil];
     NSArray *boolValueSuffixes = [NSArray arrayWithObjects:@"TrackerAutoStart", nil];
     
     NSArray *URIValues = [NSArray arrayWithObjects:@"restServerURI", @"xmlNamespace", @"recieveDataServerURI", @"sendDataServerURI", nil];

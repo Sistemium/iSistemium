@@ -121,10 +121,96 @@
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView nearestIndexPathFor:(NSIndexPath *)indexPath {
+    
+    NSIndexPath *nearestIndexPath;
+    
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    NSInteger numberOfSections = [tableView numberOfSections];
+    NSInteger numberOfRows = [tableView numberOfRowsInSection:section];
+    
+    switch (numberOfSections) {
+        case 0:
+            nearestIndexPath = nil;
+            break;
+
+        case 1:
+            switch (numberOfRows) {
+                case (0 || 1):
+                    nearestIndexPath = nil;
+                    break;
+
+                default:
+                    switch (row) {
+                        case 0:
+                            nearestIndexPath = [NSIndexPath indexPathForRow:row+1 inSection:section];
+                            break;
+                            
+                        default:
+                            nearestIndexPath = [NSIndexPath indexPathForRow:row-1 inSection:section];
+                            break;
+                    }
+                    break;
+            }
+            break;
+
+        default:
+            switch (section) {
+                case 0:
+                    switch (numberOfRows) {
+                        case (0 || 1):
+                            nearestIndexPath = [NSIndexPath indexPathForRow:0 inSection:section+1];
+                            break;
+                            
+                        default:
+                            switch (row) {
+                                case 0:
+                                    nearestIndexPath = [NSIndexPath indexPathForRow:row+1 inSection:section];
+                                    break;
+                                    
+                                default:
+                                    nearestIndexPath = [NSIndexPath indexPathForRow:row-1 inSection:section];
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                    
+                default:
+                    switch (numberOfRows) {
+                        case (0 || 1):
+                            nearestIndexPath = [NSIndexPath indexPathForRow:[tableView numberOfRowsInSection:section-1]-1 inSection:section-1];
+                            break;
+                            
+                        default:
+                            switch (row) {
+                                case 0:
+                                    nearestIndexPath = [NSIndexPath indexPathForRow:row+1 inSection:section];
+                                    break;
+                                    
+                                default:
+                                    nearestIndexPath = [NSIndexPath indexPathForRow:row-1 inSection:section];
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+            
+            break;
+    }
+    
+    return nearestIndexPath;
+    
+}
+
 
 #pragma mark - NSFetchedResultsController delegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
+//    NSLog(@"self class1 %@", NSStringFromClass([self class]));
     
     self.selectedObjects = [NSMutableArray array];
     
@@ -135,15 +221,21 @@
             [self.selectedObjects addObject:object];
         }
         @catch (NSException *exception) {
-            [self.tableView deselectRowAtIndexPath: indexPath animated: true];
+            [self.tableView deselectRowAtIndexPath:indexPath animated: true];
         }
         
+//        NSLog(@"indexPath1 %@", indexPath);
+        
     }
+    
+//    NSLog(@"self.selectedObjects.count1 %d", self.selectedObjects.count);
  
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
+//    NSLog(@"self class2 %@", NSStringFromClass([self class]));
+
     [self.tableView beginUpdates];
     
     [self.tableView deleteSections:self.deletedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
@@ -165,8 +257,11 @@
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:object];
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+//        NSLog(@"indexPath2 %@", indexPath);
         
     }
+    
+//    NSLog(@"self.selectedObjects.count2 %d", self.selectedObjects.count);
  
 }
 

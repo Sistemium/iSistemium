@@ -14,7 +14,7 @@
 
 @interface STMUncashingProcessController ()
 
-@property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, weak) STMDocument *document;
 
 @end
 

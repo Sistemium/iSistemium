@@ -216,7 +216,7 @@
         
         // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
         // Pass 1.0 to force exact pixel size.
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, 1.0);
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, 0.0);
         [image drawInRect:CGRectMake(0, 0, width, height)];
         UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();

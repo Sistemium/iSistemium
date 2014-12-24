@@ -903,12 +903,32 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingDictionaryChanged) name:@"cashingDictionaryChanged" object:[STMUncashingProcessController sharedInstance]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneButtonPressed) name:@"uncashingDoneButtonPressed" object:self.splitVC.detailVC];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(cashingDictionaryChanged)
+               name:@"cashingDictionaryChanged"
+             object:[STMUncashingProcessController sharedInstance]];
+    
+    [nc addObserver:self
+           selector:@selector(doneButtonPressed)
+               name:@"uncashingDoneButtonPressed"
+             object:self.splitVC.detailVC];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessDone) name:@"uncashingProcessDone" object:[STMUncashingProcessController sharedInstance]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessCancel) name:@"uncashingProcessCancel" object:[STMUncashingProcessController sharedInstance]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showInfoPopover) name:@"uncashingIsValid" object:[STMUncashingProcessController sharedInstance]];
+    [nc addObserver:self
+           selector:@selector(uncashingProcessDone)
+               name:@"uncashingProcessDone"
+             object:[STMUncashingProcessController sharedInstance]];
+    
+    [nc addObserver:self
+           selector:@selector(uncashingProcessCancel)
+               name:@"uncashingProcessCancel"
+             object:[STMUncashingProcessController sharedInstance]];
+    
+    [nc addObserver:self
+           selector:@selector(showInfoPopover)
+               name:@"uncashingIsValid"
+             object:[STMUncashingProcessController sharedInstance]];
 
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];

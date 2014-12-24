@@ -11,4 +11,6 @@
 
 @interface STMOutletsTVC : STMFetchedResultsControllerTVC
 
+- (void)dissmissPopover;
+
 @end
