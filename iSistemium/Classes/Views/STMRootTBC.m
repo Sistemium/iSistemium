@@ -13,6 +13,7 @@
 #import "STMSessionManager.h"
 #import "STMSession.h"
 #import "STMObjectsController.h"
+#import "STMTabBarViewController.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
@@ -214,8 +215,31 @@
 
 }
 
+- (void)currentTabBarItemDidTapped {
+    
+    if ([self.selectedViewController conformsToProtocol:@protocol(STMTabBarViewController)]) {
+        
+        [(id <STMTabBarViewController>)self.selectedViewController showActionSheetFromTabBarItem];
+        
+    }
+    
+}
+
+
+#pragma mark - UITabBarControllerDelegate
+
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+
+    if ([viewController isEqual:self.selectedViewController]) {
+        [self currentTabBarItemDidTapped];
+    }
+
     return YES;
+    
+}
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+    
 }
 
 - (id <UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {

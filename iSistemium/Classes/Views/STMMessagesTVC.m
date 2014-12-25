@@ -17,7 +17,7 @@
 #define STMDetailTextFont [UIFont systemFontOfSize:18]
 #define STMHPadding 15
 
-@interface STMMessagesTVC ()
+@interface STMMessagesTVC () <UIActionSheetDelegate>
 
 @end
 
@@ -126,6 +126,7 @@
     }];
     
 }
+
 
 #pragma mark - Table view data source
 
