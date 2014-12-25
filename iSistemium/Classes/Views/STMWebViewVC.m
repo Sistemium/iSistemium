@@ -97,7 +97,9 @@
 
 - (void)showActionSheetFromTabBarItem {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"RELOAD", nil), nil];
+    
+    actionSheet.tag = 1;
     
     CGFloat tabBarYPosition = self.tabBarController.tabBar.frame.origin.y;
     CGRect rect = [[self.tabBarController.tabBar.subviews objectAtIndex:self.tabBarController.selectedIndex+1] frame];
@@ -105,6 +107,31 @@
     
     [actionSheet showFromRect:rect inView:self.view animated:YES];
     
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (actionSheet.tag) {
+        case 1:
+            
+            switch (buttonIndex) {
+                case 0:
+                    [self loadWebView];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+
 }
 
 
