@@ -10,7 +10,7 @@
 #import "STMSessionManager.h"
 #import "STMAuthController.h"
 
-@interface STMWebViewVC () <UIWebViewDelegate>
+@interface STMWebViewVC () <UIWebViewDelegate, UIActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic) BOOL isAuthorizing;
@@ -91,6 +91,49 @@
     NSLog(@"cookies %@", [cookieJar cookies]);
 
 }
+
+
+#pragma mark - STMTabBarViewController
+
+- (void)showActionSheetFromTabBarItem {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"IORDERS", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"RELOAD", nil), nil];
+    
+    actionSheet.tag = 1;
+    
+    CGFloat tabBarYPosition = self.tabBarController.tabBar.frame.origin.y;
+    CGRect rect = [[self.tabBarController.tabBar.subviews objectAtIndex:self.tabBarController.selectedIndex+1] frame];
+    rect = CGRectMake(rect.origin.x, rect.origin.y + tabBarYPosition, rect.size.width, rect.size.height);
+    
+    [actionSheet showFromRect:rect inView:self.view animated:YES];
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (actionSheet.tag) {
+        case 1:
+            
+            switch (buttonIndex) {
+                case 0:
+                    [self loadWebView];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+
+}
+
 
 #pragma mark - UIWebViewDelegate
 
