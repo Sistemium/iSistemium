@@ -19,6 +19,7 @@
 
 - (void)showActionSheetFromTabBarItem {
     
+/*
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
     
     CGFloat tabBarYPosition = self.tabBarController.tabBar.frame.origin.y;
@@ -26,6 +27,7 @@
     rect = CGRectMake(rect.origin.x, rect.origin.y + tabBarYPosition, rect.size.width, rect.size.height);
     
     [actionSheet showFromRect:rect inView:self.view animated:YES];
+*/
     
 }
 
