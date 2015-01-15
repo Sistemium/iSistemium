@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMSingleton.h"
+#import "STMController.h"
 #import "STMUncashing.h"
 
-@interface STMUncashingController : NSObject
+@interface STMUncashingController : STMController
 
 + (STMUncashingController *)sharedInstance;
 

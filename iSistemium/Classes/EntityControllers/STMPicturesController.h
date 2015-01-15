@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMController.h"
 #import "STMPicture.h"
 
-@interface STMPicturesController : NSObject
+@interface STMPicturesController : STMController
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture;
 

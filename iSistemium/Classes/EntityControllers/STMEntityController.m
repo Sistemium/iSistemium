@@ -7,8 +7,6 @@
 //
 
 #import "STMEntityController.h"
-#import "STMDocument.h"
-#import "STMSessionManager.h"
 
 @interface STMEntityController()
 
@@ -28,12 +26,6 @@
     
     return _sharedInstance;
     
-}
-
-+ (STMDocument *)document {
-    
-        return (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-
 }
 
 + (NSDictionary *)stcEntities {

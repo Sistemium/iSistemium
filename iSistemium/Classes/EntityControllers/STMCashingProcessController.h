@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMSingleton.h"
+#import "STMController.h"
 #import "STMOutlet.h"
 #import "STMDebt+Cashing.h"
 
@@ -17,7 +17,7 @@ typedef enum {
 } STMCashingProcessState;
 
 
-@interface STMCashingProcessController : NSObject
+@interface STMCashingProcessController : STMController
 
 
 + (STMCashingProcessController *)sharedInstance;

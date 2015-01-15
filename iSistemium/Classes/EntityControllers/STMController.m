@@ -17,4 +17,10 @@
     
 }
 
++ (STMSyncer *)syncer {
+    
+    return [[STMSessionManager sharedManager].currentSession syncer];
+    
+}
+
 @end

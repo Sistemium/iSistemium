@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMController.h"
 #import "STMEntity.h"
 
-@interface STMEntityController : NSObject
+@interface STMEntityController : STMController
 
 + (NSDictionary *)stcEntities;
 + (NSSet *)entityNamesWithLifeTime;

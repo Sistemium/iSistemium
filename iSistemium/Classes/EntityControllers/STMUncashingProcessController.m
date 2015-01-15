@@ -8,15 +8,14 @@
 
 #import "STMUncashingProcessController.h"
 #import "STMUncashingPicture.h"
-#import "STMDocument.h"
-#import "STMSessionManager.h"
 #import "STMEntityDescription.h"
+#import "STMObjectsController.h"
+#import "STMSessionManager.h"
 
 @interface STMUncashingProcessController ()
 
-@property (nonatomic, weak) STMDocument *document;
-
 @end
+
 
 @implementation STMUncashingProcessController
 
@@ -31,17 +30,6 @@
     
     return _sharedInstance;
     
-}
-
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
 }
 
 - (NSMutableDictionary *)cashingDictionary {
@@ -88,7 +76,11 @@
 
 - (void)uncashingDone {
     
-    [self uncashingDoneWithSum:self.uncashingSum image:self.pictureImage type:self.uncashingType comment:self.commentText place:self.currentUncashingPlace];
+    [self uncashingDoneWithSum:self.uncashingSum
+                         image:self.pictureImage
+                          type:self.uncashingType
+                       comment:self.commentText
+                         place:self.currentUncashingPlace];
     
 }
 
@@ -104,7 +96,7 @@
         
     }
     
-    STMUncashing *uncashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:self.document.managedObjectContext];
+    STMUncashing *uncashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:[STMController document].managedObjectContext];
     
     NSArray *cashings = [self.cashingDictionary allValues];
     
@@ -120,7 +112,7 @@
     
     if (image) {
         
-        STMUncashingPicture *picture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:self.document.managedObjectContext];
+        STMUncashingPicture *picture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:[STMController document].managedObjectContext];
         
         [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
         
@@ -137,7 +129,7 @@
     uncashing.type = type;
     uncashing.commentText = comment;
     
-    [self.document saveDocument:^(BOOL success) {
+    [[STMController document] saveDocument:^(BOOL success) {
         if (success) {
             
             [[[[STMSessionManager sharedManager] currentSession] syncer] setSyncerState:STMSyncerSendDataOnce];
@@ -196,28 +188,44 @@
     
     if (self.uncashingSum.doubleValue <= 0) {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"UNCASHING SUM NOT VALID", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                        message:NSLocalizedString(@"UNCASHING SUM NOT VALID", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:nil];
         [alert show];
         
         return NO;
         
     } else if (!self.uncashingType) {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO UNCASHING TYPE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                        message:NSLocalizedString(@"NO UNCASHING TYPE", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:nil];
         [alert show];
         
         return NO;
         
     } else if ([self.uncashingType isEqualToString:BANK_OFFICE_TYPE] && !self.pictureImage) {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CHECK IMAGE", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                        message:NSLocalizedString(@"NO CHECK IMAGE", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:nil];
         [alert show];
         
         return NO;
         
     } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE] && !self.currentUncashingPlace) {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                        message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:nil];
         [alert show];
         
         return NO;

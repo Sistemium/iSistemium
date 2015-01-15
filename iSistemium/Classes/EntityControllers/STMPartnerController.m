@@ -7,25 +7,10 @@
 //
 
 #import "STMPartnerController.h"
-#import "STMSessionManager.h"
-#import "STMDocument.h"
 #import "STMObjectsController.h"
-#import "STMSyncer.h"
 #import "STMOutletController.h"
 
 @implementation STMPartnerController
-
-+ (STMDocument *)document {
-    
-    return (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
-    
-}
-
-+ (STMSyncer *)syncer {
-    
-    return [[STMSessionManager sharedManager].currentSession syncer];
-    
-}
 
 + (STMPartner *)addPartnerWithName:(NSString *)name {
     

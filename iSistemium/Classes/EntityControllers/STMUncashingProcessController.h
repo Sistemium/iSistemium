@@ -7,7 +7,7 @@
 //
 
 
-#import "STMSingleton.h"
+#import "STMController.h"
 #import "STMCashing.h"
 #import "STMUncashing.h"
 #import "STMUncashingPlace.h"
@@ -21,7 +21,7 @@ typedef enum {
 } STMUncashingProcessState;
 
 
-@interface STMUncashingProcessController : NSObject
+@interface STMUncashingProcessController : STMController
 
 
 + (STMUncashingProcessController *)sharedInstance;

@@ -7,17 +7,9 @@
 //
 
 #import "STMPicturesController.h"
-#import "STMSessionManager.h"
-#import "STMDocument.h"
 
 
 @implementation STMPicturesController
-
-+ (STMDocument *)document {
-    
-    return (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
-    
-}
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture {
     
