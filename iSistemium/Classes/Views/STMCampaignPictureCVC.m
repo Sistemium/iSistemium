@@ -10,7 +10,8 @@
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMCampaignPicture.h"
-#import "STMObjectsController.h"
+//#import "STMObjectsController.h"
+#import "STMPicturesController.h"
 #import "STMCampaignPicturePVC.h"
 #import "STMFunctions.h"
 
@@ -133,7 +134,7 @@
     imageView.tag = 1;
 
     if (!picture.resizedImagePath) {
-        [STMObjectsController hrefProcessingForObject:picture];
+        [STMPicturesController hrefProcessingForObject:picture];
     }
     
     if (!picture.imageThumbnail) {

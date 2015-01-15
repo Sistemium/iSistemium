@@ -9,7 +9,8 @@
 #import "STMUncashingProcessController.h"
 #import "STMUncashingPicture.h"
 #import "STMEntityDescription.h"
-#import "STMObjectsController.h"
+//#import "STMObjectsController.h"
+#import "STMPicturesController.h"
 #import "STMSessionManager.h"
 
 @interface STMUncashingProcessController ()
@@ -114,7 +115,7 @@
         
         STMUncashingPicture *picture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:[STMController document].managedObjectContext];
         
-        [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
+        [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
         
         [uncashing addPicturesObject:picture];
         

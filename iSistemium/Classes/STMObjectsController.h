@@ -8,15 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "STMPicture.h"
 #import "STMRecordStatus.h"
 
 @interface STMObjectsController : NSObject
 
 + (STMObjectsController *)sharedController;
 
-+ (void)checkPhotos;
-+ (void)checkUploadedPhotos;
 + (void)checkObjectsForFlushing;
 
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
@@ -26,12 +23,9 @@
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
 
 + (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
-
 + (STMRecordStatus *)removeObject:(NSManagedObject *)object;
 
-+ (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)dataLoadingFinished;
-+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;

@@ -16,7 +16,8 @@
 #import "STMPhoto.h"
 #import "STMPhotoReportPVC.h"
 #import "STMFunctions.h"
-#import "STMObjectsController.h"
+//#import "STMObjectsController.h"
+#import "STMPicturesController.h"
 #import "STMCampaignsSVC.h"
 #import "STMConstants.h"
 #import "STMEntityDescription.h"
@@ -433,7 +434,7 @@
 
 - (void)saveImage:(UIImage *)image {
 
-    [STMObjectsController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.selectedPhotoReport];
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.selectedPhotoReport];
 
     [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
   
