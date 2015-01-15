@@ -8,9 +8,9 @@
 
 #import "STMObjectsController.h"
 #import "STMAuthController.h"
-#import "STMSessionManager.h"
-#import "STMSession.h"
-#import "STMDocument.h"
+//#import "STMSessionManager.h"
+//#import "STMSession.h"
+//#import "STMDocument.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
 #import "STMEntityDescription.h"
@@ -62,12 +62,12 @@
     
 }
 
-+ (STMDocument *)document {
-    
-    return (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
-    
-}
-
+//+ (STMDocument *)document {
+//    
+//    return (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
+//    
+//}
+//
 
 #pragma mark - recieved objects management
 
@@ -120,7 +120,7 @@
             
             if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
                 
-                object = [[[STMSessionManager sharedManager].currentSession settingsController] settingForDictionary:dictionary];
+                object = [[[self session] settingsController] settingForDictionary:dictionary];
                 
             } else if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
                 
@@ -724,7 +724,7 @@
         
         if (success) {
             
-            [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendDataOnce;
+            [self syncer].syncerState = STMSyncerSendDataOnce;
             
         }
         

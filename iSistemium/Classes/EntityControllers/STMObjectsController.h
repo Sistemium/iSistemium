@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMController.h"
 #import <CoreData/CoreData.h>
 #import "STMRecordStatus.h"
 
-@interface STMObjectsController : NSObject
+@interface STMObjectsController : STMController
 
 + (STMObjectsController *)sharedController;
 

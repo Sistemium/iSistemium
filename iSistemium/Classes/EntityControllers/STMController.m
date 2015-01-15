@@ -11,15 +11,21 @@
 
 @implementation STMController
 
++ (STMSession *)session {
+    
+    return [STMSessionManager sharedManager].currentSession;
+    
+}
+
 + (STMDocument *)document {
     
-    return (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
+    return [self session].document;
     
 }
 
 + (STMSyncer *)syncer {
     
-    return [[STMSessionManager sharedManager].currentSession syncer];
+    return [self session].syncer;
     
 }
 

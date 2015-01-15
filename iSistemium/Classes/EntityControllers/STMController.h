@@ -9,9 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "STMDocument.h"
 #import "STMSyncer.h"
+#import "STMSession.h"
 
 @interface STMController : NSObject
 
++ (STMSession *)session;
 + (STMDocument *)document;
 + (STMSyncer *)syncer;
 
