@@ -12,6 +12,7 @@
 #import "STMPhotoReport.h"
 #import "STMFunctions.h"
 #import "STMEntityController.h"
+#import "STMClientDataController.h"
 
 #import "STMPhotoReport.h"
 #import "STMCashing.h"
@@ -204,14 +205,14 @@
                 
             case STMSyncerSendData:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                [STMObjectsController checkClientData];
+                [STMClientDataController checkClientData];
                 self.syncing = YES;
                 [self sendData];
                 break;
 
             case STMSyncerSendDataOnce:
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                [STMObjectsController checkClientData];
+                [STMClientDataController checkClientData];
                 self.syncing = YES;
                 [self sendData];
                 break;
@@ -309,8 +310,7 @@
         self.settings = nil;
         self.running = YES;
         [STMObjectsController checkPhotos];
-        [STMObjectsController checkClientData];
-//        [STMObjectsController checkAppVersion];
+        [STMClientDataController checkClientData];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];

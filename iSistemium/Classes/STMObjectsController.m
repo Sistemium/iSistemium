@@ -15,6 +15,7 @@
 #import "STMSyncer.h"
 #import "STMEntityDescription.h"
 #import "STMEntityController.h"
+#import "STMClientDataController.h"
 
 #import <Security/Security.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
@@ -102,171 +103,6 @@
     }
 
     return self.s3Initialized;
-    
-}
-
-
-#pragma mark - checking client state
-
-+ (void)checkClientData {
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    BOOL clientDataWaitingForSync = [[defaults objectForKey:@"clientDataWaitingForSync"] boolValue];
-
-    STMClientData *clientData = [self clientData];
-    
-    NSString *tokenHash = clientData.tokenHash;
-    if (!tokenHash) {
-        
-        tokenHash = [STMAuthController authController].tokenHash;
-        clientDataWaitingForSync = YES;
-        
-    }
-    
-    NSString *deviceName = clientData.deviceName;
-    if (!deviceName) {
-
-        deviceName = [[UIDevice currentDevice] name];
-        clientDataWaitingForSync = YES;
-        
-    }
-    
-    if (clientDataWaitingForSync && clientData) {
-        
-        NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
-
-        if (deviceToken) {
-            clientData.deviceToken = deviceToken;
-        }
-        
-        NSDate *lastAuth = [defaults objectForKey:@"lastAuth"];
-        
-        if (lastAuth) {
-            clientData.lastAuth = lastAuth;
-        }
-
-        clientData.tokenHash = tokenHash;
-        clientData.deviceName = deviceName;
-        
-#ifdef DEBUG
-        
-        clientData.buildType = @"debug";
-        
-#else
-        
-        clientData.buildType = @"release";
-        
-#endif
-        
-    }
-    
-}
-
-+ (STMClientData *)clientData {
-    
-    if ([self document].managedObjectContext) {
-        
-        NSString *entityName = NSStringFromClass([STMClientData class]);
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-        
-        NSError *error;
-        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-        
-        STMClientData *clientData = [fetchResult lastObject];
-        
-        if (!clientData) {
-            
-            clientData = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-            
-        }
-        
-        return clientData;
-
-    } else {
-        
-        return nil;
-        
-    }
-    
-}
-
-+ (void)checkAppVersion {
-    
-    if ([self document].managedObjectContext) {
-        
-        NSString *entityName = NSStringFromClass([STMClientData class]);
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-        
-        NSError *error;
-        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-        
-        STMClientData *clientData = [fetchResult lastObject];
-        
-        if (!clientData) {
-            
-            clientData = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-            
-        }
-        
-        NSString *bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
-        
-        if (![bundleVersion isEqualToString:clientData.appVersion]) {
-            clientData.appVersion = bundleVersion;
-        }
-        
-        
-        entityName = NSStringFromClass([STMSetting class]);
-        
-        request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-        request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"availableVersion"];
-        
-        fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-        
-        STMSetting *availableVersionSetting = [fetchResult lastObject];
-        
-        if (availableVersionSetting) {
-            
-            NSNumber *availableVersion = [NSNumber numberWithInteger:[availableVersionSetting.value integerValue]];
-            NSNumber *currentVersion = [NSNumber numberWithInteger:[clientData.appVersion integerValue]];
-            
-            if ([availableVersion compare:currentVersion] == NSOrderedDescending) {
-                
-                request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"appDownloadUrl"];
-                fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-                STMSetting *appDownloadUrlSetting = [fetchResult lastObject];
-
-                if (appDownloadUrlSetting) {
-                    
-                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-                    [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"newAppVersionAvailable"];
-                    [defaults setObject:availableVersion forKey:@"availableVersion"];
-                    [defaults setObject:appDownloadUrlSetting.value forKey:@"appDownloadUrl"];
-                    [defaults synchronize];
-
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newAppVersionAvailable" object:nil userInfo:@{@"availableVersion": availableVersion, @"appDownloadUrl":appDownloadUrlSetting.value}];
-                                        
-                }
-                
-            } else {
-
-                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"newAppVersionAvailable"];
-                [defaults removeObjectForKey:@"availableVersion"];
-                [defaults removeObjectForKey:@"appDownloadUrl"];
-                [defaults synchronize];
-
-            }
-
-        }
-        
-    }
-
     
 }
 
@@ -808,7 +644,7 @@
         
         if ([setting.group isEqualToString:@"appSettings"]) {
             
-            [self checkAppVersion];
+            [STMClientDataController checkAppVersion];
             
         }
         

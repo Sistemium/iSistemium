@@ -14,6 +14,7 @@
 #import "STMSession.h"
 #import "STMObjectsController.h"
 #import "STMTabBarViewController.h"
+#import "STMClientDataController.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
@@ -385,7 +386,7 @@
 }
 
 - (void) setDocumentReady {
-    [STMObjectsController checkAppVersion];
+    [STMClientDataController checkAppVersion];
 }
 
 #pragma mark - notifications

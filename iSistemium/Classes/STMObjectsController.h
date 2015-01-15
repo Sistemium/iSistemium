@@ -16,8 +16,6 @@
 + (STMObjectsController *)sharedController;
 
 + (void)checkPhotos;
-+ (void)checkClientData;
-+ (void)checkAppVersion;
 + (void)checkUploadedPhotos;
 + (void)checkObjectsForFlushing;
 
