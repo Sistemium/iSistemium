@@ -20,6 +20,8 @@
 @implementation STMDocument
 
 @synthesize myManagedObjectModel = _myManagedObjectModel;
+@synthesize mainContext = _mainContext;
+@synthesize privateContext = _privateContext;
 
 - (NSManagedObjectModel *)myManagedObjectModel {
     
@@ -48,17 +50,45 @@
     return self.myManagedObjectModel;
 }
 
-- (void)saveDocument:(void (^)(BOOL success))completionHandler {
+- (NSManagedObjectContext *)mainContext {
     
-//    NSLog(@"saveDocument");
+    if (!_mainContext) {
+        _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        _mainContext.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+    }
+    return _mainContext;
     
-//    NSLog(@"self.saving %d", self.saving);
+}
 
+- (NSManagedObjectContext *)privateContext {
+    
+    if (!_privateContext) {
+        _privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        _privateContext.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+    }
+    return _privateContext;
+    
+}
+
+- (void)saveContexts {
+    
+    [self.mainContext performBlock:^{
+        if (self.mainContext.hasChanges) [self.mainContext save:nil];
+    }];
+    
+    [self.privateContext performBlock:^{
+        if (self.privateContext.hasChanges) [self.privateContext save:nil];
+    }];
+    
+}
+
+- (void)saveDocument:(void (^)(BOOL success))completionHandler {
+
+    [self saveContexts];
+    
     if (!self.saving) {
 
         if (self.documentState == UIDocumentStateNormal) {
-            
-//            NSLog(@"documentState == UIDocumentStateNormal");
             
             self.saving = YES;
             
@@ -66,8 +96,6 @@
                 
                 if (success) {
                     
-//                    NSLog(@"UIDocumentSaveForOverwriting success");
-//                    [STMObjectsController checkObjectsForFlushing];
                     completionHandler(YES);
                     
                 } else {
@@ -92,8 +120,6 @@
 
     } else {
         
-//        NSLog(@"Document is in saving state currently");
-
         double delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -110,9 +136,44 @@
 
 }
 
+- (void)contextDidSaveMainContext:(NSNotification *)notification {
+    
+    @synchronized(self) {
+        [self.privateContext performBlock:^{
+            [self.privateContext mergeChangesFromContextDidSaveNotification:notification];
+        }];
+    }
+    
+}
+
+- (void)contextDidSavePrivateContext:(NSNotification *)notification {
+    
+    @synchronized(self) {
+        [self.mainContext performBlock:^{
+            [self.mainContext mergeChangesFromContextDidSaveNotification:notification];
+        }];
+    }
+    
+}
+
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground) name:@"applicationDidEnterBackground" object:nil];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(applicationDidEnterBackground)
+               name:@"applicationDidEnterBackground"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(contextDidSaveMainContext:)
+               name:NSManagedObjectContextDidSaveNotification
+             object:self.mainContext];
+    
+    [nc addObserver:self
+           selector:@selector(contextDidSavePrivateContext:)
+               name:NSManagedObjectContextDidSaveNotification
+             object:self.privateContext];
     
 }
 
@@ -132,7 +193,6 @@
     
     STMDocument *document = [STMDocument alloc];
     [document setDataModelName:dataModelName];
-    [document addObservers];
     return [document initWithFileURL:url];
     
 }
@@ -178,13 +238,13 @@
         
     }
     
+    [document addObservers];
+
     return document;
     
 }
 
 + (void)document:(STMDocument *)document readyWithUID:(NSString *)uid {
-
-//    NSLog(@"document %@", document);
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"documentReady" object:document userInfo:[NSDictionary dictionaryWithObject:uid forKey:@"uid"]];
 
