@@ -48,8 +48,13 @@
 
         }
 
-//        [self.managedObjectContext refreshObject:self.outlet mergeChanges:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingIsProcessedChanged" object:nil userInfo:@{@"outlet": self.outlet}];
+        if (self.outlet) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingIsProcessedChanged"
+                                                                object:nil
+                                                              userInfo:@{@"outlet": self.outlet}];
+            
+        }
 
     }
     
