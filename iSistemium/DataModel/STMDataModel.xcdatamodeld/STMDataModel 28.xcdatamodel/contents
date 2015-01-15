@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="13F34" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="STMArticle" representedClassName="STMArticle" parentEntity="STMComment" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="articles" inverseEntity="STMCampaign" syncable="YES"/>
@@ -52,7 +52,7 @@
         <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="xid" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMComment" inverseName="owner" inverseEntity="STMComment" syncable="YES"/>
     </entity>
     <entity name="STMDebt" representedClassName="STMDebt" parentEntity="STMComment" syncable="YES">
@@ -173,6 +173,7 @@
         <element name="STMComment" positionX="-180" positionY="321" width="128" height="75"/>
         <element name="STMDatum" positionX="-182" positionY="522" width="128" height="178"/>
         <element name="STMDebt" positionX="-218" positionY="-72" width="128" height="178"/>
+        <element name="STMEntity" positionX="45" positionY="524" width="128" height="133"/>
         <element name="STMLocation" positionX="-479" positionY="585" width="128" height="193"/>
         <element name="STMLogMessage" positionX="-513" positionY="267" width="128" height="75"/>
         <element name="STMMessage" positionX="297" positionY="306" width="128" height="88"/>
@@ -188,6 +189,5 @@
         <element name="STMUncashing" positionX="234" positionY="99" width="128" height="148"/>
         <element name="STMUncashingPicture" positionX="412" positionY="54" width="128" height="58"/>
         <element name="STMUncashingPlace" positionX="414" positionY="206" width="128" height="73"/>
-        <element name="STMEntity" positionX="45" positionY="524" width="128" height="133"/>
     </elements>
 </model>
