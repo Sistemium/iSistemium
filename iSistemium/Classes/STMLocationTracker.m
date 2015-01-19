@@ -144,6 +144,45 @@
     return _lastLocation;
 }
 
+- (NSString *)locationServiceStatus {
+    
+    NSString *status = nil;
+    
+    if ([CLLocationManager locationServicesEnabled]) {
+        
+        switch ([CLLocationManager authorizationStatus]) {
+            case kCLAuthorizationStatusNotDetermined:
+                status = @"notDetermined";
+                break;
+            case kCLAuthorizationStatusRestricted:
+                status = @"restricted";
+                break;
+            case kCLAuthorizationStatusDenied:
+                status = @"denied";
+                break;
+            case kCLAuthorizationStatusAuthorizedAlways:
+                status = @"authorizedAlways";
+                break;
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                status = @"authorizedWhenInUse";
+                break;
+                
+            default:
+                break;
+        }
+        
+    } else {
+        
+        status = @"disabled";
+        
+    }
+    
+//    NSLog(@"locationServiceStatus %@", status);
+    
+    return status;
+    
+}
+
 
 #pragma mark - tracking
 

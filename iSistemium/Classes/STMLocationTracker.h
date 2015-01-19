@@ -17,5 +17,6 @@
 
 - (void)getLocation;
 - (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location;
+- (NSString *)locationServiceStatus;
 
 @end

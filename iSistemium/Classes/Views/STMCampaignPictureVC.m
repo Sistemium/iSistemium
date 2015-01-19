@@ -7,6 +7,7 @@
 //
 
 #import "STMCampaignPictureVC.h"
+#import "STMPicturesController.h"
 
 @interface STMCampaignPictureVC ()
 
@@ -92,7 +93,7 @@
     
     self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
     if (!self.image) {
-        [STMObjectsController hrefProcessingForObject:self.picture];
+        [STMPicturesController hrefProcessingForObject:self.picture];
     }
     [self showImage];
 

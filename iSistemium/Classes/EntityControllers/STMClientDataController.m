@@ -38,7 +38,12 @@
             clientDataWaitingForSync = YES;
         }
         
-        if (clientDataWaitingForSync && clientData) {
+        NSString *locationServiceStatus = [[self session].locationTracker locationServiceStatus];
+        if (clientData.locationServiceStatus != locationServiceStatus) {
+            clientData.locationServiceStatus = locationServiceStatus;
+        }
+        
+        if (clientDataWaitingForSync) {
             
             NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
             if (deviceToken && deviceToken != clientData.deviceToken) {
@@ -172,5 +177,6 @@
     }
 
 }
+
 
 @end
