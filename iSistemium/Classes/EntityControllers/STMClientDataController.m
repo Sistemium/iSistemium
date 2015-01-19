@@ -39,15 +39,19 @@
         }
         
         NSString *locationServiceStatus = [[self session].locationTracker locationServiceStatus];
-        if (clientData.locationServiceStatus != locationServiceStatus) {
+        if (![clientData.locationServiceStatus isEqualToString:locationServiceStatus]) {
             clientData.locationServiceStatus = locationServiceStatus;
         }
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *deviceTokenError = [defaults objectForKey:@"deviceTokenError"];
-        if (clientData.deviceTokenError != deviceTokenError) {
+        if (![clientData.deviceTokenError isEqualToString:deviceTokenError]) {
             clientData.deviceTokenError = deviceTokenError;
         }
+        
+        UIUserNotificationSettings *settings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+        UIUserNotificationType types = settings.types;
+
         
         if (clientDataWaitingForSync) {
             
