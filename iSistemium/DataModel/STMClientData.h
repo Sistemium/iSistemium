@@ -18,7 +18,8 @@
 @property (nonatomic, retain) NSString * deviceName;
 @property (nonatomic, retain) NSData * deviceToken;
 @property (nonatomic, retain) NSDate * lastAuth;
-@property (nonatomic, retain) NSString * tokenHash;
 @property (nonatomic, retain) NSString * locationServiceStatus;
+@property (nonatomic, retain) NSString * tokenHash;
+@property (nonatomic, retain) NSString * deviceTokenError;
 
 @end

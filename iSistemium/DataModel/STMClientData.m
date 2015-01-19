@@ -16,7 +16,8 @@
 @dynamic deviceName;
 @dynamic deviceToken;
 @dynamic lastAuth;
-@dynamic tokenHash;
 @dynamic locationServiceStatus;
+@dynamic tokenHash;
+@dynamic deviceTokenError;
 
 @end

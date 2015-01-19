@@ -43,6 +43,12 @@
             clientData.locationServiceStatus = locationServiceStatus;
         }
         
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *deviceTokenError = [defaults objectForKey:@"deviceTokenError"];
+        if (clientData.deviceTokenError != deviceTokenError) {
+            clientData.deviceTokenError = deviceTokenError;
+        }
+        
         if (clientDataWaitingForSync) {
             
             NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
