@@ -370,15 +370,40 @@
     
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
     
-    [nc addObserver:self selector:@selector(sessionStatusChanged:) name:@"sessionStatusChanged" object:self.session];
-    [nc addObserver:self selector:@selector(syncerSettingsChanged) name:@"syncerSettingsChanged" object:self.session];
-    [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationDidReceiveRemoteNotification" object: nil];
-    [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationDidBecomeActive" object: nil];
-    [nc addObserver:self selector:@selector(didReceiveRemoteNotification) name:@"applicationPerformFetchWithCompletionHandler" object:nil];
-    [nc addObserver:self selector:@selector(didEnterBackground) name:@"applicationDidEnterBackground" object: nil];
-    [nc addObserver:self selector:@selector(syncerDidReceiveRemoteNotification:) name:@"syncerDidReceiveRemoteNotification" object:nil];
+    [nc addObserver:self
+           selector:@selector(sessionStatusChanged:)
+               name:@"sessionStatusChanged"
+             object:self.session];
     
-    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenReceived:) name:@"tokenReceived" object: self.authDelegate];
+    [nc addObserver:self
+           selector:@selector(syncerSettingsChanged)
+               name:@"syncerSettingsChanged"
+             object:self.session];
+    
+    [nc addObserver:self
+           selector:@selector(didReceiveRemoteNotification)
+               name:@"applicationDidReceiveRemoteNotification"
+             object: nil];
+    
+    [nc addObserver:self
+           selector:@selector(didReceiveRemoteNotification)
+               name:UIApplicationDidBecomeActiveNotification
+             object: nil];
+    
+    [nc addObserver:self
+           selector:@selector(didReceiveRemoteNotification)
+               name:@"applicationPerformFetchWithCompletionHandler"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(didEnterBackground)
+               name:UIApplicationDidEnterBackgroundNotification
+             object: nil];
+    
+    [nc addObserver:self
+           selector:@selector(syncerDidReceiveRemoteNotification:)
+               name:@"syncerDidReceiveRemoteNotification"
+             object:nil];
     
 }
 

@@ -119,10 +119,25 @@
 
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [nc addObserver:self selector:@selector(documentReady:) name:@"documentReady" object:nil];
-    [nc addObserver:self selector:@selector(documentNotReady:) name:@"documentNotReady" object:nil];
-    [nc addObserver:self selector:@selector(settingsLoadComplete) name:@"settingsLoadComplete" object:self.settingsController];
-    [nc addObserver:self selector:@selector(applicationDidEnterBackground) name:@"applicationDidEnterBackground" object:nil];
+    [nc addObserver:self
+           selector:@selector(documentReady:)
+               name:@"documentReady"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(documentNotReady:)
+               name:@"documentNotReady"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(settingsLoadComplete)
+               name:@"settingsLoadComplete"
+             object:self.settingsController];
+    
+    [nc addObserver:self
+           selector:@selector(applicationDidEnterBackground)
+               name:UIApplicationDidEnterBackgroundNotification
+             object:nil];
     
 }
 

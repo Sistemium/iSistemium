@@ -162,7 +162,7 @@
     
     [nc addObserver:self
            selector:@selector(applicationDidEnterBackground)
-               name:@"applicationDidEnterBackground"
+               name:UIApplicationDidEnterBackgroundNotification
              object:nil];
     
     [nc addObserver:self

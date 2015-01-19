@@ -148,7 +148,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidEnterBackground" object:application];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidEnterBackground" object:application];
     
 }
 
@@ -165,7 +165,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidBecomeActive"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidBecomeActive" object:application];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidBecomeActive" object:application];
 
 }
 
