@@ -31,10 +31,6 @@
 
     }
 
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [STMRootTBC sharedRootVC];
-    [self.window makeKeyAndVisible];
-
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
     return YES;
@@ -60,7 +56,7 @@
 }
 
 
-- (void) application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
     NSLog(@"didReceiveLocalNotification: %@", notification);
     
@@ -148,8 +144,6 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
     
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidEnterBackground" object:application];
-    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -165,8 +159,14 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidBecomeActive"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
     
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidBecomeActive" object:application];
+    if (!self.window) {
 
+        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        self.window.rootViewController = [STMRootTBC sharedRootVC];
+        [self.window makeKeyAndVisible];
+
+    }
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -209,14 +209,6 @@
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationPerformFetchWithCompletionHandler"];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-
-//    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-//    localNotification.fireDate = nil;
-//    localNotification.timeZone = nil;
-//    localNotification.alertAction = @"TEST";
-//    localNotification.alertBody = [NSString stringWithFormat:@"%@", [NSDate date]];
-//    
-//    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     
     __block UIBackgroundTaskIdentifier bgTask;
     
