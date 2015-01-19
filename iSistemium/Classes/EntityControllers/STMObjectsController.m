@@ -8,9 +8,6 @@
 
 #import "STMObjectsController.h"
 #import "STMAuthController.h"
-//#import "STMSessionManager.h"
-//#import "STMSession.h"
-//#import "STMDocument.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
 #import "STMEntityDescription.h"
@@ -62,12 +59,6 @@
     
 }
 
-//+ (STMDocument *)document {
-//    
-//    return (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
-//    
-//}
-//
 
 #pragma mark - recieved objects management
 
@@ -84,14 +75,9 @@
         }];
         
     }
-    
-    [[self document] saveDocument:^(BOOL success) {
-    
-        result &= success;
-        completionHandler(result);
 
-    }];
-    
+    completionHandler(result);
+
 }
 
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
@@ -228,52 +214,24 @@
         NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
         NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
         
-/*
-        if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
-        
-            NSLog(@"object %@", object);
-            NSLog(@"properties %@", properties);
-            NSLog(@"destinationObjectXid %@", destinationObjectXid);
-            
-        }
-*/
-        
         if (destinationObjectXid) {
             
             NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
-            
-/*
-            if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
-                
-                NSLog(@"destinationObject before 1 %@", destinationObject);
-                
-            }
-*/
             
             if (![[object valueForKey:relationship] isEqual:destinationObject]) {
                 
                 BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
                 
-//                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
-                
-//                [object setPrimitiveValue:destinationObject forKey:relationship];
                 [object setValue:destinationObject forKey:relationship];
                 
                 if (!waitingForSync) {
-//                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
                     
-                    [destinationObject addObserver:[self sharedController] forKeyPath:@"deviceTs" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
-                    
-                }
-                
-/*
-                if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
-                    
-                    NSLog(@"destinationObject after 1 %@", destinationObject);
+                    [destinationObject addObserver:[self sharedController]
+                                        forKeyPath:@"deviceTs"
+                                           options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                           context:nil];
                     
                 }
-*/
-                
                 
             }
             
@@ -281,37 +239,21 @@
             
             NSManagedObject *destinationObject = [object valueForKey:relationship];
             
-/*
-            if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
-                
-                NSLog(@"destinationObject before 2 %@", destinationObject);
-                
-            }
-*/
-            
             if (destinationObject) {
                 
                 BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
                 
-//                NSDate *deviceTs = [destinationObject valueForKey:@"deviceTs"];
-                
                 [object setValue:nil forKey:relationship];
                 
                 if (!waitingForSync) {
-//                    [destinationObject setValue:deviceTs forKey:@"deviceTs"];
-                    [destinationObject addObserver:[self sharedController] forKeyPath:@"deviceTs" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
+
+                    [destinationObject addObserver:[self sharedController]
+                                        forKeyPath:@"deviceTs"
+                                           options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                           context:nil];
 
                 }
 
-/*
-                if ([entityName isEqualToString:@"STMCashing"] && [[ownObjectRelationships objectForKey:relationship] isEqualToString:@"STMUncashing"]) {
-                    
-                    NSLog(@"destinationObject after 2 %@", destinationObject);
-                    
-                }
-*/
-                
-                
             }
             
         }
@@ -322,13 +264,6 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     
-//    NSLog(@"object before %@", object);
-//    
-//    NSDate *old = [change valueForKey:NSKeyValueChangeOldKey];
-//    NSDate *lts = [(NSManagedObject *)object valueForKey:@"lts"];
-//    
-//    NSLog(@"old %@, lts %@", [[STMFunctions dateFormatter] stringFromDate:old], [[STMFunctions dateFormatter] stringFromDate:lts]);
-    
     [object removeObserver:self forKeyPath:keyPath];
     
     if ([object isKindOfClass:[NSManagedObject class]]) {
@@ -336,10 +271,6 @@
         [(NSManagedObject *)object setValue:[change valueForKey:NSKeyValueChangeOldKey] forKey:keyPath];
         
     }
-
-//    NSLog(@"object after %@", object);
-//    
-//    NSLog(@"current time: %@", [[STMFunctions dateFormatter] stringFromDate:[NSDate date]]);
 
 }
 
@@ -386,6 +317,9 @@
 
 }
 
+
+#pragma mark - recieved relationships management
+
 + (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     __block BOOL result = YES;
@@ -399,14 +333,9 @@
         }];
         
     }
-    
-    [[self document] saveDocument:^(BOOL success) {
-        
-        result &= success;
-        completionHandler(YES);
-        
-    }];
 
+    completionHandler(result);
+    
 }
 
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
@@ -484,21 +413,15 @@
     
 }
 
+
+#pragma mark - info methods
+
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
     BOOL isInSyncList = [[self entityNamesForSyncing] containsObject:object.entity.name];
 
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
-    
-/*
-    if ([object.entity.name isEqualToString:@"STMUncashing"]) {
-        
-        NSLog(@"object isWaiting? %@", object);
-        NSLog(@"isWaiting? %d", (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending));
-        
-    }
-*/
     
     return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
     
@@ -795,8 +718,12 @@
 
 + (void)dataLoadingFinished {
     
-    //    [self generatePhotoReports];
     [self totalNumberOfObjects];
+    
+    [[self document] saveDocument:^(BOOL success) {
+
+    }];
+
     
 }
 
