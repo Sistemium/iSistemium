@@ -15,26 +15,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-/* deprecated in iOS 8.0
-    UIRemoteNotificationType types = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
-    
-    if (types & UIRemoteNotificationTypeAlert) {
-        NSLog(@"UIRemoteNotificationTypeAlert");
-    }
-    if (types & UIRemoteNotificationTypeBadge) {
-        NSLog(@"UIRemoteNotificationTypeBadge");
-    }
-    if (types & UIRemoteNotificationTypeSound) {
-        NSLog(@"UIRemoteNotificationTypeSound");
-    }
-    if (types & UIRemoteNotificationTypeNewsstandContentAvailability) {
-        NSLog(@"UIRemoteNotificationTypeNewsstandContentAvailability");
-    }
-    if (types == UIRemoteNotificationTypeNone) {
-        NSLog(@"UIRemoteNotificationTypeNone");
-    }
-*/
-    
     [STMAuthController authController];
     
     [self registerForRemoteNotification];
@@ -253,5 +233,54 @@
 
 }
 
+- (NSString *)currentNotificationTypes {
+    
+    NSMutableArray *typesArray = [NSMutableArray array];
+    
+    float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+    
+    if (systemVersion >= 8.0) {
+
+        UIUserNotificationSettings *settings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+        UIUserNotificationType types = settings.types;
+
+        if (types & UIUserNotificationTypeAlert) {
+            [typesArray addObject:@"alert"];
+        }
+        if (types & UIUserNotificationTypeBadge) {
+            [typesArray addObject:@"badge"];
+        }
+        if (types & UIUserNotificationTypeSound) {
+            [typesArray addObject:@"sound"];
+        }
+        if (types == UIUserNotificationTypeNone) {
+            [typesArray addObject:@"none"];
+        }
+
+    } else if (systemVersion >= 3.0 && systemVersion < 8.0) {
+
+        UIRemoteNotificationType types = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
+        
+        if (types & UIRemoteNotificationTypeAlert) {
+            [typesArray addObject:@"alert"];
+        }
+        if (types & UIRemoteNotificationTypeBadge) {
+            [typesArray addObject:@"badge"];
+        }
+        if (types & UIRemoteNotificationTypeSound) {
+            [typesArray addObject:@"sound"];
+        }
+        if (types & UIRemoteNotificationTypeNewsstandContentAvailability) {
+            [typesArray addObject:@"newsstandContentAvailability"];
+        }
+        if (types == UIRemoteNotificationTypeNone) {
+            [typesArray addObject:@"none"];
+        }
+        
+    }
+    
+    return [typesArray componentsJoinedByString:@", "];
+    
+}
 
 @end

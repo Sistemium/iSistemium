@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
+#import "STMAppDelegate.h"
 #import "STMClientDataController.h"
 #import "STMClientData.h"
 #import "STMAuthController.h"
@@ -48,10 +49,13 @@
         if (![clientData.deviceTokenError isEqualToString:deviceTokenError]) {
             clientData.deviceTokenError = deviceTokenError;
         }
-        
-        UIUserNotificationSettings *settings = [[UIApplication sharedApplication] currentUserNotificationSettings];
-        UIUserNotificationType types = settings.types;
 
+        NSString *notificationTypes = [(STMAppDelegate *)[UIApplication sharedApplication].delegate currentNotificationTypes];
+        if (![clientData.notificationTypes isEqualToString:notificationTypes]) {
+            clientData.notificationTypes = notificationTypes;
+            NSString *logMessage = [NSString stringWithFormat:@"notificationTypes: %@", notificationTypes];
+            [[self session].logger saveLogMessageWithText:logMessage type:nil];
+        }
         
         if (clientDataWaitingForSync) {
             

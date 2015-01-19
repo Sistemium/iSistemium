@@ -15,9 +15,10 @@
 @dynamic buildType;
 @dynamic deviceName;
 @dynamic deviceToken;
+@dynamic deviceTokenError;
 @dynamic lastAuth;
 @dynamic locationServiceStatus;
 @dynamic tokenHash;
-@dynamic deviceTokenError;
+@dynamic notificationTypes;
 
 @end
