@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMController.h"
 #import "STMOutlet.h"
 #import "STMPartner.h"
 
-@interface STMOutletController : NSObject
+@interface STMOutletController : STMController
 
 + (STMOutlet *)addOutletWithShortName:(NSString *)shortName forPartner:(STMPartner *)partner;
 

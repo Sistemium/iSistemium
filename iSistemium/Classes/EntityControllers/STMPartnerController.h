@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMController.h"
 #import "STMPartner.h"
 
-@interface STMPartnerController : NSObject
+@interface STMPartnerController : STMController
 
 + (STMPartner *)addPartnerWithName:(NSString *)name;
 

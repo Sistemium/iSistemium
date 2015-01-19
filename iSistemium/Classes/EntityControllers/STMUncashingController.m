@@ -7,15 +7,11 @@
 //
 
 #import "STMUncashingController.h"
-#import "STMSessionManager.h"
-#import "STMDocument.h"
 #import "STMRecordStatus.h"
 #import "STMObjectsController.h"
 #import "STMUncashingPicture.h"
 
 @interface STMUncashingController()
-
-@property (nonatomic, weak) STMDocument *document;
 
 
 @end
@@ -34,17 +30,6 @@
     
     return _sharedInstance;
     
-}
-
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
 }
 
 - (void)removeUncashing:(STMUncashing *)uncashing {

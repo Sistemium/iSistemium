@@ -7,7 +7,6 @@
 //
 
 #import "STMCashingProcessController.h"
-#import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMSyncer.h"
 #import "STMCashing.h"
@@ -16,7 +15,6 @@
 
 @interface STMCashingProcessController()
 
-@property (nonatomic, weak) STMDocument *document;
 @property (nonatomic, weak) STMOutlet *outlet;
 
 
@@ -36,17 +34,6 @@
     
     return _sharedInstance;
 
-}
-
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
 }
 
 - (NSMutableDictionary *)debtsDictionary {
@@ -205,7 +192,9 @@
                 self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
             }
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"debtAdded" object:self userInfo:@{@"debt": debt, @"previousDebt": previousDebt}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"debtAdded"
+                                                                object:self
+                                                              userInfo:@{@"debt": debt, @"previousDebt": previousDebt}];
 
         }
         
@@ -226,7 +215,9 @@
         self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingSumChanged" object:self userInfo:@{@"debt": debt, @"cashingSum": cashingSum}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingSumChanged"
+                                                        object:self
+                                                      userInfo:@{@"debt": debt, @"cashingSum": cashingSum}];
     
 }
 
@@ -245,7 +236,9 @@
             self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"debtRemoved" object:self userInfo:@{@"debt": debt, @"selectedDebt": selectedDebt}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"debtRemoved"
+                                                            object:self
+                                                          userInfo:@{@"debt": debt, @"selectedDebt": selectedDebt}];
 
     }
     
@@ -277,7 +270,7 @@
         NSDecimalNumber *summ = debtArray[1];
         NSString *commentText = [self.commentsDictionary objectForKey:debt.xid];
         
-        STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:self.document.managedObjectContext];
+        STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:[STMController document].managedObjectContext];
         
         cashing.date = date;
         cashing.summ = summ;
@@ -289,7 +282,7 @@
         
     }
     
-    [self.document saveDocument:^(BOOL success) {
+    [[STMController document] saveDocument:^(BOOL success) {
         if (success) {
             
             STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;

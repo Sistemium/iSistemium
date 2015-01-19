@@ -7,7 +7,6 @@
 //
 
 #import "STMDebtsController.h"
-#import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMObjectsController.h"
 
@@ -24,8 +23,7 @@
     debt.ndoc = ndoc;
     debt.outlet = outlet;
     
-    STMDocument *document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-    [document saveDocument:^(BOOL success) {
+    [[self document] saveDocument:^(BOOL success) {
         
     }];
     

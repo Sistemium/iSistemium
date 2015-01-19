@@ -155,6 +155,18 @@
 
 }
 
+- (void)settingsChanged:(NSNotification *)notification {
+    
+    STMSetting *setting = [notification.userInfo valueForKey:@"changedObject"];
+    
+    if ([setting.group isEqualToString:@"appSettings"] && [setting.name isEqualToString:@"enableDebtsEditing"]) {
+        
+        [self.tableView reloadData];
+        
+    }
+    
+}
+
 - (void)reloadRowWithOutlet:(STMOutlet *)outlet {
 
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:outlet];
@@ -477,9 +489,27 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(debtSummChanged:) name:@"debtSummChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingIsProcessedChanged:) name:@"cashingIsProcessedChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cashingProcessStart) name:@"cashingProcessStart" object:[STMCashingProcessController sharedInstance]];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(debtSummChanged:)
+               name:@"debtSummChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(cashingIsProcessedChanged:)
+               name:@"cashingIsProcessedChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(cashingProcessStart)
+               name:@"cashingProcessStart"
+             object:[STMCashingProcessController sharedInstance]];
+
+    [nc addObserver:self
+           selector:@selector(settingsChanged:)
+               name:@"settingsChanged"
+             object:[STMSessionManager sharedManager].currentSession.settingsController];
 
 }
 

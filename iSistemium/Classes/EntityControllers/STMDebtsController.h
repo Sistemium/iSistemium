@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMController.h"
 #import "STMDebt.h"
 
-@interface STMDebtsController : NSObject
+@interface STMDebtsController : STMController
 
 + (STMDebt *)addNewDebtWithSum:(NSDecimalNumber *)sum
                           ndoc:(NSString *)ndoc

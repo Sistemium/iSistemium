@@ -17,6 +17,8 @@
 #define STM_YELLOW_COLOR [UIColor colorWithRed:1 green:0.98 blue:0 alpha:1]
 #define STM_LIGHT_LIGHT_GREY_COLOR [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1]
 
+#define TICK NSDate *startTime = [NSDate date]
+#define TOCK NSLog(@"ElapsedTime: %f", -[startTime timeIntervalSinceNow])
 
 
 #endif

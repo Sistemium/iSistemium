@@ -7,13 +7,10 @@
 //
 
 #import "STMUncashingPlaceController.h"
-#import "STMSessionManager.h"
-#import "STMDocument.h"
 
 @interface STMUncashingPlaceController() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
-@property (nonatomic, weak) STMDocument *document;
 
 @end
 
@@ -46,18 +43,6 @@
     return self;
 }
 
-- (STMDocument *)document {
-    
-    if (!_document) {
-        
-        _document = (STMDocument *)[[STMSessionManager sharedManager].currentSession document];
-        
-    }
-    
-    return _document;
-}
-
-
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -65,7 +50,10 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMUncashingPlace class])];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
 //        request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:[STMController document].managedObjectContext
+                                                                   sectionNameKeyPath:nil
+                                                                            cacheName:nil];
         _resultsController.delegate = self;
         
     }

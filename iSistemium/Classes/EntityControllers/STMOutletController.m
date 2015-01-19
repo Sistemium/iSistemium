@@ -7,27 +7,12 @@
 //
 
 #import "STMOutletController.h"
-#import "STMSessionManager.h"
-#import "STMDocument.h"
 #import "STMObjectsController.h"
-#import "STMSyncer.h"
 #import "STMDebtsController.h"
 #import "STMPartnerController.h"
 #import "STMCashing.h"
 
 @implementation STMOutletController
-
-+ (STMDocument *)document {
-    
-    return (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
-    
-}
-
-+ (STMSyncer *)syncer {
-    
-    return [[STMSessionManager sharedManager].currentSession syncer];
-    
-}
 
 + (STMOutlet *)addOutletWithShortName:(NSString *)shortName forPartner:(STMPartner *)partner {
     

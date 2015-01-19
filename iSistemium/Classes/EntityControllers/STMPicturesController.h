@@ -6,10 +6,18 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMController.h"
 #import "STMPicture.h"
 
-@interface STMPicturesController : NSObject
+@interface STMPicturesController : STMController
+
++ (STMPicturesController *)sharedController;
+
++ (void)checkPhotos;
++ (void)checkUploadedPhotos;
+
++ (void)hrefProcessingForObject:(NSManagedObject *)object;
++ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture;
 

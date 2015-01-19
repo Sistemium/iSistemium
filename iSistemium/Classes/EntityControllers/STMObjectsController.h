@@ -6,19 +6,14 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "STMController.h"
 #import <CoreData/CoreData.h>
-#import "STMPicture.h"
 #import "STMRecordStatus.h"
 
-@interface STMObjectsController : NSObject
+@interface STMObjectsController : STMController
 
 + (STMObjectsController *)sharedController;
 
-+ (void)checkPhotos;
-+ (void)checkClientData;
-+ (void)checkAppVersion;
-+ (void)checkUploadedPhotos;
 + (void)checkObjectsForFlushing;
 
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
@@ -28,12 +23,9 @@
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
 
 + (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
-
 + (STMRecordStatus *)removeObject:(NSManagedObject *)object;
 
-+ (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)dataLoadingFinished;
-+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
