@@ -385,10 +385,10 @@
                name:@"applicationDidReceiveRemoteNotification"
              object: nil];
     
-    [nc addObserver:self
-           selector:@selector(didReceiveRemoteNotification)
-               name:UIApplicationDidBecomeActiveNotification
-             object: nil];
+//    [nc addObserver:self
+//           selector:@selector(didReceiveRemoteNotification)
+//               name:UIApplicationDidBecomeActiveNotification
+//             object: nil];
     
     [nc addObserver:self
            selector:@selector(didReceiveRemoteNotification)
