@@ -1087,6 +1087,10 @@
         NSString *connectionEntityName = [self entityNameForConnection:connection];
         NSArray *dataArray = [responseJSON objectForKey:@"data"];
         
+//        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
+//            NSLog(@"responseJSON %@", responseJSON);
+//        }
+        
         STMEntity *entity = [self.stcEntities objectForKey:connectionEntityName];
         
         if (entity.roleName) {
@@ -1201,21 +1205,9 @@
         if (object) {
             
             if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
-
                 [self.session.document.managedObjectContext deleteObject:object];
-                
             } else {
-            
                 [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
-                
-//                if ([xidData isEqualToData:self.clientDataXid]) {
-//                    
-//                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//                    [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"clientDataWaitingForSync"];
-//                    [defaults synchronize];
-//                    
-//                }
-
             }
             
             [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync %@ with xid %@", object.entity.name, xid] type:@""];

@@ -17,7 +17,7 @@
     
     [STMAuthController authController];
     
-    [self registerForRemoteNotification];
+    [self registerForNotification];
     
     if (launchOptions != nil) {
         
@@ -37,7 +37,7 @@
     
 }
 
-- (void)registerForRemoteNotification {
+- (void)registerForNotification {
     
     float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
     
@@ -46,6 +46,7 @@
         UIUserNotificationType types = UIUserNotificationTypeSound | UIUserNotificationTypeBadge | UIUserNotificationTypeAlert;
         UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
         [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
         
     } else if (systemVersion >= 3.0 && systemVersion < 8.0) {
         
@@ -60,6 +61,10 @@
     
     NSLog(@"didReceiveLocalNotification: %@", notification);
     
+}
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+//    NSLog(@"didRegisterUserNotificationSettings: %@", notificationSettings);
 }
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
