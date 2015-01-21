@@ -89,6 +89,7 @@
                 
                 if (![value isEqual:[clientData valueForKey:key]]) {
                     [clientData setValue:value forKey:key];
+//                    NSLog(@"%@ was changed", key);
                 }
                 
             }
@@ -96,6 +97,8 @@
         }
 
     }
+    
+//    NSLog(@"clientData %@", clientData);
 
 }
 

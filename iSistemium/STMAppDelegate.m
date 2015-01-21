@@ -65,7 +65,7 @@
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
     
 	NSLog(@"deviceToken: %@", deviceToken);
-    self.deviceTokenError = nil;
+    self.deviceTokenError = @"";
     [self recieveDeviceToken:deviceToken];
 
 }
