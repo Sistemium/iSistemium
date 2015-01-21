@@ -1208,13 +1208,13 @@
             
                 [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
                 
-                if ([xidData isEqualToData:self.clientDataXid]) {
-                    
-                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                    [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"clientDataWaitingForSync"];
-                    [defaults synchronize];
-                    
-                }
+//                if ([xidData isEqualToData:self.clientDataXid]) {
+//                    
+//                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//                    [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"clientDataWaitingForSync"];
+//                    [defaults synchronize];
+//                    
+//                }
 
             }
             

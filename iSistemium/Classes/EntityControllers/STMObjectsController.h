@@ -22,6 +22,8 @@
 + (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
 
++ (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName;
+
 + (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
 + (STMRecordStatus *)removeObject:(NSManagedObject *)object;
 

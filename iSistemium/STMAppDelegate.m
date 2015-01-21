@@ -65,11 +65,7 @@
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
     
 	NSLog(@"deviceToken: %@", deviceToken);
-
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@"" forKey:@"deviceTokenError"];
-    [defaults synchronize];
-
+    self.deviceTokenError = nil;
     [self recieveDeviceToken:deviceToken];
 
 }
@@ -77,31 +73,15 @@
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
     
 	NSLog(@"Failed to register with error: %@", error);
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:error.localizedDescription forKey:@"deviceTokenError"];
-    [defaults synchronize];
-    
+    self.deviceTokenError = error.localizedDescription;
     [self recieveDeviceToken:[NSData data]];
     
 }
 
 - (void)recieveDeviceToken:(NSData *)deviceToken {
+
+    self.deviceToken = deviceToken;
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSData *oldDeviceToken = [defaults objectForKey:@"deviceToken"];
-    
-    if (![deviceToken isEqualToData:oldDeviceToken]) {
-        
-        [defaults setObject:deviceToken forKey:@"deviceToken"];
-        [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"clientDataWaitingForSync"];
-        
-    } else {
-
-    }
-
-    [defaults synchronize];
-
 }
 
 - (void)receiveRemoteNotification:(NSDictionary *)remoteNotification {
@@ -272,6 +252,66 @@
     }
     
     return [typesArray componentsJoinedByString:@", "];
+    
+}
+
+
+#pragma mark - variables setters&getters
+
+@synthesize deviceToken = _deviceToken;
+@synthesize deviceTokenError = _deviceTokenError;
+
+- (NSData *)deviceToken {
+
+    if (!_deviceToken) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _deviceToken = [defaults objectForKey:@"deviceToken"];
+
+    }
+    
+    return _deviceToken;
+
+}
+
+- (void)setDeviceToken:(NSData *)deviceToken {
+    
+    if (_deviceToken != deviceToken) {
+        
+        _deviceToken = deviceToken;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:deviceToken forKey:@"deviceToken"];
+        [defaults synchronize];
+
+    }
+    
+}
+
+- (NSString *)deviceTokenError {
+    
+    if (!_deviceTokenError) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _deviceTokenError = [defaults objectForKey:@"deviceTokenError"];
+
+    }
+
+    return _deviceTokenError;
+    
+}
+
+- (void)setDeviceTokenError:(NSString *)deviceTokenError {
+    
+    if (_deviceTokenError != deviceTokenError) {
+
+        _deviceTokenError = deviceTokenError;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:deviceTokenError forKey:@"deviceTokenError"];
+        [defaults synchronize];
+        
+    }
     
 }
 

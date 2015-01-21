@@ -12,6 +12,9 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+@property (nonatomic, strong) NSData *deviceToken;
+@property (nonatomic, strong) NSString *deviceTokenError;
+
 - (NSString *)currentNotificationTypes;
 
 @end

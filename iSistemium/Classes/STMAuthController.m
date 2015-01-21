@@ -226,10 +226,12 @@
         NSLog(@"accessToken %@", accessToken);
         _accessToken = accessToken;
 
+        self.lastAuth = [NSDate date];
+        self.tokenHash = [STMFunctions MD5FromString:accessToken];
+        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:[NSDate date] forKey:@"lastAuth"];
-        [defaults setObject:[STMFunctions MD5FromString:accessToken] forKey:@"tokenHash"];
-        [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"clientDataWaitingForSync"];
+        [defaults setObject:self.lastAuth forKey:@"lastAuth"];
+        [defaults setObject:self.tokenHash forKey:@"tokenHash"];
         [defaults synchronize];
         
     }
@@ -240,7 +242,8 @@
     
     if (!_tokenHash) {
         
-        NSString *tokenHash = [[NSUserDefaults standardUserDefaults] objectForKey:@"tokenHash"];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *tokenHash = [defaults objectForKey:@"tokenHash"];
         
         if (!tokenHash) {
             
@@ -248,8 +251,8 @@
             
             if (tokenHash) {
                 
-                [[NSUserDefaults standardUserDefaults] setObject:tokenHash forKey:@"tokenHash"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+                [defaults setObject:tokenHash forKey:@"tokenHash"];
+                [defaults synchronize];
                 
             } else {
                 
@@ -264,6 +267,19 @@
     }
     
     return _tokenHash;
+    
+}
+
+- (NSDate *)lastAuth {
+    
+    if (!_lastAuth) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _lastAuth = [defaults objectForKey:@"lastAuth"];
+        
+    }
+    
+    return _lastAuth;
     
 }
 

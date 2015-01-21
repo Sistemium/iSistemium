@@ -12,80 +12,91 @@
 #import "STMAuthController.h"
 #import "STMEntityDescription.h"
 #import "STMSetting.h"
+#import "STMObjectsController.h"
 
 @implementation STMClientDataController
+
+
++ (STMAppDelegate *)appDelegate {
+    return (STMAppDelegate *)[UIApplication sharedApplication].delegate;
+}
+
+#pragma mark - clientData properties
+
++ (NSString *)appVersion {
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+}
+
++ (NSString *)buildType {
+    
+    #ifdef DEBUG
+        return @"debug";
+    #else
+        return @"release";
+    #endif
+    
+}
+
++ (NSString *)deviceName {
+    return [[UIDevice currentDevice] name];
+}
+
++ (NSData *)deviceToken {
+    return [self appDelegate].deviceToken;
+}
+
++(NSString *)deviceTokenError {
+    return [self appDelegate].deviceTokenError;
+}
+
++ (NSDate *)lastAuth {
+    return [STMAuthController authController].lastAuth;
+}
+
++ (NSString *)locationServiceStatus {
+    return [[self session].locationTracker locationServiceStatus];
+}
+
++ (NSString *)tokenHash {
+    return [STMAuthController authController].tokenHash;
+}
+
++ (NSString *)notificationTypes {
+    return [[self appDelegate] currentNotificationTypes];
+}
 
 
 #pragma mark - checking client state
 
 + (void)checkClientData {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    BOOL clientDataWaitingForSync = [[defaults objectForKey:@"clientDataWaitingForSync"] boolValue];
-    
     STMClientData *clientData = [self clientData];
     
     if (clientData) {
         
-        NSString *tokenHash = clientData.tokenHash;
-        if (!tokenHash) {
-            tokenHash = [STMAuthController authController].tokenHash;
-            clientDataWaitingForSync = YES;
-        }
+        NSSet *keys = [STMObjectsController ownObjectKeysForEntityName:NSStringFromClass([STMClientData class])];
         
-        NSString *deviceName = clientData.deviceName;
-        if (!deviceName) {
-            deviceName = [[UIDevice currentDevice] name];
-            clientDataWaitingForSync = YES;
-        }
-        
-        NSString *locationServiceStatus = [[self session].locationTracker locationServiceStatus];
-        if (![clientData.locationServiceStatus isEqualToString:locationServiceStatus]) {
-            clientData.locationServiceStatus = locationServiceStatus;
-        }
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *deviceTokenError = [defaults objectForKey:@"deviceTokenError"];
-        if (![clientData.deviceTokenError isEqualToString:deviceTokenError]) {
-            clientData.deviceTokenError = deviceTokenError;
+        for (NSString *key in keys) {
+            
+            SEL selector = NSSelectorFromString(key);
+            
+            if ([self respondsToSelector:selector]) {
+                
+// next 3 lines — implementation of id value = [self performSelector:selector] w/o warning
+                IMP imp = [self methodForSelector:selector];
+                id (*func)(id, SEL) = (void *)imp;
+                id value = func(self, selector);
+                
+                if (![value isEqual:[clientData valueForKey:key]]) {
+                    [clientData setValue:value forKey:key];
+                }
+                
+            }
+            
         }
 
-        NSString *notificationTypes = [(STMAppDelegate *)[UIApplication sharedApplication].delegate currentNotificationTypes];
-        if (![clientData.notificationTypes isEqualToString:notificationTypes]) {
-            clientData.notificationTypes = notificationTypes;
-            NSString *logMessage = [NSString stringWithFormat:@"notificationTypes: %@", notificationTypes];
-            [[self session].logger saveLogMessageWithText:logMessage type:nil];
-        }
-        
-        if (clientDataWaitingForSync) {
-            
-            NSData *deviceToken = [defaults objectForKey:@"deviceToken"];
-            if (deviceToken && deviceToken != clientData.deviceToken) {
-                clientData.deviceToken = deviceToken;
-            }
-            
-            NSDate *lastAuth = [defaults objectForKey:@"lastAuth"];
-            if (lastAuth && lastAuth != clientData.lastAuth) {
-                clientData.lastAuth = lastAuth;
-            }
-            
-            clientData.tokenHash = tokenHash;
-            clientData.deviceName = deviceName;
-            
-#ifdef DEBUG
-            
-            clientData.buildType = @"debug";
-            
-#else
-            
-            clientData.buildType = @"release";
-            
-#endif
-            
-        }
-        
     }
-    
+
 }
 
 + (STMClientData *)clientData {
