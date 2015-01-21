@@ -191,8 +191,42 @@
     [super startTracking];
     
     if (self.tracking) {
-        [[self locationManager] startUpdatingLocation];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidResumeLocationUpdates" object:self];
+        
+        float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+        
+        if (systemVersion >= 8.0) {
+            
+            if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+                
+                [[self.session logger] saveLogMessageWithText:@"location tracking is not permitted" type:@"error"];
+                self.locationManager = nil;
+                [super stopTracking];
+                
+            } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+                
+                [self.locationManager requestAlwaysAuthorization];
+                
+            } else {
+                
+                if ([CLLocationManager locationServicesEnabled]) {
+                    
+                    [self startUpdatingLocation];
+                    
+                } else {
+                    
+                    [[self.session logger] saveLogMessageWithText:@"location tracking disabled" type:@"error"];
+                    [super stopTracking];
+                    
+                }
+                
+            }
+            
+        } else if (systemVersion >= 2.0 && systemVersion < 8.0) {
+            
+            [self startUpdatingLocation];
+            
+        }
+
     }
     
 }
@@ -222,6 +256,12 @@
     
 }
 
+- (void)startUpdatingLocation {
+    
+    [self.locationManager startUpdatingLocation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidResumeLocationUpdates" object:self];
+
+}
 
 #pragma mark - CLLocationManager
 
@@ -312,7 +352,20 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidPauseLocationUpdates" object:self];
 }
 
-
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    
+    if (status == kCLAuthorizationStatusAuthorizedAlways && self.tracking) {
+        
+        if ([CLLocationManager locationServicesEnabled]) {
+            [self startUpdatingLocation];
+        } else {
+            [[self.session logger] saveLogMessageWithText:@"location tracking disabled" type:@"error"];
+            [super stopTracking];
+        }
+        
+    }
+    
+}
 
 #pragma mark - track management
 
