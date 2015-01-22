@@ -1158,7 +1158,7 @@
             
             self.syncing = NO;
 
-            [self.sendedEntities removeObject:@"STMEntity"];
+            [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMEntity class]),NSStringFromClass([STMLocation class]),NSStringFromClass([STMTrack class])]];
             
             BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
             
