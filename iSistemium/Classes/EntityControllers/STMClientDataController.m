@@ -88,8 +88,13 @@
                 id value = func(self, selector);
                 
                 if (![value isEqual:[clientData valueForKey:key]]) {
-                    [clientData setValue:value forKey:key];
+
 //                    NSLog(@"%@ was changed", key);
+//                    NSLog(@"client value %@", [clientData valueForKey:key]);
+//                    NSLog(@"value %@", value);
+                    
+                    [clientData setValue:value forKey:key];
+                    
                 }
                 
             }

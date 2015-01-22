@@ -79,7 +79,7 @@
     
 	NSLog(@"Failed to register with error: %@", error);
     self.deviceTokenError = error.localizedDescription;
-    [self recieveDeviceToken:[NSData data]];
+    [self recieveDeviceToken:nil];
     
 }
 
