@@ -14,6 +14,7 @@
 
 @property (nonatomic) CLLocationAccuracy currentAccuracy;
 @property (nonatomic, strong) CLLocation *lastLocation;
+@property (nonatomic, strong) STMTrack *currentTrack;
 
 - (void)getLocation;
 - (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location;

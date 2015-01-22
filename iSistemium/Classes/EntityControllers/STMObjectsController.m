@@ -661,6 +661,8 @@
 
     NSSet *entityNamesForFlushing = [STMEntityController entityNamesWithLifeTime];
     
+    NSLog(@"entityNamesForFlushing %@", entityNamesForFlushing);
+    
 //    NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
 //    
 //    double lifeTime = [[appSettings valueForKey:@"objectsLifeTime"] doubleValue];
@@ -699,6 +701,16 @@
                     [[[self document] managedObjectContext] deleteObject:object];
                 } else {
                     NSLog(@"location %@ linked with picture, flush canceled", location.xid);
+                }
+                
+            } else if ([object isKindOfClass:[STMTrack class]]) {
+                
+                STMTrack *track = (STMTrack *)object;
+                
+                if (track != [self session].locationTracker.currentTrack) {
+                    [[[self document] managedObjectContext] deleteObject:object];
+                } else {
+                    NSLog(@"track %@ is in use now, flush canceled", track.xid);
                 }
                 
             } else {

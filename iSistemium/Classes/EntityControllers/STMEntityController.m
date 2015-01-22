@@ -31,14 +31,10 @@
 + (NSDictionary *)stcEntities {
     
     NSMutableDictionary *stcEntities = [NSMutableDictionary dictionary];
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMEntity class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
 
-    NSError *error;
-    NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
+    NSArray *stcEntitiesArray = [self stcEntitiesArray];
     
-    for (STMEntity *entity in result) {
+    for (STMEntity *entity in stcEntitiesArray) {
     
         NSString *capFirstLetter = (entity.name) ? [[entity.name substringToIndex:1] capitalizedString] : nil;
         
@@ -52,6 +48,18 @@
     
 }
 
++ (NSArray *)stcEntitiesArray {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMEntity class])];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
+    
+    NSError *error;
+    NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
+
+    return result;
+    
+}
+
 + (NSSet *)entityNamesWithLifeTime {
     
     NSMutableDictionary *stcEntities = [[self stcEntities] mutableCopy];
@@ -61,6 +69,16 @@
     }];
 
     return filteredKeys;
+    
+}
+
++ (NSArray *)entitiesWithLifeTime {
+    
+    NSArray *stcEntitiesArray = [self stcEntitiesArray];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lifeTime.intValue > 0"];
+    NSArray *result = [stcEntitiesArray filteredArrayUsingPredicate:predicate];
+    
+    return result;
     
 }
 

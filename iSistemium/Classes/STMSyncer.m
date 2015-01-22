@@ -799,6 +799,8 @@
             
             NSURL *requestURL = [NSURL URLWithString:url];
             
+//            NSLog(@"entityName %@", entityName);
+            
             [self startReceiveDataFromURL:requestURL withETag:eTag];
             
         } else {
@@ -827,6 +829,9 @@
         
         [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
         [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
+        
+//        NSLog(@"requestURL %@", requestURL);
+//        NSLog(@"eTag %@", eTag);
         
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         

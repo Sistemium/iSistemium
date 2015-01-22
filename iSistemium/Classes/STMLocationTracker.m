@@ -22,7 +22,6 @@
 @property (nonatomic) CLLocationSpeed maxSpeedThreshold;
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
-@property (nonatomic, strong) STMTrack *currentTrack;
 
 
 @end
@@ -307,6 +306,7 @@
 
             if (speed > self.maxSpeedThreshold) {
                 
+//                self.lastLocation = newLocation;
                 [self.session.logger saveLogMessageWithText:@"maxSpeedThreshold exceeded" type:@""];
                 
             } else {
