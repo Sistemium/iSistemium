@@ -47,6 +47,7 @@
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
 @property (nonatomic) BOOL errorOccured;
+@property (nonatomic, strong) NSMutableArray *sendedEntities;
 
 - (void) didReceiveRemoteNotification;
 - (void) didEnterBackground;
@@ -163,6 +164,15 @@
     NSTimeInterval timeout = ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) ? self.httpTimeoutBackground : self.httpTimeoutForeground;
     
     return timeout;
+    
+}
+
+- (NSMutableArray *)sendedEntities {
+    
+    if (!_sendedEntities) {
+        _sendedEntities = [NSMutableArray array];
+    }
+    return _sendedEntities;
     
 }
 
@@ -543,6 +553,8 @@
         
         if (self.resultsController.fetchedObjects.count > 0) {
             
+            self.sendedEntities = nil;
+            
             NSData *sendData = [self JSONFrom:self.resultsController.fetchedObjects];
 
             if (sendData) {
@@ -594,8 +606,8 @@
     for (NSManagedObject *object in dataForSyncing) {
         
         NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
-        
-        BOOL isInSyncList = [entityNamesForSending containsObject:object.entity.name];
+        NSString *entityName = object.entity.name;
+        BOOL isInSyncList = [entityNamesForSending containsObject:entityName];
         
         if (isInSyncList) {
             
@@ -607,10 +619,14 @@
             
             [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
             [syncDataArray addObject:objectDictionary];
+
+            [self.sendedEntities addObject:entityName];
             
         }
         
     }
+    
+    self.sendedEntities = [[[NSSet setWithArray:self.sendedEntities] allObjects] mutableCopy];
     
     if (syncDataArray.count == 0) {
         
@@ -1142,9 +1158,13 @@
             
             self.syncing = NO;
 
-            if (self.syncerState == STMSyncerSendData) {
+            [self.sendedEntities removeObject:@"STMEntity"];
+            
+            BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
+            
+            if (self.syncerState == STMSyncerSendData && !onlyStcEntitiesWasSend) {
                 self.syncerState = STMSyncerReceiveData;
-            } else if (self.syncerState == STMSyncerSendDataOnce) {
+            } else /*if (self.syncerState == STMSyncerSendDataOnce)*/ {
                 self.syncerState = STMSyncerIdle;
             }
             
