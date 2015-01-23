@@ -393,16 +393,52 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAuthAlert) name:@"notAuthorized" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerError:) name:@"authControllerError" object:[STMAuthController authController]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncStateChanged) name:@"syncStatusChanged" object:self.session.syncer];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnreadMessageCount) name:@"gotNewMessage" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnreadMessageCount) name:@"messageIsRead" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"newAppVersionAvailable" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAppVersionAvailable:) name:@"updateButtonPressed" object:nil];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setDocumentReady) name:@"documentReady" object:nil];
+    [nc addObserver:self
+           selector:@selector(showAuthAlert)
+               name:@"notAuthorized"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(authControllerError:)
+               name:@"authControllerError"
+             object:[STMAuthController authController]];
+    
+    [nc addObserver:self
+           selector:@selector(authStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
+    
+    [nc addObserver:self
+           selector:@selector(syncStateChanged)
+               name:@"syncStatusChanged"
+             object:self.session.syncer];
+    
+    [nc addObserver:self
+           selector:@selector(showUnreadMessageCount)
+               name:@"gotNewMessage"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(showUnreadMessageCount)
+               name:@"messageIsRead"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(newAppVersionAvailable:)
+               name:@"newAppVersionAvailable"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(newAppVersionAvailable:)
+               name:@"updateButtonPressed"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(setDocumentReady)
+               name:@"documentReady"
+             object:nil];
     
 }
 
