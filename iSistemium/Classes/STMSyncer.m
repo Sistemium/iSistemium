@@ -47,7 +47,7 @@
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
 @property (nonatomic) BOOL errorOccured;
-@property (nonatomic, strong) NSMutableArray *sendedEntities;
+//@property (nonatomic, strong) NSMutableArray *sendedEntities;
 
 - (void) didReceiveRemoteNotification;
 - (void) didEnterBackground;
@@ -167,14 +167,14 @@
     
 }
 
-- (NSMutableArray *)sendedEntities {
-    
-    if (!_sendedEntities) {
-        _sendedEntities = [NSMutableArray array];
-    }
-    return _sendedEntities;
-    
-}
+//- (NSMutableArray *)sendedEntities {
+//    
+//    if (!_sendedEntities) {
+//        _sendedEntities = [NSMutableArray array];
+//    }
+//    return _sendedEntities;
+//    
+//}
 
 - (STMSyncerState)syncerState {
     
@@ -553,7 +553,7 @@
         
         if (self.resultsController.fetchedObjects.count > 0) {
             
-            self.sendedEntities = nil;
+//            self.sendedEntities = nil;
             
             NSData *sendData = [self JSONFrom:self.resultsController.fetchedObjects];
 
@@ -620,13 +620,13 @@
             [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
             [syncDataArray addObject:objectDictionary];
 
-            [self.sendedEntities addObject:entityName];
+//            [self.sendedEntities addObject:entityName];
             
         }
         
     }
     
-    self.sendedEntities = [[[NSSet setWithArray:self.sendedEntities] allObjects] mutableCopy];
+//    self.sendedEntities = [[[NSSet setWithArray:self.sendedEntities] allObjects] mutableCopy];
     
     if (syncDataArray.count == 0) {
         
@@ -959,7 +959,7 @@
     if (self.entityCount == 0) {
         
         self.syncing = NO;
-        self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
+        self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendDataOnce;
         
     }
     
@@ -1158,11 +1158,11 @@
             
             self.syncing = NO;
 
-            [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMEntity class]),NSStringFromClass([STMLocation class]),NSStringFromClass([STMTrack class])]];
+//            [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMEntity class]),NSStringFromClass([STMLocation class]),NSStringFromClass([STMTrack class])]];
+//            
+//            BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
             
-            BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
-            
-            if (self.syncerState == STMSyncerSendData && !onlyStcEntitiesWasSend) {
+            if (self.syncerState == STMSyncerSendData /*&& !onlyStcEntitiesWasSend*/) {
                 self.syncerState = STMSyncerReceiveData;
             } else /*if (self.syncerState == STMSyncerSendDataOnce)*/ {
                 self.syncerState = STMSyncerIdle;
