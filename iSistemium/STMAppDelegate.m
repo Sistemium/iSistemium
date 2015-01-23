@@ -188,6 +188,12 @@
         
     }
 
+//    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+//    localNotification.alertBody = @"localNotification";
+//    localNotification.soundName = UILocalNotificationDefaultSoundName;
+//    
+//    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {

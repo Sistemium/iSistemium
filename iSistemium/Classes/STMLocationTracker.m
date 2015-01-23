@@ -118,29 +118,49 @@
 }
 
 - (STMTrack *)currentTrack {
-    if (!_currentTrack) {
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMTrack class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:NO selector:@selector(compare:)]];
-        NSError *error;
-        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-        if (result.count > 0) {
-            _currentTrack = [result objectAtIndex:0];
-        }
-    }
-    return _currentTrack;
+    
+//    if (!_currentTrack) {
+//        
+//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMTrack class])];
+//        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:NO selector:@selector(compare:)]];
+//        NSError *error;
+//        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+//        
+//        if (result.count > 0) {
+//            _currentTrack = [result objectAtIndex:0];
+//        }
+//        
+//    }
+//    return _currentTrack;
+    return nil;
+    
 }
 
 - (CLLocation *)lastLocation {
+    
     if (!_lastLocation) {
-        if (self.currentTrack.locations.count > 0) {
-            NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
-            STMLocation *lastLocation = [[self.currentTrack.locations sortedArrayUsingDescriptors:sortDescriptors] objectAtIndex:0];
-            if (lastLocation) {
-                _lastLocation = [self locationFromLocationObject:lastLocation];
-            }
+        
+//        if (self.currentTrack.locations.count > 0) {
+//            NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
+//            STMLocation *lastLocation = [[self.currentTrack.locations sortedArrayUsingDescriptors:sortDescriptors] objectAtIndex:0];
+//            if (lastLocation) {
+//                _lastLocation = [self locationFromLocationObject:lastLocation];
+//            }
+//        }
+
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLocation class])];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        NSError *error;
+        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+        
+        STMLocation *lastLocation = [result lastObject];
+        if (lastLocation) {
+            _lastLocation = [self locationFromLocationObject:lastLocation];
         }
+
     }
     return _lastLocation;
+    
 }
 
 - (NSString *)locationServiceStatus {
@@ -371,26 +391,28 @@
 
 - (void)addLocation:(CLLocation *)currentLocation {
     
-    if (!self.currentTrack) {
-        [self startNewTrack];
-    }
+//    if (!self.currentTrack) {
+//        [self startNewTrack];
+//    }
+//    
+//    NSDate *timestamp = currentLocation.timestamp;
+//    
+//    if ([currentLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp] > self.trackDetectionTime && self.currentTrack.locations.count != 0) {
+//        
+//        [self startNewTrack];
+//        
+//    }
+//    
+//    //    NSLog(@"addLocation %@", [NSDate date]);
+//    
+//    if (self.currentTrack.locations.count == 0) {
+//        self.currentTrack.startTime = timestamp;
+//    }
+//    
+//    [self.currentTrack addLocationsObject:[self locationObjectFromCLLocation:currentLocation]];
+//    self.currentTrack.finishTime = timestamp;
     
-    NSDate *timestamp = currentLocation.timestamp;
-    
-    if ([currentLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp] > self.trackDetectionTime && self.currentTrack.locations.count != 0) {
-        
-        [self startNewTrack];
-        
-    }
-    
-    //    NSLog(@"addLocation %@", [NSDate date]);
-    
-    if (self.currentTrack.locations.count == 0) {
-        self.currentTrack.startTime = timestamp;
-    }
-    
-    [self.currentTrack addLocationsObject:[self locationObjectFromCLLocation:currentLocation]];
-    self.currentTrack.finishTime = timestamp;
+    [self locationObjectFromCLLocation:currentLocation];
     
     self.lastLocation = currentLocation;
     

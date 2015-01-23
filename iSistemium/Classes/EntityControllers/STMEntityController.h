@@ -13,7 +13,7 @@
 
 + (NSDictionary *)stcEntities;
 + (NSSet *)entityNamesWithLifeTime;
++ (NSArray *)entitiesWithLifeTime;
 + (STMEntity *)entityWithName:(NSString *)name;
-
 
 @end

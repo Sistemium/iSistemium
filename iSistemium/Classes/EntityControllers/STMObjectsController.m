@@ -659,22 +659,19 @@
 
 + (void)checkObjectsForFlushing {
 
-    NSSet *entityNamesForFlushing = [STMEntityController entityNamesWithLifeTime];
-    
-    NSLog(@"entityNamesForFlushing %@", entityNamesForFlushing);
-    
-//    NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
-//    
-//    double lifeTime = [[appSettings valueForKey:@"objectsLifeTime"] doubleValue];
-    
+    NSArray *entitiesWithLifeTime = [STMEntityController entitiesWithLifeTime];
+
     NSMutableSet *objectsSet = [NSMutableSet set];
     
-    for (NSString *entityName in entityNamesForFlushing) {
-
-        STMEntity *entity = [[STMEntityController stcEntities] objectForKey:entityName];
+    for (STMEntity *entity in entitiesWithLifeTime) {
+        
         double lifeTime = [entity.lifeTime doubleValue];
         NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
-
+        
+        NSString *capFirstLetter = (entity.name) ? [[entity.name substringToIndex:1] capitalizedString] : nil;
+        NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
+        NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
+        
         NSError *error;
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
@@ -682,7 +679,7 @@
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
         for (NSManagedObject *object in fetchResult) {
-            if (![self isWaitingToSyncForObject:object]) [objectsSet addObject:object];
+            [self checkObject:object forAddingTo:objectsSet];
         }
         
     }
@@ -692,43 +689,70 @@
         NSLog(@"flush %d objects with expired lifetime", objectsSet.count);
         
         for (NSManagedObject *object in objectsSet) {
-            
-            if ([object isKindOfClass:[STMLocation class]]) {
-                
-                STMLocation *location = (STMLocation *)object;
-                
-                if (location.photos.count == 0) {
-                    [[[self document] managedObjectContext] deleteObject:object];
-                } else {
-                    NSLog(@"location %@ linked with picture, flush canceled", location.xid);
-                }
-                
-            } else if ([object isKindOfClass:[STMTrack class]]) {
-                
-                STMTrack *track = (STMTrack *)object;
-                
-                if (track != [self session].locationTracker.currentTrack) {
-                    [[[self document] managedObjectContext] deleteObject:object];
-                } else {
-                    NSLog(@"track %@ is in use now, flush canceled", track.xid);
-                }
-                
-            } else {
-                
-                [[[self document] managedObjectContext] deleteObject:object];
-                
-            }
-            
+            [[[self document] managedObjectContext] deleteObject:object];
         }
 
+    } else {
+        
+        NSLog(@"No objects for flushing");
+        
     }
     
 }
 
++ (void)checkObject:(NSManagedObject *)object forAddingTo:(NSMutableSet *)objectsSet {
+    
+    if ([object isKindOfClass:[STMTrack class]]) {
+    
+        STMTrack *track = (STMTrack *)object;
+
+        if (track != [self session].locationTracker.currentTrack) {
+            [objectsSet addObject:object];
+        } else {
+            NSLog(@"track %@ is current track now, flush declined", track.xid);
+        }
+        
+    } else {
+    
+        if (![self isWaitingToSyncForObject:object]) {
+            
+            if ([object isKindOfClass:[STMLocation class]]) {
+        
+                STMLocation *location = (STMLocation *)object;
+                
+                if (location.photos.count == 0) {
+                    [objectsSet addObject:object];
+                } else {
+                    NSLog(@"location %@ linked with picture, flush declined", location.xid);
+                }
+
+//            } else if ([object isKindOfClass:[STMTrack class]]) {
+//                
+//                STMTrack *track = (STMTrack *)object;
+//                
+//                if (track != [self session].locationTracker.currentTrack) {
+//                    [objectsSet addObject:object];
+//                } else {
+//                    NSLog(@"track %@ is in use now, flush declined", track.xid);
+//                }
+                
+            } else {
+
+                [objectsSet addObject:object];
+
+            }
+
+        }
+        
+    }
+
+}
 
 #pragma mark - recieve of objects is finished
 
 + (void)dataLoadingFinished {
+    
+    [self checkObjectsForFlushing];
     
     [self totalNumberOfObjects];
     
@@ -762,23 +786,24 @@
                              NSStringFromClass([STMLocation class]),
                              NSStringFromClass([STMEntity class])];
     
-    NSUInteger totalCount = [self objectsForEntityName:NSStringFromClass([STMDatum class])].count;
-    NSLog(@"total count %d", totalCount);
+    NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
+    NSUInteger counter = totalCount;
     
     for (NSString *entityName in entityNames) {
         
         if (![entityName isEqualToString:NSStringFromClass([STMDatum class])]) {
             
-            NSUInteger count = [self objectsForEntityName:entityName].count;
+            NSUInteger count = [self numberOfObjectsForEntityName:entityName];
             NSLog(@"%@ count %d", entityName, count);
-            totalCount -= count;
+            counter -= count;
 
         }
 
     }
     
-    NSLog(@"unknow count %d", totalCount);
-    
+    NSLog(@"unknow count %d", counter);
+    NSLog(@"total count %d", totalCount);
+
 }
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
@@ -798,6 +823,25 @@
         
     }
     
+}
+
++ (NSUInteger)numberOfObjectsForEntityName:(NSString *)entityName {
+
+    if ([[self localDataModelEntityNames] containsObject:entityName]) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        NSError *error;
+        NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
+        
+        return result;
+        
+    } else {
+        
+        return 0;
+        
+    }
+
 }
 
 
