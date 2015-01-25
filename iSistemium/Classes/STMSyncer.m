@@ -1114,40 +1114,17 @@
         
         STMEntity *entity = [self.stcEntities objectForKey:connectionEntityName];
         
-        if (entity.roleName) {
-        
-            [STMObjectsController setRelationshipsFromArray:dataArray withCompletionHandler:^(BOOL success) {
-                
+        if (entity) {
+            
+            [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
+
                 if (success) {
-                    
-                    //                        NSLog(@"%d relationships successefully added", dataArray.count);
                     [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
-                    
                 } else {
                     self.errorOccured = YES;
                     [self entityCountDecrease];
-                    
                 }
-                
-            }];
-            
-        } else if (entity) {
-            
-            [STMObjectsController insertObjectsFromArray:dataArray withCompletionHandler:^(BOOL success) {
-                
-                if (success) {
-                    
-                    //                        NSLog(@"%d objects successefully added", dataArray.count);
-                    [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
-                    
-                } else {
-                    
-                    NSLog(@"insert %@ not success, possible reason: there is no such entity in local dataModel", connectionEntityName);
-                    self.errorOccured = YES;
-                    [self entityCountDecrease];
-                    
-                }
-                
+
             }];
             
         } else {

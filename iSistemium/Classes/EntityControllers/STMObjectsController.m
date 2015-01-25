@@ -62,6 +62,24 @@
 
 #pragma mark - recieved objects management
 
++ (void)processingOfDataArray:(NSArray *)array roleName:(NSString *)roleName withCompletionHandler:(void (^)(BOOL success))completionHandler {
+
+    if (roleName) {
+        
+        [self setRelationshipsFromArray:array withCompletionHandler:^(BOOL success) {
+            completionHandler(success);
+        }];
+        
+    } else {
+        
+        [self insertObjectsFromArray:array withCompletionHandler:^(BOOL success) {
+            completionHandler(success);
+        }];
+        
+    }
+
+}
+
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     __block BOOL result = YES;
