@@ -534,14 +534,16 @@
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
-        [self.spinnerView removeFromSuperview];
-        
-        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
-        
-        self.imagePickerController = nil;
+//        [self.spinnerView removeFromSuperview];
+//        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+//        self.imagePickerController = nil;
         
     }];
-    
+
+    [self.spinnerView removeFromSuperview];
+    [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+    self.imagePickerController = nil;
+
 }
 
 #pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout

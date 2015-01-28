@@ -762,14 +762,18 @@
     
     [picker dismissViewControllerAnimated:NO completion:^{
 
-        [self.spinnerView removeFromSuperview];
-        
-        self.imagePickerController = nil;
+//        [self.spinnerView removeFromSuperview];
+//        
+//        self.imagePickerController = nil;
 
 //        NSLog(@"imagePickerControllerDidCancel");
         
     }];
+
+    [self.spinnerView removeFromSuperview];
     
+    self.imagePickerController = nil;
+
 }
 
 
