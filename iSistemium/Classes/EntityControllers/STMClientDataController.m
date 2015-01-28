@@ -13,6 +13,7 @@
 #import "STMEntityDescription.h"
 #import "STMSetting.h"
 #import "STMObjectsController.h"
+#import "STMFunctions.h"
 
 @implementation STMClientDataController
 
@@ -65,6 +66,14 @@
     return [[self appDelegate] currentNotificationTypes];
 }
 
++ (NSString *)devicePlatform {
+    return [STMFunctions devicePlatform];
+}
+
++ (NSString *)systemVersion {
+    return [UIDevice currentDevice].systemVersion;
+}
+
 
 #pragma mark - checking client state
 
@@ -103,7 +112,7 @@
 
     }
     
-//    NSLog(@"clientData %@", clientData);
+    NSLog(@"clientData %@", clientData);
 
 }
 

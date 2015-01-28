@@ -32,4 +32,6 @@
 
 + (NSString *)MD5FromString:(NSString *)string;
 
++ (NSString *)devicePlatform;
+
 @end
