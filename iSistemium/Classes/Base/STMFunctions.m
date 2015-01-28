@@ -8,7 +8,7 @@
 
 #import "STMFunctions.h"
 #import <CommonCrypto/CommonDigest.h>
-
+#import <sys/sysctl.h>
 
 @implementation STMDateFormatter
 
@@ -259,6 +259,19 @@
         return nil;
         
     }
+    
+}
+
++ (NSString *)devicePlatform {
+    
+    size_t size;
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = malloc(size);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
+    free(machine);
+    
+    return platform;
     
 }
 
