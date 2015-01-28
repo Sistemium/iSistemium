@@ -141,6 +141,8 @@
     } else {
 
         [self.view endEditing:NO];
+        
+        NSLog(@"self.debtSum %@", self.debtSum);
 
         [STMDebtsController addNewDebtWithSum:self.debtSum ndoc:self.debtNdoc date:self.selectedDate outlet:self.parentVC.outlet];
         [self.parentVC dismissAddDebt];
@@ -186,14 +188,19 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     numberFormatter.minimumFractionDigits = 2;
+    numberFormatter.maximumFractionDigits = 2;
     
     if ([textField isEqual:self.sumTextField]) {
         
         NSNumber *number = [numberFormatter numberFromString:textField.text];
-        self.debtSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
-        
         textField.text = [numberFormatter stringFromNumber:number];
+
+        numberFormatter.numberStyle = NSNumberFormatterNoStyle;
+        NSString *decimalNumberString = [numberFormatter stringFromNumber:number];
+        NSDictionary *local = @{NSLocaleDecimalSeparator: numberFormatter.decimalSeparator};
         
+        self.debtSum = [NSDecimalNumber decimalNumberWithString:decimalNumberString locale:local];
+
     } else if ([textField isEqual:self.ndocTextField]) {
         
         self.debtNdoc = textField.text;

@@ -375,12 +375,18 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     numberFormatter.minimumFractionDigits = 2;
+    numberFormatter.maximumFractionDigits = 2;
     
     if ([textField isEqual:self.debtSummTextField]) {
         
         NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
-        NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
+
+        numberFormatter.numberStyle = NSNumberFormatterNoStyle;
+        NSString *decimalNumberString = [numberFormatter stringFromNumber:number];
+        NSDictionary *local = @{NSLocaleDecimalSeparator: numberFormatter.decimalSeparator};
         
+        NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithString:decimalNumberString locale:local];
+
         if ([cashingSum compare:self.selectedDebt.calculatedSum] == NSOrderedDescending) {
          
             cashingSum = self.selectedDebt.calculatedSum;
@@ -389,6 +395,7 @@
         
         [[STMCashingProcessController sharedInstance] setCashingSum:cashingSum forDebt:self.selectedDebt];
         
+        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
         self.debtSummTextField.text = [numberFormatter stringFromNumber:cashingSum];
         
     } else if ([textField isEqual:self.cashingSummTextField]) {
