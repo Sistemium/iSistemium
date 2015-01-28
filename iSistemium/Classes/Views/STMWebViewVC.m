@@ -75,13 +75,8 @@
 
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-
-    NSURLCache *cache = [NSURLCache sharedURLCache];
     
-    NSLog(@"cachedResponseForRequest %@", [cache cachedResponseForRequest:request]);
-    
-    [cache removeCachedResponseForRequest:request];
-    request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
 
     [self.webView loadRequest:request];
 
@@ -148,6 +143,9 @@
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    
+//    NSLog(@"cachedResponseForRequest %@", [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request]);
+    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:webView.request];
     
     NSString *bsAccessToken = [self.webView stringByEvaluatingJavaScriptFromString:[self webViewSessionCheckJS]];
 
