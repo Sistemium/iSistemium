@@ -54,11 +54,7 @@
 - (void)loadWebView {
 
     NSString *urlString = [self webViewUrlString];
-    
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    
-    [self.webView loadRequest:request];
+    [self loadURLString:urlString];
     
 }
 
@@ -70,11 +66,25 @@
 
     NSString *urlString = [self webViewUrlString];
     urlString = [NSString stringWithFormat:@"%@?access-token=%@", urlString, accessToken];
+
+    [self loadURLString:urlString];
+    
+}
+
+- (void)loadURLString:(NSString *)urlString {
+
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+
+    NSURLCache *cache = [NSURLCache sharedURLCache];
     
+    NSLog(@"cachedResponseForRequest %@", [cache cachedResponseForRequest:request]);
+    
+    [cache removeCachedResponseForRequest:request];
+    request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+
     [self.webView loadRequest:request];
-    
+
 }
 
 - (void)flushCookie {
