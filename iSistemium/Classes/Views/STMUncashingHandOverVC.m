@@ -322,7 +322,7 @@
 - (void)hideImageThumbnail {
     
     self.imageView.image = nil;
-    self.imageView.gestureRecognizers = [NSArray array];
+    self.imageView.gestureRecognizers = @[];
     
 }
 
@@ -745,7 +745,7 @@
         
 //        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
         
-        self.pictureImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+        self.pictureImage = info[UIImagePickerControllerOriginalImage];
         [self.spinnerView removeFromSuperview];
         self.spinnerView = nil;
         self.imagePickerController = nil;
@@ -991,7 +991,7 @@
 
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {

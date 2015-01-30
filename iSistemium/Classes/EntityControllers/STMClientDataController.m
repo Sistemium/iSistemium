@@ -123,7 +123,7 @@
         NSString *entityName = NSStringFromClass([STMClientData class]);
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
         STMClientData *clientData = [fetchResult lastObject];
@@ -158,7 +158,7 @@
             NSString *entityName = NSStringFromClass([STMSetting class]);
             
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-            request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
             request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"availableVersion"];
             
             NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
@@ -166,8 +166,8 @@
             
             if (availableVersionSetting) {
                 
-                NSNumber *availableVersion = [NSNumber numberWithInteger:[availableVersionSetting.value integerValue]];
-                NSNumber *currentVersion = [NSNumber numberWithInteger:[clientData.appVersion integerValue]];
+                NSNumber *availableVersion = @([availableVersionSetting.value integerValue]);
+                NSNumber *currentVersion = @([clientData.appVersion integerValue]);
                 
                 [self compareAvailableVersion:availableVersion withCurrentVersion:currentVersion];
                 
@@ -186,7 +186,7 @@
         NSString *entityName = NSStringFromClass([STMSetting class]);
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"appDownloadUrl"];
         
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
@@ -195,7 +195,7 @@
         if (appDownloadUrlSetting) {
             
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"newAppVersionAvailable"];
+            [defaults setObject:@YES forKey:@"newAppVersionAvailable"];
             [defaults setObject:availableVersion forKey:@"availableVersion"];
             [defaults setObject:appDownloadUrlSetting.value forKey:@"appDownloadUrl"];
             [defaults synchronize];
@@ -211,7 +211,7 @@
     } else {
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:[NSNumber numberWithBool:NO] forKey:@"newAppVersionAvailable"];
+        [defaults setObject:@NO forKey:@"newAppVersionAvailable"];
         [defaults removeObjectForKey:@"availableVersion"];
         [defaults removeObjectForKey:@"appDownloadUrl"];
         [defaults synchronize];

@@ -143,14 +143,14 @@
 
 - (void)debtSummChanged:(NSNotification *)notification {
     
-    STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
+    STMOutlet *outlet = (notification.userInfo)[@"outlet"];
     [self reloadRowWithOutlet:outlet];
     
 }
 
 - (void)cashingIsProcessedChanged:(NSNotification *)notification {
 
-    STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
+    STMOutlet *outlet = (notification.userInfo)[@"outlet"];
     [self reloadRowWithOutlet:outlet];
 
 }
@@ -311,7 +311,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtCell" forIndexPath:indexPath];
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][indexPath.section];
     
     STMOutlet *outlet = sectionInfo.objects[indexPath.row];
     
@@ -408,7 +408,7 @@
     
     NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
     
-    NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", [NSNumber numberWithBool:YES]];
+    NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", @YES];
     NSSet *cashings = [outlet.cashings filteredSetUsingPredicate:cashingPredicate];
     
     for (STMCashing *cashing in cashings) {
@@ -539,7 +539,7 @@
 }
 
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (instancetype)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {

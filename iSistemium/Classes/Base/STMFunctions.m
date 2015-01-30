@@ -66,7 +66,7 @@
     
     int numberOfDays = floor(interval / (60 * 60 * 24));
     
-    return [NSNumber numberWithInt:numberOfDays];
+    return @(numberOfDays);
     
 }
 
@@ -268,7 +268,7 @@
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);
     char *machine = malloc(size);
     sysctlbyname("hw.machine", machine, &size, NULL, 0);
-    NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
+    NSString *platform = @(machine);
     free(machine);
     
     return platform;

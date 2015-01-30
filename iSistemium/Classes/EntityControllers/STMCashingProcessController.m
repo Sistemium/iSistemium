@@ -185,7 +185,7 @@
             
             STMDebt *previousDebt = (self.debtsArray.lastObject) ? self.debtsArray.lastObject : [NSNull null];
             
-            [self.debtsDictionary setObject:@[debt, debt.calculatedSum] forKey:debt.xid];
+            (self.debtsDictionary)[debt.xid] = @[debt, debt.calculatedSum];
             [self.debtsArray addObject:debt];
             
             if ([self.cashingSummLimit doubleValue] > 0) {
@@ -209,7 +209,7 @@
 
 - (void)setCashingSum:(NSDecimalNumber *)cashingSum forDebt:(STMDebt *)debt {
     
-    [self.debtsDictionary setObject:@[debt, cashingSum] forKey:debt.xid];
+    (self.debtsDictionary)[debt.xid] = @[debt, cashingSum];
     
     if ([self.cashingSummLimit doubleValue] > 0) {
         self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
@@ -268,7 +268,7 @@
         
         STMDebt *debt = debtArray[0];
         NSDecimalNumber *summ = debtArray[1];
-        NSString *commentText = [self.commentsDictionary objectForKey:debt.xid];
+        NSString *commentText = (self.commentsDictionary)[debt.xid];
         
         STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:[STMController document].managedObjectContext];
         
@@ -300,7 +300,7 @@
 
         if (comment) {
             
-            [self.commentsDictionary setObject:comment forKey:debt.xid];
+            (self.commentsDictionary)[debt.xid] = comment;
             
         } else {
 
@@ -320,7 +320,7 @@
     
     if (lastDebt) {
         
-        NSDecimalNumber *cashingSum = [self.debtsDictionary objectForKey:lastDebt.xid][1];
+        NSDecimalNumber *cashingSum = (self.debtsDictionary)[lastDebt.xid][1];
         fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
     
         if ([fillingSumm doubleValue] < 0) {

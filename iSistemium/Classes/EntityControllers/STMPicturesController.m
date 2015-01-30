@@ -233,7 +233,7 @@
 + (void)checkBrokenPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
@@ -270,7 +270,7 @@
 + (void)checkUploadedPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
     
     NSError *error;
@@ -298,7 +298,7 @@
             
             if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
-                [[self sharedController].hrefDictionary setObject:object forKey:href];
+                ([self sharedController].hrefDictionary)[href] = object;
                 //                NSLog(@"hrefDictionary.allKeys1 %d", [self sharedController].hrefDictionary.allKeys.count);
                 
                 [[self sharedController] addOperationForObject:object];
@@ -340,7 +340,7 @@
     }
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
     NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
     NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
     
@@ -517,7 +517,7 @@
                 photoRequest.key = filename;
                 photoRequest.contentType = @"image/jpeg";
                 photoRequest.body = data;
-                photoRequest.contentLength = [NSNumber numberWithInteger:data.length];
+                photoRequest.contentLength = @((int)data.length);
                 
                 [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
                     
@@ -535,7 +535,7 @@
                         
                         //                    NSLog(@"Got here: %@", task.result);
                         
-                        NSArray *urlArray = [NSArray arrayWithObjects:transferManager.configuration.endpoint.URL, bucket, filename, nil];
+                        NSArray *urlArray = @[transferManager.configuration.endpoint.URL, bucket, filename];
                         NSString *href = [urlArray componentsJoinedByString:@"/"];
                         
                         NSLog(@"%@ upload successefully", href);

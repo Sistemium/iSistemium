@@ -47,7 +47,7 @@
     
 }
 
-- (id)init {
+- (instancetype)init {
     
     self = [super init];
     
@@ -324,7 +324,7 @@
 
 - (void)startSession {
     
-    NSArray *trackers = [NSArray arrayWithObjects:@"battery", @"location", nil];
+    NSArray *trackers = @[@"battery", @"location"];
     
     NSDictionary *startSettings = nil;
     
@@ -339,9 +339,9 @@
                       @"desiredAccuracy"          : @"10",
                       @"timeFilter"               : @"60",
                       @"maxSpeedThreshold"        : @"60",
-                      @"locationTrackerAutoStart" : [NSNumber numberWithBool:YES],
-                      @"enableDebtsEditing"       : [NSNumber numberWithBool:YES],
-                      @"enablePartnersEditing"    : [NSNumber numberWithBool:YES],
+                      @"locationTrackerAutoStart" : @YES,
+                      @"enableDebtsEditing"       : @YES,
+                      @"enablePartnersEditing"    : @YES,
                       @"http.timeout.foreground"  : @"15"
                       };
 
@@ -398,7 +398,7 @@
 
         if (!connection) {
 
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:[NSDictionary dictionaryWithObject:@"No connection" forKey:@"error"]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": @"No connection"}];
 
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
@@ -420,7 +420,7 @@
         
         if (!connection) {
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:[NSDictionary dictionaryWithObject:NSLocalizedString(@"NO CONNECTION", nil) forKey:@"error"]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": NSLocalizedString(@"NO CONNECTION", nil)}];
 
             self.controllerState = STMAuthEnterPhoneNumber;
             
@@ -461,7 +461,7 @@
     
     self.controllerState = STMAuthEnterPhoneNumber;
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:[NSDictionary dictionaryWithObject:error.localizedDescription forKey:@"error"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error.localizedDescription}];
 
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
@@ -498,15 +498,15 @@
         
         if (self.controllerState == STMAuthEnterPhoneNumber || self.controllerState == STMAuthNewSMSCode) {
             
-            self.requestID = [responseJSON objectForKey:@"ID"];
+            self.requestID = responseJSON[@"ID"];
             self.controllerState = STMAuthEnterSMSCode;
 
         } else if (self.controllerState == STMAuthEnterSMSCode) {
             
-            self.serviceUri = [responseJSON objectForKey:@"redirectUri"];
-            self.userID = [responseJSON objectForKey:@"ID"];
-            self.userName = [responseJSON objectForKey:@"name"];
-            self.accessToken = [responseJSON objectForKey:@"accessToken"];
+            self.serviceUri = responseJSON[@"redirectUri"];
+            self.userID = responseJSON[@"ID"];
+            self.userName = responseJSON[@"name"];
+            self.accessToken = responseJSON[@"accessToken"];
             self.controllerState = STMAuthSuccess;
             
         }
@@ -527,7 +527,7 @@
 
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:[NSDictionary dictionaryWithObject:error forKey:@"error"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error}];
         
     }
     

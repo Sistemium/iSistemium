@@ -31,7 +31,7 @@
 }
 
 - (STMSession *)currentSession {
-    return [self.sessions objectForKey:self.currentSessionUID];
+    return (self.sessions)[self.currentSessionUID];
 }
 
 - (void)setCurrentSessionUID:(NSString *)currentSessionUID {
@@ -40,7 +40,7 @@
         
         if (_currentSessionUID != currentSessionUID) {
             _currentSessionUID = currentSessionUID;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"currentSessionChanged" object:[self.sessions objectForKey:_currentSessionUID]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"currentSessionChanged" object:(self.sessions)[_currentSessionUID]];
         }
         
     }
@@ -51,7 +51,7 @@
     
     if (uid) {
         
-        STMSession *session = [self.sessions objectForKey:uid];
+        STMSession *session = (self.sessions)[uid];
         
         if (!session) {
             
@@ -59,8 +59,8 @@
             
             session = [STMSession initWithUID:uid authDelegate:authDelegate trackers:trackers startSettings:startSettings documentPrefix:prefix];
             
-            session.defaultSettings = [validSettings objectForKey:@"values"];
-            session.settingsControls = [validSettings objectForKey:@"controls"];
+            session.defaultSettings = validSettings[@"values"];
+            session.settingsControls = validSettings[@"controls"];
             session.manager = self;
 
             [self.sessions setValue:session forKey:uid];
@@ -85,7 +85,7 @@
 
 - (void)stopSessionForUID:(NSString *)uid {
     
-    STMSession *session = [self.sessions objectForKey:uid];
+    STMSession *session = (self.sessions)[uid];
     
     if ([session.status isEqualToString:@"running"] || [session.status isEqualToString:@"removing"]) {
         
@@ -123,7 +123,7 @@
 
 - (void)removeSessionForUID:(NSString *)uid {
 
-    STMSession *session = [self.sessions objectForKey:uid];
+    STMSession *session = (self.sessions)[uid];
     
     if ([session.status isEqualToString:@"stopped"]) {
         

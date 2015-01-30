@@ -30,7 +30,7 @@
     
 }
 
-- (id)init {
+- (instancetype)init {
     
     self = [super init];
     
@@ -48,7 +48,7 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMUncashingPlace class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
 //        request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:[STMController document].managedObjectContext

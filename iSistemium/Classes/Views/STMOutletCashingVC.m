@@ -180,7 +180,7 @@
 
 - (void)editingButtonPressed:(NSNotification *)notification {
     
-    BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
+    BOOL editing = [(notification.userInfo)[@"editing"] boolValue];
     
     [self.tableView setEditing:editing animated:YES];
     
@@ -214,7 +214,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][section];
     
     NSString *cashingDate = [sectionInfo name];
 
@@ -356,7 +356,7 @@
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
         
         STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:cashing];
-        recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+        recordStatus.isRemoved = @YES;
         
         [self.document.managedObjectContext deleteObject:cashing];
         
@@ -506,7 +506,7 @@
 
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {

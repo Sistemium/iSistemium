@@ -11,10 +11,10 @@
 #import "STMDebt+Cashing.h"
 
 
-typedef enum {
+typedef NS_ENUM(NSInteger, STMCashingProcessState) {
     STMCashingProcessIdle,
     STMCashingProcessRunning
-} STMCashingProcessState;
+};
 
 
 @interface STMCashingProcessController : STMController

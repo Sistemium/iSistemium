@@ -58,15 +58,31 @@
 
 - (NSString *)normalizeValue:(NSString *)value forKey:(NSString *)key {
     
-    NSArray *positiveDoubleValues = [NSArray arrayWithObjects:@"trackDetectionTime", @"trackSeparationDistance", @"fetchLimit", @"syncInterval", @"deviceMotionUpdateInterval", @"maxSpeedThreshold", @"http.timeout.foreground", @"http.timeout.background", @"objectsLifeTime", nil];
+    NSArray *positiveDoubleValues = @[@"trackDetectionTime",
+                                      @"trackSeparationDistance",
+                                      @"fetchLimit",
+                                      @"syncInterval",
+                                      @"deviceMotionUpdateInterval",
+                                      @"maxSpeedThreshold",
+                                      @"http.timeout.foreground",
+                                      @"http.timeout.background",
+                                      @"objectsLifeTime"];
     
-    NSArray *boolValues = [NSArray arrayWithObjects:@"localAccessToSettings", @"deviceMotionUpdate", @"enableDebtsEditing", @"enablePartnersEditing", nil];
-    NSArray *boolValueSuffixes = [NSArray arrayWithObjects:@"TrackerAutoStart", nil];
+    NSArray *boolValues = @[@"localAccessToSettings",
+                            @"deviceMotionUpdate",
+                            @"enableDebtsEditing",
+                            @"enablePartnersEditing"];
     
-    NSArray *URIValues = [NSArray arrayWithObjects:@"restServerURI", @"xmlNamespace", @"recieveDataServerURI", @"sendDataServerURI", nil];
+    NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
+    
+    NSArray *URIValues = @[@"restServerURI",
+                           @"xmlNamespace",
+                           @"recieveDataServerURI",
+                           @"sendDataServerURI"];
 
-    NSArray *timeValues = [NSArray arrayWithObjects:nil];
-    NSArray *timeValueSuffixes = [NSArray arrayWithObjects:@"TrackerStartTime", @"TrackerFinishTime", nil];
+    NSArray *timeValues = @[];
+    NSArray *timeValueSuffixes = @[@"TrackerStartTime",
+                                   @"TrackerFinishTime"];
     
     if ([positiveDoubleValues containsObject:key]) {
         if ([self isPositiveDouble:value]) {
@@ -171,7 +187,7 @@
         NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
 
-        request.sortDescriptors = [NSArray arrayWithObjects:groupSortDescriptor, nameSortDescriptor, nil];
+        request.sortDescriptors = @[groupSortDescriptor, nameSortDescriptor];
         
         _fetchedSettingsResultController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.session.document.managedObjectContext sectionNameKeyPath:@"group" cacheName:nil];
         _fetchedSettingsResultController.delegate = self;
@@ -217,7 +233,7 @@
 
 - (STMSetting *)settingForDictionary:(NSDictionary *)dictionary {
     
-    NSDictionary *properties = [dictionary objectForKey:@"properties"];
+    NSDictionary *properties = dictionary[@"properties"];
     NSString *settingName = [properties valueForKey:@"name"];
     NSString *settingGroup = [properties valueForKey:@"group"];
     
@@ -377,11 +393,11 @@
     if ([anObject isKindOfClass:[STMSetting class]]) {
         
         NSString *notificationName = [NSString stringWithFormat:@"%@SettingsChanged", [anObject valueForKey:@"group"]];
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[anObject valueForKey:@"value"] forKey:[anObject valueForKey:@"name"]];
+        NSDictionary *userInfo = @{[anObject valueForKey:@"name"]: [anObject valueForKey:@"value"]};
         
         [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self.session userInfo:userInfo];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"settingsChanged" object:self.session userInfo:[NSDictionary dictionaryWithObject:anObject forKey:@"changedObject"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"settingsChanged" object:self.session userInfo:@{@"changedObject": anObject}];
         
     }
         

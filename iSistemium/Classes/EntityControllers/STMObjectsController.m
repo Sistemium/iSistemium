@@ -100,11 +100,11 @@
 
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
-    NSString *name = [dictionary objectForKey:@"name"];
-    NSDictionary *properties = [dictionary objectForKey:@"properties"];
+    NSString *name = dictionary[@"name"];
+    NSDictionary *properties = dictionary[@"properties"];
 
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-    NSString *nameTail = (nameExplode.count > 1) ? [nameExplode objectAtIndex:1] : name;
+    NSString *nameTail = (nameExplode.count > 1) ? nameExplode[1] : name;
     NSString *capEntityName = [nameTail stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[nameTail substringToIndex:1] capitalizedString]];
 
     NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
@@ -113,7 +113,7 @@
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
-        NSString *xid = [dictionary objectForKey:@"xid"];
+        NSString *xid = dictionary[@"xid"];
         NSData *xidData = (xid) ? [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]] : nil;
         
         STMRecordStatus *recordStatus = [self existingRecordStatusForXid:xidData];
@@ -128,7 +128,7 @@
                 
             } else if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
                 
-                NSString *internalName = [properties objectForKey:@"name"];
+                NSString *internalName = properties[@"name"];
                 object = [STMEntityController entityWithName:internalName];
                 
             }
@@ -141,7 +141,7 @@
             
             if (![self isWaitingToSyncForObject:object]) {
                 
-                [object setValue:[NSNumber numberWithBool:NO] forKey:@"isFantom"];
+                [object setValue:@NO forKey:@"isFantom"];
                 [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
                 
             }
@@ -171,7 +171,7 @@
     
     for (NSString *key in ownObjectKeys) {
         
-        id value = [properties objectForKey:key];
+        id value = properties[key];
         
         if (value) {
             
@@ -201,19 +201,19 @@
 
 + (id)typeConversionForValue:(id)value key:(NSString *)key entityAttributes:(NSDictionary *)entityAttributes {
     
-    if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
+    if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
         
         value = [NSDecimalNumber decimalNumberWithString:value];
         
-    } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
+    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
         
         value = [[STMFunctions dateFormatter] dateFromString:value];
         
-    } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
+    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
         
-        value = [NSNumber numberWithBool:[value boolValue]];
+        value = @([value boolValue]);
         
-    } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
+    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
         
         value = [STMFunctions dataFromString:[value stringByReplacingOccurrencesOfString:@"-" withString:@""]];
         
@@ -229,12 +229,12 @@
     
     for (NSString *relationship in [ownObjectRelationships allKeys]) {
         
-        NSDictionary *relationshipDictionary = [properties objectForKey:relationship];
-        NSString *destinationObjectXid = [relationshipDictionary objectForKey:@"xid"];
+        NSDictionary *relationshipDictionary = properties[relationship];
+        NSString *destinationObjectXid = relationshipDictionary[@"xid"];
         
         if (destinationObjectXid) {
             
-            NSManagedObject *destinationObject = [self objectForEntityName:[ownObjectRelationships objectForKey:relationship] andXid:destinationObjectXid];
+            NSManagedObject *destinationObject = [self objectForEntityName:ownObjectRelationships[relationship] andXid:destinationObjectXid];
             
             if (![[object valueForKey:relationship] isEqual:destinationObject]) {
                 
@@ -358,26 +358,26 @@
 
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
-    NSString *name = [dictionary objectForKey:@"name"];
+    NSString *name = dictionary[@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-    NSString *entityName = [@"STM" stringByAppendingString:[nameExplode objectAtIndex:1]];
+    NSString *entityName = [@"STM" stringByAppendingString:nameExplode[1]];
 
     NSDictionary *serverDataModel = [[STMEntityController stcEntities] copy];
 
     if ([[serverDataModel allKeys] containsObject:entityName]) {
         
-        STMEntity *entityModel = [serverDataModel objectForKey:entityName];
+        STMEntity *entityModel = serverDataModel[entityName];
         NSString *roleOwner = entityModel.roleOwner;
         NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
         NSString *roleName = entityModel.roleName;
         NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
-        NSString *destinationEntityName = [ownerRelationships objectForKey:roleName];
+        NSString *destinationEntityName = ownerRelationships[roleName];
         NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
-        NSDictionary *properties = [dictionary objectForKey:@"properties"];
-        NSDictionary *ownerData = [properties objectForKey:roleOwner];
-        NSDictionary *destinationData = [properties objectForKey:destination];
-        NSString *ownerXid = [ownerData objectForKey:@"xid"];
-        NSString *destinationXid = [destinationData objectForKey:@"xid"];
+        NSDictionary *properties = dictionary[@"properties"];
+        NSDictionary *ownerData = properties[roleOwner];
+        NSDictionary *destinationData = properties[destination];
+        NSString *ownerXid = ownerData[@"xid"];
+        NSString *destinationXid = destinationData[@"xid"];
         BOOL ok = YES;
         
         if (!ownerXid || [ownerXid isEqualToString:@""] || !destinationXid || [destinationXid isEqualToString:@""]) {
@@ -489,7 +489,7 @@
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
     
     NSError *error;
@@ -540,7 +540,7 @@
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
     
     NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-    [object setValue:[NSNumber numberWithBool:YES] forKey:@"isFantom"];
+    [object setValue:@YES forKey:@"isFantom"];
     
     return object;
     
@@ -549,7 +549,7 @@
 + (STMRecordStatus *)existingRecordStatusForXid:(NSData *)objectXid {
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", objectXid];
     
     NSError *error;
@@ -609,8 +609,8 @@
     
     for (NSString *relationshipName in objectRelationshipNames) {
         
-        NSRelationshipDescription *relationship = [[objectEntity relationshipsByName] objectForKey:relationshipName];
-        [objectRelationships setObject:[relationship destinationEntity].name forKey:relationshipName];
+        NSRelationshipDescription *relationship = [objectEntity relationshipsByName][relationshipName];
+        objectRelationships[relationshipName] = [relationship destinationEntity].name;
         
     }
     
@@ -634,10 +634,10 @@
     
     for (NSString *relationshipName in objectRelationshipNames) {
         
-        NSRelationshipDescription *relationship = [[objectEntity relationshipsByName] objectForKey:relationshipName];
+        NSRelationshipDescription *relationship = [objectEntity relationshipsByName][relationshipName];
         
         if (![relationship isToMany]) {
-            [objectRelationships setObject:[relationship destinationEntity].name forKey:relationshipName];
+            objectRelationships[relationshipName] = [relationship destinationEntity].name;
         }
         
     }
@@ -658,7 +658,7 @@
 + (STMRecordStatus *)removeObject:(NSManagedObject *)object {
     
     STMRecordStatus *recordStatus = [self recordStatusForObject:object];
-    recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    recordStatus.isRemoved = @YES;
     
     [self.document.managedObjectContext deleteObject:object];
     [self.document saveDocument:^(BOOL success) {
@@ -692,7 +692,7 @@
         
         NSError *error;
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
@@ -829,7 +829,7 @@
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
@@ -848,7 +848,7 @@
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
         
@@ -868,7 +868,7 @@
 + (NSUInteger)unreadMessagesCount {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
 //    request.predicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
     
     NSError *error;
@@ -883,7 +883,7 @@
     }
     
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
 
     result = [[self document].managedObjectContext executeFetchRequest:request error:&error];

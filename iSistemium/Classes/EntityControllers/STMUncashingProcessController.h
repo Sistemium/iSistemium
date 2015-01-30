@@ -15,10 +15,10 @@
 #define BANK_OFFICE_TYPE @"bankOffice"
 #define CASH_DESK_TYPE @"cashDesk"
 
-typedef enum {
+typedef NS_ENUM(NSInteger, STMUncashingProcessState) {
     STMUncashingProcessIdle,
     STMUncashingProcessRunning
-} STMUncashingProcessState;
+};
 
 
 @interface STMUncashingProcessController : STMController

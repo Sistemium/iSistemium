@@ -133,7 +133,7 @@
             
             self.debtInfoLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
 
-            NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:selectedDebt.xid][1];
+            NSDecimalNumber *cashingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[selectedDebt.xid][1];
             
             NSMutableString *cashingSumString = [[numberFormatter stringFromNumber:cashingSum] mutableCopy];
             
@@ -142,7 +142,7 @@
             self.debtSumLabel.hidden = NO;
             self.commentTextView.hidden = NO;
             
-            NSString *commentText = [[STMCashingProcessController sharedInstance].commentsDictionary objectForKey:selectedDebt.xid];
+            NSString *commentText = ([STMCashingProcessController sharedInstance].commentsDictionary)[selectedDebt.xid];
             
             if (commentText) {
                 
@@ -184,7 +184,7 @@
     
     [self toolbarDoneButtonPressed];
 
-    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    STMDebt *debt = (notification.userInfo)[@"debt"];
 
     if (debt) {
         
@@ -199,7 +199,7 @@
     
     [self toolbarDoneButtonPressed];
 
-    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    STMDebt *debt = (notification.userInfo)[@"debt"];
 //    STMDebt *selectedDebt = [notification.userInfo objectForKey:@"selectedDebt"];
     
     if (debt) {
@@ -217,8 +217,8 @@
 
 - (void)cashingSumChanged:(NSNotification *)notification {
     
-    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
-    NSDecimalNumber *cashingSum = [notification.userInfo objectForKey:@"cashingSum"];
+    STMDebt *debt = (notification.userInfo)[@"debt"];
+    NSDecimalNumber *cashingSum = (notification.userInfo)[@"cashingSum"];
     
     if ([self.selectedDebt isEqual:debt]) {
         
@@ -310,7 +310,7 @@
 
     if ([[STMCashingProcessController sharedInstance].remainderSumm doubleValue] <= 0) {
 
-        NSDecimalNumber *fillingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:self.selectedDebt.xid][1];
+        NSDecimalNumber *fillingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[self.selectedDebt.xid][1];
         
         numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
         numberFormatter.minimumFractionDigits = 2;
@@ -660,7 +660,7 @@
 
 - (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
     
-    CGRect keyboardRect = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    CGRect keyboardRect = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
     
     return keyboardRect.size.height;
@@ -787,7 +787,7 @@
 
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {

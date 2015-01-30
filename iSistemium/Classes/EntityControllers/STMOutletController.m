@@ -21,7 +21,7 @@
     outlet.shortName = shortName;
     outlet.name = [NSString stringWithFormat:@"%@ (%@)", partner.name, shortName];
     outlet.partner = partner;
-    outlet.isFantom = [NSNumber numberWithBool:NO];
+    outlet.isFantom = @NO;
     
     [[self document] saveDocument:^(BOOL success) {
     

@@ -21,7 +21,7 @@
     
     if (!_sortedArticles) {
         
-        NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]];
+        NSArray *sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]];
 
         _sortedArticles = [self.articles sortedArrayUsingDescriptors:sortDescriptors];
         
@@ -51,7 +51,7 @@
     
 }
 
-- (id)initWithStyle:(UITableViewStyle)style {
+- (instancetype)initWithStyle:(UITableViewStyle)style {
     
     self = [super initWithStyle:style];
     if (self) {

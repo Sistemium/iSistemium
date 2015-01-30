@@ -16,7 +16,7 @@
     
     STMDebt *debt = (STMDebt *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMDebt class])];
     
-    debt.isFantom = [NSNumber numberWithBool:NO];
+    debt.isFantom = @NO;
     debt.date = date;
     debt.summ = sum;
     debt.summOrigin = sum;

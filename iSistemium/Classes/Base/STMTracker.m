@@ -28,7 +28,7 @@
 @synthesize trackerFinishTime = _trackerFinishTime;
 
 
-- (id)init {
+- (instancetype)init {
     
     self = [super init];
     
@@ -147,7 +147,7 @@
 
 - (void) didReceiveRemoteNotification:(NSNotification *) notification {
     
-    id command = [[notification userInfo] objectForKey: [[self class] description]];
+    id command = [notification userInfo][[[self class] description]];
     
     if ([command isEqual:@"stop"]) {
         [self stopTracking];

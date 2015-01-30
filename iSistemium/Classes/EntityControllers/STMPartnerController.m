@@ -17,7 +17,7 @@
     STMPartner *partner = (STMPartner *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPartner class])];
     
     partner.name = name;
-    partner.isFantom = [NSNumber numberWithBool:NO];
+    partner.isFantom = @NO;
     
     [[self document] saveDocument:^(BOOL success) {
         

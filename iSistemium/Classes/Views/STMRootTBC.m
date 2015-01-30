@@ -65,7 +65,7 @@
     
 }
 
-- (id)init {
+- (instancetype)init {
     
     self = [super init];
     
@@ -154,7 +154,7 @@
     vc.title = authTabTitle;
     vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[0] toSize:CGSizeMake(30, 30)];
 
-    [self.tabs setObject:vc forKey:authTabName];
+    (self.tabs)[authTabName] = vc;
     
     self.viewControllers = [self.tabs allValues];
 
@@ -171,11 +171,11 @@
         NSUInteger index = [self.storyboardnames indexOfObject:name];
         
         UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = [self.storyboardtitles objectAtIndex:index];
+        vc.title = (self.storyboardtitles)[index];
         vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[index] toSize:CGSizeMake(30, 30)];
         [viewControllers addObject:vc];
 
-        [self.tabs setObject:vc forKey:name];
+        (self.tabs)[name] = vc;
         
         if ([name isEqualToString:@"STMMessages"]) {
             
@@ -194,7 +194,7 @@
 
 - (void)showTabWithName:(NSString *)tabName {
     
-    UIViewController *vc = [self.tabs objectForKey:tabName];
+    UIViewController *vc = (self.tabs)[tabName];
     
     if (vc) {
         
@@ -206,7 +206,7 @@
 
 - (void)showTabAtIndex:(NSUInteger)index {
     
-    UIViewController *vc = [self.tabs objectForKey:self.storyboardnames[index]];
+    UIViewController *vc = (self.tabs)[self.storyboardnames[index]];
     
     if (vc) {
         
@@ -320,7 +320,7 @@
 
 - (void)authControllerError:(NSNotification *)notification {
         
-    NSString *error = [[notification userInfo] objectForKey:@"error"];
+    NSString *error = [notification userInfo][@"error"];
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
     alertView.tag = 0;
@@ -349,7 +349,7 @@
 
 - (void)showUnreadMessageCount {
     
-    UIViewController *vc = [self.tabs objectForKey:@"STMMessages"];
+    UIViewController *vc = (self.tabs)[@"STMMessages"];
     NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
     NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
     vc.tabBarItem.badgeValue = badgeValue;
@@ -374,7 +374,7 @@
         
         alertView.tag = 1;
         
-        UIViewController *vc = [self.tabs objectForKey:@"STMAuthTVC"];
+        UIViewController *vc = (self.tabs)[@"STMAuthTVC"];
         vc.tabBarItem.badgeValue = @"!";
         
         self.updateAlertIsShowing = YES;
@@ -451,7 +451,7 @@
 
 #pragma mark - view lifecycle
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {

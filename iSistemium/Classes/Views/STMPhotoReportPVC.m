@@ -57,18 +57,18 @@
 
 - (void)deletePhoto:(NSNotification *)notification {
     
-    STMPhotoReport *photoReport = [notification.userInfo objectForKey:@"photo2delete"];
+    STMPhotoReport *photoReport = (notification.userInfo)[@"photo2delete"];
     STMCampaign *campaign = photoReport.campaign;
     
     STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:photoReport];
-    recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    recordStatus.isRemoved = @YES;
     
     [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photoReport];
 
     [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged" object:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:[NSDictionary dictionaryWithObject:campaign forKey:@"campaign"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:@{@"campaign": campaign}];
 
     [(STMDocument *)[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
         
@@ -186,7 +186,7 @@
 
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {

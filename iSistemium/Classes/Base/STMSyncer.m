@@ -60,7 +60,7 @@
 @synthesize syncerState = _syncerState;
 
 
-- (id)init {
+- (instancetype)init {
     
     self = [super init];
     
@@ -256,7 +256,9 @@
 
 - (void)setEntityCount:(NSUInteger)entityCount {
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"entityCountdownChange" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:entityCount] forKey:@"countdownValue"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"entityCountdownChange"
+                                                        object:self
+                                                      userInfo:@{@"countdownValue": @((int)entityCount)}];
     
     _entityCount = entityCount;
     
@@ -277,7 +279,7 @@
         
         NSDictionary *stcEntities = [STMEntityController stcEntities];
         
-        if (![stcEntities objectForKey:@"STMEntity"]) {
+        if (!stcEntities[@"STMEntity"]) {
             
             NSDictionary *coreEntityDic = @{
                                             @"name": @"stc.entity",
@@ -368,7 +370,7 @@
 
 - (void)syncerDidReceiveRemoteNotification:(NSNotification *)notification {
     
-    if ([[notification.userInfo objectForKey:@"syncer"] isEqualToString:@"upload"]) {
+    if ([(notification.userInfo)[@"syncer"] isEqualToString:@"upload"]) {
         
         [self setSyncerState: STMSyncerSendDataOnce];
         
@@ -520,7 +522,7 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
         [request setIncludesSubentities:YES];
         
         request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
@@ -617,7 +619,7 @@
             NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
             NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
             
-            [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
+            objectDictionary[@"properties"] = propertiesDictionary;
             [syncDataArray addObject:objectDictionary];
 
             [self.sendedEntities addObject:entityName];
@@ -636,7 +638,7 @@
         
         [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count] type:@""];
 
-        NSDictionary *dataDictionary = [NSDictionary dictionaryWithObject:syncDataArray forKey:@"data"];
+        NSDictionary *dataDictionary = @{@"data": syncDataArray};
         
         NSError *error;
         NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
@@ -719,7 +721,7 @@
                     
                     NSString *xid = [STMFunctions xidStringFromXidData:xidData];
                     NSString *entityName = key;
-                    [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
+                    [propertiesDictionary setValue:@{@"name": entityName, @"xid": xid} forKey:key];
                     
                 }
                 
@@ -805,7 +807,7 @@
     
     if (self.syncerState != STMSyncerIdle) {
 
-        STMEntity *entity = [self.stcEntities objectForKey:entityName];
+        STMEntity *entity = (self.stcEntities)[entityName];
         NSString *url = entity.url;
         
         if (url) {
@@ -1006,9 +1008,9 @@
     
     if (statusCode == 200) {
         
-        [self.responses setObject:[NSMutableData data] forKey:entityName];
+        (self.responses)[entityName] = [NSMutableData data];
         
-        NSString *eTag = [headers objectForKey:@"eTag"];
+        NSString *eTag = headers[@"eTag"];
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) [self.temporaryETag setValue:eTag forKey:entityName];
         
@@ -1068,7 +1070,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
     NSString *entityName = [self entityNameForConnection:connection];
-    NSMutableData *responseData = [self.responses objectForKey:entityName];
+    NSMutableData *responseData = (self.responses)[entityName];
     [responseData appendData:data];
     
 }
@@ -1076,7 +1078,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
     NSString *entityName = [self entityNameForConnection:connection];
-    NSMutableData *responseData = [self.responses objectForKey:entityName];
+    NSMutableData *responseData = (self.responses)[entityName];
     
     if (responseData) {
         [self parseResponse:responseData fromConnection:connection];
@@ -1095,7 +1097,7 @@
     
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
         
-        errorString = [responseJSON objectForKey:@"error"];
+        errorString = responseJSON[@"error"];
 
     } else {
         
@@ -1106,13 +1108,13 @@
     if (!errorString) {
         
         NSString *connectionEntityName = [self entityNameForConnection:connection];
-        NSArray *dataArray = [responseJSON objectForKey:@"data"];
+        NSArray *dataArray = responseJSON[@"data"];
         
 //        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
 //            NSLog(@"responseJSON %@", responseJSON);
 //        }
         
-        STMEntity *entity = [self.stcEntities objectForKey:connectionEntityName];
+        STMEntity *entity = (self.stcEntities)[connectionEntityName];
         
         if (entity) {
             
@@ -1173,7 +1175,7 @@
 - (void)fillETagWithTemporaryValueForEntityName:(NSString *)entityName {
 
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
-    STMEntity *entity = [self.stcEntities objectForKey:entityName];
+    STMEntity *entity = (self.stcEntities)[entityName];
     entity.eTag = eTag;
     
 //    [self startConnectionForReceiveEntitiesWithName:entityName];
@@ -1196,7 +1198,7 @@
     } else {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xidData];
         
         NSError *error;

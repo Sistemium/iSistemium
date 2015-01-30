@@ -55,7 +55,7 @@
 - (void)getBatteryStatus {
     
     STMBatteryStatus *batteryStatus = (STMBatteryStatus *)[STMEntityDescription insertNewObjectForEntityForName:@"STBatteryStatus" inManagedObjectContext:self.document.managedObjectContext];
-    batteryStatus.batteryLevel = [NSNumber numberWithDouble:[UIDevice currentDevice].batteryLevel];
+    batteryStatus.batteryLevel = @((double)[UIDevice currentDevice].batteryLevel);
     NSString *batteryState;
     
     switch ([UIDevice currentDevice].batteryState) {

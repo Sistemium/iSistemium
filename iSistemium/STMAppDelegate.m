@@ -21,7 +21,7 @@
     
     if (launchOptions != nil) {
         
-        NSDictionary *remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        NSDictionary *remoteNotification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
         
         if (remoteNotification) {
 
@@ -91,7 +91,7 @@
 
 - (void)receiveRemoteNotification:(NSDictionary *)remoteNotification {
     
-    NSString *msg = [NSString stringWithFormat:@"%@", [[remoteNotification objectForKey:@"aps"] objectForKey:@"alert"]];
+    NSString *msg = [NSString stringWithFormat:@"%@", remoteNotification[@"aps"][@"alert"]];
     NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
     [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
     
@@ -178,7 +178,7 @@
     NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
     
-    if ([userInfo objectForKey:@"syncer"]) {
+    if (userInfo[@"syncer"]) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidReceiveRemoteNotification" object:application userInfo:userInfo];
 
