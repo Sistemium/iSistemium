@@ -210,7 +210,7 @@
                 if (dateIsInPast) {
                     
                     int positiveNumberOfDays = -1 * [numberOfDays intValue];
-                    numberOfDays = [NSNumber numberWithInt:positiveNumberOfDays];
+                    numberOfDays = @(positiveNumberOfDays);
                     
                 }
                 

@@ -258,7 +258,7 @@
         
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": [NSNumber numberWithBool:editing]}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"editingButtonPressed" object:self userInfo:@{@"editing": @(editing)}];
     
 }
 

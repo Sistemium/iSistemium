@@ -82,7 +82,7 @@
 
             if (buttonIndex == 1) {
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"deletePhoto" object:self userInfo:[NSDictionary dictionaryWithObject:self.photo forKey:@"photo2delete"]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"deletePhoto" object:self userInfo:@{@"photo2delete": self.photo}];
                 
             }
 

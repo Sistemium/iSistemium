@@ -141,7 +141,7 @@
             
             if (![self isWaitingToSyncForObject:object]) {
                 
-                [object setValue:[NSNumber numberWithBool:NO] forKey:@"isFantom"];
+                [object setValue:@NO forKey:@"isFantom"];
                 [self processingOfObject:object withEntityName:entityName fillWithValues:properties];
                 
             }
@@ -211,7 +211,7 @@
         
     } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
         
-        value = [NSNumber numberWithBool:[value boolValue]];
+        value = @([value boolValue]);
         
     } else if ([[[entityAttributes objectForKey:key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
         
@@ -489,7 +489,7 @@
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
     
     NSError *error;
@@ -540,7 +540,7 @@
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
     
     NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-    [object setValue:[NSNumber numberWithBool:YES] forKey:@"isFantom"];
+    [object setValue:@YES forKey:@"isFantom"];
     
     return object;
     
@@ -549,7 +549,7 @@
 + (STMRecordStatus *)existingRecordStatusForXid:(NSData *)objectXid {
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", objectXid];
     
     NSError *error;
@@ -658,7 +658,7 @@
 + (STMRecordStatus *)removeObject:(NSManagedObject *)object {
     
     STMRecordStatus *recordStatus = [self recordStatusForObject:object];
-    recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    recordStatus.isRemoved = @YES;
     
     [self.document.managedObjectContext deleteObject:object];
     [self.document saveDocument:^(BOOL success) {
@@ -692,7 +692,7 @@
         
         NSError *error;
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
@@ -829,7 +829,7 @@
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
@@ -848,7 +848,7 @@
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
         
@@ -868,7 +868,7 @@
 + (NSUInteger)unreadMessagesCount {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
 //    request.predicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
     
     NSError *error;
@@ -883,7 +883,7 @@
     }
     
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
 
     result = [[self document].managedObjectContext executeFetchRequest:request error:&error];

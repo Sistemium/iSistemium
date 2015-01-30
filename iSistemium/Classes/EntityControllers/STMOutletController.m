@@ -20,7 +20,7 @@
 
     outlet.shortName = shortName;
     outlet.partner = partner;
-    outlet.isFantom = [NSNumber numberWithBool:NO];
+    outlet.isFantom = @NO;
     
     [[self document] saveDocument:^(BOOL success) {
     

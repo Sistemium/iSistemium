@@ -322,7 +322,7 @@
 - (void)hideImageThumbnail {
     
     self.imageView.image = nil;
-    self.imageView.gestureRecognizers = [NSArray array];
+    self.imageView.gestureRecognizers = @[];
     
 }
 

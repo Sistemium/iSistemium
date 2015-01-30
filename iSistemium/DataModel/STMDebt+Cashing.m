@@ -20,7 +20,7 @@
     [self willAccessValueForKey:@"cashings"];
     [self willAccessValueForKey:@"isProcessed"];
 
-    NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", [NSNumber numberWithBool:YES]];
+    NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", @YES];
     NSSet *cashings = [self.cashings filteredSetUsingPredicate:cashingPredicate];
     
     [self didAccessValueForKey:@"isProcessed"];

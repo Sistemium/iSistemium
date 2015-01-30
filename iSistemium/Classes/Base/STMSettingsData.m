@@ -87,7 +87,7 @@
         
         [settingsControls setObject:settingsControlGroupNames forKey:@"groupNames"];
         
-        return [NSDictionary dictionaryWithObjectsAndKeys:settingsValues, @"values", settingsControls, @"controls", nil];
+        return @{@"values": settingsValues, @"controls": settingsControls};
         
     } else {
         

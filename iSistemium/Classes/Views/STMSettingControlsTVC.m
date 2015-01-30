@@ -26,7 +26,7 @@
         NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
 
-        request.sortDescriptors = [NSArray arrayWithObjects:groupSortDescriptor, nameSortDescriptor, nil];
+        request.sortDescriptors = @[groupSortDescriptor, nameSortDescriptor];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"group" cacheName:nil];
         _resultsController.delegate = self;

@@ -81,7 +81,7 @@
     if (!_photoReportPicturesResultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
         _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 
@@ -140,8 +140,8 @@
         [outletsSet minusSet:outletsWithPhotoReports];
         NSSet *outletsWithOutPhotoReports = outletsSet;
         
-        NSMutableArray *outletsWPR = [[outletsWithPhotoReports sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]] mutableCopy];
-        NSArray *outletsWOPR = [outletsWithOutPhotoReports sortedArrayUsingDescriptors:[NSArray arrayWithObject:nameSortDescriptor]];
+        NSMutableArray *outletsWPR = [[outletsWithPhotoReports sortedArrayUsingDescriptors:@[nameSortDescriptor]] mutableCopy];
+        NSArray *outletsWOPR = [outletsWithOutPhotoReports sortedArrayUsingDescriptors:@[nameSortDescriptor]];
         
         [outletsWPR addObjectsFromArray:outletsWOPR];
         outlets = outletsWPR;
@@ -443,7 +443,7 @@
     [self.locationTracker getLocation];
     [self.waitingLocationPhotos addObject:self.selectedPhotoReport];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:[NSDictionary dictionaryWithObject:self.campaign forKey:@"campaign"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
 
     [[self document] saveDocument:^(BOOL success) {
         if (success) {

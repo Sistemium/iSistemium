@@ -356,7 +356,7 @@
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
         
         STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:cashing];
-        recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+        recordStatus.isRemoved = @YES;
         
         [self.document.managedObjectContext deleteObject:cashing];
         

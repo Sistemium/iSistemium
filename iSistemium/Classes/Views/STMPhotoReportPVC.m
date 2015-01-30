@@ -61,14 +61,14 @@
     STMCampaign *campaign = photoReport.campaign;
     
     STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:photoReport];
-    recordStatus.isRemoved = [NSNumber numberWithBool:YES];
+    recordStatus.isRemoved = @YES;
     
     [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photoReport];
 
     [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged" object:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:[NSDictionary dictionaryWithObject:campaign forKey:@"campaign"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:@{@"campaign": campaign}];
 
     [(STMDocument *)[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
         

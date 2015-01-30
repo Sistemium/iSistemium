@@ -149,7 +149,7 @@
 //        }
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLocation class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
         
@@ -470,13 +470,13 @@
 - (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location {
     
     STMLocation *locationObject = (STMLocation *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLocation class]) inManagedObjectContext:self.document.managedObjectContext];
-    [locationObject setLatitude:[NSNumber numberWithDouble:location.coordinate.latitude]];
-    [locationObject setLongitude:[NSNumber numberWithDouble:location.coordinate.longitude]];
-    [locationObject setHorizontalAccuracy:[NSNumber numberWithDouble:location.horizontalAccuracy]];
-    [locationObject setSpeed:[NSNumber numberWithDouble:location.speed]];
-    [locationObject setCourse:[NSNumber numberWithDouble:location.course]];
-    [locationObject setAltitude:[NSNumber numberWithDouble:location.altitude]];
-    [locationObject setVerticalAccuracy:[NSNumber numberWithDouble:location.verticalAccuracy]];
+    [locationObject setLatitude:@(location.coordinate.latitude)];
+    [locationObject setLongitude:@(location.coordinate.longitude)];
+    [locationObject setHorizontalAccuracy:@(location.horizontalAccuracy)];
+    [locationObject setSpeed:@(location.speed)];
+    [locationObject setCourse:@(location.course)];
+    [locationObject setAltitude:@(location.altitude)];
+    [locationObject setVerticalAccuracy:@(location.verticalAccuracy)];
     [locationObject setTimestamp:location.timestamp];
     return locationObject;
     

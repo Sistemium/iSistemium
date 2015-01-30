@@ -256,7 +256,8 @@
 
 - (void)setEntityCount:(NSUInteger)entityCount {
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"entityCountdownChange" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:entityCount] forKey:@"countdownValue"]];
+#warning Converting to boxingsyntax requires casting NSUInteger to NSInteger
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"entityCountdownChange" object:self userInfo:@{@"countdownValue": [NSNumber numberWithInteger:entityCount]}];
     
     _entityCount = entityCount;
     
@@ -520,7 +521,7 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
         [request setIncludesSubentities:YES];
         
         request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
@@ -636,7 +637,7 @@
         
         [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count] type:@""];
 
-        NSDictionary *dataDictionary = [NSDictionary dictionaryWithObject:syncDataArray forKey:@"data"];
+        NSDictionary *dataDictionary = @{@"data": syncDataArray};
         
         NSError *error;
         NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
@@ -719,7 +720,7 @@
                     
                     NSString *xid = [STMFunctions xidStringFromXidData:xidData];
                     NSString *entityName = key;
-                    [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
+                    [propertiesDictionary setValue:@{@"name": entityName, @"xid": xid} forKey:key];
                     
                 }
                 
@@ -1196,7 +1197,7 @@
     } else {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xidData];
         
         NSError *error;

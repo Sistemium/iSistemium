@@ -408,7 +408,7 @@
     
     NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
     
-    NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", [NSNumber numberWithBool:YES]];
+    NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", @YES];
     NSSet *cashings = [outlet.cashings filteredSetUsingPredicate:cashingPredicate];
     
     for (STMCashing *cashing in cashings) {

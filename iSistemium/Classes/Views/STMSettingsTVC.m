@@ -197,7 +197,7 @@
         NSNumberFormatter *timeFormatter = [[NSNumberFormatter alloc] init];
         timeFormatter.formatWidth = 2;
         timeFormatter.paddingCharacter = @"0";
-        valueString = [NSString stringWithFormat:@"%@:%@", [timeFormatter stringFromNumber:[NSNumber numberWithDouble:hours]], [timeFormatter stringFromNumber:[NSNumber numberWithDouble:minutes]]];
+        valueString = [NSString stringWithFormat:@"%@:%@", [timeFormatter stringFromNumber:@(hours)], [timeFormatter stringFromNumber:@(minutes)]];
     } else if ([settingName isEqualToString:@"trackScale"]) {
         valueString = [NSString stringWithFormat:@"%.1f", [valueString doubleValue]];
     } else {
@@ -388,16 +388,16 @@
 - (void)setSlider:(UISlider *)slider value:(double)value forSettingName:(NSString *)settingName {
     
     if ([settingName isEqualToString:@"desiredAccuracy"]) {
-        NSArray *accuracyArray = [NSArray arrayWithObjects: [NSNumber numberWithDouble:kCLLocationAccuracyBestForNavigation],
-                                  [NSNumber numberWithDouble:kCLLocationAccuracyBest],
-                                  [NSNumber numberWithDouble:kCLLocationAccuracyNearestTenMeters],
-                                  [NSNumber numberWithDouble:kCLLocationAccuracyHundredMeters],
-                                  [NSNumber numberWithDouble:kCLLocationAccuracyKilometer],
-                                  [NSNumber numberWithDouble:kCLLocationAccuracyThreeKilometers],nil];
-        value = [accuracyArray indexOfObject:[NSNumber numberWithDouble:value]];
+        NSArray *accuracyArray = @[@(kCLLocationAccuracyBestForNavigation),
+                                  @(kCLLocationAccuracyBest),
+                                  @(kCLLocationAccuracyNearestTenMeters),
+                                  @(kCLLocationAccuracyHundredMeters),
+                                  @(kCLLocationAccuracyKilometer),
+                                  @(kCLLocationAccuracyThreeKilometers)];
+        value = [accuracyArray indexOfObject:@(value)];
         if (value == NSNotFound) {
             NSLog(@"NSNotFoundS");
-            value = [accuracyArray indexOfObject:[NSNumber numberWithDouble:kCLLocationAccuracyNearestTenMeters]];
+            value = [accuracyArray indexOfObject:@(kCLLocationAccuracyNearestTenMeters)];
         }
     }
     slider.value = value;
@@ -439,17 +439,17 @@
     }
     
     NSString *groupName = [[self groupNames] objectAtIndex:indexPath.section];
-    [self.session.settingsController setNewSettings:[NSDictionary dictionaryWithObjectsAndKeys:value, settingName, nil] forGroup:groupName];
+    [self.session.settingsController setNewSettings:@{settingName: value} forGroup:groupName];
 
 }
 
 - (NSString *)desiredAccuracyValueFrom:(int)index {
-    NSArray *accuracyArray = [NSArray arrayWithObjects: [NSNumber numberWithDouble:kCLLocationAccuracyBestForNavigation],
-                              [NSNumber numberWithDouble:kCLLocationAccuracyBest],
-                              [NSNumber numberWithDouble:kCLLocationAccuracyNearestTenMeters],
-                              [NSNumber numberWithDouble:kCLLocationAccuracyHundredMeters],
-                              [NSNumber numberWithDouble:kCLLocationAccuracyKilometer],
-                              [NSNumber numberWithDouble:kCLLocationAccuracyThreeKilometers],nil];
+    NSArray *accuracyArray = @[@(kCLLocationAccuracyBestForNavigation),
+                              @(kCLLocationAccuracyBest),
+                              @(kCLLocationAccuracyNearestTenMeters),
+                              @(kCLLocationAccuracyHundredMeters),
+                              @(kCLLocationAccuracyKilometer),
+                              @(kCLLocationAccuracyThreeKilometers)];
     return [NSString stringWithFormat:@"%@", [accuracyArray objectAtIndex:index]];
 }
 
@@ -460,7 +460,7 @@
     NSString *settingName = [self settingNameForIndexPath:indexPath];
     NSString *value = [NSString stringWithFormat:@"%d", senderSwitch.on];
     NSString *groupName = [[self groupNames] objectAtIndex:indexPath.section];
-    [self.session.settingsController setNewSettings:[NSDictionary dictionaryWithObjectsAndKeys:value, settingName, nil] forGroup:groupName];
+    [self.session.settingsController setNewSettings:@{settingName: value} forGroup:groupName];
     
 }
 
@@ -471,7 +471,7 @@
     NSString *settingName = [self settingNameForIndexPath:indexPath];
     NSString *value = [NSString stringWithFormat:@"%ld", (long)segmentedControl.selectedSegmentIndex];
     NSString *groupName = [[self groupNames] objectAtIndex:indexPath.section];
-    [self.session.settingsController setNewSettings:[NSDictionary dictionaryWithObjectsAndKeys:value, settingName, nil] forGroup:groupName];
+    [self.session.settingsController setNewSettings:@{settingName: value} forGroup:groupName];
     
 }
 
@@ -490,7 +490,7 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     NSString *settingName = [self settingNameForIndexPath:indexPath];
     NSString *groupName = [[self groupNames] objectAtIndex:indexPath.section];
-    textField.text = [self.session.settingsController setNewSettings:[NSDictionary dictionaryWithObjectsAndKeys:textField.text, settingName, nil] forGroup:groupName];
+    textField.text = [self.session.settingsController setNewSettings:@{settingName: textField.text} forGroup:groupName];
 
     return YES;
     

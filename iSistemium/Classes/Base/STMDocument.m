@@ -204,7 +204,7 @@
     
     STMDocument *document = [STMDocument initWithFileURL:url andDataModelName:dataModelName];
     
-    document.persistentStoreOptions = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+    document.persistentStoreOptions = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:[document.fileURL path]]) {
 
@@ -246,13 +246,13 @@
 
 + (void)document:(STMDocument *)document readyWithUID:(NSString *)uid {
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"documentReady" object:document userInfo:[NSDictionary dictionaryWithObject:uid forKey:@"uid"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"documentReady" object:document userInfo:@{@"uid": uid}];
 
 }
 
 + (void)document:(STMDocument *)document notReadyWithUID:(NSString *)uid {
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"documentNotReady" object:document userInfo:[NSDictionary dictionaryWithObject:uid forKey:@"uid"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"documentNotReady" object:document userInfo:@{@"uid": uid}];
     
 }
 

@@ -233,7 +233,7 @@
 + (void)checkBrokenPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
@@ -270,7 +270,7 @@
 + (void)checkUploadedPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
     
     NSError *error;
@@ -517,6 +517,7 @@
                 photoRequest.key = filename;
                 photoRequest.contentType = @"image/jpeg";
                 photoRequest.body = data;
+#warning Converting to boxing syntax requires casting NSUInteger to NSInteger
                 photoRequest.contentLength = [NSNumber numberWithInteger:data.length];
                 
                 [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
@@ -535,7 +536,7 @@
                         
                         //                    NSLog(@"Got here: %@", task.result);
                         
-                        NSArray *urlArray = [NSArray arrayWithObjects:transferManager.configuration.endpoint.URL, bucket, filename, nil];
+                        NSArray *urlArray = @[transferManager.configuration.endpoint.URL, bucket, filename];
                         NSString *href = [urlArray componentsJoinedByString:@"/"];
                         
                         NSLog(@"%@ upload successefully", href);
