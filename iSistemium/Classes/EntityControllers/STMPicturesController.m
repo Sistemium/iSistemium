@@ -517,8 +517,7 @@
                 photoRequest.key = filename;
                 photoRequest.contentType = @"image/jpeg";
                 photoRequest.body = data;
-#warning Converting to boxing syntax requires casting NSUInteger to NSInteger
-                photoRequest.contentLength = [NSNumber numberWithInteger:data.length];
+                photoRequest.contentLength = @((int)data.length);
                 
                 [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
                     

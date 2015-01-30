@@ -256,8 +256,9 @@
 
 - (void)setEntityCount:(NSUInteger)entityCount {
     
-#warning Converting to boxingsyntax requires casting NSUInteger to NSInteger
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"entityCountdownChange" object:self userInfo:@{@"countdownValue": [NSNumber numberWithInteger:entityCount]}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"entityCountdownChange"
+                                                        object:self
+                                                      userInfo:@{@"countdownValue": @((int)entityCount)}];
     
     _entityCount = entityCount;
     
