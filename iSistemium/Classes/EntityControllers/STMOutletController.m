@@ -19,6 +19,7 @@
     STMOutlet *outlet = (STMOutlet *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMOutlet class])];
 
     outlet.shortName = shortName;
+    outlet.name = [NSString stringWithFormat:@"%@ (%@)", partner.name, shortName];
     outlet.partner = partner;
     outlet.isFantom = [NSNumber numberWithBool:NO];
     
