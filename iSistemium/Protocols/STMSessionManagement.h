@@ -10,12 +10,12 @@
 #import "STMRequestAuthenticatable.h"
 
 
-typedef enum {
+typedef NS_ENUM(NSInteger, STMSyncerState) {
     STMSyncerIdle,
     STMSyncerSendData,
     STMSyncerSendDataOnce,
     STMSyncerReceiveData
-} STMSyncerState;
+};
 
 
 @protocol STMLogger <NSObject, UITableViewDataSource, UITableViewDelegate>
