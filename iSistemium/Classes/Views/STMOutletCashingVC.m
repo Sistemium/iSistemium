@@ -180,7 +180,7 @@
 
 - (void)editingButtonPressed:(NSNotification *)notification {
     
-    BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
+    BOOL editing = [(notification.userInfo)[@"editing"] boolValue];
     
     [self.tableView setEditing:editing animated:YES];
     
@@ -214,7 +214,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][section];
     
     NSString *cashingDate = [sectionInfo name];
 

@@ -314,7 +314,7 @@
         
         if ([[[STMCashingProcessController sharedInstance].debtsDictionary allKeys] containsObject:debt.xid]) {
             
-            NSDecimalNumber *cashingSum = [[STMCashingProcessController sharedInstance].debtsDictionary objectForKey:debt.xid][1];
+            NSDecimalNumber *cashingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[debt.xid][1];
             
             fillWidth = [[cashingSum decimalNumberByDividingBy:debt.calculatedSum] doubleValue];
             
@@ -458,7 +458,7 @@
 
 - (void)editingButtonPressed:(NSNotification *)notification {
     
-    BOOL editing = [[notification.userInfo objectForKey:@"editing"] boolValue];
+    BOOL editing = [(notification.userInfo)[@"editing"] boolValue];
     
     //    self.tableView.allowsMultipleSelectionDuringEditing = !editing;
     [self.tableView setEditing:editing animated:YES];
@@ -485,8 +485,8 @@
 
 - (void)debtAdded:(NSNotification *)notification {
     
-    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
-    STMDebt *previousDebt = [notification.userInfo objectForKey:@"previousDebt"];
+    STMDebt *debt = (notification.userInfo)[@"debt"];
+    STMDebt *previousDebt = (notification.userInfo)[@"previousDebt"];
 
     if (debt) [self updateRowWithDebt:debt];
     if (previousDebt && ![previousDebt isEqual:[NSNull null]]) [self updateRowWithDebt:previousDebt];
@@ -495,8 +495,8 @@
 
 - (void)debtRemoved:(NSNotification *)notification {
     
-    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
-    STMDebt *selectedDebt = [notification.userInfo objectForKey:@"selectedDebt"];
+    STMDebt *debt = (notification.userInfo)[@"debt"];
+    STMDebt *selectedDebt = (notification.userInfo)[@"selectedDebt"];
     
     if (debt) [self updateRowWithDebt:debt];
     if (selectedDebt && ![selectedDebt isEqual:[NSNull null]]) [self updateRowWithDebt:selectedDebt];
@@ -508,7 +508,7 @@
 
 - (void)cashingSumChanged:(NSNotification *)notification {
     
-    STMDebt *debt = [notification.userInfo objectForKey:@"debt"];
+    STMDebt *debt = (notification.userInfo)[@"debt"];
     [self updateRowWithDebt:debt];
 
 }

@@ -40,7 +40,7 @@
         
         NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
         
-        [stcEntities setObject:entity forKey:[@"STM" stringByAppendingString:capEntityName]];
+        stcEntities[[@"STM" stringByAppendingString:capEntityName]] = entity;
         
     }
     

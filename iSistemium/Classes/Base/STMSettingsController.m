@@ -233,7 +233,7 @@
 
 - (STMSetting *)settingForDictionary:(NSDictionary *)dictionary {
     
-    NSDictionary *properties = [dictionary objectForKey:@"properties"];
+    NSDictionary *properties = dictionary[@"properties"];
     NSString *settingName = [properties valueForKey:@"name"];
     NSString *settingGroup = [properties valueForKey:@"group"];
     

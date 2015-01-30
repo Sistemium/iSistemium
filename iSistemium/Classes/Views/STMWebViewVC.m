@@ -107,7 +107,7 @@
     actionSheet.tag = 1;
     
     CGFloat tabBarYPosition = self.tabBarController.tabBar.frame.origin.y;
-    CGRect rect = [[self.tabBarController.tabBar.subviews objectAtIndex:self.tabBarController.selectedIndex+1] frame];
+    CGRect rect = [(self.tabBarController.tabBar.subviews)[self.tabBarController.selectedIndex+1] frame];
     rect = CGRectMake(rect.origin.x, rect.origin.y + tabBarYPosition, rect.size.width, rect.size.height);
     
     [actionSheet showFromRect:rect inView:self.view animated:YES];

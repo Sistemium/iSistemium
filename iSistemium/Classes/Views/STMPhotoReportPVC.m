@@ -57,7 +57,7 @@
 
 - (void)deletePhoto:(NSNotification *)notification {
     
-    STMPhotoReport *photoReport = [notification.userInfo objectForKey:@"photo2delete"];
+    STMPhotoReport *photoReport = (notification.userInfo)[@"photo2delete"];
     STMCampaign *campaign = photoReport.campaign;
     
     STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:photoReport];

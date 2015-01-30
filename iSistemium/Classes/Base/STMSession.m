@@ -32,14 +32,14 @@
         if ([trackers containsObject:@"location"]) {
             
             session.locationTracker = [[STMLocationTracker alloc] init];
-            [session.trackers setObject:session.locationTracker forKey:session.locationTracker.group];
+            (session.trackers)[session.locationTracker.group] = session.locationTracker;
 
         }
         
         if ([trackers containsObject:@"battery"]) {
             
             session.batteryTracker = [[STMBatteryTracker alloc] init];
-            [session.trackers setObject:session.batteryTracker forKey:session.batteryTracker.group];
+            (session.trackers)[session.batteryTracker.group] = session.batteryTracker;
 
         }
         

@@ -76,7 +76,7 @@
 
 - (STMSetting *)settingObjectForIndexPath:(NSIndexPath *)indexPath {
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.group == %@ && SELF.name == %@", [[self groupNames] objectAtIndex:indexPath.section], [self settingNameForIndexPath:indexPath]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.group == %@ && SELF.name == %@", [self groupNames][indexPath.section], [self settingNameForIndexPath:indexPath]];
     return [[[self.session.settingsController currentSettings] filteredArrayUsingPredicate:predicate] lastObject];
     
 }
@@ -91,7 +91,7 @@
 
 - (NSArray *)settingsGroupForSection:(NSInteger)section {
     
-    NSString *groupName = [[self groupNames] objectAtIndex:section];
+    NSString *groupName = [self groupNames][section];
     NSArray *settingsGroup = [self.controlsSettings valueForKey:groupName];
     
     return settingsGroup;
@@ -108,7 +108,7 @@
     
     if (indexPath.row < controlGroup.count) {
         
-        controlType = [[controlGroup objectAtIndex:indexPath.row] objectAtIndex:0];
+        controlType = controlGroup[indexPath.row][0];
 
     } else {
         
@@ -124,18 +124,18 @@
 - (NSString *)minForIndexPath:(NSIndexPath *)indexPath {
     
     NSArray *controlGroup = [self settingsGroupForSection:indexPath.section];
-    return [[controlGroup objectAtIndex:indexPath.row] objectAtIndex:1];
+    return controlGroup[indexPath.row][1];
     
 }
 
 - (NSString *)maxForIndexPath:(NSIndexPath *)indexPath {
     NSArray *controlGroup = [self settingsGroupForSection:indexPath.section];
-    return [[controlGroup objectAtIndex:indexPath.row] objectAtIndex:2];
+    return controlGroup[indexPath.row][2];
 }
 
 - (NSString *)stepForIndexPath:(NSIndexPath *)indexPath {
     NSArray *controlGroup = [self settingsGroupForSection:indexPath.section];
-    return [[controlGroup objectAtIndex:indexPath.row] objectAtIndex:3];
+    return controlGroup[indexPath.row][3];
 }
 
 - (NSString *)settingNameForIndexPath:(NSIndexPath *)indexPath {
@@ -143,7 +143,7 @@
     NSArray *settingsGroup = [self settingsGroupForSection:indexPath.section];
     NSLog(@"settingsGroup %@", settingsGroup);
     
-    NSArray *setting = [settingsGroup objectAtIndex:indexPath.row];
+    NSArray *setting = settingsGroup[indexPath.row];
     NSLog(@"setting %@", setting);
     
     NSString *settingName = [setting lastObject];
@@ -219,7 +219,7 @@
     
     NSArray *keys = [self groupNames];
     
-    return [[[self.session settingsController] currentSettingsForGroup:[keys objectAtIndex:section]] count];
+    return [[[self.session settingsController] currentSettingsForGroup:keys[section]] count];
     
 //    return [[self.controlsSettings valueForKey:[keys objectAtIndex:section]] count];
     
@@ -227,7 +227,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
-    NSString *title = [NSString stringWithFormat:@"SETTING%@",[[self groupNames] objectAtIndex:section]];
+    NSString *title = [NSString stringWithFormat:@"SETTING%@",[self groupNames][section]];
     return NSLocalizedString(title, @"");
     
 }
@@ -438,7 +438,7 @@
         value = [self desiredAccuracyValueFrom:rint(slider.value)];
     }
     
-    NSString *groupName = [[self groupNames] objectAtIndex:indexPath.section];
+    NSString *groupName = [self groupNames][indexPath.section];
     [self.session.settingsController setNewSettings:@{settingName: value} forGroup:groupName];
 
 }
@@ -450,7 +450,7 @@
                               @(kCLLocationAccuracyHundredMeters),
                               @(kCLLocationAccuracyKilometer),
                               @(kCLLocationAccuracyThreeKilometers)];
-    return [NSString stringWithFormat:@"%@", [accuracyArray objectAtIndex:index]];
+    return [NSString stringWithFormat:@"%@", accuracyArray[index]];
 }
 
 - (void)switchValueChanged:(UISwitch *)senderSwitch {
@@ -459,7 +459,7 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     NSString *settingName = [self settingNameForIndexPath:indexPath];
     NSString *value = [NSString stringWithFormat:@"%d", senderSwitch.on];
-    NSString *groupName = [[self groupNames] objectAtIndex:indexPath.section];
+    NSString *groupName = [self groupNames][indexPath.section];
     [self.session.settingsController setNewSettings:@{settingName: value} forGroup:groupName];
     
 }
@@ -470,7 +470,7 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     NSString *settingName = [self settingNameForIndexPath:indexPath];
     NSString *value = [NSString stringWithFormat:@"%ld", (long)segmentedControl.selectedSegmentIndex];
-    NSString *groupName = [[self groupNames] objectAtIndex:indexPath.section];
+    NSString *groupName = [self groupNames][indexPath.section];
     [self.session.settingsController setNewSettings:@{settingName: value} forGroup:groupName];
     
 }
@@ -489,7 +489,7 @@
     STMSettingsTVCell *cell = [self cellForView:textField];
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     NSString *settingName = [self settingNameForIndexPath:indexPath];
-    NSString *groupName = [[self groupNames] objectAtIndex:indexPath.section];
+    NSString *groupName = [self groupNames][indexPath.section];
     textField.text = [self.session.settingsController setNewSettings:@{settingName: textField.text} forGroup:groupName];
 
     return YES;

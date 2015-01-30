@@ -105,8 +105,8 @@
 
 - (void)markMessageAsRead:(NSDictionary *)messageData{
 
-    STMMessage *message = [messageData objectForKey:@"message"];
-    NSIndexPath *indexPath = [messageData objectForKey:@"indexPath"];
+    STMMessage *message = messageData[@"message"];
+    NSIndexPath *indexPath = messageData[@"indexPath"];
     
     STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:message];
     

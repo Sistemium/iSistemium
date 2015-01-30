@@ -211,7 +211,7 @@
         
     } else if (indexPath.section == 1) {
         
-        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section-1];
+        id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][indexPath.section-1];
         STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
 
         cell.textLabel.text = [dateFormatter stringFromDate:uncashing.date];

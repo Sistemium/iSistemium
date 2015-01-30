@@ -501,7 +501,7 @@
         
 //        float totalCount = (float)syncer.entitySyncInfo.allKeys.count;
         float totalCount = (float)[STMEntityController stcEntities].allKeys.count;
-        float countdownValue = [[notification.userInfo objectForKey:@"countdownValue"] floatValue];
+        float countdownValue = [(notification.userInfo)[@"countdownValue"] floatValue];
         
         self.progressBar.progress = (totalCount - countdownValue) / totalCount;
         

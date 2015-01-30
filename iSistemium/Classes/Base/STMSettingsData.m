@@ -39,7 +39,7 @@
         
         NSMutableArray *settingsControlGroupNames = [NSMutableArray array];
         
-        for (NSDictionary *group in [settingsJSON objectForKey:@"defaultSettings"]) {
+        for (NSDictionary *group in settingsJSON[@"defaultSettings"]) {
             
             NSString *groupName = [group valueForKey:@"group"];
             
@@ -76,16 +76,16 @@
             }
             
             if (settingsValuesGroup.count > 0) {
-                [settingsValues setObject:settingsValuesGroup forKey:groupName];
+                settingsValues[groupName] = settingsValuesGroup;
             }
             if (settingsControlsGroup.count > 0) {
-                [settingsControls setObject:settingsControlsGroup forKey:groupName];
+                settingsControls[groupName] = settingsControlsGroup;
                 [settingsControlGroupNames addObject:groupName];
             }
             
         }
         
-        [settingsControls setObject:settingsControlGroupNames forKey:@"groupNames"];
+        settingsControls[@"groupNames"] = settingsControlGroupNames;
         
         return @{@"values": settingsValues, @"controls": settingsControls};
         

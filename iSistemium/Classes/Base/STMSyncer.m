@@ -279,7 +279,7 @@
         
         NSDictionary *stcEntities = [STMEntityController stcEntities];
         
-        if (![stcEntities objectForKey:@"STMEntity"]) {
+        if (!stcEntities[@"STMEntity"]) {
             
             NSDictionary *coreEntityDic = @{
                                             @"name": @"stc.entity",
@@ -370,7 +370,7 @@
 
 - (void)syncerDidReceiveRemoteNotification:(NSNotification *)notification {
     
-    if ([[notification.userInfo objectForKey:@"syncer"] isEqualToString:@"upload"]) {
+    if ([(notification.userInfo)[@"syncer"] isEqualToString:@"upload"]) {
         
         [self setSyncerState: STMSyncerSendDataOnce];
         
@@ -619,7 +619,7 @@
             NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
             NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
             
-            [objectDictionary setObject:propertiesDictionary forKey:@"properties"];
+            objectDictionary[@"properties"] = propertiesDictionary;
             [syncDataArray addObject:objectDictionary];
 
             [self.sendedEntities addObject:entityName];
@@ -807,7 +807,7 @@
     
     if (self.syncerState != STMSyncerIdle) {
 
-        STMEntity *entity = [self.stcEntities objectForKey:entityName];
+        STMEntity *entity = (self.stcEntities)[entityName];
         NSString *url = entity.url;
         
         if (url) {
@@ -1008,9 +1008,9 @@
     
     if (statusCode == 200) {
         
-        [self.responses setObject:[NSMutableData data] forKey:entityName];
+        (self.responses)[entityName] = [NSMutableData data];
         
-        NSString *eTag = [headers objectForKey:@"eTag"];
+        NSString *eTag = headers[@"eTag"];
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) [self.temporaryETag setValue:eTag forKey:entityName];
         
@@ -1070,7 +1070,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
     NSString *entityName = [self entityNameForConnection:connection];
-    NSMutableData *responseData = [self.responses objectForKey:entityName];
+    NSMutableData *responseData = (self.responses)[entityName];
     [responseData appendData:data];
     
 }
@@ -1078,7 +1078,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
     NSString *entityName = [self entityNameForConnection:connection];
-    NSMutableData *responseData = [self.responses objectForKey:entityName];
+    NSMutableData *responseData = (self.responses)[entityName];
     
     if (responseData) {
         [self parseResponse:responseData fromConnection:connection];
@@ -1097,7 +1097,7 @@
     
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
         
-        errorString = [responseJSON objectForKey:@"error"];
+        errorString = responseJSON[@"error"];
 
     } else {
         
@@ -1108,13 +1108,13 @@
     if (!errorString) {
         
         NSString *connectionEntityName = [self entityNameForConnection:connection];
-        NSArray *dataArray = [responseJSON objectForKey:@"data"];
+        NSArray *dataArray = responseJSON[@"data"];
         
 //        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
 //            NSLog(@"responseJSON %@", responseJSON);
 //        }
         
-        STMEntity *entity = [self.stcEntities objectForKey:connectionEntityName];
+        STMEntity *entity = (self.stcEntities)[connectionEntityName];
         
         if (entity) {
             
@@ -1175,7 +1175,7 @@
 - (void)fillETagWithTemporaryValueForEntityName:(NSString *)entityName {
 
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
-    STMEntity *entity = [self.stcEntities objectForKey:entityName];
+    STMEntity *entity = (self.stcEntities)[entityName];
     entity.eTag = eTag;
     
 //    [self startConnectionForReceiveEntitiesWithName:entityName];

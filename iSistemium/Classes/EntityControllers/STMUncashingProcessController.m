@@ -58,7 +58,7 @@
     
     for (STMCashing *cashing in cashings) {
         
-        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+        (self.cashingDictionary)[cashing.xid] = cashing;
         
     }
     
@@ -151,7 +151,7 @@
 
     if (cashing && cashing.xid) {
         
-        [self.cashingDictionary setObject:cashing forKey:cashing.xid];
+        (self.cashingDictionary)[cashing.xid] = cashing;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
 
     }

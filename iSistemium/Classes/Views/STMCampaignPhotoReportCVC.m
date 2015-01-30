@@ -477,7 +477,7 @@
     
     if (self.waitingLocationPhotos.count > 0) {
     
-        CLLocation *currentLocation = [notification.userInfo objectForKey:@"currentLocation"];
+        CLLocation *currentLocation = (notification.userInfo)[@"currentLocation"];
         NSLog(@"currentLocation %@", currentLocation);
 
         STMLocation *location = [self.locationTracker locationObjectFromCLLocation:currentLocation];
@@ -522,7 +522,7 @@
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
-        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
+        [self saveImage:info[UIImagePickerControllerOriginalImage]];
         self.imagePickerController = nil;
 //        NSLog(@"dismiss UIImagePickerController");
         

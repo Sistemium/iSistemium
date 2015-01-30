@@ -143,14 +143,14 @@
 
 - (void)debtSummChanged:(NSNotification *)notification {
     
-    STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
+    STMOutlet *outlet = (notification.userInfo)[@"outlet"];
     [self reloadRowWithOutlet:outlet];
     
 }
 
 - (void)cashingIsProcessedChanged:(NSNotification *)notification {
 
-    STMOutlet *outlet = [notification.userInfo objectForKey:@"outlet"];
+    STMOutlet *outlet = (notification.userInfo)[@"outlet"];
     [self reloadRowWithOutlet:outlet];
 
 }
@@ -311,7 +311,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtCell" forIndexPath:indexPath];
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.resultsController sections] objectAtIndex:indexPath.section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][indexPath.section];
     
     STMOutlet *outlet = sectionInfo.objects[indexPath.row];
     

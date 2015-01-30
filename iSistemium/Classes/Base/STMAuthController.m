@@ -498,15 +498,15 @@
         
         if (self.controllerState == STMAuthEnterPhoneNumber || self.controllerState == STMAuthNewSMSCode) {
             
-            self.requestID = [responseJSON objectForKey:@"ID"];
+            self.requestID = responseJSON[@"ID"];
             self.controllerState = STMAuthEnterSMSCode;
 
         } else if (self.controllerState == STMAuthEnterSMSCode) {
             
-            self.serviceUri = [responseJSON objectForKey:@"redirectUri"];
-            self.userID = [responseJSON objectForKey:@"ID"];
-            self.userName = [responseJSON objectForKey:@"name"];
-            self.accessToken = [responseJSON objectForKey:@"accessToken"];
+            self.serviceUri = responseJSON[@"redirectUri"];
+            self.userID = responseJSON[@"ID"];
+            self.userName = responseJSON[@"name"];
+            self.accessToken = responseJSON[@"accessToken"];
             self.controllerState = STMAuthSuccess;
             
         }

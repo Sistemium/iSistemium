@@ -298,7 +298,7 @@
             
             if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
-                [[self sharedController].hrefDictionary setObject:object forKey:href];
+                ([self sharedController].hrefDictionary)[href] = object;
                 //                NSLog(@"hrefDictionary.allKeys1 %d", [self sharedController].hrefDictionary.allKeys.count);
                 
                 [[self sharedController] addOperationForObject:object];
@@ -340,7 +340,7 @@
     }
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
     NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
     NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
     

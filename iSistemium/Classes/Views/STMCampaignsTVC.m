@@ -63,7 +63,7 @@
 
 - (void)photoReportsChanged:(NSNotification *)notification {
     
-    STMCampaign *campaign = [[notification userInfo] objectForKey:@"campaign"];
+    STMCampaign *campaign = [notification userInfo][@"campaign"];
     
     NSUInteger section = 0;
     id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];

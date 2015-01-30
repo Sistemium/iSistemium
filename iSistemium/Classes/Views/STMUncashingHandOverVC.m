@@ -745,7 +745,7 @@
         
 //        [self saveImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
         
-        self.pictureImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+        self.pictureImage = info[UIImagePickerControllerOriginalImage];
         [self.spinnerView removeFromSuperview];
         self.spinnerView = nil;
         self.imagePickerController = nil;
