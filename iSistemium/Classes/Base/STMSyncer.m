@@ -60,7 +60,7 @@
 @synthesize syncerState = _syncerState;
 
 
-- (id)init {
+- (instancetype)init {
     
     self = [super init];
     

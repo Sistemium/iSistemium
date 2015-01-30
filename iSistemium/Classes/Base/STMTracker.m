@@ -28,7 +28,7 @@
 @synthesize trackerFinishTime = _trackerFinishTime;
 
 
-- (id)init {
+- (instancetype)init {
     
     self = [super init];
     
