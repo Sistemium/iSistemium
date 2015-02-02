@@ -27,6 +27,8 @@
 @property (nonatomic, strong) NSString *appDownloadUrl;
 @property (nonatomic) BOOL updateAlertIsShowing;
 
+@property (nonatomic, strong) UIViewController *currentTappedVC;
+
 @end
 
 @implementation STMRootTBC
@@ -218,9 +220,9 @@
 
 - (void)currentTabBarItemDidTapped {
     
-    if ([self.selectedViewController conformsToProtocol:@protocol(STMTabBarViewController)]) {
+    if ([self.currentTappedVC conformsToProtocol:@protocol(STMTabBarViewController)]) {
         
-        [(id <STMTabBarViewController>)self.selectedViewController showActionSheetFromTabBarItem];
+        [(id <STMTabBarViewController>)self.currentTappedVC showActionSheetFromTabBarItem];
         
     }
     
@@ -232,7 +234,7 @@
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
 
     if ([viewController isEqual:self.selectedViewController]) {
-        [self currentTabBarItemDidTapped];
+        self.currentTappedVC = viewController;
     }
     
 //    NSLog(@"shouldSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
@@ -242,6 +244,13 @@
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+    
+    if (self.currentTappedVC) {
+        
+        [self currentTabBarItemDidTapped];
+        self.currentTappedVC = nil;
+        
+    }
     
 //    NSLog(@"didSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
 
