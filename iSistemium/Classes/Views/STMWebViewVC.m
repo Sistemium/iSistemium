@@ -76,8 +76,11 @@
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
-    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+//    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
 
+//    NSLog(@"currentDiskUsage %d", [NSURLCache sharedURLCache].currentDiskUsage);
+//    NSLog(@"currentMemoryUsage %d", [NSURLCache sharedURLCache].currentMemoryUsage);
+    
     [self.webView loadRequest:request];
 
 }
@@ -145,7 +148,7 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
 //    NSLog(@"cachedResponseForRequest %@", [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request]);
-    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:webView.request];
+//    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:webView.request];
     
     NSString *bsAccessToken = [self.webView stringByEvaluatingJavaScriptFromString:[self webViewSessionCheckJS]];
 
@@ -162,6 +165,11 @@
 
 }
 
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    
+    NSLog(@"webView didFailLoadWithError: %@", error.localizedDescription);
+    
+}
 
 #pragma mark - view lifecycle
 

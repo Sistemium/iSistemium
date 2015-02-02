@@ -234,6 +234,8 @@
     if ([viewController isEqual:self.selectedViewController]) {
         [self currentTabBarItemDidTapped];
     }
+    
+//    NSLog(@"shouldSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
 
     return YES;
     
@@ -241,6 +243,8 @@
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
+//    NSLog(@"didSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
+
 }
 
 - (id <UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
