@@ -14,10 +14,36 @@
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic) BOOL isAuthorizing;
+@property (nonatomic, strong) UIView *spinnerView;
 
 @end
 
 @implementation STMWebViewVC
+
+- (UIView *)spinnerView {
+    
+    if (!_spinnerView) {
+        
+        UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
+        view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        view.backgroundColor = [UIColor grayColor];
+        view.alpha = 0.75;
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        spinner.center = view.center;
+        spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+        [spinner startAnimating];
+        [view addSubview:spinner];
+        
+        _spinnerView = view;
+        
+    }
+    
+    return _spinnerView;
+    
+}
+
+
+#pragma mark - settings
 
 - (NSDictionary *)webViewSettings {
     
@@ -52,6 +78,8 @@
 
 
 - (void)loadWebView {
+
+    [self.view addSubview:self.spinnerView];
 
     NSString *urlString = [self webViewUrlString];
     [self loadURLString:urlString];
@@ -161,6 +189,10 @@
         self.isAuthorizing = YES;
         [self authLoadWebView];
         
+    } else {
+        
+        [self.spinnerView removeFromSuperview];
+        
     }
 
 }
@@ -178,7 +210,6 @@
 //    [self flushCookie];
 
     self.tabBarItem.title = [self webViewTitle];
-    
     self.webView.delegate = self;
     [self loadWebView];
     
