@@ -772,7 +772,11 @@
     
     [self checkObjectsForFlushing];
     
+#ifdef DEBUG
     [self totalNumberOfObjects];
+#else
+
+#endif
     
     [[self document] saveDocument:^(BOOL success) {
 

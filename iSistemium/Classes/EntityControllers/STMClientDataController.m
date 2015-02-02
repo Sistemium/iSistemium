@@ -30,11 +30,11 @@
 
 + (NSString *)buildType {
     
-    #ifdef DEBUG
-        return @"debug";
-    #else
-        return @"release";
-    #endif
+#ifdef DEBUG
+    return @"debug";
+#else
+    return @"release";
+#endif
     
 }
 
