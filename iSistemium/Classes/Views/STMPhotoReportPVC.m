@@ -11,7 +11,7 @@
 #import "STMSessionManager.h"
 #import "STMDocument.h"
 #import "STMRecordStatus.h"
-#import "STMObjectsController.h"
+#import "STMRecordStatusController.h"
 
 @interface STMPhotoReportPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
@@ -60,7 +60,7 @@
     STMPhotoReport *photoReport = (notification.userInfo)[@"photo2delete"];
     STMCampaign *campaign = photoReport.campaign;
     
-    STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:photoReport];
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:photoReport];
     recordStatus.isRemoved = @YES;
     
     [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photoReport];

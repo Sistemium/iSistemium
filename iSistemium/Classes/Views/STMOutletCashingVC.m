@@ -12,7 +12,7 @@
 #import "STMCashing.h"
 #import "STMDebt.h"
 #import "STMDebtsSVC.h"
-#import "STMObjectsController.h"
+#import "STMRecordStatusController.h"
 
 @interface STMOutletCashingTV : UITableView
 
@@ -355,7 +355,7 @@
 
         STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
         
-        STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:cashing];
+        STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:cashing];
         recordStatus.isRemoved = @YES;
         
         [self.document.managedObjectContext deleteObject:cashing];

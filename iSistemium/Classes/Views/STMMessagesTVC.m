@@ -11,7 +11,7 @@
 #import "STMConstants.h"
 #import "STMSyncer.h"
 #import "STMRecordStatus.h"
-#import "STMObjectsController.h"
+#import "STMRecordStatusController.h"
 
 #define STMTextFont [UIFont systemFontOfSize:12]
 #define STMDetailTextFont [UIFont systemFontOfSize:18]
@@ -108,10 +108,9 @@
     STMMessage *message = messageData[@"message"];
     NSIndexPath *indexPath = messageData[@"indexPath"];
     
-    STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:message];
-    
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
     recordStatus.isRead = @YES;
-
+    
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     
     [self showUnreadCount];
@@ -159,7 +158,7 @@
     cell.textLabel.text = [dateFormatter stringFromDate:message.cts];
     cell.detailTextLabel.text = message.body;
 
-    STMRecordStatus *recordStatus = [STMObjectsController recordStatusForObject:message];
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
     
     if ([recordStatus.isRead boolValue]) {
         

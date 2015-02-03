@@ -10,10 +10,10 @@
 #import "STMAuthController.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
-#import "STMEntityDescription.h"
 #import "STMEntityController.h"
 #import "STMClientDataController.h"
 #import "STMPicturesController.h"
+#import "STMRecordStatusController.h"
 
 #import "STMPartner.h"
 #import "STMOutlet.h"
@@ -49,10 +49,7 @@
     __strong static id _sharedController = nil;
     
     dispatch_once(&pred, ^{
-    
-//        NSLog(@"STMObjectsController init");
         _sharedController = [[self alloc] init];
-    
     });
     
     return _sharedController;
@@ -116,7 +113,7 @@
         NSString *xid = dictionary[@"xid"];
         NSData *xidData = (xid) ? [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]] : nil;
         
-        STMRecordStatus *recordStatus = [self existingRecordStatusForXid:xidData];
+        STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:xidData];
         
         if (![recordStatus.isRemoved boolValue]) {
             
@@ -466,23 +463,6 @@
 
 }
 
-/*
-+ (NSArray *)entityNamesForFlushing {
-    
-    NSDictionary *entitisDic = [STMEntityController stcEntities];
-    
-    
-    NSArray *entityNamesForFlushing = @[
-                                       NSStringFromClass([STMTrack class]),
-                                       NSStringFromClass([STMLocation class]),
-                                       NSStringFromClass([STMLogMessage class])
-                                       ];
-    
-    return entityNamesForFlushing;
-
-}
-*/
-
 
 #pragma mark - getting specified objects
 
@@ -543,38 +523,6 @@
     [object setValue:@YES forKey:@"isFantom"];
     
     return object;
-    
-}
-
-+ (STMRecordStatus *)existingRecordStatusForXid:(NSData *)objectXid {
-
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", objectXid];
-    
-    NSError *error;
-    NSArray *fetchResult = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-    
-    STMRecordStatus *recordStatus = [fetchResult lastObject];
-
-    return recordStatus;
-    
-}
-
-+ (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object {
-    
-    NSData *objectXid = [object valueForKey:@"xid"];
-
-    STMRecordStatus *recordStatus = [self existingRecordStatusForXid:objectXid];
-    
-    if (!recordStatus) {
-        
-        recordStatus = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].managedObjectContext];
-        recordStatus.objectXid = objectXid;
-        
-    }
-    
-    return recordStatus;
     
 }
 
@@ -657,7 +605,7 @@
 
 + (STMRecordStatus *)removeObject:(NSManagedObject *)object {
     
-    STMRecordStatus *recordStatus = [self recordStatusForObject:object];
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:object];
     recordStatus.isRemoved = @YES;
     
     [self.document.managedObjectContext deleteObject:object];

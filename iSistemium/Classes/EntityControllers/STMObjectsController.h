@@ -26,7 +26,6 @@
 
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName;
 
-+ (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
 + (STMRecordStatus *)removeObject:(NSManagedObject *)object;
 
 + (void)dataLoadingFinished;

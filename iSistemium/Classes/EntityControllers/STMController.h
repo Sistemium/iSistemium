@@ -10,6 +10,7 @@
 #import "STMDocument.h"
 #import "STMSyncer.h"
 #import "STMSession.h"
+#import "STMEntityDescription.h"
 
 @interface STMController : NSObject
 
