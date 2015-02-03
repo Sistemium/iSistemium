@@ -53,8 +53,10 @@
     
     if (self) {
         
-        NSString *keychainPhoneNumber = [self.keychainItem objectForKey:(__bridge id)kSecAttrLabel];
-        [self.phoneNumber isEqualToString:keychainPhoneNumber] ? [self checkAccessToken] : [self.keychainItem resetKeychainItem];
+//        NSString *keychainPhoneNumber = [self.keychainItem objectForKey:(__bridge id)kSecAttrLabel];
+//        [self.phoneNumber isEqualToString:keychainPhoneNumber] ? [self checkAccessToken] : [self.keychainItem resetKeychainItem];
+
+        [self checkAccessToken];
         
     }
     
@@ -69,14 +71,17 @@
     
     if (!_phoneNumber) {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        id phoneNumber = [defaults objectForKey:@"phoneNumber"];
+//        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//        id phoneNumber = [defaults objectForKey:@"phoneNumber"];
+//        
+//        if ([phoneNumber isKindOfClass:[NSString class]]) {
+//            _phoneNumber = phoneNumber;
+//            NSLog(@"phoneNumber %@", phoneNumber);
+//        }
         
-        if ([phoneNumber isKindOfClass:[NSString class]]) {
-            _phoneNumber = phoneNumber;
-            NSLog(@"phoneNumber %@", phoneNumber);
-        }
-
+        _phoneNumber = [self.keychainItem objectForKey:(__bridge id)kSecAttrLabel];
+        NSLog(@"phoneNumber %@", _phoneNumber);
+        
     }
     
     return _phoneNumber;
@@ -87,9 +92,9 @@
     
     if (phoneNumber != _phoneNumber) {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:phoneNumber forKey:@"phoneNumber"];
-        [defaults synchronize];
+//        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//        [defaults setObject:phoneNumber forKey:@"phoneNumber"];
+//        [defaults synchronize];
 
         [self.keychainItem setObject:phoneNumber forKey:(__bridge id)kSecAttrLabel];
         
@@ -287,19 +292,22 @@
 
 - (void)checkAccessToken {
 
-    if (self.userID) {
-        NSLog(@"userID %@", self.userID);
-    } else {
+    BOOL checkValue = YES;
+    
+    if (!self.userID || [self.userID isEqualToString:@""]) {
         NSLog(@"No userID");
-    }
-    if (self.accessToken) {
-//        NSLog(@"accessToken %@", self.accessToken);
-        NSLog(@"accessToken ok");
+        checkValue = NO;
     } else {
+        NSLog(@"userID %@", self.userID);
+    }
+    if (!self.accessToken || [self.accessToken isEqualToString:@""]) {
         NSLog(@"No accessToken");
+        checkValue = NO;
+    } else {
+        NSLog(@"accessToken %@", self.accessToken);
     }
 
-    BOOL checkValue = ![self.accessToken isEqualToString:@""] && ![self.userID isEqualToString:@""];
+//    BOOL checkValue = ![self.accessToken isEqualToString:@""] && ![self.userID isEqualToString:@""];
     
 //    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
     
