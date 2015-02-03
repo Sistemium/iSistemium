@@ -11,12 +11,13 @@
 #import "STMSessionManager.h"
 #import "STMRootTBC.h"
 #import "STMCampaignPageCVC.h"
+#import "STMConstants.h"
 
 @interface STMCampaignDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *descriptionLabel;
 
-//@property (nonatomic, strong) UIBarButtonItem *homeButton;
 @property (nonatomic, strong) STMDocument *document;
 
 @property (nonatomic) NSUInteger currentIndex;
@@ -67,37 +68,15 @@
             self.dataSource = self;
         }
         
+        [self showCampaignDescription];
+        
         self.navigationItem.leftBarButtonItem.title = self.campaign.name;
+        
 //        [self.popover dismissPopoverAnimated:YES];
         
     }
     
 }
-
-/*
-- (UIBarButtonItem *)homeButton {
-    
-    if (!_homeButton) {
-        
-        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HOME", nil) style:UIBarButtonItemStylePlain target:self action:@selector(homeButtonPressed)];
-        
-        _homeButton = button;
-        
-    }
-    
-    return _homeButton;
-    
-}
-
-
-- (void)homeButtonPressed {
-    
-    //    NSLog(@"homeButtonPressed");
-    [[STMRootTBC sharedRootVC] showTabWithName:@"STMAuthTVC"];
-    
-    
-}
-*/
 
 - (STMCampaignPageCVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
@@ -127,6 +106,29 @@
     
 }
 
+- (void)showCampaignDescription {
+
+    NSString *campaignDescription = self.campaign.commentText;
+    
+    if (campaignDescription) {
+        
+        self.descriptionLabel.title = NSLocalizedString(@"CAMPAIGN TERMS", nil);
+        self.descriptionLabel.enabled = YES;
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:ACTIVE_BLUE_COLOR};
+        [self.descriptionLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+        
+    } else {
+        
+        self.descriptionLabel.title = @"";
+        self.descriptionLabel.enabled = NO;
+
+    }
+    
+}
+
+- (void)showDescriptionPopover {
+    
+}
 
 #pragma mark - Page View Controller Data Source
 
@@ -238,12 +240,20 @@
 
 }
 
+- (void)descriptionLabelSetup {
+    
+    self.descriptionLabel.title = @"";
+    self.descriptionLabel.enabled = NO;
+    
+    [self.descriptionLabel setTarget:self];
+    [self.descriptionLabel setAction:@selector(showDescriptionPopover)];
+
+}
+
 #pragma mark - viewlifecycle
 
 - (void)customInit {
     
-//    self.navigationItem.rightBarButtonItem = self.homeButton;
-
     self.dataSource = self;
     self.delegate = self;
     
@@ -251,6 +261,8 @@
     [self setVCAtIndex:self.currentIndex direction:UIPageViewControllerNavigationDirectionForward];
     
     self.view.autoresizesSubviews = YES;
+    
+    [self descriptionLabelSetup];
     
 }
 

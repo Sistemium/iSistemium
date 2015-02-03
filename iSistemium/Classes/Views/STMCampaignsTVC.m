@@ -143,8 +143,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"campaignCell" forIndexPath:indexPath];
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
-    STMCampaign *campaign = sectionInfo.objects[indexPath.row];
+    STMCampaign *campaign = [self.resultsController objectAtIndexPath:indexPath];
 
     cell.textLabel.text = campaign.name;
     
@@ -158,7 +157,6 @@
     NSArray *campaignPhotos = [self.document.managedObjectContext executeFetchRequest:request error:&error];
 
     int photosCount = (int)campaignPhotos.count;
-    
     
     NSString *articlesString = NSLocalizedString([[STMFunctions pluralTypeForCount:articlesCount] stringByAppendingString:@"ARTICLES"], nil);
     NSString *picturesString = NSLocalizedString([[STMFunctions pluralTypeForCount:picturesCount] stringByAppendingString:@"PICTURES"], nil);
@@ -207,9 +205,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
-    STMCampaign *campaign = sectionInfo.objects[indexPath.row];
-
+    STMCampaign *campaign = [self.resultsController objectAtIndexPath:indexPath];
     self.splitVC.detailVC.campaign = campaign;
     
     return indexPath;
