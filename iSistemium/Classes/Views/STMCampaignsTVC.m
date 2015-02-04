@@ -48,9 +48,24 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]];
+        
+        NSSortDescriptor *groupDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"campaignGroup.ord"
+                                                                          ascending:YES
+                                                                           selector:@selector(compare:)];
+        
+        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name"
+                                                                         ascending:YES
+                                                                          selector:@selector(caseInsensitiveCompare:)];
+        
+        request.sortDescriptors = @[groupDescriptor, nameDescriptor];
+        
         request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:@"campaignGroup.name"
+                                                                            cacheName:nil];
+        
         _resultsController.delegate = self;
     
 //        NSLog(@"_resultsController %@", _resultsController);
