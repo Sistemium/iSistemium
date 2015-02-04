@@ -49,8 +49,8 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
         
-        NSSortDescriptor *groupDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"campaignGroup.ord"
-                                                                          ascending:YES
+        NSSortDescriptor *groupDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"campaignGroup.name"
+                                                                          ascending:NO
                                                                            selector:@selector(compare:)];
         
         NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name"
