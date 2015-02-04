@@ -36,6 +36,7 @@
 #import "STMUncashingPlace.h"
 #import "STMTrack.h"
 #import "STMEntity.h"
+#import "STMCampaignGroup.h"
 
 
 @implementation STMObjectsController
@@ -754,6 +755,7 @@
                              NSStringFromClass([STMUncashingPlace class]),
                              NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMLocation class]),
+                             NSStringFromClass([STMCampaignGroup class]),
                              NSStringFromClass([STMEntity class])];
     
     NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
