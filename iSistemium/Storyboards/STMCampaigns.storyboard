@@ -169,6 +169,26 @@
             </objects>
             <point key="canvasLocation" x="2077" y="-1017"/>
         </scene>
+        <!--Campaign DescriptionVC-->
+        <scene sceneID="VVU-Xz-RCR">
+            <objects>
+                <viewController storyboardIdentifier="campaignDescriptionPopover" id="g6z-fV-et9" customClass="STMCampaignDescriptionVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="oEc-8r-sj5"/>
+                        <viewControllerLayoutGuide type="bottom" id="gwA-XS-RHK"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fHk-zU-F3r">
+                        <rect key="frame" x="0.0" y="0.0" width="512" height="256"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="512" height="256"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ire-qN-Vug" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2105" y="-297"/>
+        </scene>
         <!--Campaign PictureCVC-->
         <scene sceneID="MIG-X8-e8H">
             <objects>

@@ -12,11 +12,14 @@
 #import "STMRootTBC.h"
 #import "STMCampaignPageCVC.h"
 #import "STMConstants.h"
+#import "STMCampaignDescriptionVC.h"
 
 @interface STMCampaignDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *descriptionLabel;
+
+@property (nonatomic, strong) UIPopoverController *campaignDescriptionPopover;
 
 @property (nonatomic, strong) STMDocument *document;
 
@@ -126,8 +129,29 @@
     
 }
 
+
+- (UIPopoverController *)campaignDescriptionPopover {
+    
+    if (!_campaignDescriptionPopover) {
+        
+        STMCampaignDescriptionVC *campaignDescriptionPopover = [self.storyboard instantiateViewControllerWithIdentifier:@"campaignDescriptionPopover"];
+//        uncashingInfoPopover.uncashing = self.uncashing;
+        
+        _campaignDescriptionPopover = [[UIPopoverController alloc] initWithContentViewController:campaignDescriptionPopover];
+        
+    }
+    
+    return _campaignDescriptionPopover;
+    
+}
+
 - (void)showDescriptionPopover {
     
+    self.campaignDescriptionPopover = nil;
+    [self.campaignDescriptionPopover presentPopoverFromBarButtonItem:self.descriptionLabel
+                                            permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                            animated:YES];
+
 }
 
 #pragma mark - Page View Controller Data Source

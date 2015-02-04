@@ -44,6 +44,7 @@
 		2C4E443B1A810A6D006E6AF1 /* STMRecordStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */; };
 		2C4E443F1A8209B6006E6AF1 /* STMCampaignGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E443E1A8209B6006E6AF1 /* STMCampaignGroup.m */; };
 		2C4E44421A8209E6006E6AF1 /* STMCampaign.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E44411A8209E6006E6AF1 /* STMCampaign.m */; };
+		2C4E44451A8232A7006E6AF1 /* STMCampaignDescriptionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E44441A8232A7006E6AF1 /* STMCampaignDescriptionVC.m */; };
 		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
 		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
 		2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B88D19409E71002298A5 /* STMSessionManager.m */; };
@@ -242,6 +243,8 @@
 		2C4E443E1A8209B6006E6AF1 /* STMCampaignGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignGroup.m; sourceTree = "<group>"; };
 		2C4E44401A8209E6006E6AF1 /* STMCampaign.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaign.h; sourceTree = "<group>"; };
 		2C4E44411A8209E6006E6AF1 /* STMCampaign.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaign.m; sourceTree = "<group>"; };
+		2C4E44431A8232A7006E6AF1 /* STMCampaignDescriptionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignDescriptionVC.h; sourceTree = "<group>"; };
+		2C4E44441A8232A7006E6AF1 /* STMCampaignDescriptionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignDescriptionVC.m; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
 		2C53B88919409E42002298A5 /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
 		2C53B88C19409E71002298A5 /* STMSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSessionManager.h; sourceTree = "<group>"; };
@@ -608,6 +611,8 @@
 				2C53B9B81944AB01002298A5 /* STMCampaignsTVC.m */,
 				2CD443E3195AAD72004ADE58 /* STMCampaignDetailsPVC.h */,
 				2CD443E4195AAD72004ADE58 /* STMCampaignDetailsPVC.m */,
+				2C4E44431A8232A7006E6AF1 /* STMCampaignDescriptionVC.h */,
+				2C4E44441A8232A7006E6AF1 /* STMCampaignDescriptionVC.m */,
 				2CD443EC195AB4D6004ADE58 /* STMCampaignPageCVC.h */,
 				2CD443ED195AB4D6004ADE58 /* STMCampaignPageCVC.m */,
 				2CD443E6195AB23B004ADE58 /* STMCampaignPictureCVC.h */,
@@ -1139,6 +1144,7 @@
 				2CB4052319BF3A9600813E88 /* STMRecordStatus.m in Sources */,
 				2C65291619576895008605D9 /* STMArticlePicture.m in Sources */,
 				2C53B8D81940A1B8002298A5 /* STMDatum+Init.m in Sources */,
+				2C4E44451A8232A7006E6AF1 /* STMCampaignDescriptionVC.m in Sources */,
 				2C53B9B91944AB01002298A5 /* STMCampaignsTVC.m in Sources */,
 				2CFF9A8A1A67DE8A002B6392 /* STMClientDataController.m in Sources */,
 				2C4BA3C61A419E30007F1D0A /* STMAddOutletVC.m in Sources */,
