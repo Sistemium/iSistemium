@@ -9,14 +9,28 @@
 #import "STMCampaignDescriptionVC.h"
 
 @interface STMCampaignDescriptionVC ()
+@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
 @end
 
 @implementation STMCampaignDescriptionVC
 
+
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    self.descriptionTextView.text = self.descriptionText;
+    
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning {

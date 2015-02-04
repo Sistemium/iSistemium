@@ -135,7 +135,7 @@
     if (!_campaignDescriptionPopover) {
         
         STMCampaignDescriptionVC *campaignDescriptionPopover = [self.storyboard instantiateViewControllerWithIdentifier:@"campaignDescriptionPopover"];
-//        uncashingInfoPopover.uncashing = self.uncashing;
+        campaignDescriptionPopover.descriptionText = self.campaign.commentText;
         
         _campaignDescriptionPopover = [[UIPopoverController alloc] initWithContentViewController:campaignDescriptionPopover];
         

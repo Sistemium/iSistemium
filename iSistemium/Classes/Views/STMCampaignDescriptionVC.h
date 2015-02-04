@@ -10,4 +10,6 @@
 
 @interface STMCampaignDescriptionVC : UIViewController
 
+@property (nonatomic, strong) NSString *descriptionText;
+
 @end
