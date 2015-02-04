@@ -53,10 +53,8 @@
     
     if (self) {
         
-//        NSString *keychainPhoneNumber = [self.keychainItem objectForKey:(__bridge id)kSecAttrLabel];
-//        [self.phoneNumber isEqualToString:keychainPhoneNumber] ? [self checkAccessToken] : [self.keychainItem resetKeychainItem];
-
-        [self checkAccessToken];
+        NSString *keychainPhoneNumber = [self.keychainItem objectForKey:(__bridge id)kSecAttrLabel];
+        [self.phoneNumber isEqualToString:keychainPhoneNumber] ? [self checkAccessToken] : [self.keychainItem resetKeychainItem];
         
     }
     
@@ -71,16 +69,13 @@
     
     if (!_phoneNumber) {
         
-//        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//        id phoneNumber = [defaults objectForKey:@"phoneNumber"];
-//        
-//        if ([phoneNumber isKindOfClass:[NSString class]]) {
-//            _phoneNumber = phoneNumber;
-//            NSLog(@"phoneNumber %@", phoneNumber);
-//        }
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        id phoneNumber = [defaults objectForKey:@"phoneNumber"];
         
-        _phoneNumber = [self.keychainItem objectForKey:(__bridge id)kSecAttrLabel];
-        NSLog(@"phoneNumber %@", _phoneNumber);
+        if ([phoneNumber isKindOfClass:[NSString class]]) {
+            _phoneNumber = phoneNumber;
+            NSLog(@"phoneNumber %@", phoneNumber);
+        }
         
     }
     
@@ -92,9 +87,9 @@
     
     if (phoneNumber != _phoneNumber) {
         
-//        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//        [defaults setObject:phoneNumber forKey:@"phoneNumber"];
-//        [defaults synchronize];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:phoneNumber forKey:@"phoneNumber"];
+        [defaults synchronize];
 
         [self.keychainItem setObject:phoneNumber forKey:(__bridge id)kSecAttrLabel];
         
