@@ -7,7 +7,6 @@
 //
 
 #import "STMLogger.h"
-#import "STMLogMessage+dayAsString.h"
 #import "STMDocument.h"
 #import "STMEntityDescription.h"
 
@@ -98,13 +97,52 @@
     
 }
 
+- (NSArray *)availableTypes {
+    return @[@"error", @"warning", @"info", @"debug"];
+}
+
+- (NSArray *)syncingTypesForSettingType:(NSString *)settingType {
+    
+    NSMutableArray *types = [[self availableTypes] mutableCopy];
+    
+    if ([settingType isEqualToString:@"debug"]) {
+        return types;
+    } else {
+        [types removeObject:@"debug"];
+        
+        if ([settingType isEqualToString:@"info"]) {
+            return types;
+        } else {
+            [types removeObject:@"info"];
+            
+            if ([settingType isEqualToString:@"warning"]) {
+                return types;
+            } else {
+                [types removeObject:@"warning"];
+                
+                if ([settingType isEqualToString:@"error"]) {
+                    return types;
+                } else {
+                    [types removeObject:@"error"];
+                    return types;
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
 - (void)saveLogMessageWithText:(NSString *)text {
     [self saveLogMessageWithText:text type:nil];
 }
 
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type {
     
-    if (!type) type = @"info";
+    if (![[self availableTypes] containsObject:type]) type = @"info";
     
     STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
     logMessage.text = text;

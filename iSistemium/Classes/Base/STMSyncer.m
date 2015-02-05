@@ -34,6 +34,7 @@
 @property (nonatomic, strong) NSString *xmlNamespace;
 @property (nonatomic) NSTimeInterval httpTimeoutForeground;
 @property (nonatomic) NSTimeInterval httpTimeoutBackground;
+@property (nonatomic, strong) NSString *uploadLogType;
 @property (nonatomic, strong) NSTimer *syncTimer;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) NSMutableDictionary *settings;
@@ -104,14 +105,14 @@
 
 - (int)fetchLimit {
     if (!_fetchLimit) {
-        _fetchLimit = [[self.settings valueForKey:@"fetchLimit"] intValue];
+        _fetchLimit = [self.settings[@"fetchLimit"] intValue];
     }
     return _fetchLimit;
 }
 
 - (double)syncInterval {
     if (!_syncInterval) {
-        _syncInterval = [[self.settings valueForKey:@"syncInterval"] doubleValue];
+        _syncInterval = [self.settings[@"syncInterval"] doubleValue];
     }
     return _syncInterval;
 }
@@ -126,37 +127,44 @@
 
 - (NSString *)restServerURI {
     if (!_restServerURI) {
-        _restServerURI = [self.settings valueForKey:@"restServerURI"];
+        _restServerURI = self.settings[@"restServerURI"];
     }
     return _restServerURI;
 }
 
 - (NSString *)apiUrlString {
     if (!_apiUrlString) {
-        _apiUrlString = [self.settings valueForKey:@"API.url"];
+        _apiUrlString = self.settings[@"API.url"];
     }
     return _apiUrlString;
 }
 
 - (NSString *)xmlNamespace {
     if (!_xmlNamespace) {
-        _xmlNamespace = [self.settings valueForKey:@"xmlNamespace"];
+        _xmlNamespace = self.settings[@"xmlNamespace"];
     }
     return _xmlNamespace;
 }
 
 - (NSTimeInterval)httpTimeoutForeground {
     if (!_httpTimeoutForeground) {
-        _httpTimeoutForeground = [[self.settings valueForKey:@"http.timeout.foreground"] doubleValue];
+        _httpTimeoutForeground = [self.settings[@"http.timeout.foreground"] doubleValue];
     }
     return _httpTimeoutForeground;
 }
 
 - (NSTimeInterval)httpTimeoutBackground {
     if (!_httpTimeoutBackground) {
-        _httpTimeoutBackground = [[self.settings valueForKey:@"http.timeout.background"] doubleValue];
+        _httpTimeoutBackground = [self.settings[@"http.timeout.background"] doubleValue];
     }
     return _httpTimeoutBackground;
+}
+
+- (NSString *)uploadLogType {
+    if (!_uploadLogType) {
+        _uploadLogType = self.settings[@"uploadLog.type"];
+    }
+    return _uploadLogType;
 }
 
 - (NSTimeInterval)timeout {
@@ -210,7 +218,10 @@
         
         NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
-        [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]] type:@""];
+        
+        NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
+//        [(STMLogger *)self.session.logger saveLogMessageWithText:logMessage];
+        NSLog(logMessage);
         
         switch (syncerState) {
                 
@@ -605,6 +616,10 @@
     
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
+    NSArray *logMessageSyncTypes = [(STMLogger *)self.session.logger syncingTypesForSettingType:self.uploadLogType];
+    
+    NSLog(@"logMessageSyncTypes %@", logMessageSyncTypes);
+    
     for (NSManagedObject *object in dataForSyncing) {
         
         NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
@@ -613,16 +628,20 @@
         
         if (isInSyncList) {
             
-            NSDate *currentDate = [NSDate date];
-            [object setPrimitiveValue:currentDate forKey:@"sts"];
-            
-            NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
-            NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
-            
-            objectDictionary[@"properties"] = propertiesDictionary;
-            [syncDataArray addObject:objectDictionary];
+            if ([entityName isEqualToString:NSStringFromClass([STMLogMessage class])]) {
 
-            [self.sendedEntities addObject:entityName];
+                NSString *type = [object valueForKey:@"type"];
+                
+                if ([logMessageSyncTypes containsObject:type]) {
+                    
+                    NSLog(@"type %@", [object valueForKey:@"type"]);
+                    
+                    [self addObject:object toSyncDataArray:syncDataArray];
+                }
+                
+            } else {
+                [self addObject:object toSyncDataArray:syncDataArray];
+            }
             
         }
         
@@ -636,7 +655,9 @@
         
     } else {
         
-        [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count] type:@""];
+        NSString *logMessage = [NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count];
+//        [(STMLogger *)self.session.logger saveLogMessageWithText:logMessage];
+        NSLog(logMessage);
 
         NSDictionary *dataDictionary = @{@"data": syncDataArray};
         
@@ -650,6 +671,21 @@
 
     }
     
+}
+
+- (void)addObject:(NSManagedObject *)object toSyncDataArray:(NSMutableArray *)syncDataArray {
+    
+    NSDate *currentDate = [NSDate date];
+    [object setPrimitiveValue:currentDate forKey:@"sts"];
+    
+    NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
+    NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+    
+    objectDictionary[@"properties"] = propertiesDictionary;
+    [syncDataArray addObject:objectDictionary];
+    
+    [self.sendedEntities addObject:object.entity.name];
+
 }
 
 - (NSMutableDictionary *)dictionaryForObject:(NSManagedObject *)object {
@@ -1213,9 +1249,10 @@
             } else {
                 [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
             }
-            
-            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"successefully sync %@ with xid %@", object.entity.name, xid] type:@""];
 
+            NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", object.entity.name, xid];
+//            [self.session.logger saveLogMessageWithText:logMessage type:@""];
+            NSLog(logMessage);
             
         } else {
             

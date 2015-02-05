@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "STMSessionManagement.h"
+#import "STMLogMessage+dayAsString.h"
 
 @interface STMLogger : NSObject <STMLogger, UITableViewDelegate, UITableViewDataSource>
 
@@ -16,5 +17,7 @@
 
 - (void)saveLogMessageWithText:(NSString *)text;
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
+
+- (NSArray *)syncingTypesForSettingType:(NSString *)settingType;
 
 @end

@@ -338,6 +338,7 @@
                       @"dataModelName"            : @"STMDataModel",
 //                      @"fetchLimit"               : @"50",
 //                      @"syncInterval"             : @"600",
+//                      @"uploadLog.type"           : @"",
                       @"requiredAccuracy"         : @"100",
                       @"desiredAccuracy"          : @"10",
                       @"timeFilter"               : @"60",
