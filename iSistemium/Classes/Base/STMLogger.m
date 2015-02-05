@@ -98,6 +98,9 @@
     
 }
 
+- (void)saveLogMessageWithText:(NSString *)text {
+    [self saveLogMessageWithText:text type:nil];
+}
 
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type {
     

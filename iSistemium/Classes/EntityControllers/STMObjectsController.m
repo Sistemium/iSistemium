@@ -456,7 +456,8 @@
 //                                       NSStringFromClass([STMTrack class]),
                                        NSStringFromClass([STMOutlet class]),
                                        NSStringFromClass([STMPartner class]),
-                                       NSStringFromClass([STMLocation class])
+                                       NSStringFromClass([STMLocation class]),
+                                       NSStringFromClass([STMLogMessage class])
                                        ];
     
     return entityNamesForSyncing;
