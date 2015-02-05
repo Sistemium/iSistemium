@@ -146,7 +146,7 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <toolbarItems>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="yW6-SV-Zdd"/>
-                        <barButtonItem title="Item" id="iUm-tM-2Or"/>
+                        <barButtonItem title="Item" width="400" id="iUm-tM-2Or"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="k9Z-Rq-r27"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="F7c-ku-BQV">

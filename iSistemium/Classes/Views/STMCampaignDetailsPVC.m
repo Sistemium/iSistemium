@@ -115,10 +115,28 @@
     
     if (campaignDescription) {
         
-        self.descriptionLabel.title = NSLocalizedString(@"CAMPAIGN TERMS", nil);
-        self.descriptionLabel.enabled = YES;
-        NSDictionary *attributes = @{NSForegroundColorAttributeName:ACTIVE_BLUE_COLOR};
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor],
+                                     NSFontAttributeName:[UIFont systemFontOfSize:18]};
         [self.descriptionLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+
+        CGSize size = [campaignDescription sizeWithAttributes:attributes];
+
+        if (size.width > self.descriptionLabel.width) {
+
+            attributes = @{NSForegroundColorAttributeName:ACTIVE_BLUE_COLOR,
+                           NSFontAttributeName:[UIFont systemFontOfSize:18]};
+            [self.descriptionLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+
+//            self.descriptionLabel.title = NSLocalizedString(@"CAMPAIGN TERMS", nil);
+            self.descriptionLabel.title = [self truncString:campaignDescription toWidth:self.descriptionLabel.width withTextAttributes:attributes];
+            self.descriptionLabel.enabled = YES;
+
+        } else {
+            
+            self.descriptionLabel.title = campaignDescription;
+            self.descriptionLabel.enabled = NO;
+            
+        }
         
     } else {
         
@@ -129,6 +147,26 @@
     
 }
 
+- (NSString *)truncString:(NSString *)string toWidth:(CGFloat)width withTextAttributes:(NSDictionary *)attributes {
+
+    if (string.length > 0) {
+
+        string = [string substringToIndex:[string length] - 1];
+        NSString *stringWithDots = [string stringByAppendingString:@"…"];
+        NSDictionary *attributes = [self.descriptionLabel titleTextAttributesForState:UIControlStateNormal];
+        CGSize size = [stringWithDots sizeWithAttributes:attributes];
+
+        if (size.width > width) {
+            return [self truncString:string toWidth:width withTextAttributes:attributes];
+        } else {
+            return stringWithDots;
+        }
+        
+    } else {
+        return nil;
+    }
+
+}
 
 - (UIPopoverController *)campaignDescriptionPopover {
     
