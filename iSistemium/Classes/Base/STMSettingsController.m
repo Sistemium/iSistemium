@@ -84,6 +84,8 @@
     NSArray *timeValueSuffixes = @[@"TrackerStartTime",
                                    @"TrackerFinishTime"];
     
+    NSArray *stringValue = @[@"uploadLog.type"];
+    
     if ([positiveDoubleValues containsObject:key]) {
         if ([self isPositiveDouble:value]) {
             return [NSString stringWithFormat:@"%f", [value doubleValue]];
@@ -122,9 +124,12 @@
             return [NSString stringWithFormat:@"%f", dValue];
         }
         
+    } else if ([stringValue containsObject:key]) {
+        return value;
     }
     
     return nil;
+    
 }
 
 - (BOOL)isPositiveDouble:(NSString *)value {

@@ -182,6 +182,11 @@
           "control": "textField"
         },
         {
+        "name": "uploadLog.type",
+        "value": "",
+        "control": "textField"
+        },
+        {
            "name": "http.timeout.foreground",
            "value": 30,
            "control": "slider",
