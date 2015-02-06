@@ -619,8 +619,6 @@
     
     NSArray *logMessageSyncTypes = [(STMLogger *)self.session.logger syncingTypesForSettingType:self.uploadLogType];
     
-    NSLog(@"logMessageSyncTypes %@", logMessageSyncTypes);
-    
     for (NSManagedObject *object in dataForSyncing) {
         
         NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
