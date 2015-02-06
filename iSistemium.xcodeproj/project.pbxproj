@@ -125,6 +125,7 @@
 		2CB4052019BF38F000813E88 /* STMMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB4051F19BF38F000813E88 /* STMMessage.m */; };
 		2CB4052319BF3A9600813E88 /* STMRecordStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB4052219BF3A9600813E88 /* STMRecordStatus.m */; };
 		2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */; };
+		2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */; };
 		2CD443E5195AAD72004ADE58 /* STMCampaignDetailsPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD443E4195AAD72004ADE58 /* STMCampaignDetailsPVC.m */; };
 		2CD443E8195AB23B004ADE58 /* STMCampaignPictureCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD443E7195AB23B004ADE58 /* STMCampaignPictureCVC.m */; };
 		2CD443EB195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD443EA195AB26A004ADE58 /* STMCampaignPhotoReportCVC.m */; };
@@ -420,6 +421,8 @@
 		2CB4052119BF3A9600813E88 /* STMRecordStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRecordStatus.h; sourceTree = "<group>"; };
 		2CB4052219BF3A9600813E88 /* STMRecordStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRecordStatus.m; sourceTree = "<group>"; };
 		2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCameraOverlayView.xib; sourceTree = "<group>"; };
+		2CD4311B1A850A4F00AFB5DE /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		2CD443E3195AAD72004ADE58 /* STMCampaignDetailsPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignDetailsPVC.h; sourceTree = "<group>"; };
 		2CD443E4195AAD72004ADE58 /* STMCampaignDetailsPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignDetailsPVC.m; sourceTree = "<group>"; };
 		2CD443E6195AB23B004ADE58 /* STMCampaignPictureCVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPictureCVC.h; sourceTree = "<group>"; };
@@ -809,6 +812,7 @@
 		2C8EF5A41940859F0021D202 /* iSistemium */ = {
 			isa = PBXGroup;
 			children = (
+				2CD4311A1A85098A00AFB5DE /* Frameworks */,
 				2CE8B51719547A7900C84A6D /* Storyboards */,
 				2C53B8AF1940A0A3002298A5 /* DataModel */,
 				2C8EF5D3194085B70021D202 /* Classes */,
@@ -871,6 +875,23 @@
 				2C8EF5EF194086E10021D202 /* Localizable.strings */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		2CD4311A1A85098A00AFB5DE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2CD4311E1A850A5E00AFB5DE /* KeychainItemWrapper */,
+			);
+			path = Frameworks;
+			sourceTree = "<group>";
+		};
+		2CD4311E1A850A5E00AFB5DE /* KeychainItemWrapper */ = {
+			isa = PBXGroup;
+			children = (
+				2CD4311B1A850A4F00AFB5DE /* KeychainItemWrapper.h */,
+				2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */,
+			);
+			path = KeychainItemWrapper;
 			sourceTree = "<group>";
 		};
 		2CD443EF195AD741004ADE58 /* Images */ = {
@@ -1184,6 +1205,7 @@
 				2CF365BC19FA511C00F078BD /* STMDebt.m in Sources */,
 				2C65290119576895008605D9 /* STMBatteryStatus.m in Sources */,
 				2C140ADC1A1D3016002C5C17 /* STMUncashingController.m in Sources */,
+				2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */,
 				2C53B8A119409E71002298A5 /* STMLogger.m in Sources */,
 				2C53B8A219409E71002298A5 /* STMTracker.m in Sources */,
 				2CF365AA19ED8F1900F078BD /* STMCashing.m in Sources */,

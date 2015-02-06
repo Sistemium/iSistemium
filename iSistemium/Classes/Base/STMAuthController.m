@@ -9,7 +9,7 @@
 #import "STMAuthController.h"
 #import "STMFunctions.h"
 #import <Security/Security.h>
-#import <KeychainItemWrapper/KeychainItemWrapper.h>
+#import "KeychainItemWrapper.h"
 #import "STMSessionManager.h"
 
 #define AUTH_URL @"https://sistemium.com/auth.php"
