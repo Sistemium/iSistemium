@@ -48,9 +48,24 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(compare:)]];
+        
+        NSSortDescriptor *groupDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"campaignGroup.name"
+                                                                          ascending:NO
+                                                                           selector:@selector(compare:)];
+        
+        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name"
+                                                                         ascending:YES
+                                                                          selector:@selector(caseInsensitiveCompare:)];
+        
+        request.sortDescriptors = @[groupDescriptor, nameDescriptor];
+        
         request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:@"campaignGroup.name"
+                                                                            cacheName:nil];
+        
         _resultsController.delegate = self;
     
 //        NSLog(@"_resultsController %@", _resultsController);
@@ -143,8 +158,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"campaignCell" forIndexPath:indexPath];
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
-    STMCampaign *campaign = sectionInfo.objects[indexPath.row];
+    STMCampaign *campaign = [self.resultsController objectAtIndexPath:indexPath];
 
     cell.textLabel.text = campaign.name;
     
@@ -158,7 +172,6 @@
     NSArray *campaignPhotos = [self.document.managedObjectContext executeFetchRequest:request error:&error];
 
     int photosCount = (int)campaignPhotos.count;
-    
     
     NSString *articlesString = NSLocalizedString([[STMFunctions pluralTypeForCount:articlesCount] stringByAppendingString:@"ARTICLES"], nil);
     NSString *picturesString = NSLocalizedString([[STMFunctions pluralTypeForCount:picturesCount] stringByAppendingString:@"PICTURES"], nil);
@@ -207,9 +220,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
-    STMCampaign *campaign = sectionInfo.objects[indexPath.row];
-
+    STMCampaign *campaign = [self.resultsController objectAtIndexPath:indexPath];
     self.splitVC.detailVC.campaign = campaign;
     
     return indexPath;

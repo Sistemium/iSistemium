@@ -343,7 +343,7 @@
         
     } else {
         
-        cell.textLabel.textColor = [UIColor blackColor];
+//        cell.textLabel.textColor = [UIColor blackColor];
         cell.detailTextLabel.textColor = [UIColor blackColor];
         
     }
