@@ -569,6 +569,8 @@
     
     [self addObservers];
     
+    self.tableView.rowHeight = 44;
+    
 //    STMRootTBC *rootTBC = (STMRootTBC *)self.tabBarController;
 //
 //    if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
