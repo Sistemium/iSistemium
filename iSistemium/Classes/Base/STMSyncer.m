@@ -631,10 +631,7 @@
 
                 NSString *type = [object valueForKey:@"type"];
                 
-                if ([logMessageSyncTypes containsObject:type]) {
-                    
-                    NSLog(@"type %@", [object valueForKey:@"type"]);
-                    
+                if ([logMessageSyncTypes containsObject:type]) {                    
                     [self addObject:object toSyncDataArray:syncDataArray];
                 }
                 
