@@ -2,15 +2,15 @@
 //  STMCampaign.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 04/02/15.
+//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMArticle, STMCampaignPicture, STMOutlet, STMPhotoReport;
+@class STMArticle, STMCampaignGroup, STMCampaignPicture, STMOutlet, STMPhotoReport;
 
 @interface STMCampaign : STMComment
 
@@ -21,6 +21,7 @@
 @property (nonatomic, retain) NSSet *outlets;
 @property (nonatomic, retain) NSSet *photoReports;
 @property (nonatomic, retain) NSSet *pictures;
+@property (nonatomic, retain) STMCampaignGroup *campaignGroup;
 @end
 
 @interface STMCampaign (CoreDataGeneratedAccessors)

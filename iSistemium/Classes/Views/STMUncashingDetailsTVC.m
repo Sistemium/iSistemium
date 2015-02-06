@@ -434,6 +434,19 @@
 }
 
 
+- (void)infoLabelSetup {
+    
+    self.infoLabel.title = @"";
+    self.infoLabel.enabled = NO;
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+    
+    [self.infoLabel setTarget:self];
+    [self.infoLabel setAction:@selector(showUncashingInfoPopover)];
+
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -461,15 +474,7 @@
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
 
-    self.infoLabel.title = @"";
-    self.infoLabel.enabled = NO;
-    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
-    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
-    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
-    
-    [self.infoLabel setTarget:self];
-    [self.infoLabel setAction:@selector(showUncashingInfoPopover)];
-    
+    [self infoLabelSetup];
     [self performFetch];
     
 }

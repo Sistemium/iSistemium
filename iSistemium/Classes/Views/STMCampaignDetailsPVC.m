@@ -11,12 +11,16 @@
 #import "STMSessionManager.h"
 #import "STMRootTBC.h"
 #import "STMCampaignPageCVC.h"
+#import "STMConstants.h"
+#import "STMCampaignDescriptionVC.h"
 
 @interface STMCampaignDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *descriptionLabel;
 
-//@property (nonatomic, strong) UIBarButtonItem *homeButton;
+@property (nonatomic, strong) UIPopoverController *campaignDescriptionPopover;
+
 @property (nonatomic, strong) STMDocument *document;
 
 @property (nonatomic) NSUInteger currentIndex;
@@ -67,37 +71,15 @@
             self.dataSource = self;
         }
         
+        [self showCampaignDescription];
+        
         self.navigationItem.leftBarButtonItem.title = self.campaign.name;
+        
 //        [self.popover dismissPopoverAnimated:YES];
         
     }
     
 }
-
-/*
-- (UIBarButtonItem *)homeButton {
-    
-    if (!_homeButton) {
-        
-        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HOME", nil) style:UIBarButtonItemStylePlain target:self action:@selector(homeButtonPressed)];
-        
-        _homeButton = button;
-        
-    }
-    
-    return _homeButton;
-    
-}
-
-
-- (void)homeButtonPressed {
-    
-    //    NSLog(@"homeButtonPressed");
-    [[STMRootTBC sharedRootVC] showTabWithName:@"STMAuthTVC"];
-    
-    
-}
-*/
 
 - (STMCampaignPageCVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
@@ -127,6 +109,88 @@
     
 }
 
+- (void)showCampaignDescription {
+
+    NSString *campaignDescription = self.campaign.commentText;
+    
+    if (campaignDescription) {
+        
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor],
+                                     NSFontAttributeName:[UIFont systemFontOfSize:18]};
+        [self.descriptionLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+
+        CGSize size = [campaignDescription sizeWithAttributes:attributes];
+
+        if (size.width > self.descriptionLabel.width) {
+
+            attributes = @{NSForegroundColorAttributeName:ACTIVE_BLUE_COLOR,
+                           NSFontAttributeName:[UIFont systemFontOfSize:18]};
+            [self.descriptionLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+
+//            self.descriptionLabel.title = NSLocalizedString(@"CAMPAIGN TERMS", nil);
+            self.descriptionLabel.title = [self truncString:campaignDescription toWidth:self.descriptionLabel.width withTextAttributes:attributes];
+            self.descriptionLabel.enabled = YES;
+
+        } else {
+            
+            self.descriptionLabel.title = campaignDescription;
+            self.descriptionLabel.enabled = NO;
+            
+        }
+        
+    } else {
+        
+        self.descriptionLabel.title = @"";
+        self.descriptionLabel.enabled = NO;
+
+    }
+    
+}
+
+- (NSString *)truncString:(NSString *)string toWidth:(CGFloat)width withTextAttributes:(NSDictionary *)attributes {
+
+    if (string.length > 0) {
+
+        string = [string substringToIndex:[string length] - 1];
+        NSString *stringWithDots = [string stringByAppendingString:@"…"];
+        NSDictionary *attributes = [self.descriptionLabel titleTextAttributesForState:UIControlStateNormal];
+        CGSize size = [stringWithDots sizeWithAttributes:attributes];
+
+        if (size.width > width) {
+            return [self truncString:string toWidth:width withTextAttributes:attributes];
+        } else {
+            return stringWithDots;
+        }
+        
+    } else {
+        return nil;
+    }
+
+}
+
+- (UIPopoverController *)campaignDescriptionPopover {
+    
+    if (!_campaignDescriptionPopover) {
+        
+        STMCampaignDescriptionVC *campaignDescriptionPopover = [self.storyboard instantiateViewControllerWithIdentifier:@"campaignDescriptionPopover"];
+        campaignDescriptionPopover.descriptionText = self.campaign.commentText;
+        
+        _campaignDescriptionPopover = [[UIPopoverController alloc] initWithContentViewController:campaignDescriptionPopover];
+        
+    }
+    
+    return _campaignDescriptionPopover;
+    
+}
+
+- (void)showDescriptionPopover {
+    
+    self.campaignDescriptionPopover = nil;
+    [self.campaignDescriptionPopover presentPopoverFromBarButtonItem:self.descriptionLabel
+                                            permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                            animated:YES];
+
+}
 
 #pragma mark - Page View Controller Data Source
 
@@ -238,12 +302,20 @@
 
 }
 
+- (void)descriptionLabelSetup {
+    
+    self.descriptionLabel.title = @"";
+    self.descriptionLabel.enabled = NO;
+    
+    [self.descriptionLabel setTarget:self];
+    [self.descriptionLabel setAction:@selector(showDescriptionPopover)];
+
+}
+
 #pragma mark - viewlifecycle
 
 - (void)customInit {
     
-//    self.navigationItem.rightBarButtonItem = self.homeButton;
-
     self.dataSource = self;
     self.delegate = self;
     
@@ -251,6 +323,8 @@
     [self setVCAtIndex:self.currentIndex direction:UIPageViewControllerNavigationDirectionForward];
     
     self.view.autoresizesSubviews = YES;
+    
+    [self descriptionLabelSetup];
     
 }
 
