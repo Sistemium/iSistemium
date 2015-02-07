@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2C0651F71A860CAF005AF57B /* STMAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C0651F61A860CAF005AF57B /* STMAuth.storyboard */; };
 		2C0651FA1A861228005AF57B /* STMAuthVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C0651F91A861228005AF57B /* STMAuthVC.m */; };
+		2C0651FD1A862F75005AF57B /* STMAuthNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C0651FC1A862F75005AF57B /* STMAuthNC.m */; };
 		2C140AB81A189772002C5C17 /* STMUIBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */; };
 		2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC21A18D397002C5C17 /* STMUncashingPlace.m */; };
 		2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC51A18D398002C5C17 /* STMUncashing.m */; };
@@ -173,6 +174,8 @@
 		2C0651F61A860CAF005AF57B /* STMAuth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMAuth.storyboard; sourceTree = "<group>"; };
 		2C0651F81A861228005AF57B /* STMAuthVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthVC.h; sourceTree = "<group>"; };
 		2C0651F91A861228005AF57B /* STMAuthVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthVC.m; sourceTree = "<group>"; };
+		2C0651FB1A862F75005AF57B /* STMAuthNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthNC.h; sourceTree = "<group>"; };
+		2C0651FC1A862F75005AF57B /* STMAuthNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthNC.m; sourceTree = "<group>"; };
 		2C140AB61A189772002C5C17 /* STMUIBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUIBarButtonItem.h; sourceTree = "<group>"; };
 		2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUIBarButtonItem.m; sourceTree = "<group>"; };
 		2C140AB91A18991B002C5C17 /* STMUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMUI.h; sourceTree = "<group>"; };
@@ -599,6 +602,8 @@
 			children = (
 				2CE8B513195475F400C84A6D /* STMRootTBC.h */,
 				2CE8B514195475F400C84A6D /* STMRootTBC.m */,
+				2C0651FB1A862F75005AF57B /* STMAuthNC.h */,
+				2C0651FC1A862F75005AF57B /* STMAuthNC.m */,
 				2C0651F81A861228005AF57B /* STMAuthVC.h */,
 				2C0651F91A861228005AF57B /* STMAuthVC.m */,
 				2CE8B52119556F0700C84A6D /* STMAuthTVC.h */,
@@ -1143,6 +1148,7 @@
 				2C140ACA1A19F5B3002C5C17 /* STMUncashingPlaceController.m in Sources */,
 				D9527F6D1A3A504D0098885D /* STMUISplitViewController.m in Sources */,
 				2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */,
+				2C0651FD1A862F75005AF57B /* STMAuthNC.m in Sources */,
 				2CD443E5195AAD72004ADE58 /* STMCampaignDetailsPVC.m in Sources */,
 				2CD443EE195AB4D6004ADE58 /* STMCampaignPageCVC.m in Sources */,
 				2C4E44421A8209E6006E6AF1 /* STMCampaign.m in Sources */,

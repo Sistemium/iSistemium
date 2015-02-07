@@ -8,21 +8,37 @@
 
 #import "STMAuthVC.h"
 #import "STMAuthController.h"
+#import "STMFunctions.h"
 
-@interface STMAuthVC ()
+@interface STMAuthVC () <UITextFieldDelegate>
+
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
 @property (weak, nonatomic) IBOutlet UITextField *phoneNumberTextField;
-@property (weak, nonatomic) IBOutlet UIButton *enterButton;
+@property (weak, nonatomic) IBOutlet UIButton *sendPhoneButton;
 
 @end
+
 
 @implementation STMAuthVC
 
 - (void)enterPhoneNumber {
     
     self.phoneNumberLabel.text = NSLocalizedString(@"ENTER PHONE NUMBER", nil);
-    [self.enterButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
+
+    self.sendPhoneButton.enabled = NO;
+    [self.sendPhoneButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
+    [self.sendPhoneButton addTarget:self action:@selector(sendPhoneNumber) forControlEvents:UIControlEventTouchUpInside];
     
+    self.phoneNumberTextField.delegate = self;
+    self.phoneNumberTextField.keyboardType = UIKeyboardTypeNumberPad;
+    [self.phoneNumberTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.phoneNumberTextField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
+
+    if ([STMAuthController authController].phoneNumber) {
+        self.phoneNumberTextField.text = [STMAuthController authController].phoneNumber;
+        [self textFieldDidChange:self.phoneNumberTextField];
+    }
+
 }
 
 - (void)enterSMSCode {
@@ -32,6 +48,43 @@
 - (void)authSuccess {
     
 }
+
+- (void)sendPhoneNumber {
+    [[STMAuthController authController] sendPhoneNumber:self.phoneNumberTextField.text];
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    if (textField == self.phoneNumberTextField) {
+        
+        if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
+            if ([STMFunctions isCorrectPhoneNumber:textField.text]) {
+                [self sendPhoneNumber];
+            }
+        }
+        return NO;
+        
+    }
+    return YES;
+    
+}
+
+- (void)textFieldDidChange:(UITextField *)textField {
+    
+    if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
+        
+        if ([STMFunctions isCorrectPhoneNumber:textField.text]) {
+            self.sendPhoneButton.enabled = YES;
+        } else {
+            self.sendPhoneButton.enabled = NO;
+        }
+
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 

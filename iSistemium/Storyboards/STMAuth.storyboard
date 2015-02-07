@@ -38,19 +38,19 @@
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="g2g-1D-s3A"/>
                     <connections>
-                        <outlet property="enterButton" destination="a1j-9k-3JR" id="0CP-xT-R9n"/>
                         <outlet property="phoneNumberLabel" destination="nzm-I6-fus" id="9Xe-do-Tun"/>
                         <outlet property="phoneNumberTextField" destination="wP0-CX-GR1" id="MdL-eR-fCG"/>
+                        <outlet property="sendPhoneButton" destination="a1j-9k-3JR" id="LMS-Vk-JwF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GeF-Vl-Ngc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="773" y="213"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--AuthNC-->
         <scene sceneID="5gm-T3-wfn">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="O4G-E8-Jmm" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="O4G-E8-Jmm" customClass="STMAuthNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="zhv-YG-gx0">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
