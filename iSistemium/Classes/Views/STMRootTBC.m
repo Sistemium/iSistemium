@@ -150,7 +150,7 @@
     NSLog(@"device is iPhone");
     
     self.storyboardnames = @[
-                             @"STMAuthTVC",
+                             @"STMAuth",
                              @"STMMessages",
 #ifdef DEBUG
                              @"STMSettings",
