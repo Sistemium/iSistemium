@@ -1,13 +1,13 @@
 //
-//  STMAuthNC.h
+//  STMAuthSMSVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 07/02/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "STMAuthVC.h"
 
-@interface STMAuthNC : UINavigationController
+@interface STMAuthSMSVC : STMAuthVC
 
 @end

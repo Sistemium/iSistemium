@@ -7,112 +7,75 @@
 //
 
 #import "STMAuthVC.h"
-#import "STMAuthController.h"
-#import "STMFunctions.h"
 
-@interface STMAuthVC () <UITextFieldDelegate>
-
-@property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
-@property (weak, nonatomic) IBOutlet UITextField *phoneNumberTextField;
-@property (weak, nonatomic) IBOutlet UIButton *sendPhoneButton;
+@interface STMAuthVC ()
 
 @end
 
-
 @implementation STMAuthVC
 
-- (void)enterPhoneNumber {
+- (UIView *)spinnerView {
     
-    self.phoneNumberLabel.text = NSLocalizedString(@"ENTER PHONE NUMBER", nil);
-
-    self.sendPhoneButton.enabled = NO;
-    [self.sendPhoneButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
-    [self.sendPhoneButton addTarget:self action:@selector(sendPhoneNumber) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.phoneNumberTextField.delegate = self;
-    self.phoneNumberTextField.keyboardType = UIKeyboardTypeNumberPad;
-    [self.phoneNumberTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [self.phoneNumberTextField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
-
-    if ([STMAuthController authController].phoneNumber) {
-        self.phoneNumberTextField.text = [STMAuthController authController].phoneNumber;
-        [self textFieldDidChange:self.phoneNumberTextField];
-    }
-
-}
-
-- (void)enterSMSCode {
-    
-}
-
-- (void)authSuccess {
-    
-}
-
-- (void)sendPhoneNumber {
-    [[STMAuthController authController] sendPhoneNumber:self.phoneNumberTextField.text];
-}
-
-#pragma mark - UITextFieldDelegate
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    
-    if (textField == self.phoneNumberTextField) {
+    if (!_spinnerView) {
         
-        if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
-            if ([STMFunctions isCorrectPhoneNumber:textField.text]) {
-                [self sendPhoneNumber];
-            }
-        }
-        return NO;
+        UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
+        view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        view.backgroundColor = [UIColor grayColor];
+        view.alpha = 0.75;
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        spinner.center = view.center;
+        spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+        [spinner startAnimating];
+        [view addSubview:spinner];
+        
+        _spinnerView = view;
         
     }
-    return YES;
+    
+    return _spinnerView;
     
 }
 
-- (void)textFieldDidChange:(UITextField *)textField {
-    
-    if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
-        
-        if ([STMFunctions isCorrectPhoneNumber:textField.text]) {
-            self.sendPhoneButton.enabled = YES;
-        } else {
-            self.sendPhoneButton.enabled = NO;
-        }
-
-    }
+- (void)authControllerStateChanged {
     
 }
 
 
 #pragma mark - view lifecycle
 
-- (void)customInit {
-    
-    if ([STMAuthController authController].controllerState == STMAuthSuccess) {
-        
-        self.navigationItem.title = NSLocalizedString(@"SISTEMIUM", nil);
-        [self authSuccess];
-        
-    } else {
-        
-        self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
-        
-        if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
-            [self enterPhoneNumber];
-        } else if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
-            [self enterSMSCode];
-        }
-        
-    }
 
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(authControllerStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
+- (void)customInit {
+    [self addObservers];
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     [self customInit];
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    [self.spinnerView removeFromSuperview];
     
 }
 

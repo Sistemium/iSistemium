@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMAuthController.h"
+#import "STMFunctions.h"
 
 @interface STMAuthVC : UIViewController
+
+@property (nonatomic, strong) UIView *spinnerView;
+
+- (void)customInit;
+
+- (void)authControllerStateChanged;
 
 @end

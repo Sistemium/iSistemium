@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <scenes>
-        <!--Title-->
+        <!--Phone-->
         <scene sceneID="LRd-76-hmi">
             <objects>
-                <viewController id="fVj-6S-p0R" customClass="STMAuthVC" sceneMemberID="viewController">
+                <viewController id="fVj-6S-p0R" customClass="STMAuthPhoneVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="cQh-12-uc4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -36,21 +36,37 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="g2g-1D-s3A"/>
+                    <navigationItem key="navigationItem" title="Phone" id="g2g-1D-s3A"/>
                     <connections>
                         <outlet property="phoneNumberLabel" destination="nzm-I6-fus" id="9Xe-do-Tun"/>
                         <outlet property="phoneNumberTextField" destination="wP0-CX-GR1" id="MdL-eR-fCG"/>
                         <outlet property="sendPhoneButton" destination="a1j-9k-3JR" id="LMS-Vk-JwF"/>
+                        <segue destination="c6U-Kx-9BH" kind="push" identifier="enterSMSCode" id="Ncj-z4-LbT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GeF-Vl-Ngc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="773" y="213"/>
         </scene>
-        <!--AuthNC-->
+        <!--SMS-->
+        <scene sceneID="u5f-Rj-kRa">
+            <objects>
+                <viewController id="c6U-Kx-9BH" customClass="STMAuthSMSVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UZK-1g-8QB">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="SMS" id="Evg-dQ-z9G"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="I7T-W5-KGr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1196" y="213"/>
+        </scene>
+        <!--Navigation Controller-->
         <scene sceneID="5gm-T3-wfn">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="O4G-E8-Jmm" customClass="STMAuthNC" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="O4G-E8-Jmm" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="zhv-YG-gx0">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
