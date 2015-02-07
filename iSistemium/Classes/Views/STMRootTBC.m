@@ -15,6 +15,7 @@
 #import "STMObjectsController.h"
 #import "STMTabBarViewController.h"
 #import "STMClientDataController.h"
+#import "STMConstants.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
@@ -87,6 +88,22 @@
 
     self.delegate = self;
     
+    if (IPAD) {
+        [self setupIPadTabs];
+    } else if (IPHONE) {
+        [self setupIPhoneTabs];
+    }
+    
+    self.tabBar.hidden = NO;
+    
+    [self stateChanged];
+    
+}
+
+- (void)setupIPadTabs {
+    
+    NSLog(@"device is iPad");
+    
     self.storyboardnames = @[
                              @"STMAuthTVC",
                              @"STMCampaigns",
@@ -125,13 +142,37 @@
                        [UIImage imageNamed:@"archive-128.png"]
 #endif
                        ];
+
+}
+
+- (void)setupIPhoneTabs {
     
+    NSLog(@"device is iPhone");
     
-//    self.tabBar.hidden = YES;
-    self.tabBar.hidden = NO;
+    self.storyboardnames = @[
+                             @"STMAuthTVC",
+                             @"STMMessages",
+#ifdef DEBUG
+                             @"STMSettings",
+#endif
+                             ];
     
-    [self stateChanged];
+    self.storyboardtitles = @[
+                              NSLocalizedString(@"AUTHORIZATION", nil),
+                              NSLocalizedString(@"MESSAGES", nil),
+#ifdef DEBUG
+                              NSLocalizedString(@"SETTINGS", nil),
+#endif
+                              ];
     
+    self.tabImages = @[
+                       [UIImage imageNamed:@"password2-128.png"],
+                       [UIImage imageNamed:@"message-128.png"],
+#ifdef DEBUG
+                       [UIImage imageNamed:@"settings3-128.png"],
+#endif
+                       ];
+
 }
 
 - (NSMutableDictionary *)tabs {
