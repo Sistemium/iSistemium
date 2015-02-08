@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMAuthVC.h"
+//#import "STMAuthVC.h"
+#import <UIKit/UIKit.h>
 
-@interface STMAuthSMSVC : STMAuthVC
+@interface STMAuthSMSVC : UIViewController//STMAuthVC
 
 @end

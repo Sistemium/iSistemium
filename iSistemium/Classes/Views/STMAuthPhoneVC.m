@@ -1,5 +1,5 @@
 //
-//  STMAuthVC.m
+//  STMAuthPhoneVC.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 07/02/15.
