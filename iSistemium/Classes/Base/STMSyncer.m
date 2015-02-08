@@ -784,8 +784,11 @@
             //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
             [request setHTTPMethod:@"POST"];
             [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+            [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
             
             request.HTTPBody = sendData;
+            
+//            NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
             
             NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
             
@@ -879,9 +882,11 @@
         
         [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
         [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
-        
+        [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+
 //        NSLog(@"requestURL %@", requestURL);
 //        NSLog(@"eTag %@", eTag);
+//        NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
         
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         
