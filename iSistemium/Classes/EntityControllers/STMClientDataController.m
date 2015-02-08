@@ -74,6 +74,17 @@
     return [UIDevice currentDevice].systemVersion;
 }
 
++ (NSData *)deviceUUID {
+    
+    NSUUID *identifierForVendor = [UIDevice currentDevice].identifierForVendor;
+    uuid_t uuid;
+    [identifierForVendor getUUIDBytes:uuid];
+    
+    NSData *deviceUUID = [NSData dataWithBytes:uuid length:16];
+    
+    return deviceUUID;
+    
+}
 
 #pragma mark - checking client state
 
