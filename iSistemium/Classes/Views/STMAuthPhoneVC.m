@@ -39,12 +39,6 @@
 
 }
 
-//- (void)authSuccess {
-//    
-//    [self performSegueWithIdentifier:@"showSuccessAuth" sender:self];
-//    
-//}
-
 - (void)sendPhoneNumber {
     
     [self.view addSubview:self.spinnerView];
@@ -79,8 +73,6 @@
     
     if ([STMAuthController authController].controllerState == STMAuthEnterSMSCode) {
         [self performSegueWithIdentifier:@"enterSMSCode" sender:self];
-//    } else if ([STMAuthController authController].controllerState == STMAuthSuccess) {
-//        [self authSuccess];
     }
     
 }
@@ -88,9 +80,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:@"enterSMSCode"]) {
-        
         NSLog(@"segue.destinationViewController %@", segue.destinationViewController);
-        
     }
     
 }
