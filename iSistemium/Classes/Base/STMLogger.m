@@ -45,7 +45,6 @@
         
         _session = session;
         self.document = (STMDocument *)session.document;
-        NSLog(@"_session %@", _session);
         
     }
     
@@ -58,18 +57,17 @@
         _document = document;
         self.resultsController = nil;
         
-        NSLog(@"_document %@", _document);
-
-        
-        NSError *error;
-        if (![self.resultsController performFetch:&error]) {
-            
-            NSLog(@"performFetch error %@", error);
-            
-        }
-
         if (_document) {
+            
             [self saveLogMessageDictionaryToDocument];
+            
+            NSError *error;
+            if (![self.resultsController performFetch:&error]) {
+                
+                NSLog(@"performFetch error %@", error);
+                
+            }
+
         }
         
     }
@@ -123,13 +121,13 @@
     
     if (![[self availableTypes] containsObject:type]) type = @"info";
     
+    NSLog(@"Log %@: %@", type, text);
+
     if (self.document) {
         
         STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
         logMessage.text = text;
         logMessage.type = type;
-        
-        NSLog(@"Log: %@", text);
         
 //        [self.document saveDocument:^(BOOL success) {
 //            
@@ -148,10 +146,50 @@
 }
 
 - (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic {
-        
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSDictionary *loggerDefaults = [defaults dictionaryForKey:[self loggerKey]];
+    NSMutableDictionary *loggerDefaultsMutable = [NSMutableDictionary dictionaryWithDictionary:loggerDefaults];
+    NSString *insertKey = [@(loggerDefaultsMutable.allValues.count) stringValue];
+
+    NSMutableDictionary *logMessageDicMutable = [NSMutableDictionary dictionaryWithDictionary:logMessageDic];
+    logMessageDicMutable[@"deviceCts"] = [NSDate date];
+    
+    loggerDefaultsMutable[insertKey] = logMessageDicMutable;
+    
+    [defaults setObject:loggerDefaultsMutable forKey:[self loggerKey]];
+    [defaults synchronize];
+    
 }
 
 - (void)saveLogMessageDictionaryToDocument {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSDictionary *loggerDefaults = [defaults dictionaryForKey:[self loggerKey]];
+
+    for (NSDictionary *logMessageDic in [loggerDefaults allValues]) {
+        
+        STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
+        
+        for (NSString *key in [logMessageDic allKeys]) {
+            [logMessage setValue:logMessageDic[key] forKey:key];
+        }
+        
+    }
+    
+    [defaults removeObjectForKey:[self loggerKey]];
+    [defaults synchronize];
+    
+}
+
+- (NSString *)loggerKey {
+    
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *loggerKey = [bundleIdentifier stringByAppendingString:@".logger"];
+
+    return loggerKey;
     
 }
 

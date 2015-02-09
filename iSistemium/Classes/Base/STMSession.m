@@ -21,8 +21,8 @@
     if (uid) {
         
         STMSession *session = [[STMSession alloc] init];
-        session.status = @"starting";
         session.uid = uid;
+        session.status = @"starting";
         session.startSettings = startSettings;
         session.authDelegate = authDelegate;
         session.settingsController = [STMSettingsController initWithSettings:startSettings];
@@ -151,6 +151,8 @@
 
 - (void)documentReady:(NSNotification *)notification {
     
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"test documentReady" type:@"debug"];
+    
     if ([[notification.userInfo valueForKey:@"uid"] isEqualToString:self.uid]) {
         
 //        self.logger = [[STMLogger alloc] init];
@@ -202,7 +204,7 @@
         
         _status = status;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionStatusChanged" object:self];
-        [self.logger saveLogMessageWithText:[NSString stringWithFormat:@"Session status changed to %@", self.status] type:nil];
+        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Session #%@ status changed to %@", self.uid, self.status] type:nil];
         
     }
     
