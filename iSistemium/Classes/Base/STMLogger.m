@@ -60,56 +60,6 @@
     
 }
 
-- (NSMutableIndexSet *)deletedSectionIndexes {
-    
-    if (!_deletedSectionIndexes) {
-        _deletedSectionIndexes = [NSMutableIndexSet indexSet];
-    }
-    
-    return _deletedSectionIndexes;
-    
-}
-
-- (NSMutableIndexSet *)insertedSectionIndexes {
-    
-    if (!_insertedSectionIndexes) {
-        _insertedSectionIndexes = [NSMutableIndexSet indexSet];
-    }
-    
-    return _insertedSectionIndexes;
-    
-}
-
-- (NSMutableArray *)deletedRowIndexPaths {
-    
-    if (!_deletedRowIndexPaths) {
-        _deletedRowIndexPaths = [NSMutableArray array];
-    }
-    
-    return _deletedRowIndexPaths;
-    
-}
-
-- (NSMutableArray *)insertedRowIndexPaths {
-    
-    if (!_insertedRowIndexPaths) {
-        _insertedRowIndexPaths = [NSMutableArray array];
-    }
-    
-    return _insertedRowIndexPaths;
-    
-}
-
-- (NSMutableArray *)updatedRowIndexPaths {
-    
-    if (!_updatedRowIndexPaths) {
-        _updatedRowIndexPaths = [NSMutableArray array];
-    }
-    
-    return _updatedRowIndexPaths;
-    
-}
-
 - (NSArray *)availableTypes {
     return @[@"error", @"warning", @"info", @"debug"];
 }
@@ -157,21 +107,31 @@
     
     if (![[self availableTypes] containsObject:type]) type = @"info";
     
-    STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
-    logMessage.text = text;
-    logMessage.type = type;
-    
-    NSLog(@"Log: %@", text);
-    
-    [self.document saveDocument:^(BOOL success) {
+    if (self.document) {
         
-        if (success) {
-//            NSLog(@"save logMessage success");
-        } else {
-//            NSLog(@"save logMessage fail");
-        }
+        STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
+        logMessage.text = text;
+        logMessage.type = type;
         
-    }];
+        NSLog(@"Log: %@", text);
+        
+//        [self.document saveDocument:^(BOOL success) {
+//            
+//            if (success) {
+//                //            NSLog(@"save logMessage success");
+//            } else {
+//                //            NSLog(@"save logMessage fail");
+//            }
+//            
+//        }];
+
+    } else {
+        [self saveLogMessageDictionary:@{@"text": text, @"type": type}];
+    }
+    
+}
+
+- (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic {
     
 }
 
@@ -188,6 +148,56 @@
     }
     
     return _resultsController;
+    
+}
+
+- (NSMutableIndexSet *)deletedSectionIndexes {
+    
+    if (!_deletedSectionIndexes) {
+        _deletedSectionIndexes = [NSMutableIndexSet indexSet];
+    }
+    
+    return _deletedSectionIndexes;
+    
+}
+
+- (NSMutableIndexSet *)insertedSectionIndexes {
+    
+    if (!_insertedSectionIndexes) {
+        _insertedSectionIndexes = [NSMutableIndexSet indexSet];
+    }
+    
+    return _insertedSectionIndexes;
+    
+}
+
+- (NSMutableArray *)deletedRowIndexPaths {
+    
+    if (!_deletedRowIndexPaths) {
+        _deletedRowIndexPaths = [NSMutableArray array];
+    }
+    
+    return _deletedRowIndexPaths;
+    
+}
+
+- (NSMutableArray *)insertedRowIndexPaths {
+    
+    if (!_insertedRowIndexPaths) {
+        _insertedRowIndexPaths = [NSMutableArray array];
+    }
+    
+    return _insertedRowIndexPaths;
+    
+}
+
+- (NSMutableArray *)updatedRowIndexPaths {
+    
+    if (!_updatedRowIndexPaths) {
+        _updatedRowIndexPaths = [NSMutableArray array];
+    }
+    
+    return _updatedRowIndexPaths;
     
 }
 
