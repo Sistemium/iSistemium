@@ -41,20 +41,36 @@
 
 - (void)setSession:(id <STMSession>)session {
     
-    _session = session;
-    self.document = (STMDocument *)session.document;
+    if (_session != session) {
+        
+        _session = session;
+        self.document = (STMDocument *)session.document;
+        NSLog(@"_session %@", _session);
+        
+    }
     
 }
 
 - (void)setDocument:(STMDocument *)document {
     
-    _document = document;
-    self.resultsController = nil;
-    
-    NSError *error;
-    if (![self.resultsController performFetch:&error]) {
+    if (_document != document) {
         
-        NSLog(@"performFetch error %@", error);
+        _document = document;
+        self.resultsController = nil;
+        
+        NSLog(@"_document %@", _document);
+
+        
+        NSError *error;
+        if (![self.resultsController performFetch:&error]) {
+            
+            NSLog(@"performFetch error %@", error);
+            
+        }
+
+        if (_document) {
+            [self saveLogMessageDictionaryToDocument];
+        }
         
     }
     
@@ -132,9 +148,12 @@
 }
 
 - (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic {
-    
+        
 }
 
+- (void)saveLogMessageDictionaryToDocument {
+    
+}
 
 - (NSFetchedResultsController *)resultsController {
     

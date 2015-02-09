@@ -68,6 +68,8 @@
     
     self.status = [self.status isEqualToString:@"removing"] ? self.status : @"finishing";
 
+    self.logger.session = nil;
+    
     if (self.document.documentState == UIDocumentStateNormal) {
         
         [self.document saveDocument:^(BOOL success) {
@@ -151,7 +153,8 @@
     
     if ([[notification.userInfo valueForKey:@"uid"] isEqualToString:self.uid]) {
         
-        self.logger = [[STMLogger alloc] init];
+//        self.logger = [[STMLogger alloc] init];
+        self.logger = [STMLogger sharedLogger];
         self.logger.session = self;
         self.settingsController.session = self;
 
