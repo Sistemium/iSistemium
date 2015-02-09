@@ -15,6 +15,8 @@
 @property (nonatomic, strong) id <STMSession> session;
 @property (nonatomic, weak) UITableView *tableView;
 
++ (STMLogger *)sharedLogger;
+
 - (void)saveLogMessageWithText:(NSString *)text;
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
 
