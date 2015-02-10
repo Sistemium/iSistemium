@@ -49,6 +49,7 @@
 
 #import "KeychainItemWrapper.h"
 #import <Security/Security.h>
+#import "STMLogger.h"
 
 #if ! __has_feature(objc_arc)
 #error THIS CODE MUST BE COMPILED WITH ARC ENABLED!
@@ -135,8 +136,16 @@
         
         CFMutableDictionaryRef outDictionary = NULL;
         
-        if (!SecItemCopyMatching((__bridge CFDictionaryRef)tempQuery, (CFTypeRef *)&outDictionary) == noErr)
-        {
+        signed int status = SecItemCopyMatching((__bridge CFDictionaryRef)tempQuery, (CFTypeRef *)&outDictionary);
+            
+        if (status != noErr) {
+            
+            //if (status != errSecItemNotFound) {
+                NSString * logMessage = [NSString stringWithFormat: @"KeychainItemWrapper SecItemCopyMatching status: %D", status];
+                NSLog(logMessage);
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            //}
+            
             // Stick these default values into keychain item if nothing found.
             [self resetKeychainItem];
             
@@ -277,6 +286,8 @@
         // Lastly, we need to set up the updated attribute list being careful to remove the class.
         NSMutableDictionary *tempCheck = [self dictionaryToSecItemFormat:keychainItemData];
         [tempCheck removeObjectForKey:(__bridge id)kSecClass];
+
+        [tempCheck removeObjectForKey:(__bridge id)kSecAttrAccessible];
         
 #if TARGET_IPHONE_SIMULATOR
         // Remove the access group if running on the iPhone simulator.

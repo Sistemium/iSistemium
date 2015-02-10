@@ -309,7 +309,7 @@
         }
         
         _stcEntities = [stcEntities mutableCopy];
-
+        
     }
     
     return _stcEntities;
@@ -1010,7 +1010,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
     NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error.localizedDescription];
-    [self.session.logger saveLogMessageWithText:errorMessage type:@"error"];
+    [self.session.logger saveLogMessageWithText:errorMessage type:@"warning"];
 
     if (error.code == NSURLErrorTimedOut) {
         
@@ -1051,9 +1051,13 @@
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) [self.temporaryETag setValue:eTag forKey:entityName];
         
-    } else if (statusCode == 304) {
+    } else if (statusCode == 410) {
         
-        NSLog(@"304 Not Modified");
+        NSLog(@"%@: 410 Gone", entityName);
+        
+        [STMEntityController deleteEntityWithName:entityName];
+
+        [self entityCountDecrease];
         
     }  else if (statusCode == 204) {
         

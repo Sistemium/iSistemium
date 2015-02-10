@@ -12,8 +12,12 @@
 @interface STMEntityController : STMController
 
 + (NSDictionary *)stcEntities;
+
 + (NSSet *)entityNamesWithLifeTime;
 + (NSArray *)entitiesWithLifeTime;
+
 + (STMEntity *)entityWithName:(NSString *)name;
+
++ (void)deleteEntityWithName:(NSString *)name;
 
 @end

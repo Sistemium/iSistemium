@@ -151,7 +151,8 @@
         
         NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
         _keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
-        
+        [_keychainItem setObject:(__bridge id)kSecAttrAccessibleAlways forKey:(__bridge id)kSecAttrAccessible];
+
     }
     
     return _keychainItem;
