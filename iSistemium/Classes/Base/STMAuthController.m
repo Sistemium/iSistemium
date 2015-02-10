@@ -11,6 +11,7 @@
 #import <Security/Security.h>
 #import "KeychainItemWrapper.h"
 #import "STMSessionManager.h"
+#import "STMLogger.h"
 
 #define AUTH_URL @"https://sistemium.com/auth.php"
 
@@ -153,6 +154,8 @@
         _keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
         id accessible = [_keychainItem objectForKey:(__bridge id)kSecAttrAccessible];
         if (![accessible isEqual: (__bridge id)kSecAttrAccessibleAlways]){
+            
+            [[STMLogger sharedLogger] saveLogMessageWithText:@"STMAuthController.keychainItem not kSecAttrAccessibleAlways" type:@"error"];
             
             NSString *phoneNumber = [_keychainItem objectForKey:(__bridge id)kSecAttrLabel];
             NSString *serviceUri = [_keychainItem objectForKey:(__bridge id)kSecAttrService];
