@@ -286,6 +286,8 @@
         // Lastly, we need to set up the updated attribute list being careful to remove the class.
         NSMutableDictionary *tempCheck = [self dictionaryToSecItemFormat:keychainItemData];
         [tempCheck removeObjectForKey:(__bridge id)kSecClass];
+
+        [tempCheck removeObjectForKey:(__bridge id)kSecAttrAccessible];
         
 #if TARGET_IPHONE_SIMULATOR
         // Remove the access group if running on the iPhone simulator.
