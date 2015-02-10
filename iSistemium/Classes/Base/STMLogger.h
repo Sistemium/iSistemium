@@ -19,6 +19,7 @@
 
 - (void)saveLogMessageWithText:(NSString *)text;
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
+- (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic;
 
 - (NSArray *)syncingTypesForSettingType:(NSString *)settingType;
 
