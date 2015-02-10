@@ -1010,7 +1010,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
     NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error.localizedDescription];
-    [self.session.logger saveLogMessageWithText:errorMessage type:@"error"];
+    [self.session.logger saveLogMessageWithText:errorMessage type:@"warning"];
 
     if (error.code == NSURLErrorTimedOut) {
         
