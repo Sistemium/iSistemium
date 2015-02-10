@@ -309,7 +309,7 @@
         }
         
         _stcEntities = [stcEntities mutableCopy];
-
+        
     }
     
     return _stcEntities;
@@ -1054,6 +1054,10 @@
     } else if (statusCode == 410) {
         
         NSLog(@"%@: 410 Gone", entityName);
+        
+        [STMEntityController deleteEntityWithName:entityName];
+
+        [self entityCountDecrease];
         
     }  else if (statusCode == 204) {
         

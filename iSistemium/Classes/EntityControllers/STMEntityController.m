@@ -95,4 +95,28 @@
     
 }
 
++ (void)deleteEntityWithName:(NSString *)name {
+
+    __weak STMEntity *entityToDelete = ([self stcEntities])[name];
+
+    if (entityToDelete) {
+        
+        __weak NSManagedObjectContext *context = entityToDelete.managedObjectContext;
+        
+        [context performBlock:^{
+            
+            [context deleteObject:entityToDelete];
+            
+        }];
+
+    } else {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"where is no entity with name %@ to delete", name];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage];
+        
+    }
+    
+}
+
+
 @end
