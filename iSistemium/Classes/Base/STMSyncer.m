@@ -1051,9 +1051,9 @@
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) [self.temporaryETag setValue:eTag forKey:entityName];
         
-    } else if (statusCode == 304) {
+    } else if (statusCode == 410) {
         
-        NSLog(@"304 Not Modified");
+        NSLog(@"%@: 410 Gone", entityName);
         
     }  else if (statusCode == 204) {
         
