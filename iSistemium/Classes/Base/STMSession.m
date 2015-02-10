@@ -21,8 +21,8 @@
     if (uid) {
         
         STMSession *session = [[STMSession alloc] init];
-        session.status = @"starting";
         session.uid = uid;
+        session.status = @"starting";
         session.startSettings = startSettings;
         session.authDelegate = authDelegate;
         session.settingsController = [STMSettingsController initWithSettings:startSettings];
@@ -68,6 +68,8 @@
     
     self.status = [self.status isEqualToString:@"removing"] ? self.status : @"finishing";
 
+    self.logger.session = nil;
+    
     if (self.document.documentState == UIDocumentStateNormal) {
         
         [self.document saveDocument:^(BOOL success) {
@@ -149,9 +151,12 @@
 
 - (void)documentReady:(NSNotification *)notification {
     
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"test documentReady" type:@"debug"];
+    
     if ([[notification.userInfo valueForKey:@"uid"] isEqualToString:self.uid]) {
         
-        self.logger = [[STMLogger alloc] init];
+//        self.logger = [[STMLogger alloc] init];
+        self.logger = [STMLogger sharedLogger];
         self.logger.session = self;
         self.settingsController.session = self;
 
@@ -199,7 +204,7 @@
         
         _status = status;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionStatusChanged" object:self];
-        [self.logger saveLogMessageWithText:[NSString stringWithFormat:@"Session status changed to %@", self.status] type:nil];
+        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Session #%@ status changed to %@", self.uid, self.status] type:nil];
         
     }
     

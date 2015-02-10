@@ -69,6 +69,7 @@
             
             session.authDelegate = authDelegate;
             session.status = @"running";
+            session.logger.session = session;
             
         }
         self.currentSessionUID = uid;

@@ -45,7 +45,6 @@
 		2C4BA3C91A41AE8B007F1D0A /* STMOutletController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3C81A41AE8B007F1D0A /* STMOutletController.m */; };
 		2C4BA3CC1A41AE9A007F1D0A /* STMPartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3CB1A41AE9A007F1D0A /* STMPartnerController.m */; };
 		2C4BA3CF1A41C543007F1D0A /* STMSelectPartnerTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3CE1A41C543007F1D0A /* STMSelectPartnerTVC.m */; };
-		2C4C997C1A7925FB0070363B /* STMClientData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4C997B1A7925FB0070363B /* STMClientData.m */; };
 		2C4E443B1A810A6D006E6AF1 /* STMRecordStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */; };
 		2C4E443F1A8209B6006E6AF1 /* STMCampaignGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E443E1A8209B6006E6AF1 /* STMCampaignGroup.m */; };
 		2C4E44421A8209E6006E6AF1 /* STMCampaign.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E44411A8209E6006E6AF1 /* STMCampaign.m */; };
@@ -127,6 +126,7 @@
 		2CA4528B195EB53400D93CA2 /* STMPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA4528A195EB53400D93CA2 /* STMPicture.m */; };
 		2CA452E319649C5E00D93CA2 /* STMSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA452E219649C5E00D93CA2 /* STMSetting.m */; };
 		2CA611EC19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */; };
+		2CA6A9A81A8796E5003BD9B3 /* STMClientData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA6A9A71A8796E5003BD9B3 /* STMClientData.m */; };
 		2CB4052019BF38F000813E88 /* STMMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB4051F19BF38F000813E88 /* STMMessage.m */; };
 		2CB4052319BF3A9600813E88 /* STMRecordStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB4052219BF3A9600813E88 /* STMRecordStatus.m */; };
 		2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */; };
@@ -249,8 +249,6 @@
 		2C4BA3CD1A41C543007F1D0A /* STMSelectPartnerTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSelectPartnerTVC.h; sourceTree = "<group>"; };
 		2C4BA3CE1A41C543007F1D0A /* STMSelectPartnerTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSelectPartnerTVC.m; sourceTree = "<group>"; };
 		2C4C99791A7925B00070363B /* STMDataModel 32.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 32.xcdatamodel"; sourceTree = "<group>"; };
-		2C4C997A1A7925FB0070363B /* STMClientData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMClientData.h; sourceTree = "<group>"; };
-		2C4C997B1A7925FB0070363B /* STMClientData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMClientData.m; sourceTree = "<group>"; };
 		2C4E44391A810A6D006E6AF1 /* STMRecordStatusController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRecordStatusController.h; sourceTree = "<group>"; };
 		2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRecordStatusController.m; sourceTree = "<group>"; };
 		2C4E443C1A820692006E6AF1 /* STMDataModel 33.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 33.xcdatamodel"; sourceTree = "<group>"; };
@@ -430,6 +428,9 @@
 		2CA452E219649C5E00D93CA2 /* STMSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSetting.m; sourceTree = "<group>"; };
 		2CA611EA19FB7B1A0046ECF4 /* STMUncashingHandOverVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingHandOverVC.h; sourceTree = "<group>"; };
 		2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingHandOverVC.m; sourceTree = "<group>"; };
+		2CA6A9A51A879692003BD9B3 /* STMDataModel 34.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 34.xcdatamodel"; sourceTree = "<group>"; };
+		2CA6A9A61A8796E5003BD9B3 /* STMClientData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMClientData.h; sourceTree = "<group>"; };
+		2CA6A9A71A8796E5003BD9B3 /* STMClientData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMClientData.m; sourceTree = "<group>"; };
 		2CB4051E19BF38F000813E88 /* STMMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMessage.h; sourceTree = "<group>"; };
 		2CB4051F19BF38F000813E88 /* STMMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessage.m; sourceTree = "<group>"; };
 		2CB4052119BF3A9600813E88 /* STMRecordStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRecordStatus.h; sourceTree = "<group>"; };
@@ -725,12 +726,12 @@
 			isa = PBXGroup;
 			children = (
 				2C9051881A276E9200EFE40D /* STMDataModel.xcdatamodeld */,
+				2CA6A9A61A8796E5003BD9B3 /* STMClientData.h */,
+				2CA6A9A71A8796E5003BD9B3 /* STMClientData.m */,
 				2C4E44401A8209E6006E6AF1 /* STMCampaign.h */,
 				2C4E44411A8209E6006E6AF1 /* STMCampaign.m */,
 				2C4E443D1A8209B6006E6AF1 /* STMCampaignGroup.h */,
 				2C4E443E1A8209B6006E6AF1 /* STMCampaignGroup.m */,
-				2C4C997A1A7925FB0070363B /* STMClientData.h */,
-				2C4C997B1A7925FB0070363B /* STMClientData.m */,
 				2C14D4491A3CB78800747844 /* STMEntity.h */,
 				2C14D44A1A3CB78800747844 /* STMEntity.m */,
 				2C9051721A236A7600EFE40D /* STMDatum.h */,
@@ -1203,9 +1204,9 @@
 				2C140AB81A189772002C5C17 /* STMUIBarButtonItem.m in Sources */,
 				2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */,
 				2C80C823198E4D9A0044ADE4 /* STMDebtsCombineVC.m in Sources */,
-				2C4C997C1A7925FB0070363B /* STMClientData.m in Sources */,
 				2C53B8AB19409E83002298A5 /* STMLocationTVC.m in Sources */,
 				2C5797F01A432CFF00EEFBA7 /* STMWebViewVC.m in Sources */,
+				2CA6A9A81A8796E5003BD9B3 /* STMClientData.m in Sources */,
 				2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */,
 				2C53B8A519409E71002298A5 /* STMSettingsData.m in Sources */,
 				2C80C7F4198A5CF10044ADE4 /* STMDebtsDetailsPVC.m in Sources */,
@@ -1483,6 +1484,7 @@
 			isa = XCVersionGroup;
 			children = (
 				2C4E443C1A820692006E6AF1 /* STMDataModel 33.xcdatamodel */,
+				2CA6A9A51A879692003BD9B3 /* STMDataModel 34.xcdatamodel */,
 				2C4C99791A7925B00070363B /* STMDataModel 32.xcdatamodel */,
 				2C58DF751A6D2FA100E8117C /* STMDataModel 31.xcdatamodel */,
 				2C58DF711A6D25DE00E8117C /* STMDataModel 30.xcdatamodel */,
@@ -1516,7 +1518,7 @@
 				2C9051A01A276E9200EFE40D /* STMDataModel 9.xcdatamodel */,
 				2C9051A11A276E9200EFE40D /* STMDataModel.xcdatamodel */,
 			);
-			currentVersion = 2C4E443C1A820692006E6AF1 /* STMDataModel 33.xcdatamodel */;
+			currentVersion = 2CA6A9A51A879692003BD9B3 /* STMDataModel 34.xcdatamodel */;
 			path = STMDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
