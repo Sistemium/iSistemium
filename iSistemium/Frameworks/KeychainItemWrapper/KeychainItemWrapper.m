@@ -286,8 +286,6 @@
         // Lastly, we need to set up the updated attribute list being careful to remove the class.
         NSMutableDictionary *tempCheck = [self dictionaryToSecItemFormat:keychainItemData];
         [tempCheck removeObjectForKey:(__bridge id)kSecClass];
-
-        [tempCheck removeObjectForKey:(__bridge id)kSecAttrAccessible];
         
 #if TARGET_IPHONE_SIMULATOR
         // Remove the access group if running on the iPhone simulator.
@@ -307,7 +305,13 @@
         // An implicit assumption is that you can only update a single item at a time.
         
         result = SecItemUpdate((__bridge CFDictionaryRef)updateItem, (__bridge CFDictionaryRef)tempCheck);
-        NSAssert( result == noErr, @"Couldn't update the Keychain Item." );
+        if (result != noErr) {
+            OSStatus junk = noErr;
+            junk = SecItemDelete((__bridge CFDictionaryRef)updateItem);
+            NSAssert( junk == noErr || junk == errSecItemNotFound, @"Problem deleting current dictionary." );
+            result = SecItemAdd((__bridge CFDictionaryRef)tempCheck, NULL);
+            NSAssert( result == noErr, @"Couldn't add the Keychain Item." );
+        }
     }
     else
     {
