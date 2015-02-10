@@ -154,6 +154,7 @@
                              @"STMMessages",
 #ifdef DEBUG
                              @"STMSettings",
+                             @"STMLogs"
 #endif
                              ];
     
@@ -162,6 +163,7 @@
                               NSLocalizedString(@"MESSAGES", nil),
 #ifdef DEBUG
                               NSLocalizedString(@"SETTINGS", nil),
+                              NSLocalizedString(@"LOGS", nil)
 #endif
                               ];
     
@@ -170,6 +172,7 @@
                        [UIImage imageNamed:@"message-128.png"],
 #ifdef DEBUG
                        [UIImage imageNamed:@"settings3-128.png"],
+                       [UIImage imageNamed:@"archive-128.png"]
 #endif
                        ];
 
