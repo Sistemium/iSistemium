@@ -305,13 +305,7 @@
         // An implicit assumption is that you can only update a single item at a time.
         
         result = SecItemUpdate((__bridge CFDictionaryRef)updateItem, (__bridge CFDictionaryRef)tempCheck);
-        if (result != noErr) {
-            OSStatus junk = noErr;
-            junk = SecItemDelete((__bridge CFDictionaryRef)updateItem);
-            NSAssert( junk == noErr || junk == errSecItemNotFound, @"Problem deleting current dictionary." );
-            result = SecItemAdd((__bridge CFDictionaryRef)tempCheck, NULL);
-            NSAssert( result == noErr, @"Couldn't add the Keychain Item." );
-        }
+        NSAssert( result == noErr, @"Couldn't update the Keychain Item." );
     }
     else
     {

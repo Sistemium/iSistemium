@@ -151,7 +151,24 @@
         
         NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
         _keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
-        [_keychainItem setObject:(__bridge id)kSecAttrAccessibleAlways forKey:(__bridge id)kSecAttrAccessible];
+        id accessible = [_keychainItem objectForKey:(__bridge id)kSecAttrAccessible];
+        if (![accessible isEqual: (__bridge id)kSecAttrAccessibleAlways]){
+            
+            NSString *phoneNumber = [_keychainItem objectForKey:(__bridge id)kSecAttrLabel];
+            NSString *serviceUri = [_keychainItem objectForKey:(__bridge id)kSecAttrService];
+            NSString *userID = [_keychainItem objectForKey:(__bridge id)(kSecAttrAccount)];
+            NSString *accessToken = [_keychainItem objectForKey:(__bridge id)(kSecValueData)];
+            
+            [_keychainItem resetKeychainItem];
+            
+            [_keychainItem setObject:(__bridge id)kSecAttrAccessibleAlways forKey:(__bridge id)kSecAttrAccessible];
+            
+            [_keychainItem setObject:phoneNumber forKey:(__bridge id)kSecAttrLabel];
+            [_keychainItem setObject:serviceUri forKey:(__bridge id)kSecAttrService];
+            [_keychainItem setObject:userID forKey:(__bridge id)kSecAttrAccount];
+            [_keychainItem setObject:accessToken forKey:(__bridge id)kSecValueData];
+
+        }
 
     }
     
