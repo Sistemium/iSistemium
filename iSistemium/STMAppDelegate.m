@@ -10,6 +10,7 @@
 #import "STMAuthController.h"
 #import "STMSessionManager.h"
 #import "STMRootTBC.h"
+#import "STMLogger.h"
 
 #import "STMAuthNC.h"
 
@@ -160,7 +161,9 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillTerminate"];
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+    NSLog(logMessage);
+    [[STMLogger sharedLogger] saveLogMessageDictionary:@{@"text": logMessage, @"type": @"error"}];
+    
 
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
