@@ -36,13 +36,20 @@
 
     self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
     
-    NSString *title = [@"< " stringByAppendingString:[STMAuthController authController].phoneNumber];
+//    NSString *title = [STMAuthController authController].phoneNumber;
+//    
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title
+//                                                                             style:UIBarButtonItemStylePlain
+//                                                                            target:self
+//                                                                            action:@selector(backToPhoneNumber)];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title
+    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"exit-128.png"] toSize:CGSizeMake(24, 24)];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self
                                                                             action:@selector(backToPhoneNumber)];
-    
+
     self.enterSMSLabel.text = NSLocalizedString(@"ENTER SMS CODE", nil);
 
     [self.sendSMSButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
