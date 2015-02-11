@@ -19,8 +19,8 @@
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
-@property (nonatomic, strong) NSArray *storyboardnames;
-@property (nonatomic, strong) NSArray *tabImages;
+@property (nonatomic, strong) NSMutableArray *storyboardNames;
+@property (nonatomic, strong) NSMutableArray *tabImages;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
 @property (nonatomic, strong) STMSession *session;
@@ -100,81 +100,110 @@
     
 }
 
+- (NSMutableArray *)storyboardNames {
+    
+    if (!_storyboardNames) {
+        _storyboardNames = [NSMutableArray array];
+    }
+    return _storyboardNames;
+    
+}
+
+- (NSMutableArray *)storyboardTitles {
+    
+    if (!_storyboardTitles) {
+        _storyboardTitles = [NSMutableArray array];
+    }
+    return _storyboardTitles;
+    
+}
+
+- (NSMutableArray *)tabImages {
+    
+    if (!_tabImages) {
+        _tabImages = [NSMutableArray array];
+    }
+    return _tabImages;
+    
+}
+
+- (void)registerTabWithName:(NSString *)name title:(NSString *)title image:(UIImage *)image {
+    
+    if (name) {
+        
+        [self.storyboardNames addObject:name];        
+        (title) ? [self.storyboardTitles addObject:title] : [self.storyboardTitles addObject:name];
+        (image) ? [self.tabImages addObject:image] : [self.tabImages addObject:[UIImage imageNamed:@"full_moon-128.png"]];
+        
+    }
+    
+}
+
 - (void)setupIPadTabs {
     
     NSLog(@"device is iPad");
     
-    self.storyboardnames = @[
-                             @"STMAuthTVC",
-                             @"STMCampaigns",
-                             @"STMDebts",
-                             @"STMUncashing",
-                             @"STMMessages",
-                             @"STMWebView",
+    [self registerTabWithName:@"STMAuthTVC"
+                        title:NSLocalizedString(@"AUTHORIZATION", nil)
+                        image:[UIImage imageNamed:@"password2-128.png"]];
+
+    [self registerTabWithName:@"STMCampaigns"
+                        title:NSLocalizedString(@"AD CAMPAIGNS", nil)
+                        image:[UIImage imageNamed:@"christmas_gift-128.png"]];
+
+    [self registerTabWithName:@"STMDebts"
+                        title:NSLocalizedString(@"DEBTS", nil)
+                        image:[UIImage imageNamed:@"cash_receiving-128.png"]];
+
+    [self registerTabWithName:@"STMUncashing"
+                        title:NSLocalizedString(@"UNCASHING", nil)
+                        image:[UIImage imageNamed:@"banknotes-128.png"]];
+
+    [self registerTabWithName:@"STMMessages"
+                        title:NSLocalizedString(@"MESSAGES", nil)
+                        image:[UIImage imageNamed:@"message-128.png"]];
+
+    [self registerTabWithName:@"STMWebView"
+                        title:NSLocalizedString(@"IORDERS", nil)
+                        image:[UIImage imageNamed:@"purchase_order-128.png"]];
+
 #ifdef DEBUG
-                             @"STMSettings",
-                             @"STMLogs"
-#endif
-                             ];
     
-    self.storyboardtitles = @[
-                              NSLocalizedString(@"AUTHORIZATION", nil),
-                              NSLocalizedString(@"AD CAMPAIGNS", nil),
-                              NSLocalizedString(@"DEBTS", nil),
-                              NSLocalizedString(@"UNCASHING", nil),
-                              NSLocalizedString(@"MESSAGES", nil),
-                              NSLocalizedString(@"IORDERS", nil),
-#ifdef DEBUG
-                              NSLocalizedString(@"SETTINGS", nil),
-                              NSLocalizedString(@"LOGS", nil)
-#endif
-                              ];
+    [self registerTabWithName:@"STMSettings"
+                        title:NSLocalizedString(@"SETTINGS", nil)
+                        image:[UIImage imageNamed:@"settings3-128.png"]];
+
+    [self registerTabWithName:@"STMLogs"
+                        title:NSLocalizedString(@"LOGS", nil)
+                        image:[UIImage imageNamed:@"archive-128.png"]];
     
-    self.tabImages = @[
-                       [UIImage imageNamed:@"password2-128.png"],
-                       [UIImage imageNamed:@"christmas_gift-128.png"],
-                       [UIImage imageNamed:@"cash_receiving-128.png"],
-                       [UIImage imageNamed:@"banknotes-128.png"],
-                       [UIImage imageNamed:@"message-128.png"],
-                       [UIImage imageNamed:@"purchase_order-128.png"],
-#ifdef DEBUG
-                       [UIImage imageNamed:@"settings3-128.png"],
-                       [UIImage imageNamed:@"archive-128.png"]
 #endif
-                       ];
 
 }
 
 - (void)setupIPhoneTabs {
     
     NSLog(@"device is iPhone");
-    
-    self.storyboardnames = @[
-                             @"STMAuth",
-                             @"STMMessages",
+
+    [self registerTabWithName:@"STMAuth"
+                        title:NSLocalizedString(@"AUTHORIZATION", nil)
+                        image:[UIImage imageNamed:@"password2-128.png"]];
+
+    [self registerTabWithName:@"STMMessages"
+                        title:NSLocalizedString(@"MESSAGES", nil)
+                        image:[UIImage imageNamed:@"message-128.png"]];
+
 #ifdef DEBUG
-                             @"STMSettings",
-                             @"STMLogs"
-#endif
-                             ];
     
-    self.storyboardtitles = @[
-                              NSLocalizedString(@"AUTHORIZATION", nil),
-                              NSLocalizedString(@"MESSAGES", nil),
-#ifdef DEBUG
-                              NSLocalizedString(@"SETTINGS", nil),
-                              NSLocalizedString(@"LOGS", nil)
-#endif
-                              ];
+    [self registerTabWithName:@"STMSettings"
+                        title:NSLocalizedString(@"SETTINGS", nil)
+                        image:[UIImage imageNamed:@"settings3-128.png"]];
     
-    self.tabImages = @[
-                       [UIImage imageNamed:@"password2-128.png"],
-                       [UIImage imageNamed:@"message-128.png"],
-#ifdef DEBUG
-                       [UIImage imageNamed:@"settings3-128.png"],
-                       [UIImage imageNamed:@"archive-128.png"]
+//    [self registerTabWithName:@"STMLogs"
+//                        title:NSLocalizedString(@"LOGS", nil)
+//                        image:[UIImage imageNamed:@"archive-128.png"]];
+    
 #endif
-                       ];
 
 }
 
@@ -192,8 +221,8 @@
     
     self.tabs = nil;
     
-    NSString *authTabName = self.storyboardnames[0];
-    NSString *authTabTitle = self.storyboardtitles[0];
+    NSString *authTabName = self.storyboardNames[0];
+    NSString *authTabTitle = self.storyboardTitles[0];
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:authTabName bundle:nil];
     UIViewController *vc = [storyboard instantiateInitialViewController];
@@ -210,14 +239,14 @@
 
     NSMutableArray *viewControllers = [NSMutableArray array];
     
-    for (NSString *name in self.storyboardnames) {
+    for (NSString *name in self.storyboardNames) {
         
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
         
-        NSUInteger index = [self.storyboardnames indexOfObject:name];
+        NSUInteger index = [self.storyboardNames indexOfObject:name];
         
         UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = (self.storyboardtitles)[index];
+        vc.title = (self.storyboardTitles)[index];
         vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[index] toSize:CGSizeMake(30, 30)];
         [viewControllers addObject:vc];
 
@@ -252,7 +281,7 @@
 
 - (void)showTabAtIndex:(NSUInteger)index {
     
-    UIViewController *vc = (self.tabs)[self.storyboardnames[index]];
+    UIViewController *vc = (self.tabs)[self.storyboardNames[index]];
     
     if (vc) {
         

@@ -14,6 +14,7 @@
 		2C02F2BD1A8A881900E0E890 /* STMAuthSuccessVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2BC1A8A881900E0E890 /* STMAuthSuccessVC.m */; };
 		2C02F2C01A8A989000E0E890 /* STMAuthVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2BF1A8A989000E0E890 /* STMAuthVC.m */; };
 		2C02F2C31A8A995700E0E890 /* STMUISpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2C21A8A995700E0E890 /* STMUISpinnerView.m */; };
+		2C02F2C51A8B503A00E0E890 /* full_moon-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C02F2C41A8B503A00E0E890 /* full_moon-128.png */; };
 		2C140AB81A189772002C5C17 /* STMUIBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */; };
 		2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC21A18D397002C5C17 /* STMUncashingPlace.m */; };
 		2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC51A18D398002C5C17 /* STMUncashing.m */; };
@@ -188,6 +189,7 @@
 		2C02F2BF1A8A989000E0E890 /* STMAuthVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthVC.m; sourceTree = "<group>"; };
 		2C02F2C11A8A995700E0E890 /* STMUISpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUISpinnerView.h; sourceTree = "<group>"; };
 		2C02F2C21A8A995700E0E890 /* STMUISpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUISpinnerView.m; sourceTree = "<group>"; };
+		2C02F2C41A8B503A00E0E890 /* full_moon-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "full_moon-128.png"; sourceTree = "<group>"; };
 		2C140AB61A189772002C5C17 /* STMUIBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUIBarButtonItem.h; sourceTree = "<group>"; };
 		2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUIBarButtonItem.m; sourceTree = "<group>"; };
 		2C140AB91A18991B002C5C17 /* STMUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMUI.h; sourceTree = "<group>"; };
@@ -930,6 +932,7 @@
 		2CD443EF195AD741004ADE58 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2C02F2C41A8B503A00E0E890 /* full_moon-128.png */,
 				2C5797F11A43608300EEFBA7 /* purchase_order-128.png */,
 				D94AC56B198BC6A300D8CD63 /* password2-128.png */,
 				D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */,
@@ -1064,6 +1067,7 @@
 				2CE8B52019556E0400C84A6D /* STMAuthTVC.storyboard in Resources */,
 				2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */,
 				2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */,
+				2C02F2C51A8B503A00E0E890 /* full_moon-128.png in Resources */,
 				2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */,
 				D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */,
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
