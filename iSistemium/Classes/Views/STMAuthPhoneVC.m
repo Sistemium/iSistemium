@@ -8,7 +8,7 @@
 
 #import "STMAuthPhoneVC.h"
 
-@interface STMAuthPhoneVC ()
+@interface STMAuthPhoneVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
 @property (weak, nonatomic) IBOutlet UITextField *phoneNumberTextField;
@@ -23,9 +23,27 @@
 - (void)buttonPressed {
 
     [super buttonPressed];
-    [[STMAuthController authController] sendPhoneNumber:@"89096216061"];
+    [[STMAuthController authController] sendPhoneNumber:self.phoneNumberTextField.text];
     
 }
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    if ([STMFunctions isCorrectPhoneNumber:textField.text]) {
+        [self buttonPressed];
+    }
+    return NO;
+
+}
+
+- (void)textFieldDidChange:(UITextField *)textField {
+    
+    self.sendPhoneNumberButton.enabled = [STMFunctions isCorrectPhoneNumber:textField.text];
+    
+}
+
 
 #pragma mark - view lifecycle
 
@@ -34,9 +52,19 @@
     self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
     
     self.phoneNumberLabel.text = NSLocalizedString(@"ENTER PHONE NUMBER", nil);
+    
+    self.phoneNumberTextField.delegate = self;
+    [self.phoneNumberTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.phoneNumberTextField becomeFirstResponder];
+//    [self.phoneNumberTextField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
+
+    if ([STMAuthController authController].phoneNumber) {
+        self.phoneNumberTextField.text = [STMAuthController authController].phoneNumber;
+    }
+    
+//    [self textFieldDidChange:self.phoneNumberTextField];
 
     [self.sendPhoneNumberButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
-    self.sendPhoneNumberButton.enabled = [STMFunctions isCorrectPhoneNumber:self.phoneNumberTextField.text];
     
     self.button = self.sendPhoneNumberButton;
     [super customInit];
