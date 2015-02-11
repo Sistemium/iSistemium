@@ -7,12 +7,16 @@
 //
 
 #import "STMAuthSuccessVC.h"
+#import "STMSessionManager.h"
+#import "STMSyncer.h"
+#import "STMEntityController.h"
 
 @interface STMAuthSuccessVC () <UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
-@property (weak, nonatomic) IBOutlet UIProgressView *progressIndicator;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
+@property (nonatomic) float totalEntityCount;
 
 @end
 
@@ -26,6 +30,49 @@
     alertView.delegate = self;
     [alertView show];
 
+}
+
+- (void)syncerStatusChanged:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMSyncer class]]) {
+        
+        STMSyncer *syncer = notification.object;
+        
+        if (syncer.syncerState == STMSyncerIdle) {
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                
+                sleep(1);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    self.progressBar.hidden = YES;
+                    
+                });
+                
+            });
+            
+        } else {
+            
+            self.progressBar.hidden = NO;
+            self.totalEntityCount = (float)[STMEntityController stcEntities].allKeys.count;
+            
+        }
+                
+    }
+    
+}
+
+- (void)entityCountdownChange:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMSyncer class]]) {
+        
+//        float totalCount = (float)[STMEntityController stcEntities].allKeys.count;
+        float countdownValue = [(notification.userInfo)[@"countdownValue"] floatValue];
+        
+        self.progressBar.progress = (self.totalEntityCount - countdownValue) / self.totalEntityCount;
+        
+    }
+    
 }
 
 
@@ -51,9 +98,31 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver:self
+           selector:@selector(syncerStatusChanged:)
+               name:@"syncStatusChanged"
+             object:[[STMSessionManager sharedManager].currentSession syncer]];
+    
+    [nc addObserver:self
+           selector:@selector(entityCountdownChange:)
+               name:@"entityCountdownChange"
+             object:[[STMSessionManager sharedManager].currentSession syncer]];
+
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)customInit {
     
     self.navigationItem.title = NSLocalizedString(@"SISTEMIUM", nil);
+    [self addObservers];
+    
     [super customInit];
 
 }
@@ -66,6 +135,8 @@
     
     self.nameLabel.text = [STMAuthController authController].userName;
     self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
+    self.progressBar.progress = 0.0;
+    self.progressBar.hidden = YES;
 
     [super viewWillAppear:animated];
     
