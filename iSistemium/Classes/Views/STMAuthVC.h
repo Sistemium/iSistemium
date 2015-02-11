@@ -20,7 +20,9 @@
 - (void)buttonPressed;
 - (void)customInit;
 - (void)dismissSpinner;
+- (void)backButtonPressed;
 
 - (BOOL)isCorrectValue:(NSString *)textFieldValue;
+- (BOOL)sendTextFieldValue;
 
 @end

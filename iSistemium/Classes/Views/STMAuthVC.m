@@ -24,7 +24,12 @@
 }
 
 - (void)buttonPressed {
+    
     [self.view addSubview:self.spinnerView];
+    
+    BOOL success = [self sendTextFieldValue];
+    if (!success) [self.spinnerView removeFromSuperview];
+    
 }
 
 - (void)dismissSpinner {
@@ -33,6 +38,14 @@
 
 - (BOOL)isCorrectValue:(NSString *)textFieldValue {
     return YES;
+}
+
+- (void)backButtonPressed {
+    
+}
+
+- (BOOL)sendTextFieldValue {
+    return NO;
 }
 
 #pragma mark - UITextFieldDelegate
@@ -63,6 +76,12 @@
     [self textFieldDidChange:self.textField];
 
     [self.button addTarget:self action:@selector(buttonPressed) forControlEvents:UIControlEventTouchUpInside];
+
+    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"exit-128.png"] toSize:CGSizeMake(24, 24)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(backButtonPressed)];
     
 }
 
@@ -78,7 +97,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
     [self.navigationItem setHidesBackButton:YES animated:NO];
+    [self textFieldDidChange:self.textField];
     
 }
 

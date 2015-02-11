@@ -427,7 +427,10 @@
             
         } else {
 
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": @"No connection"}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError"
+                                                                object:self
+                                                              userInfo:@{@"error": @"No connection"}];
+            
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             
             return NO;
@@ -440,7 +443,7 @@
     
 }
 
-- (void)sendSMSCode:(NSString *)SMSCode {
+- (BOOL)sendSMSCode:(NSString *)SMSCode {
     
     if ([STMFunctions isCorrectSMSCode:SMSCode]) {
 
@@ -450,16 +453,26 @@
         NSURLRequest *request = [self requestForURL:urlString];
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         
-        if (!connection) {
+        if (connection) {
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": NSLocalizedString(@"NO CONNECTION", nil)}];
-
-            self.controllerState = STMAuthEnterPhoneNumber;
+            return YES;
+            
+        } else {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError"
+                                                                object:self
+                                                              userInfo:@{@"error": NSLocalizedString(@"NO CONNECTION", nil)}];
             
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            
+            self.controllerState = STMAuthEnterPhoneNumber;
 
+            return NO;
+            
         }
 
+    } else {
+        return NO;
     }
     
 }

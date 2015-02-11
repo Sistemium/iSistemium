@@ -19,21 +19,16 @@
 
 @implementation STMAuthSMSVC
 
-- (void)buttonPressed {
-
-    [super buttonPressed];
-    [[STMAuthController authController] sendSMSCode:self.enterSMSTextField.text];
-    
-}
-
-- (void)backToPhoneNumber {
-    
+- (void)backButtonPressed {
     [STMAuthController authController].controllerState = STMAuthEnterPhoneNumber;
-    
 }
 
 - (BOOL)isCorrectValue:(NSString *)textFieldValue {
     return [STMFunctions isCorrectSMSCode:textFieldValue];
+}
+
+- (BOOL)sendTextFieldValue {
+    return [[STMAuthController authController] sendSMSCode:self.textField.text];
 }
 
 
@@ -43,11 +38,11 @@
 
     self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
     
-    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"exit-128.png"] toSize:CGSizeMake(24, 24)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image
-                                                                             style:UIBarButtonItemStylePlain
-                                                                            target:self
-                                                                            action:@selector(backToPhoneNumber)];
+//    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"exit-128.png"] toSize:CGSizeMake(24, 24)];
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image
+//                                                                             style:UIBarButtonItemStylePlain
+//                                                                            target:self
+//                                                                            action:@selector(backToPhoneNumber)];
 
     self.enterSMSLabel.text = NSLocalizedString(@"ENTER SMS CODE", nil);
     [self.sendSMSButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
@@ -67,8 +62,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [super viewWillAppear:animated];
     self.textField.text = @"";
+    [super viewWillAppear:animated];
 
 }
 

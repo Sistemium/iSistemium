@@ -20,19 +20,13 @@
 
 @implementation STMAuthPhoneVC
 
-- (void)buttonPressed {
-
-    [super buttonPressed];
-    
-    BOOL success = [[STMAuthController authController] sendPhoneNumber:self.phoneNumberTextField.text];
-    if (!success) [self.spinnerView removeFromSuperview];
-    
-}
-
 - (BOOL)isCorrectValue:(NSString *)textFieldValue {
     return [STMFunctions isCorrectPhoneNumber:textFieldValue];
 }
 
+- (BOOL)sendTextFieldValue {
+    return [[STMAuthController authController] sendPhoneNumber:self.textField.text];
+}
 
 #pragma mark - view lifecycle
 
@@ -42,12 +36,14 @@
     self.phoneNumberLabel.text = NSLocalizedString(@"ENTER PHONE NUMBER", nil);
     self.phoneNumberTextField.text = [STMAuthController authController].phoneNumber;
     [self.sendPhoneNumberButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
-
+    
     self.textField = self.phoneNumberTextField;
     self.button = self.sendPhoneNumberButton;
     
     [super customInit];
-    
+ 
+    self.navigationItem.leftBarButtonItem = nil;
+
 }
 
 - (void)viewDidLoad {

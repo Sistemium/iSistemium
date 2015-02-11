@@ -24,6 +24,9 @@
     
 }
 
+- (void)backButtonPressed {
+    [[STMAuthController authController] logout];    
+}
 
 #pragma mark - view lifecycle
 
