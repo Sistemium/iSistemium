@@ -71,6 +71,7 @@
 - (void)customInit {
     
     self.textField.delegate = self;
+    self.textField.borderStyle = UITextBorderStyleNone;
     [self.textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     [self.textField becomeFirstResponder];
     [self textFieldDidChange:self.textField];

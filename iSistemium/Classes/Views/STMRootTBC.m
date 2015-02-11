@@ -165,7 +165,7 @@
     
     NSLog(@"device is iPad");
     
-    [self registerTabWithName:@"STMAuthTVC"
+    [self registerTabWithName:@"STMAuth"
                         title:NSLocalizedString(@"AUTHORIZATION", nil)
                         image:[UIImage imageNamed:@"password2-128.png"]];
 
