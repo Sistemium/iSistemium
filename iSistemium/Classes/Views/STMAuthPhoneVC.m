@@ -23,7 +23,9 @@
 - (void)buttonPressed {
 
     [super buttonPressed];
-    [[STMAuthController authController] sendPhoneNumber:self.phoneNumberTextField.text];
+    
+    BOOL success = [[STMAuthController authController] sendPhoneNumber:self.phoneNumberTextField.text];
+    if (!success) [self.spinnerView removeFromSuperview];
     
 }
 
@@ -56,13 +58,12 @@
     self.phoneNumberTextField.delegate = self;
     [self.phoneNumberTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     [self.phoneNumberTextField becomeFirstResponder];
-//    [self.phoneNumberTextField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
 
     if ([STMAuthController authController].phoneNumber) {
         self.phoneNumberTextField.text = [STMAuthController authController].phoneNumber;
     }
     
-//    [self textFieldDidChange:self.phoneNumberTextField];
+    [self textFieldDidChange:self.phoneNumberTextField];
 
     [self.sendPhoneNumberButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
     

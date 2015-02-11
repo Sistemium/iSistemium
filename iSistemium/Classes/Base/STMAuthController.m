@@ -409,7 +409,7 @@
 
 #pragma mark - send requests
 
-- (void)sendPhoneNumber:(NSString *)phoneNumber {
+- (BOOL)sendPhoneNumber:(NSString *)phoneNumber {
     
     if ([STMFunctions isCorrectPhoneNumber:phoneNumber]) {
         
@@ -421,14 +421,21 @@
         NSURLRequest *request = [self requestForURL:urlString];
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 
-        if (!connection) {
+        if (connection) {
+
+            return YES;
+            
+        } else {
 
             [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": @"No connection"}];
-
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            
+            return NO;
 
         }
 
+    } else {
+        return NO;
     }
     
 }
@@ -518,7 +525,7 @@
     id responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
     
 //    NSLog(@"responseData %@", responseData);
-//    NSLog(@"responseJSON %@", responseJSON);
+    NSLog(@"responseJSON %@", responseJSON);
 
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
         
