@@ -23,17 +23,22 @@
     
 }
 
+- (void)buttonPressed {
+    [self.view addSubview:self.spinnerView];
+}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
+    [self.button addTarget:self action:@selector(buttonPressed) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     [self customInit];
+
+    NSLog(@"%@ viewDidLoad", self);
 
 }
 

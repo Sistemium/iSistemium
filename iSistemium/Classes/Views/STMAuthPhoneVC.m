@@ -20,9 +20,9 @@
 
 @implementation STMAuthPhoneVC
 
-- (void)sendPhoneNumber {
-    
-    [self.view addSubview:self.spinnerView];
+- (void)buttonPressed {
+
+    [super buttonPressed];
     [[STMAuthController authController] sendPhoneNumber:@"89096216061"];
     
 }
@@ -31,15 +31,14 @@
 
 - (void)customInit {
     
-    [self.sendPhoneNumberButton addTarget:self action:@selector(sendPhoneNumber) forControlEvents:UIControlEventTouchUpInside];
+    self.button = self.sendPhoneNumberButton;
+    [super customInit];
     
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
-    NSLog(@"%@ viewDidLoad", self);
 
 }
 

@@ -17,21 +17,26 @@
 
 @implementation STMAuthSuccessVC
 
-- (void)logout {
+- (void)buttonPressed {
+    
+    [super buttonPressed];
     [[STMAuthController authController] logout];
+    
 }
 
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    [self.logoutButton addTarget:self action:@selector(logout) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.button = self.logoutButton;
+    [super customInit];
+
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
 
 }
 

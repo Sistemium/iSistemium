@@ -19,9 +19,9 @@
 
 @implementation STMAuthSMSVC
 
-- (void)sendSMS {
+- (void)buttonPressed {
 
-    [self.view addSubview:self.spinnerView];
+    [super buttonPressed];
     [[STMAuthController authController] sendSMSCode:@"1234"];
     
 }
@@ -30,15 +30,15 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    [self.sendSMSButton addTarget:self action:@selector(sendSMS) forControlEvents:UIControlEventTouchUpInside];
+
+    self.button = self.sendSMSButton;
+    [super customInit];
+
 }
 
 - (void)viewDidLoad {
     
-    [super viewDidLoad];
-    NSLog(@"%@ viewDidLoad", self);
-    
-    [self customInit];
+    [super viewDidLoad];    
 
 }
 

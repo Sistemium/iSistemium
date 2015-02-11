@@ -13,5 +13,9 @@
 @interface STMAuthVC : UIViewController
 
 @property (nonatomic, strong) STMUISpinnerView *spinnerView;
+@property (nonatomic, weak) UIButton *button;
+
+- (void)buttonPressed;
+- (void)customInit;
 
 @end
