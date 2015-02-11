@@ -29,6 +29,8 @@
 
 - (void)customInit {
     
+    self.navigationItem.title = NSLocalizedString(@"SISTEMIUM", nil);
+
     self.button = self.logoutButton;
     [super customInit];
 

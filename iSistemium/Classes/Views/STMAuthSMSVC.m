@@ -31,6 +31,8 @@
 
 - (void)customInit {
 
+    self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
+
     self.button = self.sendSMSButton;
     [super customInit];
 

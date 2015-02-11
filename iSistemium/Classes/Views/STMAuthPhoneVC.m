@@ -31,6 +31,10 @@
 
 - (void)customInit {
     
+    self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
+
+//    self.phoneNumberLabel.text =
+    
     self.button = self.sendPhoneNumberButton;
     [super customInit];
     
