@@ -18,5 +18,6 @@
 
 - (void)buttonPressed;
 - (void)customInit;
+- (void)dismissSpinner;
 
 @end

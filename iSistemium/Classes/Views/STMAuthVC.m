@@ -27,6 +27,10 @@
     [self.view addSubview:self.spinnerView];
 }
 
+- (void)dismissSpinner {
+    [self.spinnerView removeFromSuperview];
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {

@@ -26,12 +26,22 @@
     
 }
 
+- (void)backToPhoneNumber {
+    [STMAuthController authController].controllerState = STMAuthEnterPhoneNumber;
+}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
 
     self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
+    
+    NSString *title = [@"< " stringByAppendingString:[STMAuthController authController].phoneNumber];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(backToPhoneNumber)];
     
     self.enterSMSLabel.text = NSLocalizedString(@"ENTER SMS CODE", nil);
 

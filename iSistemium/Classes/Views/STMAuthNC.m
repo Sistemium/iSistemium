@@ -11,7 +11,7 @@
 #import "STMAuthSMSVC.h"
 #import "STMAuthSuccessVC.h"
 
-@interface STMAuthNC () <UINavigationControllerDelegate>
+@interface STMAuthNC () <UINavigationControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) STMAuthPhoneVC *phoneVC;
 @property (nonatomic, strong) STMAuthSMSVC *smsVC;
@@ -87,6 +87,23 @@
     
 }
 
+- (void)authControllerError:(NSNotification *)notification {
+    
+    NSString *error = [notification userInfo][@"error"];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    alertView.tag = 0;
+    alertView.delegate = self;
+    [alertView show];
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    [(STMAuthVC *)[self.viewControllers lastObject] dismissSpinner];
+}
 
 #pragma marl - UINavigationControllerDelegate
 
@@ -105,11 +122,18 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(authControllerStateChanged) 
-                                                 name:@"authControllerStateChanged"
-                                               object:[STMAuthController authController]];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver:self
+           selector:@selector(authControllerStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
     
+    [nc addObserver:self
+           selector:@selector(authControllerError:)
+               name:@"authControllerError"
+             object:[STMAuthController authController]];
+
 }
 
 - (void)removeObservers {
