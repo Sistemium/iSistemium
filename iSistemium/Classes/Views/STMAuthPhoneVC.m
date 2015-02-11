@@ -32,8 +32,11 @@
 - (void)customInit {
     
     self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
+    
+    self.phoneNumberLabel.text = NSLocalizedString(@"ENTER PHONE NUMBER", nil);
 
-//    self.phoneNumberLabel.text =
+    [self.sendPhoneNumberButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
+    self.sendPhoneNumberButton.enabled = [STMFunctions isCorrectPhoneNumber:self.phoneNumberTextField.text];
     
     self.button = self.sendPhoneNumberButton;
     [super customInit];

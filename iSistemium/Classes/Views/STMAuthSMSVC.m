@@ -32,6 +32,11 @@
 - (void)customInit {
 
     self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
+    
+    self.enterSMSLabel.text = NSLocalizedString(@"ENTER SMS CODE", nil);
+
+    [self.sendSMSButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
+    self.sendSMSButton.enabled = [STMFunctions isCorrectSMSCode:self.enterSMSTextField.text];
 
     self.button = self.sendSMSButton;
     [super customInit];

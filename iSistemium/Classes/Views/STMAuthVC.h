@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "STMAuthNC.h"
 #import "STMUI.h"
+#import "STMFunctions.h"
 
 @interface STMAuthVC : UIViewController
 
