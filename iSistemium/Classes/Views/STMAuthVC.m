@@ -8,7 +8,7 @@
 
 #import "STMAuthVC.h"
 
-@interface STMAuthVC ()
+@interface STMAuthVC () <UITextFieldDelegate>
 
 @end
 
@@ -31,10 +31,39 @@
     [self.spinnerView removeFromSuperview];
 }
 
+- (BOOL)isCorrectValue:(NSString *)textFieldValue {
+    return YES;
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    if ([self isCorrectValue:textField.text]) {
+        [self buttonPressed];
+    }
+    return NO;
+    
+}
+
+- (void)textFieldDidChange:(UITextField *)textField {
+    
+    self.button.enabled = [self isCorrectValue:textField.text];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    self.textField.delegate = self;
+    [self.textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.textField becomeFirstResponder];
+    [self textFieldDidChange:self.textField];
+
     [self.button addTarget:self action:@selector(buttonPressed) forControlEvents:UIControlEventTouchUpInside];
+    
 }
 
 - (void)viewDidLoad {

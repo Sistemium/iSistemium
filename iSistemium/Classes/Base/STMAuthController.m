@@ -525,7 +525,7 @@
     id responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
     
 //    NSLog(@"responseData %@", responseData);
-    NSLog(@"responseJSON %@", responseJSON);
+//    NSLog(@"responseJSON %@", responseJSON);
 
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
         

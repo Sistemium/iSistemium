@@ -15,9 +15,12 @@
 
 @property (nonatomic, strong) STMUISpinnerView *spinnerView;
 @property (nonatomic, weak) UIButton *button;
+@property (nonatomic, weak) UITextField *textField;
 
 - (void)buttonPressed;
 - (void)customInit;
 - (void)dismissSpinner;
+
+- (BOOL)isCorrectValue:(NSString *)textFieldValue;
 
 @end

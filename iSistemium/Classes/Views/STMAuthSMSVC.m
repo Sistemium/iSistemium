@@ -22,13 +22,20 @@
 - (void)buttonPressed {
 
     [super buttonPressed];
-    [[STMAuthController authController] sendSMSCode:@"1234"];
+    [[STMAuthController authController] sendSMSCode:self.enterSMSTextField.text];
     
 }
 
 - (void)backToPhoneNumber {
+    
     [STMAuthController authController].controllerState = STMAuthEnterPhoneNumber;
+    
 }
+
+- (BOOL)isCorrectValue:(NSString *)textFieldValue {
+    return [STMFunctions isCorrectSMSCode:textFieldValue];
+}
+
 
 #pragma mark - view lifecycle
 
@@ -36,26 +43,18 @@
 
     self.navigationItem.title = NSLocalizedString(@"ENTER TO SISTEMIUM", nil);
     
-//    NSString *title = [STMAuthController authController].phoneNumber;
-//    
-//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title
-//                                                                             style:UIBarButtonItemStylePlain
-//                                                                            target:self
-//                                                                            action:@selector(backToPhoneNumber)];
-    
     UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"exit-128.png"] toSize:CGSizeMake(24, 24)];
-    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self
                                                                             action:@selector(backToPhoneNumber)];
 
     self.enterSMSLabel.text = NSLocalizedString(@"ENTER SMS CODE", nil);
-
     [self.sendSMSButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
-    self.sendSMSButton.enabled = [STMFunctions isCorrectSMSCode:self.enterSMSTextField.text];
 
+    self.textField = self.enterSMSTextField;
     self.button = self.sendSMSButton;
+    
     [super customInit];
 
 }
@@ -63,6 +62,13 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];    
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    self.textField.text = @"";
 
 }
 
