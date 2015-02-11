@@ -8,41 +8,67 @@
 
 #import "STMAuthSuccessVC.h"
 
-@interface STMAuthSuccessVC ()
+@interface STMAuthSuccessVC () <UIAlertViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIButton *logoutButton;
-
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressIndicator;
 
 @end
 
+
 @implementation STMAuthSuccessVC
 
-- (void)buttonPressed {
+- (void)backButtonPressed {
     
-    [super buttonPressed];
-    [[STMAuthController authController] logout];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil) message:NSLocalizedString(@"R U SURE TO LOGOUT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+    alertView.tag = 0;
+    alertView.delegate = self;
+    [alertView show];
+
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+            
+        case 0:
+            if (buttonIndex == 1) {
+                [[STMAuthController authController] logout];
+            }
+            break;
+            
+        default:
+            break;
+            
+    }
     
 }
 
-- (void)backButtonPressed {
-    [[STMAuthController authController] logout];    
-}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     self.navigationItem.title = NSLocalizedString(@"SISTEMIUM", nil);
-
-    self.button = self.logoutButton;
     [super customInit];
 
 }
 
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    self.nameLabel.text = [STMAuthController authController].userName;
+    self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
+
+    [super viewWillAppear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {
