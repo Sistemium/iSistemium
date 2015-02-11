@@ -19,8 +19,6 @@
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
-@property (nonatomic, strong) NSMutableArray *storyboardNames;
-@property (nonatomic, strong) NSMutableArray *tabImages;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
 @property (nonatomic, strong) STMSession *session;
@@ -29,6 +27,9 @@
 @property (nonatomic) BOOL updateAlertIsShowing;
 
 @property (nonatomic, strong) UIViewController *currentTappedVC;
+
+@property (nonatomic, strong) NSMutableArray *allTabsVCs;
+@property (nonatomic, strong) NSMutableArray *authVCs;
 
 @end
 
@@ -100,12 +101,31 @@
     
 }
 
-- (NSMutableArray *)storyboardNames {
+- (NSMutableArray *)allTabsVCs {
     
-    if (!_storyboardNames) {
-        _storyboardNames = [NSMutableArray array];
+    if (!_allTabsVCs) {
+        _allTabsVCs = [NSMutableArray array];
     }
-    return _storyboardNames;
+    return _allTabsVCs;
+    
+}
+
+- (NSMutableArray *)authVCs {
+    
+    if (!_authVCs) {
+        _authVCs = [NSMutableArray array];
+    }
+    return _authVCs;
+    
+}
+
+- (NSMutableDictionary *)tabs {
+    
+    if (!_tabs) {
+        _tabs = [NSMutableDictionary dictionary];
+    }
+    
+    return _tabs;
     
 }
 
@@ -118,23 +138,25 @@
     
 }
 
-- (NSMutableArray *)tabImages {
-    
-    if (!_tabImages) {
-        _tabImages = [NSMutableArray array];
-    }
-    return _tabImages;
-    
-}
-
 - (void)registerTabWithName:(NSString *)name title:(NSString *)title image:(UIImage *)image {
     
     if (name) {
         
-        [self.storyboardNames addObject:name];        
         (title) ? [self.storyboardTitles addObject:title] : [self.storyboardTitles addObject:name];
-        (image) ? [self.tabImages addObject:image] : [self.tabImages addObject:[UIImage imageNamed:@"full_moon-128.png"]];
         
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
+        UIViewController *vc = [storyboard instantiateInitialViewController];
+        vc.title = title;
+        vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
+
+        [self.allTabsVCs addObject:vc];
+        
+        (self.tabs)[name] = vc;
+        
+        if ([name hasPrefix:@"STMAuth"]) {
+            [self.authVCs addObject:vc];
+        }
+                
     }
     
 }
@@ -207,86 +229,41 @@
 
 }
 
-- (NSMutableDictionary *)tabs {
-    
-    if (!_tabs) {
-        _tabs = [NSMutableDictionary dictionary];
-    }
-    
-    return _tabs;
-    
-}
-
 - (void)initAuthTab {
-    
-    self.tabs = nil;
-    
-    NSString *authTabName = self.storyboardNames[0];
-    NSString *authTabTitle = self.storyboardTitles[0];
-    
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:authTabName bundle:nil];
-    UIViewController *vc = [storyboard instantiateInitialViewController];
-    vc.title = authTabTitle;
-    vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[0] toSize:CGSizeMake(30, 30)];
-
-    (self.tabs)[authTabName] = vc;
-    
-    self.viewControllers = [self.tabs allValues];
-
+    self.viewControllers = self.authVCs;
 }
 
 - (void)initAllTabs {
 
-    NSMutableArray *viewControllers = [NSMutableArray array];
+    UIViewController *messageVC = self.tabs[@"STMMessage"];
     
-    for (NSString *name in self.storyboardNames) {
+    if (messageVC) {
         
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
-        
-        NSUInteger index = [self.storyboardNames indexOfObject:name];
-        
-        UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = (self.storyboardTitles)[index];
-        vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[index] toSize:CGSizeMake(30, 30)];
-        [viewControllers addObject:vc];
+        NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+        NSString *badgeValue = (unreadCount == 0) ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+        messageVC.tabBarItem.badgeValue = badgeValue;
+        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
 
-        (self.tabs)[name] = vc;
-        
-        if ([name isEqualToString:@"STMMessages"]) {
-            
-            NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
-            NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
-            vc.tabBarItem.badgeValue = badgeValue;
-            [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
-
-        }
-        
     }
     
-    self.viewControllers = viewControllers;
-    
+    self.viewControllers = self.allTabsVCs;
+
 }
 
 - (void)showTabWithName:(NSString *)tabName {
     
     UIViewController *vc = (self.tabs)[tabName];
-    
     if (vc) {
-        
         [self setSelectedViewController:vc];
-        
     }
     
 }
 
 - (void)showTabAtIndex:(NSUInteger)index {
     
-    UIViewController *vc = (self.tabs)[self.storyboardNames[index]];
-    
+    UIViewController *vc = self.viewControllers[index];
     if (vc) {
-        
         [self setSelectedViewController:vc];
-        
     }
 
 }
@@ -436,10 +413,15 @@
 - (void)showUnreadMessageCount {
     
     UIViewController *vc = (self.tabs)[@"STMMessages"];
-    NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
-    NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
-    vc.tabBarItem.badgeValue = badgeValue;
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+    
+    if (vc) {
+        
+        NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+        NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+        vc.tabBarItem.badgeValue = badgeValue;
+        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+        
+    }
 
 }
 

@@ -38,7 +38,7 @@
     [super viewDidLoad];
     [self customInit];
 
-    NSLog(@"%@ viewDidLoad", self);
+//    NSLog(@"%@ viewDidLoad", self);
 
 }
 
