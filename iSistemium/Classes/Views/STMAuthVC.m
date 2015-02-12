@@ -101,7 +101,7 @@
     
     [self.navigationItem setHidesBackButton:YES animated:NO];
     [self textFieldDidChange:self.textField];
-    
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

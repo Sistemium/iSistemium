@@ -75,6 +75,28 @@
     
 }
 
+- (void)showUpdateButton {
+    
+    UIBarButtonItem *updateButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"UPDATE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(updateButtonPressed)];
+    
+    [updateButton setTintColor:[UIColor redColor]];
+    
+    self.navigationItem.rightBarButtonItem = updateButton;
+    
+}
+
+- (void)updateButtonPressed {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateButtonPressed" object:nil];
+    
+}
+
+- (void)newAppVersionAvailable:(NSNotification *)notification {
+    
+    [self showUpdateButton];
+    
+}
+
 
 #pragma mark - UIAlertViewDelegate
 
@@ -112,6 +134,11 @@
                name:@"entityCountdownChange"
              object:[[STMSessionManager sharedManager].currentSession syncer]];
 
+    [nc addObserver:self
+           selector:@selector(newAppVersionAvailable:)
+               name:@"newAppVersionAvailable"
+             object:nil];
+
 }
 
 - (void)removeObservers {
@@ -140,6 +167,10 @@
 
     [super viewWillAppear:animated];
     
+    if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
+        [[STMRootTBC sharedRootVC] newAppVersionAvailable:nil];
+    }
+
 }
 
 - (void)didReceiveMemoryWarning {

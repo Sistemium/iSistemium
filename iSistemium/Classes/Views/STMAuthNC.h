@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "STMAuthController.h"
+#import "STMRootTBC.h"
 
 @interface STMAuthNC : UINavigationController
 
