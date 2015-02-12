@@ -442,7 +442,8 @@
         
         alertView.tag = 1;
         
-        UIViewController *vc = (self.tabs)[@"STMAuthTVC"];
+//        UIViewController *vc = (self.tabs)[@"STMAuthTVC"];
+        UIViewController *vc = [self.authVCs lastObject];
         vc.tabBarItem.badgeValue = @"!";
         
         self.updateAlertIsShowing = YES;
