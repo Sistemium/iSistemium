@@ -211,6 +211,7 @@
     if (!_addCashingPopover) {
         
         STMAddEtceteraVC *addEtceteraVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addEtceteraVC"];
+        addEtceteraVC.parentVC = self;
         
         _addCashingPopover = [[UIPopoverController alloc] initWithContentViewController:addEtceteraVC];
         _addCashingPopover.delegate = self;
@@ -234,6 +235,12 @@
     
 }
 
+- (void)dismissAddCashingPopover {
+    
+    [self.addCashingPopover dismissPopoverAnimated:YES];
+    self.addCashingPopover = nil;
+
+}
 
 #pragma mark - UIPopoverControllerDelegate
 

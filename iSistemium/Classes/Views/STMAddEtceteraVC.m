@@ -60,6 +60,17 @@
     
 }
 
+- (IBAction)cancelButtonPressed:(id)sender {
+    [self.parentVC dismissAddCashingPopover];
+}
+
+- (IBAction)doneButtonPressed:(id)sender {
+    
+    [self.parentVC dismissAddCashingPopover];
+    
+}
+
+
 
 #pragma mark - view lifecycle
 

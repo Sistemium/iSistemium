@@ -405,9 +405,17 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZpD-KL-jCZ">
                                 <rect key="frame" x="0.0" y="212" width="512" height="44"/>
                                 <items>
-                                    <barButtonItem systemItem="cancel" id="UMe-2e-tVv"/>
+                                    <barButtonItem systemItem="cancel" id="UMe-2e-tVv">
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="iGN-Zs-Yzk" id="85U-Am-sDT"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="W4q-K1-Q0J"/>
-                                    <barButtonItem systemItem="done" id="eVd-sW-nPD"/>
+                                    <barButtonItem systemItem="done" id="eVd-sW-nPD">
+                                        <connections>
+                                            <action selector="doneButtonPressed:" destination="iGN-Zs-Yzk" id="V8P-cf-e5e"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Number label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kc5-2B-bsz">
