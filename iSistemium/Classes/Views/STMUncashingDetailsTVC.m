@@ -19,7 +19,7 @@
 #import "STMUncashingProcessController.h"
 #import "STMAddEtceteraVC.h"
 
-@interface STMUncashingDetailsTVC ()
+@interface STMUncashingDetailsTVC () <UIPopoverControllerDelegate>
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
@@ -196,6 +196,16 @@
 
 }
 
+- (void)showUncashingInfoPopover {
+    
+    self.uncashingInfoPopover = nil;
+    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
+
+#pragma mark - popovers
+
 - (UIPopoverController *)addCashingPopover {
     
     if (!_addCashingPopover) {
@@ -203,6 +213,7 @@
         STMAddEtceteraVC *addEtceteraVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addEtceteraVC"];
         
         _addCashingPopover = [[UIPopoverController alloc] initWithContentViewController:addEtceteraVC];
+        _addCashingPopover.delegate = self;
         
     }
     return _addCashingPopover;
@@ -223,12 +234,17 @@
     
 }
 
-- (void)showUncashingInfoPopover {
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
     
-    self.uncashingInfoPopover = nil;
-    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    return NO;
     
 }
+
+
+#pragma mark - uncashing process
 
 - (void)uncashingProcessButtonPressed {
 

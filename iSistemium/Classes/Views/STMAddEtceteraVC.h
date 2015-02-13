@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMDatePickerParent.h"
 
-@interface STMAddEtceteraVC : UIViewController
+@interface STMAddEtceteraVC : UIViewController <STMDatePickerParent>
+
+@property (nonatomic, strong) NSDate *selectedDate;
+
 
 @end
