@@ -12,6 +12,8 @@
 #import "STMRootTBC.h"
 #import "STMLogger.h"
 
+#import "STMAuthNC.h"
+
 @implementation STMAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -149,6 +151,7 @@
 
         self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         self.window.rootViewController = [STMRootTBC sharedRootVC];
+//        self.window.rootViewController = [STMAuthNC sharedAuthNC];
         [self.window makeKeyAndVisible];
 
     }

@@ -212,6 +212,7 @@
     [keychainItemData setObject:@"" forKey:(__bridge id)kSecAttrAccount];
     [keychainItemData setObject:@"" forKey:(__bridge id)kSecAttrLabel];
     [keychainItemData setObject:@"" forKey:(__bridge id)kSecAttrDescription];
+    [keychainItemData setObject:(__bridge id)kSecAttrAccessibleAlways forKey:(__bridge id)kSecAttrAccessible];
     
     // Default data for keychain item.
     [keychainItemData setObject:@"" forKey:(__bridge id)kSecValueData];

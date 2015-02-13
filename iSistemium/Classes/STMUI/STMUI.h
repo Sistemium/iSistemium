@@ -12,6 +12,7 @@
 #include "STMUIBarButtonItem.h"
 #include "STMUISplitViewController.h"
 #include "STMUIImagePickerController.h"
+#include "STMUISpinnerView.h"
 
 
 #endif
