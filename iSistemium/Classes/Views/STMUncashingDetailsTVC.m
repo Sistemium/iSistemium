@@ -256,6 +256,8 @@
 #pragma mark - uncashing process
 
 - (void)uncashingProcessButtonPressed {
+    
+    [self.tableView setEditing:NO animated:YES];
 
     if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessIdle) {
         
