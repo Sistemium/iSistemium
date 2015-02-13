@@ -153,19 +153,22 @@
     
     [self.view endEditing:NO];
 
-    if (!self.ndoc) {
+    if (!self.ndoc || [[self.ndoc stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        
         [self.numberTextField becomeFirstResponder];
+        
     } else if (!self.sum) {
+        
         [self.sumTextField becomeFirstResponder];
-    } else if (!self.commentText) {
+        
+    } else if (!self.commentText || [[self.commentText stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        
         [self.commentTextField becomeFirstResponder];
+        
     } else {
     
-        NSLog(@"self.ndoc %@", self.ndoc);
-        NSLog(@"self.sum %@", self.sum);
-        NSLog(@"self.commentText %@", self.commentText);
-
         [STMCashingController addCashingWithSum:self.sum ndoc:self.ndoc date:self.selectedDate comment:self.commentText debt:nil outlet:nil];
+
         [self.parentVC dismissAddCashingPopover];
 
     }
@@ -221,7 +224,11 @@
         NSString *decimalNumberString = [numberFormatter stringFromNumber:number];
         NSDictionary *local = @{NSLocaleDecimalSeparator: numberFormatter.decimalSeparator};
         
-        self.sum = [NSDecimalNumber decimalNumberWithString:decimalNumberString locale:local];
+        if (!decimalNumberString) {
+            self.sum = nil;
+        } else {
+            self.sum = [NSDecimalNumber decimalNumberWithString:decimalNumberString locale:local];    
+        }
         
     } else if ([textField isEqual:self.numberTextField]) {
         
