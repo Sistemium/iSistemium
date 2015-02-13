@@ -9,7 +9,6 @@
 #import "STMPicturesController.h"
 #import "STMFunctions.h"
 #import "STMSessionManager.h"
-#import "STMSession.h"
 
 #import "STMCampaignPicture.h"
 #import "STMUncashingPicture.h"

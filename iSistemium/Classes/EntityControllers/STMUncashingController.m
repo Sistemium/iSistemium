@@ -8,8 +8,9 @@
 
 #import "STMUncashingController.h"
 #import "STMRecordStatus.h"
-#import "STMObjectsController.h"
 #import "STMUncashingPicture.h"
+#import "STMObjectsController.h"
+
 
 @interface STMUncashingController()
 

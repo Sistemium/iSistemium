@@ -18,4 +18,6 @@
                              debt:(STMDebt *)debt
                            outlet:(STMOutlet *)outlet;
 
++ (void)removeCashing:(STMCashing *)cashing;
+
 @end

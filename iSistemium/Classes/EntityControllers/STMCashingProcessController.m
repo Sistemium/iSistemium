@@ -8,9 +8,7 @@
 
 #import "STMCashingProcessController.h"
 #import "STMSessionManager.h"
-#import "STMSyncer.h"
 #import "STMCashing.h"
-#import "STMEntityDescription.h"
 
 
 @interface STMCashingProcessController()

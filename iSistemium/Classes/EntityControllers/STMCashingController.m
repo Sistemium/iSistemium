@@ -8,6 +8,7 @@
 
 #import "STMCashingController.h"
 #import "STMDebt+Cashing.h"
+#import "STMObjectsController.h"
 
 @implementation STMCashingController
 
@@ -34,5 +35,10 @@
     
 }
 
++ (void)removeCashing:(STMCashing *)cashing {
+    
+    [STMObjectsController removeObject:cashing];
+
+}
 
 @end

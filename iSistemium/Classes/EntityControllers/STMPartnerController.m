@@ -7,8 +7,8 @@
 //
 
 #import "STMPartnerController.h"
-#import "STMObjectsController.h"
 #import "STMOutletController.h"
+#import "STMObjectsController.h"
 
 @implementation STMPartnerController
 

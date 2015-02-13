@@ -18,6 +18,7 @@
 #import "STMTableViewCell.h"
 #import "STMUncashingProcessController.h"
 #import "STMAddEtceteraVC.h"
+#import "STMCashingController.h"
 
 @interface STMUncashingDetailsTVC () <UIPopoverControllerDelegate>
 
@@ -273,6 +274,9 @@
     
     [self.tableView setEditing:YES animated:YES];
     
+    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = YES;
+    
     for (STMCashing *cashing in self.resultsController.fetchedObjects) {
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
@@ -298,6 +302,9 @@
 
 - (void)uncashingProcessDone {
     
+    self.tableView.allowsSelectionDuringEditing = NO;
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
+
     [self.tableView setEditing:NO animated:YES];
     [self.uncashingProcessButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
     
@@ -468,6 +475,23 @@
     
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return YES;
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
+        [STMCashingController removeCashing:cashing];
+        
+    }
+    
+}
+
 
 #pragma mark - NSFetchedResultsController delegate
 
@@ -515,9 +539,6 @@
     self.uncashingProcessButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(uncashingProcessButtonPressed)];
     
     self.navigationItem.rightBarButtonItem = self.uncashingProcessButton;
-
-    self.tableView.allowsSelectionDuringEditing = YES;
-    self.tableView.allowsMultipleSelectionDuringEditing = YES;
 
     [self infoLabelSetup];
     

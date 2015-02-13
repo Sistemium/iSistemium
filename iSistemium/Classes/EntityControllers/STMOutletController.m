@@ -7,10 +7,10 @@
 //
 
 #import "STMOutletController.h"
-#import "STMObjectsController.h"
 #import "STMDebtsController.h"
 #import "STMPartnerController.h"
 #import "STMCashing.h"
+#import "STMObjectsController.h"
 
 @implementation STMOutletController
 
