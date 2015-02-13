@@ -17,13 +17,15 @@
 #import "STMUncashingInfoVC.h"
 #import "STMTableViewCell.h"
 #import "STMUncashingProcessController.h"
+#import "STMAddEtceteraVC.h"
 
 @interface STMUncashingDetailsTVC ()
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
-//@property (nonatomic, strong) UIPopoverController *uncashingPopover;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
+@property (nonatomic, strong) UIPopoverController *addCashingPopover;
+@property (nonatomic, strong) UIBarButtonItem *addButton;
 
 
 @end
@@ -58,18 +60,54 @@
         if (_uncashing) {
             
             self.uncashingProcessButton.enabled = NO;
+            [self hideAddButton];
             
         } else {
             
             self.uncashingProcessButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
+            [self showAddButton];
 
         }
         
         [self performFetch];
-//        [self.uncashingPopover dismissPopoverAnimated:YES];
         
     }
     
+}
+
+- (UIBarButtonItem *)addButton {
+    
+    if (!_addButton) {
+        _addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonPressed)];
+    }
+    return _addButton;
+    
+}
+
+- (void)hideAddButton {
+
+    NSMutableArray *toolbarButtons = [self.toolbarItems mutableCopy];
+
+    if ([toolbarButtons containsObject:self.addButton]) {
+
+        [toolbarButtons removeObject:self.addButton];
+        [self setToolbarItems:toolbarButtons animated:YES];
+
+    }
+    
+}
+
+- (void)showAddButton {
+    
+    NSMutableArray *toolbarButtons = [self.toolbarItems mutableCopy];
+
+    if (![toolbarButtons containsObject:self.addButton]) {
+
+        [toolbarButtons addObject:self.addButton];
+        [self setToolbarItems:toolbarButtons animated:YES];
+        
+    }
+
 }
 
 - (void)setInfoLabelTitle {
@@ -146,7 +184,28 @@
         [self.tableView reloadData];
         [self setInfoLabelTitle];
         
+        
     }
+    
+}
+
+- (void)addButtonPressed {
+    
+    self.addCashingPopover = nil;
+    [self.addCashingPopover presentPopoverFromBarButtonItem:self.addButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+
+}
+
+- (UIPopoverController *)addCashingPopover {
+    
+    if (!_addCashingPopover) {
+        
+        STMAddEtceteraVC *addEtceteraVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addEtceteraVC"];
+        
+        _addCashingPopover = [[UIPopoverController alloc] initWithContentViewController:addEtceteraVC];
+        
+    }
+    return _addCashingPopover;
     
 }
 
@@ -160,7 +219,6 @@
         _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoPopover];
         
     }
-    
     return _uncashingInfoPopover;
     
 }
@@ -206,12 +264,6 @@
     
     [self.uncashingProcessButton setTitle:NSLocalizedString(@"DONE", nil)];
     
-//    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
-//        
-//        [self.uncashingPopover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-//
-//    }
-    
 }
 
 - (void)uncashingProcessCancel {
@@ -230,49 +282,6 @@
     
 }
 
-/*
-#pragma mark - UISplitViewControllerDelegate
-
-//- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation {
-//    
-//    if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
-//        
-//        return NO;
-//        
-//    } else {
-//    
-//        if (self.splitVC.isUncashingHandOverProcessing) {
-//            
-//            return NO;
-//            
-//        } else {
-//            
-//            return YES;
-//            
-//        }
-//
-//    }
-//    
-//}
-
-- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
-    
-    barButtonItem.title = NSLocalizedString(@"UNCASHING", nil);
-    
-    self.navigationItem.leftBarButtonItem = barButtonItem;
-    
-    self.uncashingPopover = pc;
-    
-}
-
-- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)button {
-    
-    self.navigationItem.leftBarButtonItem = nil;
-    
-    self.uncashingPopover = nil;
-    
-}
-*/
 
 #pragma mark - table view data source
 
@@ -475,6 +484,9 @@
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
 
     [self infoLabelSetup];
+    
+    (self.uncashing) ? [self hideAddButton] : [self showAddButton];
+    
     [self performFetch];
     
 }

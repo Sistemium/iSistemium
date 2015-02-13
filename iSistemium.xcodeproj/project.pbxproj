@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C02F2CD1A8DF1EB00E0E890 /* STMAddEtceteraVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2CC1A8DF1EB00E0E890 /* STMAddEtceteraVC.m */; };
 		2C140AB81A189772002C5C17 /* STMUIBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */; };
 		2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC21A18D397002C5C17 /* STMUncashingPlace.m */; };
 		2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC51A18D398002C5C17 /* STMUncashing.m */; };
@@ -168,6 +169,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2C02F2CB1A8DF1EB00E0E890 /* STMAddEtceteraVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAddEtceteraVC.h; sourceTree = "<group>"; };
+		2C02F2CC1A8DF1EB00E0E890 /* STMAddEtceteraVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAddEtceteraVC.m; sourceTree = "<group>"; };
 		2C140AB61A189772002C5C17 /* STMUIBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUIBarButtonItem.h; sourceTree = "<group>"; };
 		2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUIBarButtonItem.m; sourceTree = "<group>"; };
 		2C140AB91A18991B002C5C17 /* STMUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMUI.h; sourceTree = "<group>"; };
@@ -669,6 +672,8 @@
 				2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */,
 				2C2968F719A0C3950038B122 /* STMUncashingDetailsTVC.h */,
 				2C2968F819A0C3950038B122 /* STMUncashingDetailsTVC.m */,
+				2C02F2CB1A8DF1EB00E0E890 /* STMAddEtceteraVC.h */,
+				2C02F2CC1A8DF1EB00E0E890 /* STMAddEtceteraVC.m */,
 				2C8047141A0E381400FEFEFF /* STMUncashingInfoVC.h */,
 				2C8047151A0E381400FEFEFF /* STMUncashingInfoVC.m */,
 				2C8047211A12352F00FEFEFF /* STMUncashingPhotoVC.h */,
@@ -1210,6 +1215,7 @@
 				2C53B8A119409E71002298A5 /* STMLogger.m in Sources */,
 				2C53B8A219409E71002298A5 /* STMTracker.m in Sources */,
 				2CF365AA19ED8F1900F078BD /* STMCashing.m in Sources */,
+				2C02F2CD1A8DF1EB00E0E890 /* STMAddEtceteraVC.m in Sources */,
 				2C14D4381A3B1C3700747844 /* STMEntityDescription.m in Sources */,
 				2C2968FC19A208FB0038B122 /* STMDatePickerVC.m in Sources */,
 				2C53B8AC19409E83002298A5 /* STMSettingsTVC.m in Sources */,
