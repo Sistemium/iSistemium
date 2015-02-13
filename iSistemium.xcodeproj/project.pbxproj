@@ -7,11 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-<<<<<<< HEAD
 		2C02F2CD1A8DF1EB00E0E890 /* STMAddEtceteraVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2CC1A8DF1EB00E0E890 /* STMAddEtceteraVC.m */; };
 		2C02F2D01A8E1FE100E0E890 /* STMCashingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2CF1A8E1FE100E0E890 /* STMCashingController.m */; };
 		2C02F2D41A8E22BF00E0E890 /* STMCashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2D31A8E22BF00E0E890 /* STMCashing.m */; };
-=======
 		2C02F2AE1A8A307A00E0E890 /* STMAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C02F2AD1A8A307A00E0E890 /* STMAuth.storyboard */; };
 		2C02F2B11A8A319B00E0E890 /* STMAuthPhoneVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2B01A8A319B00E0E890 /* STMAuthPhoneVC.m */; };
 		2C02F2B41A8A342200E0E890 /* STMAuthSMSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2B31A8A342200E0E890 /* STMAuthSMSVC.m */; };
@@ -21,7 +19,6 @@
 		2C02F2C31A8A995700E0E890 /* STMUISpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2C21A8A995700E0E890 /* STMUISpinnerView.m */; };
 		2C02F2C51A8B503A00E0E890 /* full_moon-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C02F2C41A8B503A00E0E890 /* full_moon-128.png */; };
 		2C02F2C71A8B95F600E0E890 /* exit-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C02F2C61A8B95F600E0E890 /* exit-128.png */; };
->>>>>>> iPhone
 		2C140AB81A189772002C5C17 /* STMUIBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */; };
 		2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC21A18D397002C5C17 /* STMUncashingPlace.m */; };
 		2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C140AC51A18D398002C5C17 /* STMUncashing.m */; };
@@ -182,7 +179,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-<<<<<<< HEAD
 		2C02F2CB1A8DF1EB00E0E890 /* STMAddEtceteraVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAddEtceteraVC.h; sourceTree = "<group>"; };
 		2C02F2CC1A8DF1EB00E0E890 /* STMAddEtceteraVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAddEtceteraVC.m; sourceTree = "<group>"; };
 		2C02F2CE1A8E1FE100E0E890 /* STMCashingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCashingController.h; sourceTree = "<group>"; };
@@ -190,7 +186,6 @@
 		2C02F2D11A8E228600E0E890 /* STMDataModel 35.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 35.xcdatamodel"; sourceTree = "<group>"; };
 		2C02F2D21A8E22BF00E0E890 /* STMCashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCashing.h; sourceTree = "<group>"; };
 		2C02F2D31A8E22BF00E0E890 /* STMCashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCashing.m; sourceTree = "<group>"; };
-=======
 		2C02F2AD1A8A307A00E0E890 /* STMAuth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMAuth.storyboard; sourceTree = "<group>"; };
 		2C02F2AF1A8A319B00E0E890 /* STMAuthPhoneVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthPhoneVC.h; sourceTree = "<group>"; };
 		2C02F2B01A8A319B00E0E890 /* STMAuthPhoneVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthPhoneVC.m; sourceTree = "<group>"; };
@@ -206,7 +201,6 @@
 		2C02F2C21A8A995700E0E890 /* STMUISpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUISpinnerView.m; sourceTree = "<group>"; };
 		2C02F2C41A8B503A00E0E890 /* full_moon-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "full_moon-128.png"; sourceTree = "<group>"; };
 		2C02F2C61A8B95F600E0E890 /* exit-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "exit-128.png"; sourceTree = "<group>"; };
->>>>>>> iPhone
 		2C140AB61A189772002C5C17 /* STMUIBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUIBarButtonItem.h; sourceTree = "<group>"; };
 		2C140AB71A189772002C5C17 /* STMUIBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUIBarButtonItem.m; sourceTree = "<group>"; };
 		2C140AB91A18991B002C5C17 /* STMUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMUI.h; sourceTree = "<group>"; };
