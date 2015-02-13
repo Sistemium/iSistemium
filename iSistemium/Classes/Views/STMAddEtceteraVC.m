@@ -291,7 +291,7 @@
     
     if (!number) {
         
-        if ([text isEqualToString:@""]) {
+        if ([text isEqualToString:@""] || [text isEqualToString:@"-"]) {
             
             textField.text = text;
             
