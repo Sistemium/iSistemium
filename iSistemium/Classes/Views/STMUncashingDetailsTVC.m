@@ -8,7 +8,7 @@
 
 #import "STMUncashingDetailsTVC.h"
 #import "STMDebt.h"
-#import "STMCashing.h"
+#import "STMCashing+dayAsString.h"
 #import "STMConstants.h"
 #import "STMUncashingSVC.h"
 #import "STMSyncer.h"
@@ -117,13 +117,13 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
         
-        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"debt.outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
         
         request.sortDescriptors = @[outletNameSortDescriptor, dateSortDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@ AND debt.outlet.name != %@", self.uncashing, nil];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"debt.outlet.name" cacheName:nil];
+        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@ AND outlet.name != %@", self.uncashing, nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"outletSectionName" cacheName:nil];
         _resultsController.delegate = self;
 
     }

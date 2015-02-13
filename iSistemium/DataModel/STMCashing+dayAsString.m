@@ -31,6 +31,12 @@
     
 }
 
+- (NSString *)outletSectionName {
+    
+    return (self.outlet.name) ? self.outlet.name : NSLocalizedString(@"ETC", nil);
+    
+}
+
 - (void)willSave {
     
     BOOL isProcessedChanged = [[[self changedValues] allKeys] containsObject:@"isProcessed"];
