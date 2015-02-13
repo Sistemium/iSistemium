@@ -7,7 +7,6 @@
 //
 
 #import "STMDebtsController.h"
-#import "STMSessionManager.h"
 #import "STMObjectsController.h"
 
 @implementation STMDebtsController
@@ -27,7 +26,7 @@
         
     }];
     
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+    [[self syncer] setSyncerState:STMSyncerSendDataOnce];
     
 //    NSLog(@"debt %@", debt);
     

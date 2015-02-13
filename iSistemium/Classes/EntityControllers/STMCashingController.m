@@ -24,6 +24,12 @@
     
     debt.calculatedSum = [debt cashingCalculatedSum];
     
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+    
+    [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+    
     return cashing;
     
 }

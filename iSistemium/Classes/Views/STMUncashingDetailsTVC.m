@@ -358,26 +358,38 @@
                                  NSForegroundColorAttributeName: textColor
                                  };
     
-    NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
+    if (cashing.debt) {
+        
+        NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
+        
+        text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
+        
+        if (cashing.debt.responsibility) {
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
+            
+            UIColor *backgroundColor = [UIColor grayColor];
+            UIColor *textColor = [UIColor whiteColor];
+            
+            NSDictionary *attributes = @{
+                                         NSFontAttributeName: font,
+                                         NSBackgroundColorAttributeName: backgroundColor,
+                                         NSForegroundColorAttributeName: textColor
+                                         };
+            
+            NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", cashing.debt.responsibility];
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
+            
+        }
 
-    text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
-    
-    if (cashing.debt.responsibility) {
+    } else {
         
-        [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
-        
-        UIColor *backgroundColor = [UIColor grayColor];
-        UIColor *textColor = [UIColor whiteColor];
-        
-        NSDictionary *attributes = @{
-                                     NSFontAttributeName: font,
-                                     NSBackgroundColorAttributeName: backgroundColor,
-                                     NSForegroundColorAttributeName: textColor
-                                     };
-        
-        NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", cashing.debt.responsibility];
-        
-        [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
+        if (cashing.ndoc) {
+            text = [[NSMutableAttributedString alloc] initWithString:cashing.ndoc attributes:attributes];
+        } else {
+            text = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"NO DATA", nil) attributes:attributes];
+        }
         
     }
     
