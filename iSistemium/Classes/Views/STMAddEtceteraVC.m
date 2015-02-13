@@ -9,6 +9,7 @@
 #import "STMAddEtceteraVC.h"
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
+#import "STMCashingController.h"
 
 @interface STMAddEtceteraVC () <UITextFieldDelegate>
 
@@ -133,6 +134,7 @@
     
 }
 
+
 - (void)checkSumField {
     
     if ([self.sumTextField.text isEqualToString:@""]) {
@@ -149,11 +151,24 @@
 
 - (IBAction)doneButtonPressed:(id)sender {
     
-    NSLog(@"self.ndoc %@", self.ndoc);
-    NSLog(@"self.sum %@", self.sum);
-    NSLog(@"self.commentText %@", self.commentText);
+    [self.view endEditing:NO];
+
+    if (!self.ndoc) {
+        [self.numberTextField becomeFirstResponder];
+    } else if (!self.sum) {
+        [self.sumTextField becomeFirstResponder];
+    } else if (!self.commentText) {
+        [self.commentTextField becomeFirstResponder];
+    } else {
     
-    [self.parentVC dismissAddCashingPopover];
+        NSLog(@"self.ndoc %@", self.ndoc);
+        NSLog(@"self.sum %@", self.sum);
+        NSLog(@"self.commentText %@", self.commentText);
+
+        [STMCashingController addCashingWithSum:self.sum ndoc:self.ndoc date:self.selectedDate comment:self.commentText debt:nil outlet:nil];
+        [self.parentVC dismissAddCashingPopover];
+
+    }
     
 }
 
@@ -212,14 +227,11 @@
         
         self.ndoc = textField.text;
         
-//        [self checkSumField];
-        
     } else if ([textField isEqual:self.commentTextField]) {
         
         self.commentText = self.commentTextField.text;
         
     }
-    
     
 }
 

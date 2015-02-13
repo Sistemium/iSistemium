@@ -2,8 +2,8 @@
 //  STMCashing.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 14/10/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 13/02/15.
+//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
 #import "STMCashing.h"
@@ -15,8 +15,9 @@
 @implementation STMCashing
 
 @dynamic date;
-@dynamic summ;
 @dynamic isProcessed;
+@dynamic summ;
+@dynamic ndoc;
 @dynamic debt;
 @dynamic outlet;
 @dynamic uncashing;

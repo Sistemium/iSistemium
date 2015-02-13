@@ -270,15 +270,17 @@
         NSDecimalNumber *summ = debtArray[1];
         NSString *commentText = (self.commentsDictionary)[debt.xid];
         
-        STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:[STMController document].managedObjectContext];
+        [STMCashingController addCashingWithSum:summ ndoc:nil date:date comment:commentText debt:debt outlet:self.outlet];
         
-        cashing.date = date;
-        cashing.summ = summ;
-        cashing.debt = debt;
-        cashing.commentText = commentText;
-        cashing.outlet = self.outlet;
-        
-        debt.calculatedSum = [debt cashingCalculatedSum];
+//        STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:[STMController document].managedObjectContext];
+//        
+//        cashing.date = date;
+//        cashing.summ = summ;
+//        cashing.debt = debt;
+//        cashing.commentText = commentText;
+//        cashing.outlet = self.outlet;
+//        
+//        debt.calculatedSum = [debt cashingCalculatedSum];
         
     }
     
