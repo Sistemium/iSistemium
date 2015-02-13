@@ -124,4 +124,6 @@
 "RELOAD" = "Reload";
 "CAMPAIGN TERMS" = "Campaign terms";
 "ETC" = "Etcetera";
+"SUM" = "Sum: ";
+"COMMENT" = "Comment: ";
 

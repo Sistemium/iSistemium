@@ -85,6 +85,7 @@
     self.dateLabel.text = NSLocalizedString(@"DOC DATE", nil);
     self.numberLabel.text = NSLocalizedString(@"DOC NUMBER", nil);
     self.sumLabel.text = NSLocalizedString(@"SUM", nil);
+    self.commentLabel.text = NSLocalizedString(@"COMMENT", nil);
     
     self.numberTextField.delegate = self;
     self.numberTextField.keyboardType = UIKeyboardTypeDefault;
