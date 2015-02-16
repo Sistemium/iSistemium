@@ -54,12 +54,16 @@
         } else {
             
             self.progressBar.hidden = NO;
-            self.totalEntityCount = (float)[STMEntityController stcEntities].allKeys.count;
+            self.totalEntityCount = 1;
             
         }
                 
     }
     
+}
+
+- (void)entitiesReceivingDidFinish {
+    self.totalEntityCount = (float)[STMEntityController stcEntities].allKeys.count;
 }
 
 - (void)entityCountdownChange:(NSNotification *)notification {
@@ -123,16 +127,23 @@
 - (void)addObservers {
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
 
     [nc addObserver:self
            selector:@selector(syncerStatusChanged:)
                name:@"syncStatusChanged"
-             object:[[STMSessionManager sharedManager].currentSession syncer]];
+             object:syncer];
     
     [nc addObserver:self
            selector:@selector(entityCountdownChange:)
                name:@"entityCountdownChange"
-             object:[[STMSessionManager sharedManager].currentSession syncer]];
+             object:syncer];
+    
+    [nc addObserver:self
+           selector:@selector(entitiesReceivingDidFinish)
+               name:@"entitiesReceivingDidFinish"
+             object:syncer];
 
     [nc addObserver:self
            selector:@selector(newAppVersionAvailable:)
@@ -162,8 +173,8 @@
     
     self.nameLabel.text = [STMAuthController authController].userName;
     self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
-    self.progressBar.progress = 0.0;
-    self.progressBar.hidden = YES;
+//    self.progressBar.progress = 0.0;
+    self.progressBar.hidden = ([[STMSessionManager sharedManager].currentSession syncer].syncerState == STMSyncerIdle);
 
     [super viewWillAppear:animated];
     
