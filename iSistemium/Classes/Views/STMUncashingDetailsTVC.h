@@ -9,6 +9,7 @@
 #import "STMFetchedResultsControllerTVC.h"
 #import "STMUncashing.h"
 #import "STMUI.h"
+#import "STMCashingController.h"
 
 @interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC //<UISplitViewControllerDelegate>
 

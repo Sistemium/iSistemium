@@ -14,6 +14,6 @@
 
 @property (nonatomic, strong) STMUncashingDetailsTVC *parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
-
+@property (nonatomic) STMCashingType cashingType;
 
 @end

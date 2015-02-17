@@ -360,7 +360,14 @@
     self.dateLabel.text = NSLocalizedString(@"DOC DATE", nil);
     self.numberLabel.text = NSLocalizedString(@"DOC NUMBER", nil);
     self.sumLabel.text = NSLocalizedString(@"SUM", nil);
-    self.commentLabel.text = NSLocalizedString(@"COMMENT", nil);
+    
+    if (self.cashingType == STMCashingEtcetera) {
+        self.commentLabel.text = NSLocalizedString(@"OUTLET", nil);
+    } else if (self.cashingType == STMCashingDeduction) {
+        self.commentLabel.text = NSLocalizedString(@"BASIS", nil);
+    } else {
+        self.commentLabel.text = NSLocalizedString(@"COMMENT", nil);
+    }
     
     self.numberTextField.delegate = self;
     self.numberTextField.keyboardType = UIKeyboardTypeDefault;

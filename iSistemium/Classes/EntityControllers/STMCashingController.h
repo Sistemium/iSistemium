@@ -9,6 +9,11 @@
 #import "STMController.h"
 #import "STMCashing.h"
 
+typedef NS_ENUM(NSInteger, STMCashingType) {
+    STMCashingEtcetera,
+    STMCashingDeduction
+};
+
 @interface STMCashingController : STMController
 
 + (STMCashing *)addCashingWithSum:(NSDecimalNumber *)sum
@@ -17,6 +22,14 @@
                           comment:(NSString *)comment
                              debt:(STMDebt *)debt
                            outlet:(STMOutlet *)outlet;
+
++ (STMCashing *)addCashingWithSum:(NSDecimalNumber *)sum
+                             ndoc:(NSString *)ndoc
+                             date:(NSDate *)date
+                          comment:(NSString *)comment
+                             debt:(STMDebt *)debt
+                           outlet:(STMOutlet *)outlet
+                             type:(STMCashingType)type;
 
 + (void)removeCashing:(STMCashing *)cashing;
 

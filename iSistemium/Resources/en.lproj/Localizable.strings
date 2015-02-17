@@ -127,3 +127,7 @@
 "SUM" = "Sum: ";
 "COMMENT" = "Comment: ";
 "NO DATA" = "No data";
+"ADD SUM" = "Add sum";
+"DEDUCTION" = "Deduction";
+"BASIS" = "Basis: ";
+"OUTLET" = "Outlet";

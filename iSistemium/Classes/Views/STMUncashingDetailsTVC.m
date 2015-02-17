@@ -18,15 +18,16 @@
 #import "STMTableViewCell.h"
 #import "STMUncashingProcessController.h"
 #import "STMAddEtceteraVC.h"
-#import "STMCashingController.h"
 
-@interface STMUncashingDetailsTVC () <UIPopoverControllerDelegate>
+@interface STMUncashingDetailsTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
 @property (nonatomic, strong) UIPopoverController *addCashingPopover;
 @property (nonatomic, strong) UIBarButtonItem *addButton;
+
+@property (nonatomic) STMCashingType addCashingType;
 
 
 @end
@@ -79,7 +80,8 @@
 - (UIBarButtonItem *)addButton {
     
     if (!_addButton) {
-        _addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonPressed)];
+//        _addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonPressed)];
+        _addButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"ADD SUM", nil) style:UIBarButtonItemStylePlain target:self action:@selector(addButtonPressed)];
     }
     return _addButton;
     
@@ -193,15 +195,45 @@
 
 - (void)addButtonPressed {
     
-    self.addCashingPopover = nil;
-    [self.addCashingPopover presentPopoverFromBarButtonItem:self.addButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"ADD", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"ETC", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"DEDUCTION", nil)];
+    
+    [actionSheet showFromBarButtonItem:self.addButton animated:YES];
+    
 }
 
 - (void)showUncashingInfoPopover {
     
     self.uncashingInfoPopover = nil;
     [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet.title isEqualToString:NSLocalizedString(@"ADD", nil)]) {
+        
+        if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"ETC", nil)]) {
+            self.addCashingType = STMCashingEtcetera;
+        } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"DEDUCTION", nil)]) {
+            self.addCashingType = STMCashingDeduction;
+        }
+        
+        self.addCashingPopover = nil;
+        
+        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+//        [self.uncashingInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+
+        [self.addCashingPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+        
+//        [self.addCashingPopover presentPopoverFromBarButtonItem:self.addButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+
+    }
     
 }
 
@@ -214,6 +246,7 @@
         
         STMAddEtceteraVC *addEtceteraVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addEtceteraVC"];
         addEtceteraVC.parentVC = self;
+        addEtceteraVC.cashingType = self.addCashingType;
         
         _addCashingPopover = [[UIPopoverController alloc] initWithContentViewController:addEtceteraVC];
         _addCashingPopover.delegate = self;
