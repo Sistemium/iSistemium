@@ -159,9 +159,10 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
         
         NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *sumSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"summ" ascending:YES selector:@selector(compare:)];
         NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
         
-        request.sortDescriptors = @[outletNameSortDescriptor, dateSortDescriptor];
+        request.sortDescriptors = @[outletNameSortDescriptor, sumSortDescriptor, dateSortDescriptor];
         
 //        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@ AND outlet.name != %@", self.uncashing, nil];
         request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", self.uncashing];

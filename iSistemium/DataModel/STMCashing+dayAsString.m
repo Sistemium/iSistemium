@@ -33,7 +33,23 @@
 
 - (NSString *)outletSectionName {
     
-    return (self.outlet.name) ? self.outlet.name : NSLocalizedString(@"ETC", nil);
+    if (self.outlet.name) {
+        
+        return self.outlet.name;
+        
+    } else {
+        
+        if ([self.summ compare:[NSDecimalNumber zero]] == NSOrderedAscending) {
+            
+            return NSLocalizedString(@"DEDUCTIONS", nil);
+            
+        } else {
+            
+            return NSLocalizedString(@"ETC", nil);
+            
+        }
+        
+    }
     
 }
 

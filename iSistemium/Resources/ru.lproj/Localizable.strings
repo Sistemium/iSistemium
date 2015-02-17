@@ -129,6 +129,7 @@
 "NO DATA" = "Нет данных";
 "ADD SUM" = "Добавить сумму";
 "DEDUCTION" = "Вычет";
+"DEDUCTIONS" = "Вычеты";
 "BASIS" = "Обоснование: ";
 "OUTLET" = "Точка: ";
 "DEBT COMMENT" = "Комментарий: ";
