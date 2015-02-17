@@ -218,21 +218,21 @@
     
     if ([actionSheet.title isEqualToString:NSLocalizedString(@"ADD", nil)]) {
         
-        if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"ETC", nil)]) {
-            self.addCashingType = STMCashingEtcetera;
-        } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"DEDUCTION", nil)]) {
-            self.addCashingType = STMCashingDeduction;
+        if (buttonIndex >= 0) {
+            
+            if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"ETC", nil)]) {
+                self.addCashingType = STMCashingEtcetera;
+            } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"DEDUCTION", nil)]) {
+                self.addCashingType = STMCashingDeduction;
+            }
+            
+            self.addCashingPopover = nil;
+            
+            CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+            [self.addCashingPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+
         }
         
-        self.addCashingPopover = nil;
-        
-        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-//        [self.uncashingInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
-
-        [self.addCashingPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
-        
-//        [self.addCashingPopover presentPopoverFromBarButtonItem:self.addButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-
     }
     
 }
