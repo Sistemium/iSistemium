@@ -22,6 +22,13 @@
     
     STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:[STMController document].managedObjectContext];
     
+    if (type == STMCashingDeduction) {
+
+        NSDecimalNumber *minusOne = [NSDecimalNumber decimalNumberWithMantissa:1 exponent:0 isNegative:YES];
+        sum = [sum decimalNumberByMultiplyingBy:minusOne];
+        
+    }
+    
     cashing.summ = sum;
     cashing.ndoc = ndoc;
     cashing.date = date;
@@ -36,6 +43,8 @@
     }];
     
     [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+    
+    NSLog(@"cashing %@", cashing);
     
     return cashing;
     

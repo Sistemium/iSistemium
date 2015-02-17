@@ -167,7 +167,7 @@
         
     } else {
     
-        [STMCashingController addCashingWithSum:self.sum ndoc:self.ndoc date:self.selectedDate comment:self.commentText debt:nil outlet:nil];
+        [STMCashingController addCashingWithSum:self.sum ndoc:self.ndoc date:self.selectedDate comment:self.commentText debt:nil outlet:nil type:self.cashingType];
 
         [self.parentVC dismissAddCashingPopover];
 
@@ -291,7 +291,7 @@
     
     if (!number) {
         
-        if ([text isEqualToString:@""] || [text isEqualToString:@"-"]) {
+        if ([text isEqualToString:@""]/* || [text isEqualToString:@"-"]*/) {
             
             textField.text = text;
             
