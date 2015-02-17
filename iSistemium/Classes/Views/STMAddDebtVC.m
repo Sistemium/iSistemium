@@ -112,7 +112,7 @@
 }
 
 - (void)toolbarDoneButtonPressed {
-        
+    
     if ([self.ndocTextField isFirstResponder]) {
         
         NSString *debtNdoc = [self.ndocTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];

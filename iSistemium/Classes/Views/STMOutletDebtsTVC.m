@@ -235,6 +235,24 @@
             
         }
         
+        if (debt.commentText) {
+            
+            font = [UIFont systemFontOfSize:14];
+            backgroundColor = [UIColor clearColor];
+            textColor = [UIColor blackColor];
+
+            attributes = @{
+                           NSFontAttributeName: font,
+                           NSBackgroundColorAttributeName: backgroundColor,
+                           NSForegroundColorAttributeName: textColor
+                           };
+
+            NSString *commentString = [NSString stringWithFormat:@" (%@)", debt.commentText];
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:commentString attributes:attributes]];
+            
+        }
+        
         return text;
         
     } else {
