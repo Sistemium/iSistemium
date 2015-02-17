@@ -107,36 +107,57 @@
         
     }
 
-    [self.view endEditing:NO];
+    [self.view endEditing:YES];
 
 }
 
 - (void)toolbarDoneButtonPressed {
-    
-    [self.view endEditing:NO];
-    
-    NSString *debtNdoc = [self.ndocTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    
-    if ([debtNdoc isEqualToString:@""]) {
-        [self.ndocTextField becomeFirstResponder];
+        
+    if ([self.ndocTextField isFirstResponder]) {
+        
+        NSString *debtNdoc = [self.ndocTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+        
+        if ([debtNdoc isEqualToString:@""]) {
+            
+            [self.ndocTextField becomeFirstResponder];
+            [self errorStyleForTextField:self.ndocTextField];
+            
+        } else {
+            [self checkSumField];
+        }
+
+    } else if ([self.sumTextField isFirstResponder]) {
+        
+        if (![self checkSumField]) {
+            [self errorStyleForTextField:self.sumTextField];
+        } else {
+            [self.commentTextField becomeFirstResponder];
+        }
+        
     } else {
-        [self checkSumField];
+        
+        [self.view endEditing:YES];
+        
     }
     
 }
 
-- (void)checkSumField {
+- (BOOL)checkSumField {
     
     if ([self.sumTextField.text isEqualToString:@""]) {
         
         [self.sumTextField becomeFirstResponder];
+        return NO;
         
+    } else {
+        return YES;
     }
     
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
     
+    [self.view endEditing:YES];
     [self.parentVC dismissAddDebt];
     
 }
@@ -228,19 +249,13 @@
 
     } else if ([textField isEqual:self.ndocTextField]) {
         
-        NSString *debtNdoc = [textField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
-
-        if ([debtNdoc isEqualToString:@""]) {
-            [textField becomeFirstResponder];
-        } else {
-            self.debtNdoc = textField.text;
-            [self checkSumField];
-        }
+        self.debtNdoc = textField.text;
+        if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
         
     } else if ([textField isEqual:self.commentTextField]) {
         
         self.commentText = textField.text;
-        [self checkSumField];
+        if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
         
     }
     
@@ -283,7 +298,9 @@
 
     } else {
         
+        [self okStyleForTextField:textField];
         return YES;
+        
     }
     
 }
@@ -335,6 +352,8 @@
             textField.text = finalString;
             
         }
+        
+        [self okStyleForTextField:textField];
         
     }
     
@@ -391,6 +410,8 @@
     
     self.commentTextField.delegate = self;
     self.commentTextField.keyboardType = UIKeyboardTypeDefault;
+    
+    [self.ndocTextField becomeFirstResponder];
     
 }
 
