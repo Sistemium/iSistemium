@@ -16,6 +16,12 @@
                           date:(NSDate *)date
                         outlet:(STMOutlet *)outlet;
 
++ (STMDebt *)addNewDebtWithSum:(NSDecimalNumber *)sum
+                          ndoc:(NSString *)ndoc
+                          date:(NSDate *)date
+                        outlet:(STMOutlet *)outlet
+                       comment:(NSString *)commentText;
+
 + (void)removeDebt:(STMDebt *)debt;
 
 @end

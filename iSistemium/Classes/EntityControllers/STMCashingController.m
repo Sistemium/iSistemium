@@ -29,6 +29,7 @@
         
     }
     
+    cashing.isFantom = @NO;
     cashing.summ = sum;
     cashing.ndoc = ndoc;
     cashing.date = date;

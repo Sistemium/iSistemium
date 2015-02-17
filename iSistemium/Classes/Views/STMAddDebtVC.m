@@ -10,15 +10,20 @@
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
 #import "STMDebtsController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface STMAddDebtVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
-@property (weak, nonatomic) IBOutlet UIButton *dateButton;
 @property (weak, nonatomic) IBOutlet UILabel *ndocLabel;
 @property (weak, nonatomic) IBOutlet UILabel *sumLabel;
+@property (weak, nonatomic) IBOutlet UILabel *commentLabel;
+
+@property (weak, nonatomic) IBOutlet UIButton *dateButton;
 @property (weak, nonatomic) IBOutlet UITextField *ndocTextField;
 @property (weak, nonatomic) IBOutlet UITextField *sumTextField;
+@property (weak, nonatomic) IBOutlet UITextField *commentTextField;
+
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
@@ -27,6 +32,7 @@
 
 @property (nonatomic, strong) NSString *debtNdoc;
 @property (nonatomic, strong) NSDecimalNumber *debtSum;
+@property (nonatomic, strong) NSString *commentText;
 
 @end
 
@@ -95,6 +101,10 @@
 
         self.ndocTextField.text = self.initialTextFieldValue;
 
+    } else if ([self.commentTextField isFirstResponder]) {
+        
+        self.commentTextField.text = self.initialTextFieldValue;
+        
     }
 
     [self.view endEditing:NO];
@@ -104,7 +114,14 @@
 - (void)toolbarDoneButtonPressed {
     
     [self.view endEditing:NO];
-    [self checkSumField];
+    
+    NSString *debtNdoc = [self.ndocTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    if ([debtNdoc isEqualToString:@""]) {
+        [self.ndocTextField becomeFirstResponder];
+    } else {
+        [self checkSumField];
+    }
     
 }
 
@@ -126,25 +143,33 @@
 
 - (IBAction)doneButtonPressed:(id)sender {
     
-    NSString *debtNumber = [self.ndocTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    
+    NSString *debtNdoc = [self.ndocTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
     double debtSum = [self.sumTextField.text doubleValue];
+//    NSString *debtComment = [self.commentTextField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
     
-    if ([debtNumber isEqualToString:@""]) {
+    if ([debtNdoc isEqualToString:@""]) {
         
         [self.ndocTextField becomeFirstResponder];
+        [self errorStyleForTextField:self.ndocTextField];
+        
+        if (debtSum == 0) [self errorStyleForTextField:self.sumTextField];
         
     } else if (debtSum == 0) {
         
         [self.sumTextField becomeFirstResponder];
+        [self errorStyleForTextField:self.sumTextField];
+        
+//    } else if ([debtComment isEqualToString:@""]) {
+//        
+//        [self.commentTextField becomeFirstResponder];
         
     } else {
 
         [self.view endEditing:NO];
         
-        NSLog(@"self.debtSum %@", self.debtSum);
+//        NSLog(@"self.debtSum %@", self.debtSum);
 
-        [STMDebtsController addNewDebtWithSum:self.debtSum ndoc:self.debtNdoc date:self.selectedDate outlet:self.parentVC.outlet];
+        [STMDebtsController addNewDebtWithSum:self.debtSum ndoc:self.debtNdoc date:self.selectedDate outlet:self.parentVC.outlet comment:self.commentText];
         [self.parentVC dismissAddDebt];
 
     }
@@ -203,8 +228,18 @@
 
     } else if ([textField isEqual:self.ndocTextField]) {
         
-        self.debtNdoc = textField.text;
+        NSString *debtNdoc = [textField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+        if ([debtNdoc isEqualToString:@""]) {
+            [textField becomeFirstResponder];
+        } else {
+            self.debtNdoc = textField.text;
+            [self checkSumField];
+        }
         
+    } else if ([textField isEqual:self.commentTextField]) {
+        
+        self.commentText = textField.text;
         [self checkSumField];
         
     }
@@ -316,6 +351,21 @@
     
 }
 
+- (void)okStyleForTextField:(UITextField *)textField {
+    
+    textField.layer.borderWidth = 1.0;
+    textField.layer.cornerRadius = 8.0;
+    textField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    
+}
+
+- (void)errorStyleForTextField:(UITextField *)textField {
+    
+    textField.layer.borderWidth = 1.0;
+    textField.layer.cornerRadius = 8.0;
+    textField.layer.borderColor = [[UIColor redColor] CGColor];
+    
+}
 
 
 #pragma mark - view lifecycle
@@ -331,12 +381,16 @@
     self.dateLabel.text = NSLocalizedString(@"DOC DATE", nil);
     self.ndocLabel.text = NSLocalizedString(@"DOC NUMBER", nil);
     self.sumLabel.text = NSLocalizedString(@"DEBT SUM", nil);
+    self.commentLabel.text = NSLocalizedString(@"DEBT COMMENT", nil);
     
     self.ndocTextField.delegate = self;
     self.ndocTextField.keyboardType = UIKeyboardTypeDefault;
     
     self.sumTextField.delegate = self;
     self.sumTextField.keyboardType = UIKeyboardTypeDecimalPad;
+    
+    self.commentTextField.delegate = self;
+    self.commentTextField.keyboardType = UIKeyboardTypeDefault;
     
 }
 

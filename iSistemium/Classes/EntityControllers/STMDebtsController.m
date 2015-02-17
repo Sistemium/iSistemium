@@ -12,6 +12,10 @@
 @implementation STMDebtsController
 
 + (STMDebt *)addNewDebtWithSum:(NSDecimalNumber *)sum ndoc:(NSString *)ndoc date:(NSDate *)date outlet:(STMOutlet *)outlet {
+    return [self addNewDebtWithSum:sum ndoc:ndoc date:date outlet:outlet comment:nil];
+}
+
++ (STMDebt *)addNewDebtWithSum:(NSDecimalNumber *)sum ndoc:(NSString *)ndoc date:(NSDate *)date outlet:(STMOutlet *)outlet comment:(NSString *)commentText {
     
     STMDebt *debt = (STMDebt *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMDebt class])];
     
@@ -21,6 +25,7 @@
     debt.summOrigin = sum;
     debt.ndoc = ndoc;
     debt.outlet = outlet;
+    debt.commentText = commentText;
     
     [[self document] saveDocument:^(BOOL success) {
         
@@ -28,7 +33,7 @@
     
     [[self syncer] setSyncerState:STMSyncerSendDataOnce];
     
-//    NSLog(@"debt %@", debt);
+    NSLog(@"debt %@", debt);
     
     return debt;
     
