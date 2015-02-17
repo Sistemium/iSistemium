@@ -1073,6 +1073,8 @@
 
             self.entityCount = entityNames.count;
 
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"entitiesReceivingDidFinish" object:self];
+            
             for (NSString *name in entityNames) {
 //                [self startConnectionForReceiveEntitiesWithName:name];
                 [self checkConditionForReceivingEntityWithName:name];

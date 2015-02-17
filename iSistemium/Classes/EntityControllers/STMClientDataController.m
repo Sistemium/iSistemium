@@ -10,10 +10,9 @@
 #import "STMClientDataController.h"
 #import "STMClientData.h"
 #import "STMAuthController.h"
-#import "STMEntityDescription.h"
 #import "STMSetting.h"
-#import "STMObjectsController.h"
 #import "STMFunctions.h"
+#import "STMObjectsController.h"
 
 @implementation STMClientDataController
 

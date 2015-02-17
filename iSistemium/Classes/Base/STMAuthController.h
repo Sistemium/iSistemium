@@ -31,8 +31,9 @@ typedef enum STMAuthState {
 + (STMAuthController *)authController;
 
 
-- (void)sendPhoneNumber:(NSString *)phoneNumber;
-- (void)sendSMSCode:(NSString *)SMSCode;
+- (BOOL)sendPhoneNumber:(NSString *)phoneNumber;
+- (BOOL)sendSMSCode:(NSString *)SMSCode;
+
 - (void)requestNewSMSCode;
 - (void)logout;
 

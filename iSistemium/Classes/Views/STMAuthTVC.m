@@ -277,7 +277,7 @@
     
     if ([self.tabBarController isKindOfClass:[STMRootTBC class]]) {
         
-        title = [(STMRootTBC *)self.tabBarController storyboardtitles][index + 1];
+        title = [(STMRootTBC *)self.tabBarController storyboardTitles][index + 1];
         
     }
     

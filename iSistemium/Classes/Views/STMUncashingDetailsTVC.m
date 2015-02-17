@@ -8,7 +8,7 @@
 
 #import "STMUncashingDetailsTVC.h"
 #import "STMDebt.h"
-#import "STMCashing.h"
+#import "STMCashing+dayAsString.h"
 #import "STMConstants.h"
 #import "STMUncashingSVC.h"
 #import "STMSyncer.h"
@@ -17,13 +17,16 @@
 #import "STMUncashingInfoVC.h"
 #import "STMTableViewCell.h"
 #import "STMUncashingProcessController.h"
+#import "STMAddEtceteraVC.h"
+#import "STMCashingController.h"
 
-@interface STMUncashingDetailsTVC ()
+@interface STMUncashingDetailsTVC () <UIPopoverControllerDelegate>
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
-//@property (nonatomic, strong) UIPopoverController *uncashingPopover;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
+@property (nonatomic, strong) UIPopoverController *addCashingPopover;
+@property (nonatomic, strong) UIBarButtonItem *addButton;
 
 
 @end
@@ -58,18 +61,54 @@
         if (_uncashing) {
             
             self.uncashingProcessButton.enabled = NO;
+            [self hideAddButton];
             
         } else {
             
             self.uncashingProcessButton.enabled = (self.splitVC.masterVC.cashingSum.intValue == 0) ? NO : YES;
+            [self showAddButton];
 
         }
         
         [self performFetch];
-//        [self.uncashingPopover dismissPopoverAnimated:YES];
         
     }
     
+}
+
+- (UIBarButtonItem *)addButton {
+    
+    if (!_addButton) {
+        _addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonPressed)];
+    }
+    return _addButton;
+    
+}
+
+- (void)hideAddButton {
+
+    NSMutableArray *toolbarButtons = [self.toolbarItems mutableCopy];
+
+    if ([toolbarButtons containsObject:self.addButton]) {
+
+        [toolbarButtons removeObject:self.addButton];
+        [self setToolbarItems:toolbarButtons animated:YES];
+
+    }
+    
+}
+
+- (void)showAddButton {
+    
+    NSMutableArray *toolbarButtons = [self.toolbarItems mutableCopy];
+
+    if (![toolbarButtons containsObject:self.addButton]) {
+
+        [toolbarButtons addObject:self.addButton];
+        [self setToolbarItems:toolbarButtons animated:YES];
+        
+    }
+
 }
 
 - (void)setInfoLabelTitle {
@@ -117,13 +156,14 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
         
-        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"debt.outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *outletNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
         
         request.sortDescriptors = @[outletNameSortDescriptor, dateSortDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@ AND debt.outlet.name != %@", self.uncashing, nil];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"debt.outlet.name" cacheName:nil];
+//        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@ AND outlet.name != %@", self.uncashing, nil];
+        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", self.uncashing];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"outletSectionName" cacheName:nil];
         _resultsController.delegate = self;
 
     }
@@ -146,7 +186,40 @@
         [self.tableView reloadData];
         [self setInfoLabelTitle];
         
+        
     }
+    
+}
+
+- (void)addButtonPressed {
+    
+    self.addCashingPopover = nil;
+    [self.addCashingPopover presentPopoverFromBarButtonItem:self.addButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+
+}
+
+- (void)showUncashingInfoPopover {
+    
+    self.uncashingInfoPopover = nil;
+    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
+
+#pragma mark - popovers
+
+- (UIPopoverController *)addCashingPopover {
+    
+    if (!_addCashingPopover) {
+        
+        STMAddEtceteraVC *addEtceteraVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addEtceteraVC"];
+        addEtceteraVC.parentVC = self;
+        
+        _addCashingPopover = [[UIPopoverController alloc] initWithContentViewController:addEtceteraVC];
+        _addCashingPopover.delegate = self;
+        
+    }
+    return _addCashingPopover;
     
 }
 
@@ -160,19 +233,31 @@
         _uncashingInfoPopover = [[UIPopoverController alloc] initWithContentViewController:uncashingInfoPopover];
         
     }
-    
     return _uncashingInfoPopover;
     
 }
 
-- (void)showUncashingInfoPopover {
+- (void)dismissAddCashingPopover {
     
-    self.uncashingInfoPopover = nil;
-    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.addCashingPopover dismissPopoverAnimated:YES];
+    self.addCashingPopover = nil;
+
+}
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    
+    return NO;
     
 }
 
+
+#pragma mark - uncashing process
+
 - (void)uncashingProcessButtonPressed {
+    
+    [self.tableView setEditing:NO animated:YES];
 
     if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessIdle) {
         
@@ -191,6 +276,9 @@
     
     [self.tableView setEditing:YES animated:YES];
     
+    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.allowsMultipleSelectionDuringEditing = YES;
+    
     for (STMCashing *cashing in self.resultsController.fetchedObjects) {
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:cashing];
@@ -206,12 +294,6 @@
     
     [self.uncashingProcessButton setTitle:NSLocalizedString(@"DONE", nil)];
     
-//    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
-//        
-//        [self.uncashingPopover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-//
-//    }
-    
 }
 
 - (void)uncashingProcessCancel {
@@ -222,6 +304,9 @@
 
 - (void)uncashingProcessDone {
     
+    self.tableView.allowsSelectionDuringEditing = NO;
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
+
     [self.tableView setEditing:NO animated:YES];
     [self.uncashingProcessButton setTitle:NSLocalizedString(@"HAND OVER BUTTON", nil)];
     
@@ -230,49 +315,6 @@
     
 }
 
-/*
-#pragma mark - UISplitViewControllerDelegate
-
-//- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation {
-//    
-//    if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
-//        
-//        return NO;
-//        
-//    } else {
-//    
-//        if (self.splitVC.isUncashingHandOverProcessing) {
-//            
-//            return NO;
-//            
-//        } else {
-//            
-//            return YES;
-//            
-//        }
-//
-//    }
-//    
-//}
-
-- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc {
-    
-    barButtonItem.title = NSLocalizedString(@"UNCASHING", nil);
-    
-    self.navigationItem.leftBarButtonItem = barButtonItem;
-    
-    self.uncashingPopover = pc;
-    
-}
-
-- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)button {
-    
-    self.navigationItem.leftBarButtonItem = nil;
-    
-    self.uncashingPopover = nil;
-    
-}
-*/
 
 #pragma mark - table view data source
 
@@ -325,26 +367,38 @@
                                  NSForegroundColorAttributeName: textColor
                                  };
     
-    NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
+    if (cashing.debt) {
+        
+        NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
+        
+        text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
+        
+        if (cashing.debt.responsibility) {
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
+            
+            UIColor *backgroundColor = [UIColor grayColor];
+            UIColor *textColor = [UIColor whiteColor];
+            
+            NSDictionary *attributes = @{
+                                         NSFontAttributeName: font,
+                                         NSBackgroundColorAttributeName: backgroundColor,
+                                         NSForegroundColorAttributeName: textColor
+                                         };
+            
+            NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", cashing.debt.responsibility];
+            
+            [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
+            
+        }
 
-    text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
-    
-    if (cashing.debt.responsibility) {
+    } else {
         
-        [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes]];
-        
-        UIColor *backgroundColor = [UIColor grayColor];
-        UIColor *textColor = [UIColor whiteColor];
-        
-        NSDictionary *attributes = @{
-                                     NSFontAttributeName: font,
-                                     NSBackgroundColorAttributeName: backgroundColor,
-                                     NSForegroundColorAttributeName: textColor
-                                     };
-        
-        NSString *responsibilityString = [NSString stringWithFormat:@" %@ ", cashing.debt.responsibility];
-        
-        [text appendAttributedString:[[NSAttributedString alloc] initWithString:responsibilityString attributes:attributes]];
+        if (cashing.ndoc) {
+            text = [[NSMutableAttributedString alloc] initWithString:cashing.ndoc attributes:attributes];
+        } else {
+            text = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"NO DATA", nil) attributes:attributes];
+        }
         
     }
     
@@ -423,6 +477,23 @@
     
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return (self.uncashing) ? NO : YES;
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
+        [STMCashingController removeCashing:cashing];
+        
+    }
+    
+}
+
 
 #pragma mark - NSFetchedResultsController delegate
 
@@ -471,10 +542,10 @@
     
     self.navigationItem.rightBarButtonItem = self.uncashingProcessButton;
 
-    self.tableView.allowsSelectionDuringEditing = YES;
-    self.tableView.allowsMultipleSelectionDuringEditing = YES;
-
     [self infoLabelSetup];
+    
+    (self.uncashing) ? [self hideAddButton] : [self showAddButton];
+    
     [self performFetch];
     
 }

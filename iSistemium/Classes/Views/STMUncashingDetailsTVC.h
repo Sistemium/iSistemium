@@ -16,4 +16,6 @@
 @property (nonatomic, strong) STMUIBarButtonItem *uncashingProcessButton;
 
 
+- (void)dismissAddCashingPopover;
+
 @end

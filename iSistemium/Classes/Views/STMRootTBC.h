@@ -16,7 +16,7 @@
 - (void)showTabAtIndex:(NSUInteger)index;
 - (void)newAppVersionAvailable:(NSNotification *)notification;
 
-@property (nonatomic, strong) NSArray *storyboardtitles;
+@property (nonatomic, strong) NSMutableArray *storyboardTitles;
 @property (nonatomic) BOOL newAppVersionAvailable;
 
 

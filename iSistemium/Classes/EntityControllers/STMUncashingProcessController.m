@@ -8,8 +8,6 @@
 
 #import "STMUncashingProcessController.h"
 #import "STMUncashingPicture.h"
-#import "STMEntityDescription.h"
-//#import "STMObjectsController.h"
 #import "STMPicturesController.h"
 #import "STMSessionManager.h"
 

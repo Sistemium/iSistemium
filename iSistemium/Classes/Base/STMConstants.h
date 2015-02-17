@@ -20,5 +20,7 @@
 #define TICK NSDate *startTime = [NSDate date]
 #define TOCK NSLog(@"ElapsedTime: %f", -[startTime timeIntervalSinceNow])
 
+#define IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
 
 #endif

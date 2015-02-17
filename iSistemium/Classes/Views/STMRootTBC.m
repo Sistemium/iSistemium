@@ -15,11 +15,10 @@
 #import "STMObjectsController.h"
 #import "STMTabBarViewController.h"
 #import "STMClientDataController.h"
+#import "STMConstants.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
-@property (nonatomic, strong) NSArray *storyboardnames;
-@property (nonatomic, strong) NSArray *tabImages;
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
 @property (nonatomic, strong) STMSession *session;
@@ -28,6 +27,9 @@
 @property (nonatomic) BOOL updateAlertIsShowing;
 
 @property (nonatomic, strong) UIViewController *currentTappedVC;
+
+@property (nonatomic, strong) NSMutableArray *allTabsVCs;
+@property (nonatomic, strong) NSMutableArray *authVCs;
 
 @end
 
@@ -87,50 +89,33 @@
 
     self.delegate = self;
     
-    self.storyboardnames = @[
-                             @"STMAuthTVC",
-                             @"STMCampaigns",
-                             @"STMDebts",
-                             @"STMUncashing",
-                             @"STMMessages",
-                             @"STMWebView",
-#ifdef DEBUG
-                             @"STMSettings",
-                             @"STMLogs"
-#endif
-                             ];
+    if (IPAD) {
+        [self setupIPadTabs];
+    } else if (IPHONE) {
+        [self setupIPhoneTabs];
+    }
     
-    self.storyboardtitles = @[
-                              NSLocalizedString(@"AUTHORIZATION", nil),
-                              NSLocalizedString(@"AD CAMPAIGNS", nil),
-                              NSLocalizedString(@"DEBTS", nil),
-                              NSLocalizedString(@"UNCASHING", nil),
-                              NSLocalizedString(@"MESSAGES", nil),
-                              NSLocalizedString(@"IORDERS", nil),
-#ifdef DEBUG
-                              NSLocalizedString(@"SETTINGS", nil),
-                              NSLocalizedString(@"LOGS", nil)
-#endif
-                              ];
-    
-    self.tabImages = @[
-                       [UIImage imageNamed:@"password2-128.png"],
-                       [UIImage imageNamed:@"christmas_gift-128.png"],
-                       [UIImage imageNamed:@"cash_receiving-128.png"],
-                       [UIImage imageNamed:@"banknotes-128.png"],
-                       [UIImage imageNamed:@"message-128.png"],
-                       [UIImage imageNamed:@"purchase_order-128.png"],
-#ifdef DEBUG
-                       [UIImage imageNamed:@"settings3-128.png"],
-                       [UIImage imageNamed:@"archive-128.png"]
-#endif
-                       ];
-    
-    
-//    self.tabBar.hidden = YES;
     self.tabBar.hidden = NO;
     
     [self stateChanged];
+    
+}
+
+- (NSMutableArray *)allTabsVCs {
+    
+    if (!_allTabsVCs) {
+        _allTabsVCs = [NSMutableArray array];
+    }
+    return _allTabsVCs;
+    
+}
+
+- (NSMutableArray *)authVCs {
+    
+    if (!_authVCs) {
+        _authVCs = [NSMutableArray array];
+    }
+    return _authVCs;
     
 }
 
@@ -144,76 +129,141 @@
     
 }
 
+- (NSMutableArray *)storyboardTitles {
+    
+    if (!_storyboardTitles) {
+        _storyboardTitles = [NSMutableArray array];
+    }
+    return _storyboardTitles;
+    
+}
+
+- (void)registerTabWithName:(NSString *)name title:(NSString *)title image:(UIImage *)image {
+    
+    if (name) {
+        
+        (title) ? [self.storyboardTitles addObject:title] : [self.storyboardTitles addObject:name];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
+        UIViewController *vc = [storyboard instantiateInitialViewController];
+        vc.title = title;
+        vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
+
+        [self.allTabsVCs addObject:vc];
+        
+        (self.tabs)[name] = vc;
+        
+        if ([name hasPrefix:@"STMAuth"]) {
+            [self.authVCs addObject:vc];
+        }
+                
+    }
+    
+}
+
+- (void)setupIPadTabs {
+    
+    NSLog(@"device is iPad");
+    
+    [self registerTabWithName:@"STMAuth"
+                        title:NSLocalizedString(@"AUTHORIZATION", nil)
+                        image:[UIImage imageNamed:@"password2-128.png"]];
+
+    [self registerTabWithName:@"STMCampaigns"
+                        title:NSLocalizedString(@"AD CAMPAIGNS", nil)
+                        image:[UIImage imageNamed:@"christmas_gift-128.png"]];
+
+    [self registerTabWithName:@"STMDebts"
+                        title:NSLocalizedString(@"OUTLETS", nil)
+                        image:[UIImage imageNamed:@"cash_receiving-128.png"]];
+
+    [self registerTabWithName:@"STMUncashing"
+                        title:NSLocalizedString(@"UNCASHING", nil)
+                        image:[UIImage imageNamed:@"banknotes-128.png"]];
+
+    [self registerTabWithName:@"STMMessages"
+                        title:NSLocalizedString(@"MESSAGES", nil)
+                        image:[UIImage imageNamed:@"message-128.png"]];
+
+    [self registerTabWithName:@"STMWebView"
+                        title:NSLocalizedString(@"IORDERS", nil)
+                        image:[UIImage imageNamed:@"purchase_order-128.png"]];
+
+#ifdef DEBUG
+    
+    [self registerTabWithName:@"STMSettings"
+                        title:NSLocalizedString(@"SETTINGS", nil)
+                        image:[UIImage imageNamed:@"settings3-128.png"]];
+
+    [self registerTabWithName:@"STMLogs"
+                        title:NSLocalizedString(@"LOGS", nil)
+                        image:[UIImage imageNamed:@"archive-128.png"]];
+    
+#endif
+
+}
+
+- (void)setupIPhoneTabs {
+    
+    NSLog(@"device is iPhone");
+
+    [self registerTabWithName:@"STMAuth"
+                        title:NSLocalizedString(@"AUTHORIZATION", nil)
+                        image:[UIImage imageNamed:@"password2-128.png"]];
+
+    [self registerTabWithName:@"STMMessages"
+                        title:NSLocalizedString(@"MESSAGES", nil)
+                        image:[UIImage imageNamed:@"message-128.png"]];
+
+#ifdef DEBUG
+    
+    [self registerTabWithName:@"STMSettings"
+                        title:NSLocalizedString(@"SETTINGS", nil)
+                        image:[UIImage imageNamed:@"settings3-128.png"]];
+    
+//    [self registerTabWithName:@"STMLogs"
+//                        title:NSLocalizedString(@"LOGS", nil)
+//                        image:[UIImage imageNamed:@"archive-128.png"]];
+    
+#endif
+
+}
+
 - (void)initAuthTab {
-    
-    self.tabs = nil;
-    
-    NSString *authTabName = self.storyboardnames[0];
-    NSString *authTabTitle = self.storyboardtitles[0];
-    
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:authTabName bundle:nil];
-    UIViewController *vc = [storyboard instantiateInitialViewController];
-    vc.title = authTabTitle;
-    vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[0] toSize:CGSizeMake(30, 30)];
-
-    (self.tabs)[authTabName] = vc;
-    
-    self.viewControllers = [self.tabs allValues];
-
+    self.viewControllers = self.authVCs;
 }
 
 - (void)initAllTabs {
 
-    NSMutableArray *viewControllers = [NSMutableArray array];
+    UIViewController *messageVC = self.tabs[@"STMMessage"];
     
-    for (NSString *name in self.storyboardnames) {
+    if (messageVC) {
         
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
-        
-        NSUInteger index = [self.storyboardnames indexOfObject:name];
-        
-        UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = (self.storyboardtitles)[index];
-        vc.tabBarItem.image = [STMFunctions resizeImage:self.tabImages[index] toSize:CGSizeMake(30, 30)];
-        [viewControllers addObject:vc];
+        NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+        NSString *badgeValue = (unreadCount == 0) ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+        messageVC.tabBarItem.badgeValue = badgeValue;
+        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
 
-        (self.tabs)[name] = vc;
-        
-        if ([name isEqualToString:@"STMMessages"]) {
-            
-            NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
-            NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
-            vc.tabBarItem.badgeValue = badgeValue;
-            [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
-
-        }
-        
     }
     
-    self.viewControllers = viewControllers;
-    
+    self.viewControllers = self.allTabsVCs;
+
 }
 
 - (void)showTabWithName:(NSString *)tabName {
     
     UIViewController *vc = (self.tabs)[tabName];
-    
     if (vc) {
-        
         [self setSelectedViewController:vc];
-        
     }
     
 }
 
 - (void)showTabAtIndex:(NSUInteger)index {
     
-    UIViewController *vc = (self.tabs)[self.storyboardnames[index]];
-    
+    UIViewController *vc = self.viewControllers[index];
     if (vc) {
-        
         [self setSelectedViewController:vc];
-        
     }
 
 }
@@ -331,15 +381,15 @@
     
 }
 
-- (void)authControllerError:(NSNotification *)notification {
-        
-    NSString *error = [notification userInfo][@"error"];
-    
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    alertView.tag = 0;
-    [alertView show];
-    
-}
+//- (void)authControllerError:(NSNotification *)notification {
+//        
+//    NSString *error = [notification userInfo][@"error"];
+//    
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//    alertView.tag = 0;
+//    [alertView show];
+//    
+//}
 
 - (void)stateChanged {
     
@@ -363,10 +413,15 @@
 - (void)showUnreadMessageCount {
     
     UIViewController *vc = (self.tabs)[@"STMMessages"];
-    NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
-    NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
-    vc.tabBarItem.badgeValue = badgeValue;
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+    
+    if (vc) {
+        
+        NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+        NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+        vc.tabBarItem.badgeValue = badgeValue;
+        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+        
+    }
 
 }
 
@@ -387,7 +442,8 @@
         
         alertView.tag = 1;
         
-        UIViewController *vc = (self.tabs)[@"STMAuthTVC"];
+//        UIViewController *vc = (self.tabs)[@"STMAuthTVC"];
+        UIViewController *vc = [self.authVCs lastObject];
         vc.tabBarItem.badgeValue = @"!";
         
         self.updateAlertIsShowing = YES;
@@ -413,10 +469,10 @@
                name:@"notAuthorized"
              object:nil];
     
-    [nc addObserver:self
-           selector:@selector(authControllerError:)
-               name:@"authControllerError"
-             object:[STMAuthController authController]];
+//    [nc addObserver:self
+//           selector:@selector(authControllerError:)
+//               name:@"authControllerError"
+//             object:[STMAuthController authController]];
     
     [nc addObserver:self
            selector:@selector(authStateChanged)
