@@ -11,6 +11,8 @@
 #import "STMFunctions.h"
 #import "STMCashingController.h"
 
+#import <QuartzCore/QuartzCore.h>
+
 @interface STMAddEtceteraVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
@@ -153,28 +155,50 @@
     
     [self.view endEditing:NO];
 
-    if (!self.ndoc || [[self.ndoc stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+    if ([self textFieldFillingIsCorrect]) {
         
-        [self.numberTextField becomeFirstResponder];
-        
-    } else if (!self.sum) {
-        
-        [self.sumTextField becomeFirstResponder];
-        
-    } else if (!self.commentText || [[self.commentText stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
-        
-        [self.commentTextField becomeFirstResponder];
-        
-    } else {
-    
         [STMCashingController addCashingWithSum:self.sum ndoc:self.ndoc date:self.selectedDate comment:self.commentText debt:nil outlet:nil type:self.cashingType];
-
+        
         [self.parentVC dismissAddCashingPopover];
 
     }
     
 }
 
+- (BOOL)textFieldFillingIsCorrect {
+    
+    BOOL result = YES;
+    UITextField *textFieldToSelect = nil;
+    
+    if (!self.commentText || [[self.commentText stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        
+        [self errorStyleForTextField:self.commentTextField];
+        result = NO;
+        textFieldToSelect = self.commentTextField;
+        
+    }
+
+    if (!self.sum) {
+        
+        [self errorStyleForTextField:self.sumTextField];
+        result = NO;
+        textFieldToSelect = self.sumTextField;
+        
+    }
+
+    if (!self.ndoc || [[self.ndoc stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        
+        [self errorStyleForTextField:self.numberTextField];
+        result = NO;
+        textFieldToSelect = self.numberTextField;
+        
+    }
+    
+    if (textFieldToSelect) [textFieldToSelect becomeFirstResponder];
+    
+    return result;
+
+}
 
 
 #pragma mark - UITextFieldDelegate
@@ -278,7 +302,9 @@
         
     } else {
         
+        [self okStyleForTextField:textField];
         return YES;
+        
     }
     
 }
@@ -331,6 +357,8 @@
             
         }
         
+        [self okStyleForTextField:textField];
+        
     }
     
 }
@@ -346,6 +374,21 @@
     
 }
 
+- (void)okStyleForTextField:(UITextField *)textField {
+    
+    textField.layer.borderWidth = 1.0;
+    textField.layer.cornerRadius = 8.0;
+    textField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+
+}
+
+- (void)errorStyleForTextField:(UITextField *)textField {
+    
+    textField.layer.borderWidth = 1.0;
+    textField.layer.cornerRadius = 8.0;
+    textField.layer.borderColor = [[UIColor redColor] CGColor];
+    
+}
 
 #pragma mark - view lifecycle
 
@@ -372,15 +415,19 @@
     self.numberTextField.delegate = self;
     self.numberTextField.keyboardType = UIKeyboardTypeDefault;
     self.numberTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    [self okStyleForTextField:self.numberTextField];
+
     [self.numberTextField becomeFirstResponder];
     
     self.sumTextField.delegate = self;
     self.sumTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.sumTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    [self okStyleForTextField:self.sumTextField];
     
     self.commentTextField.delegate = self;
     self.commentTextField.keyboardType = UIKeyboardTypeDefault;
     self.commentTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    [self okStyleForTextField:self.commentTextField];
     
 }
 
