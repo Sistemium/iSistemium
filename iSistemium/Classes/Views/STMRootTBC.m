@@ -88,17 +88,34 @@
     [self addObservers];
 
     self.delegate = self;
+
+    [self prepareTabs];
+    
+    self.tabBar.hidden = NO;
+    
+    [self stateChanged];
+    
+}
+
+- (void)prepareTabs {
+
+    [self nullifyTabs];
     
     if (IPAD) {
         [self setupIPadTabs];
     } else if (IPHONE) {
         [self setupIPhoneTabs];
     }
+
+}
+
+- (void)nullifyTabs {
     
-    self.tabBar.hidden = NO;
-    
-    [self stateChanged];
-    
+    self.storyboardTitles = nil;
+    self.allTabsVCs = nil;
+    self.tabs = nil;
+    self.authVCs = nil;
+
 }
 
 - (NSMutableArray *)allTabsVCs {
@@ -230,7 +247,11 @@
 }
 
 - (void)initAuthTab {
+    
+    [self prepareTabs];
+    
     self.viewControllers = self.authVCs;
+    
 }
 
 - (void)initAllTabs {
