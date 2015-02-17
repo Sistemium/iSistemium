@@ -174,7 +174,7 @@
                         image:[UIImage imageNamed:@"christmas_gift-128.png"]];
 
     [self registerTabWithName:@"STMDebts"
-                        title:NSLocalizedString(@"DEBTS", nil)
+                        title:NSLocalizedString(@"OUTLETS", nil)
                         image:[UIImage imageNamed:@"cash_receiving-128.png"]];
 
     [self registerTabWithName:@"STMUncashing"
