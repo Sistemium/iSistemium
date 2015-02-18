@@ -8,7 +8,7 @@
 
 #import "STMAuthPhoneVC.h"
 
-@interface STMAuthPhoneVC () //<UITextFieldDelegate>
+@interface STMAuthPhoneVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
 @property (weak, nonatomic) IBOutlet UITextField *phoneNumberTextField;
@@ -28,6 +28,18 @@
     return [[STMAuthController authController] sendPhoneNumber:self.textField.text];
 }
 
+
+#pragma mark - UITextFieldDelegate
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+        
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -36,6 +48,8 @@
     self.phoneNumberLabel.text = NSLocalizedString(@"ENTER PHONE NUMBER", nil);
     self.phoneNumberTextField.text = [STMAuthController authController].phoneNumber;
     [self.sendPhoneNumberButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
+    
+    self.phoneNumberTextField.delegate = self;
     
     self.textField = self.phoneNumberTextField;
     self.button = self.sendPhoneNumberButton;
