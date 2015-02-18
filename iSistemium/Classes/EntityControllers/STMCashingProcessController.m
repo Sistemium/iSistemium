@@ -122,6 +122,7 @@
 
 - (void)startCashingProcessForOutlet:(STMOutlet *)outlet {
     
+    [self flushSelf];
     self.state = STMCashingProcessRunning;
     self.outlet = outlet;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingProcessStart" object:self];

@@ -54,6 +54,8 @@
 
 - (void)startWithCashings:(NSArray *)cashings {
     
+    self.cashingDictionary = nil;
+    
     for (STMCashing *cashing in cashings) {
         
         (self.cashingDictionary)[cashing.xid] = cashing;
