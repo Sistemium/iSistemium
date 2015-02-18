@@ -205,7 +205,7 @@
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationPerformFetchWithCompletionHandler"];
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
     __block UIBackgroundTaskIdentifier bgTask;
     
