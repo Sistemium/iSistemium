@@ -12,6 +12,8 @@
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 
+#import "STMAuthController.h"
+
 @interface STMFetchedResultsControllerTVC : UITableViewController <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;

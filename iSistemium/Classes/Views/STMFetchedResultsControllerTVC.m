@@ -79,7 +79,13 @@
     
 }
 
-
+- (void)authControllerStateChanged {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        self.resultsController = nil;
+    }
+    
+}
 
 
 
@@ -352,12 +358,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning
