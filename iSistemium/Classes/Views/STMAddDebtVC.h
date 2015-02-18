@@ -12,7 +12,7 @@
 
 @interface STMAddDebtVC : UIViewController <STMDatePickerParent>
 
-@property (nonatomic, strong) STMDebtsDetailsPVC *parentVC;
+@property (nonatomic, weak) STMDebtsDetailsPVC *parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
 
 @end

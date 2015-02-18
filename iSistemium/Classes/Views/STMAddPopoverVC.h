@@ -11,7 +11,7 @@
 
 @interface STMAddPopoverVC : UIViewController <UITextFieldDelegate>
 
-@property (nonatomic, strong) STMAddPopoverNC *parentNC;
+@property (nonatomic, weak) STMAddPopoverNC *parentNC;
 
 - (void)doneButtonPressed;
 - (BOOL)textFieldIsFilled:(UITextField *)textField;

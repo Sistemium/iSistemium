@@ -16,7 +16,7 @@
 
 @interface STMUncashingMasterTVC ()
 
-@property (nonatomic, strong) STMUncashingSVC *splitVC;
+@property (nonatomic, weak) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) STMCashingSumFRCD *cashingSumFRCD;
 @property (nonatomic, strong) NSFetchedResultsController *cashingSumResultsController;
 

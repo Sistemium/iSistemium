@@ -12,7 +12,7 @@
 
 @interface STMDatePickerVC : UIViewController
 
-@property (nonatomic, strong) id <STMDatePickerParent> parentVC;
+@property (nonatomic, weak) id <STMDatePickerParent> parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
 
 @end

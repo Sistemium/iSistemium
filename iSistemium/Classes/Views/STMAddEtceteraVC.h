@@ -12,7 +12,7 @@
 
 @interface STMAddEtceteraVC : UIViewController <STMDatePickerParent>
 
-@property (nonatomic, strong) STMUncashingDetailsTVC *parentVC;
+@property (nonatomic, weak) STMUncashingDetailsTVC *parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic) STMCashingType cashingType;
 

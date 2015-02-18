@@ -21,7 +21,7 @@
 
 @interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) STMDebtsSVC *splitVC;
+@property (nonatomic, weak) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
 

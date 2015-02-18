@@ -12,7 +12,7 @@
 
 @interface STMAddPopoverNC : UINavigationController
 
-@property (nonatomic, strong) STMOutletsTVC *parentVC;
+@property (nonatomic, weak) STMOutletsTVC *parentVC;
 @property (nonatomic, strong) STMPartner *partner;
 
 - (void)dismissSelf;

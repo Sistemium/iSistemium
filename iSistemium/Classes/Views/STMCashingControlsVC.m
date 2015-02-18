@@ -36,7 +36,7 @@
 
 @property (nonatomic, strong) NSString *initialTextFieldValue;
 
-@property (nonatomic, strong) STMDebtsSVC *splitVC;
+@property (nonatomic, weak) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) STMDebt *selectedDebt;
 
 @end

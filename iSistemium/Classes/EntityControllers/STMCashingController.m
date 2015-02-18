@@ -45,7 +45,7 @@
     
     [[self syncer] setSyncerState:STMSyncerSendDataOnce];
     
-    NSLog(@"cashing %@", cashing);
+//    NSLog(@"cashing %@", cashing);
     
     return cashing;
     

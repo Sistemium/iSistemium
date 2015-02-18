@@ -14,7 +14,7 @@
 
 @interface STMSelectPartnerTVC ()
 
-@property (nonatomic, strong) STMAddPopoverNC *parentNC;
+@property (nonatomic, weak) STMAddPopoverNC *parentNC;
 
 @end
 

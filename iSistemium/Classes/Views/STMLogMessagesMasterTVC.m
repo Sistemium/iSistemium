@@ -13,7 +13,7 @@
 
 @interface STMLogMessagesMasterTVC ()
 
-@property (nonatomic, strong) STMLogMessagesSVC *splitVC;
+@property (nonatomic, weak) STMLogMessagesSVC *splitVC;
 
 
 @end

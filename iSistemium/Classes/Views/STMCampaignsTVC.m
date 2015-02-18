@@ -20,7 +20,7 @@
 
 @interface STMCampaignsTVC ()
 
-@property (nonatomic, strong) STMCampaignsSVC *splitVC;
+@property (nonatomic, weak) STMCampaignsSVC *splitVC;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end

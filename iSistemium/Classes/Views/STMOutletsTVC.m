@@ -23,7 +23,7 @@
 
 @interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>
 
-@property (nonatomic, strong) STMDebtsSVC *splitVC;
+@property (nonatomic, weak) STMDebtsSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
 @property (nonatomic, strong) UIPopoverController *addPartnerPopover;
 @property (nonatomic, strong) UIPopoverController *addOutletPopover;

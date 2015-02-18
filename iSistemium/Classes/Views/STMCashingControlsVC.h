@@ -15,7 +15,7 @@
 @interface STMCashingControlsVC : UIViewController <STMDatePickerParent>
 
 @property (nonatomic, strong) STMOutlet *outlet;
-@property (nonatomic, strong) STMOutletDebtsTVC *tableVC;
+@property (nonatomic, weak) STMOutletDebtsTVC *tableVC;
 @property (nonatomic, strong) NSDate *selectedDate;
 
 
