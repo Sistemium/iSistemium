@@ -145,7 +145,7 @@
     
 }
 
-- (void) didReceiveRemoteNotification:(NSNotification *) notification {
+- (void)didReceiveRemoteNotification:(NSNotification *) notification {
     
     id command = [notification userInfo][[[self class] description]];
     
@@ -267,6 +267,7 @@
     } else {
         
         [self releaseTimers];
+        [self stopTracking];
         
     }
     

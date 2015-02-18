@@ -365,6 +365,7 @@
                       @"timeFilter"               : @"60",
                       @"maxSpeedThreshold"        : @"60",
                       @"locationTrackerAutoStart" : @YES,
+                      @"locationTrackerFinishTime": @"23",
                       @"enableDebtsEditing"       : @YES,
                       @"enablePartnersEditing"    : @YES,
                       @"http.timeout.foreground"  : @"15"
