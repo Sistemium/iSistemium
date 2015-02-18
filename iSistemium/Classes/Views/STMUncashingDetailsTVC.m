@@ -295,10 +295,9 @@
 
 - (void)uncashingProcessButtonPressed {
     
-    [self.tableView setEditing:NO animated:YES];
-
     if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessIdle) {
-        
+    
+        [self.tableView setEditing:NO animated:YES];
         [[STMUncashingProcessController sharedInstance] startWithCashings:self.resultsController.fetchedObjects];
         
     } else if ([STMUncashingProcessController sharedInstance].state == STMUncashingProcessRunning) {
@@ -560,9 +559,22 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessStart) name:@"uncashingProcessStart" object:[STMUncashingProcessController sharedInstance]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessCancel) name:@"uncashingProcessCancel" object:[STMUncashingProcessController sharedInstance]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessDone) name:@"uncashingProcessDone" object:[STMUncashingProcessController sharedInstance]];    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(uncashingProcessStart)
+               name:@"uncashingProcessStart"
+             object:[STMUncashingProcessController sharedInstance]];
+    
+    [nc addObserver:self
+           selector:@selector(uncashingProcessCancel)
+               name:@"uncashingProcessCancel"
+             object:[STMUncashingProcessController sharedInstance]];
+    
+    [nc addObserver:self
+           selector:@selector(uncashingProcessDone)
+               name:@"uncashingProcessDone"
+             object:[STMUncashingProcessController sharedInstance]];
 
 }
 
