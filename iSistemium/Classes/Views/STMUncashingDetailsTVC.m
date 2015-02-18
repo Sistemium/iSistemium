@@ -203,6 +203,8 @@
     
     [actionSheet showFromBarButtonItem:self.addButton animated:YES];
     
+    self.addButton.enabled = NO;
+    
 }
 
 - (void)showUncashingInfoPopover {
@@ -237,6 +239,8 @@
             [self.addCashingPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
             
         }
+        
+        self.addButton.enabled = YES;
         
     }
 
