@@ -217,6 +217,10 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+ 
     if ([actionSheet.title isEqualToString:NSLocalizedString(@"ADD", nil)]) {
         
         if (buttonIndex >= 0) {
@@ -231,11 +235,11 @@
             
             CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
             [self.addCashingPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
-
+            
         }
         
     }
-    
+
 }
 
 
