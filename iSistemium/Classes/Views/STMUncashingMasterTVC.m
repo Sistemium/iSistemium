@@ -401,9 +401,22 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessStart) name:@"uncashingProcessStart" object:[STMUncashingProcessController sharedInstance]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessCancel) name:@"uncashingProcessCancel" object:[STMUncashingProcessController sharedInstance]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uncashingProcessDone) name:@"uncashingProcessDone" object:[STMUncashingProcessController sharedInstance]];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(uncashingProcessStart)
+               name:@"uncashingProcessStart"
+             object:[STMUncashingProcessController sharedInstance]];
+    
+    [nc addObserver:self
+           selector:@selector(uncashingProcessCancel)
+               name:@"uncashingProcessCancel"
+             object:[STMUncashingProcessController sharedInstance]];
+    
+    [nc addObserver:self
+           selector:@selector(uncashingProcessDone)
+               name:@"uncashingProcessDone"
+             object:[STMUncashingProcessController sharedInstance]];
     
 }
 
