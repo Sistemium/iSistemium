@@ -46,7 +46,7 @@
 
 - (void)updatePicture {
     
-    self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
+    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
     [self showImage];
     
 }
@@ -91,7 +91,7 @@
 
     [self addObservers];
     
-    self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
+    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
     if (!self.image) {
         [STMPicturesController hrefProcessingForObject:self.picture];
     }
