@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Campaign PictureVC-->
@@ -17,21 +18,36 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cft-5K-2NA">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vkP-VV-f53">
                                 <rect key="frame" x="20" y="20" width="728" height="984"/>
-                            </imageView>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cft-5K-2NA">
+                                        <rect key="frame" x="8" y="8" width="712" height="968"/>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="Cft-5K-2NA" secondAttribute="bottom" constant="8" id="8dm-Kk-h7b"/>
+                                    <constraint firstAttribute="centerX" secondItem="Cft-5K-2NA" secondAttribute="centerX" id="8oP-8y-LnT"/>
+                                    <constraint firstItem="Cft-5K-2NA" firstAttribute="top" secondItem="vkP-VV-f53" secondAttribute="top" constant="8" id="NVg-Io-eba"/>
+                                    <constraint firstAttribute="trailing" secondItem="Cft-5K-2NA" secondAttribute="trailing" constant="8" id="RYo-6e-Rfb"/>
+                                    <constraint firstAttribute="centerY" secondItem="Cft-5K-2NA" secondAttribute="centerY" id="SK0-QL-bIT"/>
+                                    <constraint firstItem="Cft-5K-2NA" firstAttribute="leading" secondItem="vkP-VV-f53" secondAttribute="leading" constant="8" id="gxr-1P-5jN"/>
+                                </constraints>
+                            </scrollView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="zY4-x9-QRn">
                                 <rect key="frame" x="374" y="502" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="Cft-5K-2NA" secondAttribute="trailing" constant="20" symbolic="YES" id="DdK-Cg-iIq"/>
-                            <constraint firstAttribute="bottom" secondItem="Cft-5K-2NA" secondAttribute="bottom" constant="20" symbolic="YES" id="JqN-W8-rAW"/>
-                            <constraint firstItem="zY4-x9-QRn" firstAttribute="centerX" secondItem="Cft-5K-2NA" secondAttribute="centerX" id="KUI-Hj-C5R"/>
-                            <constraint firstItem="zY4-x9-QRn" firstAttribute="centerY" secondItem="Cft-5K-2NA" secondAttribute="centerY" id="TOq-Fh-LVg"/>
-                            <constraint firstItem="Cft-5K-2NA" firstAttribute="leading" secondItem="3rP-Xe-Lsi" secondAttribute="leading" constant="20" symbolic="YES" id="Z7T-cy-sKD"/>
-                            <constraint firstItem="Cft-5K-2NA" firstAttribute="top" secondItem="3rP-Xe-Lsi" secondAttribute="top" constant="20" symbolic="YES" id="wUc-GQ-SVP"/>
+                            <constraint firstItem="vkP-VV-f53" firstAttribute="trailing" secondItem="3rP-Xe-Lsi" secondAttribute="trailingMargin" id="BKG-ql-5OE"/>
+                            <constraint firstItem="vkP-VV-f53" firstAttribute="top" secondItem="7p0-Rn-sC9" secondAttribute="bottom" id="Gty-vW-W6x"/>
+                            <constraint firstAttribute="centerX" secondItem="vkP-VV-f53" secondAttribute="centerX" id="Jbn-3b-J38"/>
+                            <constraint firstAttribute="centerY" secondItem="zY4-x9-QRn" secondAttribute="centerY" id="kj1-S9-CnO"/>
+                            <constraint firstItem="Jcr-Yb-T2Q" firstAttribute="top" secondItem="vkP-VV-f53" secondAttribute="bottom" constant="20" id="oBn-zq-Jdg"/>
+                            <constraint firstAttribute="centerY" secondItem="vkP-VV-f53" secondAttribute="centerY" id="oZf-Bh-liS"/>
+                            <constraint firstItem="vkP-VV-f53" firstAttribute="leading" secondItem="3rP-Xe-Lsi" secondAttribute="leadingMargin" id="rhr-Ug-1kT"/>
+                            <constraint firstAttribute="centerX" secondItem="zY4-x9-QRn" secondAttribute="centerX" id="yZK-Xg-tnt"/>
                         </constraints>
                     </view>
                     <connections>
@@ -41,7 +57,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NFU-sx-sFx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4516" y="215"/>
+            <point key="canvasLocation" x="4617" y="345"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="trc-ZN-9Z8">
