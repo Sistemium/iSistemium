@@ -9,8 +9,9 @@
 #import "STMCampaignPictureVC.h"
 #import "STMPicturesController.h"
 
-@interface STMCampaignPictureVC ()
+@interface STMCampaignPictureVC () <UIScrollViewDelegate>
 
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIImage *image;
@@ -50,6 +51,40 @@
     [self showImage];
     
 }
+
+- (void)setupScrollView {
+    
+    if (self.image) {
+    
+        self.scrollView.contentSize = self.image.size;
+        
+        CGRect scrollViewFrame = self.scrollView.frame;
+        CGFloat scaleWidth = scrollViewFrame.size.width / self.scrollView.contentSize.width;
+        CGFloat scaleHeight = scrollViewFrame.size.height / self.scrollView.contentSize.height;
+        CGFloat minScale = MIN(scaleWidth, scaleHeight);
+        self.scrollView.minimumZoomScale = minScale;
+        self.scrollView.maximumZoomScale = 1.0f;
+        self.scrollView.zoomScale = minScale;
+
+        self.scrollView.delegate = self;
+        
+    }
+    
+}
+
+
+#pragma mark - UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.imageView;
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    
+    NSLog(@"scale %f", scale);
+    
+}
+
 
 #pragma mark - view lifecycle
 
@@ -95,7 +130,9 @@
     if (!self.image) {
         [STMPicturesController hrefProcessingForObject:self.picture];
     }
+    
     [self showImage];
+    [self setupScrollView];
 
 }
 
