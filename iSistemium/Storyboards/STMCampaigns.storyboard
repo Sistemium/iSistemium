@@ -1,54 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="X8u-yg-6rY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="X8u-yg-6rY">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Campaign PictureVC-->
         <scene sceneID="Z9x-cv-hyV">
             <objects>
                 <viewController storyboardIdentifier="campaignPictureVC" id="qLK-Df-1on" customClass="STMCampaignPictureVC" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="7p0-Rn-sC9"/>
-                        <viewControllerLayoutGuide type="bottom" id="Jcr-Yb-T2Q"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="3rP-Xe-Lsi">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vkP-VV-f53">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="vkP-VV-f53">
                                 <rect key="frame" x="20" y="20" width="728" height="984"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cft-5K-2NA">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Cft-5K-2NA">
                                         <rect key="frame" x="8" y="8" width="712" height="968"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </imageView>
                                 </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="Cft-5K-2NA" secondAttribute="bottom" constant="8" id="8dm-Kk-h7b"/>
-                                    <constraint firstAttribute="centerX" secondItem="Cft-5K-2NA" secondAttribute="centerX" id="8oP-8y-LnT"/>
-                                    <constraint firstItem="Cft-5K-2NA" firstAttribute="top" secondItem="vkP-VV-f53" secondAttribute="top" constant="8" id="NVg-Io-eba"/>
-                                    <constraint firstAttribute="trailing" secondItem="Cft-5K-2NA" secondAttribute="trailing" constant="8" id="RYo-6e-Rfb"/>
-                                    <constraint firstAttribute="centerY" secondItem="Cft-5K-2NA" secondAttribute="centerY" id="SK0-QL-bIT"/>
-                                    <constraint firstItem="Cft-5K-2NA" firstAttribute="leading" secondItem="vkP-VV-f53" secondAttribute="leading" constant="8" id="gxr-1P-5jN"/>
-                                </constraints>
                             </scrollView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="zY4-x9-QRn">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" id="zY4-x9-QRn">
                                 <rect key="frame" x="374" y="502" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="vkP-VV-f53" firstAttribute="trailing" secondItem="3rP-Xe-Lsi" secondAttribute="trailingMargin" id="BKG-ql-5OE"/>
-                            <constraint firstItem="vkP-VV-f53" firstAttribute="top" secondItem="7p0-Rn-sC9" secondAttribute="bottom" id="Gty-vW-W6x"/>
-                            <constraint firstAttribute="centerX" secondItem="vkP-VV-f53" secondAttribute="centerX" id="Jbn-3b-J38"/>
-                            <constraint firstAttribute="centerY" secondItem="zY4-x9-QRn" secondAttribute="centerY" id="kj1-S9-CnO"/>
-                            <constraint firstItem="Jcr-Yb-T2Q" firstAttribute="top" secondItem="vkP-VV-f53" secondAttribute="bottom" constant="20" id="oBn-zq-Jdg"/>
-                            <constraint firstAttribute="centerY" secondItem="vkP-VV-f53" secondAttribute="centerY" id="oZf-Bh-liS"/>
-                            <constraint firstItem="vkP-VV-f53" firstAttribute="leading" secondItem="3rP-Xe-Lsi" secondAttribute="leadingMargin" id="rhr-Ug-1kT"/>
-                            <constraint firstAttribute="centerX" secondItem="zY4-x9-QRn" secondAttribute="centerX" id="yZK-Xg-tnt"/>
-                        </constraints>
                     </view>
                     <connections>
                         <outlet property="imageView" destination="Cft-5K-2NA" id="V2Y-a6-j3Z"/>
@@ -189,16 +169,13 @@
         <scene sceneID="VVU-Xz-RCR">
             <objects>
                 <viewController storyboardIdentifier="campaignDescriptionPopover" id="g6z-fV-et9" customClass="STMCampaignDescriptionVC" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="oEc-8r-sj5"/>
-                        <viewControllerLayoutGuide type="bottom" id="gwA-XS-RHK"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="fHk-zU-F3r">
                         <rect key="frame" x="0.0" y="0.0" width="512" height="256"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Sm-Fa-OHH">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="1Sm-Fa-OHH">
                                 <rect key="frame" x="16" y="20" width="480" height="216"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -284,17 +261,13 @@
                             <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
-                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PKb-F2-Afb">
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PKb-F2-Afb">
                                     <rect key="frame" x="20" y="11" width="728" height="21"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
-                            <constraints>
-                                <constraint firstItem="PKb-F2-Afb" firstAttribute="leading" secondItem="foY-GL-7yN" secondAttribute="leading" constant="20" id="BY9-ei-nLy"/>
-                                <constraint firstAttribute="centerY" secondItem="PKb-F2-Afb" secondAttribute="centerY" constant="0.5" id="L6a-TI-Hbo"/>
-                                <constraint firstAttribute="trailing" secondItem="PKb-F2-Afb" secondAttribute="trailing" constant="20" id="emd-2j-nqJ"/>
-                            </constraints>
                         </collectionReusableView>
                         <connections>
                             <outlet property="dataSource" destination="SI0-Zx-oFq" id="izK-66-WPW"/>
@@ -324,19 +297,17 @@
         <scene sceneID="e9c-oJ-Qx1">
             <objects>
                 <viewController storyboardIdentifier="photoVC" id="pFO-of-WVz" customClass="STMPhotoVC" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="WEl-qU-VSE"/>
-                        <viewControllerLayoutGuide type="bottom" id="h7g-VF-9LO"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="JIf-HU-7F3">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sq4-jP-x0t">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="sq4-jP-x0t">
                                 <rect key="frame" x="20" y="20" width="728" height="984"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="YmK-Jk-y8N">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" id="YmK-Jk-y8N">
                                 <rect key="frame" x="0.0" y="20" width="768" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="cEW-p5-J1Z"/>
@@ -350,15 +321,6 @@
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="YmK-Jk-y8N" secondAttribute="trailing" id="94c-Iw-eQw"/>
-                            <constraint firstItem="YmK-Jk-y8N" firstAttribute="top" secondItem="WEl-qU-VSE" secondAttribute="bottom" id="Otl-z8-diA"/>
-                            <constraint firstItem="YmK-Jk-y8N" firstAttribute="leading" secondItem="JIf-HU-7F3" secondAttribute="leading" id="VFJ-lD-3BB"/>
-                            <constraint firstItem="sq4-jP-x0t" firstAttribute="leading" secondItem="JIf-HU-7F3" secondAttribute="leading" constant="20" symbolic="YES" id="ezC-8x-84k"/>
-                            <constraint firstAttribute="trailing" secondItem="sq4-jP-x0t" secondAttribute="trailing" constant="20" symbolic="YES" id="w2d-OX-FV0"/>
-                            <constraint firstAttribute="bottom" secondItem="sq4-jP-x0t" secondAttribute="bottom" constant="20" symbolic="YES" id="xoO-7v-9Pc"/>
-                            <constraint firstItem="sq4-jP-x0t" firstAttribute="top" secondItem="JIf-HU-7F3" secondAttribute="top" constant="20" symbolic="YES" id="ynU-72-LIk"/>
-                        </constraints>
                     </view>
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
