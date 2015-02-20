@@ -44,7 +44,6 @@
 @property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL checkSending;
 @property (nonatomic) BOOL sendOnce;
-@property (nonatomic, strong) NSData *clientDataXid;
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
 @property (nonatomic) BOOL errorOccured;
@@ -94,7 +93,6 @@
     }
     
 }
-
 
 - (NSMutableDictionary *)settings {
     if (!_settings) {
@@ -573,18 +571,13 @@
                 
                 self.checkSending = (self.syncerState == STMSyncerSendData);
                 [self startConnectionForSendData:sendData];
-//                [self nothingToSend];
                 
             } else {
-                
                 [self nothingToSend];
-                
             }
 
         } else {
-        
             [self nothingToSend];
-            
         }
         
     }
@@ -672,99 +665,13 @@
     NSDate *currentDate = [NSDate date];
     [object setPrimitiveValue:currentDate forKey:@"sts"];
     
-    NSMutableDictionary *objectDictionary = [self dictionaryForObject:object];
-    NSMutableDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
-    
-    objectDictionary[@"properties"] = propertiesDictionary;
+    NSDictionary *objectDictionary = [STMObjectsController dictionaryForObject:object];
+
     [syncDataArray addObject:objectDictionary];
     
     [self.sendedEntities addObject:object.entity.name];
 
 }
-
-- (NSMutableDictionary *)dictionaryForObject:(NSManagedObject *)object {
-    
-    NSString *entityName = object.entity.name;
-    NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
-    NSData *xidData = [object valueForKey:@"xid"];
-    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
-
-    if ([entityName isEqualToString:NSStringFromClass([STMClientData class])]) {
-        self.clientDataXid = xidData;
-    }
-    
-    return [NSMutableDictionary dictionaryWithObjectsAndKeys:name, @"name", xid, @"xid", nil];
-    
-}
-
-- (NSMutableDictionary *)propertiesDictionaryForObject:(NSManagedObject *)object {
-    
-    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
-    
-    for (NSString *key in object.entity.attributesByName.allKeys) {
-        
-        if (![key isEqualToString:@"xid"]) {
-        
-            id value = [object valueForKey:key];
-            
-            if (value) {
-                
-                if ([value isKindOfClass:[NSDate class]]) {
-                    
-                    value = [[STMFunctions dateFormatter] stringFromDate:value];
-                    
-                } else if ([value isKindOfClass:[NSData class]]) {
-                    
-                    if ([key isEqualToString:@"objectXid"]) {
-                        
-                        value = [STMFunctions xidStringFromXidData:value];
-                        
-                    } else {
-                        
-                        value = [STMFunctions hexStringFromData:value];
-
-                    }
-                    
-                }
-                
-                [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
-                
-            }
-
-        }
-        
-    }
-    
-    for (NSString *key in object.entity.relationshipsByName.allKeys) {
-        
-        NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
-        
-        if (![relationshipDescription isToMany]) {
-        
-            NSManagedObject *relationshipObject = [object valueForKey:key];
-            
-            if (relationshipObject) {
-                
-                NSData *xidData = [relationshipObject valueForKey:@"xid"];
-                
-                if (xidData.length != 0) {
-                    
-                    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
-                    NSString *entityName = key;
-                    [propertiesDictionary setValue:@{@"name": entityName, @"xid": xid} forKey:key];
-                    
-                }
-                
-            }
-
-        }
-        
-    }
-    
-    return propertiesDictionary;
-    
-}
-
 
 - (void)startConnectionForSendData:(NSData *)sendData {
     
@@ -826,10 +733,8 @@
     
     if (self.syncerState == STMSyncerReceiveData) {
         
-        //        NSLog(@"receiveData");
         self.entityCount = 1;
         self.errorOccured = NO;
-//        [self startConnectionForReceiveEntitiesWithName:@"STMEntity"];
         [self checkConditionForReceivingEntityWithName:@"STMEntity"];
         
     }
@@ -907,57 +812,6 @@
     
 }
 
-/*
-- (void)startConnectionForReceiveEntitiesWithName:(NSString *)entityName {
-    
-    if (self.syncerState != STMSyncerIdle) {
-        
-        STMEntity *entity = [self.stcEntities objectForKey:entityName];
-        NSString *url = entity.url;
-        NSString *eTag = entity.eTag;
-        eTag = eTag ? eTag : @"*";
-        
-        NSURL *requestURL = [NSURL URLWithString:url];
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
-        
-        request = [[self.authDelegate authenticateRequest:request] mutableCopy];
-        
-        if ([request valueForHTTPHeaderField:@"Authorization"]) {
-            
-            request.timeoutInterval = [self timeout];
-            request.HTTPShouldHandleCookies = NO;
-            //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-            [request setHTTPMethod:@"GET"];
-            
-            [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
-            [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
-            
-            NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-            
-            if (!connection) {
-                
-                [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
-                self.syncing = NO;
-                self.syncerState = STMSyncerIdle;
-                
-            } else {
-                
-//            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
-                
-            }
-            
-        } else {
-            
-            [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
-            [self notAuthorized];
-            
-        }
-        
-    }
-    
-}
-*/
-
 - (void)notAuthorized {
     
     [self stopSyncer];
@@ -966,25 +820,35 @@
 }
 
 - (NSString *)entityNameForConnection:(NSURLConnection *)connection {
+    return [self entityNameForRequest:connection.currentRequest];
+}
+
+- (NSString *)entityNameForRequest:(NSURLRequest *)request {
+    return [self entityNameForURLString:request.URL.absoluteString];
+}
+
+- (NSString *)entityNameForURLString:(NSString *)urlString {
     
-    NSString *entityName = nil;
-    
-    for (STMEntity *entity in [self.stcEntities allValues]) {
+    if ([urlString isEqualToString:self.apiUrlString]) {
         
-        if ([entity.url isEqualToString:connection.currentRequest.URL.absoluteString]) {
+        return @"SEND_DATA";
+        
+    } else {
+        
+        for (STMEntity *entity in [self.stcEntities allValues]) {
             
-            entityName = [[self.stcEntities allKeysForObject:entity] lastObject];
+            if ([entity.url isEqualToString:urlString]) {
+                
+                return [[self.stcEntities allKeysForObject:entity] lastObject];
+                
+            }
             
         }
         
     }
+    
+    return nil;
 
-    if ([connection.currentRequest.URL.absoluteString isEqualToString:self.apiUrlString]) {
-        entityName = @"SEND_DATA";
-    }
-    
-    return entityName;
-    
 }
 
 - (void)entityCountDecrease {
@@ -1074,14 +938,11 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"entitiesReceivingDidFinish" object:self];
             
             for (NSString *name in entityNames) {
-//                [self startConnectionForReceiveEntitiesWithName:name];
                 [self checkConditionForReceivingEntityWithName:name];
             }
             
         } else {
-
             [self entityCountDecrease];
-            
         }
         
     } else {
@@ -1137,13 +998,9 @@
     NSString *errorString = nil;
     
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
-        
         errorString = responseJSON[@"error"];
-
     } else {
-        
         errorString = @"response not a dictionary";
-        
     }
     
     if (!errorString) {
@@ -1163,6 +1020,7 @@
 
                 if (success) {
                     [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+//                    NSLog(@"%@: get %d objects", connectionEntityName, dataArray.count);
                 } else {
                     self.errorOccured = YES;
                     [self entityCountDecrease];
@@ -1173,7 +1031,7 @@
         } else {
             
             for (NSDictionary *datum in dataArray) {
-                [self syncObject:datum];
+                [STMObjectsController syncObject:datum];
             }
             
             self.syncing = NO;
@@ -1219,53 +1077,7 @@
     STMEntity *entity = (self.stcEntities)[entityName];
     entity.eTag = eTag;
     
-//    [self startConnectionForReceiveEntitiesWithName:entityName];
     [self checkConditionForReceivingEntityWithName:entityName];
-    
-}
-
-- (void)syncObject:(NSDictionary *)object {
-    
-    NSString *result = [object valueForKey:@"result"];
-    NSString *xid = [(NSDictionary *)object valueForKey:@"xid"];
-    NSString *xidString = [xid stringByReplacingOccurrencesOfString:@"-" withString:@""];
-    NSData *xidData = [STMFunctions dataFromString:xidString];
-    
-    if (!result || ![result isEqualToString:@"ok"]) {
-        
-        NSString *errorMessage = [NSString stringWithFormat:@"Sync result not ok xid: %@", xid];
-        [self.session.logger saveLogMessageWithText:errorMessage type:@"error"];
-        
-    } else {
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]];
-        request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xidData];
-        
-        NSError *error;
-        NSArray *fetchResult = [self.session.document.managedObjectContext executeFetchRequest:request error:&error];
-        
-        NSManagedObject *object = [fetchResult lastObject];
-        
-        if (object) {
-            
-            if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
-                [self.session.document.managedObjectContext deleteObject:object];
-            } else {
-                [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
-            }
-
-            NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", object.entity.name, xid];
-//            [self.session.logger saveLogMessageWithText:logMessage type:@""];
-            NSLog(logMessage);
-            
-        } else {
-            
-            [self.session.logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no %@ with xid: %@", object.entity.name, xid] type:@"error"];
-            
-        }
-    
-    }
     
 }
 
