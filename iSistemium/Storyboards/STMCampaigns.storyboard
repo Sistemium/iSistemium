@@ -16,12 +16,6 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="vkP-VV-f53">
                                 <rect key="frame" x="20" y="20" width="728" height="984"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Cft-5K-2NA">
-                                        <rect key="frame" x="8" y="8" width="712" height="968"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    </imageView>
-                                </subviews>
                             </scrollView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" id="zY4-x9-QRn">
                                 <rect key="frame" x="374" y="502" width="20" height="20"/>
@@ -31,7 +25,6 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="imageView" destination="Cft-5K-2NA" id="V2Y-a6-j3Z"/>
                         <outlet property="scrollView" destination="vkP-VV-f53" id="vvU-CN-1mN"/>
                         <outlet property="spinner" destination="zY4-x9-QRn" id="14E-Dy-tRg"/>
                     </connections>

@@ -61,9 +61,7 @@
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-    
     NSLog(@"didReceiveLocalNotification: %@", notification);
-    
 }
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
@@ -96,7 +94,7 @@
     
     NSString *msg = [NSString stringWithFormat:@"%@", remoteNotification[@"aps"][@"alert"]];
     NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
     id <STMSession> session = [STMSessionManager sharedManager].currentSession;
     
@@ -111,10 +109,8 @@
 - (void)applicationWillResignActive:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillResignActive"];
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -130,31 +126,23 @@
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillEnterForeground"];
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidBecomeActive"];
-    [[[STMSessionManager sharedManager].currentSession logger] saveLogMessageWithText:logMessage type:nil];
-    
-    if (!self.window) {
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
 
-        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        self.window.rootViewController = [STMRootTBC sharedRootVC];
-//        self.window.rootViewController = [STMAuthNC sharedAuthNC];
-        [self.window makeKeyAndVisible];
-
-    }
+    [self setupWindow];
     
 }
 
@@ -164,8 +152,6 @@
     NSLog(logMessage);
     [[STMLogger sharedLogger] saveLogMessageDictionary:@{@"text": logMessage, @"type": @"error"}];
     
-
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
 
@@ -194,11 +180,7 @@
         
     }
 
-//    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-//    localNotification.alertBody = @"localNotification";
-//    localNotification.soundName = UILocalNotificationDefaultSoundName;
-//    
-//    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+//    [self showLocalNotification];
 
 }
 
@@ -219,6 +201,28 @@
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationPerformFetchWithCompletionHandler" object:application];
+
+}
+
+- (void)setupWindow {
+    
+    if (!self.window) {
+        
+        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        self.window.rootViewController = [STMRootTBC sharedRootVC];
+        [self.window makeKeyAndVisible];
+        
+    }
+
+}
+
+- (void)showLocalNotification {
+    
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.alertBody = @"localNotification";
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
 
 }
 

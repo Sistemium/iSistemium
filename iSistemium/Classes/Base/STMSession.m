@@ -151,7 +151,7 @@
 
 - (void)documentReady:(NSNotification *)notification {
     
-    [[STMLogger sharedLogger] saveLogMessageWithText:@"test documentReady" type:@"debug"];
+//    [[STMLogger sharedLogger] saveLogMessageWithText:@"test documentReady" type:@"debug"];
     
     if ([[notification.userInfo valueForKey:@"uid"] isEqualToString:self.uid]) {
         

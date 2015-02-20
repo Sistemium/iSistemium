@@ -12,8 +12,8 @@
 @interface STMCampaignPictureVC () <UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImage *image;
 
 @end
@@ -29,45 +29,44 @@
     
 }
 
-- (void)showImage {
-    
-    if (!self.image) {
-        
-        [self.spinner startAnimating];
-        
-    } else {
-
-        [self.spinner stopAnimating];
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        self.imageView.image = self.image;
-
-    }
-
-}
-
 - (void)updatePicture {
     
     self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
-    [self showImage];
+    [self setupScrollView];
     
 }
 
 - (void)setupScrollView {
     
     if (self.image) {
-    
-        self.scrollView.contentSize = self.image.size;
+        
+        [self.spinner stopAnimating];
+        
+        [self.imageView removeFromSuperview];
+        
+        self.imageView = [[UIImageView alloc] initWithImage:self.image];
+        self.scrollView.contentSize = self.imageView.frame.size;
+        
+        [self.scrollView addSubview:self.imageView];
+        
+#warning - Check [[UIScreen mainScreen] bounds/nativeBounds]
         
         CGRect scrollViewFrame = self.scrollView.frame;
         CGFloat scaleWidth = scrollViewFrame.size.width / self.scrollView.contentSize.width;
         CGFloat scaleHeight = scrollViewFrame.size.height / self.scrollView.contentSize.height;
         CGFloat minScale = MIN(scaleWidth, scaleHeight);
+        
+        UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+        CGRect screenFrame = [rootView convertRect:scrollViewFrame fromView:nil];
+        NSLog(@"screenFrame.size.height %f, screenFrame.size.width %f", screenFrame.size.height, screenFrame.size.width);
+        
+        
         self.scrollView.minimumZoomScale = minScale;
         self.scrollView.maximumZoomScale = 1.0f;
         self.scrollView.zoomScale = minScale;
-
-        self.scrollView.delegate = self;
         
+    } else {
+        [self.spinner startAnimating];
     }
     
 }
@@ -82,6 +81,7 @@
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
     
     NSLog(@"scale %f", scale);
+    NSLog(@"self.scrollView.zoomScale %f", self.scrollView.zoomScale);
     
 }
 
@@ -101,7 +101,14 @@
 }
 
 - (void)customInit {
+
+    self.scrollView.delegate = self;
     
+    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
+    if (!self.image) {
+        [STMPicturesController hrefProcessingForObject:self.picture];
+    }
+
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -126,14 +133,8 @@
 
     [self addObservers];
     
-    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
-    if (!self.image) {
-        [STMPicturesController hrefProcessingForObject:self.picture];
-    }
-    
-    [self showImage];
     [self setupScrollView];
-
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
