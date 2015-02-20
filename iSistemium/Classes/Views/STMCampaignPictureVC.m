@@ -57,9 +57,28 @@
         
 #warning - Check [[UIScreen mainScreen] bounds/nativeBounds]
         
-        UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+        CGRect scrollViewFrame;
+        
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
 
-        CGRect scrollViewFrame =  [rootView convertRect:self.scrollView.frame fromView:nil];
+            scrollViewFrame = self.scrollView.frame;
+            
+        } else {
+
+            if (self.isViewLoaded && self.view.window) {
+
+                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+                scrollViewFrame =  [rootView convertRect:self.scrollView.frame fromView:nil];
+
+            } else {
+                scrollViewFrame = self.scrollView.frame;
+            }
+            
+        }
+        
+        NSLog(@"self.index %d", self.index);
+        NSLog(@"w %f h %f", scrollViewFrame.size.width, scrollViewFrame.size.height);
+        
         CGFloat scaleWidth = scrollViewFrame.size.width / self.scrollView.contentSize.width;
         CGFloat scaleHeight = scrollViewFrame.size.height / self.scrollView.contentSize.height;
         CGFloat minScale = MIN(scaleWidth, scaleHeight);
@@ -108,7 +127,10 @@
 }
 
 - (void)customInit {
+
     self.scrollView.delegate = self;
+//    if (!self.image) [self updatePicture];
+
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -134,7 +156,7 @@
 //    [self addObservers];
     
     if (!self.image) [self updatePicture];
-        
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
