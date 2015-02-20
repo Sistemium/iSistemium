@@ -31,7 +31,13 @@
 
 - (void)updatePicture {
     
-    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
+    [self removeObservers];
+
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:self.picture.imagePath];
+    
+    self.image = [UIImage imageWithContentsOfFile:imagePath];
     [self setupScrollView];
     
 }
@@ -65,6 +71,7 @@
     } else {
         
         [self.spinner startAnimating];
+        [self addObservers];
         [STMPicturesController hrefProcessingForObject:self.picture];
 
     }
@@ -124,22 +131,17 @@
     
     [super viewWillAppear:animated];
 
-    [self addObservers];
+//    [self addObservers];
     
-    if (!self.image) self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
-    
-    NSLog(@"self.picture.imagePath %@", self.picture.imagePath);
-    NSLog(@"self.image %@",self.image);
-    
-    [self setupScrollView];
-    
+    if (!self.image) [self updatePicture];
+        
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
     [super viewWillDisappear:animated];
     
-    [self removeObservers];
+//    [self removeObservers];
     
 }
 

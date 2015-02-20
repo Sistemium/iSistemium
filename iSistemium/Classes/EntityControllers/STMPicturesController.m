@@ -338,8 +338,9 @@
         
     }
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+    NSString *documentsDirectory = @"";
     NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
     NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
     
@@ -426,13 +427,11 @@
                 
                 NSLog(@"%@ load successefully", href);
                 
-                [self.hrefDictionary removeObjectForKey:href];
-                
                 NSData *dataCopy = [data copy];
                 
                 [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
                 
-                NSLog(@"weakObject %@", weakObject);
+                [self.hrefDictionary removeObjectForKey:href];
 
             }
             
