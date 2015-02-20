@@ -9,6 +9,8 @@
 #import "STMLocationTracker.h"
 #import "STMEntityDescription.h"
 
+#import "STMClientDataController.h"
+
 @interface STMLocationTracker() <CLLocationManagerDelegate>
 
 @property (nonatomic, strong) CLLocationManager *locationManager;
@@ -373,6 +375,8 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    
+    [STMClientDataController checkClientData];
     
     if (status == kCLAuthorizationStatusAuthorizedAlways && self.tracking) {
         
