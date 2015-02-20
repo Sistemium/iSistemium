@@ -390,8 +390,6 @@
     
     [self.downloadQueue addOperationWithBlock:^{
         
-        //        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        
         [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             
             if (error) {
@@ -411,20 +409,9 @@
                         
                         [self.secondAttempt addObject:href];
                         
-                        //                        double delayInSeconds = 2.0;
-                        //
-                        //                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                        //                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        //
-                        //                            [self addOperationForObject:object];
-                        //
-                        //                        });
-                        
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
                         });
-                        
-                        //                        NSLog(@"secondAttempt.count %d", self.secondAttempt.count);
                         
                     }
                     
@@ -437,25 +424,17 @@
                 
             } else {
                 
-                //                NSLog(@"%@ load successefully", href);
+                NSLog(@"%@ load successefully", href);
                 
                 [self.hrefDictionary removeObjectForKey:href];
                 
                 NSData *dataCopy = [data copy];
                 
-                //                @autoreleasepool {
-                //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
-                
                 [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
                 
-                //                    });
-                //                }
-                
-                //                NSLog(@"hrefDictionary.allKeys2 %d", self.hrefDictionary.allKeys.count);
-                
+                NSLog(@"weakObject %@", weakObject);
+
             }
-            
-            //            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             
         }] resume];
         

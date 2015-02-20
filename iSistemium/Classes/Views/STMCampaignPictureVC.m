@@ -51,22 +51,22 @@
         
 #warning - Check [[UIScreen mainScreen] bounds/nativeBounds]
         
-        CGRect scrollViewFrame = self.scrollView.frame;
+        UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+
+        CGRect scrollViewFrame =  [rootView convertRect:self.scrollView.frame fromView:nil];
         CGFloat scaleWidth = scrollViewFrame.size.width / self.scrollView.contentSize.width;
         CGFloat scaleHeight = scrollViewFrame.size.height / self.scrollView.contentSize.height;
         CGFloat minScale = MIN(scaleWidth, scaleHeight);
-        
-        UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
-        CGRect screenFrame = [rootView convertRect:scrollViewFrame fromView:nil];
-        NSLog(@"screenFrame.size.height %f, screenFrame.size.width %f", screenFrame.size.height, screenFrame.size.width);
-        
         
         self.scrollView.minimumZoomScale = minScale;
         self.scrollView.maximumZoomScale = 1.0f;
         self.scrollView.zoomScale = minScale;
         
     } else {
+        
         [self.spinner startAnimating];
+        [STMPicturesController hrefProcessingForObject:self.picture];
+
     }
     
 }
@@ -101,14 +101,7 @@
 }
 
 - (void)customInit {
-
     self.scrollView.delegate = self;
-    
-    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
-    if (!self.image) {
-        [STMPicturesController hrefProcessingForObject:self.picture];
-    }
-
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -132,6 +125,11 @@
     [super viewWillAppear:animated];
 
     [self addObservers];
+    
+    if (!self.image) self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
+    
+    NSLog(@"self.picture.imagePath %@", self.picture.imagePath);
+    NSLog(@"self.image %@",self.image);
     
     [self setupScrollView];
     
