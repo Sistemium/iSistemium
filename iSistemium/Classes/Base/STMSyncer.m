@@ -367,24 +367,22 @@
     }
 }
 
-- (void) didReceiveRemoteNotification {
-    
+- (void)didReceiveRemoteNotification {
     [self setSyncerState: STMSyncerSendData];
-    
 }
 
-- (void) didEnterBackground {
-    
+- (void)didEnterBackground {
     [self setSyncerState: STMSyncerSendDataOnce];
-    
+}
+
+- (void)appDidBecomeActive {
+    [self setSyncerState: STMSyncerSendDataOnce];
 }
 
 - (void)syncerDidReceiveRemoteNotification:(NSNotification *)notification {
     
     if ([(notification.userInfo)[@"syncer"] isEqualToString:@"upload"]) {
-        
         [self setSyncerState: STMSyncerSendDataOnce];
-        
     }
     
 }
@@ -408,10 +406,10 @@
                name:@"applicationDidReceiveRemoteNotification"
              object: nil];
     
-//    [nc addObserver:self
-//           selector:@selector(didReceiveRemoteNotification)
-//               name:UIApplicationDidBecomeActiveNotification
-//             object: nil];
+    [nc addObserver:self
+           selector:@selector(appDidBecomeActive)
+               name:UIApplicationDidBecomeActiveNotification
+             object: nil];
     
     [nc addObserver:self
            selector:@selector(didReceiveRemoteNotification)
