@@ -841,10 +841,146 @@
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
 
-    result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSUInteger resultCount = [[self document].managedObjectContext countForFetchRequest:request error:&error];
     
-    return messageXids.count - result.count;
+    return messageXids.count - resultCount;
+
+//    result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+//    
+//    return messageXids.count - result.count;
     
 }
+
+
+#pragma mark - create dictionary from object
+
++ (NSDictionary *)dictionaryForObject:(NSManagedObject *)object {
+    
+    NSString *entityName = object.entity.name;
+    NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
+    NSData *xidData = [object valueForKey:@"xid"];
+    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
+    
+    NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+    
+    return @{@"name":name, @"xid":xid, @"properties":propertiesDictionary};
+    
+}
+
++ (NSDictionary *)propertiesDictionaryForObject:(NSManagedObject *)object {
+    
+    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
+    
+    for (NSString *key in object.entity.attributesByName.allKeys) {
+        
+        if (![key isEqualToString:@"xid"]) {
+            
+            id value = [object valueForKey:key];
+            
+            if (value) {
+                
+                if ([value isKindOfClass:[NSDate class]]) {
+                    
+                    value = [[STMFunctions dateFormatter] stringFromDate:value];
+                    
+                } else if ([value isKindOfClass:[NSData class]]) {
+                    
+                    if ([key isEqualToString:@"objectXid"]) {
+                        
+                        value = [STMFunctions xidStringFromXidData:value];
+                        
+                    } else {
+                        
+                        value = [STMFunctions hexStringFromData:value];
+                        
+                    }
+                    
+                }
+                
+                [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
+                
+            }
+            
+        }
+        
+    }
+    
+    for (NSString *key in object.entity.relationshipsByName.allKeys) {
+        
+        NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
+        
+        if (![relationshipDescription isToMany]) {
+            
+            NSManagedObject *relationshipObject = [object valueForKey:key];
+            
+            if (relationshipObject) {
+                
+                NSData *xidData = [relationshipObject valueForKey:@"xid"];
+                
+                if (xidData.length != 0) {
+                    
+                    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
+                    NSString *entityName = key;
+                    [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    return propertiesDictionary;
+    
+}
+
+
+#pragma mark - sync object
+
++ (void)syncObject:(NSDictionary *)objectDictionary {
+    
+    NSString *result = [objectDictionary valueForKey:@"result"];
+    NSString *xid = [objectDictionary valueForKey:@"xid"];
+    NSString *xidString = [xid stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    NSData *xidData = [STMFunctions dataFromString:xidString];
+    
+    if (!result || ![result isEqualToString:@"ok"]) {
+        
+        NSString *errorMessage = [NSString stringWithFormat:@"Sync result not ok xid: %@", xid];
+        [[self session].logger saveLogMessageWithText:errorMessage type:@"error"];
+        
+    } else {
+        
+//        __weak __block
+        NSManagedObject *object = [self objectForXid:xidData];
+        
+//        __weak NSManagedObjectContext *context = object.managedObjectContext;
+//        
+//        [context performBlock:^{
+        
+            if (object) {
+                
+                if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
+                    [[self session].document.managedObjectContext deleteObject:object];
+                } else {
+                    [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
+                }
+                
+                NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", object.entity.name, xid];
+                NSLog(logMessage);
+                
+            } else {
+                
+                [[self session].logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
+                
+            }
+            
+//        }];
+        
+    }
+
+}
+
 
 @end
