@@ -233,7 +233,7 @@
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
+//    request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
     NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
@@ -244,6 +244,8 @@
         
         if (picture.imagePath) {
             
+//            NSLog(@"picture.imagePath %@", picture.imagePath);
+            
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
             NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
@@ -252,17 +254,40 @@
             
             if (photoData) {
                 
-                [self setImagesFromData:photoData forPicture:picture];
+//                NSLog(@"has data");
+                
+                if (!picture.imageThumbnail) {
+                    
+//                    NSLog(@"no thumbnail");
+                    
+                    [self setImagesFromData:photoData forPicture:picture];
+                }
                 
             } else {
                 
-                [self deletePicture:picture];
+//                NSLog(@"no data");
+                
+                if (picture.href && ![picture.href isEqualToString:@""]) {
+//                    NSLog(@"has href");
+                    [self hrefProcessingForObject:picture];
+                } else {
+//                    NSLog(@"no href");
+                    [self deletePicture:picture];
+                }
                 
             }
             
         } else {
             
-            [self deletePicture:picture];
+//            NSLog(@"no imagePath");
+            
+            if (picture.href && ![picture.href isEqualToString:@""]) {
+//                NSLog(@"has href");
+                [self hrefProcessingForObject:picture];
+            } else {
+//                NSLog(@"no href");
+                [self deletePicture:picture];
+            }
             
         }
         
@@ -303,6 +328,8 @@
     if (href) {
         
         if ([object isKindOfClass:[STMPicture class]]) {
+            
+            [self removeImageFilesForPicture:(STMPicture *)object];
             
             if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
@@ -572,6 +599,8 @@
 
 + (void)deletePicture:(STMPicture *)picture {
 
+//    NSLog(@"delete picture %@", picture);
+    
     [self removeImageFilesForPicture:picture];
     
     [[self document].managedObjectContext deleteObject:picture];
@@ -584,12 +613,12 @@
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture {
     
-    [self removeImage:picture.imagePath];
-    [self removeImage:picture.resizedImagePath];
+    if (picture.imagePath) [self removeImageFile:picture.imagePath];
+    if (picture.resizedImagePath) [self removeImageFile:picture.resizedImagePath];
     
 }
 
-+ (void)removeImage:(NSString *)filePath {
++ (void)removeImageFile:(NSString *)filePath {
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
