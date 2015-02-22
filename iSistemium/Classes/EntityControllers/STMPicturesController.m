@@ -244,7 +244,11 @@
         
         if (picture.imagePath) {
             
-            NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+            NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+            
+            NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
             
             if (photoData) {
                 
@@ -279,7 +283,12 @@
         
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+        
+        NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
         
         [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
         
@@ -449,7 +458,12 @@
         
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        NSData *data = [NSData dataWithContentsOfFile:picture.imagePath];
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+
+        NSData *data = [NSData dataWithContentsOfFile:imagePath];
         
         [self addUploadOperationForPicture:picture withFileName:fileName data:data];
         
@@ -577,9 +591,13 @@
 
 + (void)removeImage:(NSString *)filePath {
     
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:filePath];
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
-    if ([fileManager fileExistsAtPath:filePath isDirectory:nil]) {
+    if ([fileManager fileExistsAtPath:imagePath isDirectory:nil]) {
 
         NSError *error;
         BOOL success = [fileManager removeItemAtPath:filePath error:&error];
