@@ -43,10 +43,14 @@
     } else {
     
         STMCampaignPictureVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPictureVC"];
+//        STMCampaignPictureVC *vc = [[STMCampaignPictureVC alloc] init];
 
         vc.index = index;
         
         vc.picture = self.picturesArray[index];
+        
+//        NSLog(@"index %d", index);
+//        NSLog(@"vc.view %@", vc.view);
 
         return vc;
         

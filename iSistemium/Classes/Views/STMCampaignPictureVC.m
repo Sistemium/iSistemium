@@ -11,15 +11,29 @@
 
 @interface STMCampaignPictureVC () <UIScrollViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImage *image;
 
 @end
 
+
 @implementation STMCampaignPictureVC
 
+- (UIScrollView *)scrollView {
+    
+    if (!_scrollView) {
+        
+        _scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+        _scrollView.backgroundColor = [UIColor whiteColor];
+        
+        self.view = _scrollView;
+        
+    }
+    return _scrollView;
+    
+}
 
 - (void)setPicture:(STMCampaignPicture *)picture {
     
@@ -46,6 +60,8 @@
     
     if (self.image) {
         
+        [self checkFrameOrientation];
+        
         [self.spinner stopAnimating];
         
         [self.imageView removeFromSuperview];
@@ -57,27 +73,41 @@
         
 #warning - Check [[UIScreen mainScreen] bounds/nativeBounds]
         
-        CGRect scrollViewFrame;
+        CGRect scrollViewFrame = self.scrollView.frame;
         
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-
-            scrollViewFrame = self.scrollView.frame;
             
         } else {
 
-            if (self.isViewLoaded && self.view.window) {
+//            if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+//                self.scrollView.frame = CGRectMake(scrollViewFrame.origin.x, scrollViewFrame.origin.y, scrollViewFrame.size.height, scrollViewFrame.size.width);
+//                scrollViewFrame = self.scrollView.frame;
+//            }
 
-                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
-                scrollViewFrame =  [rootView convertRect:self.scrollView.frame fromView:nil];
-
-            } else {
-                scrollViewFrame = self.scrollView.frame;
-            }
+            
+//            if (self.isViewLoaded && self.view.window) {
+//
+//                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+//                scrollViewFrame =  [self.view convertRect:self.scrollView.frame fromView:nil];
+//            
+//            NSLog(@"IsLandscape %d", UIInterfaceOrientationIsLandscape([UIDevice currentDevice].orientation));
+//            NSLog(@"IsLandscape %d", UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]));
+//
+//                if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+//                    screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
+//                }
+//
+//            } else {
+//                scrollViewFrame = self.scrollView.frame;
+//            }
             
         }
         
+//        CGRect scrollViewFrame = self.scrollView.frame;
+        
         NSLog(@"self.index %d", self.index);
-        NSLog(@"w %f h %f", scrollViewFrame.size.width, scrollViewFrame.size.height);
+//        NSLog(@"self.imageView %@", self.imageView);
+        NSLog(@"h %f w %f", scrollViewFrame.size.height, scrollViewFrame.size.width);
         
         CGFloat scaleWidth = scrollViewFrame.size.width / self.scrollView.contentSize.width;
         CGFloat scaleHeight = scrollViewFrame.size.height / self.scrollView.contentSize.height;
@@ -97,6 +127,34 @@
     
 }
 
+- (void)checkFrameOrientation {
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        
+    } else {
+
+        CGFloat width = self.view.frame.size.width;
+        CGFloat height = self.view.frame.size.height;
+        CGFloat x = self.view.frame.origin.x;
+        CGFloat y = self.view.frame.origin.y;
+
+        if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+            
+            if (height > width) {
+                self.scrollView.frame = CGRectMake(x, y, height, width);
+            }
+            
+        } else {
+
+            if (height < width) {
+                self.scrollView.frame = CGRectMake(x, y, height, width);
+            }
+
+        }
+
+    }
+    
+}
 
 #pragma mark - UIScrollViewDelegate
 
@@ -133,8 +191,8 @@
 
 }
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -148,6 +206,20 @@
     [self customInit];
 
 }
+
+- (void)viewWillLayoutSubviews {
+    
+//    NSLog(@"self.view %@", self.view);
+//    
+//    CGRect screenFrame = [[UIScreen mainScreen] applicationFrame];
+//
+//    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+//        screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
+//    }
+//    self.view.frame = screenFrame;
+    
+}
+
 
 - (void)viewWillAppear:(BOOL)animated {
     
