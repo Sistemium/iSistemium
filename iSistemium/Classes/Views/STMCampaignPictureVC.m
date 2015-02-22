@@ -76,9 +76,9 @@
         CGFloat scaleHeight = scrollViewFrame.size.height / self.scrollView.contentSize.height;
         CGFloat minScale = MIN(scaleWidth, scaleHeight);
         
-        self.scrollView.minimumZoomScale = minScale;
+        self.scrollView.minimumZoomScale = (minScale < 1.0f) ? minScale : 1.0f;
         self.scrollView.maximumZoomScale = 1.0f;
-        self.scrollView.zoomScale = minScale;
+        self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
         
         [self centerContent];
 
@@ -136,6 +136,23 @@
     
 }
 
+- (void)deviceOrientationDidChangeNotification:(NSNotification*)note {
+    
+    CGFloat scale = self.scrollView.zoomScale;
+
+    BOOL viewWasScaled = NO;
+    
+    if (self.scrollView.zoomScale > self.scrollView.minimumZoomScale) {
+        viewWasScaled = YES;
+    }
+    
+    [self setupScrollView];
+    
+    if (viewWasScaled && scale > self.scrollView.minimumZoomScale) {
+        self.scrollView.zoomScale = scale;
+    }
+    
+}
 
 #pragma mark - UIScrollViewDelegate
 
@@ -166,7 +183,14 @@
 }
 
 - (void)customInit {
+    
     self.scrollView.delegate = self;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChangeNotification:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
