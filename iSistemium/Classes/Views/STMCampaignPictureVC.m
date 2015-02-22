@@ -29,7 +29,8 @@
         _scrollView.backgroundColor = [UIColor whiteColor];
 
         self.view = _scrollView;
-        
+        [self.view addSubview:self.spinner];
+
     }
     return _scrollView;
     
