@@ -68,7 +68,6 @@
         
         self.imageView = [[UIImageView alloc] initWithImage:self.image];
         self.scrollView.contentSize = self.imageView.frame.size;
-        
         [self.scrollView addSubview:self.imageView];
         
 #warning - Check [[UIScreen mainScreen] bounds/nativeBounds]
@@ -117,6 +116,8 @@
         self.scrollView.maximumZoomScale = 1.0f;
         self.scrollView.zoomScale = minScale;
         
+        self.imageView.frame = [self centeredFrame];
+
     } else {
         
         [self.spinner startAnimating];
@@ -156,6 +157,32 @@
     
 }
 
+- (CGRect)centeredFrame {
+    
+    CGSize boundsSize = self.scrollView.bounds.size;
+    CGRect frameToCenter = self.imageView.frame;
+    
+    // center horizontally
+    if (frameToCenter.size.width < boundsSize.width) {
+        frameToCenter.origin.x = (boundsSize.width - frameToCenter.size.width) / 2;
+    }
+    else {
+        frameToCenter.origin.x = 0;
+    }
+    
+    // center vertically
+    if (frameToCenter.size.height < boundsSize.height) {
+        frameToCenter.origin.y = (boundsSize.height - frameToCenter.size.height) / 2;
+    }
+    else {
+        frameToCenter.origin.y = 0;
+    }
+    
+    return frameToCenter;
+    
+}
+
+
 #pragma mark - UIScrollViewDelegate
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
@@ -163,10 +190,7 @@
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
-    
-    NSLog(@"scale %f", scale);
-    NSLog(@"self.scrollView.zoomScale %f", self.scrollView.zoomScale);
-    
+    self.imageView.frame = [self centeredFrame];
 }
 
 
