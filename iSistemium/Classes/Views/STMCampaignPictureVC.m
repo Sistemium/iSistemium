@@ -27,7 +27,7 @@
         
         _scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
         _scrollView.backgroundColor = [UIColor whiteColor];
-        
+
         self.view = _scrollView;
         
     }
@@ -70,43 +70,7 @@
         self.scrollView.contentSize = self.imageView.frame.size;
         [self.scrollView addSubview:self.imageView];
         
-#warning - Check [[UIScreen mainScreen] bounds/nativeBounds]
-        
         CGRect scrollViewFrame = self.scrollView.frame;
-        
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-            
-        } else {
-
-//            if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-//                self.scrollView.frame = CGRectMake(scrollViewFrame.origin.x, scrollViewFrame.origin.y, scrollViewFrame.size.height, scrollViewFrame.size.width);
-//                scrollViewFrame = self.scrollView.frame;
-//            }
-
-            
-//            if (self.isViewLoaded && self.view.window) {
-//
-//                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
-//                scrollViewFrame =  [self.view convertRect:self.scrollView.frame fromView:nil];
-//            
-//            NSLog(@"IsLandscape %d", UIInterfaceOrientationIsLandscape([UIDevice currentDevice].orientation));
-//            NSLog(@"IsLandscape %d", UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]));
-//
-//                if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-//                    screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
-//                }
-//
-//            } else {
-//                scrollViewFrame = self.scrollView.frame;
-//            }
-            
-        }
-        
-//        CGRect scrollViewFrame = self.scrollView.frame;
-        
-        NSLog(@"self.index %d", self.index);
-//        NSLog(@"self.imageView %@", self.imageView);
-        NSLog(@"h %f w %f", scrollViewFrame.size.height, scrollViewFrame.size.width);
         
         CGFloat scaleWidth = scrollViewFrame.size.width / self.scrollView.contentSize.width;
         CGFloat scaleHeight = scrollViewFrame.size.height / self.scrollView.contentSize.height;
@@ -116,7 +80,7 @@
         self.scrollView.maximumZoomScale = 1.0f;
         self.scrollView.zoomScale = minScale;
         
-        self.imageView.frame = [self centeredFrame];
+        [self centerContent];
 
     } else {
         
@@ -130,10 +94,8 @@
 
 - (void)checkFrameOrientation {
     
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
         
-    } else {
-
         CGFloat width = self.view.frame.size.width;
         CGFloat height = self.view.frame.size.height;
         CGFloat x = self.view.frame.origin.x;
@@ -157,28 +119,20 @@
     
 }
 
-- (CGRect)centeredFrame {
+- (void)centerContent {
     
+    CGFloat top = 0, left = 0;
+    CGSize contentSize = self.scrollView.contentSize;
     CGSize boundsSize = self.scrollView.bounds.size;
-    CGRect frameToCenter = self.imageView.frame;
     
-    // center horizontally
-    if (frameToCenter.size.width < boundsSize.width) {
-        frameToCenter.origin.x = (boundsSize.width - frameToCenter.size.width) / 2;
+    if (contentSize.width < boundsSize.width) {
+        left = (boundsSize.width - contentSize.width) * 0.5f;
     }
-    else {
-        frameToCenter.origin.x = 0;
+    if (contentSize.height < boundsSize.height) {
+        top = (boundsSize.height - contentSize.height) * 0.5f;
     }
     
-    // center vertically
-    if (frameToCenter.size.height < boundsSize.height) {
-        frameToCenter.origin.y = (boundsSize.height - frameToCenter.size.height) / 2;
-    }
-    else {
-        frameToCenter.origin.y = 0;
-    }
-    
-    return frameToCenter;
+    self.scrollView.contentInset = UIEdgeInsetsMake(top, left, top, left);
     
 }
 
@@ -190,9 +144,12 @@
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
-    self.imageView.frame = [self centeredFrame];
+
 }
 
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    [self centerContent];
+}
 
 #pragma mark - view lifecycle
 
@@ -209,10 +166,7 @@
 }
 
 - (void)customInit {
-
     self.scrollView.delegate = self;
-//    if (!self.image) [self updatePicture];
-
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -233,34 +187,19 @@
 
 - (void)viewWillLayoutSubviews {
     
-//    NSLog(@"self.view %@", self.view);
-//    
-//    CGRect screenFrame = [[UIScreen mainScreen] applicationFrame];
-//
-//    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-//        screenFrame = CGRectMake(0, 0, screenFrame.size.height, screenFrame.size.width);
-//    }
-//    self.view.frame = screenFrame;
-    
 }
 
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-
-//    [self addObservers];
     
     if (!self.image) [self updatePicture];
     
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    
     [super viewWillDisappear:animated];
-    
-//    [self removeObservers];
-    
 }
 
 - (void)didReceiveMemoryWarning
