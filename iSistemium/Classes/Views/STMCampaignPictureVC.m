@@ -12,29 +12,37 @@
 @interface STMCampaignPictureVC () <UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) UIView *spinnerView;
 
 @end
 
 
 @implementation STMCampaignPictureVC
 
-//- (UIScrollView *)scrollView {
-//    
-//    if (!_scrollView) {
-//        
-//        _scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
-//        _scrollView.backgroundColor = [UIColor whiteColor];
-//
-//        self.view = _scrollView;
-//        [self.view addSubview:self.spinner];
-//
-//    }
-//    return _scrollView;
-//    
-//}
+- (UIView *)spinnerView {
+    
+    if (!_spinnerView) {
+        
+        UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
+        [self checkFrameOrientationForView:view];
+        view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        view.backgroundColor = [UIColor whiteColor];
+        view.alpha = 0.75;
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        spinner.center = view.center;
+        spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+        [spinner startAnimating];
+        [view addSubview:spinner];
+        
+        _spinnerView = view;
+        
+    }
+    
+    return _spinnerView;
+    
+}
 
 - (void)setPicture:(STMCampaignPicture *)picture {
     
@@ -63,10 +71,9 @@
     
     if (self.image) {
         
-        [self checkFrameOrientation];
+        [self checkFrameOrientationForView:self.scrollView];
         
-        [self.spinner stopAnimating];
-        
+        [self.spinnerView removeFromSuperview];
         [self.imageView removeFromSuperview];
         
         self.imageView = [[UIImageView alloc] initWithImage:self.image];
@@ -87,7 +94,7 @@
 
     } else {
         
-        [self.spinner startAnimating];
+        [self.view addSubview:self.spinnerView];
         [self addObservers];
         [STMPicturesController hrefProcessingForObject:self.picture];
 
@@ -95,25 +102,25 @@
     
 }
 
-- (void)checkFrameOrientation {
+- (void)checkFrameOrientationForView:(UIView *)view {
     
 //    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
     
-        CGFloat width = self.scrollView.frame.size.width;
-        CGFloat height = self.scrollView.frame.size.height;
-        CGFloat x = self.scrollView.frame.origin.x;
-        CGFloat y = self.scrollView.frame.origin.y;
+        CGFloat width = view.frame.size.width;
+        CGFloat height = view.frame.size.height;
+        CGFloat x = view.frame.origin.x;
+        CGFloat y = view.frame.origin.y;
 
         if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
             
             if (height > width) {
-                self.scrollView.frame = CGRectMake(x, y, height, width);
+                view.frame = CGRectMake(x, y, height, width);
             }
             
         } else {
 
             if (height < width) {
-                self.scrollView.frame = CGRectMake(x, y, height, width);
+                view.frame = CGRectMake(x, y, height, width);
             }
 
         }
@@ -140,6 +147,8 @@
 }
 
 - (void)deviceOrientationDidChangeNotification:(NSNotification*)note {
+    
+    [self checkFrameOrientationForView:self.spinnerView];
     
     CGFloat scale = self.scrollView.zoomScale;
 

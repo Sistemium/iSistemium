@@ -13,10 +13,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" id="zY4-x9-QRn">
-                                <rect key="frame" x="374" y="502" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            </activityIndicatorView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="Wmc-gI-Xf2">
                                 <rect key="frame" x="16" y="20" width="736" height="984"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -26,7 +22,6 @@
                     </view>
                     <connections>
                         <outlet property="scrollView" destination="Wmc-gI-Xf2" id="dgs-C0-QbZ"/>
-                        <outlet property="spinner" destination="zY4-x9-QRn" id="14E-Dy-tRg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NFU-sx-sFx" userLabel="First Responder" sceneMemberID="firstResponder"/>
