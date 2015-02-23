@@ -6,14 +6,12 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#warning hide status bar after rotating/zooming
-
 #import "STMCampaignPictureVC.h"
 #import "STMPicturesController.h"
 
 @interface STMCampaignPictureVC () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImage *image;
@@ -23,20 +21,20 @@
 
 @implementation STMCampaignPictureVC
 
-- (UIScrollView *)scrollView {
-    
-    if (!_scrollView) {
-        
-        _scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
-        _scrollView.backgroundColor = [UIColor whiteColor];
-
-        self.view = _scrollView;
-        [self.view addSubview:self.spinner];
-
-    }
-    return _scrollView;
-    
-}
+//- (UIScrollView *)scrollView {
+//    
+//    if (!_scrollView) {
+//        
+//        _scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+//        _scrollView.backgroundColor = [UIColor whiteColor];
+//
+//        self.view = _scrollView;
+//        [self.view addSubview:self.spinner];
+//
+//    }
+//    return _scrollView;
+//    
+//}
 
 - (void)setPicture:(STMCampaignPicture *)picture {
     
@@ -99,12 +97,12 @@
 
 - (void)checkFrameOrientation {
     
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
-        
-        CGFloat width = self.view.frame.size.width;
-        CGFloat height = self.view.frame.size.height;
-        CGFloat x = self.view.frame.origin.x;
-        CGFloat y = self.view.frame.origin.y;
+//    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
+    
+        CGFloat width = self.scrollView.frame.size.width;
+        CGFloat height = self.scrollView.frame.size.height;
+        CGFloat x = self.scrollView.frame.origin.x;
+        CGFloat y = self.scrollView.frame.origin.y;
 
         if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
             
@@ -120,7 +118,7 @@
 
         }
 
-    }
+//    }
     
 }
 

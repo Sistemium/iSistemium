@@ -125,6 +125,11 @@
 
 - (void)customInit {
     
+    UIPageControl *pageControl = [UIPageControl appearanceWhenContainedIn:[self class], nil];
+    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
+    pageControl.backgroundColor = [UIColor whiteColor];
+    
     self.dataSource = self;
     self.delegate = self;
     
