@@ -34,12 +34,14 @@
     
     if (self.picture) {
         
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-        NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:self.picture.resizedImagePath];
-
-        self.image = [UIImage imageWithContentsOfFile:resizedImagePath];
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//        NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:self.picture.resizedImagePath];
+//
+//        self.image = [UIImage imageWithContentsOfFile:resizedImagePath];
         
+        self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
+
     }
     
     self.photoView.image = self.image;

@@ -36,12 +36,14 @@
         vc.index = index;
         vc.photo = photoReport;
         
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-        NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:photoReport.resizedImagePath];
-
-        vc.image = [UIImage imageWithContentsOfFile:resizedImagePath];
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//        NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:photoReport.resizedImagePath];
+//
+//        vc.image = [UIImage imageWithContentsOfFile:resizedImagePath];
         
+        vc.image = [UIImage imageWithContentsOfFile:photoReport.resizedImagePath];
+
         return vc;
         
     }

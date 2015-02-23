@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
+#warning hide status bar after rotating/zooming
+
 #import "STMCampaignPictureVC.h"
 #import "STMPicturesController.h"
 
@@ -48,11 +50,13 @@
     
     [self removeObservers];
 
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:self.picture.imagePath];
-    
-    self.image = [UIImage imageWithContentsOfFile:imagePath];
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:self.picture.imagePath];
+//    
+//    self.image = [UIImage imageWithContentsOfFile:imagePath];
+
+    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
     [self setupScrollView];
     
 }

@@ -233,15 +233,33 @@
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-//    request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
+    request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
     NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     
     for (STMPicture *picture in result) {
         
-        //        NSLog(@"broken photo %@", photo);
+        if (picture.imagePath) {
+            
+            NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+            
+            if (photoData) {
+                
+                [self setImagesFromData:photoData forPicture:picture];
+                
+            } else {
+                
+                [self deletePicture:picture];
+                
+            }
+            
+        }
+
         
+        //        NSLog(@"broken photo %@", photo);
+
+/*
         if (picture.imagePath) {
             
 //            NSLog(@"picture.imagePath %@", picture.imagePath);
@@ -290,7 +308,7 @@
             }
             
         }
-        
+*/
     }
     
 }
@@ -309,12 +327,14 @@
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
-        
-        NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
-        
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+//        
+//        NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
+
+        NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+
         [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
         
     }
@@ -329,7 +349,7 @@
         
         if ([object isKindOfClass:[STMPicture class]]) {
             
-            [self removeImageFilesForPicture:(STMPicture *)object];
+//            [self removeImageFilesForPicture:(STMPicture *)object];
             
             if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
@@ -374,9 +394,9 @@
         
     }
     
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-    NSString *documentsDirectory = @"";
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//    NSString *documentsDirectory = @"";
     NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
     NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
     
@@ -461,8 +481,10 @@
                 
             } else {
                 
-                NSLog(@"%@ load successefully", href);
+//                NSLog(@"%@ load successefully", href);
                 
+                [self.hrefDictionary removeObjectForKey:href];
+
                 NSData *dataCopy = [data copy];
                 
                 [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
@@ -486,12 +508,14 @@
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+//
+//        NSData *data = [NSData dataWithContentsOfFile:imagePath];
 
-        NSData *data = [NSData dataWithContentsOfFile:imagePath];
-        
+        NSData *data = [NSData dataWithContentsOfFile:picture.imagePath];
+
         [self addUploadOperationForPicture:picture withFileName:fileName data:data];
         
     }
@@ -620,9 +644,11 @@
 
 + (void)removeImageFile:(NSString *)filePath {
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:filePath];
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:filePath];
+    
+    NSString *imagePath = filePath;
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
