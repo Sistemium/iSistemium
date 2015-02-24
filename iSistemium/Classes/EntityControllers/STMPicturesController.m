@@ -224,15 +224,34 @@
 
 + (void)checkPhotos {
     
+    [self checkPhotosPaths];
     [self checkBrokenPhotos];
     [self checkUploadedPhotos];
+    
+}
+
++ (void)checkPhotosPaths {
+
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+    
+    NSError *error;
+    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    
+    for (STMPicture *picture in result) {
+
+        NSArray *pathComponents = [picture.imagePath pathComponents];
+        NSLog(@"pathComponents.count %d", pathComponents.count);
+        NSLog(@"pathComponents.lastObject %@", pathComponents.lastObject);
+
+    }
     
 }
 
 + (void)checkBrokenPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
@@ -316,7 +335,7 @@
 + (void)checkUploadedPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
     
     NSError *error;
