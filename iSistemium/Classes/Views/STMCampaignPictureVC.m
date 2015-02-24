@@ -9,16 +9,40 @@
 #import "STMCampaignPictureVC.h"
 #import "STMPicturesController.h"
 
-@interface STMCampaignPictureVC ()
+@interface STMCampaignPictureVC () <UIScrollViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) UIView *spinnerView;
 
 @end
 
+
 @implementation STMCampaignPictureVC
 
+- (UIView *)spinnerView {
+    
+    if (!_spinnerView) {
+        
+        UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
+        [self checkFrameOrientationForView:view];
+        view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        view.backgroundColor = [UIColor whiteColor];
+        view.alpha = 0.75;
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        spinner.center = view.center;
+        spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+        [spinner startAnimating];
+        [view addSubview:spinner];
+        
+        _spinnerView = view;
+        
+    }
+    
+    return _spinnerView;
+    
+}
 
 - (void)setPicture:(STMCampaignPicture *)picture {
     
@@ -28,27 +52,132 @@
     
 }
 
-- (void)showImage {
+- (void)updatePicture {
     
-    if (!self.image) {
-        
-        [self.spinner startAnimating];
-        
-    } else {
+    [self removeObservers];
 
-        [self.spinner stopAnimating];
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        self.imageView.image = self.image;
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:self.picture.imagePath];
+//    
+//    self.image = [UIImage imageWithContentsOfFile:imagePath];
+
+    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
+    [self setupScrollView];
+    
+}
+
+- (void)setupScrollView {
+    
+    if (self.image) {
+        
+        [self checkFrameOrientationForView:self.scrollView];
+        
+        [self.spinnerView removeFromSuperview];
+        [self.imageView removeFromSuperview];
+        
+        self.imageView = [[UIImageView alloc] initWithImage:self.image];
+        self.scrollView.contentSize = self.imageView.frame.size;
+        [self.scrollView addSubview:self.imageView];
+        
+        CGRect scrollViewFrame = self.scrollView.frame;
+        
+        CGFloat scaleWidth = scrollViewFrame.size.width / self.scrollView.contentSize.width;
+        CGFloat scaleHeight = scrollViewFrame.size.height / self.scrollView.contentSize.height;
+        CGFloat minScale = MIN(scaleWidth, scaleHeight);
+        
+        self.scrollView.minimumZoomScale = (minScale < 1.0f) ? minScale : 1.0f;
+        self.scrollView.maximumZoomScale = 1.0f;
+        self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
+        
+        [self centerContent];
+
+    } else {
+        
+        [self.view addSubview:self.spinnerView];
+        [self addObservers];
+        [STMPicturesController hrefProcessingForObject:self.picture];
 
     }
+    
+}
+
+- (void)checkFrameOrientationForView:(UIView *)view {
+    
+//    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
+    
+        CGFloat width = view.frame.size.width;
+        CGFloat height = view.frame.size.height;
+        CGFloat x = view.frame.origin.x;
+        CGFloat y = view.frame.origin.y;
+
+        if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+            
+            if (height > width) {
+                view.frame = CGRectMake(x, y, height, width);
+            }
+            
+        } else {
+
+            if (height < width) {
+                view.frame = CGRectMake(x, y, height, width);
+            }
+
+        }
+
+//    }
+    
+}
+
+- (void)centerContent {
+    
+    CGFloat top = 0, left = 0;
+    CGSize contentSize = self.scrollView.contentSize;
+    CGSize boundsSize = self.scrollView.bounds.size;
+    
+    if (contentSize.width < boundsSize.width) {
+        left = (boundsSize.width - contentSize.width) * 0.5f;
+    }
+    if (contentSize.height < boundsSize.height) {
+        top = (boundsSize.height - contentSize.height) * 0.5f;
+    }
+    
+    self.scrollView.contentInset = UIEdgeInsetsMake(top, left, top, left);
+    
+}
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification*)note {
+    
+    [self checkFrameOrientationForView:self.spinnerView];
+    
+    CGFloat scale = self.scrollView.zoomScale;
+
+    BOOL viewWasScaled = NO;
+    
+    if (self.scrollView.zoomScale > self.scrollView.minimumZoomScale) {
+        viewWasScaled = YES;
+    }
+    
+    [self setupScrollView];
+    
+    if (viewWasScaled && scale > self.scrollView.minimumZoomScale) {
+        self.scrollView.zoomScale = scale;
+    }
+    
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.imageView;
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
 
 }
 
-- (void)updatePicture {
-    
-    self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
-    [self showImage];
-    
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    [self centerContent];
 }
 
 #pragma mark - view lifecycle
@@ -67,10 +196,17 @@
 
 - (void)customInit {
     
+    self.scrollView.delegate = self;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChangeNotification:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+
 }
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -85,26 +221,21 @@
 
 }
 
+- (void)viewWillLayoutSubviews {
+    
+}
+
+
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-
-    [self addObservers];
     
-    self.image = [UIImage imageWithContentsOfFile:self.picture.resizedImagePath];
-    if (!self.image) {
-        [STMPicturesController hrefProcessingForObject:self.picture];
-    }
-    [self showImage];
-
+    if (!self.image) [self updatePicture];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    
     [super viewWillDisappear:animated];
-    
-    [self removeObservers];
-    
 }
 
 - (void)didReceiveMemoryWarning

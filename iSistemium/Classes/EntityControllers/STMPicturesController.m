@@ -240,8 +240,6 @@
     
     for (STMPicture *picture in result) {
         
-        //        NSLog(@"broken photo %@", photo);
-        
         if (picture.imagePath) {
             
             NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
@@ -256,12 +254,61 @@
                 
             }
             
+        }
+
+        
+        //        NSLog(@"broken photo %@", photo);
+
+/*
+        if (picture.imagePath) {
+            
+//            NSLog(@"picture.imagePath %@", picture.imagePath);
+            
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+            NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+            
+            NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
+            
+            if (photoData) {
+                
+//                NSLog(@"has data");
+                
+                if (!picture.imageThumbnail) {
+                    
+//                    NSLog(@"no thumbnail");
+                    
+                    [self setImagesFromData:photoData forPicture:picture];
+                }
+                
+            } else {
+                
+//                NSLog(@"no data");
+                
+                if (picture.href && ![picture.href isEqualToString:@""]) {
+//                    NSLog(@"has href");
+                    [self hrefProcessingForObject:picture];
+                } else {
+//                    NSLog(@"no href");
+                    [self deletePicture:picture];
+                }
+                
+            }
+            
         } else {
             
-            [self deletePicture:picture];
+//            NSLog(@"no imagePath");
+            
+            if (picture.href && ![picture.href isEqualToString:@""]) {
+//                NSLog(@"has href");
+                [self hrefProcessingForObject:picture];
+            } else {
+//                NSLog(@"no href");
+                [self deletePicture:picture];
+            }
             
         }
-        
+*/
     }
     
 }
@@ -279,8 +326,15 @@
         
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
         
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+//        
+//        NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
+
+        NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+
         [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
         
     }
@@ -294,6 +348,8 @@
     if (href) {
         
         if ([object isKindOfClass:[STMPicture class]]) {
+            
+//            [self removeImageFilesForPicture:(STMPicture *)object];
             
             if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
@@ -340,6 +396,7 @@
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//    NSString *documentsDirectory = @"";
     NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
     NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
     
@@ -390,8 +447,6 @@
     
     [self.downloadQueue addOperationWithBlock:^{
         
-        //        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        
         [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             
             if (error) {
@@ -411,20 +466,9 @@
                         
                         [self.secondAttempt addObject:href];
                         
-                        //                        double delayInSeconds = 2.0;
-                        //
-                        //                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                        //                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        //
-                        //                            [self addOperationForObject:object];
-                        //
-                        //                        });
-                        
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
                         });
-                        
-                        //                        NSLog(@"secondAttempt.count %d", self.secondAttempt.count);
                         
                     }
                     
@@ -437,25 +481,17 @@
                 
             } else {
                 
-                //                NSLog(@"%@ load successefully", href);
+//                NSLog(@"%@ load successefully", href);
                 
                 [self.hrefDictionary removeObjectForKey:href];
-                
+
                 NSData *dataCopy = [data copy];
-                
-                //                @autoreleasepool {
-                //                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
                 
                 [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
                 
-                //                    });
-                //                }
-                
-                //                NSLog(@"hrefDictionary.allKeys2 %d", self.hrefDictionary.allKeys.count);
-                
+                [self.hrefDictionary removeObjectForKey:href];
+
             }
-            
-            //            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             
         }] resume];
         
@@ -471,8 +507,15 @@
         
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        NSData *data = [NSData dataWithContentsOfFile:picture.imagePath];
         
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
+//
+//        NSData *data = [NSData dataWithContentsOfFile:imagePath];
+
+        NSData *data = [NSData dataWithContentsOfFile:picture.imagePath];
+
         [self addUploadOperationForPicture:picture withFileName:fileName data:data];
         
     }
@@ -580,6 +623,8 @@
 
 + (void)deletePicture:(STMPicture *)picture {
 
+//    NSLog(@"delete picture %@", picture);
+    
     [self removeImageFilesForPicture:picture];
     
     [[self document].managedObjectContext deleteObject:picture];
@@ -592,16 +637,22 @@
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture {
     
-    [self removeImage:picture.imagePath];
-    [self removeImage:picture.resizedImagePath];
+    if (picture.imagePath) [self removeImageFile:picture.imagePath];
+    if (picture.resizedImagePath) [self removeImageFile:picture.resizedImagePath];
     
 }
 
-+ (void)removeImage:(NSString *)filePath {
++ (void)removeImageFile:(NSString *)filePath {
+    
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+//    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:filePath];
+    
+    NSString *imagePath = filePath;
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
-    if ([fileManager fileExistsAtPath:filePath isDirectory:nil]) {
+    if ([fileManager fileExistsAtPath:imagePath isDirectory:nil]) {
 
         NSError *error;
         BOOL success = [fileManager removeItemAtPath:filePath error:&error];

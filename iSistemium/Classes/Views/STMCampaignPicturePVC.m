@@ -43,10 +43,14 @@
     } else {
     
         STMCampaignPictureVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPictureVC"];
+//        STMCampaignPictureVC *vc = [[STMCampaignPictureVC alloc] init];
 
         vc.index = index;
         
         vc.picture = self.picturesArray[index];
+        
+//        NSLog(@"index %d", index);
+//        NSLog(@"vc.view %@", vc.view);
 
         return vc;
         
@@ -120,6 +124,11 @@
 
 
 - (void)customInit {
+    
+    UIPageControl *pageControl = [UIPageControl appearanceWhenContainedIn:[self class], nil];
+    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
+    pageControl.backgroundColor = [UIColor whiteColor];
     
     self.dataSource = self;
     self.delegate = self;
