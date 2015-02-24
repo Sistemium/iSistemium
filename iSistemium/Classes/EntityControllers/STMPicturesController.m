@@ -8,6 +8,7 @@
 
 #import "STMPicturesController.h"
 #import "STMFunctions.h"
+#import "STMConstants.h"
 #import "STMSessionManager.h"
 
 #import "STMCampaignPicture.h"
@@ -232,6 +233,19 @@
 
 + (void)checkPhotosPaths {
 
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+
+    if ([version isEqualToString:@"1.1.1"] && [build intValue] < 666) {
+        [self startCheckingPhotosPaths];
+    }
+    
+}
+
++ (void)startCheckingPhotosPaths {
+    
+    NSLogMethodName;
+    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
     
@@ -239,11 +253,11 @@
     NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     
     for (STMPicture *picture in result) {
-
+        
         NSArray *pathComponents = [picture.imagePath pathComponents];
-
+        
         if (pathComponents.count == 0) {
-
+            
             if (picture.href) {
                 [self hrefProcessingForObject:picture];
             } else {
@@ -258,7 +272,7 @@
             }
             
         }
-
+        
     }
     
 }
