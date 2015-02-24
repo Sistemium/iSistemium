@@ -8,6 +8,7 @@
 
 #import "STMCampaignPictureVC.h"
 #import "STMPicturesController.h"
+#import "STMFunctions.h"
 
 @interface STMCampaignPictureVC () <UIScrollViewDelegate>
 
@@ -55,14 +56,7 @@
 - (void)updatePicture {
     
     [self removeObservers];
-
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:self.picture.imagePath];
-//    
-//    self.image = [UIImage imageWithContentsOfFile:imagePath];
-
-    self.image = [UIImage imageWithContentsOfFile:self.picture.imagePath];
+    self.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.picture.imagePath]];
     [self setupScrollView];
     
 }

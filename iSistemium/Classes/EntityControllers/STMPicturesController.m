@@ -288,12 +288,12 @@
     if (newImagePath) {
 
         NSLog(@"set new imagePath for picture %@", picture.xid);
-//        picture.imagePath = newImagePath;
+        picture.imagePath = newImagePath;
 
         if (newResizedImagePath) {
             
             NSLog(@"set new resizedImagePath for picture %@", picture.xid);
-//            picture.resizedImagePath = newResizedImagePath;
+            picture.resizedImagePath = newResizedImagePath;
             
         } else {
             
@@ -334,9 +334,8 @@
 
 + (NSString *)convertImagePath:(NSString *)path {
     
-    NSArray *pathComponents = [path pathComponents];
-    NSString *lastPathComponent = pathComponents.lastObject;
-    NSString *imagePath = [[STMFunctions documentsDirectory] stringByAppendingPathComponent:lastPathComponent];
+    NSString *lastPathComponent = [path lastPathComponent];
+    NSString *imagePath = [STMFunctions absolutePathForPath:lastPathComponent];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:imagePath]) {
         return lastPathComponent;
@@ -359,7 +358,7 @@
         
         if (picture.imagePath) {
             
-            NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
             if (photoData) {
                 
@@ -373,59 +372,6 @@
             
         }
 
-        
-        //        NSLog(@"broken photo %@", photo);
-
-/*
-        if (picture.imagePath) {
-            
-//            NSLog(@"picture.imagePath %@", picture.imagePath);
-            
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-            NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-            NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
-            
-            NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
-            
-            if (photoData) {
-                
-//                NSLog(@"has data");
-                
-                if (!picture.imageThumbnail) {
-                    
-//                    NSLog(@"no thumbnail");
-                    
-                    [self setImagesFromData:photoData forPicture:picture];
-                }
-                
-            } else {
-                
-//                NSLog(@"no data");
-                
-                if (picture.href && ![picture.href isEqualToString:@""]) {
-//                    NSLog(@"has href");
-                    [self hrefProcessingForObject:picture];
-                } else {
-//                    NSLog(@"no href");
-                    [self deletePicture:picture];
-                }
-                
-            }
-            
-        } else {
-            
-//            NSLog(@"no imagePath");
-            
-            if (picture.href && ![picture.href isEqualToString:@""]) {
-//                NSLog(@"has href");
-                [self hrefProcessingForObject:picture];
-            } else {
-//                NSLog(@"no href");
-                [self deletePicture:picture];
-            }
-            
-        }
-*/
     }
     
 }
@@ -444,13 +390,7 @@
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
-//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
-//        
-//        NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
-
-        NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+        NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
 
         [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
         
@@ -466,13 +406,9 @@
         
         if ([object isKindOfClass:[STMPicture class]]) {
             
-//            [self removeImageFilesForPicture:(STMPicture *)object];
-            
             if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
                 ([self sharedController].hrefDictionary)[href] = object;
-                //                NSLog(@"hrefDictionary.allKeys1 %d", [self sharedController].hrefDictionary.allKeys.count);
-                
                 [[self sharedController] addOperationForObject:object];
                 
             }
@@ -525,9 +461,9 @@
     
     NSString *imagePath = [STMFunctions absolutePathForPath:fileName];
     [data writeToFile:imagePath atomically:YES];
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-        picture.imagePath = imagePath;
+        picture.imagePath = fileName;
     });
 
 }
@@ -542,7 +478,7 @@
     [resizedImageData writeToFile:resizedImagePath atomically:YES];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        picture.resizedImagePath = resizedImagePath;
+        picture.resizedImagePath = resizedFileName;
     });
 
 }
@@ -620,13 +556,7 @@
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
-//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
-//
-//        NSData *data = [NSData dataWithContentsOfFile:imagePath];
-
-        NSData *data = [NSData dataWithContentsOfFile:picture.imagePath];
+        NSData *data = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
 
         [self addUploadOperationForPicture:picture withFileName:fileName data:data];
         
@@ -756,18 +686,14 @@
 
 + (void)removeImageFile:(NSString *)filePath {
     
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:filePath];
-    
-    NSString *imagePath = filePath;
+    NSString *imagePath = [STMFunctions absolutePathForPath:filePath];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     if ([fileManager fileExistsAtPath:imagePath isDirectory:nil]) {
 
         NSError *error;
-        BOOL success = [fileManager removeItemAtPath:filePath error:&error];
+        BOOL success = [fileManager removeItemAtPath:imagePath error:&error];
         
         if (success) {
             
@@ -782,37 +708,6 @@
     }
     
 }
-
-
-//+ (void)generatePhotoReports {
-//    
-//    NSArray *outlets = [self objectsForEntityName:NSStringFromClass([STMOutlet class])];
-//    NSArray *campaigns = [self objectsForEntityName:NSStringFromClass([STMCampaign class])];
-//    
-//    for (STMCampaign *campaign in campaigns) {
-//        
-//        for (STMOutlet *outlet in outlets) {
-//            
-//            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
-//            request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-//            request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@ AND outlet == %@", campaign, outlet];
-//            
-//            NSError *error;
-//            NSArray *photoReports = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-//            
-//            if (photoReports.count == 0) {
-//                
-//                STMPhotoReport *photoReport = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
-//                photoReport.outlet = outlet;
-//                photoReport.campaign = campaign;
-//                
-//            }
-//            
-//        }
-//        
-//    }
-//    
-//}
 
 
 @end
