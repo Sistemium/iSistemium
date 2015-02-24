@@ -51,6 +51,33 @@
     
 }
 
+- (void)checkFrameOrientationForView:(UIView *)view {
+
+    CGFloat width = view.frame.size.width;
+    CGFloat height = view.frame.size.height;
+    CGFloat x = view.frame.origin.x;
+    CGFloat y = view.frame.origin.y;
+    
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        
+        if (height > width) {
+            view.frame = CGRectMake(x, y, height, width);
+        }
+        
+    } else {
+        
+        if (height < width) {
+            view.frame = CGRectMake(x, y, height, width);
+        }
+        
+    }
+    
+}
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification*)note {
+    [self checkFrameOrientationForView:self.view];
+}
+
 
 #pragma mark - UIGestureRecognizerDelegate
 
@@ -104,6 +131,13 @@
     [self.toolbar setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     [self.toolbar setShadowImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChangeNotification:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+
+    [self checkFrameOrientationForView:self.view];
+    
     [self showImage];
     
 }
