@@ -245,37 +245,35 @@
 
 + (void)startCheckingPhotosPaths {
     
-    NSLogMethodName;
-    
-//    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
-//    
-//    NSError *error;
-//    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
     NSArray *result = [STMObjectsController objectsForEntityName:NSStringFromClass([STMPicture class])];
     
-    for (STMPicture *picture in result) {
-        
-        NSArray *pathComponents = [picture.imagePath pathComponents];
-        
-        if (pathComponents.count == 0) {
+    if (result.count > 0) {
+
+        NSLogMethodName;
+
+        for (STMPicture *picture in result) {
             
-            if (picture.href) {
-                [self hrefProcessingForObject:picture];
+            NSArray *pathComponents = [picture.imagePath pathComponents];
+            
+            if (pathComponents.count == 0) {
+                
+                if (picture.href) {
+                    [self hrefProcessingForObject:picture];
+                } else {
+                    NSLog(@"picture %@ has no both imagePath and href, will be deleted", picture.xid);
+                    [self deletePicture:picture];
+                }
+                
             } else {
-                NSLog(@"picture %@ has no both imagePath and href, will be deleted", picture.xid);
-                [self deletePicture:picture];
-            }
-            
-        } else {
-            
-            if (pathComponents.count > 1) {
-                [self imagePathsConvertingFromAbsoluteToRelativeForPicture:picture];
+                
+                if (pathComponents.count > 1) {
+                    [self imagePathsConvertingFromAbsoluteToRelativeForPicture:picture];
+                }
+                
             }
             
         }
-        
+
     }
     
 }
