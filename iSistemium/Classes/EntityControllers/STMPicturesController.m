@@ -241,11 +241,42 @@
     for (STMPicture *picture in result) {
 
         NSArray *pathComponents = [picture.imagePath pathComponents];
-        NSLog(@"pathComponents.count %d", pathComponents.count);
-        NSLog(@"pathComponents.lastObject %@", pathComponents.lastObject);
+
+        if (pathComponents.count == 0) {
+
+            if (picture.href) {
+                [self hrefProcessingForObject:picture];
+            } else {
+                NSLog(@"picture %@ has no both imagePath and href, will be deleted", picture.xid);
+                [self deletePicture:picture];
+            }
+            
+        } else {
+            
+            if (pathComponents.count > 1) {
+                [self imagePathsConvertingFromAbsoluteToRelativeForPicture:picture];
+            }
+            
+        }
 
     }
     
+}
+
++ (void)imagePathsConvertingFromAbsoluteToRelativeForPicture:(STMPicture *)picture {
+    
+    NSArray *pathComponents = [picture.imagePath pathComponents];
+
+    NSString *lastPathComponent = pathComponents.lastObject;
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    if ([fileManager fileExistsAtPath:lastPathComponent]) {
+        
+        
+        
+    }
+
 }
 
 + (void)checkBrokenPhotos {
