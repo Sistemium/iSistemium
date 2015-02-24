@@ -279,17 +279,27 @@
 
 + (void)imagePathsConvertingFromAbsoluteToRelativeForPicture:(STMPicture *)picture {
     
-    NSArray *pathComponents = [picture.imagePath pathComponents];
-
-    NSString *lastPathComponent = pathComponents.lastObject;
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    if ([fileManager fileExistsAtPath:lastPathComponent]) {
+    if ([self imagePathIsAbleToConvert:picture.imagePath]) {
         
-        
+        if ([self imagePathIsAbleToConvert:picture.resizedImagePath]) {
+            
+            NSLog(@"set new paths for picture %@", picture.xid);
+            //            picture.imagePath = lastPathComponent;
+            //            picture.resizedImagePath = lastResizedPathComponent;
+            
+        }
         
     }
+
+}
+
++ (BOOL)imagePathIsAbleToConvert:(NSString *)path {
+    
+    NSArray *pathComponents = [path pathComponents];
+    NSString *lastPathComponent = pathComponents.lastObject;
+    NSString *imagePath = [[STMFunctions documentsDirectory] stringByAppendingPathComponent:lastPathComponent];
+    
+    return ([[NSFileManager defaultManager] fileExistsAtPath:imagePath]);
 
 }
 

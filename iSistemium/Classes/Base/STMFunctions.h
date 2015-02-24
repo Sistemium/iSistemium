@@ -34,4 +34,6 @@
 
 + (NSString *)devicePlatform;
 
++ (NSString *)documentsDirectory;
+
 @end
