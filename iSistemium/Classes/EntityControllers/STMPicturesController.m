@@ -10,6 +10,7 @@
 #import "STMFunctions.h"
 #import "STMConstants.h"
 #import "STMSessionManager.h"
+#import "STMObjectsController.h"
 
 #import "STMCampaignPicture.h"
 #import "STMUncashingPicture.h"
@@ -246,11 +247,13 @@
     
     NSLogMethodName;
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+//    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
+//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+//    
+//    NSError *error;
+//    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     
-    NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [STMObjectsController objectsForEntityName:NSStringFromClass([STMPicture class])];
     
     for (STMPicture *picture in result) {
         
@@ -278,28 +281,70 @@
 }
 
 + (void)imagePathsConvertingFromAbsoluteToRelativeForPicture:(STMPicture *)picture {
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    if ([self imagePathIsAbleToConvert:picture.imagePath]) {
-        
-        if ([self imagePathIsAbleToConvert:picture.resizedImagePath]) {
+    NSString *newImagePath = [self convertImagePath:picture.imagePath];
+    NSString *newResizedImagePath = [self convertImagePath:picture.resizedImagePath];
+    
+    if (newImagePath) {
+
+        NSLog(@"set new imagePath for picture %@", picture.xid);
+//        picture.imagePath = newImagePath;
+
+        if (newResizedImagePath) {
             
-            NSLog(@"set new paths for picture %@", picture.xid);
-            //            picture.imagePath = lastPathComponent;
-            //            picture.resizedImagePath = lastResizedPathComponent;
+            NSLog(@"set new resizedImagePath for picture %@", picture.xid);
+//            picture.resizedImagePath = newResizedImagePath;
+            
+        } else {
+            
+            NSLog(@"! new resizedImagePath for picture %@", picture.xid);
+
+            if ([fileManager fileExistsAtPath:picture.resizedImagePath]) {
+                [fileManager removeItemAtPath:picture.resizedImagePath error:nil];
+            }
+
+            NSLog(@"save new resizedImage file for picture %@", picture.xid);
+            NSData *imageData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:newImagePath]];
+            [self saveResizedImageFile:[@"resized_" stringByAppendingString:newImagePath] forPicture:picture fromImageData:imageData];
             
         }
         
+    } else {
+
+        NSLog(@"! new imagePath for picture %@", picture.xid);
+
+        if (picture.href) {
+            
+            NSLog(@"have href, flush picture and download data again");
+            
+            [self removeImageFilesForPicture:picture];
+            [self hrefProcessingForObject:picture];
+            
+        } else {
+
+            NSLog(@"no href, delete picture");
+            
+            [self deletePicture:picture];
+            
+        }
+
     }
 
 }
 
-+ (BOOL)imagePathIsAbleToConvert:(NSString *)path {
++ (NSString *)convertImagePath:(NSString *)path {
     
     NSArray *pathComponents = [path pathComponents];
     NSString *lastPathComponent = pathComponents.lastObject;
     NSString *imagePath = [[STMFunctions documentsDirectory] stringByAppendingPathComponent:lastPathComponent];
     
-    return ([[NSFileManager defaultManager] fileExistsAtPath:imagePath]);
+    if ([[NSFileManager defaultManager] fileExistsAtPath:imagePath]) {
+        return lastPathComponent;
+    } else {
+        return nil;
+    }
 
 }
 
@@ -480,9 +525,7 @@
 
 + (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
     
-    NSString *documentsDirectory = [STMFunctions documentsDirectory];
-    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
-    
+    NSString *imagePath = [STMFunctions absolutePathForPath:fileName];
     [data writeToFile:imagePath atomically:YES];
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -493,8 +536,7 @@
 
 + (void)saveResizedImageFile:(NSString *)resizedFileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
 
-    NSString *documentsDirectory = [STMFunctions documentsDirectory];
-    NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:resizedFileName];
+    NSString *resizedImagePath = [STMFunctions absolutePathForPath:resizedFileName];
     
     UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
     NSData *resizedImageData = nil;

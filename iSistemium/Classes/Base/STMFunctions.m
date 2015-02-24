@@ -284,4 +284,8 @@
     
 }
 
++ (NSString *)absolutePathForPath:(NSString *)path {
+    return [[self documentsDirectory] stringByAppendingPathComponent:path];
+}
+
 @end

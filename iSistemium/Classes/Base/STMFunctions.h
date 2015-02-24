@@ -35,5 +35,6 @@
 + (NSString *)devicePlatform;
 
 + (NSString *)documentsDirectory;
++ (NSString *)absolutePathForPath:(NSString *)path;
 
 @end

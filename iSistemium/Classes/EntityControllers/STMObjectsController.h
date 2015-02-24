@@ -41,4 +41,6 @@
 
 + (NSArray *)localDataModelEntityNames;
 
++ (NSArray *)objectsForEntityName:(NSString *)entityName;
+
 @end
