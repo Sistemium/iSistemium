@@ -443,15 +443,8 @@
 
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
     
-    //    NSLog(@"data.length %d", data.length);
-    
     NSData *weakData = data;
     STMPicture *weakPicture = picture;
-    
-    //    NSLog(@"weakData.length %d", weakData.length);
-    
-    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
-    
     
     NSString *fileName = nil;
     
@@ -468,45 +461,50 @@
         
     }
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//    NSString *documentsDirectory = @"";
-    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
-    NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
+    [self setThumbnailForPicture:weakPicture fromImageData:weakData];
+    [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
+    [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
     
-    //        NSLog(@"weakData %d", weakData.length);
+}
+
++ (void)setThumbnailForPicture:(STMPicture *)picture fromImageData:(NSData *)data {
     
-    UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:weakData] toSize:CGSizeMake(150, 150)];
+    UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
     NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
-    //        NSLog(@"thumbnail before the block %@", thumbnail);
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        
-        //            NSLog(@"weakPicture %@", weakPicture);
-        //            NSLog(@"thumbnail %@", thumbnail);
-        
-        weakPicture.imageThumbnail = thumbnail;
-        
+        picture.imageThumbnail = thumbnail;
     });
+
+}
+
++ (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
     
-    [weakData writeToFile:imagePath atomically:YES];
+    NSString *documentsDirectory = [STMFunctions documentsDirectory];
+    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
     
-    UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:weakData] toSize:CGSizeMake(1024, 1024)];
+    [data writeToFile:imagePath atomically:YES];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        picture.imagePath = imagePath;
+    });
+
+}
+
++ (void)saveResizedImageFile:(NSString *)resizedFileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
+
+    NSString *documentsDirectory = [STMFunctions documentsDirectory];
+    NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:resizedFileName];
+    
+    UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
     NSData *resizedImageData = nil;
-    
     resizedImageData = UIImageJPEGRepresentation(resizedImage, 0.0);
-    
     [resizedImageData writeToFile:resizedImagePath atomically:YES];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        
-        weakPicture.imagePath = imagePath;
-        weakPicture.resizedImagePath = resizedImagePath;
-        
+        picture.resizedImagePath = resizedImagePath;
     });
-    
-    // });
-    
+
 }
 
 - (void)addOperationForObject:(NSManagedObject *)object {
