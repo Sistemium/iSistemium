@@ -233,17 +233,12 @@
 }
 
 + (void)checkPicturesPaths {
-
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSString *sessionUID = [STMSessionManager sharedManager].currentSessionUID;
     NSString *keyToCheck = [@"picturePathsDidCheckedAlready_" stringByAppendingString:sessionUID];
     
-    NSLog(@"keyToCheck %@", keyToCheck);
-    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL picturePathsDidCheckedAlready = [[defaults objectForKey:keyToCheck] boolValue];
-
-    NSLog(@"picturePathsDidCheckedAlready %d", picturePathsDidCheckedAlready);
     
     if (!picturePathsDidCheckedAlready) {
         
@@ -254,19 +249,10 @@
         
     }
     
-//    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-//    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
-//
-//    if ([version isEqualToString:@"1.1.1"] && [build intValue] < 666) {
-//        [self startCheckingPicturesPaths];
-//    }
-    
 }
 
 + (void)startCheckingPicturesPaths {
     
-    NSLogMethodName;
-
     NSArray *result = [STMObjectsController objectsForEntityName:NSStringFromClass([STMPicture class])];
     
     if (result.count > 0) {
