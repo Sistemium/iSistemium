@@ -65,6 +65,9 @@
     BOOL notSts = ![changedKeys containsObject:@"sts"];
     BOOL notSqts = ![changedKeys containsObject:@"sqts"];
     BOOL notDeviceTs = ![changedKeys containsObject:@"deviceTs"];
+    BOOL notImagePath = ![changedKeys containsObject:@"imagePath"];
+    BOOL notResizedImagePath = ![changedKeys containsObject:@"resizedImagePath"];
+    
     BOOL notEmpty = (changedKeys.count != 0);
     BOOL notToMany = YES;
     
@@ -100,7 +103,7 @@
         
     }
     
-    if (notLts && notSts && notSqts && notDeviceTs && notEmpty && notToMany) {
+    if (notLts && notSts && notSqts && notDeviceTs && notEmpty && notToMany && notImagePath && notResizedImagePath) {
 
 //        if ([self.entity.name isEqualToString:@"STMUncashing"]) {
 //            
