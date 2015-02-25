@@ -27,7 +27,6 @@
     if (!_spinnerView) {
         
         UIView *view = [[UIView alloc] initWithFrame:self.view.frame];
-        [self checkFrameOrientationForView:view];
         view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         view.backgroundColor = [UIColor whiteColor];
         view.alpha = 0.75;
@@ -36,7 +35,7 @@
         spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
         [spinner startAnimating];
         [view addSubview:spinner];
-        
+
         _spinnerView = view;
         
     }
@@ -65,8 +64,6 @@
     
     if (self.image) {
         
-        [self checkFrameOrientationForView:self.scrollView];
-        
         [self.spinnerView removeFromSuperview];
         [self.imageView removeFromSuperview];
         
@@ -93,34 +90,30 @@
         [STMPicturesController hrefProcessingForObject:self.picture];
 
     }
-    
+
 }
 
 - (void)checkFrameOrientationForView:(UIView *)view {
     
-//    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
-    
-        CGFloat width = view.frame.size.width;
-        CGFloat height = view.frame.size.height;
-        CGFloat x = view.frame.origin.x;
-        CGFloat y = view.frame.origin.y;
+    CGFloat width = view.frame.size.width;
+    CGFloat height = view.frame.size.height;
+    CGFloat x = view.frame.origin.x;
+    CGFloat y = view.frame.origin.y;
 
-        if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-            
-            if (height > width) {
-                view.frame = CGRectMake(x, y, height, width);
-            }
-            
-        } else {
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        
+        if (height > width) {
+            view.frame = CGRectMake(x, y, height, width);
+        }
+        
+    } else {
 
-            if (height < width) {
-                view.frame = CGRectMake(x, y, height, width);
-            }
-
+        if (height < width) {
+            view.frame = CGRectMake(x, y, height, width);
         }
 
-//    }
-    
+    }
+
 }
 
 - (void)centerContent {
@@ -141,9 +134,7 @@
 }
 
 - (void)deviceOrientationDidChangeNotification:(NSNotification*)note {
-    
-    [self checkFrameOrientationForView:self.spinnerView];
-    
+        
     CGFloat scale = self.scrollView.zoomScale;
 
     BOOL viewWasScaled = NO;
@@ -189,6 +180,8 @@
 }
 
 - (void)customInit {
+    
+    [self checkFrameOrientationForView:self.view];
     
     self.scrollView.delegate = self;
     

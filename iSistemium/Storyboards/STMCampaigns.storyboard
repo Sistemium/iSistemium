@@ -9,7 +9,7 @@
         <scene sceneID="Z9x-cv-hyV">
             <objects>
                 <viewController storyboardIdentifier="campaignPictureVC" id="qLK-Df-1on" customClass="STMCampaignPictureVC" sceneMemberID="viewController">
-                    <view key="view" autoresizesSubviews="NO" contentMode="scaleToFill" id="3rP-Xe-Lsi">
+                    <view key="view" contentMode="scaleToFill" id="3rP-Xe-Lsi">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
