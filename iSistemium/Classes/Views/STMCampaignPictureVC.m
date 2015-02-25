@@ -133,10 +133,19 @@
     
 }
 
-- (void)deviceOrientationDidChangeNotification:(NSNotification*)note {
-        
-    CGFloat scale = self.scrollView.zoomScale;
+//- (void)deviceOrientationDidChangeNotification:(NSNotification*)note {
+//
+//    CGPoint offset = self.scrollView.contentOffset;
+//    
+//    [self updateScrollView];
+//    
+//    self.scrollView.contentOffset = CGPointMake(offset.y, offset.x);
+//
+//}
 
+- (void)updateScrollView {
+    
+    CGFloat scale = self.scrollView.zoomScale;
     BOOL viewWasScaled = NO;
     
     if (self.scrollView.zoomScale > self.scrollView.minimumZoomScale) {
@@ -185,10 +194,10 @@
     
     self.scrollView.delegate = self;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deviceOrientationDidChangeNotification:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(deviceOrientationDidChangeNotification:)
+//                                                 name:UIDeviceOrientationDidChangeNotification
+//                                               object:nil];
 
 }
 
@@ -209,37 +218,28 @@
 }
 
 - (void)viewWillLayoutSubviews {
-    
+    [self updateScrollView];
 }
 
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
     if (!self.image) [self updatePicture];
     
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
