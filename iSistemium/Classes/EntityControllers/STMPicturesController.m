@@ -226,25 +226,47 @@
 
 + (void)checkPhotos {
     
-    [self checkPhotosPaths];
+    [self checkPicturesPaths];
     [self checkBrokenPhotos];
     [self checkUploadedPhotos];
     
 }
 
-+ (void)checkPhotosPaths {
++ (void)checkPicturesPaths {
 
-    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *sessionUID = [STMSessionManager sharedManager].currentSessionUID;
+    NSString *keyToCheck = [@"picturePathsDidCheckedAlready_" stringByAppendingString:sessionUID];
+    
+    NSLog(@"keyToCheck %@", keyToCheck);
+    
+    BOOL picturePathsDidCheckedAlready = [[defaults objectForKey:keyToCheck] boolValue];
 
-    if ([version isEqualToString:@"1.1.1"] && [build intValue] < 666) {
-        [self startCheckingPhotosPaths];
+    NSLog(@"picturePathsDidCheckedAlready %d", picturePathsDidCheckedAlready);
+    
+    if (!picturePathsDidCheckedAlready) {
+        
+        [self startCheckingPicturesPaths];
+        
+        [defaults setObject:@YES forKey:keyToCheck];
+        [defaults synchronize];
+        
     }
+    
+//    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+//    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+//
+//    if ([version isEqualToString:@"1.1.1"] && [build intValue] < 666) {
+//        [self startCheckingPicturesPaths];
+//    }
     
 }
 
-+ (void)startCheckingPhotosPaths {
++ (void)startCheckingPicturesPaths {
     
+    NSLogMethodName;
+
     NSArray *result = [STMObjectsController objectsForEntityName:NSStringFromClass([STMPicture class])];
     
     if (result.count > 0) {
