@@ -8,7 +8,9 @@
 
 #import "STMPicturesController.h"
 #import "STMFunctions.h"
+#import "STMConstants.h"
 #import "STMSessionManager.h"
+#import "STMObjectsController.h"
 
 #import "STMCampaignPicture.h"
 #import "STMUncashingPicture.h"
@@ -224,15 +226,137 @@
 
 + (void)checkPhotos {
     
+    [self checkPicturesPaths];
     [self checkBrokenPhotos];
     [self checkUploadedPhotos];
     
 }
 
++ (void)checkPicturesPaths {
+    
+    NSString *sessionUID = [STMSessionManager sharedManager].currentSessionUID;
+    NSString *keyToCheck = [@"picturePathsDidCheckedAlready_" stringByAppendingString:sessionUID];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL picturePathsDidCheckedAlready = [[defaults objectForKey:keyToCheck] boolValue];
+    
+    if (!picturePathsDidCheckedAlready) {
+        
+        [self startCheckingPicturesPaths];
+        
+        [defaults setObject:@YES forKey:keyToCheck];
+        [defaults synchronize];
+        
+    }
+    
+}
+
++ (void)startCheckingPicturesPaths {
+    
+    NSArray *result = [STMObjectsController objectsForEntityName:NSStringFromClass([STMPicture class])];
+    
+    if (result.count > 0) {
+
+        NSLogMethodName;
+
+        for (STMPicture *picture in result) {
+            
+            NSArray *pathComponents = [picture.imagePath pathComponents];
+            
+            if (pathComponents.count == 0) {
+                
+                if (picture.href) {
+                    [self hrefProcessingForObject:picture];
+                } else {
+                    NSLog(@"picture %@ has no both imagePath and href, will be deleted", picture.xid);
+                    [self deletePicture:picture];
+                }
+                
+            } else {
+                
+                if (pathComponents.count > 1) {
+                    [self imagePathsConvertingFromAbsoluteToRelativeForPicture:picture];
+                }
+                
+            }
+            
+        }
+
+    }
+    
+}
+
++ (void)imagePathsConvertingFromAbsoluteToRelativeForPicture:(STMPicture *)picture {
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSString *newImagePath = [self convertImagePath:picture.imagePath];
+    NSString *newResizedImagePath = [self convertImagePath:picture.resizedImagePath];
+    
+    if (newImagePath) {
+
+        NSLog(@"set new imagePath for picture %@", picture.xid);
+        picture.imagePath = newImagePath;
+
+        if (newResizedImagePath) {
+            
+            NSLog(@"set new resizedImagePath for picture %@", picture.xid);
+            picture.resizedImagePath = newResizedImagePath;
+            
+        } else {
+            
+            NSLog(@"! new resizedImagePath for picture %@", picture.xid);
+
+            if ([fileManager fileExistsAtPath:picture.resizedImagePath]) {
+                [fileManager removeItemAtPath:picture.resizedImagePath error:nil];
+            }
+
+            NSLog(@"save new resizedImage file for picture %@", picture.xid);
+            NSData *imageData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:newImagePath]];
+            [self saveResizedImageFile:[@"resized_" stringByAppendingString:newImagePath] forPicture:picture fromImageData:imageData];
+            
+        }
+        
+    } else {
+
+        NSLog(@"! new imagePath for picture %@", picture.xid);
+
+        if (picture.href) {
+            
+            NSLog(@"have href, flush picture and download data again");
+            
+            [self removeImageFilesForPicture:picture];
+            [self hrefProcessingForObject:picture];
+            
+        } else {
+
+            NSLog(@"no href, delete picture");
+            
+            [self deletePicture:picture];
+            
+        }
+
+    }
+
+}
+
++ (NSString *)convertImagePath:(NSString *)path {
+    
+    NSString *lastPathComponent = [path lastPathComponent];
+    NSString *imagePath = [STMFunctions absolutePathForPath:lastPathComponent];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:imagePath]) {
+        return lastPathComponent;
+    } else {
+        return nil;
+    }
+
+}
+
 + (void)checkBrokenPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
@@ -242,7 +366,7 @@
         
         if (picture.imagePath) {
             
-            NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
             if (photoData) {
                 
@@ -256,59 +380,6 @@
             
         }
 
-        
-        //        NSLog(@"broken photo %@", photo);
-
-/*
-        if (picture.imagePath) {
-            
-//            NSLog(@"picture.imagePath %@", picture.imagePath);
-            
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-            NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-            NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
-            
-            NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
-            
-            if (photoData) {
-                
-//                NSLog(@"has data");
-                
-                if (!picture.imageThumbnail) {
-                    
-//                    NSLog(@"no thumbnail");
-                    
-                    [self setImagesFromData:photoData forPicture:picture];
-                }
-                
-            } else {
-                
-//                NSLog(@"no data");
-                
-                if (picture.href && ![picture.href isEqualToString:@""]) {
-//                    NSLog(@"has href");
-                    [self hrefProcessingForObject:picture];
-                } else {
-//                    NSLog(@"no href");
-                    [self deletePicture:picture];
-                }
-                
-            }
-            
-        } else {
-            
-//            NSLog(@"no imagePath");
-            
-            if (picture.href && ![picture.href isEqualToString:@""]) {
-//                NSLog(@"has href");
-                [self hrefProcessingForObject:picture];
-            } else {
-//                NSLog(@"no href");
-                [self deletePicture:picture];
-            }
-            
-        }
-*/
     }
     
 }
@@ -316,7 +387,7 @@
 + (void)checkUploadedPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
     
     NSError *error;
@@ -327,13 +398,7 @@
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
-//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
-//        
-//        NSData *photoData = [NSData dataWithContentsOfFile:imagePath];
-
-        NSData *photoData = [NSData dataWithContentsOfFile:picture.imagePath];
+        NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
 
         [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
         
@@ -349,13 +414,9 @@
         
         if ([object isKindOfClass:[STMPicture class]]) {
             
-//            [self removeImageFilesForPicture:(STMPicture *)object];
-            
             if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
                 ([self sharedController].hrefDictionary)[href] = object;
-                //                NSLog(@"hrefDictionary.allKeys1 %d", [self sharedController].hrefDictionary.allKeys.count);
-                
                 [[self sharedController] addOperationForObject:object];
                 
             }
@@ -369,15 +430,8 @@
 
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
     
-    //    NSLog(@"data.length %d", data.length);
-    
     NSData *weakData = data;
     STMPicture *weakPicture = picture;
-    
-    //    NSLog(@"weakData.length %d", weakData.length);
-    
-    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^ {
-    
     
     NSString *fileName = nil;
     
@@ -394,45 +448,47 @@
         
     }
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//    NSString *documentsDirectory = @"";
-    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:fileName];
-    NSString *resizedImagePath = [documentsDirectory stringByAppendingPathComponent:[@"resized_" stringByAppendingString:fileName]];
+    [self setThumbnailForPicture:weakPicture fromImageData:weakData];
+    [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
+    [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
     
-    //        NSLog(@"weakData %d", weakData.length);
+}
+
++ (void)setThumbnailForPicture:(STMPicture *)picture fromImageData:(NSData *)data {
     
-    UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:weakData] toSize:CGSizeMake(150, 150)];
+    UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
     NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
-    //        NSLog(@"thumbnail before the block %@", thumbnail);
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        
-        //            NSLog(@"weakPicture %@", weakPicture);
-        //            NSLog(@"thumbnail %@", thumbnail);
-        
-        weakPicture.imageThumbnail = thumbnail;
-        
+        picture.imageThumbnail = thumbnail;
     });
+
+}
+
++ (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
     
-    [weakData writeToFile:imagePath atomically:YES];
+    NSString *imagePath = [STMFunctions absolutePathForPath:fileName];
+    [data writeToFile:imagePath atomically:YES];
     
-    UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:weakData] toSize:CGSizeMake(1024, 1024)];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        picture.imagePath = fileName;
+    });
+
+}
+
++ (void)saveResizedImageFile:(NSString *)resizedFileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
+
+    NSString *resizedImagePath = [STMFunctions absolutePathForPath:resizedFileName];
+    
+    UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
     NSData *resizedImageData = nil;
-    
     resizedImageData = UIImageJPEGRepresentation(resizedImage, 0.0);
-    
     [resizedImageData writeToFile:resizedImagePath atomically:YES];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        
-        weakPicture.imagePath = imagePath;
-        weakPicture.resizedImagePath = resizedImagePath;
-        
+        picture.resizedImagePath = resizedFileName;
     });
-    
-    // });
-    
+
 }
 
 - (void)addOperationForObject:(NSManagedObject *)object {
@@ -508,13 +564,7 @@
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
-//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//        NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:picture.imagePath];
-//
-//        NSData *data = [NSData dataWithContentsOfFile:imagePath];
-
-        NSData *data = [NSData dataWithContentsOfFile:picture.imagePath];
+        NSData *data = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
 
         [self addUploadOperationForPicture:picture withFileName:fileName data:data];
         
@@ -644,18 +694,14 @@
 
 + (void)removeImageFile:(NSString *)filePath {
     
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
-//    NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:filePath];
-    
-    NSString *imagePath = filePath;
+    NSString *imagePath = [STMFunctions absolutePathForPath:filePath];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     if ([fileManager fileExistsAtPath:imagePath isDirectory:nil]) {
 
         NSError *error;
-        BOOL success = [fileManager removeItemAtPath:filePath error:&error];
+        BOOL success = [fileManager removeItemAtPath:imagePath error:&error];
         
         if (success) {
             
@@ -670,37 +716,6 @@
     }
     
 }
-
-
-//+ (void)generatePhotoReports {
-//    
-//    NSArray *outlets = [self objectsForEntityName:NSStringFromClass([STMOutlet class])];
-//    NSArray *campaigns = [self objectsForEntityName:NSStringFromClass([STMCampaign class])];
-//    
-//    for (STMCampaign *campaign in campaigns) {
-//        
-//        for (STMOutlet *outlet in outlets) {
-//            
-//            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
-//            request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-//            request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@ AND outlet == %@", campaign, outlet];
-//            
-//            NSError *error;
-//            NSArray *photoReports = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-//            
-//            if (photoReports.count == 0) {
-//                
-//                STMPhotoReport *photoReport = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.managedObjectContext];
-//                photoReport.outlet = outlet;
-//                photoReport.campaign = campaign;
-//                
-//            }
-//            
-//        }
-//        
-//    }
-//    
-//}
 
 
 @end

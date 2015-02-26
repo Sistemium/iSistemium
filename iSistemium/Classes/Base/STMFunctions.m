@@ -275,5 +275,17 @@
     
 }
 
++ (NSString *)documentsDirectory {
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = ([paths count] > 0) ? paths[0] : nil;
+
+    return documentsDirectory;
+    
+}
+
++ (NSString *)absolutePathForPath:(NSString *)path {
+    return [[self documentsDirectory] stringByAppendingPathComponent:path];
+}
 
 @end
