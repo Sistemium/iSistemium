@@ -80,6 +80,8 @@
 - (void)loadWebView {
 
     [self.view addSubview:self.spinnerView];
+    
+    self.isAuthorizing = NO;
 
     NSString *urlString = [self webViewUrlString];
     [self loadURLString:urlString];
@@ -87,6 +89,8 @@
 }
 
 - (void)authLoadWebView {
+
+    self.isAuthorizing = YES;
 
     NSString *accessToken = [STMAuthController authController].accessToken;
     
@@ -175,6 +179,8 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
+//    NSLog(@"webViewDidFinishLoad %@", webView.request);
+    
 //    NSLog(@"cachedResponseForRequest %@", [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request]);
 //    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:webView.request];
     
@@ -182,15 +188,19 @@
 
 //    NSLog(@"bsAccessToken %@", bsAccessToken);
     
-    if ([bsAccessToken isEqualToString:@""] && !self.isAuthorizing) {
+    if ([bsAccessToken isEqualToString:@""]) {
     
-        NSLog(@"no bsAccessToken, go to authorization");
+        if (!self.isAuthorizing) {
 
-        self.isAuthorizing = YES;
-        [self authLoadWebView];
+            NSLog(@"no bsAccessToken, go to authorization");
+            
+            [self authLoadWebView];
+
+        }
         
     } else {
         
+        self.isAuthorizing = NO;
         [self.spinnerView removeFromSuperview];
         
     }
@@ -198,10 +208,9 @@
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    
     NSLog(@"webView didFailLoadWithError: %@", error.localizedDescription);
-    
 }
+
 
 #pragma mark - view lifecycle
 
