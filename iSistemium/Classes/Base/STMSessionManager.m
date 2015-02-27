@@ -64,15 +64,18 @@
             session.manager = self;
 
             [self.sessions setValue:session forKey:uid];
-            
+
+            self.currentSessionUID = uid;
+
         } else {
-            
+
+            self.currentSessionUID = uid;
+
             session.authDelegate = authDelegate;
             session.status = @"running";
             session.logger.session = session;
             
         }
-        self.currentSessionUID = uid;
         return session;
         
     } else {
