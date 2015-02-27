@@ -9,6 +9,7 @@
 #import "STMWebViewVC.h"
 #import "STMSessionManager.h"
 #import "STMAuthController.h"
+#import "STMFunctions.h"
 
 @interface STMWebViewVC () <UIWebViewDelegate, UIActionSheetDelegate>
 
@@ -140,10 +141,8 @@
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"IORDERS", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"RELOAD", nil), nil];
     
     actionSheet.tag = 1;
-    
-    CGFloat tabBarYPosition = self.tabBarController.tabBar.frame.origin.y;
-    CGRect rect = [(self.tabBarController.tabBar.subviews)[self.tabBarController.selectedIndex+1] frame];
-    rect = CGRectMake(rect.origin.x, rect.origin.y + tabBarYPosition, rect.size.width, rect.size.height);
+
+    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
     
     [actionSheet showFromRect:rect inView:self.view animated:YES];
     

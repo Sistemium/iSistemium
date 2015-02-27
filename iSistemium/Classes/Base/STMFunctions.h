@@ -37,4 +37,6 @@
 + (NSString *)documentsDirectory;
 + (NSString *)absolutePathForPath:(NSString *)path;
 
++ (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController;
+
 @end
