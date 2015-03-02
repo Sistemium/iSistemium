@@ -206,6 +206,10 @@
                         title:NSLocalizedString(@"IORDERS", nil)
                         image:[UIImage imageNamed:@"purchase_order-128.png"]];
 
+    [self registerTabWithName:@"STMCatalog"
+                        title:NSLocalizedString(@"CATALOG", nil)
+                        image:[UIImage imageNamed:@"beer_bottle-128.png"]];
+
 #ifdef DEBUG
     
     [self registerTabWithName:@"STMSettings"
