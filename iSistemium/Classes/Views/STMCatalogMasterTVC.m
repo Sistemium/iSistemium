@@ -87,7 +87,21 @@
     STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = articleGroup.name;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"ord %@, groups %lu", articleGroup.ord, (unsigned long)articleGroup.articleGroups.count];
+    cell.detailTextLabel.text = nil;
+    
+    if (articleGroup.articleGroups.count > 0) {
+        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+    } else {
+        
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
+        if (articleGroup.articles.count == 0) {
+            cell.detailTextLabel.text = NSLocalizedString(@"NO ARTICLES", nil);
+        }
+        
+    }
     
     return cell;
     
