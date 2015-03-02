@@ -96,13 +96,21 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
-    NSLog(@"articleGroup %@", articleGroup);
+
+    self.splitVC.currentArticleGroup = articleGroup;
     
-    for (STMArticleGroup *childGroup in articleGroup.articleGroups) {
-        NSLog(@"childGroup.name %@", childGroup.name);
+    if (articleGroup.articleGroups.count > 0) {
+        
+        STMCatalogMasterTVC *nextVC = [self.storyboard instantiateViewControllerWithIdentifier:@"catalogMasterTVC"];
+        [self.navigationController pushViewController:nextVC animated:YES];
+
     }
     
     return indexPath;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     
 }
 
