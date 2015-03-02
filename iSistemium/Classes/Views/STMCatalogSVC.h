@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMCatalogMasterTVC.h"
+#import "STMCatalogDetailTVC.h"
 
 @interface STMCatalogSVC : UISplitViewController
+
+@property (nonatomic, strong) STMCatalogMasterTVC *masterTVC;
+@property (nonatomic, strong) STMCatalogDetailTVC *detailTVC;
+
 
 @end

@@ -7,12 +7,34 @@
 //
 
 #import "STMCatalogMasterTVC.h"
+#import "STMCatalogSVC.h"
 
 @interface STMCatalogMasterTVC ()
 
+@property (nonatomic, weak) STMCatalogSVC *splitVC;
+
+
 @end
 
+
 @implementation STMCatalogMasterTVC
+
+- (STMCatalogSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMCatalogSVC class]]) {
+            _splitVC = (STMCatalogSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
+
+
+
+#pragma mark - view lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
