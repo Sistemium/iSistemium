@@ -52,12 +52,26 @@
     
 }
 
+- (void)setCurrentArticleGroup:(STMArticleGroup *)currentArticleGroup {
+    
+    if (_currentArticleGroup != currentArticleGroup) {
+        _currentArticleGroup = currentArticleGroup;
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    self.currentArticleGroup = nil;
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning {

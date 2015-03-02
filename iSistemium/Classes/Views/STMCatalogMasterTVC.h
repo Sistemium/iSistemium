@@ -10,4 +10,5 @@
 
 @interface STMCatalogMasterTVC : STMFetchedResultsControllerTVC
 
+
 @end

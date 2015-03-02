@@ -15,8 +15,8 @@
 
 @dynamic name;
 @dynamic ord;
-@dynamic articleGroup;
 @dynamic articleGroups;
+@dynamic articleGroup;
 @dynamic articles;
 
 @end

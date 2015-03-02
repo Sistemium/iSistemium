@@ -16,17 +16,17 @@
 
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * ord;
-@property (nonatomic, retain) NSSet *articleGroup;
-@property (nonatomic, retain) STMArticleGroup *articleGroups;
+@property (nonatomic, retain) NSSet *articleGroups;
+@property (nonatomic, retain) STMArticleGroup *articleGroup;
 @property (nonatomic, retain) NSSet *articles;
 @end
 
 @interface STMArticleGroup (CoreDataGeneratedAccessors)
 
-- (void)addArticleGroupObject:(STMArticleGroup *)value;
-- (void)removeArticleGroupObject:(STMArticleGroup *)value;
-- (void)addArticleGroup:(NSSet *)values;
-- (void)removeArticleGroup:(NSSet *)values;
+- (void)addArticleGroupsObject:(STMArticleGroup *)value;
+- (void)removeArticleGroupsObject:(STMArticleGroup *)value;
+- (void)addArticleGroups:(NSSet *)values;
+- (void)removeArticleGroups:(NSSet *)values;
 
 - (void)addArticlesObject:(STMArticle *)value;
 - (void)removeArticlesObject:(STMArticle *)value;

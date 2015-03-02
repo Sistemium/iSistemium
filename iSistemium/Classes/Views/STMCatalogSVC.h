@@ -9,11 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "STMCatalogMasterTVC.h"
 #import "STMCatalogDetailTVC.h"
+#import "STMArticle.h"
+#import "STMArticleGroup.h"
+
 
 @interface STMCatalogSVC : UISplitViewController
 
 @property (nonatomic, strong) STMCatalogMasterTVC *masterTVC;
 @property (nonatomic, strong) STMCatalogDetailTVC *detailTVC;
+
+@property (nonatomic, strong) STMArticleGroup *currentArticleGroup;
 
 
 @end

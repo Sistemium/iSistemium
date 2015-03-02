@@ -15,8 +15,8 @@
     <entity name="STMArticleGroup" representedClassName="STMArticleGroup" parentEntity="STMComment" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <relationship name="articleGroup" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articleGroups" inverseEntity="STMArticleGroup" syncable="YES"/>
-        <relationship name="articleGroups" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articleGroup" inverseEntity="STMArticleGroup" syncable="YES"/>
+        <relationship name="articleGroup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articleGroups" inverseEntity="STMArticleGroup" syncable="YES"/>
+        <relationship name="articleGroups" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articleGroup" inverseEntity="STMArticleGroup" syncable="YES"/>
         <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="articleGroup" inverseEntity="STMArticle" syncable="YES"/>
     </entity>
     <entity name="STMArticlePicture" representedClassName="STMArticlePicture" parentEntity="STMPicture" syncable="YES">
@@ -191,6 +191,7 @@
     </entity>
     <elements>
         <element name="STMArticle" positionX="142" positionY="-450" width="128" height="193"/>
+        <element name="STMArticleGroup" positionX="-83" positionY="-450" width="128" height="118"/>
         <element name="STMArticlePicture" positionX="313" positionY="-288" width="128" height="58"/>
         <element name="STMBatteryStatus" positionX="-513" positionY="186" width="128" height="75"/>
         <element name="STMCampaign" positionX="-146" positionY="-279" width="128" height="163"/>
@@ -217,6 +218,5 @@
         <element name="STMUncashing" positionX="234" positionY="99" width="128" height="148"/>
         <element name="STMUncashingPicture" positionX="412" positionY="54" width="128" height="58"/>
         <element name="STMUncashingPlace" positionX="414" positionY="206" width="128" height="73"/>
-        <element name="STMArticleGroup" positionX="-83" positionY="-450" width="128" height="118"/>
     </elements>
 </model>

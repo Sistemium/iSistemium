@@ -19,6 +19,9 @@
 
 @implementation STMCatalogMasterTVC
 
+@synthesize resultsController = _resultsController;
+
+
 - (STMCatalogSVC *)splitVC {
     
     if (!_splitVC) {
@@ -32,13 +35,76 @@
     
 }
 
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticleGroup class])];
+        
+        NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        
+        request.sortDescriptors = @[ordDescriptor, nameDescriptor];
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.splitVC.currentArticleGroup];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
+        _resultsController.delegate = self;
+        
+    }
+    
+    return _resultsController;
+    
+}
+
+- (void)performFetch {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+        
+        NSLog(@"performFetch error %@", error);
+        
+    } else {
+        
+        //        [self.tableView reloadData];
+        
+    }
+    
+}
+
+
+#pragma mark - Table view data source
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *cellIdentifier = @"catalogMasterCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+
+    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
+    
+    cell.textLabel.text = articleGroup.name;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"ord %@, groups %lu", articleGroup.ord, (unsigned long)articleGroup.articleGroups.count];
+    
+    return cell;
+    
+}
 
 
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    [self performFetch];
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning {
