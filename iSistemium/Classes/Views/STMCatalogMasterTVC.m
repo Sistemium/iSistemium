@@ -117,7 +117,11 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
     [self performFetch];
+    
+    self.navigationItem.title = (self.splitVC.currentArticleGroup) ? self.splitVC.currentArticleGroup.name : NSLocalizedString(@"CATALOG", nil);
+    
 }
 
 - (void)viewDidLoad {

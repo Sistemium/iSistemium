@@ -55,7 +55,38 @@
 - (void)setCurrentArticleGroup:(STMArticleGroup *)currentArticleGroup {
     
     if (_currentArticleGroup != currentArticleGroup) {
+        
         _currentArticleGroup = currentArticleGroup;
+        
+        [self.detailTVC refreshTable];
+        
+    }
+    
+}
+
+- (NSArray *)nestedArticleGroups {
+    
+    if (!self.currentArticleGroup) {
+        
+        return nil;
+        
+    } else {
+        
+        NSMutableArray *array = [NSMutableArray array];
+        [self addChildGroupsFromArticleGroup:self.currentArticleGroup toArray:array];
+        
+        return array;
+    
+    }
+    
+}
+
+- (void)addChildGroupsFromArticleGroup:(STMArticleGroup *)articleGroup toArray:(NSMutableArray *)array {
+    
+    [array addObject:articleGroup];
+    
+    for (STMArticleGroup *childGroup in articleGroup.articleGroups) {
+        [self addChildGroupsFromArticleGroup:childGroup toArray:array];
     }
     
 }

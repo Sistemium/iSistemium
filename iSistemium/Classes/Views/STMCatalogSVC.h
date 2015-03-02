@@ -20,5 +20,6 @@
 
 @property (nonatomic, strong) STMArticleGroup *currentArticleGroup;
 
+- (NSArray *)nestedArticleGroups;
 
 @end

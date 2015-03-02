@@ -45,7 +45,12 @@
         
         request.sortDescriptors = @[nameDescriptor];
         
-//        request.predicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.splitVC.currentArticleGroup];
+        if (self.splitVC.currentArticleGroup) {
+            
+            NSArray *filterArray = [self.splitVC nestedArticleGroups];
+            request.predicate = [NSPredicate predicateWithFormat:@"articleGroup IN %@", filterArray];
+    
+        }
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
@@ -68,12 +73,17 @@
         
     } else {
         
-        //        [self.tableView reloadData];
+        [self.tableView reloadData];
         
     }
     
 }
 
+- (void)refreshTable {
+    
+    [self performFetch];
+    
+}
 
 #pragma mark - Table view data source
 
