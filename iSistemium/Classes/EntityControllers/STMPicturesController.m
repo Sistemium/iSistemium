@@ -223,6 +223,11 @@
 }
 
 
+#pragma mark - class methods
+
++ (CGFloat)jpgQuality {
+    return 0.0;
+}
 
 + (void)checkPhotos {
     
@@ -457,7 +462,7 @@
 + (void)setThumbnailForPicture:(STMPicture *)picture fromImageData:(NSData *)data {
     
     UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
-    NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, 0.0);
+    NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, [self jpgQuality]);
     
     dispatch_async(dispatch_get_main_queue(), ^{
         picture.imageThumbnail = thumbnail;
@@ -482,7 +487,7 @@
     
     UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
     NSData *resizedImageData = nil;
-    resizedImageData = UIImageJPEGRepresentation(resizedImage, 0.0);
+    resizedImageData = UIImageJPEGRepresentation(resizedImage, [self jpgQuality]);
     [resizedImageData writeToFile:resizedImagePath atomically:YES];
     
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -434,10 +434,10 @@
 
 - (void)saveImage:(UIImage *)image {
 
-    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:self.selectedPhotoReport];
+    CGFloat jpgQuality = [STMPicturesController jpgQuality];
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:self.selectedPhotoReport];
 
     [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
-  
     self.selectedPhotoReport.campaign = self.campaign;
     
     [self.locationTracker getLocation];
