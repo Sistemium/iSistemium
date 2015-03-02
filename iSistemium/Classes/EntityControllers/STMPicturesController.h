@@ -13,6 +13,8 @@
 
 + (STMPicturesController *)sharedController;
 
++ (CGFloat)jpgQuality;
+
 + (void)checkPhotos;
 + (void)checkUploadedPhotos;
 

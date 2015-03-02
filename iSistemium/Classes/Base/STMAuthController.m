@@ -368,7 +368,8 @@
                       @"locationTrackerFinishTime": @"23",
                       @"enableDebtsEditing"       : @YES,
                       @"enablePartnersEditing"    : @YES,
-                      @"http.timeout.foreground"  : @"15"
+                      @"http.timeout.foreground"  : @"15",
+                      @"jpgQuality"               : @"0.0"
                       };
 
 #else
