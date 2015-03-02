@@ -131,6 +131,17 @@
 
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+        self.splitVC.currentArticleGroup = self.splitVC.currentArticleGroup.articleGroup;
+    }
+    
+    [super viewWillDisappear:animated];
+    
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

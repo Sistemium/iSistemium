@@ -74,6 +74,7 @@
     } else {
         
         [self.tableView reloadData];
+//        NSLog(@"articles count %d", self.resultsController.fetchedObjects.count);
         
     }
     
