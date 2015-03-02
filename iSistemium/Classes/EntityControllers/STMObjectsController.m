@@ -23,6 +23,7 @@
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
 #import "STMArticle.h"
+#import "STMArticleGroup.h"
 #import "STMArticlePicture.h"
 #import "STMSetting.h"
 #import "STMLogMessage.h"
@@ -742,6 +743,7 @@
                              NSStringFromClass([STMPartner class]),
                              NSStringFromClass([STMCampaign class]),
                              NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMArticleGroup class]),
                              NSStringFromClass([STMCampaignPicture class]),
                              NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMOutlet class]),
