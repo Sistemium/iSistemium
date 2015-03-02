@@ -226,7 +226,12 @@
 #pragma mark - class methods
 
 + (CGFloat)jpgQuality {
-    return 0.0;
+    
+    NSDictionary *appSettings = [self.session.settingsController currentSettingsForGroup:@"appSettings"];
+    CGFloat jpgQuality = [[appSettings valueForKey:@"jpgQuality"] floatValue];
+
+    return jpgQuality;
+    
 }
 
 + (void)checkPhotos {

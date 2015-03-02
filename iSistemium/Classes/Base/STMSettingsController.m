@@ -124,6 +124,12 @@
             return [NSString stringWithFormat:@"%f", dValue];
         }
         
+    } else if ([key isEqualToString:@"jpgQuality"]) {
+        double dValue = [value doubleValue];
+        if (dValue >= 0 && dValue <= 1) {
+            return [NSString stringWithFormat:@"%f", dValue];
+        }
+        
     } else if ([stringValue containsObject:key]) {
         return value;
     }
