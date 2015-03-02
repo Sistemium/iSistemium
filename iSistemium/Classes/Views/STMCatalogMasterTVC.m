@@ -93,6 +93,18 @@
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
+    NSLog(@"articleGroup %@", articleGroup);
+    
+    for (STMArticleGroup *childGroup in articleGroup.articleGroups) {
+        NSLog(@"childGroup.name %@", childGroup.name);
+    }
+    
+    return indexPath;
+    
+}
 
 #pragma mark - view lifecycle
 
