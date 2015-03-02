@@ -1008,9 +1008,9 @@
         NSString *connectionEntityName = [self entityNameForConnection:connection];
         NSArray *dataArray = responseJSON[@"data"];
         
-        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
-            NSLog(@"responseJSON %@", responseJSON);
-        }
+//        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
+//            NSLog(@"responseJSON %@", responseJSON);
+//        }
         
         STMEntity *entity = (self.stcEntities)[connectionEntityName];
         
