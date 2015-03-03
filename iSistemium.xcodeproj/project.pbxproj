@@ -662,7 +662,7 @@
 				2C5763D71AA5E03000B9FD2C /* STMSettings */,
 				2C5763D81AA5E0B300B9FD2C /* STMCampaign */,
 				2C5763FA1AA5E16200B9FD2C /* STMDebts */,
-				2C5764251AA5E21300B9FD2C /* STMUnacashing */,
+				2C5764251AA5E21300B9FD2C /* STMUncashing */,
 				2C5764261AA5E27100B9FD2C /* STMMessages */,
 				2C5764271AA5E29B00B9FD2C /* STMLogs */,
 				2C5764281AA5E2C900B9FD2C /* STMWebView */,
@@ -861,7 +861,7 @@
 			path = STMDebts;
 			sourceTree = "<group>";
 		};
-		2C5764251AA5E21300B9FD2C /* STMUnacashing */ = {
+		2C5764251AA5E21300B9FD2C /* STMUncashing */ = {
 			isa = PBXGroup;
 			children = (
 				2C2968F119A0C31B0038B122 /* STMUncashingSVC.h */,
@@ -879,7 +879,7 @@
 				2C8047211A12352F00FEFEFF /* STMUncashingPhotoVC.h */,
 				2C8047221A12352F00FEFEFF /* STMUncashingPhotoVC.m */,
 			);
-			path = STMUnacashing;
+			path = STMUncashing;
 			sourceTree = "<group>";
 		};
 		2C5764261AA5E27100B9FD2C /* STMMessages */ = {
