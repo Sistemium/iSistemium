@@ -163,7 +163,15 @@
 - (void)viewWillDisappear:(BOOL)animated {
     
     if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
-        self.splitVC.currentArticleGroup = self.splitVC.currentArticleGroup.articleGroup;
+        
+        NSArray *selectedIndexPaths = [self.tableView indexPathsForSelectedRows];
+        
+        if (selectedIndexPaths.count == 0) {
+            self.splitVC.currentArticleGroup = self.splitVC.currentArticleGroup.articleGroup;
+        } else {
+            self.splitVC.currentArticleGroup = self.splitVC.currentArticleGroup.articleGroup.articleGroup;
+        }
+        
     }
     
     [super viewWillDisappear:animated];
