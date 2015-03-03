@@ -1036,6 +1036,8 @@
             
             self.syncing = NO;
 
+#warning Check if STMEntity was changed — receive data againg
+            
             [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMEntity class])]];
             
             BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);

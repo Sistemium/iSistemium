@@ -111,17 +111,39 @@
 
     STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
 
-    self.splitVC.currentArticleGroup = articleGroup;
+    NSArray *selectedIndexPaths = [tableView indexPathsForSelectedRows];
     
-    if (articleGroup.articleGroups.count > 0) {
+    if ([selectedIndexPaths containsObject:indexPath]) {
         
-        STMCatalogMasterTVC *nextVC = [self.storyboard instantiateViewControllerWithIdentifier:@"catalogMasterTVC"];
-        [self.navigationController pushViewController:nextVC animated:YES];
+        self.splitVC.currentArticleGroup = articleGroup.articleGroup;
+
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        return nil;
+        
+    } else {
+        
+        self.splitVC.currentArticleGroup = articleGroup;
+        
+        if (articleGroup.articleGroups.count > 0) {
+            
+            STMCatalogMasterTVC *nextVC = [self.storyboard instantiateViewControllerWithIdentifier:@"catalogMasterTVC"];
+            [self.navigationController pushViewController:nextVC animated:YES];
+            
+        }
+        
+        return indexPath;
 
     }
     
-    return indexPath;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return indexPath;
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {

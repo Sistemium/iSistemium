@@ -119,6 +119,8 @@
 
 #pragma mark - view lifecycle
 
+#warning Navigation buttons on navigation bar
+
 - (void)customInit {
     [self performFetch];
 }
