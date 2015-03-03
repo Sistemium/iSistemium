@@ -10,7 +10,7 @@
 #import "STMCatalogMasterTVC.h"
 #import "STMCatalogDetailTVC.h"
 #import "STMArticle.h"
-#import "STMArticleGroup.h"
+#import "STMArticleGroupController.h"
 #import "STMFunctions.h"
 #import "STMUI.h"
 
