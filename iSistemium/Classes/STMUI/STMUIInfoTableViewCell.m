@@ -21,27 +21,33 @@
     self.infoLabel.textAlignment = NSTextAlignmentRight;
     self.infoLabel.backgroundColor = backgroundColor;
     
-    CGFloat paddingX = 0;
+    CGFloat paddingX = 10;
     CGFloat paddingY = 0;
     CGFloat marginX = 10;
     
     NSDictionary *attributes = @{NSFontAttributeName:font};
     
-//    CGSize size = [self.infoLabel.text sizeWithFont:self.infoLabel.font];
     CGSize size = [self.infoLabel.text sizeWithAttributes:attributes];
 
     CGFloat x = self.contentView.frame.size.width - size.width - 2 * paddingX - marginX;
     CGFloat y = (self.contentView.frame.size.height - size.height - 2 * paddingY) / 2;
     CGRect frame = CGRectMake(x, y, size.width + 2 * paddingX, size.height + 2 * paddingY);
     self.infoLabel.frame = frame;
+
+    [self setFrameToLabel:self.textLabel withInfoLabel:self.infoLabel];
+    [self setFrameToLabel:self.detailTextLabel withInfoLabel:self.infoLabel];
     
-    x = self.detailTextLabel.frame.origin.x;
-    y = self.detailTextLabel.frame.origin.y;
-    CGFloat height = self.detailTextLabel.frame.size.height;
-    CGFloat width = self.infoLabel.frame.origin.x - x;
-    frame = CGRectMake(x, y, width, height);
-    self.detailTextLabel.frame = frame;
-    
+}
+
+- (void)setFrameToLabel:(UILabel *)label withInfoLabel:(UILabel *)infoLabel {
+
+    CGFloat x = label.frame.origin.x;
+    CGFloat y = label.frame.origin.y;
+    CGFloat height = label.frame.size.height;
+    CGFloat width = infoLabel.frame.origin.x - x;
+    CGRect frame = CGRectMake(x, y, width, height);
+    label.frame = frame;
+
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {

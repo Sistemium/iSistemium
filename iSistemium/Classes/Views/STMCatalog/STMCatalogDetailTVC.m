@@ -119,17 +119,20 @@
     
     static NSString *cellIdentifier = @"catalogDetailCell";
     
-    STMUIInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
-    
+    STMUIInfoTableViewCell *cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+
     STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = article.name;
-//    cell.detailTextLabel.text = [NSString stringWithFormat:@"ord %@, groups %lu", articleGroup.ord, (unsigned long)articleGroup.articleGroups.count];
-    
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"price %@, pieceVolume %@, code %@", article.price, article.pieceVolume, article.code];
     cell.infoLabel.text = @"TEST";
     
     return cell;
     
+}
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    cell = nil;
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
