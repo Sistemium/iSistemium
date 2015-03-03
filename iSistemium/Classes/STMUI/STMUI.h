@@ -13,6 +13,8 @@
 #include "STMUISplitViewController.h"
 #include "STMUIImagePickerController.h"
 #include "STMUISpinnerView.h"
+#include "STMUITableViewCell.h"
+#include "STMUIInfoTableViewCell.h"
 
 
 #endif

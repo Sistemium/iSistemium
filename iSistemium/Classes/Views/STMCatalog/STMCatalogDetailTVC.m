@@ -119,12 +119,14 @@
     
     static NSString *cellIdentifier = @"catalogDetailCell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    STMUIInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
     STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = article.name;
 //    cell.detailTextLabel.text = [NSString stringWithFormat:@"ord %@, groups %lu", articleGroup.ord, (unsigned long)articleGroup.articleGroups.count];
+    
+    cell.infoLabel.text = @"TEST";
     
     return cell;
     
@@ -132,13 +134,9 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
-//    NSLog(@"article %@", article);
-//    
-//    for (STMArticleGroup *childGroup in articleGroup.articleGroups) {
-//        NSLog(@"childGroup.name %@", childGroup.name);
-//    }
-    
+    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+    NSLog(@"article %@", article);
+        
     return indexPath;
     
 }

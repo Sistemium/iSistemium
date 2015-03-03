@@ -12,8 +12,9 @@
 #import "STMArticle.h"
 #import "STMArticleGroup.h"
 #import "STMFunctions.h"
+#import "STMUI.h"
 
-@interface STMCatalogSVC : UISplitViewController
+@interface STMCatalogSVC : STMUISplitViewController
 
 @property (nonatomic, strong) STMCatalogMasterTVC *masterTVC;
 @property (nonatomic, strong) STMCatalogDetailTVC *detailTVC;

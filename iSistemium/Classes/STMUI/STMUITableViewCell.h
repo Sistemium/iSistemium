@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMTableViewCell : UITableViewCell
+@interface STMUITableViewCell : UITableViewCell
 
 @end
