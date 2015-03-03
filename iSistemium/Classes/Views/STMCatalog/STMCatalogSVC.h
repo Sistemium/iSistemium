@@ -11,7 +11,7 @@
 #import "STMCatalogDetailTVC.h"
 #import "STMArticle.h"
 #import "STMArticleGroup.h"
-
+#import "STMFunctions.h"
 
 @interface STMCatalogSVC : UISplitViewController
 

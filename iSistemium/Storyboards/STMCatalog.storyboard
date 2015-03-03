@@ -134,7 +134,15 @@
                             <outlet property="delegate" destination="sOH-aR-tyO" id="iHg-fT-jCA"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="q8N-d4-wkH"/>
+                        <barButtonItem title="Info" id="tNC-PC-kOB"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="WIj-zS-KlQ"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="cHP-29-uPc"/>
+                    <connections>
+                        <outlet property="infoLabel" destination="tNC-PC-kOB" id="e3U-xd-TE6"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W0p-oR-5IS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -12,6 +12,7 @@
 @interface STMCatalogDetailTVC ()
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 
 
 @end
@@ -75,6 +76,7 @@
         
         [self.tableView reloadData];
 //        NSLog(@"articles count %d", self.resultsController.fetchedObjects.count);
+        [self updateInfoLabel];
         
     }
     
@@ -83,6 +85,31 @@
 - (void)refreshTable {
     
     [self performFetch];
+    
+}
+
+- (void)infoLabelSetup {
+    
+    self.infoLabel.title = @"";
+    self.infoLabel.enabled = NO;
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+
+}
+
+- (void)updateInfoLabel {
+    
+    NSUInteger count = self.resultsController.fetchedObjects.count;
+    
+    NSString *pluralType = [STMFunctions pluralTypeForCount:count];
+    NSString *labelString = [pluralType stringByAppendingString:@"ARTICLES"];
+    
+    NSString *numberString = (count > 0) ? [NSString stringWithFormat:@"%lu ", (unsigned long)count] : @"";
+    
+    NSString *infoString = [numberString stringByAppendingString:NSLocalizedString(labelString, nil)];
+    
+    [self.infoLabel setTitle:infoString];
     
 }
 
@@ -105,9 +132,9 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
-    NSLog(@"article %@", article);
-    
+//    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+//    NSLog(@"article %@", article);
+//    
 //    for (STMArticleGroup *childGroup in articleGroup.articleGroups) {
 //        NSLog(@"childGroup.name %@", childGroup.name);
 //    }
@@ -119,10 +146,11 @@
 
 #pragma mark - view lifecycle
 
-#warning Navigation buttons on navigation bar
-
 - (void)customInit {
+    
+    [self infoLabelSetup];
     [self performFetch];
+    
 }
 
 - (void)viewDidLoad {
