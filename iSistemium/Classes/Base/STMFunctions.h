@@ -29,6 +29,7 @@
 
 + (STMDateFormatter *)dateFormatter;
 + (NSNumberFormatter *)decimalFormatter;
++ (NSNumberFormatter *)currencyFormatter;
 
 + (NSString *)MD5FromString:(NSString *)string;
 

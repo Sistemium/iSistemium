@@ -51,6 +51,15 @@
     
 }
 
++ (NSNumberFormatter *)currencyFormatter {
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    
+    return numberFormatter;
+    
+}
+
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date {
     
     NSDate *today = [NSDate date];

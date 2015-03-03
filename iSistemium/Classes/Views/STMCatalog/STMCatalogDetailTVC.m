@@ -124,8 +124,10 @@
     STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = article.name;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"price %@, pieceVolume %@, code %@", article.price, article.pieceVolume, article.code];
-    cell.infoLabel.text = @"TEST";
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"pieceVolume %@, code %@", article.pieceVolume, article.code];
+    
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+    cell.infoLabel.text = [numberFormatter stringFromNumber:article.price];
     
     return cell;
     
