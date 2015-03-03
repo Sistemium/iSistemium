@@ -135,4 +135,8 @@
 "DEBT COMMENT" = "Comment: ";
 "CATALOG" = "Catalog";
 "NO ARTICLES" = "No articles";
+"VOLUME" = "Volume";
+"VOLUME UNIT" = "l.";
+"PACKAGE REL" = "Package rel";
+"FACTOR" = "Factor";
 

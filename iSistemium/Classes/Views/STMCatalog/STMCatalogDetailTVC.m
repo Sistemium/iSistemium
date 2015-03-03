@@ -113,6 +113,38 @@
     
 }
 
+- (NSString *)detailedTextForArticle:(STMArticle *)article {
+    
+    NSString *detailedText = @"";
+    NSString *appendString = @"";
+    
+    if (article.extraLabel) {
+        
+        appendString = [NSString stringWithFormat:@"%@ ", article.extraLabel];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+    }
+    
+    appendString = [NSString stringWithFormat:@"%@, ", article.code];
+    detailedText = [detailedText stringByAppendingString:appendString];
+    
+    NSString *packageString = NSLocalizedString(@"PACKAGE REL", nil);
+    appendString = [NSString stringWithFormat:@"%@: %@, ", packageString, article.packageRel];
+    detailedText = [detailedText stringByAppendingString:appendString];
+
+    NSString *factorString = NSLocalizedString(@"FACTOR", nil);
+    appendString = [NSString stringWithFormat:@"%@: %@, ", factorString, article.factor];
+    detailedText = [detailedText stringByAppendingString:appendString];
+
+    NSString *volumeString = NSLocalizedString(@"VOLUME", nil);
+    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    appendString = [NSString stringWithFormat:@"%@: %@%@", volumeString, article.pieceVolume, volumeUnitString];
+    detailedText = [detailedText stringByAppendingString:appendString];
+
+    return detailedText;
+    
+}
+
 #pragma mark - Table view data source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -124,7 +156,10 @@
     STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = article.name;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"pieceVolume %@, code %@", article.pieceVolume, article.code];
+    
+//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@, %@: %@, %@, %@, %@", article.code, volumeString, article.pieceVolume, article.extraLabel, article.factor, article.packageRel];
+    
+    cell.detailTextLabel.text = [self detailedTextForArticle:article];
     
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     cell.infoLabel.text = [numberFormatter stringFromNumber:article.price];
@@ -139,9 +174,9 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
-    NSLog(@"article %@", article);
-        
+//    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+//    NSLog(@"article %@", article);
+    
     return indexPath;
     
 }

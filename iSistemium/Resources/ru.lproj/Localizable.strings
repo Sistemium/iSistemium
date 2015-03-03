@@ -135,5 +135,9 @@
 "DEBT COMMENT" = "Комментарий: ";
 "CATALOG" = "Каталог";
 "NO ARTICLES" = "Нет товаров";
+"VOLUME" = "Объём";
+"VOLUME UNIT" = "л.";
+"PACKAGE REL" = "В коробке";
+"FACTOR" = "Кратность";
 
 
