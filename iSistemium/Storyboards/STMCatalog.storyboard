@@ -107,6 +107,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="L0f-e2-pur">
+                            <rect key="frame" x="0.0" y="64" width="768" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="sOH-aR-tyO" id="flv-Xq-LkA"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="catalogDetailCell" textLabel="bAd-uq-Ej8" detailTextLabel="Z7c-6S-w5L" style="IBUITableViewCellStyleSubtitle" id="cF7-03-zAH" customClass="STMUIInfoTableViewCell">
                                 <autoresizingMask key="autoresizingMask"/>
@@ -142,9 +150,19 @@
                     <navigationItem key="navigationItem" id="cHP-29-uPc"/>
                     <connections>
                         <outlet property="infoLabel" destination="tNC-PC-kOB" id="e3U-xd-TE6"/>
+                        <outlet property="searchDisplayController" destination="GvI-JK-ddk" id="V1h-jL-6YN"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W0p-oR-5IS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="GvI-JK-ddk">
+                    <connections>
+                        <outlet property="delegate" destination="sOH-aR-tyO" id="475-8F-Xca"/>
+                        <outlet property="searchBar" destination="L0f-e2-pur" id="2Yx-Rb-MNQ"/>
+                        <outlet property="searchContentsController" destination="sOH-aR-tyO" id="8Dg-SP-Sg3"/>
+                        <outlet property="searchResultsDataSource" destination="sOH-aR-tyO" id="YIr-nc-7zI"/>
+                        <outlet property="searchResultsDelegate" destination="sOH-aR-tyO" id="8mq-aa-DV7"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="1759" y="636"/>
         </scene>

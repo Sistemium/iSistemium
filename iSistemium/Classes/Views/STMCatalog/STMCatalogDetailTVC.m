@@ -13,7 +13,7 @@
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
-
+@property (nonatomic, strong) NSArray *searchResults;
 
 @end
 
@@ -147,13 +147,50 @@
 
 #pragma mark - Table view data source
 
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+//    
+//    if (tableView == self.searchDisplayController.searchResultsTableView) {
+//        return 1;
+//    } else {
+//        return [super numberOfSectionsInTableView:tableView];
+//    }
+//
+//}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        return self.searchResults.count;
+    } else {
+        return [super tableView:tableView numberOfRowsInSection:section];
+    }
+    
+}
+
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+//    
+//    if (tableView == self.searchDisplayController.searchResultsTableView) {
+//        return nil;
+//    } else {
+//        return [super tableView:tableView titleForHeaderInSection:section];
+//    }
+//    
+//}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *cellIdentifier = @"catalogDetailCell";
     
     STMUIInfoTableViewCell *cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
 
-    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+    STMArticle *article = nil;
+
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        article = [self.searchResults objectAtIndex:indexPath.row];
+    } else {
+        article = [self.resultsController objectAtIndexPath:indexPath];
+    }
+
     
     cell.textLabel.text = article.name;
     
@@ -180,6 +217,29 @@
     return indexPath;
     
 }
+
+
+#pragma mark - UISearchDisplayDelegate
+#warning self.searchDisplayController is deprecated — have to find workaround
+
+-(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+    
+    [self filterContentForSearchText:searchString];
+//                               scope:[[self.searchDisplayController.searchBar scopeButtonTitles]
+//                                      objectAtIndex:[self.searchDisplayController.searchBar
+//                                                     selectedScopeButtonIndex]]];
+    
+    return YES;
+}
+
+
+- (void)filterContentForSearchText:(NSString*)searchText/* scope:(NSString*)scope*/ {
+    
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText];
+    self.searchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:resultPredicate];
+    
+}
+
 
 
 #pragma mark - view lifecycle
