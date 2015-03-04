@@ -374,7 +374,13 @@
 }
 
 - (void)appDidBecomeActive {
+    
+#ifdef DEBUG
+    [self setSyncerState: STMSyncerSendData];
+#else
     [self setSyncerState: STMSyncerSendDataOnce];
+#endif
+
 }
 
 - (void)syncerDidReceiveRemoteNotification:(NSNotification *)notification {
