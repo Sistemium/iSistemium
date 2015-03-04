@@ -677,6 +677,8 @@
     
     if (self.apiUrlString) {
         
+//        NSLog(@"self.apiUrlString %@", self.apiUrlString);
+        
         NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
         
@@ -948,6 +950,9 @@
     } else {
         
         NSLog(@"%@: HTTP status %d", entityName, statusCode);
+        
+//        NSLog(@"connection.originalRequest %@", connection.originalRequest);
+//        NSLog(@"allHTTPHeaderFields %@", [connection.originalRequest allHTTPHeaderFields]);
         
         if ([entityName isEqualToString:@"SEND_DATA"]) {
             
