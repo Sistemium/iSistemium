@@ -104,7 +104,7 @@
             <objects>
                 <tableViewController id="sOH-aR-tyO" customClass="STMCatalogDetailTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="8vN-Sa-CR8">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="64" width="768" height="916"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <searchBar key="tableHeaderView" contentMode="redraw" id="L0f-e2-pur">
@@ -142,6 +142,7 @@
                             <outlet property="delegate" destination="sOH-aR-tyO" id="iHg-fT-jCA"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <toolbarItems>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="q8N-d4-wkH"/>
                         <barButtonItem title="Info" id="tNC-PC-kOB"/>

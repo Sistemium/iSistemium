@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic) BOOL searchFieldIsScrolledAway;
 
 @end
 
@@ -41,14 +42,21 @@
     return self.searchDisplayController.searchBar;
 }
 
-//- (NSArray *)searchResults {
-//    
-//    if (!_searchResults) {
-//        _searchResults = self.resultsController.fetchedObjects;
-//    }
-//    return _searchResults;
-//    
-//}
+- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
+    
+    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
+        
+        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
+        
+        if (_searchFieldIsScrolledAway) {
+            [self showSearchButton];
+        } else {
+            self.navigationItem.rightBarButtonItem = nil;
+        }
+        
+    }
+    
+}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -99,9 +107,7 @@
 }
 
 - (void)refreshTable {
-    
     [self performFetch];
-    
 }
 
 - (void)infoLabelSetup {
@@ -141,6 +147,18 @@
     
     [self.infoLabel setTitle:infoString];
     
+}
+
+- (void)searchButtonPressed {
+
+    self.navigationItem.rightBarButtonItem = nil;
+    [self.searchDisplayController setActive:YES animated:YES];
+    
+}
+
+- (void)showSearchButton {
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
 }
 
 - (NSString *)detailedTextForArticle:(STMArticle *)article {
@@ -248,19 +266,36 @@
     
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if (!self.searchDisplayController.active) {
+        self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchBar.frame.size.height);
+    }
+    
+}
 
 #pragma mark - UISearchDisplayDelegate / deprecated in >8.0
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    
 //    [self setupSearchBar];
     [self updateInfoLabel];
-    NSLog(@"searchDisplayControllerWillBeginSearch");
+    
+//    NSLog(@"searchDisplayControllerWillBeginSearch");
+    
 }
 
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+    
     [self updateInfoLabel];
     self.searchResults = nil;
+    
+    if (self.searchFieldIsScrolledAway) {
+        [self showSearchButton];
+    }
+    
 //    NSLog(@"searchDisplayControllerDidEndSearch");
+    
 }
 
 - (void)searchDisplayController:(UISearchDisplayController *)controller willUnloadSearchResultsTableView:(UITableView *)tableView {
@@ -340,12 +375,12 @@
 //    NSString *firstButton = [NSString stringWithFormat:@"%@ - 0.5", minVolume];
 //    NSString *lastButton = [NSString stringWithFormat:@"1 - %@", maxVolume];
 
-    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+//    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
 //    self.searchBar.scopeButtonTitles = @[firstButton, @"0.5", @"0.5 - 1", @"1", lastButton];
     
     self.searchBar.scopeButtonTitles = @[NSLocalizedString(@"ALL", nil), @"< 0.5", @"0.5", @"0.5 - 1", @"1", @"> 1"];
     self.searchBar.selectedScopeButtonIndex = 0;
-    
+
 }
 
 - (NSArray *)scopeButtonTitles {
@@ -379,6 +414,7 @@
     [self infoLabelSetup];
     [self performFetch];
     [self setupSearchBar];
+    
     
 }
 
