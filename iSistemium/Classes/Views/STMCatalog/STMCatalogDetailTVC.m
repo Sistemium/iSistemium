@@ -417,7 +417,7 @@
 
 - (void)setupSearchBar {
 
-    NSArray *volumes = [self scopeButtonTitles];
+//    NSArray *volumes = [self scopeButtonTitles];
 //    NSString *minVolume = volumes[0];
 //    NSString *maxVolume = [volumes lastObject];
 //    NSString *firstButton = [NSString stringWithFormat:@"%@ - 0.5", minVolume];
