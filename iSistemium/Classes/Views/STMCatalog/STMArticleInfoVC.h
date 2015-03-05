@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMCatalogSVC.h"
 
 @interface STMArticleInfoVC : UIViewController
+
+@property (nonatomic, weak) STMCatalogDetailTVC *parentVC;
+
+@property (nonatomic, strong) STMArticle *article;
 
 @end

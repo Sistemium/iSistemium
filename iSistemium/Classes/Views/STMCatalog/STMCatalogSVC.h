@@ -14,7 +14,6 @@
 #import "STMFunctions.h"
 #import "STMUI.h"
 #import "STMConstants.h"
-#import "STMArticleInfoVC.h"
 
 @interface STMCatalogSVC : STMUISplitViewController
 

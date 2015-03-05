@@ -11,5 +11,7 @@
 @interface STMCatalogDetailTVC : STMFetchedResultsControllerTVC
 
 - (void)refreshTable;
+- (void)dismissArticleInfoPopover;
+
 
 @end

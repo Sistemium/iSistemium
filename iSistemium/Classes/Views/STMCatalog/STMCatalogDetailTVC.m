@@ -8,8 +8,9 @@
 
 #import "STMCatalogDetailTVC.h"
 #import "STMCatalogSVC.h"
+#import "STMArticleInfoVC.h"
 
-@interface STMCatalogDetailTVC ()
+@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate>
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
@@ -18,6 +19,8 @@
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
 @property (nonatomic, strong) UIPopoverController *articleInfoPopover;
 @property (nonatomic) BOOL articleInfoPopoverIsVisible;
+@property (nonatomic, strong) STMArticle *selectedArticle;
+
 
 @end
 
@@ -171,7 +174,11 @@
     if (!_articleInfoPopover) {
         
         STMArticleInfoVC *articleInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:@"articleInfoVC"];
+        articleInfoVC.parentVC = self;
+        articleInfoVC.article = self.selectedArticle;
+        
         _articleInfoPopover = [[UIPopoverController alloc] initWithContentViewController:articleInfoVC];
+        _articleInfoPopover.delegate = self;
         
     }
     return _articleInfoPopover;
@@ -221,6 +228,9 @@
     return YES;
 }
 
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    self.articleInfoPopover = nil;
+}
 
 #pragma mark - Table view data source
 
@@ -256,16 +266,6 @@
     
 }
 
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    
-//    if (tableView == self.searchDisplayController.searchResultsTableView) {
-//        return 1;
-//    } else {
-//        return [super numberOfSectionsInTableView:tableView];
-//    }
-//
-//}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     NSUInteger count = (tableView == self.searchDisplayController.searchResultsTableView) ? self.searchResults.count : [super tableView:tableView numberOfRowsInSection:section];
@@ -275,16 +275,6 @@
     return count;
     
 }
-
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-//    
-//    if (tableView == self.searchDisplayController.searchResultsTableView) {
-//        return nil;
-//    } else {
-//        return [super tableView:tableView titleForHeaderInSection:section];
-//    }
-//    
-//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -299,12 +289,8 @@
     } else {
         article = [self.resultsController objectAtIndexPath:indexPath];
     }
-
     
     cell.textLabel.text = article.name;
-    
-//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@, %@: %@, %@, %@, %@", article.code, volumeString, article.pieceVolume, article.extraLabel, article.factor, article.packageRel];
-    
     cell.detailTextLabel.text = [self detailedTextForArticle:article];
     
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
@@ -320,8 +306,11 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
-//    NSLog(@"article %@", article);
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        self.selectedArticle = [self.searchResults objectAtIndex:indexPath.row];
+    } else {
+        self.selectedArticle = [self.resultsController objectAtIndexPath:indexPath];
+    }
 
     [self showArticleInfoPopover];
     
