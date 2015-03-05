@@ -563,9 +563,9 @@
             
             self.serviceUri = responseJSON[@"redirectUri"];
 
-#warning Switch comment line when server give correct apiURL
-//            self.apiURL = responseJSON[@"apiUrl"];
-            self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
+//#warning Switch comment line when server give correct apiURL
+            self.apiURL = responseJSON[@"apiUrl"];
+//            self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
             
             self.userID = responseJSON[@"ID"];
             self.userName = responseJSON[@"name"];
