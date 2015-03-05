@@ -357,7 +357,9 @@
             break;
     }
     
-    NSPredicate *textPredicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText];
+    NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText];
+    NSPredicate *extraLabelPredicate = [NSPredicate predicateWithFormat:@"extraLabel CONTAINS[cd] %@", searchText];
+    NSCompoundPredicate *textPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[namePredicate, extraLabelPredicate]];
     NSCompoundPredicate *resultPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[scopePredicate, textPredicate]];
     
     self.searchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:resultPredicate];
