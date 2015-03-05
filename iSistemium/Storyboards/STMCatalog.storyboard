@@ -170,7 +170,7 @@
         <!--Article InfoVC-->
         <scene sceneID="3MJ-bD-EIo">
             <objects>
-                <viewController id="Whb-Fk-qIf" customClass="STMArticleInfoVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="articleInfoVC" id="Whb-Fk-qIf" customClass="STMArticleInfoVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ana-P5-lgv"/>
                         <viewControllerLayoutGuide type="bottom" id="gqI-b9-Vnl"/>

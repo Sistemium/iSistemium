@@ -690,7 +690,6 @@
     
     if (self.infoPopoverIsVisible) {
         
-        [self dismissInfoPopover];
         [self showInfoPopover];
         self.infoPopoverIsVisible = NO;
         
@@ -703,6 +702,7 @@
     if (self.uncashingInfoPopover.popoverVisible) {
         
         self.infoPopoverIsVisible = YES;
+        [self dismissInfoPopover];
         
     }
     

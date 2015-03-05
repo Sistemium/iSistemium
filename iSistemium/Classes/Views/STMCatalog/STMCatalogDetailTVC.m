@@ -16,6 +16,8 @@
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
+@property (nonatomic, strong) UIPopoverController *articleInfoPopover;
+@property (nonatomic) BOOL articleInfoPopoverIsVisible;
 
 @end
 
@@ -161,6 +163,67 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
 }
 
+
+#pragma mark - articleInfo popover
+
+- (UIPopoverController *)articleInfoPopover {
+    
+    if (!_articleInfoPopover) {
+        
+        STMArticleInfoVC *articleInfoVC = [self.storyboard instantiateViewControllerWithIdentifier:@"articleInfoVC"];
+        _articleInfoPopover = [[UIPopoverController alloc] initWithContentViewController:articleInfoVC];
+        
+    }
+    return _articleInfoPopover;
+    
+}
+
+- (void)showArticleInfoPopover {
+    
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    [self.articleInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+
+}
+
+- (void)dismissArticleInfoPopover {
+    
+    [self.articleInfoPopover dismissPopoverAnimated:YES];
+    self.articleInfoPopover = nil;
+    
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    if (self.articleInfoPopoverIsVisible) {
+        
+        [self showArticleInfoPopover];
+        self.articleInfoPopoverIsVisible = NO;
+        
+    }
+    
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    
+    if (self.articleInfoPopover.popoverVisible) {
+
+        self.articleInfoPopoverIsVisible = YES;
+        [self dismissArticleInfoPopover];
+        
+    }
+    
+}
+
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    return YES;
+}
+
+
+#pragma mark - Table view data source
+
 - (NSString *)detailedTextForArticle:(STMArticle *)article {
     
     NSString *detailedText = @"";
@@ -192,8 +255,6 @@
     return detailedText;
     
 }
-
-#pragma mark - Table view data source
 
 //- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 //    
@@ -261,8 +322,8 @@
     
 //    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
 //    NSLog(@"article %@", article);
-    
-    [self performSegueWithIdentifier:@"showArticleInfo" sender:self];
+
+    [self showArticleInfoPopover];
     
     return indexPath;
     
