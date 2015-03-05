@@ -246,16 +246,16 @@
         
     }
     
-    appendString = [NSString stringWithFormat:@"%@, ", article.code];
-    detailedText = [detailedText stringByAppendingString:appendString];
-    
-    NSString *packageString = NSLocalizedString(@"PACKAGE REL", nil);
-    appendString = [NSString stringWithFormat:@"%@: %@, ", packageString, article.packageRel];
-    detailedText = [detailedText stringByAppendingString:appendString];
-
-    NSString *factorString = NSLocalizedString(@"FACTOR", nil);
-    appendString = [NSString stringWithFormat:@"%@: %@, ", factorString, article.factor];
-    detailedText = [detailedText stringByAppendingString:appendString];
+//    appendString = [NSString stringWithFormat:@"%@, ", article.code];
+//    detailedText = [detailedText stringByAppendingString:appendString];
+//    
+//    NSString *packageString = NSLocalizedString(@"PACKAGE REL", nil);
+//    appendString = [NSString stringWithFormat:@"%@: %@, ", packageString, article.packageRel];
+//    detailedText = [detailedText stringByAppendingString:appendString];
+//
+//    NSString *factorString = NSLocalizedString(@"FACTOR", nil);
+//    appendString = [NSString stringWithFormat:@"%@: %@, ", factorString, article.factor];
+//    detailedText = [detailedText stringByAppendingString:appendString];
 
     NSString *volumeString = NSLocalizedString(@"VOLUME", nil);
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
