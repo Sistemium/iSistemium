@@ -262,6 +262,8 @@
 //    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
 //    NSLog(@"article %@", article);
     
+    [self performSegueWithIdentifier:@"showArticleInfo" sender:self];
+    
     return indexPath;
     
 }
@@ -281,8 +283,6 @@
 //    [self setupSearchBar];
     [self updateInfoLabel];
     
-//    NSLog(@"searchDisplayControllerWillBeginSearch");
-    
 }
 
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
@@ -294,16 +294,6 @@
         [self showSearchButton];
     }
     
-//    NSLog(@"searchDisplayControllerDidEndSearch");
-    
-}
-
-- (void)searchDisplayController:(UISearchDisplayController *)controller willUnloadSearchResultsTableView:(UITableView *)tableView {
-//    NSLog(@"willUnloadSearchResultsTableView");
-}
-
-- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView {
-//    NSLog(@"didHideSearchResultsTableView");
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
@@ -315,14 +305,9 @@
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
     
-//    self.searchBar.text = (self.searchBar.text) ? self.searchBar.text : @"";
     [self filterContentForSearchText:self.searchBar.text scope:searchOption];
     return YES;
     
-}
-
-- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
-//    NSLog(@"selectedScopeButtonIndexDidChange %d", selectedScope);
 }
 
 - (void)filterContentForSearchText:(NSString *)searchText scope:(NSInteger)searchScope {

@@ -167,6 +167,41 @@
             </objects>
             <point key="canvasLocation" x="1759" y="636"/>
         </scene>
+        <!--Article InfoVC-->
+        <scene sceneID="3MJ-bD-EIo">
+            <objects>
+                <viewController id="Whb-Fk-qIf" customClass="STMArticleInfoVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ana-P5-lgv"/>
+                        <viewControllerLayoutGuide type="bottom" id="gqI-b9-Vnl"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Kx2-94-d5Z">
+                        <rect key="frame" x="0.0" y="0.0" width="640" height="512"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G8a-cv-XpD">
+                                <rect key="frame" x="0.0" y="468" width="640" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="y37-la-4qh"/>
+                                    <barButtonItem systemItem="cancel" id="fp9-Bg-RGL"/>
+                                </items>
+                            </toolbar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sxm-mo-rhk">
+                                <rect key="frame" x="299" y="245" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="640" height="512"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="l0Y-Mc-eOn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2590" y="636"/>
+        </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

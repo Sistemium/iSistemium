@@ -208,7 +208,7 @@
 
     [self registerTabWithName:@"STMCatalog"
                         title:NSLocalizedString(@"CATALOG", nil)
-                        image:[UIImage imageNamed:@"beer_bottle-128.png"]];
+                        image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
 
 #ifdef DEBUG
     
