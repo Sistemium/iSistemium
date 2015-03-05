@@ -210,7 +210,7 @@
         
     } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
         
-        value = @([value boolValue]);
+        value = @([value intValue]);
         
     } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
         
