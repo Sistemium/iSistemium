@@ -14,7 +14,7 @@
     
     [super layoutSubviews];
     
-    UIFont *font = [UIFont boldSystemFontOfSize:18];
+    UIFont *font = [UIFont systemFontOfSize:18];
     UIColor *backgroundColor = [UIColor clearColor];
     
     self.infoLabel.font = font;

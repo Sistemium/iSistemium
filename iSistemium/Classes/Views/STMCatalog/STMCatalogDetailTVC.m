@@ -70,8 +70,9 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
         
         NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"pieceVolume" ascending:YES selector:@selector(compare:)];
         
-        request.sortDescriptors = @[nameDescriptor];
+        request.sortDescriptors = @[nameDescriptor, volumeDescriptor];
         
         if (self.splitVC.currentArticleGroup) {
             
@@ -239,13 +240,6 @@
     NSString *detailedText = @"";
     NSString *appendString = @"";
     
-    if (article.extraLabel) {
-        
-        appendString = [NSString stringWithFormat:@"%@ ", article.extraLabel];
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
-    }
-    
 //    appendString = [NSString stringWithFormat:@"%@, ", article.code];
 //    detailedText = [detailedText stringByAppendingString:appendString];
 //    
@@ -256,12 +250,25 @@
 //    NSString *factorString = NSLocalizedString(@"FACTOR", nil);
 //    appendString = [NSString stringWithFormat:@"%@: %@, ", factorString, article.factor];
 //    detailedText = [detailedText stringByAppendingString:appendString];
+//
+//    NSString *volumeString = NSLocalizedString(@"VOLUME", nil);
+//    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+//    appendString = [NSString stringWithFormat:@"%@: %@%@", volumeString, article.pieceVolume, volumeUnitString];
+//    detailedText = [detailedText stringByAppendingString:appendString];
 
-    NSString *volumeString = NSLocalizedString(@"VOLUME", nil);
-    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-    appendString = [NSString stringWithFormat:@"%@: %@%@", volumeString, article.pieceVolume, volumeUnitString];
+//    NSString *priceString = NSLocalizedString(@"PRICE", nil);
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+//    appendString = [NSString stringWithFormat:@"%@: %@", priceString, [numberFormatter stringFromNumber:article.price]];
+    appendString = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:article.price]];
     detailedText = [detailedText stringByAppendingString:appendString];
-
+    
+    if (article.extraLabel) {
+        
+        appendString = [NSString stringWithFormat:@", %@", article.extraLabel];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+    }
+    
     return detailedText;
     
 }
@@ -293,8 +300,8 @@
     cell.textLabel.text = article.name;
     cell.detailTextLabel.text = [self detailedTextForArticle:article];
     
-    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
-    cell.infoLabel.text = [numberFormatter stringFromNumber:article.price];
+    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", article.pieceVolume, volumeUnitString];
     
     return cell;
     
