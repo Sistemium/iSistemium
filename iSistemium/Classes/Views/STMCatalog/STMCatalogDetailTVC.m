@@ -14,6 +14,7 @@
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) NSArray *searchResults;
+@property (nonatomic, strong) UISearchBar *searchBar;
 
 @end
 
@@ -35,6 +36,19 @@
     return _splitVC;
     
 }
+
+- (UISearchBar *)searchBar {
+    return self.searchDisplayController.searchBar;
+}
+
+//- (NSArray *)searchResults {
+//    
+//    if (!_searchResults) {
+//        _searchResults = self.resultsController.fetchedObjects;
+//    }
+//    return _searchResults;
+//    
+//}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -76,7 +90,7 @@
         
         [self.tableView reloadData];
 //        NSLog(@"articles count %d", self.resultsController.fetchedObjects.count);
-        [self updateInfoLabel];
+//        [self updateInfoLabel];
         
     }
     
@@ -98,9 +112,9 @@
 
 }
 
-- (void)updateInfoLabel {
+- (void)updateInfoLabelWithArticleCount:(NSUInteger)count {
     
-    NSUInteger count = self.resultsController.fetchedObjects.count;
+//    NSUInteger count = self.resultsController.fetchedObjects.count;
     
     NSString *pluralType = [STMFunctions pluralTypeForCount:count];
     NSString *labelString = [pluralType stringByAppendingString:@"ARTICLES"];
@@ -159,11 +173,11 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        return self.searchResults.count;
-    } else {
-        return [super tableView:tableView numberOfRowsInSection:section];
-    }
+    NSUInteger count = (tableView == self.searchDisplayController.searchResultsTableView) ? self.searchResults.count : [super tableView:tableView numberOfRowsInSection:section];
+
+    [self updateInfoLabelWithArticleCount:count];
+    
+    return count;
     
 }
 
@@ -219,28 +233,112 @@
 }
 
 
-#pragma mark - UISearchDisplayDelegate
-#warning self.searchDisplayController is deprecated — have to find workaround
+#pragma mark - UISearchDisplayDelegate / deprecated in >8.0
 
--(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
-    
-    [self filterContentForSearchText:searchString];
-//                               scope:[[self.searchDisplayController.searchBar scopeButtonTitles]
-//                                      objectAtIndex:[self.searchDisplayController.searchBar
-//                                                     selectedScopeButtonIndex]]];
-    
-    return YES;
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+//    [self setupSearchBar];
 }
 
-
-- (void)filterContentForSearchText:(NSString*)searchText/* scope:(NSString*)scope*/ {
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
     
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText];
+    [self filterContentForSearchText:searchString scope:self.searchBar.selectedScopeButtonIndex];
+    return YES;
+    
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
+    
+//    self.searchBar.text = (self.searchBar.text) ? self.searchBar.text : @"";
+    [self filterContentForSearchText:self.searchBar.text scope:searchOption];
+    return YES;
+    
+}
+
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+//    NSLog(@"selectedScopeButtonIndexDidChange %d", selectedScope);
+}
+
+- (void)filterContentForSearchText:(NSString *)searchText scope:(NSInteger)searchScope {
+    
+    NSPredicate *scopePredicate = [NSPredicate predicateWithValue:YES];
+    
+    switch (searchScope) {
+        case 0:
+            break;
+            
+        case 1:
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume < 0.5"];
+            break;
+            
+        case 2:
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume == 0.5"];
+            break;
+            
+        case 3:
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume > 0.5 AND pieceVolume < 1"];
+            break;
+            
+        case 4:
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume == 1"];
+            break;
+            
+        case 5:
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume > 1"];
+            break;
+            
+        default:
+            break;
+    }
+    
+    NSPredicate *textPredicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText];
+    NSCompoundPredicate *resultPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[scopePredicate, textPredicate]];
+    
     self.searchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:resultPredicate];
     
 }
 
 
+#pragma mark - search bar setup
+
+- (void)setupSearchBar {
+
+//    NSArray *volumes = [self scopeButtonTitles];
+//    NSString *minVolume = volumes[0];
+//    NSString *maxVolume = [volumes lastObject];
+//    NSString *firstButton = [NSString stringWithFormat:@"%@ - 0.5", minVolume];
+//    NSString *lastButton = [NSString stringWithFormat:@"1 - %@", maxVolume];
+
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+//    self.searchBar.scopeButtonTitles = @[firstButton, @"0.5", @"0.5 - 1", @"1", lastButton];
+    
+    self.searchBar.scopeButtonTitles = @[NSLocalizedString(@"ALL", nil), @"< 0.5", @"0.5", @"0.5 - 1", @"1", @"> 1"];
+    self.searchBar.selectedScopeButtonIndex = 0;
+    
+}
+
+- (NSArray *)scopeButtonTitles {
+    
+    TICK;
+    
+    NSMutableArray *volumes = [NSMutableArray array];
+    
+    for (STMArticle *article in self.resultsController.fetchedObjects) {
+        [volumes addObject:article.pieceVolume];
+    }
+    
+    NSSet *volumesSet = [NSSet setWithArray:volumes];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES selector:@selector(compare:)];
+
+    volumes = [[volumesSet sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
+    volumes = [volumes valueForKey:@"stringValue"];
+
+    TOCK;
+    
+    NSLog(@"volumes %@", volumes);
+    
+    return volumes;
+    
+}
 
 #pragma mark - view lifecycle
 
@@ -248,6 +346,7 @@
     
     [self infoLabelSetup];
     [self performFetch];
+    [self setupSearchBar];
     
 }
 
