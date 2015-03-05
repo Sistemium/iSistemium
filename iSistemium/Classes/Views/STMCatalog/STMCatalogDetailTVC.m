@@ -89,9 +89,11 @@
     } else {
         
         [self.tableView reloadData];
-//        NSLog(@"articles count %d", self.resultsController.fetchedObjects.count);
-//        [self updateInfoLabel];
         
+        if (self.searchDisplayController.active) {
+            self.searchBar.text = self.searchBar.text;
+        }
+
     }
     
 }
@@ -110,6 +112,20 @@
     [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
 
+}
+
+- (void)updateInfoLabel {
+
+    NSUInteger count;
+    
+    if (self.searchDisplayController.active) {
+        count = self.searchResults.count;
+    } else {
+        count = self.resultsController.fetchedObjects.count;
+    }
+    
+    [self updateInfoLabelWithArticleCount:count];
+    
 }
 
 - (void)updateInfoLabelWithArticleCount:(NSUInteger)count {
@@ -237,6 +253,22 @@
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
 //    [self setupSearchBar];
+    [self updateInfoLabel];
+    NSLog(@"searchDisplayControllerWillBeginSearch");
+}
+
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+    [self updateInfoLabel];
+    self.searchResults = nil;
+//    NSLog(@"searchDisplayControllerDidEndSearch");
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller willUnloadSearchResultsTableView:(UITableView *)tableView {
+//    NSLog(@"willUnloadSearchResultsTableView");
+}
+
+- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView {
+//    NSLog(@"didHideSearchResultsTableView");
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
