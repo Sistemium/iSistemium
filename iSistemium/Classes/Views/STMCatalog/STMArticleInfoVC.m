@@ -33,7 +33,12 @@
 - (void)setupImage {
     
     if (self.article.pictures.count > 0) {
-        // set article picture[0]
+
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
+        STMArticlePicture *picture = [self.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
+        
+        self.imageView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
+    
     } else {
         self.imageView.image = [UIImage imageNamed:@"wine_bottle-512.png"];
     }

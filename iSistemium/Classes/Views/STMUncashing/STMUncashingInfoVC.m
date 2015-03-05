@@ -85,7 +85,7 @@
         type = self.uncashing.type;
         comment = self.uncashing.commentText;
         
-        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCTS" ascending:YES];
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
         
         STMUncashingPicture *picture = [[self.uncashing.pictures sortedArrayUsingDescriptors:@[sortDescriptor]] lastObject];
         

@@ -11,6 +11,7 @@
 #import "STMCatalogDetailTVC.h"
 #import "STMArticle.h"
 #import "STMArticleGroupController.h"
+#import "STMArticlePicture.h"
 #import "STMFunctions.h"
 #import "STMUI.h"
 #import "STMConstants.h"
