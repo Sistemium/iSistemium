@@ -376,22 +376,26 @@
             break;
             
         case 1:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume < 0.5"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume <= 0.2"];
             break;
             
         case 2:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume == 0.5"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume > 0.2 AND pieceVolume < 0.5"];
             break;
             
         case 3:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume > 0.5 AND pieceVolume < 1"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume == 0.5"];
             break;
             
         case 4:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume == 1"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume > 0.5 AND pieceVolume < 1"];
             break;
             
         case 5:
+            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume == 1"];
+            break;
+            
+        case 6:
             scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume > 1"];
             break;
             
@@ -422,7 +426,7 @@
 //    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
 //    self.searchBar.scopeButtonTitles = @[firstButton, @"0.5", @"0.5 - 1", @"1", lastButton];
     
-    self.searchBar.scopeButtonTitles = @[NSLocalizedString(@"ALL", nil), @"< 0.5", @"0.5", @"0.5 - 1", @"1", @"> 1"];
+    self.searchBar.scopeButtonTitles = @[NSLocalizedString(@"ALL", nil), @"< 0.2", @"0.2 - 0.5", @"0.5", @"0.5 - 1", @"1", @"> 1"];
     self.searchBar.selectedScopeButtonIndex = 0;
 
 }
