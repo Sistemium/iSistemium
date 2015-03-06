@@ -1019,7 +1019,7 @@
         NSString *connectionEntityName = [self entityNameForConnection:connection];
         NSArray *dataArray = responseJSON[@"data"];
         
-//        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
+//        if ([connectionEntityName isEqualToString:@"STMSaleOrder"]) {
 //            NSLog(@"responseJSON %@", responseJSON);
 //        }
         
