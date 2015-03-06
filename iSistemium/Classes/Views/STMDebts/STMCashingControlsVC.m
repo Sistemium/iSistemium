@@ -682,57 +682,56 @@
 }
 
 
-
 #pragma mark - observers
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeHidden:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
+    [nc addObserver:self
+           selector:@selector(keyboardWillShow:)
+               name:UIKeyboardWillShowNotification
+             object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(cashingProcessCancel)
-                                                 name:@"cashingProcessCancel"
-                                               object:[STMCashingProcessController sharedInstance]];
+    [nc addObserver:self
+           selector:@selector(keyboardWillBeHidden:)
+               name:UIKeyboardWillHideNotification
+             object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(cashingProcessDone)
-                                                 name:@"cashingProcessDone"
-                                               object:[STMCashingProcessController sharedInstance]];
+    [nc addObserver:self
+           selector:@selector(cashingProcessCancel)
+               name:@"cashingProcessCancel"
+             object:[STMCashingProcessController sharedInstance]];
+    
+    [nc addObserver:self
+           selector:@selector(cashingProcessDone)
+               name:@"cashingProcessDone"
+             object:[STMCashingProcessController sharedInstance]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(debtAdded:)
-                                                 name:@"debtAdded"
-                                               object:[STMCashingProcessController sharedInstance]];
+    [nc addObserver:self
+           selector:@selector(debtAdded:)
+               name:@"debtAdded"
+             object:[STMCashingProcessController sharedInstance]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(debtRemoved:)
-                                                 name:@"debtRemoved"
-                                               object:[STMCashingProcessController sharedInstance]];
+    [nc addObserver:self
+           selector:@selector(debtRemoved:)
+               name:@"debtRemoved"
+             object:[STMCashingProcessController sharedInstance]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(cashingSumChanged:)
-                                                 name:@"cashingSumChanged"
-                                               object:[STMCashingProcessController sharedInstance]];
+    [nc addObserver:self
+           selector:@selector(cashingSumChanged:)
+               name:@"cashingSumChanged"
+             object:[STMCashingProcessController sharedInstance]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(toolbarDoneButtonPressed)
-                                                 name:@"textFieldsShouldResignResponder"
-                                               object:nil];
+    [nc addObserver:self
+           selector:@selector(toolbarDoneButtonPressed)
+               name:@"textFieldsShouldResignResponder"
+             object:nil];
     
 }
 
 - (void)removeObservers {
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
 }
 
 

@@ -220,6 +220,10 @@
         
     }
     
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
+    
 }
 
 

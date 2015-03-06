@@ -12,6 +12,7 @@
 @interface STMCatalogMasterTVC ()
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
+@property (nonatomic) CGFloat heightCorrection;
 
 
 @end
@@ -72,6 +73,39 @@
         //        [self.tableView reloadData];
         
     }
+    
+}
+
+
+#pragma mark - keyboard show / hide
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+    CGFloat tableViewHeight = self.tableView.frame.size.height;
+    CGFloat tableViewOriginY = self.tableView.frame.origin.y;
+    CGFloat splitViewHeight = self.splitVC.view.frame.size.height;
+    
+    self.heightCorrection = splitViewHeight - (tableViewOriginY + tableViewHeight) - keyboardHeight;
+    
+    CGRect frame = self.tableView.frame;
+    self.tableView.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height + self.heightCorrection);
+    
+}
+
+- (void)keyboardWillBeHidden:(NSNotification *)notification {
+    
+    CGRect frame = self.tableView.frame;
+    self.tableView.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height - self.heightCorrection);
+    
+}
+
+- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
+    
+    CGRect keyboardRect = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
+    
+    return keyboardRect.size.height;
     
 }
 
@@ -143,10 +177,32 @@
     
 }
 
+
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(keyboardWillShow:)
+               name:UIKeyboardWillShowNotification
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(keyboardWillBeHidden:)
+               name:UIKeyboardWillHideNotification
+             object:nil];
+
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)customInit {
     
+    [self addObservers];
     [self performFetch];
     
     self.navigationItem.title = (self.splitVC.currentArticleGroup) ? self.splitVC.currentArticleGroup.name : NSLocalizedString(@"CATALOG", nil);

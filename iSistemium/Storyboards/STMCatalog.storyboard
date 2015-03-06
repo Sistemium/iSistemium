@@ -10,7 +10,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="catalogMasterTVC" clearsSelectionOnViewWillAppear="NO" id="Mua-0a-mJA" customClass="STMCatalogMasterTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="4Vw-lB-w1R">
-                        <rect key="frame" x="0.0" y="0.0" width="308" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="308" height="916"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -40,6 +40,7 @@
                             <outlet property="delegate" destination="Mua-0a-mJA" id="Ms5-4l-Y4i"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Root View Controller" id="WEk-vs-XNE"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="l0m-Ld-TxE" userLabel="First Responder" sceneMemberID="firstResponder"/>
