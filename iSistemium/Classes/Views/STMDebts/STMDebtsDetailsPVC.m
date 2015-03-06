@@ -284,7 +284,7 @@
     self.addDebtButton.enabled = NO;
     self.editDebtsButton.enabled = NO;
     
-//    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+//    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
 //        
 //        [self.popover presentPopoverFromBarButtonItem:self.navigationItem.leftBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 //        

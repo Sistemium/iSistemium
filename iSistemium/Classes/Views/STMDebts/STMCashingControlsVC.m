@@ -614,7 +614,7 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     
-    if ([self.commentTextView isFirstResponder] && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+    if ([self.commentTextView isFirstResponder] && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
         
         if (!self.textViewIsShifted) {
             
@@ -644,7 +644,7 @@
 
 - (void)keyboardWillBeHidden:(NSNotification *)notification {
 
-    if ([self.commentTextView isFirstResponder] && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+    if ([self.commentTextView isFirstResponder] && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
         
         if (self.textViewIsShifted) {
             
@@ -668,6 +668,8 @@
 }
 
 - (void)moveTextFieldViewByDictance:(CGFloat)distance {
+    
+#warning unnecessary down movement if comment isFirstResponder and rotate device from landscape to portrait and back to landscape
     
     const float movementDuration = 0.3f;
     

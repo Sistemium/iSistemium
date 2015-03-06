@@ -100,7 +100,7 @@
     CGFloat x = view.frame.origin.x;
     CGFloat y = view.frame.origin.y;
 
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
         
         if (height > width) {
             view.frame = CGRectMake(x, y, height, width);
