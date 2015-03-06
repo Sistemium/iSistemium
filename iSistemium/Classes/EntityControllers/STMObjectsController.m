@@ -228,10 +228,6 @@
     
     NSDictionary *ownObjectRelationships = [self singleRelationshipsForEntityName:entityName];
     
-    if ([object isKindOfClass:[STMSaleOrder class]] || [object isKindOfClass:[STMSaleOrderPosition class]]) {
-        NSLog(@"gotcha!");
-    }
-    
     for (NSString *relationship in [ownObjectRelationships allKeys]) {
         
         if ([properties[relationship] isKindOfClass:[NSDictionary class]]) {
