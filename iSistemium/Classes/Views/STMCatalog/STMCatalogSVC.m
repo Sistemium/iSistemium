@@ -59,6 +59,7 @@
         _currentArticleGroup = currentArticleGroup;
         
         [self.detailTVC refreshTable];
+        [self.detailTVC hideKeyboard];
         
     }
     

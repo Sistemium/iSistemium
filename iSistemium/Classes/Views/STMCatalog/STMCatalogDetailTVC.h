@@ -12,6 +12,6 @@
 
 - (void)refreshTable;
 - (void)dismissArticleInfoPopover;
-
+- (void)hideKeyboard;
 
 @end

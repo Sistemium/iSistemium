@@ -167,6 +167,13 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
 }
 
+- (void)hideKeyboard {
+    
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
+
+}
 
 #pragma mark - articleInfo popover
 
@@ -219,10 +226,8 @@
         [self dismissArticleInfoPopover];
         
     }
-    
-    if ([self.searchBar isFirstResponder]) {
-        [self.searchBar resignFirstResponder];
-    }
+
+    [self hideKeyboard];
     
 }
 
