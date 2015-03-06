@@ -210,6 +210,10 @@
                         title:NSLocalizedString(@"CATALOG", nil)
                         image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
 
+    [self registerTabWithName:@"STMOrders"
+                        title:NSLocalizedString(@"ORDERS", nil)
+                        image:[UIImage imageNamed:@"bill-128.png"]];
+
 #ifdef DEBUG
     
     [self registerTabWithName:@"STMSettings"
