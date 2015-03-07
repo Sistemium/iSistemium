@@ -36,14 +36,14 @@
     
     if (!_masterTVC) {
         
+#warning possible get wrong masterTVC
+        
         UINavigationController *navController = (UINavigationController *)self.viewControllers[0];
         
         UIViewController *masterTVC = navController.viewControllers[0];
         
         if ([masterTVC isKindOfClass:[STMCatalogMasterTVC class]]) {
-            
             _masterTVC = (STMCatalogMasterTVC *)masterTVC;
-            
         }
         
     }

@@ -5,33 +5,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <scenes>
-        <!--Root View Controller-->
-        <scene sceneID="dUp-OA-KQo">
-            <objects>
-                <tableViewController clearsSelectionOnViewWillAppear="NO" id="IaZ-F8-l69" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Wb6-Z5-OMh">
-                        <rect key="frame" x="0.0" y="0.0" width="308" height="1024"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="wwU-4g-vBt">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wwU-4g-vBt" id="Jag-Ji-ZRc">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="IaZ-F8-l69" id="aAU-Il-slP"/>
-                            <outlet property="delegate" destination="IaZ-F8-l69" id="AP1-u7-Oxv"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="FQ0-pC-mG1"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6cc-39-E4n" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1165" y="-656"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="LP2-iY-Wf4">
             <objects>
@@ -41,17 +14,27 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="IaZ-F8-l69" kind="relationship" relationship="rootViewController" id="gVz-Y5-Nw2"/>
+                        <segue destination="JOe-a7-GZe" kind="relationship" relationship="rootViewController" id="0Ii-vE-RmD"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Hd-fV-WnD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="705" y="-656"/>
         </scene>
-        <!--Split View Controller-->
+        <!--Orders MasterPVC-->
+        <scene sceneID="O6M-16-08J">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="JOe-a7-GZe" customClass="STMOrdersMasterPVC" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="pOT-a9-Mf8"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6Nx-ch-juw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1165" y="-656"/>
+        </scene>
+        <!--OrdersSVC-->
         <scene sceneID="i1j-BZ-eoV">
             <objects>
-                <splitViewController id="VVk-5m-kMA" sceneMemberID="viewController">
+                <splitViewController id="VVk-5m-kMA" customClass="STMOrdersSVC" sceneMemberID="viewController">
                     <connections>
                         <segue destination="vvx-op-V79" kind="relationship" relationship="masterViewController" id="fMw-Lg-95B"/>
                         <segue destination="uU0-yg-hqk" kind="relationship" relationship="detailViewController" id="fYm-6k-LTK"/>
@@ -79,19 +62,33 @@
             </objects>
             <point key="canvasLocation" x="935" y="501"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Orders DetailTVC-->
         <scene sceneID="Ql1-zE-fVs">
             <objects>
-                <tableViewController id="Rie-Dl-IUb" sceneMemberID="viewController">
+                <tableViewController id="Rie-Dl-IUb" customClass="STMOrdersDetailTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="39c-oZ-znp">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="ljZ-55-Azd">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="orderCell" textLabel="SIv-oZ-lh8" detailTextLabel="oms-M6-YIE" style="IBUITableViewCellStyleSubtitle" id="ljZ-55-Azd" customClass="STMUIInfoTableViewCell">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ljZ-55-Azd" id="fnf-AS-r3u">
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SIv-oZ-lh8">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oms-M6-YIE">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>

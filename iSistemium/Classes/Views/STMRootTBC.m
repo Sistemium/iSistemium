@@ -198,21 +198,21 @@
                         title:NSLocalizedString(@"UNCASHING", nil)
                         image:[UIImage imageNamed:@"banknotes-128.png"]];
 
-    [self registerTabWithName:@"STMMessages"
-                        title:NSLocalizedString(@"MESSAGES", nil)
-                        image:[UIImage imageNamed:@"message-128.png"]];
+    [self registerTabWithName:@"STMCatalog"
+                        title:NSLocalizedString(@"CATALOG", nil)
+                        image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
 
     [self registerTabWithName:@"STMWebView"
                         title:NSLocalizedString(@"IORDERS", nil)
                         image:[UIImage imageNamed:@"purchase_order-128.png"]];
 
-    [self registerTabWithName:@"STMCatalog"
-                        title:NSLocalizedString(@"CATALOG", nil)
-                        image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
-
     [self registerTabWithName:@"STMOrders"
                         title:NSLocalizedString(@"ORDERS", nil)
                         image:[UIImage imageNamed:@"bill-128.png"]];
+
+    [self registerTabWithName:@"STMMessages"
+                        title:NSLocalizedString(@"MESSAGES", nil)
+                        image:[UIImage imageNamed:@"message-128.png"]];
 
 #ifdef DEBUG
     
