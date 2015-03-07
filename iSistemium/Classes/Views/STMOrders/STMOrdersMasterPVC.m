@@ -16,6 +16,8 @@
 
 @interface STMOrdersMasterPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
+@property (nonatomic, strong) UISegmentedControl *segmentedControl;
+
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
@@ -24,6 +26,69 @@
 
 
 @implementation STMOrdersMasterPVC
+
+- (UISegmentedControl *)segmentedControl {
+ 
+    if (!_segmentedControl) {
+        
+        NSArray *controlItems = @[NSLocalizedString(@"SALESMANS", nil),
+                                  NSLocalizedString(@"DATES", nil),
+                                  NSLocalizedString(@"OUTLETS", nil)];
+        
+        UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:controlItems];
+        segmentedControl.selectedSegmentIndex = self.currentIndex;
+        [segmentedControl addTarget:self action:@selector(segmentedControlValueChanged) forControlEvents:UIControlEventValueChanged];
+        
+        _segmentedControl = segmentedControl;
+        
+    }
+    return _segmentedControl;
+    
+}
+
+- (void)segmentedControlValueChanged {
+    
+    NSLog(@"self.segmentedControl.selectedSegmentIndex %d", self.segmentedControl.selectedSegmentIndex);
+    
+    UIPageViewControllerNavigationDirection direction;
+    
+    if (self.segmentedControl.selectedSegmentIndex > self.currentIndex) {
+        direction = UIPageViewControllerNavigationDirectionForward;
+    } else {
+        direction = UIPageViewControllerNavigationDirectionReverse;
+    }
+
+    [self rewindToIndex:self.segmentedControl.selectedSegmentIndex direction:direction];
+    
+}
+
+- (void)rewindToIndex:(NSUInteger)index direction:(UIPageViewControllerNavigationDirection)direction {
+    
+    NSUInteger nextIndex;
+    
+    if (direction == UIPageViewControllerNavigationDirectionForward) {
+        nextIndex = self.currentIndex + 1;
+    } else {
+        nextIndex = self.currentIndex - 1;
+    }
+    
+    [self setVCAtIndex:nextIndex direction:direction];
+
+    if (nextIndex != index) {
+        [self rewindToIndex:index direction:direction];
+    }
+    
+}
+
+- (void)setVCAtIndex:(NSUInteger)index direction:(UIPageViewControllerNavigationDirection)direction {
+    
+    STMOrdersMasterTVC *vc = [self viewControllerAtIndex:index storyboard:self.storyboard];
+    NSArray *viewControllers = @[vc];
+    [self setViewControllers:viewControllers direction:direction animated:YES completion:NULL];
+    self.currentIndex = index;
+    
+}
+
 
 - (STMOrdersMasterTVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
@@ -83,7 +148,7 @@
     if (completed) {
         
         self.currentIndex = self.nextIndex;
-//        [self refreshTitle];
+        self.segmentedControl.selectedSegmentIndex = self.currentIndex;
         
     }
     
@@ -93,6 +158,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    self.navigationItem.titleView = self.segmentedControl;
     
     self.dataSource = self;
     self.delegate = self;
