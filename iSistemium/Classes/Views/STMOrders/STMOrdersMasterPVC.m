@@ -48,8 +48,6 @@
 
 - (void)segmentedControlValueChanged {
     
-    NSLog(@"self.segmentedControl.selectedSegmentIndex %d", self.segmentedControl.selectedSegmentIndex);
-    
     UIPageViewControllerNavigationDirection direction;
     
     if (self.segmentedControl.selectedSegmentIndex > self.currentIndex) {
