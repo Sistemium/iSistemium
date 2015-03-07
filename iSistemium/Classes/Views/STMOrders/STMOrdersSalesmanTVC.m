@@ -76,6 +76,19 @@
 
 #pragma mark - view lifecycle
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if (self.splitVC.selectedSalesman) {
+        
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedSalesman];
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.

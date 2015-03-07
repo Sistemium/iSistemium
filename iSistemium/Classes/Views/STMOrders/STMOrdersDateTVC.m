@@ -158,6 +158,19 @@
 
 #pragma mark - view lifecycle
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if (self.splitVC.selectedDate) {
+        
+        NSUInteger index = [self.saleOrdersDates indexOfObject:self.splitVC.selectedDate];
+        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
+        
+    }
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
