@@ -8,11 +8,14 @@
         <!--Navigation Controller-->
         <scene sceneID="LP2-iY-Wf4">
             <objects>
-                <navigationController id="vvx-op-V79" sceneMemberID="viewController">
+                <navigationController toolbarHidden="NO" id="vvx-op-V79" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="eNj-rk-gKh">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="6KI-td-JlG">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="JOe-a7-GZe" kind="relationship" relationship="rootViewController" id="0Ii-vE-RmD"/>
                     </connections>
@@ -48,13 +51,16 @@
         <!--Navigation Controller-->
         <scene sceneID="ZLS-wn-zaL">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="uU0-yg-hqk" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="uU0-yg-hqk" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="eQq-zt-PyE">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="WbJ-hD-zCa">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="Rie-Dl-IUb" kind="relationship" relationship="rootViewController" id="SZk-xN-kFg"/>
                     </connections>
@@ -68,7 +74,7 @@
             <objects>
                 <tableViewController id="Rie-Dl-IUb" customClass="STMOrdersDetailTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="39c-oZ-znp">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="64" width="768" height="916"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -98,6 +104,7 @@
                             <outlet property="delegate" destination="Rie-Dl-IUb" id="tSg-WX-JJy"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="Q95-b5-uWK"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eCb-mT-6vh" userLabel="First Responder" sceneMemberID="firstResponder"/>

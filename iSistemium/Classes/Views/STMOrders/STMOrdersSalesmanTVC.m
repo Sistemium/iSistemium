@@ -37,6 +37,10 @@
     
     STMUIInfoTableViewCell *cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     
+    STMSalesman *salesman = [self.resultsController objectAtIndexPath:indexPath];
+    
+    cell.textLabel.text = salesman.name;
+    
     return cell;
     
 }

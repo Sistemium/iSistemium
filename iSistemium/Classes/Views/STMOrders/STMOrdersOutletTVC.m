@@ -40,6 +40,10 @@
     
     STMUIInfoTableViewCell *cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
+    
+    cell.textLabel.text = outlet.name;
+    
     return cell;
     
 }
