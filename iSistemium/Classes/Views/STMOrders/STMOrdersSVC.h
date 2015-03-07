@@ -10,6 +10,16 @@
 #import "STMOrdersMasterPVC.h"
 #import "STMOrdersDetailTVC.h"
 
+#import "STMSaleOrder.h"
+#import "STMSaleOrderPosition.h"
+#import "STMSalesman.h"
+#import "STMOutlet.h"
+#import "STMArticle.h"
+
+#import "STMUI.h"
+#import "STMFunctions.h"
+#import "STMConstants.h"
+
 @interface STMOrdersSVC : STMUISplitViewController
 
 @property (nonatomic, strong) STMOrdersMasterPVC *masterPVC;
