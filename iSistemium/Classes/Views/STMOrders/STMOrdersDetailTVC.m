@@ -99,6 +99,7 @@
     } else {
         
         [self.tableView reloadData];
+        [self updateTitle];
         
     }
     
@@ -107,6 +108,35 @@
 - (void)refreshTable {
     [self performFetch];
 }
+
+- (void)updateTitle {
+    
+    NSString *date = NSLocalizedString(@"ALL DATES", nil);
+    NSString *salesman = NSLocalizedString(@"ALL SALESMANS", nil);
+    NSString *outlet = NSLocalizedString(@"ALL OUTLETS", nil);
+    
+    if (self.splitVC.selectedSalesman) {
+        
+        NSArray *salesmanNames = [self.splitVC.selectedSalesman.name componentsSeparatedByString:@" "];
+        salesman = salesmanNames[0];
+        
+    }
+
+    if (self.splitVC.selectedDate) {
+        
+        NSDateFormatter *dateFormatter = [STMFunctions dateShortNoTimeFormatter];
+        date = [dateFormatter stringFromDate:self.splitVC.selectedDate];
+        
+    }
+
+    if (self.splitVC.selectedOutlet) {
+        outlet = self.splitVC.selectedOutlet.name;
+    }
+
+    self.navigationItem.title = [NSString stringWithFormat:@"%@ / %@ / %@", salesman, date, outlet];
+    
+}
+
 
 #pragma mark - Table view data source
 
@@ -119,9 +149,7 @@
 
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
     
     cell.textLabel.text = [dateFormatter stringFromDate:saleOrder.date];
     cell.detailTextLabel.text = saleOrder.outlet.name;

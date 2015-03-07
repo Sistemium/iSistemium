@@ -67,8 +67,6 @@
     
     ordersDates = [[ordersDatesSet sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
     
-    NSLog(@"volumes %@", ordersDates);
-    
     return ordersDates;
     
 }
@@ -96,10 +94,7 @@
     
     NSDate *date = self.saleOrdersDates[indexPath.row];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
-    
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];    
     cell.textLabel.text = [dateFormatter stringFromDate:date];
     
     return cell;

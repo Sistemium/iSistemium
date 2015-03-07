@@ -28,6 +28,8 @@
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
 + (STMDateFormatter *)dateFormatter;
++ (NSDateFormatter *)dateMediumNoTimeFormatter;
++ (NSDateFormatter *)dateShortNoTimeFormatter;
 + (NSNumberFormatter *)decimalFormatter;
 + (NSNumberFormatter *)currencyFormatter;
 

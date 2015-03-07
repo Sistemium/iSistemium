@@ -14,6 +14,7 @@
 #import "STMSaleOrderPosition.h"
 #import "STMSalesman.h"
 #import "STMOutlet.h"
+#import "STMPartner.h"
 #import "STMArticle.h"
 
 #import "STMUI.h"

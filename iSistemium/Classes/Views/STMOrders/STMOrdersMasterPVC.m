@@ -32,17 +32,17 @@
     switch (index) {
             
         case 0:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersDateTVC alloc] init];
-            break;
-
-        case 1:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] init];
-            break;
-            
-        case 2:
             vc = (STMOrdersMasterTVC *)[[STMOrdersSalesmanTVC alloc] init];
             break;
 
+        case 1:
+            vc = (STMOrdersMasterTVC *)[[STMOrdersDateTVC alloc] init];
+            break;
+
+        case 2:
+            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] init];
+            break;
+            
         default:
             break;
             

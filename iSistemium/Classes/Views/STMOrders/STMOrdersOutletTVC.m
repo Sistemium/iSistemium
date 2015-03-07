@@ -42,7 +42,8 @@
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = outlet.name;
+    cell.textLabel.text = outlet.partner.name;
+    cell.detailTextLabel.text = outlet.shortName;
     
     return cell;
     
