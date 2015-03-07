@@ -76,8 +76,11 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCashing class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        
         request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", nil];
+        
         _cashingSumResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
         _cashingSumResultsController.delegate = self.cashingSumFRCD;
         
     }

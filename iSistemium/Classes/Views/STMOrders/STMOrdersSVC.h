@@ -8,6 +8,10 @@
 
 #import "STMUISplitViewController.h"
 #import "STMOrdersMasterPVC.h"
+#import "STMOrdersMasterTVC.h"
+#import "STMOrdersDateTVC.h"
+#import "STMOrdersOutletTVC.h"
+#import "STMOrdersSalesmanTVC.h"
 #import "STMOrdersDetailTVC.h"
 
 #import "STMSaleOrder.h"

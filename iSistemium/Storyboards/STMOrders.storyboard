@@ -24,7 +24,8 @@
         <!--Orders MasterPVC-->
         <scene sceneID="O6M-16-08J">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="JOe-a7-GZe" customClass="STMOrdersMasterPVC" sceneMemberID="viewController">
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="JOe-a7-GZe" customClass="STMOrdersMasterPVC" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="pOT-a9-Mf8"/>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Nx-ch-juw" userLabel="First Responder" sceneMemberID="firstResponder"/>
