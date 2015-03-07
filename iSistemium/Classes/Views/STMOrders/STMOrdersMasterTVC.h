@@ -7,12 +7,14 @@
 //
 
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMOrdersSVC.h"
 
 @interface STMOrdersMasterTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic) NSUInteger index;
 
 - (NSFetchRequest *)fetchRequest;
+@property (nonatomic, weak) STMOrdersSVC *splitVC;
 
 
 @end

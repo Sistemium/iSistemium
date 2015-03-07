@@ -10,4 +10,6 @@
 
 @interface STMOrdersDetailTVC : STMFetchedResultsControllerTVC
 
+- (void)refreshTable;
+
 @end

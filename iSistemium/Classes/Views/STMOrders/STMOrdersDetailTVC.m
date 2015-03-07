@@ -11,6 +11,9 @@
 
 @interface STMOrdersDetailTVC ()
 
+@property (nonatomic, weak) STMOrdersSVC *splitVC;
+
+
 @end
 
 
@@ -18,6 +21,18 @@
 
 @synthesize resultsController = _resultsController;
 
+- (STMOrdersSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMOrdersSVC class]]) {
+            _splitVC = (STMOrdersSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -30,6 +45,9 @@
         
         request.sortDescriptors = @[dateDescriptor, salesmanDescriptor];
         
+        NSCompoundPredicate *predicate = [self requestPredicate];
+        if (predicate.subpredicates.count > 0) request.predicate = predicate;
+        
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
         _resultsController.delegate = self;
@@ -37,6 +55,35 @@
     }
     
     return _resultsController;
+    
+}
+
+- (NSCompoundPredicate *)requestPredicate {
+    
+    NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
+    
+    if (self.splitVC.selectedDate) {
+        
+        NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"date == %@", self.splitVC.selectedDate];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, datePredicate]];
+        
+    }
+    
+    if (self.splitVC.selectedOutlet) {
+        
+        NSPredicate *outletPredicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.splitVC.selectedOutlet];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, outletPredicate]];
+        
+    }
+
+    if (self.splitVC.selectedSalesman) {
+        
+        NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"salesman == %@", self.splitVC.selectedSalesman];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, salesmanPredicate]];
+        
+    }
+
+    return predicate;
     
 }
 
@@ -51,12 +98,15 @@
         
     } else {
         
-//        [self.tableView reloadData];
+        [self.tableView reloadData];
         
     }
     
 }
 
+- (void)refreshTable {
+    [self performFetch];
+}
 
 #pragma mark - Table view data source
 

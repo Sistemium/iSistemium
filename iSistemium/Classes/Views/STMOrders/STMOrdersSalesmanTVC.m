@@ -49,6 +49,30 @@
     cell = nil;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMSalesman *salesman = [self.resultsController objectAtIndexPath:indexPath];
+    
+    NSArray *selectedIndexPaths = [tableView indexPathsForSelectedRows];
+    
+    if ([selectedIndexPaths containsObject:indexPath]) {
+        
+        self.splitVC.selectedSalesman = nil;
+        
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        return nil;
+        
+    } else {
+        
+        self.splitVC.selectedSalesman = salesman;
+        
+        return indexPath;
+        
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 

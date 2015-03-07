@@ -52,6 +52,30 @@
     cell = nil;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
+    
+    NSArray *selectedIndexPaths = [tableView indexPathsForSelectedRows];
+    
+    if ([selectedIndexPaths containsObject:indexPath]) {
+        
+        self.splitVC.selectedOutlet = nil;
+        
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        return nil;
+        
+    } else {
+        
+        self.splitVC.selectedOutlet = outlet;
+        
+        return indexPath;
+        
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 

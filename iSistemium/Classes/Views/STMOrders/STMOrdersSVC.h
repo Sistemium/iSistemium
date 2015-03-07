@@ -8,10 +8,6 @@
 
 #import "STMUISplitViewController.h"
 #import "STMOrdersMasterPVC.h"
-#import "STMOrdersMasterTVC.h"
-#import "STMOrdersDateTVC.h"
-#import "STMOrdersOutletTVC.h"
-#import "STMOrdersSalesmanTVC.h"
 #import "STMOrdersDetailTVC.h"
 
 #import "STMSaleOrder.h"
@@ -28,6 +24,10 @@
 
 @property (nonatomic, strong) STMOrdersMasterPVC *masterPVC;
 @property (nonatomic, strong) STMOrdersDetailTVC *detailTVC;
+
+@property (nonatomic, strong) NSDate *selectedDate;
+@property (nonatomic, strong) STMOutlet *selectedOutlet;
+@property (nonatomic, strong) STMSalesman *selectedSalesman;
 
 
 @end

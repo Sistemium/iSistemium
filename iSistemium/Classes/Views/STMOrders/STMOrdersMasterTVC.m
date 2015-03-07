@@ -7,7 +7,6 @@
 //
 
 #import "STMOrdersMasterTVC.h"
-#import "STMOrdersSVC.h"
 
 @interface STMOrdersMasterTVC ()
 
@@ -17,6 +16,19 @@
 @implementation STMOrdersMasterTVC
 
 @synthesize resultsController = _resultsController;
+
+- (STMOrdersSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMOrdersSVC class]]) {
+            _splitVC = (STMOrdersSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSFetchRequest *)fetchRequest {
     return nil;

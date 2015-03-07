@@ -9,6 +9,11 @@
 #import "STMOrdersMasterPVC.h"
 #import "STMOrdersSVC.h"
 
+#import "STMOrdersMasterTVC.h"
+#import "STMOrdersDateTVC.h"
+#import "STMOrdersOutletTVC.h"
+#import "STMOrdersSalesmanTVC.h"
+
 @interface STMOrdersMasterPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic) NSUInteger currentIndex;

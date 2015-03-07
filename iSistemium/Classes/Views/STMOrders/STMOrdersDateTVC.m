@@ -110,6 +110,30 @@
     cell = nil;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSDate *date = self.saleOrdersDates[indexPath.row];
+    
+    NSArray *selectedIndexPaths = [tableView indexPathsForSelectedRows];
+    
+    if ([selectedIndexPaths containsObject:indexPath]) {
+        
+        self.splitVC.selectedDate = nil;
+        
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        return nil;
+        
+    } else {
+        
+        self.splitVC.selectedDate = date;
+                
+        return indexPath;
+        
+    }
+    
+}
+
 
 #pragma mark - NSFetchedResultsController delegate
 

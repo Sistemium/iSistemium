@@ -16,7 +16,7 @@
 
 - (STMOrdersMasterPVC *)masterPVC {
     
-    if (_masterPVC) {
+    if (!_masterPVC) {
         
         UINavigationController *nc = (UINavigationController *)self.viewControllers[0];
         UIViewController *masterPVC = nc.viewControllers[0];
@@ -32,9 +32,9 @@
 
 - (STMOrdersDetailTVC *)detailTVC {
     
-    if (_detailTVC) {
+    if (!_detailTVC) {
     
-        UINavigationController *nc = (UINavigationController *)self.viewControllers[0];
+        UINavigationController *nc = (UINavigationController *)self.viewControllers[1];
         UIViewController *detailTVC = nc.viewControllers[0];
 
         if ([detailTVC isKindOfClass:[STMOrdersDetailTVC class]]) {
@@ -46,6 +46,26 @@
     
 }
 
+- (void)setSelectedDate:(NSDate *)selectedDate {
+
+    _selectedDate = selectedDate;
+    [self.detailTVC refreshTable];
+    
+}
+
+- (void)setSelectedOutlet:(STMOutlet *)selectedOutlet {
+    
+    _selectedOutlet = selectedOutlet;
+    [self.detailTVC refreshTable];
+    
+}
+
+- (void)setSelectedSalesman:(STMSalesman *)selectedSalesman {
+    
+    _selectedSalesman = selectedSalesman;
+    [self.detailTVC refreshTable];
+    
+}
 
 #pragma mark - view lifecycle
 
