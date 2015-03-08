@@ -168,5 +168,7 @@
 "DISPATCH DATE" = "Дата отгрузки:";
 "COST" = "Стоимость:";
 "STATUS" = "Статус:";
+"VOLUME UNIT1" = "к.";
+"VOLUME UNIT2" = "б.";
 
 

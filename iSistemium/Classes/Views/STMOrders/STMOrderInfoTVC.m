@@ -203,8 +203,37 @@
     
     cell.detailTextLabel.text = [self detailedTextForSaleOrderPosition:saleOrderPosition];
     
-    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-    cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", saleOrderPosition.volume, volumeUnitString];
+    NSString *volumeUnitString = nil;
+    
+    int volume = [saleOrderPosition.volume intValue];
+    int packageRel = [saleOrderPosition.article.packageRel intValue];
+    
+    if (volume >= packageRel) {
+
+        int package = floor(volume / packageRel);
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
+        NSString *packageString = [NSString stringWithFormat:@"%d %@", package, volumeUnitString];
+
+        int bottle = volume % packageRel;
+        
+        if (bottle > 0) {
+            
+            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+            NSString *bottleString = [NSString stringWithFormat:@" %d %@", bottle, volumeUnitString];
+            
+            packageString = [packageString stringByAppendingString:bottleString];
+            
+        }
+        
+        cell.infoLabel.text = packageString;
+        
+    } else {
+     
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+        cell.infoLabel.text = [NSString stringWithFormat:@"%@ %@", saleOrderPosition.volume, volumeUnitString];
+
+    }
     
 }
 

@@ -168,3 +168,6 @@
 "DISPATCH DATE" = "Dispatch date";
 "COST" = "Cost";
 "STATUS" = "Status";
+"VOLUME UNIT1" = "p.";
+"VOLUME UNIT2" = "b.";
+
