@@ -116,15 +116,12 @@
 
 - (void)updateTitle {
     
+    NSString *outlet = NSLocalizedString(@"ALL OUTLETS", nil);
     NSString *date = NSLocalizedString(@"ALL DATES", nil);
     NSString *salesman = NSLocalizedString(@"ALL SALESMANS", nil);
-    NSString *outlet = NSLocalizedString(@"ALL OUTLETS", nil);
     
-    if (self.splitVC.selectedSalesman) {
-        
-        NSArray *salesmanNames = [self.splitVC.selectedSalesman.name componentsSeparatedByString:@" "];
-        salesman = salesmanNames[0];
-        
+    if (self.splitVC.selectedOutlet) {
+        outlet = self.splitVC.selectedOutlet.name;
     }
 
     if (self.splitVC.selectedDate) {
@@ -134,11 +131,14 @@
         
     }
 
-    if (self.splitVC.selectedOutlet) {
-        outlet = self.splitVC.selectedOutlet.name;
+    if (self.splitVC.selectedSalesman) {
+        
+        NSArray *salesmanNames = [self.splitVC.selectedSalesman.name componentsSeparatedByString:@" "];
+        salesman = salesmanNames[0];
+        
     }
 
-    self.navigationItem.title = [NSString stringWithFormat:@"%@ / %@ / %@", salesman, date, outlet];
+    self.navigationItem.title = [NSString stringWithFormat:@"%@ / %@ / %@", date, salesman, outlet];
     
 }
 

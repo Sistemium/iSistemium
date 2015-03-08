@@ -239,30 +239,18 @@
         appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceOrigin]];
         detailedText = [detailedText stringByAppendingString:appendString];
         
-        NSDecimalNumber *result = [priceOrigin decimalNumberBySubtracting:price0];
+        NSDecimalNumber *result = [price0 decimalNumberBySubtracting:priceOrigin];
         result = [result decimalNumberByDividingBy:priceOrigin];
         
         NSDecimalNumberHandler *behavior = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundDown scale:3 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
 
         NSDecimalNumber *discount = [result decimalNumberByRoundingAccordingToBehavior:behavior];
         
-        if ([price0 compare:priceOrigin] == NSOrderedDescending) {
-
-            discount = [discount decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithDecimal:[@(-1) decimalValue]]];
-            appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"MARKUP", nil)];
-            
-        } else {
-            
-            appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"DISCOUNT", nil)];
-            
-        }
-
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
         numberFormatter.numberStyle = NSNumberFormatterPercentStyle;
+        numberFormatter.positivePrefix = @"+";
         NSString *discountString = [numberFormatter stringFromNumber:discount];
-
-        appendString = [NSString stringWithFormat:@": %@", discountString];
+        
+        appendString = [NSString stringWithFormat:@", %@", discountString];
         detailedText = [detailedText stringByAppendingString:appendString];
         
     }
@@ -276,7 +264,8 @@
 - (void)customInit {
     
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed)];
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonPressed)];
+//    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed)];
 
     [self setToolbarItems:@[flexibleSpace, cancelButton]];
 

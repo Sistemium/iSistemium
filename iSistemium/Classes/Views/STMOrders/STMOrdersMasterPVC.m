@@ -31,9 +31,9 @@
  
     if (!_segmentedControl) {
         
-        NSArray *controlItems = @[NSLocalizedString(@"SALESMANS", nil),
+        NSArray *controlItems = @[NSLocalizedString(@"OUTLETS", nil),
                                   NSLocalizedString(@"DATES", nil),
-                                  NSLocalizedString(@"OUTLETS", nil)];
+                                  NSLocalizedString(@"SALESMANS", nil)];
         
         UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:controlItems];
         segmentedControl.selectedSegmentIndex = self.currentIndex;
@@ -95,7 +95,7 @@
     switch (index) {
             
         case 0:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersSalesmanTVC alloc] init];
+            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
             break;
 
         case 1:
@@ -103,7 +103,7 @@
             break;
 
         case 2:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            vc = (STMOrdersMasterTVC *)[[STMOrdersSalesmanTVC alloc] init];
             break;
             
         default:

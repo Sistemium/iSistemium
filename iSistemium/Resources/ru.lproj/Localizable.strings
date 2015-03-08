@@ -145,8 +145,8 @@
 "ORDERS" = "Заказы 2";
 "ALL DATES" = "Все даты";
 "ALL OUTLETS" = "Все точки";
-"ALL SALESMANS" = "Все торгпреды";
-"SALESMANS" = "Торгпреды";
+"ALL SALESMANS" = "Все менеджеры";
+"SALESMANS" = "Менеджеры";
 "DATES" = "Даты";
 "0ORDERS" = "нет заказов";
 "1ORDERS" = "заказ";
@@ -163,5 +163,6 @@
 "PRICE ORIGIN" = "Цена без скидки";
 "DISCOUNT" = "Скидка";
 "MARKUP" = "Наценка";
+"CLOSE" = "Закрыть";
 
 
