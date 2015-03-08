@@ -161,7 +161,12 @@
     NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
     
     cell.infoLabel.text = processingLabel;
-    cell.infoLabel.textColor = [UIColor redColor];
+    
+    UIColor *processingColor = [STMSaleOrderController colorForProcessing:saleOrder.processing];
+    
+    if (processingColor) {
+        cell.infoLabel.textColor = processingColor;
+    }
     
     return cell;
     

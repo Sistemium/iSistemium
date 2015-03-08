@@ -11,6 +11,8 @@
 #import "STMSyncer.h"
 #import "STMSession.h"
 #import "STMEntityDescription.h"
+#import "STMFunctions.h"
+#import "STMConstants.h"
 
 @interface STMController : NSObject
 

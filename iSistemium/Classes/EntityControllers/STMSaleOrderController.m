@@ -30,20 +30,10 @@
     
 }
 
-+ (NSString *)labelForProcessing:(NSString *)processing {
-
-    NSDictionary *workflow = [self sharedInstance].workflow;
-    
-    NSDictionary *dictionaryForCode = workflow[processing];
-    
-    return dictionaryForCode[@"label"];
-    
-}
-
 - (NSDictionary *)workflow {
     
     if (!_workflow) {
-
+        
         NSString *entityName = NSStringFromClass([STMSaleOrder class]);
         entityName = [entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
         
@@ -55,11 +45,42 @@
         
         NSError *error;
         NSDictionary *workflowJSON = [NSJSONSerialization JSONObjectWithData:workflowData options:NSJSONReadingMutableContainers error:&error];
-
+        
         _workflow = workflowJSON[@"processing"];
         
     }
     return _workflow;
+    
+}
+
+
++ (NSString *)labelForProcessing:(NSString *)processing {
+
+    NSDictionary *workflow = [self sharedInstance].workflow;
+    
+    NSDictionary *dictionaryForProcessing = workflow[processing];
+    
+    return dictionaryForProcessing[@"label"];
+    
+}
+
++ (UIColor *)colorForProcessing:(NSString *)processing {
+    
+    NSDictionary *workflow = [self sharedInstance].workflow;
+    
+    NSDictionary *dictionaryForProcessing = workflow[processing];
+
+    NSString *colorString = dictionaryForProcessing[@"cls"];
+    
+    if (colorString) {
+
+        return [STMFunctions colorForColorString:colorString];
+
+    } else {
+    
+        return nil;
+
+    }
     
 }
 

@@ -317,4 +317,50 @@
     return [[self documentsDirectory] stringByAppendingPathComponent:path];
 }
 
++ (UIColor *)colorForColorString:(NSString *)colorSting {
+    
+    NSString *selectorString = [[colorSting lowercaseString] stringByAppendingString:@"Color"];
+    
+    SEL selector = NSSelectorFromString(selectorString);
+    
+    if ([UIColor respondsToSelector:selector]) {
+        
+// next 3 lines — implementation of id value = [self performSelector:selector] w/o warning
+        IMP imp = [UIColor methodForSelector:selector];
+        id (*func)(id, SEL) = (void *)imp;
+        id value = func([UIColor class], selector);
+        
+        return value;
+        
+    } else {
+        
+        return nil;
+        
+    }
+        
+//    if ([colorSting caseInsensitiveCompare:@"blue"] == NSOrderedSame) {
+//        
+//        return [UIColor blueColor];
+//        
+//    } else if ([colorSting caseInsensitiveCompare:@"red"] == NSOrderedSame) {
+//        
+//        return [UIColor redColor];
+//        
+//    } else if ([colorSting caseInsensitiveCompare:@"orange"] == NSOrderedSame) {
+//        
+//        return [UIColor orangeColor];
+//        
+//    } else if ([colorSting caseInsensitiveCompare:@"green"] == NSOrderedSame) {
+//        
+//        return [UIColor greenColor];
+//        
+//    } else {
+//        
+//        return nil;
+//        
+//    }
+    
+}
+
+
 @end

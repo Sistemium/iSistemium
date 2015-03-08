@@ -40,4 +40,6 @@
 + (NSString *)documentsDirectory;
 + (NSString *)absolutePathForPath:(NSString *)path;
 
++ (UIColor *)colorForColorString:(NSString *)colorSting;
+
 @end
