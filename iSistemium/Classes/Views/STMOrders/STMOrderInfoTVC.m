@@ -38,6 +38,61 @@
 }
 
 
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    
+    return 2;
+    
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+
+    switch (section) {
+        case 0:
+            return 3;
+            break;
+            
+        case 1:
+            return 5;
+            break;
+            
+        default:
+            return 0;
+            break;
+    }
+    
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return NSLocalizedString(@"ORDER INFO", nil);
+            break;
+            
+        case 1:
+            return NSLocalizedString(@"ORDER POSITIONS", nil);
+            break;
+            
+        default:
+            return @"";
+            break;
+    }
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *cellIdentifier = @"orderInfoCell";
+    
+    STMUIInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    return cell;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
