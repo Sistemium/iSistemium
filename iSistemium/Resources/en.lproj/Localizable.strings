@@ -158,4 +158,9 @@
 "5POSITIONS" = "positions";
 "ORDER INFO" = "Order info";
 "ORDER POSITIONS" = "Order position";
+"PRICE0" = "Price0";
+"PRICE1" = "Price1";
+"PRICE ORIGIN" = "Price origin";
+"DISCOUNT" = "Discount";
+"MARKUP" = "Markup";
 

@@ -158,5 +158,10 @@
 "5POSITIONS" = "позиций";
 "ORDER INFO" = "Данные заказа";
 "ORDER POSITIONS" = "Позиции заказа";
+"PRICE0" = "Цена";
+"PRICE1" = "Цена бух";
+"PRICE ORIGIN" = "Цена без скидки";
+"DISCOUNT" = "Скидка";
+"MARKUP" = "Наценка";
 
 

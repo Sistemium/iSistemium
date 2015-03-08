@@ -52,9 +52,9 @@
     if (!_saleOrderPositions) {
         
         NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"volume" ascending:YES selector:@selector(compare:)];
+//        NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"volume" ascending:YES selector:@selector(compare:)];
         
-        _saleOrderPositions = [self.saleOrder.saleOrderPositions sortedArrayUsingDescriptors:@[nameDescriptor, volumeDescriptor]];
+        _saleOrderPositions = [self.saleOrder.saleOrderPositions sortedArrayUsingDescriptors:@[nameDescriptor]];
 
     }
     return _saleOrderPositions;
@@ -103,7 +103,7 @@
     
     NSUInteger positionsCount = self.saleOrder.saleOrderPositions.count;
     NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];
-    NSString *positionsCountString = [NSString stringWithFormat:@"%lu %@:", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
+    NSString *positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
     
     switch (section) {
         case 0:
@@ -197,24 +197,77 @@
     
     cell.textLabel.text = saleOrderPosition.article.name;
     
-    NSString *detailedText = @"";
-    NSString *appendString = @"";
-    
-//    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
-//    appendString = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:article.price]];
-//    detailedText = [detailedText stringByAppendingString:appendString];
-//    
-//    if (article.extraLabel) {
-//        
-//        appendString = [NSString stringWithFormat:@", %@", article.extraLabel];
-//        detailedText = [detailedText stringByAppendingString:appendString];
-//        
-//    }
-    
-    cell.detailTextLabel.text = detailedText;
+    cell.detailTextLabel.text = [self detailedTextForSaleOrderPosition:saleOrderPosition];
     
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
     cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", saleOrderPosition.volume, volumeUnitString];
+    
+}
+
+- (NSString *)detailedTextForSaleOrderPosition:(STMSaleOrderPosition *)saleOrderPosition {
+    
+    NSDecimalNumber *price0 = saleOrderPosition.price0;
+    NSDecimalNumber *price1 = saleOrderPosition.price1;
+    NSDecimalNumber *priceOrigin = saleOrderPosition.priceOrigin;
+    
+    NSString *detailedText = @"";
+    NSString *appendString = @"";
+    
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+    
+    appendString = NSLocalizedString(@"PRICE0", nil);
+    detailedText = [detailedText stringByAppendingString:appendString];
+    
+    appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price0]];
+    detailedText = [detailedText stringByAppendingString:appendString];
+    
+    if ([price0 compare:price1] != NSOrderedSame) {
+        
+        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE1", nil)];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price1]];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+    }
+    
+    if ([price0 compare:priceOrigin] != NSOrderedSame) {
+        
+        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE ORIGIN", nil)];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceOrigin]];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+        NSDecimalNumber *result = [priceOrigin decimalNumberBySubtracting:price0];
+        result = [result decimalNumberByDividingBy:priceOrigin];
+        
+        NSDecimalNumberHandler *behavior = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundDown scale:3 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
+
+        NSDecimalNumber *discount = [result decimalNumberByRoundingAccordingToBehavior:behavior];
+        
+        if ([price0 compare:priceOrigin] == NSOrderedDescending) {
+
+            discount = [discount decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithDecimal:[@(-1) decimalValue]]];
+            appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"MARKUP", nil)];
+            
+        } else {
+            
+            appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"DISCOUNT", nil)];
+            
+        }
+
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+        numberFormatter.numberStyle = NSNumberFormatterPercentStyle;
+        NSString *discountString = [numberFormatter stringFromNumber:discount];
+
+        appendString = [NSString stringWithFormat:@": %@", discountString];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+    }
+
+    return detailedText;
     
 }
 
