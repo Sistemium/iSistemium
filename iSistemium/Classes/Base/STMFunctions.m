@@ -99,6 +99,37 @@
     
 }
 
++ (NSString *)dayWithDayOfWeekFromDate:(NSDate *)date {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"dd MMMM yyyy, EEE";
+    
+    NSString *dateString = [dateFormatter stringFromDate:date];
+    
+    NSNumber *numberOfDays = [STMFunctions daysFromTodayToDate:date];
+
+    NSString *dayString = nil;
+    
+    if ([numberOfDays intValue] == 0) {
+        
+        dayString = NSLocalizedString(@"TODAY", nil);
+        
+    } else if ([numberOfDays intValue] == -1) {
+        
+        dayString = NSLocalizedString(@"YESTERDAY", nil);
+        
+    } else if ([numberOfDays intValue] == 1) {
+        
+        dayString = NSLocalizedString(@"TOMORROW", nil);
+        
+    }
+    
+    if (dayString) dateString = [NSString stringWithFormat:@"%@, %@", dateString, [dayString lowercaseString]];
+    
+    return dateString;
+    
+}
+
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString {
     
     if ([phoneNumberString hasPrefix:@"8"]) {

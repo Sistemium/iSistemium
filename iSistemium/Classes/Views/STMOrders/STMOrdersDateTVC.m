@@ -94,8 +94,7 @@
     
     NSDate *date = self.saleOrdersDates[indexPath.row];
     
-    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];    
-    cell.textLabel.text = [dateFormatter stringFromDate:date];
+    cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:date];
     
     return cell;
     

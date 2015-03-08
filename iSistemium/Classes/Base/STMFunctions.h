@@ -30,8 +30,11 @@
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateMediumNoTimeFormatter;
 + (NSDateFormatter *)dateShortNoTimeFormatter;
+
 + (NSNumberFormatter *)decimalFormatter;
 + (NSNumberFormatter *)currencyFormatter;
+
++ (NSString *)dayWithDayOfWeekFromDate:(NSDate *)date;
 
 + (NSString *)MD5FromString:(NSString *)string;
 

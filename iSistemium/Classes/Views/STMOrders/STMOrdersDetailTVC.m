@@ -49,7 +49,7 @@
         NSCompoundPredicate *predicate = [self requestPredicate];
         if (predicate.subpredicates.count > 0) request.predicate = predicate;
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"date" cacheName:nil];
         
         _resultsController.delegate = self;
         
@@ -141,6 +141,27 @@
 
 #pragma mark - Table view data source
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    if (self.resultsController.sections.count > 0) {
+        
+        id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
+        
+        STMSaleOrder *saleOrder = [[sectionInfo objects] lastObject];
+        
+        NSDate *date = saleOrder.date;
+        
+        NSString *dateString = [STMFunctions dayWithDayOfWeekFromDate:date];
+        
+        return dateString;
+        
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
