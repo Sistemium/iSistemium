@@ -14,10 +14,10 @@
     
     [super layoutSubviews];
     
-    UIFont *font = [UIFont systemFontOfSize:18];
+//    UIFont *font = [UIFont systemFontOfSize:18];
     UIColor *backgroundColor = [UIColor clearColor];
     
-    self.infoLabel.font = font;
+//    self.infoLabel.font = font;
     self.infoLabel.textAlignment = NSTextAlignmentRight;
     self.infoLabel.backgroundColor = backgroundColor;
     
@@ -25,7 +25,7 @@
     CGFloat paddingY = 0;
     CGFloat marginX = 10;
     
-    NSDictionary *attributes = @{NSFontAttributeName:font};
+    NSDictionary *attributes = @{NSFontAttributeName:self.infoLabel.font};
     
     CGSize size = [self.infoLabel.text sizeWithAttributes:attributes];
 

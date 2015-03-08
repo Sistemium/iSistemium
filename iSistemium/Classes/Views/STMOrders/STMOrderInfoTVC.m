@@ -152,6 +152,22 @@
     cell = nil;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+//    if (indexPath.section == 1) {
+//        
+//        STMSaleOrderPosition *saleOrderPosition = self.saleOrderPositions[indexPath.row];
+//        STMArticle *article = saleOrderPosition.article;
+//        
+//        NSLog(@"saleOrderPosition %@", saleOrderPosition);
+//        NSLog(@"article %@", article);
+//        
+//    }
+    
+    return indexPath;
+    
+}
+
 - (void)fillOrderInfoCell:(UITableViewCell *)cell forRow:(NSUInteger)row {
     
     switch (row) {
@@ -234,7 +250,7 @@
         cell.infoLabel.text = [NSString stringWithFormat:@"%@ %@", saleOrderPosition.volume, volumeUnitString];
 
     }
-    
+        
 }
 
 - (NSString *)detailedTextForSaleOrderPosition:(STMSaleOrderPosition *)saleOrderPosition {
