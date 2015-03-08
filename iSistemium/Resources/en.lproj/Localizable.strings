@@ -164,3 +164,7 @@
 "DISCOUNT" = "Discount";
 "MARKUP" = "Markup";
 "CLOSE" = "Close";
+"SALESMAN" = "Salesman";
+"DISPATCH DATE" = "Dispatch date";
+"COST" = "Cost";
+"STATUS" = "Status";

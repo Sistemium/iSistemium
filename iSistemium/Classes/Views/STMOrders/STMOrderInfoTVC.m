@@ -124,17 +124,20 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *cellIdentifier = @"orderInfoCell";
+    static NSString *infoCellIdentifier = @"orderInfoCell";
+    static NSString *positionCellIdentifier = @"orderPositionCell";
     
-    STMUIInfoTableViewCell *cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    UITableViewCell *cell;
     
     switch (indexPath.section) {
         case 0:
+            cell = [tableView dequeueReusableCellWithIdentifier:infoCellIdentifier forIndexPath:indexPath];
             [self fillOrderInfoCell:cell forRow:indexPath.row];
             break;
 
         case 1:
-            [self fillOrderPositionCell:cell forRow:indexPath.row];
+            cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:positionCellIdentifier];
+            [self fillOrderPositionCell:(STMUIInfoTableViewCell *)cell forRow:indexPath.row];
             break;
 
         default:
@@ -149,40 +152,40 @@
     cell = nil;
 }
 
-- (void)fillOrderInfoCell:(STMUIInfoTableViewCell *)cell forRow:(NSUInteger)row {
+- (void)fillOrderInfoCell:(UITableViewCell *)cell forRow:(NSUInteger)row {
     
     switch (row) {
         case 0:
-            cell.textLabel.text = self.saleOrder.outlet.partner.name;
-            cell.detailTextLabel.text = self.saleOrder.outlet.shortName;
+            cell.textLabel.text = NSLocalizedString(@"OUTLET", nil);
+            cell.detailTextLabel.text = self.saleOrder.outlet.name;
             break;
 
         case 1:
-            cell.textLabel.text = self.saleOrder.salesman.name;
-            cell.detailTextLabel.text = @"";
+            cell.textLabel.text = NSLocalizedString(@"SALESMAN", nil);
+            cell.detailTextLabel.text = self.saleOrder.salesman.name;
             break;
 
         case 2:
-            cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.saleOrder.date];
-            cell.detailTextLabel.text = @"";
+            cell.textLabel.text = NSLocalizedString(@"DISPATCH DATE", nil);
+            cell.detailTextLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.saleOrder.date];
             break;
 
         case 3:
-            cell.textLabel.text = [[STMFunctions currencyFormatter] stringFromNumber:self.saleOrder.totalCost];
-            cell.detailTextLabel.text = @"";
+            cell.textLabel.text = NSLocalizedString(@"COST", nil);
+            cell.detailTextLabel.text = [[STMFunctions currencyFormatter] stringFromNumber:self.saleOrder.totalCost];
             break;
 
         case 4:
-            cell.textLabel.text = [STMSaleOrderController labelForProcessing:self.saleOrder.processing];
+            cell.textLabel.text = NSLocalizedString(@"STATUS", nil);
+            cell.detailTextLabel.text = [STMSaleOrderController labelForProcessing:self.saleOrder.processing];
             if ([STMSaleOrderController colorForProcessing:self.saleOrder.processing]) {
-                cell.textLabel.textColor =  [STMSaleOrderController colorForProcessing:self.saleOrder.processing];
+                cell.detailTextLabel.textColor =  [STMSaleOrderController colorForProcessing:self.saleOrder.processing];
             }
-            cell.detailTextLabel.text = @"";
             break;
 
         case 5:
-            cell.textLabel.text = self.saleOrder.commentText;
-            cell.detailTextLabel.text = @"";
+            cell.textLabel.text = NSLocalizedString(@"COMMENT", nil);
+            cell.detailTextLabel.text = self.saleOrder.commentText;
             break;
 
         default:
@@ -196,6 +199,7 @@
     STMSaleOrderPosition *saleOrderPosition = self.saleOrderPositions[row];
     
     cell.textLabel.text = saleOrderPosition.article.name;
+    cell.textLabel.font = [UIFont systemFontOfSize:16];
     
     cell.detailTextLabel.text = [self detailedTextForSaleOrderPosition:saleOrderPosition];
     
