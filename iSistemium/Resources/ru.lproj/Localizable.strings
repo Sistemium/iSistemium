@@ -156,5 +156,7 @@
 "1POSITIONS" = "позиция";
 "2POSITIONS" = "позиции";
 "5POSITIONS" = "позиций";
+"ORDER INFO" = "Данные заказа";
+"ORDER POSITIONS" = "Позиции заказа";
 
 
