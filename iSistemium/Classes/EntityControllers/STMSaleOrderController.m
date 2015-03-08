@@ -43,10 +43,14 @@
         
         NSData *workflowData = [workflow dataUsingEncoding:NSUTF8StringEncoding];
         
-        NSError *error;
-        NSDictionary *workflowJSON = [NSJSONSerialization JSONObjectWithData:workflowData options:NSJSONReadingMutableContainers error:&error];
-        
-        _workflow = workflowJSON[@"processing"];
+        if (workflowData) {
+            
+            NSError *error;
+            NSDictionary *workflowJSON = [NSJSONSerialization JSONObjectWithData:workflowData options:NSJSONReadingMutableContainers error:&error];
+            
+            _workflow = workflowJSON[@"processing"];
+            
+        }
         
     }
     return _workflow;
