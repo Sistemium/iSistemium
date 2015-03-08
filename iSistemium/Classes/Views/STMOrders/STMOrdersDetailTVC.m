@@ -8,6 +8,7 @@
 
 #import "STMOrdersDetailTVC.h"
 #import "STMOrdersSVC.h"
+#import "STMSaleOrderController.h"
 
 @interface STMOrdersDetailTVC ()
 
@@ -150,13 +151,17 @@
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
-    
     cell.textLabel.text = [dateFormatter stringFromDate:saleOrder.date];
+    
     cell.detailTextLabel.text = saleOrder.outlet.name;
     
-    NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
+//    NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
+//    cell.infoLabel.text = [currencyFormatter stringFromNumber:saleOrder.totalCost];
+
+    NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
     
-    cell.infoLabel.text = [currencyFormatter stringFromNumber:saleOrder.totalCost];
+    cell.infoLabel.text = processingLabel;
+    cell.infoLabel.textColor = [UIColor redColor];
     
     return cell;
     
@@ -166,6 +171,14 @@
     cell = nil;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+//    STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
+//    NSLog(@"saleOrder.processing %@", saleOrder.processing);
+    
+    return indexPath;
+    
+}
 
 #pragma mark - view lifecycle
 

@@ -36,7 +36,7 @@
     
     if (!_masterTVC) {
         
-#warning possible get wrong masterTVC
+#warning Possible get wrong masterTVC
         
         UINavigationController *navController = (UINavigationController *)self.viewControllers[0];
         
