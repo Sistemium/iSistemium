@@ -9,10 +9,14 @@
 #import "STMOrdersDetailTVC.h"
 #import "STMOrdersSVC.h"
 #import "STMSaleOrderController.h"
+#import "STMOrderInfoNC.h"
 
-@interface STMOrdersDetailTVC ()
+@interface STMOrdersDetailTVC () <UIPopoverControllerDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
+@property (nonatomic, strong) UIPopoverController *orderInfoPopover;
+@property (nonatomic) BOOL orderInfoPopoverIsVisible;
+@property (nonatomic, strong) STMSaleOrder *selectedOrder;
 
 
 @end
@@ -139,6 +143,72 @@
 }
 
 
+#pragma mark - articleInfo popover
+
+- (UIPopoverController *)orderInfoPopover {
+    
+    if (!_orderInfoPopover) {
+        
+        STMOrderInfoNC *orderInfoNC = [self.storyboard instantiateViewControllerWithIdentifier:@"orderInfoNC"];
+        orderInfoNC.parentVC = self;
+        orderInfoNC.saleOrder = self.selectedOrder;
+        
+        _orderInfoPopover = [[UIPopoverController alloc] initWithContentViewController:orderInfoNC];
+        _orderInfoPopover.delegate = self;
+        
+    }
+    return _orderInfoPopover;
+    
+}
+
+- (void)showOrderInfoPopover {
+    
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    [self.orderInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+    
+}
+
+- (void)dismissOrderInfoPopover {
+    
+    [self.orderInfoPopover dismissPopoverAnimated:YES];
+    self.orderInfoPopover = nil;
+    
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    if (self.orderInfoPopoverIsVisible) {
+        
+        [self showOrderInfoPopover];
+        self.orderInfoPopoverIsVisible = NO;
+        
+    }
+    
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    
+    if (self.orderInfoPopover.popoverVisible) {
+        
+        self.orderInfoPopoverIsVisible = YES;
+        [self dismissOrderInfoPopover];
+        
+    }
+    
+}
+
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    return YES;
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    self.orderInfoPopover = nil;
+}
+
+
 #pragma mark - Table view data source
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -205,8 +275,9 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
-//    NSLog(@"saleOrder.processing %@", saleOrder.processing);
+    self.selectedOrder = [self.resultsController objectAtIndexPath:indexPath];
+
+    [self showOrderInfoPopover];
     
     return indexPath;
     
