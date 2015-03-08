@@ -152,4 +152,8 @@
 "1ORDERS" = "order";
 "2ORDERS" = "orders";
 "5ORDERS" = "orders";
+"0POSITIONS" = "no positions";
+"1POSITIONS" = "position";
+"2POSITIONS" = "positions";
+"5POSITIONS" = "positions";
 

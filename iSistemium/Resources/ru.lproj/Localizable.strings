@@ -152,5 +152,9 @@
 "1ORDERS" = "заказ";
 "2ORDERS" = "заказа";
 "5ORDERS" = "заказов";
+"0POSITIONS" = "нет позиций";
+"1POSITIONS" = "позиция";
+"2POSITIONS" = "позиции";
+"5POSITIONS" = "позиций";
 
 

@@ -171,13 +171,19 @@
 
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
-    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
-    cell.textLabel.text = [dateFormatter stringFromDate:saleOrder.date];
+    cell.textLabel.text = saleOrder.outlet.name;
     
-    cell.detailTextLabel.text = saleOrder.outlet.name;
+    NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
+    NSString *totalCostString = [currencyFormatter stringFromNumber:saleOrder.totalCost];
     
-//    NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
-//    cell.infoLabel.text = [currencyFormatter stringFromNumber:saleOrder.totalCost];
+    NSUInteger positionsCount = saleOrder.saleOrderPositions.count;
+    NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];
+    NSString *positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
+    
+//    NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.outlet.shortName];
+    NSString *detailText = [NSString stringWithFormat:@"%@, %@", totalCostString, positionsCountString];
+
+    cell.detailTextLabel.text = detailText;
 
     NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
     
