@@ -103,7 +103,7 @@
             break;
 
         case 2:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] init];
+            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
             break;
             
         default:

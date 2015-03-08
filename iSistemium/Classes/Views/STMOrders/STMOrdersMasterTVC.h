@@ -11,10 +11,10 @@
 
 @interface STMOrdersMasterTVC : STMFetchedResultsControllerTVC
 
+@property (nonatomic, weak) STMOrdersSVC *splitVC;
 @property (nonatomic) NSUInteger index;
+@property (nonatomic, strong) NSString *sectionNameKeyPath;
 
 - (NSFetchRequest *)fetchRequest;
-@property (nonatomic, weak) STMOrdersSVC *splitVC;
-
 
 @end

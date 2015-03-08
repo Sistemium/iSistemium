@@ -27,6 +27,8 @@
     
     request.predicate = [NSPredicate predicateWithFormat:@"saleOrders.@count > 0"];
     
+    self.sectionNameKeyPath = @"partner.name";
+    
     return request;
     
 }
@@ -42,8 +44,15 @@
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = outlet.partner.name;
-    cell.detailTextLabel.text = outlet.shortName;
+    cell.textLabel.text = outlet.shortName;
+    
+    NSUInteger count = outlet.saleOrders.count;
+    NSString *pluralType = [STMFunctions pluralTypeForCount:count];
+    NSString *ordersString = [pluralType stringByAppendingString:@"ORDERS"];
+    
+    NSString *ordersCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(ordersString, nil)];
+    
+    cell.detailTextLabel.text = ordersCountString;
     
     return cell;
     

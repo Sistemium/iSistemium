@@ -319,7 +319,7 @@
 
 + (UIColor *)colorForColorString:(NSString *)colorSting {
     
-    NSString *selectorString = [[colorSting lowercaseString] stringByAppendingString:@"Color"];
+    NSString *selectorString = [colorSting stringByAppendingString:@"Color"];
     
     SEL selector = NSSelectorFromString(selectorString);
     
@@ -338,28 +338,6 @@
         
     }
         
-//    if ([colorSting caseInsensitiveCompare:@"blue"] == NSOrderedSame) {
-//        
-//        return [UIColor blueColor];
-//        
-//    } else if ([colorSting caseInsensitiveCompare:@"red"] == NSOrderedSame) {
-//        
-//        return [UIColor redColor];
-//        
-//    } else if ([colorSting caseInsensitiveCompare:@"orange"] == NSOrderedSame) {
-//        
-//        return [UIColor orangeColor];
-//        
-//    } else if ([colorSting caseInsensitiveCompare:@"green"] == NSOrderedSame) {
-//        
-//        return [UIColor greenColor];
-//        
-//    } else {
-//        
-//        return nil;
-//        
-//    }
-    
 }
 
 

@@ -40,7 +40,7 @@
         
         NSFetchRequest *request = [self fetchRequest];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:self.sectionNameKeyPath cacheName:nil];
         
         _resultsController.delegate = self;
         
