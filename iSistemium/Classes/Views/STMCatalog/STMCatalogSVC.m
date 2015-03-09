@@ -36,8 +36,6 @@
     
     if (!_masterTVC) {
         
-//TODO: Possible get wrong masterTVC
-        
         UINavigationController *navController = (UINavigationController *)self.viewControllers[0];
         
         UIViewController *masterTVC = navController.viewControllers[0];
@@ -47,7 +45,6 @@
         }
         
     }
-    
     return _masterTVC;
     
 }
