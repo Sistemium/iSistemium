@@ -16,16 +16,32 @@
 
 @interface STMOrdersMasterPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
+@property (nonatomic, weak) STMOrdersSVC *splitVC;
+
 @property (nonatomic, strong) UISegmentedControl *segmentedControl;
 
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
+@property (nonatomic, strong) UIBarButtonItem *resetFilterButton;
 
 @end
 
 
 @implementation STMOrdersMasterPVC
+
+- (STMOrdersSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMOrdersSVC class]]) {
+            _splitVC = (STMOrdersSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (UISegmentedControl *)segmentedControl {
  
@@ -57,6 +73,34 @@
     }
 
     [self rewindToIndex:self.segmentedControl.selectedSegmentIndex direction:direction];
+    
+}
+
+- (UIBarButtonItem *)resetFilterButton {
+    
+    if (!_resetFilterButton) {
+
+        _resetFilterButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"RESET FILTER", nil) style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
+
+    }
+    return _resetFilterButton;
+    
+}
+
+- (void)resetFilter {
+    
+    self.splitVC.selectedDate = nil;
+    self.splitVC.selectedOutlet = nil;
+    self.splitVC.selectedSalesman = nil;
+    
+    STMOrdersMasterTVC *masterTVC = self.viewControllers[0];
+    [masterTVC resetFilter];
+    
+}
+
+- (void)updateResetFilterButtonState {
+    
+    self.resetFilterButton.enabled = (self.splitVC.selectedDate || self.splitVC.selectedOutlet || self.splitVC.selectedSalesman);
     
 }
 
@@ -165,6 +209,11 @@
     STMOrdersMasterTVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
+    
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [self setToolbarItems:@[flexibleSpace, self.resetFilterButton, flexibleSpace]];
+    
+    [self updateResetFilterButtonState];
     
 }
 

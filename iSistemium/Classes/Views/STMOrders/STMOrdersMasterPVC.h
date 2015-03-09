@@ -10,4 +10,7 @@
 
 @interface STMOrdersMasterPVC : UIPageViewController
 
+- (void)updateResetFilterButtonState;
+
+
 @end

@@ -49,20 +49,27 @@
 - (void)setSelectedDate:(NSDate *)selectedDate {
 
     _selectedDate = selectedDate;
-    [self.detailTVC refreshTable];
+    [self stateUpdate];
     
 }
 
 - (void)setSelectedOutlet:(STMOutlet *)selectedOutlet {
     
     _selectedOutlet = selectedOutlet;
-    [self.detailTVC refreshTable];
+    [self stateUpdate];
     
 }
 
 - (void)setSelectedSalesman:(STMSalesman *)selectedSalesman {
     
     _selectedSalesman = selectedSalesman;
+    [self stateUpdate];
+    
+}
+
+- (void)stateUpdate {
+    
+    [self.masterPVC updateResetFilterButtonState];
     [self.detailTVC refreshTable];
     
 }

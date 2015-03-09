@@ -16,5 +16,6 @@
 @property (nonatomic, strong) NSString *sectionNameKeyPath;
 
 - (NSFetchRequest *)fetchRequest;
+- (void)resetFilter;
 
 @end

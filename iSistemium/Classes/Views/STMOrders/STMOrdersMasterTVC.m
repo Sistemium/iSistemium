@@ -67,6 +67,12 @@
     
 }
 
+- (void)resetFilter {
+    
+    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+}
 
 #pragma mark - view lifecycle
 
