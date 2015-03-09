@@ -248,8 +248,7 @@
     NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];
     NSString *positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
     
-//    NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.outlet.shortName];
-    NSString *detailText = [NSString stringWithFormat:@"%@, %@", totalCostString, positionsCountString];
+    NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
 
     cell.detailTextLabel.text = detailText;
 

@@ -262,9 +262,13 @@
     NSString *detailedText = @"";
     NSString *appendString = @"";
     
+    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    appendString = [NSString stringWithFormat:@"%@%@", saleOrderPosition.article.pieceVolume, volumeUnitString];
+    detailedText = [detailedText stringByAppendingString:appendString];
+    
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
-    appendString = NSLocalizedString(@"PRICE0", nil);
+    appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE0", nil)];
     detailedText = [detailedText stringByAppendingString:appendString];
     
     appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price0]];
