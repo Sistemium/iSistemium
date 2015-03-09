@@ -609,6 +609,10 @@
     
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [self.view endEditing:NO];
+}
+
 
 #pragma mark - keyboard show / hide
 
@@ -668,8 +672,6 @@
 }
 
 - (void)moveTextFieldViewByDictance:(CGFloat)distance {
-    
-//TODO: Unnecessary down movement if comment isFirstResponder and rotate device from landscape to portrait and back to landscape
     
     const float movementDuration = 0.3f;
     
