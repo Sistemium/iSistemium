@@ -669,7 +669,7 @@
 
 - (void)moveTextFieldViewByDictance:(CGFloat)distance {
     
-#warning Unnecessary down movement if comment isFirstResponder and rotate device from landscape to portrait and back to landscape
+//TODO: Unnecessary down movement if comment isFirstResponder and rotate device from landscape to portrait and back to landscape
     
     const float movementDuration = 0.3f;
     
