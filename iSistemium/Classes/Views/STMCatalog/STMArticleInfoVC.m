@@ -18,7 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *factorLabel;
 @property (weak, nonatomic) IBOutlet UILabel *packageLabel;
 @property (weak, nonatomic) IBOutlet UILabel *codeLabel;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
+//@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 
 
 @end
@@ -26,7 +26,7 @@
 
 @implementation STMArticleInfoVC
 
-- (IBAction)cancelButtonPressed:(id)sender {
+- (void)closeButtonPressed {
     [self.parentVC dismissArticleInfoPopover];
 }
 
@@ -90,6 +90,24 @@
 
 }
 
+- (void)setupToolbar {
+    
+    CGFloat height = 44;
+    CGFloat width = self.view.frame.size.width;
+    CGFloat x = self.view.frame.origin.x;
+    CGFloat y = self.view.frame.size.height - height;
+    
+    CGRect frame = CGRectMake(x, y, width, height);
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:frame];
+    
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
+    
+    [toolbar setItems:@[flexibleSpace, closeButton]];
+
+    [self.view addSubview:toolbar];
+    
+}
 
 #pragma mark - view lifecycle
 
@@ -108,6 +126,17 @@
 
     [super viewDidLoad];
     [self customInit];
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self setupToolbar];
 
 }
 

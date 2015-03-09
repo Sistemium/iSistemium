@@ -62,7 +62,7 @@
 }
 
 
-- (void)cancelButtonPressed {
+- (void)closeButtonPressed {
     [self.parentNC cancelButtonPressed];
 }
 
@@ -313,10 +313,9 @@
 - (void)customInit {
     
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonPressed)];
-//    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed)];
+    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
 
-    [self setToolbarItems:@[flexibleSpace, cancelButton]];
+    [self setToolbarItems:@[flexibleSpace, closeButton]];
 
 }
 
