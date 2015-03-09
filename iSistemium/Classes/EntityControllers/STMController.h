@@ -13,6 +13,7 @@
 #import "STMEntityDescription.h"
 #import "STMFunctions.h"
 #import "STMConstants.h"
+#import "STMAuthController.h"
 
 @interface STMController : NSObject
 

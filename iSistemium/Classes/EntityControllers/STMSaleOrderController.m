@@ -17,8 +17,6 @@
 
 @implementation STMSaleOrderController
 
-//TODO: should be destroyed if session changed?
-
 + (STMSaleOrderController *)sharedInstance {
     
     static dispatch_once_t pred = 0;
@@ -30,6 +28,34 @@
     
     return _sharedInstance;
     
+}
+
+- (instancetype)init {
+    
+    self = [super init];
+    
+    if (self) [self addObservers];
+    return self;
+    
+}
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(authStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
+    
+}
+
+- (void)authStateChanged {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        self.workflow = nil;
+    }
+
 }
 
 - (NSDictionary *)workflow {

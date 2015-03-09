@@ -45,8 +45,6 @@
 @synthesize secretKey = _secretKey;
 
 
-//TODO: should be destroyed if session changed?
-
 + (STMPicturesController *)sharedController {
     
     static dispatch_once_t pred = 0;
@@ -65,6 +63,45 @@
 
 
 #pragma mark - instance properties
+
+- (instancetype)init {
+    
+    self = [super init];
+    
+    if (self) [self addObservers];
+    return self;
+    
+}
+
+- (void)addObservers {
+ 
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(authStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
+
+}
+
+- (void)authStateChanged {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        
+        self.downloadQueue = nil;
+        self.uploadQueue = nil;
+        self.hrefDictionary = nil;
+        self.secondAttempt = nil;
+        self.s3keychainItem = nil;
+        self.accessKey = nil;
+        self.secretKey = nil;
+        self.s3Initialized = NO;
+        self.session = nil;
+        self.settings = nil;
+        
+    }
+    
+}
 
 - (STMSession *)session {
     
