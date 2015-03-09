@@ -17,6 +17,8 @@
 
 @implementation STMSaleOrderController
 
+//TODO: should be destroyed if session changed?
+
 + (STMSaleOrderController *)sharedInstance {
     
     static dispatch_once_t pred = 0;

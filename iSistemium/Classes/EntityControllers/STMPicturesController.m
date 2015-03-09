@@ -45,6 +45,8 @@
 @synthesize secretKey = _secretKey;
 
 
+//TODO: should be destroyed if session changed?
+
 + (STMPicturesController *)sharedController {
     
     static dispatch_once_t pred = 0;

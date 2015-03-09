@@ -17,6 +17,8 @@
 
 @implementation STMUncashingPlaceController
 
+//TODO: should be destroyed if session changed?
+
 + (STMUncashingPlaceController *)sharedController {
     
     static dispatch_once_t pred = 0;
