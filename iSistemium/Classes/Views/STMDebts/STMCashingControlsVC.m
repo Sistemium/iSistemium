@@ -119,16 +119,11 @@
         
         _selectedDebt = selectedDebt;
 
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-        numberFormatter.minimumFractionDigits = 2;
+        NSNumberFormatter *numberFormatter = [STMFunctions decimalMinTwoDigitFormatter];
 
         if (selectedDebt) {
             
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            dateFormatter.dateStyle = NSDateFormatterShortStyle;
-            dateFormatter.timeStyle = NSDateFormatterNoStyle;
-            
+            NSDateFormatter *dateFormatter = [STMFunctions dateShortNoTimeFormatter];
             NSString *debtDate = [dateFormatter stringFromDate:selectedDebt.date];
             
             self.debtInfoLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
@@ -172,9 +167,7 @@
 
 - (void)refreshDateButtonTitle {
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterLongStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    NSDateFormatter *dateFormatter = [STMFunctions dateLongNoTimeFormatter];
     
     [self.dateButton setTitle:[dateFormatter stringFromDate:[STMCashingProcessController sharedInstance].selectedDate] forState:UIControlStateNormal];
     
@@ -222,10 +215,7 @@
     
     if ([self.selectedDebt isEqual:debt]) {
         
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-        numberFormatter.minimumFractionDigits = 2;
-
+        NSNumberFormatter *numberFormatter = [STMFunctions decimalMinTwoDigitFormatter];
         self.debtSummTextField.text = [numberFormatter stringFromNumber:cashingSum];
         
     }
@@ -300,8 +290,7 @@
     
     self.remainderLabel.hidden = NO;
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
     NSString *remainderSumString = [numberFormatter stringFromNumber:[STMCashingProcessController sharedInstance].remainderSumm];
     
@@ -312,8 +301,7 @@
 
         NSDecimalNumber *fillingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[self.selectedDebt.xid][1];
         
-        numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-        numberFormatter.minimumFractionDigits = 2;
+        numberFormatter = [STMFunctions decimalMinTwoDigitFormatter];
         self.debtSummTextField.text = [numberFormatter stringFromNumber:fillingSum];
         
     }
@@ -336,8 +324,7 @@
     
     NSDecimalNumber *sum = [[STMCashingProcessController sharedInstance] debtsSumm];
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     NSString *sumString = [numberFormatter stringFromNumber:sum];
     self.summLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PICKED", nil), sumString];
 
@@ -372,10 +359,7 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    numberFormatter.minimumFractionDigits = 2;
-    numberFormatter.maximumFractionDigits = 2;
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoMinTwoDigitFormatter];
     
     if ([textField isEqual:self.debtSummTextField]) {
         
@@ -420,7 +404,7 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 
-    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoDigitFormatter];
 
     NSMutableString *text = [textField.text mutableCopy];
     [text replaceCharactersInRange:range withString:string];
@@ -453,7 +437,7 @@
 
 - (void)fillTextField:(UITextField *)textField withText:(NSString *)text {
     
-    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoDigitFormatter];
 
     NSNumber *number = [numberFormatter numberFromString:text];
     
@@ -505,9 +489,7 @@
 
 - (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
     NSNumber *number = [numberFormatter numberFromString:textField.text];
     
     return [number boolValue];
@@ -743,8 +725,7 @@
     
     self.selectedDate = [NSDate date];
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
     self.cashingSumLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"CASHING SUMM", nil), @""];
     

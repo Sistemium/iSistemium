@@ -41,11 +41,28 @@
     
 }
 
-+ (NSDateFormatter *)dateMediumNoTimeFormatter {
++ (NSDateFormatter *)dateNumbersFormatter {
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.dateFormat = @"yyyy/MM/dd";
+
+    return dateFormatter;
+    
+}
+
++ (NSDateFormatter *)dateNoTimeFormatter {
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    
+    return dateFormatter;
+
+}
+
++ (NSDateFormatter *)dateMediumNoTimeFormatter {
+    
+    NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
 
     return dateFormatter;
     
@@ -53,9 +70,8 @@
 
 + (NSDateFormatter *)dateShortNoTimeFormatter {
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
     dateFormatter.dateStyle = NSDateFormatterShortStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
     
     return dateFormatter;
     
@@ -71,20 +87,55 @@
 
 }
 
++ (NSDateFormatter *)dateLongNoTimeFormatter {
+    
+    NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
+    
+    return dateFormatter;
+    
+}
+
 + (NSNumberFormatter *)trueMinusFormatter {
 
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.minusSign = @"\u2212"; // U+2212 MINUS SIGN
+    numberFormatter.minusSign = @"\u2212"; // U+2212 TRUE MINUS SIGN
     
     return numberFormatter;
 
 }
 
 + (NSNumberFormatter *)decimalFormatter {
-    
+
     NSNumberFormatter *numberFormatter = [self trueMinusFormatter];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    return numberFormatter;
+
+}
+
++ (NSNumberFormatter *)decimalMaxTwoDigitFormatter {
+    
+    NSNumberFormatter *numberFormatter = [self decimalFormatter];
     numberFormatter.maximumFractionDigits = 2;
+
+    return numberFormatter;
+    
+}
+
++ (NSNumberFormatter *)decimalMinTwoDigitFormatter {
+
+    NSNumberFormatter *numberFormatter = [self decimalFormatter];
+    numberFormatter.minimumFractionDigits = 2;
+    
+    return numberFormatter;
+
+}
+
++ (NSNumberFormatter *)decimalMaxTwoMinTwoDigitFormatter {
+    
+    NSNumberFormatter *numberFormatter = [self decimalMaxTwoDigitFormatter];
+    numberFormatter.minimumFractionDigits = 2;
 
     return numberFormatter;
     
@@ -113,9 +164,7 @@
     
     NSDate *today = [NSDate date];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterShortStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    NSDateFormatter *dateFormatter = [self dateShortNoTimeFormatter];
     
     today = [dateFormatter dateFromString:[dateFormatter stringFromDate:today]];
     date = [dateFormatter dateFromString:[dateFormatter stringFromDate:date]];

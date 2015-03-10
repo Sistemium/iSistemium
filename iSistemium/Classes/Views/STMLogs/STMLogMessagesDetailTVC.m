@@ -9,6 +9,7 @@
 #import "STMLogMessagesDetailTVC.h"
 #import <CoreData/CoreData.h>
 #import "STMLogMessage+dayAsString.h"
+#import "STMFunctions.h"
 
 @interface STMLogMessagesDetailTVC ()
 
@@ -24,9 +25,7 @@
     
     if (!_selectedDate) {
         
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateStyle = NSDateFormatterShortStyle;
-        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        NSDateFormatter *dateFormatter = [STMFunctions dateShortNoTimeFormatter];
         NSString *stringDate = [dateFormatter stringFromDate:[NSDate date]];
         
         _selectedDate = [dateFormatter dateFromString:stringDate];
@@ -94,9 +93,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailLogCell" forIndexPath:indexPath];
     
-    NSDateFormatter *startDateFormatter = [[NSDateFormatter alloc] init];
-    [startDateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    [startDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    NSDateFormatter *startDateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
     
     STMLogMessage *logMessage = [self.resultsController objectAtIndexPath:indexPath];
     

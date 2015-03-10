@@ -123,8 +123,7 @@
 
 - (NSMutableAttributedString *)textLabelForDebt:(STMDebt *)debt withFont:(UIFont *)font {
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
     NSString *debtSumString = [numberFormatter stringFromNumber:debt.calculatedSum];
     
@@ -286,12 +285,9 @@
 
     cell.textLabel.attributedText = [self textLabelForDebt:debt withFont:cell.textLabel.font];
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
     
     NSString *debtDate = [dateFormatter stringFromDate:debt.date];
     NSString *debtSumOriginString = [numberFormatter stringFromNumber:debt.summOrigin];

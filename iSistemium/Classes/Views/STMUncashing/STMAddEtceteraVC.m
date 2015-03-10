@@ -61,10 +61,7 @@
         
         _selectedDate = selectedDate;
         
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.timeStyle = NSDateFormatterNoStyle;
-        dateFormatter.dateStyle = NSDateFormatterLongStyle;
-        
+        NSDateFormatter *dateFormatter = [STMFunctions dateLongNoTimeFormatter];
         [self.dateButton setTitle:[dateFormatter stringFromDate:_selectedDate] forState:UIControlStateNormal];
         
     }
@@ -234,10 +231,7 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    numberFormatter.minimumFractionDigits = 2;
-    numberFormatter.maximumFractionDigits = 2;
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoMinTwoDigitFormatter];
     
     if ([textField isEqual:self.sumTextField]) {
         
@@ -277,7 +271,7 @@
     
     if ([textField isEqual:self.sumTextField]) {
         
-        NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+        NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoDigitFormatter];
         
         NSMutableString *text = [textField.text mutableCopy];
         [text replaceCharactersInRange:range withString:string];
@@ -311,7 +305,7 @@
 
 - (void)fillTextField:(UITextField *)textField withText:(NSString *)text {
     
-    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoDigitFormatter];
     
     NSNumber *number = [numberFormatter numberFromString:text];
     
@@ -365,9 +359,7 @@
 
 - (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
     NSNumber *number = [numberFormatter numberFromString:textField.text];
     
     return [number boolValue];
@@ -394,9 +386,7 @@
 
 - (void)customInit {
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
-    dateFormatter.dateStyle = NSDateFormatterLongStyle;
+    NSDateFormatter *dateFormatter = [STMFunctions dateLongNoTimeFormatter];
     
     [self.dateButton setTitle:[dateFormatter stringFromDate:self.selectedDate] forState:UIControlStateNormal];
     

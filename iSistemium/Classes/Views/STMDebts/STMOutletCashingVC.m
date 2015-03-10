@@ -226,9 +226,7 @@
         
     }
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-    numberFormatter.minimumFractionDigits = 2;
+    NSNumberFormatter *numberFormatter = [STMFunctions decimalMinTwoDigitFormatter];
 
     NSString *sumString = [numberFormatter stringFromNumber:summ];
     
@@ -245,8 +243,7 @@
     STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
     
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
 
     NSString *sumString = [[numberFormatter stringFromNumber:cashing.summ] stringByAppendingString:@" "];
 
@@ -274,10 +271,7 @@
     cell.textLabel.attributedText = text;
     
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
-    
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];    
     NSString *debtDate = [dateFormatter stringFromDate:cashing.debt.date];
     
     NSString *summOriginString = [numberFormatter stringFromNumber:cashing.debt.summOrigin];

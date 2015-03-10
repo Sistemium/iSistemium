@@ -392,12 +392,7 @@
 }
 
 - (void)doneButtonPressed {
-    
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-    
     [self.view endEditing:NO];
-    
 }
 
 - (void)cancelUncashingProcessButtonPressed {
@@ -677,9 +672,8 @@
         
     }
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
-    
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+
     self.uncashingSumLabel.text = [numberFormatter stringFromNumber:uncashingSum];
     
     self.uncashingSum = uncashingSum;
@@ -950,9 +944,7 @@
     
     self.title = NSLocalizedString(@"HANDOVERING", nil);
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterLongStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    NSDateFormatter *dateFormatter = [STMFunctions dateLongNoTimeFormatter];
     
     self.dateLabel.text = [dateFormatter stringFromDate:[NSDate date]];
     

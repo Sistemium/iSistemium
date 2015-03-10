@@ -10,6 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "STMLogMessage+dayAsString.h"
 #import "STMLogMessagesSVC.h"
+#import "STMFunctions.h"
 
 @interface STMLogMessagesMasterTVC ()
 
@@ -101,13 +102,11 @@
 
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][indexPath.row];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy/MM/dd";
+    NSDateFormatter *dateFormatter = [STMFunctions dateNumbersFormatter];
     
     NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
     
-    dateFormatter.dateStyle = NSDateFormatterLongStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    dateFormatter = [STMFunctions dateLongNoTimeFormatter];
     
     cell.textLabel.text = [dateFormatter stringFromDate:date];
     
@@ -119,8 +118,7 @@
 
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][indexPath.row];
 
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy/MM/dd";
+    NSDateFormatter *dateFormatter = [STMFunctions dateNumbersFormatter];
     
     NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
     

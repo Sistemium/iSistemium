@@ -28,11 +28,16 @@
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
 + (STMDateFormatter *)dateFormatter;
-+ (NSDateFormatter *)dateMediumNoTimeFormatter;
++ (NSDateFormatter *)dateNumbersFormatter;
 + (NSDateFormatter *)dateShortNoTimeFormatter;
++ (NSDateFormatter *)dateMediumNoTimeFormatter;
 + (NSDateFormatter *)dateMediumTimeMediumFormatter;
++ (NSDateFormatter *)dateLongNoTimeFormatter;
 
 + (NSNumberFormatter *)decimalFormatter;
++ (NSNumberFormatter *)decimalMaxTwoDigitFormatter;
++ (NSNumberFormatter *)decimalMinTwoDigitFormatter;
++ (NSNumberFormatter *)decimalMaxTwoMinTwoDigitFormatter;
 + (NSNumberFormatter *)currencyFormatter;
 + (NSNumberFormatter *)percentFormatter;
 

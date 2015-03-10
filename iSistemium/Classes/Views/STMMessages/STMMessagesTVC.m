@@ -151,9 +151,7 @@
 
     STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
     
     cell.textLabel.text = [dateFormatter stringFromDate:message.cts];
     cell.detailTextLabel.text = message.body;
