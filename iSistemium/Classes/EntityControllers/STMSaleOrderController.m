@@ -47,6 +47,11 @@
            selector:@selector(authStateChanged)
                name:@"authControllerStateChanged"
              object:[STMAuthController authController]];
+
+    [nc addObserver:self
+           selector:@selector(workflowDidChange:)
+               name:@"workflowDidChange"
+             object:[STMSaleOrderController saleOrderEntity]];
     
 }
 
@@ -58,16 +63,15 @@
 
 }
 
+- (void)workflowDidChange:(NSNotification *)notification {
+    self.workflow = nil;
+}
+
 - (NSDictionary *)workflow {
     
     if (!_workflow) {
         
-        NSString *entityName = NSStringFromClass([STMSaleOrder class]);
-        entityName = [entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
-        
-        STMEntity *saleOrderEntity = [STMEntityController entityWithName:entityName];
-        
-        NSString *workflow = saleOrderEntity.workflow;
+        NSString *workflow = [STMSaleOrderController saleOrderEntity].workflow;
         
         NSData *workflowData = [workflow dataUsingEncoding:NSUTF8StringEncoding];
         
@@ -85,6 +89,16 @@
     
 }
 
++ (STMEntity *)saleOrderEntity {
+    
+    NSString *entityName = NSStringFromClass([STMSaleOrder class]);
+    entityName = [entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
+    
+    STMEntity *saleOrderEntity = [STMEntityController entityWithName:entityName];
+    
+    return saleOrderEntity;
+    
+}
 
 + (NSString *)labelForProcessing:(NSString *)processing {
 
