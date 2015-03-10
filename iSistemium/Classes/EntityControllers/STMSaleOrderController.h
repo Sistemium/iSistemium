@@ -16,4 +16,5 @@
 + (NSString *)labelForProcessing:(NSString *)processing;
 + (UIColor *)colorForProcessing:(NSString *)processing;
 
+
 @end

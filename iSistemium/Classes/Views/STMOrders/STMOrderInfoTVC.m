@@ -299,8 +299,8 @@
 
         NSDecimalNumber *discount = [result decimalNumberByRoundingAccordingToBehavior:behavior];
         
-        numberFormatter.numberStyle = NSNumberFormatterPercentStyle;
-        numberFormatter.positivePrefix = @"+";
+        numberFormatter = [STMFunctions percentFormatter];
+
         NSString *discountString = [numberFormatter stringFromNumber:discount];
         
         appendString = [NSString stringWithFormat:@", %@", discountString];

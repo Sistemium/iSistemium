@@ -71,9 +71,18 @@
 
 }
 
++ (NSNumberFormatter *)trueMinusFormatter {
+
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.minusSign = @"\u2212"; // U+2212 MINUS SIGN
+    
+    return numberFormatter;
+
+}
+
 + (NSNumberFormatter *)decimalFormatter {
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    NSNumberFormatter *numberFormatter = [self trueMinusFormatter];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
     numberFormatter.maximumFractionDigits = 2;
 
@@ -83,9 +92,19 @@
 
 + (NSNumberFormatter *)currencyFormatter {
     
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    NSNumberFormatter *numberFormatter = [self trueMinusFormatter];
     numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
     
+    return numberFormatter;
+    
+}
+
++ (NSNumberFormatter *)percentFormatter {
+    
+    NSNumberFormatter *numberFormatter = [self trueMinusFormatter];
+    numberFormatter.numberStyle = NSNumberFormatterPercentStyle;
+    numberFormatter.positivePrefix = @"+";
+
     return numberFormatter;
     
 }

@@ -34,6 +34,7 @@
 
 + (NSNumberFormatter *)decimalFormatter;
 + (NSNumberFormatter *)currencyFormatter;
++ (NSNumberFormatter *)percentFormatter;
 
 + (NSString *)dayWithDayOfWeekFromDate:(NSDate *)date;
 
