@@ -11,13 +11,16 @@
 #import "STMSaleOrderController.h"
 #import "STMOrderInfoNC.h"
 
-@interface STMOrdersDetailTVC () <UIPopoverControllerDelegate>
+@interface STMOrdersDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
 @property (nonatomic, strong) UIPopoverController *orderInfoPopover;
-@property (nonatomic) BOOL orderInfoPopoverIsVisible;
+@property (nonatomic) BOOL orderInfoPopoverWasVisible;
 @property (nonatomic, strong) STMSaleOrder *selectedOrder;
-
+@property (nonatomic, strong) STMSaleOrder *processingOrder;
+@property (nonatomic ,strong) NSArray *processingRoutes;
+@property (nonatomic, strong) UIActionSheet *routesActionSheet;
+@property (nonatomic) BOOL routesActionSheetWasVisible;
 
 @end
 
@@ -147,22 +150,72 @@
     if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
         
         UITapGestureRecognizer *tap = (UITapGestureRecognizer *)sender;
-        UIView *checkView = tap.view.superview.superview.superview;
+        UIView *checkView = tap.view.superview.superview;
 
-        if ([checkView isKindOfClass:[STMUITableViewCell class]]) {
+        if ([checkView isKindOfClass:[STMUIInfoTableViewCell class]]) {
                 
-            STMUITableViewCell *cell = (STMUITableViewCell *)checkView;
+            STMUIInfoTableViewCell *cell = (STMUIInfoTableViewCell *)checkView;
             NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
             
             STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
             
-            NSArray *routes = [STMSaleOrderController availableRoutesForProcessing:saleOrder.processing];
-            
-            NSLog(@"routes %@", routes);
+            self.processingRoutes = [STMSaleOrderController availableRoutesForProcessing:saleOrder.processing];
+
+            if (self.processingRoutes.count > 0) {
+                
+                self.processingOrder = saleOrder;
+                [self showRoutesActionSheet];
+                
+            } else {
+                
+                [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+                
+            }
             
         }
 
     }
+    
+}
+
+
+#pragma mark - routesActionSheet
+
+- (UIActionSheet *)routesActionSheet {
+    
+    if (!_routesActionSheet) {
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        for (NSString *processing in self.processingRoutes) {
+            [actionSheet addButtonWithTitle:[STMSaleOrderController labelForProcessing:processing]];
+        }
+
+        _routesActionSheet = actionSheet;
+        
+    }
+    return _routesActionSheet;
+    
+}
+
+- (void)showRoutesActionSheet {
+    
+    if (!self.routesActionSheet.isVisible) {
+        
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
+        STMUIInfoTableViewCell *cell = (STMUIInfoTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        
+        [self.routesActionSheet showFromRect:cell.infoLabel.frame inView:cell animated:YES];
+        
+    }
+    
+}
+
+- (void)hideRoutesActionSheet {
+    
+    [self.routesActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+    self.routesActionSheet = nil;
     
 }
 
@@ -200,10 +253,17 @@
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
-    if (self.orderInfoPopoverIsVisible) {
+    if (self.orderInfoPopoverWasVisible) {
         
         [self showOrderInfoPopover];
-        self.orderInfoPopoverIsVisible = NO;
+        self.orderInfoPopoverWasVisible = NO;
+        
+    }
+    
+    if (self.routesActionSheetWasVisible) {
+        
+        [self showRoutesActionSheet];
+        self.routesActionSheetWasVisible = NO;
         
     }
     
@@ -213,8 +273,15 @@
     
     if (self.orderInfoPopover.popoverVisible) {
         
-        self.orderInfoPopoverIsVisible = YES;
+        self.orderInfoPopoverWasVisible = YES;
         [self dismissOrderInfoPopover];
+        
+    }
+    
+    if (self.routesActionSheet.visible) {
+        
+        self.routesActionSheetWasVisible = YES;
+        [self hideRoutesActionSheet];
         
     }
     
@@ -269,7 +336,14 @@
     
     NSUInteger positionsCount = saleOrder.saleOrderPositions.count;
     NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];
-    NSString *positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
+    
+    NSString *positionsCountString = nil;
+    
+    if (positionsCount == 0) {
+        positionsCountString = [NSString stringWithFormat:@"%@",NSLocalizedString(pluralTypeString, nil)];
+    } else {
+        positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
+    }
     
     NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
 
