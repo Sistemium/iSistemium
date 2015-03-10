@@ -130,5 +130,24 @@
     
 }
 
++ (NSArray *)availableRoutesForProcessing:(NSString *)processing {
+    
+    NSDictionary *workflow = [self sharedInstance].workflow;
+    
+    NSMutableArray *routes = [NSMutableArray array];
+    
+    for (NSString *key in workflow.allKeys) {
+        
+        NSArray *fromArray = workflow[key][@"from"];
+        
+        if ([fromArray containsObject:processing]) {
+            [routes addObject:key];
+        }
+        
+    }
+    
+    return routes;
+    
+}
 
 @end

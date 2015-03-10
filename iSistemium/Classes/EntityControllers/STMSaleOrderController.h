@@ -15,6 +15,6 @@
 
 + (NSString *)labelForProcessing:(NSString *)processing;
 + (UIColor *)colorForProcessing:(NSString *)processing;
-
++ (NSArray *)availableRoutesForProcessing:(NSString *)processing;
 
 @end

@@ -142,6 +142,29 @@
     
 }
 
+- (void)infoLabelTapped:(id)sender {
+    
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        UITapGestureRecognizer *tap = (UITapGestureRecognizer *)sender;
+        UIView *checkView = tap.view.superview.superview.superview;
+
+        if ([checkView isKindOfClass:[STMUITableViewCell class]]) {
+                
+            STMUITableViewCell *cell = (STMUITableViewCell *)checkView;
+            NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+            
+            STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
+            
+            NSArray *routes = [STMSaleOrderController availableRoutesForProcessing:saleOrder.processing];
+            
+            NSLog(@"routes %@", routes);
+            
+        }
+
+    }
+    
+}
 
 #pragma mark - articleInfo popover
 
@@ -255,6 +278,14 @@
     NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
     
     cell.infoLabel.text = processingLabel;
+
+    for (UIGestureRecognizer *gestures in cell.infoLabel.gestureRecognizers) {
+        [cell.infoLabel removeGestureRecognizer:gestures];
+    }
+    
+    cell.infoLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(infoLabelTapped:)];
+    [cell.infoLabel addGestureRecognizer:tap];
     
     UIColor *processingColor = [STMSaleOrderController colorForProcessing:saleOrder.processing];
     
