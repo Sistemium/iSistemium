@@ -115,7 +115,8 @@
         
         STMUncashingPicture *picture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:[STMController document].managedObjectContext];
         
-        [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, 0.0) forPicture:picture];
+        CGFloat jpgQuality = [STMPicturesController jpgQuality];
+        [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:picture];
         
         [uncashing addPicturesObject:picture];
         
