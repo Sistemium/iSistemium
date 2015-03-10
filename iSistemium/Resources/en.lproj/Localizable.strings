@@ -133,4 +133,6 @@
 "BASIS" = "Basis: ";
 "OUTLET" = "Outlet";
 "DEBT COMMENT" = "Comment: ";
+"SEND DATE" = "Send date: ";
+"RECEIVE DATE" = "Receive date: ";
 

@@ -41,6 +41,16 @@
     
 }
 
++ (NSDateFormatter *)dateMediumTimeMediumFormatter {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+
+    return dateFormatter;
+    
+}
+
 + (NSNumberFormatter *)decimalFormatter {
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];

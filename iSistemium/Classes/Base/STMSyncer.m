@@ -860,6 +860,9 @@
     if (self.entityCount == 0) {
         
         self.syncing = NO;
+        
+        [self saveReceiveDate];
+        
         self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
         
     }
@@ -1033,6 +1036,8 @@
             for (NSDictionary *datum in dataArray) {
                 [STMObjectsController syncObject:datum];
             }
+
+            [self saveSendDate];
             
             self.syncing = NO;
 
@@ -1081,5 +1086,29 @@
     
 }
 
+- (void)saveSendDate {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *key = [@"sendDate" stringByAppendingString:self.session.uid];
+    NSString *sendDateString = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:[NSDate date]];
+    
+    [defaults setObject:sendDateString forKey:key];
+    [defaults synchronize];
+    
+}
+
+- (void)saveReceiveDate {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *key = [@"receiveDate" stringByAppendingString:self.session.uid];
+
+    NSString *receiveDateString = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:[NSDate date]];
+    
+    [defaults setObject:receiveDateString forKey:key];
+    [defaults synchronize];
+    
+}
 
 @end
