@@ -224,7 +224,7 @@
     int volume = [saleOrderPosition.volume intValue];
     int packageRel = [saleOrderPosition.article.packageRel intValue];
     
-    if (volume >= packageRel) {
+    if (packageRel != 0 && volume >= packageRel) {
 
         int package = floor(volume / packageRel);
         

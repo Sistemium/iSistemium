@@ -183,7 +183,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uncashingMasterCell" forIndexPath:indexPath];
     
-    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+//    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterLongStyle;
