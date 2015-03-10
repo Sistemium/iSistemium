@@ -16,6 +16,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
+@property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
 @property (nonatomic) float totalEntityCount;
 
 @end
@@ -60,6 +62,8 @@
                 
     }
     
+    [self updateSyncDatesLabels];
+    
 }
 
 - (void)entitiesReceivingDidFinish {
@@ -101,6 +105,29 @@
     
 }
 
+- (void)updateSyncDatesLabels {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *key = [@"sendDate" stringByAppendingString:[STMAuthController authController].userID];
+    NSString *sendDateString = [defaults objectForKey:key];
+    
+    key = [@"receiveDate" stringByAppendingString:[STMAuthController authController].userID];
+    NSString *receiveDateString = [defaults objectForKey:key];
+    
+    if (sendDateString) {
+        self.sendDateLabel.text = [NSLocalizedString(@"SEND DATE", nil) stringByAppendingString:sendDateString];
+    } else {
+        self.sendDateLabel.text = nil;
+    }
+    
+    if (receiveDateString) {
+        self.receiveDateLabel.text = [NSLocalizedString(@"RECEIVE DATE", nil) stringByAppendingString:receiveDateString];
+    } else {
+        self.receiveDateLabel.text = nil;
+    }
+
+}
 
 #pragma mark - UIAlertViewDelegate
 
@@ -159,6 +186,8 @@
 - (void)customInit {
     
     self.navigationItem.title = NSLocalizedString(@"SISTEMIUM", nil);
+
+    [self updateSyncDatesLabels];
     [self addObservers];
     
     [super customInit];

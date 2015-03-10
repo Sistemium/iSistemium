@@ -133,6 +133,7 @@
 "BASIS" = "Basis: ";
 "OUTLET" = "Outlet";
 "DEBT COMMENT" = "Comment: ";
+<<<<<<< HEAD
 "CATALOG" = "Catalog";
 "NO ARTICLES" = "No articles";
 "VOLUME" = "Volume";
@@ -171,4 +172,8 @@
 "VOLUME UNIT1" = "p.";
 "VOLUME UNIT2" = "b.";
 "RESET FILTER" = "Reset filter";
+=======
+"SEND DATE" = "Send date: ";
+"RECEIVE DATE" = "Receive date: ";
+>>>>>>> syncLabels
 
