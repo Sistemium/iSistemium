@@ -327,6 +327,8 @@
     } else {
         self.selectedArticle = [self.resultsController objectAtIndexPath:indexPath];
     }
+    
+    [self.view endEditing:NO];
 
     [self showArticleInfoPopover];
     
