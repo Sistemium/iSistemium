@@ -171,6 +171,6 @@
 "VOLUME UNIT1" = "к.";
 "VOLUME UNIT2" = "б.";
 "RESET FILTER" = "Сбросить фильтр";
-"SEND DATE" = "Данные получены: ";
-"RECEIVE DATE" = "Данные отправлены: ";
+"SEND DATE" = "Данные отправлены: ";
+"RECEIVE DATE" = "Данные получены: ";
 
