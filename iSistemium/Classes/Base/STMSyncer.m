@@ -1052,7 +1052,7 @@
             
             self.syncing = NO;
 
-//#warning Check if STMEntity was changed — receive data againg
+//TODO: Check if STMEntity was changed — receive data againg
             
             [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMEntity class])]];
             

@@ -28,12 +28,9 @@
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
 + (STMDateFormatter *)dateFormatter;
-<<<<<<< HEAD
 + (NSDateFormatter *)dateMediumNoTimeFormatter;
 + (NSDateFormatter *)dateShortNoTimeFormatter;
-=======
 + (NSDateFormatter *)dateMediumTimeMediumFormatter;
->>>>>>> syncLabels
 
 + (NSNumberFormatter *)decimalFormatter;
 + (NSNumberFormatter *)currencyFormatter;
