@@ -358,7 +358,6 @@
     return [[self documentsDirectory] stringByAppendingPathComponent:path];
 }
 
-<<<<<<< HEAD
 + (UIColor *)colorForColorString:(NSString *)colorSting {
     
     NSString *selectorString = [colorSting stringByAppendingString:@"Color"];
@@ -379,8 +378,9 @@
         return nil;
         
     }
-        
-=======
+    
+}
+
 + (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController {
     
     CGFloat tabBarYPosition = tabBarController.tabBar.frame.origin.y;
@@ -403,7 +403,6 @@
 
     return rect;
     
->>>>>>> catalog
 }
 
 
