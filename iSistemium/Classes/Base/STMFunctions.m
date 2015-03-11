@@ -446,7 +446,31 @@
         return nil;
         
     }
+    
+}
+
++ (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController {
+    
+    CGFloat tabBarYPosition = tabBarController.tabBar.frame.origin.y;
+    CGRect rect;
+    
+    NSMutableArray *tabBarSubviews = [tabBarController.tabBar.subviews mutableCopy];
+    
+    for (UIView *view in tabBarSubviews) {
         
+        if ([view isKindOfClass:[UIControl class]]) {
+            
+            UIControl *controlView = (UIControl *)view;
+            if (controlView.highlighted) rect = controlView.frame;
+            
+        }
+        
+    }
+    
+    rect = CGRectMake(rect.origin.x, rect.origin.y + tabBarYPosition, rect.size.width, rect.size.height);
+
+    return rect;
+    
 }
 
 

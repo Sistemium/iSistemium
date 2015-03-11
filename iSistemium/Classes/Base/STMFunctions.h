@@ -52,4 +52,7 @@
 
 + (UIColor *)colorForColorString:(NSString *)colorSting;
 
++ (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController;
+
+
 @end
