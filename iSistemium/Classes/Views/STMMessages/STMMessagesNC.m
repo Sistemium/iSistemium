@@ -7,6 +7,7 @@
 //
 
 #import "STMMessagesNC.h"
+#import "STMFunctions.h"
 
 @interface STMMessagesNC () <UIActionSheetDelegate>
 
@@ -21,9 +22,7 @@
     
 //    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
 //    
-//    CGFloat tabBarYPosition = self.tabBarController.tabBar.frame.origin.y;
-//    CGRect rect = [[self.tabBarController.tabBar.subviews objectAtIndex:self.tabBarController.selectedIndex+1] frame];
-//    rect = CGRectMake(rect.origin.x, rect.origin.y + tabBarYPosition, rect.size.width, rect.size.height);
+//    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
 //    
 //    [actionSheet showFromRect:rect inView:self.view animated:YES];
     

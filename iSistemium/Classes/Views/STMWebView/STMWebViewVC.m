@@ -9,6 +9,7 @@
 #import "STMWebViewVC.h"
 #import "STMSessionManager.h"
 #import "STMAuthController.h"
+#import "STMFunctions.h"
 
 @interface STMWebViewVC () <UIWebViewDelegate, UIActionSheetDelegate>
 
@@ -80,6 +81,8 @@
 - (void)loadWebView {
 
     [self.view addSubview:self.spinnerView];
+    
+    self.isAuthorizing = NO;
 
     NSString *urlString = [self webViewUrlString];
     [self loadURLString:urlString];
@@ -87,6 +90,8 @@
 }
 
 - (void)authLoadWebView {
+
+    self.isAuthorizing = YES;
 
     NSString *accessToken = [STMAuthController authController].accessToken;
     
@@ -136,10 +141,8 @@
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"IORDERS", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"RELOAD", nil), nil];
     
     actionSheet.tag = 1;
-    
-    CGFloat tabBarYPosition = self.tabBarController.tabBar.frame.origin.y;
-    CGRect rect = [(self.tabBarController.tabBar.subviews)[self.tabBarController.selectedIndex+1] frame];
-    rect = CGRectMake(rect.origin.x, rect.origin.y + tabBarYPosition, rect.size.width, rect.size.height);
+
+    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
     
     [actionSheet showFromRect:rect inView:self.view animated:YES];
     
@@ -175,6 +178,8 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
+//    NSLog(@"webViewDidFinishLoad %@", webView.request);
+    
 //    NSLog(@"cachedResponseForRequest %@", [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request]);
 //    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:webView.request];
     
@@ -182,15 +187,19 @@
 
 //    NSLog(@"bsAccessToken %@", bsAccessToken);
     
-    if ([bsAccessToken isEqualToString:@""] && !self.isAuthorizing) {
+    if ([bsAccessToken isEqualToString:@""]) {
     
-        NSLog(@"no bsAccessToken, go to authorization");
+        if (!self.isAuthorizing) {
 
-        self.isAuthorizing = YES;
-        [self authLoadWebView];
+            NSLog(@"no bsAccessToken, go to authorization");
+            
+            [self authLoadWebView];
+
+        }
         
     } else {
         
+        self.isAuthorizing = NO;
         [self.spinnerView removeFromSuperview];
         
     }
@@ -198,10 +207,9 @@
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    
     NSLog(@"webView didFailLoadWithError: %@", error.localizedDescription);
-    
 }
+
 
 #pragma mark - view lifecycle
 
