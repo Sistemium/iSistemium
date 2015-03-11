@@ -39,6 +39,7 @@
 #import "STMEntity.h"
 #import "STMCampaignGroup.h"
 
+#import "STMFetchRequest.h"
 
 @implementation STMObjectsController
 
@@ -642,7 +643,8 @@
         NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
         
         NSError *error;
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
