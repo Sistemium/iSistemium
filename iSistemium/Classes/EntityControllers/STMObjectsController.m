@@ -641,6 +641,9 @@
         NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
         
         NSError *error;
+        
+        entityName = [NSString stringWithFormat:@"%@", entityName];
+        
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
