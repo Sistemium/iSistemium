@@ -44,6 +44,10 @@
 + (NSString *)documentsDirectory;
 + (NSString *)absolutePathForPath:(NSString *)path;
 
+<<<<<<< HEAD
 + (UIColor *)colorForColorString:(NSString *)colorSting;
+=======
++ (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController;
+>>>>>>> catalog
 
 @end
