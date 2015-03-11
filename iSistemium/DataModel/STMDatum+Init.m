@@ -67,6 +67,7 @@
     BOOL notDeviceTs = ![changedKeys containsObject:@"deviceTs"];
     BOOL notImagePath = ![changedKeys containsObject:@"imagePath"];
     BOOL notResizedImagePath = ![changedKeys containsObject:@"resizedImagePath"];
+    BOOL notCalculatedSum = ![changedKeys containsObject:@"calculatedSum"];
     
     BOOL notEmpty = (changedKeys.count != 0);
     BOOL notToMany = YES;
@@ -85,11 +86,10 @@
     
 //    if ([self.entity.name isEqualToString:@"STMDebt"]) {
 //        
-//        NSLog(@"changedKeys %@", changedKeys);
-//        NSLog(@"self.changedValues %@", self.changedValues);
+//        NSLog(@"self1 %@", self)
+//        NSLog(@"[[self changedValues] allKeys] %@", [[self changedValues] allKeys]);
 //        
 //    }
-    
     
     if (changedKeys.count == 1) {
         
@@ -103,14 +103,7 @@
         
     }
     
-    if (notLts && notSts && notSqts && notDeviceTs && notEmpty && notToMany && notImagePath && notResizedImagePath) {
-
-//        if ([self.entity.name isEqualToString:@"STMUncashing"]) {
-//            
-//            NSLog(@"self 1 %@", self)
-//            NSLog(@"[[self changedValues] allKeys] %@", [[self changedValues] allKeys]);
-//            
-//        }
+    if (notLts && notSts && notSqts && notDeviceTs && notEmpty && notToMany && notImagePath && notResizedImagePath && notCalculatedSum) {
         
         NSDate *ts = [NSDate date];
         
@@ -128,9 +121,9 @@
         
         [self setPrimitiveValue:sqts forKey:@"sqts"];
 
-//        if ([self.entity.name isEqualToString:@"STMUncashing"]) {
+//        if ([self.entity.name isEqualToString:@"STMDebt"]) {
 //            
-//            NSLog(@"self 2 %@", self)
+//            NSLog(@"self2 %@", self)
 //            
 //        }
     
