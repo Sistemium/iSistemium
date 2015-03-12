@@ -11,11 +11,13 @@
 #import "STMSaleOrderController.h"
 
 
-@interface STMOrderInfoTVC ()
+@interface STMOrderInfoTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, weak) STMOrderInfoNC *parentNC;
 @property (nonatomic, strong) STMSaleOrder *saleOrder;
 @property (nonatomic, strong) NSArray *saleOrderPositions;
+@property (nonatomic ,strong) NSArray *processingRoutes;
+@property (nonatomic, strong) UIActionSheet *routesActionSheet;
 
 
 @end
@@ -64,6 +66,85 @@
 
 - (void)closeButtonPressed {
     [self.parentNC cancelButtonPressed];
+}
+
+- (void)statusLabelTapped:(id)sender {
+    
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        self.processingRoutes = [STMSaleOrderController availableRoutesForProcessing:self.saleOrder.processing];
+        
+        if (self.processingRoutes.count > 0) {
+            [self showRoutesActionSheet];
+        }
+        
+    }
+    
+}
+
+
+#pragma mark - routesActionSheet
+
+- (UIActionSheet *)routesActionSheet {
+    
+    if (!_routesActionSheet) {
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        for (NSString *processing in self.processingRoutes) {
+            [actionSheet addButtonWithTitle:[STMSaleOrderController labelForProcessing:processing]];
+        }
+        
+        _routesActionSheet = actionSheet;
+        
+    }
+    return _routesActionSheet;
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    NSUInteger buttonCount = actionSheet.numberOfButtons;
+    NSUInteger routesCount = self.processingRoutes.count;
+    
+    NSUInteger diffCount = buttonCount - routesCount;
+    
+    NSInteger index = buttonIndex - diffCount;
+    
+    if (index >= 0 && index < routesCount) {
+
+        self.saleOrder.processing = self.processingRoutes[index];
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+    }
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    self.routesActionSheet = nil;
+}
+
+- (void)showRoutesActionSheet {
+    
+    if (!self.routesActionSheet.isVisible) {
+        
+//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
+//        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+//        [self.routesActionSheet showFromRect:cell.detailTextLabel.frame inView:cell animated:YES];
+        
+        [self.routesActionSheet showInView:self.view];
+        
+    }
+    
+}
+
+- (void)hideRoutesActionSheet {
+    
+    [self.routesActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+    self.routesActionSheet = nil;
+    
 }
 
 
@@ -170,6 +251,11 @@
 
 - (void)fillOrderInfoCell:(UITableViewCell *)cell forRow:(NSUInteger)row {
     
+    for (UIGestureRecognizer *gestures in cell.detailTextLabel.gestureRecognizers) {
+        [cell.detailTextLabel removeGestureRecognizer:gestures];
+    }
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(statusLabelTapped:)];
+    
     switch (row) {
         case 0:
             cell.textLabel.text = NSLocalizedString(@"OUTLET", nil);
@@ -193,6 +279,10 @@
 
         case 4:
             cell.textLabel.text = NSLocalizedString(@"STATUS", nil);
+            
+            cell.detailTextLabel.userInteractionEnabled = YES;
+            [cell.detailTextLabel addGestureRecognizer:tap];
+
             cell.detailTextLabel.text = [STMSaleOrderController labelForProcessing:self.saleOrder.processing];
             if ([STMSaleOrderController colorForProcessing:self.saleOrder.processing]) {
                 cell.detailTextLabel.textColor =  [STMSaleOrderController colorForProcessing:self.saleOrder.processing];
