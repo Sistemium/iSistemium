@@ -239,10 +239,14 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 
-    self.processingOrder.processing = self.processingRoutes[buttonIndex];
-    
-    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
-    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    if (buttonIndex >= 0 && buttonIndex < self.processingRoutes.count) {
+        
+        self.processingOrder.processing = self.processingRoutes[buttonIndex];
+        
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+    }
     
 }
 
