@@ -13,7 +13,7 @@
 
 @interface STMAuthVC : UIViewController
 
-@property (nonatomic, strong) STMUISpinnerView *spinnerView;
+@property (nonatomic, strong) STMSpinnerView *spinnerView;
 @property (nonatomic, weak) UIButton *button;
 @property (nonatomic, weak) UITextField *textField;
 

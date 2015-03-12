@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUIInfoTableViewCell.h"
+#import "STMInfoTableViewCell.h"
 
-@implementation STMUIInfoTableViewCell
+@implementation STMInfoTableViewCell
 
 - (void)layoutSubviews {
     

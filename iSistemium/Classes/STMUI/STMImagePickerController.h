@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMUIImagePickerController : UIImagePickerController
+@interface STMImagePickerController : UIImagePickerController
 
 @end

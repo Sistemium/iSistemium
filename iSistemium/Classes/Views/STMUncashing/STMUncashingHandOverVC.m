@@ -15,7 +15,7 @@
 #import "STMUncashingPlaceController.h"
 #import "STMFunctions.h"
 #import "STMObjectsController.h"
-#import "STMUIImagePickerController.h"
+#import "STMImagePickerController.h"
 
 @interface STMUncashingHandOverVC () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate>
 
@@ -34,7 +34,7 @@
 @property (nonatomic, strong) NSString *initialCommentText;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
-@property (nonatomic, strong) STMUIImagePickerController *imagePickerController;
+@property (nonatomic, strong) STMImagePickerController *imagePickerController;
 @property (nonatomic, strong) UIView *spinnerView;
 @property (nonatomic, strong) UIView *cameraOverlayView;
 
@@ -57,11 +57,11 @@
 
 //@synthesize uncashingType = _uncashingType;
 
-- (STMUIImagePickerController *)imagePickerController {
+- (STMImagePickerController *)imagePickerController {
     
     if (!_imagePickerController) {
         
-        STMUIImagePickerController *imagePickerController = [[STMUIImagePickerController alloc] init];
+        STMImagePickerController *imagePickerController = [[STMImagePickerController alloc] init];
         imagePickerController.delegate = self;
         
         imagePickerController.sourceType = self.selectedSourceType;
@@ -975,7 +975,7 @@
 
     [self addObservers];
     
-    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelUncashingProcessButtonPressed)];
+    self.navigationItem.leftBarButtonItem = [[STMBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cancelUncashingProcessButtonPressed)];
     [self.navigationItem setHidesBackButton:YES animated:YES];
 
     self.commentTextView.delegate = self;

@@ -11,7 +11,7 @@
 #import "STMUncashingDetailsTVC.h"
 #import "STMUI.h"
 
-@interface STMUncashingSVC : STMUISplitViewController
+@interface STMUncashingSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMUncashingMasterTVC *masterVC;
 @property (nonatomic, strong) STMUncashingDetailsTVC *detailVC;

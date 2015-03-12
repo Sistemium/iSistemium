@@ -35,7 +35,7 @@
     
     static NSString *cellIdentifier = @"ordersSalesmanCell";
     
-    STMUIInfoTableViewCell *cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     
     STMSalesman *salesman = [self.resultsController objectAtIndexPath:indexPath];
     

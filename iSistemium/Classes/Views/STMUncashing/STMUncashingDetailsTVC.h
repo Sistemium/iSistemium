@@ -14,7 +14,7 @@
 @interface STMUncashingDetailsTVC : STMFetchedResultsControllerTVC //<UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) STMUncashing *uncashing;
-@property (nonatomic, strong) STMUIBarButtonItem *uncashingProcessButton;
+@property (nonatomic, strong) STMBarButtonItem *uncashingProcessButton;
 
 
 - (void)dismissAddCashingPopover;

@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMUISplitViewController : UISplitViewController
+@interface STMSplitViewController : UISplitViewController
 
 @end

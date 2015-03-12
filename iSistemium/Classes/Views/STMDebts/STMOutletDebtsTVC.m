@@ -14,7 +14,7 @@
 #import "STMDebtsCombineVC.h"
 #import "STMConstants.h"
 #import "STMFunctions.h"
-#import "STMUITableViewCell.h"
+#import "STMTableViewCell.h"
 #import "STMDebtsSVC.h"
 #import "STMCashingProcessController.h"
 #import "STMDebtsController.h"
@@ -277,9 +277,9 @@
     
 }
 
-- (STMUITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (STMTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMUITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtDetailsCell" forIndexPath:indexPath];
+    STMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtDetailsCell" forIndexPath:indexPath];
 
     STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
 

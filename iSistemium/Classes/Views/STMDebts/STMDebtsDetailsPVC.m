@@ -32,7 +32,7 @@
 @property (nonatomic, strong) UIBarButtonItem *addDebtButton;
 @property (nonatomic, strong) UIBarButtonItem *editDebtsButton;
 @property (nonatomic, strong) UIPopoverController *addDebtPopover;
-@property (nonatomic, strong) STMUIBarButtonItemDone *cashingButton;
+@property (nonatomic, strong) STMBarButtonItemDone *cashingButton;
 
 @end
 
@@ -50,11 +50,11 @@
     
 }
 
-- (STMUIBarButtonItemDone *)cashingButton {
+- (STMBarButtonItemDone *)cashingButton {
     
     if (!_cashingButton) {
         
-        _cashingButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"CASHING", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cashingButtonPressed)];
+        _cashingButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"CASHING", nil) style:UIBarButtonItemStylePlain target:self action:@selector(cashingButtonPressed)];
 
     }
 

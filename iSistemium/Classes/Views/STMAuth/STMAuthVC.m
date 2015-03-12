@@ -14,10 +14,10 @@
 
 @implementation STMAuthVC
 
-- (STMUISpinnerView *)spinnerView {
+- (STMSpinnerView *)spinnerView {
     
     if (!_spinnerView) {
-        _spinnerView = [STMUISpinnerView spinnerViewWithFrame:self.view.frame];
+        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame];
     }
     return _spinnerView;
     

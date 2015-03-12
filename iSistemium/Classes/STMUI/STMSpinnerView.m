@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUISpinnerView.h"
+#import "STMSpinnerView.h"
 
-@implementation STMUISpinnerView
+@implementation STMSpinnerView
 
-+ (STMUISpinnerView *)spinnerViewWithFrame:(CGRect)frame {
++ (STMSpinnerView *)spinnerViewWithFrame:(CGRect)frame {
     
-    STMUISpinnerView *view = [[STMUISpinnerView alloc] initWithFrame:frame];
+    STMSpinnerView *view = [[STMSpinnerView alloc] initWithFrame:frame];
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     view.backgroundColor = [UIColor grayColor];
     view.alpha = 0.75;

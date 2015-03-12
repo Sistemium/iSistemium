@@ -15,7 +15,7 @@
 #import "STMUncashingPicture.h"
 #import "STMObjectsController.h"
 #import "STMUncashingInfoVC.h"
-#import "STMUITableViewCell.h"
+#import "STMTableViewCell.h"
 #import "STMUncashingProcessController.h"
 #import "STMAddEtceteraVC.h"
 
@@ -358,9 +358,9 @@
 
 #pragma mark - table view data source
 
-- (STMUITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (STMTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMUITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uncashingDetailCell" forIndexPath:indexPath];
+    STMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uncashingDetailCell" forIndexPath:indexPath];
     
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
@@ -588,7 +588,7 @@
     
     [self addObservers];
     
-    self.uncashingProcessButton = [[STMUIBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(uncashingProcessButtonPressed)];
+    self.uncashingProcessButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"HAND OVER BUTTON", nil) style:UIBarButtonItemStylePlain target:self action:@selector(uncashingProcessButtonPressed)];
     
     self.navigationItem.rightBarButtonItem = self.uncashingProcessButton;
 

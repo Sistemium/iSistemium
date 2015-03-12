@@ -12,7 +12,7 @@
 #import "STMCashingControlsVC.h"
 #import "STMUI.h"
 
-@interface STMDebtsSVC : STMUISplitViewController
+@interface STMDebtsSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMOutletsTVC *masterVC;
 @property (nonatomic, strong) STMDebtsDetailsPVC *detailVC;

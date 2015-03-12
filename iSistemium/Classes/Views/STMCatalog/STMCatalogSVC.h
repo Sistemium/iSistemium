@@ -16,7 +16,7 @@
 #import "STMUI.h"
 #import "STMConstants.h"
 
-@interface STMCatalogSVC : STMUISplitViewController
+@interface STMCatalogSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMCatalogMasterTVC *masterTVC;
 @property (nonatomic, strong) STMCatalogDetailTVC *detailTVC;

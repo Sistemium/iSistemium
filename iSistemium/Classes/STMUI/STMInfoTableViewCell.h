@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUITableViewCell.h"
+#import "STMTableViewCell.h"
 
-@interface STMUIInfoTableViewCell : STMUITableViewCell
+@interface STMInfoTableViewCell : STMTableViewCell
 
 @property (nonatomic, retain) UILabel *infoLabel;
 

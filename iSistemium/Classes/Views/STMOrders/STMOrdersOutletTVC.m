@@ -40,7 +40,7 @@
     
     static NSString *cellIdentifier = @"ordersOutletCell";
     
-    STMUIInfoTableViewCell *cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     

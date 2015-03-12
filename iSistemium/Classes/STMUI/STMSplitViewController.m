@@ -6,13 +6,13 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUISplitViewController.h"
+#import "STMSplitViewController.h"
 
-@interface STMUISplitViewController () <UISplitViewControllerDelegate>
+@interface STMSplitViewController () <UISplitViewControllerDelegate>
 
 @end
 
-@implementation STMUISplitViewController
+@implementation STMSplitViewController
 
 #pragma mark - UISplitViewControllerDelegate
 

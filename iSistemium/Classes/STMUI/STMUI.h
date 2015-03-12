@@ -9,12 +9,12 @@
 #ifndef iSistemium_STMUI_h
 #define iSistemium_STMUI_h
 
-#include "STMUIBarButtonItem.h"
-#include "STMUISplitViewController.h"
-#include "STMUIImagePickerController.h"
-#include "STMUISpinnerView.h"
-#include "STMUITableViewCell.h"
-#include "STMUIInfoTableViewCell.h"
+#include "STMBarButtonItem.h"
+#include "STMSplitViewController.h"
+#include "STMImagePickerController.h"
+#include "STMSpinnerView.h"
+#include "STMTableViewCell.h"
+#include "STMInfoTableViewCell.h"
 
 
 #endif

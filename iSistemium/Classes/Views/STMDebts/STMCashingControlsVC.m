@@ -761,7 +761,7 @@
     
     self.splitVC.controlsVC = self;
 
-    self.navigationItem.leftBarButtonItem = [[STMUIBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:[STMCashingProcessController sharedInstance] action:@selector(cancelCashingProcess)];
+    self.navigationItem.leftBarButtonItem = [[STMBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil) style:UIBarButtonItemStylePlain target:[STMCashingProcessController sharedInstance] action:@selector(cancelCashingProcess)];
 
     [self.navigationItem setHidesBackButton:YES animated:YES];
 

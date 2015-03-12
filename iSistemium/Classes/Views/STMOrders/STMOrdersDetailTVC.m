@@ -152,9 +152,9 @@
         UITapGestureRecognizer *tap = (UITapGestureRecognizer *)sender;
         UIView *checkView = tap.view.superview.superview;
 
-        if ([checkView isKindOfClass:[STMUIInfoTableViewCell class]]) {
+        if ([checkView isKindOfClass:[STMInfoTableViewCell class]]) {
                 
-            STMUIInfoTableViewCell *cell = (STMUIInfoTableViewCell *)checkView;
+            STMInfoTableViewCell *cell = (STMInfoTableViewCell *)checkView;
             NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
             
             STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
@@ -204,7 +204,7 @@
     if (!self.routesActionSheet.isVisible) {
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
-        STMUIInfoTableViewCell *cell = (STMUIInfoTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        STMInfoTableViewCell *cell = (STMInfoTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         
         [self.routesActionSheet showFromRect:cell.infoLabel.frame inView:cell animated:YES];
         
@@ -325,7 +325,7 @@
     
     static NSString *cellIdentifier = @"orderCell";
     
-    STMUIInfoTableViewCell *cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
 
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     

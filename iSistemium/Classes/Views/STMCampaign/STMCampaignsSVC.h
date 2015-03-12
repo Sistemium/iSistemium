@@ -11,7 +11,7 @@
 #import "STMCampaignDetailsPVC.h"
 #import "STMUI.h"
 
-@interface STMCampaignsSVC : STMUISplitViewController
+@interface STMCampaignsSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMCampaignDetailsPVC *detailVC;
 @property (nonatomic, strong) STMCampaignsTVC *masterVC;

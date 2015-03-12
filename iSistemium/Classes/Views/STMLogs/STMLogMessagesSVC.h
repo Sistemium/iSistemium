@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUISplitViewController.h"
+#import "STMSplitViewController.h"
 #import "STMLogMessagesMasterTVC.h"
 #import "STMLogMessagesDetailTVC.h"
 
-@interface STMLogMessagesSVC : STMUISplitViewController
+@interface STMLogMessagesSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMLogMessagesMasterTVC *masterTVC;
 @property (nonatomic, strong) STMLogMessagesDetailTVC *detailTVC;

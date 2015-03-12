@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUISplitViewController.h"
+#import "STMSplitViewController.h"
 #import "STMOrdersMasterPVC.h"
 #import "STMOrdersDetailTVC.h"
 
@@ -21,7 +21,7 @@
 #import "STMFunctions.h"
 #import "STMConstants.h"
 
-@interface STMOrdersSVC : STMUISplitViewController
+@interface STMOrdersSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMOrdersMasterPVC *masterPVC;
 @property (nonatomic, strong) STMOrdersDetailTVC *detailTVC;

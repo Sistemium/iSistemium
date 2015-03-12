@@ -6,20 +6,20 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUIBarButtonItem.h"
+#import "STMBarButtonItem.h"
 #import "STMConstants.h"
 
-@implementation STMUIBarButtonItemDone
+@implementation STMBarButtonItemDone
 
 @end
 
 
-@implementation STMUIBarButtonItemCancel
+@implementation STMBarButtonItemCancel
 
 @end
 
 
-@implementation STMUIBarButtonItem
+@implementation STMBarButtonItem
 
 - (instancetype)init {
     
@@ -45,7 +45,7 @@
 
 - (void)customInit {
 
-    if ([self isKindOfClass:[STMUIBarButtonItemDone class]]) {
+    if ([self isKindOfClass:[STMBarButtonItemDone class]]) {
         
         UIFont *font = [UIFont boldSystemFontOfSize:17];
         UIColor *color = ACTIVE_BLUE_COLOR;
@@ -64,7 +64,7 @@
 
         [self setTitleTextAttributes:textAttributes forState:UIControlStateDisabled];
 
-    } else if ([self isKindOfClass:[STMUIBarButtonItemCancel class]]) {
+    } else if ([self isKindOfClass:[STMBarButtonItemCancel class]]) {
         
 //        UIColor *color = [UIColor redColor];
         UIColor *color = ACTIVE_BLUE_COLOR;

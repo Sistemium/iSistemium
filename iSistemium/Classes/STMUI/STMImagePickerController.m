@@ -6,13 +6,13 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUIImagePickerController.h"
+#import "STMImagePickerController.h"
 
-@interface STMUIImagePickerController ()
+@interface STMImagePickerController ()
 
 @end
 
-@implementation STMUIImagePickerController
+@implementation STMImagePickerController
 
 #pragma mark - orientation fix
 

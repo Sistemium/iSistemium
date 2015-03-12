@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMUITableViewCell.h"
+#import "STMTableViewCell.h"
 
-@implementation STMUITableViewCell
+@implementation STMTableViewCell
 
 
 // remove circles in cells then table view in editing mode

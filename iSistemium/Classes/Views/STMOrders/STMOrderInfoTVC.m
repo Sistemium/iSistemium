@@ -136,8 +136,8 @@
             break;
 
         case 1:
-            cell = [[STMUIInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:positionCellIdentifier];
-            [self fillOrderPositionCell:(STMUIInfoTableViewCell *)cell forRow:indexPath.row];
+            cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:positionCellIdentifier];
+            [self fillOrderPositionCell:(STMInfoTableViewCell *)cell forRow:indexPath.row];
             break;
 
         default:
@@ -210,7 +210,7 @@
     
 }
 
-- (void)fillOrderPositionCell:(STMUIInfoTableViewCell *)cell forRow:(NSUInteger)row {
+- (void)fillOrderPositionCell:(STMInfoTableViewCell *)cell forRow:(NSUInteger)row {
     
     STMSaleOrderPosition *saleOrderPosition = self.saleOrderPositions[row];
     

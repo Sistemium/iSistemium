@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMUISpinnerView : UIView
+@interface STMSpinnerView : UIView
 
-+ (STMUISpinnerView *)spinnerViewWithFrame:(CGRect)frame;
++ (STMSpinnerView *)spinnerViewWithFrame:(CGRect)frame;
 
 @end

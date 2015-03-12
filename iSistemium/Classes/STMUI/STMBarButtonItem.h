@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMUIBarButtonItem : UIBarButtonItem
+@interface STMBarButtonItem : UIBarButtonItem
 
 @end
 
 
-@interface STMUIBarButtonItemDone : STMUIBarButtonItem
+@interface STMBarButtonItemDone : STMBarButtonItem
 
 @end
 
 
-@interface STMUIBarButtonItemCancel : STMUIBarButtonItem
+@interface STMBarButtonItemCancel : STMBarButtonItem
 
 @end
