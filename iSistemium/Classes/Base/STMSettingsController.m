@@ -257,7 +257,7 @@
     if (result.count > 1) {
         
         NSLog(@"More than one setting with name %@ and group %@, get lastObject", settingName, settingGroup);
-        NSLog(@"remove all other setting objects with name %@ and group", settingName, settingGroup);
+        NSLog(@"remove all other setting objects with name %@ and group %@", settingName, settingGroup);
         
         predicate = [NSPredicate predicateWithFormat:@"SELF != %@", setting];
         result = [result filteredArrayUsingPredicate:predicate];
