@@ -321,17 +321,17 @@
             
         } else {
             
-            CLLocationDistance distance = [self.lastLocation distanceFromLocation:newLocation];
+//            CLLocationDistance distance = [self.lastLocation distanceFromLocation:newLocation];
             NSTimeInterval time = [newLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp];
 //            CLLocationSpeed speed = 3.6 * distance / time; // km/h
-            CLLocationSpeed speed = distance / time; // m/s
-
-            if (speed > self.maxSpeedThreshold) {
-                
+//            CLLocationSpeed speed = distance / time; // m/s
+//
+//            if (speed > self.maxSpeedThreshold) {
+//                
 //                self.lastLocation = newLocation;
-                [self.session.logger saveLogMessageWithText:@"maxSpeedThreshold exceeded" type:@""];
-                
-            } else {
+//                [self.session.logger saveLogMessageWithText:@"maxSpeedThreshold exceeded" type:@""];
+//                
+//            } else {
 
                 if (!self.lastLocation || time > self.timeFilter) {
                     
@@ -354,8 +354,8 @@
                     }
                     
                 }
-
-            }
+//
+//            }
             
         }
             
