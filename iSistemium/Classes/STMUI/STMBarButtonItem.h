@@ -10,6 +10,9 @@
 
 @interface STMBarButtonItem : UIBarButtonItem
 
++ (STMBarButtonItem *)flexibleSpace;
+
+
 @end
 
 

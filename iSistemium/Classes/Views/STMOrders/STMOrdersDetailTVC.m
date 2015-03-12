@@ -21,6 +21,8 @@
 @property (nonatomic ,strong) NSArray *processingRoutes;
 @property (nonatomic, strong) UIActionSheet *routesActionSheet;
 @property (nonatomic) BOOL routesActionSheetWasVisible;
+@property (nonatomic) BOOL filterProcessed;
+
 
 @end
 
@@ -39,6 +41,15 @@
         
     }
     return _splitVC;
+    
+}
+
+- (BOOL)filterProcessed {
+    
+    if (!_filterProcessed) {
+        _filterProcessed = NO;
+    }
+    return _filterProcessed;
     
 }
 
@@ -89,6 +100,13 @@
         NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"salesman == %@", self.splitVC.selectedSalesman];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, salesmanPredicate]];
         
+    }
+    
+    if (self.filterProcessed) {
+        
+        NSPredicate *processedPredicate = [NSPredicate predicateWithFormat:@"processing != %@", @"processed"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, processedPredicate]];
+
     }
 
     return predicate;
@@ -193,6 +211,13 @@
     
 }
 
+- (void)filterProcessedButtonPressed {
+    
+    self.filterProcessed = !self.filterProcessed;
+    [self refreshTable];
+    
+}
+
 #pragma mark - routesActionSheet
 
 - (UIActionSheet *)routesActionSheet {
@@ -209,6 +234,15 @@
         
     }
     return _routesActionSheet;
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+    self.processingOrder.processing = self.processingRoutes[buttonIndex];
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     
 }
 
@@ -404,8 +438,23 @@
 
 #pragma mark - view lifecycle
 
+- (void)setupToolbar {
+    
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+    
+    NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:@"processed"];
+    
+    STMBarButtonItem *filterProcessedButton = [[STMBarButtonItem alloc] initWithTitle:filterProcessedLabel style:UIBarButtonItemStylePlain target:self action:@selector(filterProcessedButtonPressed)];
+    
+    [self setToolbarItems:@[flexibleSpace, filterProcessedButton, flexibleSpace]];
+    
+}
+
 - (void)customInit {
+    
+    [self setupToolbar];
     [self performFetch];
+    
 }
 
 - (void)viewDidLoad {

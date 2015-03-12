@@ -21,6 +21,14 @@
 
 @implementation STMBarButtonItem
 
++ (STMBarButtonItem *)flexibleSpace {
+    
+    STMBarButtonItem *flexibleSpace = [[STMBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+
+    return flexibleSpace;
+    
+}
+
 - (instancetype)init {
     
     self = [super init];
