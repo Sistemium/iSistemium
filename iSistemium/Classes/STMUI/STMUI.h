@@ -13,6 +13,7 @@
 #include "STMSplitViewController.h"
 #include "STMImagePickerController.h"
 #include "STMSpinnerView.h"
+#include "STMFetchedResultsControllerTVC.h"
 #include "STMTableViewCell.h"
 #include "STMInfoTableViewCell.h"
 
