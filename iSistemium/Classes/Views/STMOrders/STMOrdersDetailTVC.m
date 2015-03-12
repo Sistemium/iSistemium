@@ -150,28 +150,24 @@
     if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
         
         UITapGestureRecognizer *tap = (UITapGestureRecognizer *)sender;
-        UIView *checkView = tap.view.superview.superview;
+        
+        STMInfoTableViewCell *cell = [self cellForView:tap.view];
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        
+        STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
+        
+        self.processingRoutes = [STMSaleOrderController availableRoutesForProcessing:saleOrder.processing];
 
-        if ([checkView isKindOfClass:[STMInfoTableViewCell class]]) {
-                
-            STMInfoTableViewCell *cell = (STMInfoTableViewCell *)checkView;
-            NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        if (self.processingRoutes.count > 0) {
             
-            STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
+            self.processingOrder = saleOrder;
+            [self showRoutesActionSheet];
             
-            self.processingRoutes = [STMSaleOrderController availableRoutesForProcessing:saleOrder.processing];
-
-            if (self.processingRoutes.count > 0) {
-                
-                self.processingOrder = saleOrder;
-                [self showRoutesActionSheet];
-                
-            } else {
-                
-                [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
-                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-                
-            }
+        } else {
+            
+            [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
             
         }
 
@@ -179,6 +175,23 @@
     
 }
 
+- (STMInfoTableViewCell *)cellForView:(UIView *)view {
+    
+    UIView *superView = view.superview;
+    
+    if (superView) {
+        
+        if ([superView isKindOfClass:[STMInfoTableViewCell class]]) {
+            return (STMInfoTableViewCell *)superView;
+        } else {
+            return [self cellForView:superView];
+        }
+
+    } else {
+        return nil;
+    }
+    
+}
 
 #pragma mark - routesActionSheet
 
@@ -186,7 +199,7 @@
     
     if (!_routesActionSheet) {
         
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
         for (NSString *processing in self.processingRoutes) {
             [actionSheet addButtonWithTitle:[STMSaleOrderController labelForProcessing:processing]];
@@ -199,6 +212,10 @@
     
 }
 
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    self.routesActionSheet = nil;
+}
+
 - (void)showRoutesActionSheet {
     
     if (!self.routesActionSheet.isVisible) {
@@ -206,7 +223,7 @@
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
         STMInfoTableViewCell *cell = (STMInfoTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         
-        [self.routesActionSheet showFromRect:cell.infoLabel.frame inView:cell animated:YES];
+        [self.routesActionSheet showFromRect:cell.infoLabel.frame inView:cell.contentView animated:YES];
         
     }
     
