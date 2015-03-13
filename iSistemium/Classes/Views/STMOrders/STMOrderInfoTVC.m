@@ -89,9 +89,9 @@
 }
 
 
-- (void)closeButtonPressed {
+//- (void)closeButtonPressed {
 //    [self.parentVC cancelButtonPressed];
-}
+//}
 
 - (void)statusLabelTapped:(id)sender {
     
@@ -442,10 +442,10 @@
 
 - (void)customInit {
     
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
-
-    [self setToolbarItems:@[flexibleSpace, closeButton]];
+//    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+//    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
+//
+//    [self setToolbarItems:@[flexibleSpace, closeButton]];
     
     [self performFetch];
 
