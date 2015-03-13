@@ -19,6 +19,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
 @property (nonatomic) float totalEntityCount;
+@property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
+@property (nonatomic) int previousNumberOfObjects;
 
 @end
 
@@ -40,6 +42,8 @@
         
         STMSyncer *syncer = notification.object;
         
+        STMSyncerState fromState = [notification.userInfo[@"from"] intValue];
+        
         if (syncer.syncerState == STMSyncerIdle) {
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -59,7 +63,22 @@
             self.totalEntityCount = 1;
             
         }
+        
+        if (fromState == STMSyncerReceiveData) {
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 
+                sleep(5);
+                dispatch_async(dispatch_get_main_queue(), ^{
+
+                    [self hideNumberOfObjects];
+                    
+                });
+                
+            });
+
+        }
+        
     }
     
     [self updateSyncDatesLabels];
@@ -74,10 +93,38 @@
     
     if ([notification.object isKindOfClass:[STMSyncer class]]) {
         
-//        float totalCount = (float)[STMEntityController stcEntities].allKeys.count;
         float countdownValue = [(notification.userInfo)[@"countdownValue"] floatValue];
-        
         self.progressBar.progress = (self.totalEntityCount - countdownValue) / self.totalEntityCount;
+        
+    }
+    
+}
+
+- (void)getBunchOfObjects:(NSNotification *)notification {
+
+    if ([notification.object isKindOfClass:[STMSyncer class]]) {
+
+        NSNumber *numberOfObjects = notification.userInfo[@"count"];
+        
+        numberOfObjects = @(self.previousNumberOfObjects + numberOfObjects.intValue);
+        
+        NSString *pluralType = [STMFunctions pluralTypeForCount:numberOfObjects.intValue];
+        NSString *numberOfObjectsString = [pluralType stringByAppendingString:@"OBJECTS"];
+        
+        self.numberOfObjectLabel.text = [NSString stringWithFormat:@"%@ %@ %@", NSLocalizedString(@"RECEIVE", nil), numberOfObjects, NSLocalizedString(numberOfObjectsString, nil)];
+        
+        self.previousNumberOfObjects = numberOfObjects.intValue;
+        
+    }
+
+}
+
+- (void)hideNumberOfObjects {
+    
+    if ([[[STMSessionManager sharedManager].currentSession syncer] syncerState] != STMSyncerReceiveData) {
+        
+        self.previousNumberOfObjects = 0;
+        self.numberOfObjectLabel.text = @"";
         
     }
     
@@ -171,6 +218,11 @@
            selector:@selector(entitiesReceivingDidFinish)
                name:@"entitiesReceivingDidFinish"
              object:syncer];
+    
+    [nc addObserver:self
+           selector:@selector(getBunchOfObjects:)
+               name:@"getBunchOfObjects"
+             object:syncer];
 
     [nc addObserver:self
            selector:@selector(newAppVersionAvailable:)
@@ -187,6 +239,8 @@
     
     self.navigationItem.title = NSLocalizedString(@"SISTEMIUM", nil);
 
+    self.numberOfObjectLabel.text = @"";
+    
     [self updateSyncDatesLabels];
     [self addObservers];
     

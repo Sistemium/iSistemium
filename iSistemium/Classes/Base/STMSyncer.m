@@ -209,13 +209,13 @@
     if (!self.syncing && syncerState != _syncerState) {
         
         syncerState = (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
-        
-//        NSLog(@"syncerState %d", syncerState);
+
+        STMSyncerState previousState = _syncerState;
         
         _syncerState = syncerState;
         
         NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self userInfo:@{@"from":@(previousState), @"to":@(syncerState)}];
         
         NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
 //        [(STMLogger *)self.session.logger saveLogMessageWithText:logMessage];
@@ -1035,7 +1035,11 @@
 
                 if (success) {
                     [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+                    
 //                    NSLog(@"%@: get %d objects", connectionEntityName, dataArray.count);
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"getBunchOfObjects" object:self userInfo:@{@"count":@(dataArray.count)}];
+                    
                 } else {
                     self.errorOccured = YES;
                     [self entityCountDecrease];

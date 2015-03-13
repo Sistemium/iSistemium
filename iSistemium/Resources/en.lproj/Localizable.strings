@@ -173,4 +173,9 @@
 "RESET FILTER" = "Reset filter";
 "SEND DATE" = "Send date: ";
 "RECEIVE DATE" = "Receive date: ";
+"RECEIVE" = "Receive";
+"0OBJECTS" = "no objects";
+"1OBJECTS" = "object";
+"2OBJECTS" = "objects";
+"5OBJECTS" = "objects";
 
