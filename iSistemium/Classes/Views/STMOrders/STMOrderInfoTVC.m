@@ -319,7 +319,7 @@
     STMSaleOrderPosition *saleOrderPosition = self.saleOrderPositions[row];
     
     cell.textLabel.text = saleOrderPosition.article.name;
-    cell.textLabel.font = [UIFont systemFontOfSize:16];
+//    cell.textLabel.font = [UIFont systemFontOfSize:16];
     
     cell.detailTextLabel.text = [self detailedTextForSaleOrderPosition:saleOrderPosition];
     
