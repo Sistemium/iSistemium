@@ -16,6 +16,7 @@
 #include "STMFetchedResultsControllerTVC.h"
 #include "STMTableViewCell.h"
 #include "STMInfoTableViewCell.h"
+#include "STMSegmentedControl.h"
 
 
 #endif

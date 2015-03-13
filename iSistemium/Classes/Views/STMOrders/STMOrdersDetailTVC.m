@@ -22,6 +22,8 @@
 @property (nonatomic ,strong) NSArray *processingRoutes;
 @property (nonatomic, strong) UIActionSheet *routesActionSheet;
 @property (nonatomic) BOOL routesActionSheetWasVisible;
+//@property (nonatomic, strong) STMBarButtonItem *filterProcessedButton;
+@property (nonatomic, strong) STMSegmentedControl *filterProcessedSegmentedControl;
 @property (nonatomic) BOOL filterProcessed;
 
 
@@ -51,6 +53,25 @@
         _filterProcessed = NO;
     }
     return _filterProcessed;
+    
+}
+
+- (STMSegmentedControl *)filterProcessedSegmentedControl {
+    
+    if (!_filterProcessedSegmentedControl) {
+        
+        NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:@"processed"];
+        
+        _filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
+        
+        _filterProcessedSegmentedControl.selectedSegmentIndex = 0;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterProcessedButtonPressed)];
+
+        [_filterProcessedSegmentedControl addGestureRecognizer:tap];
+
+    }
+    return _filterProcessedSegmentedControl;
     
 }
 
@@ -214,7 +235,18 @@
 
 - (void)filterProcessedButtonPressed {
     
-    self.filterProcessed = !self.filterProcessed;
+    if (self.filterProcessedSegmentedControl.selectedSegmentIndex == 0) {
+        
+        self.filterProcessedSegmentedControl.selectedSegmentIndex = -1;
+        self.filterProcessed = YES;
+        
+    } else {
+
+        self.filterProcessedSegmentedControl.selectedSegmentIndex = 0;
+        self.filterProcessed = NO;
+
+    }
+    
     [self refreshTable];
     
 }
@@ -270,86 +302,6 @@
     
 }
 
-/*
-#pragma mark - articleInfo popover
-
-- (UIPopoverController *)orderInfoPopover {
-    
-    if (!_orderInfoPopover) {
-        
-        STMOrderInfoNC *orderInfoNC = [self.storyboard instantiateViewControllerWithIdentifier:@"orderInfoNC"];
-        orderInfoNC.parentVC = self;
-        orderInfoNC.saleOrder = self.selectedOrder;
-        
-        _orderInfoPopover = [[UIPopoverController alloc] initWithContentViewController:orderInfoNC];
-        _orderInfoPopover.delegate = self;
-        
-    }
-    return _orderInfoPopover;
-    
-}
-
-- (void)showOrderInfoPopover {
-    
-    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-    [self.orderInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
-    
-}
-
-- (void)dismissOrderInfoPopover {
-    
-    [self.orderInfoPopover dismissPopoverAnimated:YES];
-    self.orderInfoPopover = nil;
-    
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    
-    if (self.orderInfoPopoverWasVisible) {
-        
-        [self showOrderInfoPopover];
-        self.orderInfoPopoverWasVisible = NO;
-        
-    }
-    
-    if (self.routesActionSheetWasVisible) {
-        
-        [self showRoutesActionSheet];
-        self.routesActionSheetWasVisible = NO;
-        
-    }
-    
-}
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    
-    if (self.orderInfoPopover.popoverVisible) {
-        
-        self.orderInfoPopoverWasVisible = YES;
-        [self dismissOrderInfoPopover];
-        
-    }
-    
-    if (self.routesActionSheet.visible) {
-        
-        self.routesActionSheetWasVisible = YES;
-        [self hideRoutesActionSheet];
-        
-    }
-    
-}
-
-
-#pragma mark - UIPopoverControllerDelegate
-
-- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
-    return YES;
-}
-
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-    self.orderInfoPopover = nil;
-}
-*/
 
 #pragma mark - Table view data source
 
@@ -445,9 +397,8 @@
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
-    NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:@"processed"];
-    
-    STMBarButtonItem *filterProcessedButton = [[STMBarButtonItem alloc] initWithTitle:filterProcessedLabel style:UIBarButtonItemStylePlain target:self action:@selector(filterProcessedButtonPressed)];
+//    STMBarButtonItem *filterProcessedButton = [[STMBarButtonItem alloc] initWithTitle:filterProcessedLabel style:UIBarButtonItemStylePlain target:self action:@selector(filterProcessedButtonPressed)];
+    STMBarButtonItem *filterProcessedButton = [[STMBarButtonItem alloc] initWithCustomView:self.filterProcessedSegmentedControl];
     
     [self setToolbarItems:@[flexibleSpace, filterProcessedButton, flexibleSpace]];
     
