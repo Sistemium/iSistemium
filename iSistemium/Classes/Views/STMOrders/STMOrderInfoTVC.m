@@ -25,6 +25,9 @@
 
 @implementation STMOrderInfoTVC
 
+@synthesize resultsController = _resultsController;
+
+
 - (STMOrderInfoNC *)parentNC {
     
     if (!_parentNC) {
@@ -46,6 +49,42 @@
         
     }
     return _saleOrder;
+    
+}
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSaleOrder class])];
+        
+        NSSortDescriptor *xidDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:NO selector:@selector(compare:)];
+        request.sortDescriptors = @[xidDescriptor];
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", self.saleOrder.xid];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
+        _resultsController.delegate = self;
+        
+    }
+    
+    return _resultsController;
+    
+}
+
+- (void)performFetch {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+        
+        NSLog(@"performFetch error %@", error);
+        
+    } else {
+                
+    }
     
 }
 
@@ -112,12 +151,7 @@
     NSInteger index = buttonIndex - diffCount;
     
     if (index >= 0 && index < routesCount) {
-
         [STMSaleOrderController setProcessing:self.processingRoutes[index] forSaleOrder:self.saleOrder];
-        
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        
     }
     
 }
@@ -402,6 +436,28 @@
     
 }
 
+
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView reloadData];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -410,6 +466,8 @@
     UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
 
     [self setToolbarItems:@[flexibleSpace, closeButton]];
+    
+    [self performFetch];
 
 }
 
