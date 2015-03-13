@@ -241,11 +241,18 @@
 
     if (buttonIndex >= 0 && buttonIndex < self.processingRoutes.count) {
         
+        [self.processingOrder addObserver:self
+                               forKeyPath:@"deviceTs"
+                                  options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                  context:nil];
+
+        NSLog(@"change processing time: %@", [NSDate date]);
+        
         self.processingOrder.processing = self.processingRoutes[buttonIndex];
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-
+        
     }
     
 }
@@ -271,6 +278,16 @@
     
     [self.routesActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
     self.routesActionSheet = nil;
+    
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    NSLog(@"change %@ %@", keyPath, change);
+    
+    [object removeObserver:self forKeyPath:keyPath];
+    
+    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     
 }
 

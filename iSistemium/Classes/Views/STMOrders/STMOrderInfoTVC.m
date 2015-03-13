@@ -113,11 +113,18 @@
     
     if (index >= 0 && index < routesCount) {
 
+        [self.saleOrder addObserver:self
+                               forKeyPath:@"deviceTs"
+                                  options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                  context:nil];
+        
+        NSLog(@"change processing time: %@", [NSDate date]);
+
         self.saleOrder.processing = self.processingRoutes[index];
         
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-
+        
     }
     
 }
@@ -144,6 +151,16 @@
     
     [self.routesActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
     self.routesActionSheet = nil;
+    
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    NSLog(@"change %@ %@", keyPath, change);
+    
+    [object removeObserver:self forKeyPath:keyPath];
+    
+    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     
 }
 
