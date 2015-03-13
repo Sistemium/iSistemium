@@ -9,7 +9,8 @@
 #import "STMOrdersDetailTVC.h"
 #import "STMOrdersSVC.h"
 #import "STMSaleOrderController.h"
-#import "STMOrderInfoNC.h"
+//#import "STMOrderInfoNC.h"
+#import "STMOrderInfoTVC.h"
 
 @interface STMOrdersDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
@@ -240,12 +241,7 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 
     if (buttonIndex >= 0 && buttonIndex < self.processingRoutes.count) {
-
         [STMSaleOrderController setProcessing:self.processingRoutes[buttonIndex] forSaleOrder:self.processingOrder];
-        
-//        NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
-//        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        
     }
     
 }
@@ -274,7 +270,7 @@
     
 }
 
-
+/*
 #pragma mark - articleInfo popover
 
 - (UIPopoverController *)orderInfoPopover {
@@ -353,7 +349,7 @@
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
     self.orderInfoPopover = nil;
 }
-
+*/
 
 #pragma mark - Table view data source
 
@@ -435,7 +431,9 @@
     
     self.selectedOrder = [self.resultsController objectAtIndexPath:indexPath];
 
-    [self showOrderInfoPopover];
+    [self performSegueWithIdentifier:@"showOrderInfo" sender:self];
+    
+//    [self showOrderInfoPopover];
     
     return indexPath;
     
@@ -474,14 +472,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+
+    if ([segue.identifier isEqualToString:@"showOrderInfo"]) {
+        
+        STMOrderInfoTVC *orderInfoTVC = (STMOrderInfoTVC *)segue.destinationViewController;
+        orderInfoTVC.saleOrder = self.selectedOrder;
+        
+    }
+    
 }
-*/
+
 
 @end

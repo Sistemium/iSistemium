@@ -7,14 +7,12 @@
 //
 
 #import "STMOrderInfoTVC.h"
-#import "STMOrderInfoNC.h"
 #import "STMSaleOrderController.h"
 
 
 @interface STMOrderInfoTVC () <UIActionSheetDelegate>
 
-@property (nonatomic, weak) STMOrderInfoNC *parentNC;
-@property (nonatomic, strong) STMSaleOrder *saleOrder;
+//@property (nonatomic, strong) STMSaleOrder *saleOrder;
 @property (nonatomic, strong) NSArray *saleOrderPositions;
 @property (nonatomic ,strong) NSArray *processingRoutes;
 @property (nonatomic, strong) UIActionSheet *routesActionSheet;
@@ -28,27 +26,15 @@
 @synthesize resultsController = _resultsController;
 
 
-- (STMOrderInfoNC *)parentNC {
+- (void)setSaleOrder:(STMSaleOrder *)saleOrder {
     
-    if (!_parentNC) {
+    if (saleOrder != _saleOrder) {
         
-        if ([self.navigationController isKindOfClass:[STMOrderInfoNC class]]) {
-            _parentNC = (STMOrderInfoNC *)self.navigationController;
-        }
+        _saleOrder = saleOrder;
+        
+        [self performFetch];
         
     }
-    return _parentNC;
-    
-}
-
-- (STMSaleOrder *)saleOrder {
-    
-    if (!_saleOrder) {
-        
-        _saleOrder = self.parentNC.saleOrder;
-        
-    }
-    return _saleOrder;
     
 }
 
@@ -104,7 +90,7 @@
 
 
 - (void)closeButtonPressed {
-    [self.parentNC cancelButtonPressed];
+//    [self.parentVC cancelButtonPressed];
 }
 
 - (void)statusLabelTapped:(id)sender {
@@ -128,7 +114,7 @@
     
     if (!_routesActionSheet) {
         
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
         
         for (NSString *processing in self.processingRoutes) {
             [actionSheet addButtonWithTitle:[STMSaleOrderController labelForProcessing:processing]];
@@ -143,15 +129,8 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    NSUInteger buttonCount = actionSheet.numberOfButtons;
-    NSUInteger routesCount = self.processingRoutes.count;
-    
-    NSUInteger diffCount = buttonCount - routesCount;
-    
-    NSInteger index = buttonIndex - diffCount;
-    
-    if (index >= 0 && index < routesCount) {
-        [STMSaleOrderController setProcessing:self.processingRoutes[index] forSaleOrder:self.saleOrder];
+    if (buttonIndex >= 0 && buttonIndex < self.processingRoutes.count) {
+        [STMSaleOrderController setProcessing:self.processingRoutes[buttonIndex] forSaleOrder:self.saleOrder];
     }
     
 }
@@ -164,11 +143,12 @@
     
     if (!self.routesActionSheet.isVisible) {
         
-//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
-//        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-//        [self.routesActionSheet showFromRect:cell.detailTextLabel.frame inView:cell animated:YES];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         
-        [self.routesActionSheet showInView:self.view];
+        [self.routesActionSheet showFromRect:cell.detailTextLabel.frame inView:cell.contentView animated:YES];
+        
+//        [self.routesActionSheet showInView:self.view];
         
     }
     

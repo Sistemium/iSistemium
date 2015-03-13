@@ -7,7 +7,12 @@
 //
 
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMOrdersSVC.h"
+
 
 @interface STMOrderInfoTVC : STMFetchedResultsControllerTVC
+
+@property (nonatomic, strong) STMSaleOrder *saleOrder;
+
 
 @end
