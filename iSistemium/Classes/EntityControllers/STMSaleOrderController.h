@@ -17,4 +17,6 @@
 + (UIColor *)colorForProcessing:(NSString *)processing;
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing;
 
++ (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder;
+
 @end

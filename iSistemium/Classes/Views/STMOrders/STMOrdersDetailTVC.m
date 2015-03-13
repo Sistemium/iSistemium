@@ -240,18 +240,11 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 
     if (buttonIndex >= 0 && buttonIndex < self.processingRoutes.count) {
-        
-        [self.processingOrder addObserver:self
-                               forKeyPath:@"deviceTs"
-                                  options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
-                                  context:nil];
 
-        NSLog(@"change processing time: %@", [NSDate date]);
+        [STMSaleOrderController setProcessing:self.processingRoutes[buttonIndex] forSaleOrder:self.processingOrder];
         
-        self.processingOrder.processing = self.processingRoutes[buttonIndex];
-        
-        NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
+//        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
     }
     
@@ -281,15 +274,6 @@
     
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    
-    NSLog(@"change %@ %@", keyPath, change);
-    
-    [object removeObserver:self forKeyPath:keyPath];
-    
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
-    
-}
 
 #pragma mark - articleInfo popover
 

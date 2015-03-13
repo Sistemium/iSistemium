@@ -150,4 +150,19 @@
     
 }
 
++ (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder {
+    
+    if (saleOrder.processing != processing) {
+        saleOrder.processing = processing;
+    }
+    
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+    
+    [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+    
+}
+
+
 @end
