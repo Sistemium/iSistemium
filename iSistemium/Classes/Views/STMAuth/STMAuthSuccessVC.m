@@ -111,7 +111,9 @@
         NSString *pluralType = [STMFunctions pluralTypeForCount:numberOfObjects.intValue];
         NSString *numberOfObjectsString = [pluralType stringByAppendingString:@"OBJECTS"];
         
-        self.numberOfObjectLabel.text = [NSString stringWithFormat:@"%@ %@ %@", NSLocalizedString(@"RECEIVE", nil), numberOfObjects, NSLocalizedString(numberOfObjectsString, nil)];
+        NSString *receiveString = ([pluralType isEqualToString:@"1"]) ? NSLocalizedString(@"RECEIVE1", nil) : NSLocalizedString(@"RECEIVE", nil);
+        
+        self.numberOfObjectLabel.text = [NSString stringWithFormat:@"%@ %@ %@", receiveString, numberOfObjects, NSLocalizedString(numberOfObjectsString, nil)];
         
         self.previousNumberOfObjects = numberOfObjects.intValue;
         
