@@ -7,10 +7,16 @@
 //
 
 #import "STMTableViewCell.h"
+#import "STMConstants.h"
 
 @interface STMInfoTableViewCell : STMTableViewCell
 
 @property (nonatomic, retain) UILabel *infoLabel;
 
+
+@end
+
+
+@interface STMInfoButtonTableViewCell : STMInfoTableViewCell
 
 @end

@@ -333,7 +333,7 @@
     
     static NSString *cellIdentifier = @"orderCell";
     
-    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    STMInfoButtonTableViewCell *cell = [[STMInfoButtonTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
 
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
@@ -357,10 +357,18 @@
 
     cell.detailTextLabel.text = detailText;
 
+    [self setupInfoLabelForCell:cell andSaleOrder:saleOrder];
+    
+    return cell;
+    
+}
+
+- (void)setupInfoLabelForCell:(STMInfoTableViewCell *)cell andSaleOrder:(STMSaleOrder *)saleOrder {
+
     NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
     
     cell.infoLabel.text = processingLabel;
-
+    
     for (UIGestureRecognizer *gestures in cell.infoLabel.gestureRecognizers) {
         [cell.infoLabel removeGestureRecognizer:gestures];
     }
@@ -375,7 +383,7 @@
         cell.infoLabel.textColor = processingColor;
     }
     
-    return cell;
+    cell.infoLabel.backgroundColor = [UIColor blackColor];
     
 }
 

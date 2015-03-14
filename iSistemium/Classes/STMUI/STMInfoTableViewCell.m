@@ -8,35 +8,76 @@
 
 #import "STMInfoTableViewCell.h"
 
+@implementation STMInfoButtonTableViewCell
+
+- (void)layoutSubviews {
+    
+    [super layoutSubviews];
+    
+    self.infoLabel.textAlignment = NSTextAlignmentCenter;
+    self.infoLabel.backgroundColor = STM_LIGHT_LIGHT_GREY_COLOR;
+
+}
+
+- (void)setFrameForInfoLabel {
+    
+    CGFloat paddingX = (self.infoLabel.text) ? 10 : 0;
+    
+    NSDictionary *attributes = @{NSFontAttributeName:self.infoLabel.font};
+    
+    CGSize size = [self.infoLabel.text sizeWithAttributes:attributes];
+    
+    CGFloat x = self.contentView.frame.size.width - size.width - 2 * paddingX;
+    
+    CGRect frame = CGRectMake(x, 0, size.width + 2 * paddingX, self.infoLabel.superview.frame.size.height);
+    self.infoLabel.frame = frame;
+    
+}
+
+
+@end
+
+
 @implementation STMInfoTableViewCell
 
 - (void)layoutSubviews {
     
     [super layoutSubviews];
     
-//    UIFont *font = [UIFont systemFontOfSize:18];
-    UIColor *backgroundColor = [UIColor clearColor];
-    
-//    self.infoLabel.font = font;
     self.infoLabel.textAlignment = NSTextAlignmentRight;
-    self.infoLabel.backgroundColor = backgroundColor;
+    self.infoLabel.backgroundColor = [UIColor redColor];
     
-    CGFloat paddingX = 10;
-    CGFloat paddingY = 0;
-    CGFloat marginX = 10;
-    
-    NSDictionary *attributes = @{NSFontAttributeName:self.infoLabel.font};
-    
-    CGSize size = [self.infoLabel.text sizeWithAttributes:attributes];
-
-    CGFloat x = self.contentView.frame.size.width - size.width - 2 * paddingX - marginX;
-    CGFloat y = (self.contentView.frame.size.height - size.height - 2 * paddingY) / 2;
-    CGRect frame = CGRectMake(x, y, size.width + 2 * paddingX, size.height + 2 * paddingY);
-    self.infoLabel.frame = frame;
+    [self setFrameForInfoLabel];
 
     [self setFrameToLabel:self.textLabel withInfoLabel:self.infoLabel];
     [self setFrameToLabel:self.detailTextLabel withInfoLabel:self.infoLabel];
     
+}
+
+- (void)setFrameForInfoLabel {
+
+    CGFloat paddingX = 0;
+    CGFloat paddingY = 0;
+    CGFloat marginX = 0;
+    
+    if (self.infoLabel.text) {
+        
+        paddingX = 10;
+        paddingY = 5;
+        marginX = 10;
+        
+    }
+    
+    NSDictionary *attributes = @{NSFontAttributeName:self.infoLabel.font};
+    
+    CGSize size = [self.infoLabel.text sizeWithAttributes:attributes];
+    
+    CGFloat x = self.contentView.frame.size.width - size.width - 2 * paddingX - marginX;
+    CGFloat y = (self.contentView.frame.size.height - size.height - 2 * paddingY) / 2;
+    
+    CGRect frame = CGRectMake(x, y, size.width + 2 * paddingX, size.height + 2 * paddingY);
+    self.infoLabel.frame = frame;
+
 }
 
 - (void)setFrameToLabel:(UILabel *)label withInfoLabel:(UILabel *)infoLabel {
