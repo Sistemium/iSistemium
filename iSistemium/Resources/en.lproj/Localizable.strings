@@ -179,4 +179,6 @@
 "1OBJECTS" = "object";
 "2OBJECTS" = "objects";
 "5OBJECTS" = "objects";
+"PROFILE" = "Profile";
+"APP TERMINATE" = "App will be terminate. Please restart.";
 

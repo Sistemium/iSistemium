@@ -128,6 +128,8 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
+//    [self showLocalNotification];
+    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -143,7 +145,7 @@
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
 
     [self setupWindow];
-    
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -151,6 +153,8 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillTerminate"];
     NSLog(logMessage);
     [[STMLogger sharedLogger] saveLogMessageDictionary:@{@"text": logMessage, @"type": @"error"}];
+    
+    [self sendAppTerminateLocalNotification];
     
 }
 
@@ -219,9 +223,19 @@
 - (void)showLocalNotification {
     
     UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    localNotification.alertBody = @"localNotification";
+    localNotification.alertBody = NSLocalizedString(@"APP TERMINATE", nil);;
     localNotification.soundName = UILocalNotificationDefaultSoundName;
 
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+
+}
+
+- (void)sendAppTerminateLocalNotification {
+
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.alertBody = NSLocalizedString(@"APP TERMINATE", nil);
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
 
 }
