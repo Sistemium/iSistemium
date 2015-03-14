@@ -80,7 +80,7 @@
             NSError *error;
             NSDictionary *workflowJSON = [NSJSONSerialization JSONObjectWithData:workflowData options:NSJSONReadingMutableContainers error:&error];
             
-            _workflow = workflowJSON[@"processing"];
+            _workflow = workflowJSON;
             
         }
         

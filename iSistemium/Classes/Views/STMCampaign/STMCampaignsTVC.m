@@ -9,7 +9,7 @@
 #import "STMCampaignsTVC.h"
 
 #import "STMCampaign.h"
-#import "STMArticlesTVC.h"
+//#import "STMArticlesTVC.h"
 #import "STMRootTBC.h"
 #import "STMCampaignsSVC.h"
 #import "STMFunctions.h"

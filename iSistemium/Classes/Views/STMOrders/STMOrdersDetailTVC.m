@@ -62,14 +62,18 @@
         
         NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:@"processed"];
         
-        _filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
-        
-        _filterProcessedSegmentedControl.selectedSegmentIndex = 0;
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterProcessedButtonPressed)];
+        if (filterProcessedLabel) {
+            
+            _filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
+            
+            _filterProcessedSegmentedControl.selectedSegmentIndex = 0;
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterProcessedButtonPressed)];
+            
+            [_filterProcessedSegmentedControl addGestureRecognizer:tap];
 
-        [_filterProcessedSegmentedControl addGestureRecognizer:tap];
-
+        }
+        
     }
     return _filterProcessedSegmentedControl;
     
@@ -396,8 +400,6 @@
 - (void)setupToolbar {
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-    
-//    STMBarButtonItem *filterProcessedButton = [[STMBarButtonItem alloc] initWithTitle:filterProcessedLabel style:UIBarButtonItemStylePlain target:self action:@selector(filterProcessedButtonPressed)];
     STMBarButtonItem *filterProcessedButton = [[STMBarButtonItem alloc] initWithCustomView:self.filterProcessedSegmentedControl];
     
     [self setToolbarItems:@[flexibleSpace, filterProcessedButton, flexibleSpace]];
@@ -406,7 +408,7 @@
 
 - (void)customInit {
     
-    [self setupToolbar];
+//    [self setupToolbar];
     [self performFetch];
     
 }
@@ -416,6 +418,13 @@
     [super viewDidLoad];
     [self customInit];
 
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    [self setupToolbar];
+    
 }
 
 - (void)didReceiveMemoryWarning {
