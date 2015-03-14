@@ -11,6 +11,6 @@
 @interface STMOrdersDetailTVC : STMFetchedResultsControllerTVC
 
 - (void)refreshTable;
-//- (void)dismissOrderInfoPopover;
+
 
 @end

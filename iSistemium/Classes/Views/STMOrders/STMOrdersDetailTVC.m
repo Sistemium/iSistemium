@@ -24,6 +24,7 @@
 @property (nonatomic) BOOL routesActionSheetWasVisible;
 //@property (nonatomic, strong) STMBarButtonItem *filterProcessedButton;
 @property (nonatomic, strong) STMSegmentedControl *filterProcessedSegmentedControl;
+@property (nonatomic, strong) STMBarButtonItem *filterProcessedButton;
 @property (nonatomic) BOOL filterProcessed;
 
 
@@ -76,6 +77,17 @@
         
     }
     return _filterProcessedSegmentedControl;
+    
+}
+
+- (STMBarButtonItem *)filterProcessedButton {
+
+    if (!_filterProcessedButton) {
+        
+        _filterProcessedButton = [[STMBarButtonItem alloc] initWithCustomView:self.filterProcessedSegmentedControl];
+
+    }
+    return _filterProcessedButton;
     
 }
 
@@ -397,26 +409,35 @@
 
     [self performSegueWithIdentifier:@"showOrderInfo" sender:self];
     
-//    [self showOrderInfoPopover];
-    
     return indexPath;
     
 }
+
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [super controllerDidChangeContent:controller];
+    
+    [self setupToolbar];
+    
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)setupToolbar {
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-    STMBarButtonItem *filterProcessedButton = [[STMBarButtonItem alloc] initWithCustomView:self.filterProcessedSegmentedControl];
     
-    [self setToolbarItems:@[flexibleSpace, filterProcessedButton, flexibleSpace]];
-    
+    [self setToolbarItems:@[flexibleSpace, self.filterProcessedButton, flexibleSpace]];
+
 }
 
 - (void)customInit {
     
-//    [self setupToolbar];
+    [self setupToolbar];
     [self performFetch];
     
 }
@@ -428,11 +449,8 @@
 
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    [self setupToolbar];
-    
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning {
