@@ -155,22 +155,22 @@
     
 }
 
-- (void)registerTabWithName:(NSString *)name title:(NSString *)title image:(UIImage *)image {
+- (void)registerTabWithStoryboardName:(NSString *)storyboardName title:(NSString *)title image:(UIImage *)image {
     
-    if (name) {
+    if (storyboardName) {
         
-        (title) ? [self.storyboardTitles addObject:title] : [self.storyboardTitles addObject:name];
+        (title) ? [self.storyboardTitles addObject:title] : [self.storyboardTitles addObject:storyboardName];
         
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:name bundle:nil];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
         UIViewController *vc = [storyboard instantiateInitialViewController];
         vc.title = title;
         vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
 
         [self.allTabsVCs addObject:vc];
         
-        (self.tabs)[name] = vc;
+        (self.tabs)[storyboardName] = vc;
         
-        if ([name hasPrefix:@"STMAuth"]) {
+        if ([storyboardName hasPrefix:@"STMAuth"]) {
             [self.authVCs addObject:vc];
         }
                 
@@ -182,45 +182,45 @@
     
     NSLog(@"device is iPad");
     
-    [self registerTabWithName:@"STMAuth"
+    [self registerTabWithStoryboardName:@"STMAuth"
                         title:NSLocalizedString(@"AUTHORIZATION", nil)
                         image:[UIImage imageNamed:@"password2-128.png"]];
 
-    [self registerTabWithName:@"STMCampaigns"
+    [self registerTabWithStoryboardName:@"STMCampaigns"
                         title:NSLocalizedString(@"AD CAMPAIGNS", nil)
                         image:[UIImage imageNamed:@"christmas_gift-128.png"]];
 
-    [self registerTabWithName:@"STMDebts"
+    [self registerTabWithStoryboardName:@"STMDebts"
                         title:NSLocalizedString(@"DEBTS", nil)
                         image:[UIImage imageNamed:@"cash_receiving-128.png"]];
 
-    [self registerTabWithName:@"STMUncashing"
+    [self registerTabWithStoryboardName:@"STMUncashing"
                         title:NSLocalizedString(@"UNCASHING", nil)
                         image:[UIImage imageNamed:@"banknotes-128.png"]];
 
-    [self registerTabWithName:@"STMCatalog"
+    [self registerTabWithStoryboardName:@"STMCatalog"
                         title:NSLocalizedString(@"CATALOG", nil)
                         image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
 
-    [self registerTabWithName:@"STMWebView"
+    [self registerTabWithStoryboardName:@"STMWebView"
                         title:NSLocalizedString(@"IORDERS", nil)
                         image:[UIImage imageNamed:@"purchase_order-128.png"]];
 
-    [self registerTabWithName:@"STMOrders"
+    [self registerTabWithStoryboardName:@"STMOrders"
                         title:NSLocalizedString(@"ORDERS", nil)
                         image:[UIImage imageNamed:@"bill-128.png"]];
 
-    [self registerTabWithName:@"STMMessages"
+    [self registerTabWithStoryboardName:@"STMMessages"
                         title:NSLocalizedString(@"MESSAGES", nil)
                         image:[UIImage imageNamed:@"message-128.png"]];
 
 #ifdef DEBUG
     
-    [self registerTabWithName:@"STMSettings"
+    [self registerTabWithStoryboardName:@"STMSettings"
                         title:NSLocalizedString(@"SETTINGS", nil)
                         image:[UIImage imageNamed:@"settings3-128.png"]];
 
-    [self registerTabWithName:@"STMLogs"
+    [self registerTabWithStoryboardName:@"STMLogs"
                         title:NSLocalizedString(@"LOGS", nil)
                         image:[UIImage imageNamed:@"archive-128.png"]];
     
@@ -232,17 +232,17 @@
     
     NSLog(@"device is iPhone");
 
-    [self registerTabWithName:@"STMAuth"
+    [self registerTabWithStoryboardName:@"STMAuth"
                         title:NSLocalizedString(@"AUTHORIZATION", nil)
                         image:[UIImage imageNamed:@"password2-128.png"]];
 
-    [self registerTabWithName:@"STMMessages"
+    [self registerTabWithStoryboardName:@"STMMessages"
                         title:NSLocalizedString(@"MESSAGES", nil)
                         image:[UIImage imageNamed:@"message-128.png"]];
 
 #ifdef DEBUG
     
-    [self registerTabWithName:@"STMSettings"
+    [self registerTabWithStoryboardName:@"STMSettings"
                         title:NSLocalizedString(@"SETTINGS", nil)
                         image:[UIImage imageNamed:@"settings3-128.png"]];
     
@@ -264,6 +264,12 @@
 
 - (void)initAllTabs {
 
+    [self prepareTabs];
+    
+    UIViewController *vc = self.tabs[@"STMAuth"];
+    vc.title = NSLocalizedString(@"PROFILE", nil);
+    vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checked_user-128.png"] toSize:CGSizeMake(30, 30)];
+    
     UIViewController *messageVC = self.tabs[@"STMMessage"];
     
     if (messageVC) {
@@ -316,7 +322,7 @@
         self.currentTappedVC = viewController;
     }
     
-//    NSLog(@"shouldSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
+    NSLog(@"shouldSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
 
     return YES;
     
@@ -331,7 +337,7 @@
         
     }
     
-//    NSLog(@"didSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
+    NSLog(@"didSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
 
 }
 
@@ -429,7 +435,17 @@
 
 - (void)authStateChanged {
     
-    [STMAuthController authController].controllerState != STMAuthSuccess ? [self initAuthTab] : [self initAllTabs];
+//    [STMAuthController authController].controllerState != STMAuthSuccess ? [self initAuthTab] : [self initAllTabs];
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        
+        [self initAuthTab];
+        
+    } else {
+        
+        [self initAllTabs];
+        
+    }
     
 }
 
