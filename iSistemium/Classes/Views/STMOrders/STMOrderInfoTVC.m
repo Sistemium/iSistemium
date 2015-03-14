@@ -298,8 +298,11 @@
             [cell.detailTextLabel addGestureRecognizer:tap];
 
             cell.detailTextLabel.text = [STMSaleOrderController labelForProcessing:self.saleOrder.processing];
+        
             if ([STMSaleOrderController colorForProcessing:self.saleOrder.processing]) {
                 cell.detailTextLabel.textColor =  [STMSaleOrderController colorForProcessing:self.saleOrder.processing];
+            } else {
+                cell.detailTextLabel.textColor = [UIColor blackColor];
             }
             break;
 
