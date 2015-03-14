@@ -110,6 +110,21 @@
     
 }
 
++ (NSString *)processingForLabel:(NSString *)label {
+    
+    NSDictionary *workflow = [self sharedInstance].workflow;
+    
+    for (NSString *key in workflow.allKeys) {
+        
+        if ([label isEqualToString:workflow[key][@"label"]]) {
+            return key;
+        }
+        
+    }
+    return nil;
+    
+}
+
 + (UIColor *)colorForProcessing:(NSString *)processing {
     
     NSDictionary *workflow = [self sharedInstance].workflow;

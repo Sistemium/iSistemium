@@ -15,18 +15,17 @@
 @interface STMOrdersDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
-@property (nonatomic, strong) UIPopoverController *orderInfoPopover;
-@property (nonatomic) BOOL orderInfoPopoverWasVisible;
+
 @property (nonatomic, strong) STMSaleOrder *selectedOrder;
 @property (nonatomic, strong) STMSaleOrder *processingOrder;
+
 @property (nonatomic ,strong) NSArray *processingRoutes;
+
 @property (nonatomic, strong) UIActionSheet *routesActionSheet;
 @property (nonatomic) BOOL routesActionSheetWasVisible;
-//@property (nonatomic, strong) STMBarButtonItem *filterProcessedButton;
-@property (nonatomic, strong) STMSegmentedControl *filterProcessedSegmentedControl;
-@property (nonatomic, strong) STMBarButtonItem *filterProcessedButton;
-@property (nonatomic) BOOL filterProcessed;
 
+@property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
+@property (nonatomic, strong) NSMutableDictionary *filterButtons;
 
 @end
 
@@ -48,47 +47,36 @@
     
 }
 
-- (BOOL)filterProcessed {
+- (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
     
-    if (!_filterProcessed) {
-        _filterProcessed = NO;
-    }
-    return _filterProcessed;
+    NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:processing];
+    
+    STMSegmentedControl *filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
+    filterProcessedSegmentedControl.selectedSegmentIndex = 0;
+        
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonPressed:)];
+    [filterProcessedSegmentedControl addGestureRecognizer:tap];
+
+    STMBarButtonItem *filterButton = [[STMBarButtonItem alloc] initWithCustomView:filterProcessedSegmentedControl];
+    return filterButton;
     
 }
 
-- (STMSegmentedControl *)filterProcessedSegmentedControl {
+- (NSMutableDictionary *)filterButtons {
     
-    if (!_filterProcessedSegmentedControl) {
-        
-        NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:@"processed"];
-        
-        if (filterProcessedLabel) {
-            
-            _filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
-            
-            _filterProcessedSegmentedControl.selectedSegmentIndex = 0;
-            
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterProcessedButtonPressed)];
-            
-            [_filterProcessedSegmentedControl addGestureRecognizer:tap];
-
-        }
-        
+    if (!_filterButtons) {
+        _filterButtons = [NSMutableDictionary dictionary];
     }
-    return _filterProcessedSegmentedControl;
+    return _filterButtons;
     
 }
 
-- (STMBarButtonItem *)filterProcessedButton {
-
-    if (!_filterProcessedButton) {
-        
-        _filterProcessedButton = [[STMBarButtonItem alloc] initWithCustomView:self.filterProcessedSegmentedControl];
-
-    }
-    return _filterProcessedButton;
+- (NSMutableArray *)currentFilterProcessings {
     
+    if (!_currentFilterProcessings) {
+        _currentFilterProcessings = [NSMutableArray array];
+    }
+    return _currentFilterProcessings;
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -140,11 +128,11 @@
         
     }
     
-    if (self.filterProcessed) {
+    for (NSString *processing in self.currentFilterProcessings) {
         
-        NSPredicate *processedPredicate = [NSPredicate predicateWithFormat:@"processing != %@", @"processed"];
+        NSPredicate *processedPredicate = [NSPredicate predicateWithFormat:@"processing != %@", processing];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, processedPredicate]];
-
+        
     }
 
     return predicate;
@@ -249,21 +237,29 @@
     
 }
 
-- (void)filterProcessedButtonPressed {
+- (void)filterButtonPressed:(id)sender {
     
-    if (self.filterProcessedSegmentedControl.selectedSegmentIndex == 0) {
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
         
-        self.filterProcessedSegmentedControl.selectedSegmentIndex = -1;
-        self.filterProcessed = YES;
+        STMSegmentedControl *segmentedControl = (STMSegmentedControl *)[(UITapGestureRecognizer *)sender view];
+        NSString *title = [segmentedControl titleForSegmentAtIndex:0];
+        NSString *processing = [STMSaleOrderController processingForLabel:title];
         
-    } else {
-
-        self.filterProcessedSegmentedControl.selectedSegmentIndex = 0;
-        self.filterProcessed = NO;
+        if (segmentedControl.selectedSegmentIndex == 0) {
+            
+            segmentedControl.selectedSegmentIndex = -1;
+            [self.currentFilterProcessings addObject:processing];
+            
+        } else {
+            
+            segmentedControl.selectedSegmentIndex = 0;
+            [self.currentFilterProcessings removeObject:processing];
+            
+        }
+        
+        [self refreshTable];
 
     }
-    
-    [self refreshTable];
     
 }
 
@@ -425,14 +421,82 @@
 }
 
 
+- (NSArray *)fetchProperty:(NSString *)property {
+    
+    NSString *entityName = NSStringFromClass([STMSaleOrder class]);
+    
+    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
+    
+    NSPropertyDescription *entityProperty = entity.propertiesByName[property];
+
+    if (entityProperty) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        
+        NSString *propertyName = property;
+        
+        //    NSExpression *keypath = [NSExpression expressionForKeyPath:propertyName];
+        //    NSExpressionDescription *description = [[NSExpressionDescription alloc] init];
+        //    description.expression = keypath;
+        //    description.name = propertyName;
+        //    description.expressionResultType = NSStringAttributeType;
+        
+        request.propertiesToFetch = @[entityProperty];
+        request.propertiesToGroupBy = @[propertyName];
+        
+        request.resultType = NSDictionaryResultType;
+        
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:propertyName ascending:YES]];
+        
+        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+        
+//        NSLog(@"result %@", result);
+        
+        return result;
+
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)setupToolbar {
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-    
-    [self setToolbarItems:@[flexibleSpace, self.filterProcessedButton, flexibleSpace]];
+//    [self setToolbarItems:@[flexibleSpace, self.filterProcessedButton, flexibleSpace]];
 
+    NSMutableArray *toolbarItems = [NSMutableArray array];
+    [toolbarItems addObject:flexibleSpace];
+    
+    NSString *propertyName = @"processing";
+    
+    NSArray *processings = [self fetchProperty:propertyName];
+    
+    for (NSDictionary *processing in processings) {
+        
+        NSString *processingName = processing[propertyName];
+        
+        STMBarButtonItem *button = self.filterButtons[processingName];
+        
+        if (!button) {
+            
+            button = [self filterButtonForProcessing:processingName];
+            [self.filterButtons setObject:button forKey:processingName];
+            
+        }
+        
+        [toolbarItems addObject:button];
+        
+    }
+    
+    [toolbarItems addObject:flexibleSpace];
+    
+    [self setToolbarItems:toolbarItems];
+    
 }
 
 - (void)customInit {

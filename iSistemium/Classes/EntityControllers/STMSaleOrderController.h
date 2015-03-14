@@ -14,7 +14,10 @@
 + (STMSaleOrderController *)sharedInstance;
 
 + (NSString *)labelForProcessing:(NSString *)processing;
++ (NSString *)processingForLabel:(NSString *)label;
+
 + (UIColor *)colorForProcessing:(NSString *)processing;
+
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing;
 
 + (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder;
