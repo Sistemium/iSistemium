@@ -59,7 +59,7 @@
     NSMutableArray *returnValue = result.mutableCopy;
     
 // insert duplicates
-    
+/*
     if (result.count < 40) {
         
         STMEntity *result0 = result[20];
@@ -69,9 +69,11 @@
         duplicateEntity.name = result0.name;
 
         [returnValue addObject:duplicateEntity];
+        
+        [[self document] saveDocument:^(BOOL success) {}];
 
     }
-    
+*/
 // end of insert duplicates
     
     return returnValue;
@@ -138,18 +140,9 @@
 
 + (void)checkEntitiesForDuplicates {
     
-// TODO: checkEntitiesForDuplicates
-    
     NSArray *entitiesArray = [self stcEntitiesArray];
 
     NSLog(@"entitiesArray.count %d", entitiesArray.count);
-    
-//    for (STMEntity *entity in entitiesArray) {
-//        
-//        NSLog(@"entity.name %@", entity.name);
-//        NSLog(@"entity.deviceCts %@", entity.deviceCts);
-//        
-//    }
     
     NSString *entityName = NSStringFromClass([STMEntity class]);
     NSString *property = @"name";
@@ -163,31 +156,21 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         
-//        NSExpression *keypath = [NSExpression expressionForKeyPath:propertyName];
-//        NSExpressionDescription *description = [[NSExpressionDescription alloc] init];
-//        description.expression = keypath;
-//        description.name = propertyName;
-//        description.expressionResultType = NSStringAttributeType;
-
         NSExpression *expression = [NSExpression expressionForKeyPath:property];
         NSExpression *countExpression = [NSExpression expressionForFunction:@"count:" arguments:[NSArray arrayWithObject:expression]];
         NSExpressionDescription *ed = [[NSExpressionDescription alloc] init];
         ed.expression = countExpression;
         ed.expressionResultType = NSInteger64AttributeType;
-        ed.name = @"nameCount";
+        ed.name = @"count";
         
         request.propertiesToFetch = @[entityProperty, ed];
         request.propertiesToGroupBy = @[entityProperty];
-        
-//        request.havingPredicate = [NSPredicate predicateWithFormat:@"%@ > 1", ed];
-        
         request.resultType = NSDictionaryResultType;
-        
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:property ascending:YES]];
         
         NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
         
-        result = [result filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"nameCount > 1"]];
+        result = [result filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"count > 1"]];
 
         if (result.count > 0) {
             
@@ -196,20 +179,41 @@
                 NSString *message = [NSString stringWithFormat:@"Entity %@ have %@ duplicates", entity[property], entity[ed.name]];
                 [[STMLogger sharedLogger] saveLogMessageWithText:message type:@"error"];
                 
+                [self removeDuplicatesWithName:entity[property]];
+                
             }
             
         } else {
-            NSLog(@"stc.entity duplicates not found");
+            [[STMLogger sharedLogger] saveLogMessageWithText:@"stc.entity duplicates not found"];
         }
         
-//        return result;
-        
-    } else {
-        
-//        return nil;
-        
     }
+    
+}
 
++ (void)removeDuplicatesWithName:(NSString *)name {
+    
+    NSLog(@"remove entity duplicates for %@", name);
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMEntity class])];
+    
+#warning Don't forget to switch ascending to YES
+    
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
+
+    NSError *error;
+    NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
+
+    STMEntity *actualEntity = [result lastObject];
+    NSMutableArray *mutableResult = result.mutableCopy;
+    [mutableResult removeObject:actualEntity];
+    
+    for (STMEntity *entity in mutableResult) {
+        [[self document].managedObjectContext deleteObject:entity];
+    }
+    
+    [[self document] saveDocument:^(BOOL success) {}];
     
 }
 
