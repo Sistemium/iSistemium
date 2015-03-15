@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
+#import <AdSupport/AdSupport.h>
+
 #import "STMSyncer.h"
 #import "STMDocument.h"
 #import "STMObjectsController.h"
@@ -690,7 +692,8 @@
             //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
             [request setHTTPMethod:@"POST"];
             [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-            [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+//            [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+            [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
             
             request.HTTPBody = sendData;
             
@@ -786,7 +789,8 @@
         
         [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
         [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
-        [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+//        [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+        [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
 
 //        NSLog(@"requestURL %@", requestURL);
 //        NSLog(@"eTag %@", eTag);

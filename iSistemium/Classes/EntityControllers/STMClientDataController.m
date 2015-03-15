@@ -87,7 +87,7 @@
     uuid_t uuid;
     [advertisingIdentifier getUUIDBytes:uuid];
     
-    NSLog(@"advertisingIdentifier %@", advertisingIdentifier);
+//    NSLog(@"advertisingIdentifier %@", advertisingIdentifier);
 
     NSData *deviceUUID = [NSData dataWithBytes:uuid length:16];
     
@@ -134,7 +134,7 @@
     
     [[self document] saveDocument:^(BOOL success) {}];
     
-    NSLog(@"clientData %@", clientData);
+//    NSLog(@"clientData %@", clientData);
 
 }
 
