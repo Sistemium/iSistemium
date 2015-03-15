@@ -476,6 +476,23 @@
     
     NSArray *processings = [self fetchProperty:propertyName];
     
+    NSMutableArray *processingArray = [NSMutableArray array];
+    
+    for (NSDictionary *processing in processings) {
+        
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:processing];
+        [dic setObject:[STMSaleOrderController labelForProcessing:processing[propertyName]] forKey:@"label"];
+        
+        [processingArray addObject:dic];
+        
+    }
+    
+    NSSortDescriptor *labelDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"label" ascending:YES];
+    
+    processings = [processingArray sortedArrayUsingDescriptors:@[labelDescriptor]];
+    
+//    NSLog(@"processings %@", processings);
+    
     for (NSDictionary *processing in processings) {
         
         NSString *processingName = processing[propertyName];
