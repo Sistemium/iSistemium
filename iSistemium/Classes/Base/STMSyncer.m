@@ -331,6 +331,7 @@
         
         self.settings = nil;
         self.running = YES;
+        [STMEntityController checkEntitiesForDuplicates];
         [STMPicturesController checkPhotos];
         [STMClientDataController checkClientData];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];

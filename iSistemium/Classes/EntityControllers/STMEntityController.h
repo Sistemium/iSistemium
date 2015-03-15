@@ -13,6 +13,8 @@
 
 + (NSDictionary *)stcEntities;
 
++ (void)checkEntitiesForDuplicates;
+
 + (NSSet *)entityNamesWithLifeTime;
 + (NSArray *)entitiesWithLifeTime;
 
