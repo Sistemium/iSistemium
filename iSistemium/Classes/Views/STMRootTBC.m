@@ -322,7 +322,7 @@
         self.currentTappedVC = viewController;
     }
     
-    NSLog(@"shouldSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
+//    NSLog(@"shouldSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
 
     return YES;
     
@@ -337,7 +337,7 @@
         
     }
     
-    NSLog(@"didSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
+//    NSLog(@"didSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
 
 }
 
