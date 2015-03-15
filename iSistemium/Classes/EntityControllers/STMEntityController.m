@@ -58,14 +58,22 @@
     
     NSMutableArray *returnValue = result.mutableCopy;
     
-//    STMEntity *result0 = result[0];
-//    
-//    STMEntity *duplicateEntity = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMEntity class]) inManagedObjectContext:[self document].managedObjectContext];
-//    
-//    duplicateEntity.name = result0.name;
-//    
-//    [returnValue addObject:duplicateEntity];
+// insert duplicates
+    
+    if (result.count < 40) {
+        
+        STMEntity *result0 = result[20];
 
+        STMEntity *duplicateEntity = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMEntity class]) inManagedObjectContext:[self document].managedObjectContext];
+
+        duplicateEntity.name = result0.name;
+
+        [returnValue addObject:duplicateEntity];
+
+    }
+    
+// end of insert duplicates
+    
     return returnValue;
     
 }
@@ -132,8 +140,10 @@
     
 // TODO: checkEntitiesForDuplicates
     
-//    NSArray *entitiesArray = [self stcEntitiesArray];
+    NSArray *entitiesArray = [self stcEntitiesArray];
 
+    NSLog(@"entitiesArray.count %d", entitiesArray.count);
+    
 //    for (STMEntity *entity in entitiesArray) {
 //        
 //        NSLog(@"entity.name %@", entity.name);
@@ -147,12 +157,11 @@
     STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
 
     NSPropertyDescription *entityProperty = entity.propertiesByName[property];
+//    NSPropertyDescription *xidProperty = entity.propertiesByName[@"xid"];
     
     if (entityProperty) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        
-        NSString *propertyName = property;
         
 //        NSExpression *keypath = [NSExpression expressionForKeyPath:propertyName];
 //        NSExpressionDescription *description = [[NSExpressionDescription alloc] init];
@@ -160,24 +169,38 @@
 //        description.name = propertyName;
 //        description.expressionResultType = NSStringAttributeType;
 
-        NSExpression *expression = [NSExpression expressionForKeyPath:propertyName];
+        NSExpression *expression = [NSExpression expressionForKeyPath:property];
         NSExpression *countExpression = [NSExpression expressionForFunction:@"count:" arguments:[NSArray arrayWithObject:expression]];
         NSExpressionDescription *ed = [[NSExpressionDescription alloc] init];
         ed.expression = countExpression;
         ed.expressionResultType = NSInteger64AttributeType;
-        ed.name = @"count";
-
+        ed.name = @"nameCount";
         
         request.propertiesToFetch = @[entityProperty, ed];
-        request.propertiesToGroupBy = @[propertyName];
+        request.propertiesToGroupBy = @[entityProperty];
+        
+//        request.havingPredicate = [NSPredicate predicateWithFormat:@"%@ > 1", ed];
         
         request.resultType = NSDictionaryResultType;
         
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:propertyName ascending:YES]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:property ascending:YES]];
         
         NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
         
-        NSLog(@"result %@", result);
+        result = [result filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"nameCount > 1"]];
+
+        if (result.count > 0) {
+            
+            for (NSDictionary *entity in result) {
+                
+                NSString *message = [NSString stringWithFormat:@"Entity %@ have %@ duplicates", entity[property], entity[ed.name]];
+                [[STMLogger sharedLogger] saveLogMessageWithText:message type:@"error"];
+                
+            }
+            
+        } else {
+            NSLog(@"stc.entity duplicates not found");
+        }
         
 //        return result;
         
