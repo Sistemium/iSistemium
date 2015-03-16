@@ -84,10 +84,18 @@
         
     }
     
-//    if ([self.entity.name isEqualToString:@"STMDebt"]) {
+//    if ([self.entity.name isEqualToString:@"STMSaleOrder"]) {
 //        
-//        NSLog(@"self1 %@", self)
-//        NSLog(@"[[self changedValues] allKeys] %@", [[self changedValues] allKeys]);
+////        NSLog(@"self1 %@", self)
+//        
+//        NSArray *keys = self.changedValues.allKeys;
+//        NSLog(@"self.changedValues.allKeys %@", self.changedValues.allKeys);
+//        
+//        for (NSString *key in keys) {
+//            
+//            NSLog(@"%@: %@", key, self.changedValues[key]);
+//            
+//        }
 //        
 //    }
     

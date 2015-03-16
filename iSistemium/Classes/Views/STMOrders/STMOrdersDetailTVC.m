@@ -420,6 +420,14 @@
     
 }
 
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+//    NSLog(@"anObject xid %@", [anObject valueForKey:@"xid"]);
+//    NSLog(@"type %d", type);
+    
+    [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
+    
+}
 
 - (NSArray *)fetchProperty:(NSString *)property {
     
@@ -433,27 +441,53 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         
-        NSString *propertyName = property;
-        
-        //    NSExpression *keypath = [NSExpression expressionForKeyPath:propertyName];
-        //    NSExpressionDescription *description = [[NSExpressionDescription alloc] init];
-        //    description.expression = keypath;
-        //    description.name = propertyName;
-        //    description.expressionResultType = NSStringAttributeType;
-        
-        request.propertiesToFetch = @[entityProperty];
-        request.propertiesToGroupBy = @[propertyName];
-        
-        request.resultType = NSDictionaryResultType;
-        
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:propertyName ascending:YES]];
+        request.resultType = NSManagedObjectResultType;
         
         NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
         
-//        NSLog(@"result %@", result);
+        NSMutableArray *resultArray = [NSMutableArray array];
         
-        return result;
+        for (STMSaleOrder *saleOrder in result) {
+            
+            NSString *propertyValue = [saleOrder valueForKey:property];
+            
+            NSDictionary *dic = @{property:propertyValue};
+            
+            if (![resultArray containsObject:dic]) {
+                [resultArray addObject:dic];
+            }
+            
+//            NSLog(@"%@.%@ %@", entityName, property, propertyValue);
+            
+        }
+        
+//        NSLog(@"resultArray %@", resultArray);
+        
+        return resultArray;
+        
+        
+//        NSString *propertyName = property;
+//        
+//        //    NSExpression *keypath = [NSExpression expressionForKeyPath:propertyName];
+//        //    NSExpressionDescription *description = [[NSExpressionDescription alloc] init];
+//        //    description.expression = keypath;
+//        //    description.name = propertyName;
+//        //    description.expressionResultType = NSStringAttributeType;
+//        
+//        request.propertiesToFetch = @[entityProperty];
+//        request.propertiesToGroupBy = @[propertyName];
+//        
+//        request.resultType = NSDictionaryResultType;
+//        
+//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:propertyName ascending:YES]];
+//        
+//        result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+//        
+//        NSLog(@"result %@", result);
+//
+//        return result;
 
+        
     } else {
         
         return nil;
@@ -518,7 +552,7 @@
 
 - (void)customInit {
     
-    [self setupToolbar];
+//    [self setupToolbar];
     [self performFetch];
     
 }
