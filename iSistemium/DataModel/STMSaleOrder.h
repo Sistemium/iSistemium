@@ -2,7 +2,7 @@
 //  STMSaleOrder.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/03/15.
+//  Created by Maxim Grigoriev on 16/03/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -15,11 +15,12 @@
 @interface STMSaleOrder : STMComment
 
 @property (nonatomic, retain) NSDate * date;
-@property (nonatomic, retain) NSDecimalNumber * totalCost;
 @property (nonatomic, retain) NSString * processing;
+@property (nonatomic, retain) NSDecimalNumber * totalCost;
+@property (nonatomic, retain) NSString * processingMessage;
 @property (nonatomic, retain) STMOutlet *outlet;
-@property (nonatomic, retain) STMSalesman *salesman;
 @property (nonatomic, retain) NSSet *saleOrderPositions;
+@property (nonatomic, retain) STMSalesman *salesman;
 @end
 
 @interface STMSaleOrder (CoreDataGeneratedAccessors)

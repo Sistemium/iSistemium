@@ -168,6 +168,7 @@
 "DISPATCH DATE" = "Dispatch date";
 "COST" = "Cost";
 "STATUS" = "Status";
+"PROCESSING MESSAGE" = "Message";
 "VOLUME UNIT1" = "p.";
 "VOLUME UNIT2" = "b.";
 "RESET FILTER" = "Reset filter";

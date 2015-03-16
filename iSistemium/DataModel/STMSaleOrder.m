@@ -2,7 +2,7 @@
 //  STMSaleOrder.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/03/15.
+//  Created by Maxim Grigoriev on 16/03/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -15,10 +15,11 @@
 @implementation STMSaleOrder
 
 @dynamic date;
-@dynamic totalCost;
 @dynamic processing;
+@dynamic totalCost;
+@dynamic processingMessage;
 @dynamic outlet;
-@dynamic salesman;
 @dynamic saleOrderPositions;
+@dynamic salesman;
 
 @end

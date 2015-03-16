@@ -175,7 +175,9 @@
     switch (section) {
         case 0:
             
-            if (self.saleOrder.commentText) {
+            if (self.saleOrder.commentText && self.saleOrder.processingMessage) {
+                return 7;
+            } else if (self.saleOrder.commentText || self.saleOrder.processingMessage) {
                 return 6;
             } else {
                 return 5;
@@ -307,14 +309,31 @@
             break;
 
         case 5:
-            cell.textLabel.text = NSLocalizedString(@"COMMENT", nil);
-            cell.detailTextLabel.text = self.saleOrder.commentText;
+            (self.saleOrder.commentText) ? [self fillCommentForCell:cell] : [self fillProcessingMessageForCell:cell];
+            break;
+
+        case 6:
+            [self fillProcessingMessageForCell:cell];
             break;
 
         default:
             break;
     }
     
+}
+
+- (void)fillCommentForCell:(UITableViewCell *)cell {
+    
+    cell.textLabel.text = NSLocalizedString(@"COMMENT", nil);
+    cell.detailTextLabel.text = self.saleOrder.commentText;
+    
+}
+
+- (void)fillProcessingMessageForCell:(UITableViewCell *)cell {
+    
+    cell.textLabel.text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
+    cell.detailTextLabel.text = self.saleOrder.processingMessage;
+
 }
 
 - (void)fillOrderPositionCell:(STMInfoTableViewCell *)cell forRow:(NSUInteger)row {
