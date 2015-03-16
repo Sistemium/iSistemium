@@ -20,6 +20,8 @@
 
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing;
 
++ (id)editingPropertiesForProcessing:(NSString *)processing;
+
 + (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder;
 
 @end

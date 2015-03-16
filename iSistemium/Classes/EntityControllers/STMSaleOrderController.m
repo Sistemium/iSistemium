@@ -165,6 +165,18 @@
     
 }
 
++ (id)editingPropertiesForProcessing:(NSString *)processing {
+    
+    NSDictionary *workflow = [self sharedInstance].workflow;
+    
+    NSDictionary *dictionaryForProcessing = workflow[processing];
+    
+    id editableProperties = dictionaryForProcessing[@"editable"];
+    
+    return editableProperties;
+    
+}
+
 + (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder {
     
     if (saleOrder.processing != processing) {

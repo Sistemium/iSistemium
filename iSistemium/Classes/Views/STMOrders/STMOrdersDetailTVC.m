@@ -9,8 +9,9 @@
 #import "STMOrdersDetailTVC.h"
 #import "STMOrdersSVC.h"
 #import "STMSaleOrderController.h"
-//#import "STMOrderInfoNC.h"
 #import "STMOrderInfoTVC.h"
+#import "STMOrderEditablesVC.h"
+
 
 @interface STMOrdersDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
@@ -26,6 +27,8 @@
 
 @property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
 @property (nonatomic, strong) NSMutableDictionary *filterButtons;
+
+@property (nonatomic, strong) UIPopoverController *editablesPopover;
 
 @end
 
@@ -285,7 +288,31 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 
     if (buttonIndex >= 0 && buttonIndex < self.processingRoutes.count) {
-        [STMSaleOrderController setProcessing:self.processingRoutes[buttonIndex] forSaleOrder:self.processingOrder];
+        
+        NSString *processing = self.processingRoutes[buttonIndex];
+        
+        id editableProperties = [STMSaleOrderController editingPropertiesForProcessing:processing];
+
+        if ([editableProperties isKindOfClass:[NSArray class]]) {
+            
+//            for (NSString *editable in editableProperties) {
+//                
+//            }
+            
+        } else if ([editableProperties isKindOfClass:[NSString class]]) {
+            
+            NSLog(@"BOOL %d", [editableProperties boolValue]);
+            
+        } else {
+
+//            [STMSaleOrderController setProcessing:processing forSaleOrder:self.processingOrder];
+
+        }
+
+        [self showEditablesPopover];
+        
+        [STMSaleOrderController setProcessing:processing forSaleOrder:self.processingOrder];
+
     }
     
 }
@@ -314,6 +341,42 @@
     
 }
 
+
+#pragma mark - editables popover
+
+- (UIPopoverController *)editablesPopover {
+    
+    if (!_editablesPopover) {
+        
+        STMOrderEditablesVC *vc = [[STMOrderEditablesVC alloc] init];
+        
+        vc.fromProcessing = self.processingOrder.processing;
+        
+        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:vc];
+        popover.delegate = self;
+        popover.popoverContentSize = CGSizeMake(vc.view.frame.size.width, vc.view.frame.size.height);
+        
+        _editablesPopover = popover;
+
+    }
+    return _editablesPopover;
+    
+}
+
+- (void)showEditablesPopover {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
+    STMInfoTableViewCell *cell = (STMInfoTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    
+    [self.editablesPopover presentPopoverFromRect:cell.infoLabel.frame inView:cell.contentView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    
+    self.editablesPopover = nil;
+    
+}
 
 #pragma mark - Table view data source
 
