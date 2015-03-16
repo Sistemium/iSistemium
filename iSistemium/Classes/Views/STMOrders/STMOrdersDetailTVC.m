@@ -28,6 +28,8 @@
 @property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
 @property (nonatomic, strong) NSMutableDictionary *filterButtons;
 
+@property (nonatomic, strong) NSString *nextProcessing;
+
 @property (nonatomic, strong) UIPopoverController *editablesPopover;
 
 @end
@@ -289,9 +291,9 @@
 
     if (buttonIndex >= 0 && buttonIndex < self.processingRoutes.count) {
         
-        NSString *processing = self.processingRoutes[buttonIndex];
+        self.nextProcessing = self.processingRoutes[buttonIndex];
         
-        id editableProperties = [STMSaleOrderController editingPropertiesForProcessing:processing];
+        id editableProperties = [STMSaleOrderController editingPropertiesForProcessing:self.nextProcessing];
 
         if ([editableProperties isKindOfClass:[NSArray class]]) {
             
@@ -311,7 +313,7 @@
 
         [self showEditablesPopover];
         
-        [STMSaleOrderController setProcessing:processing forSaleOrder:self.processingOrder];
+        [STMSaleOrderController setProcessing:self.nextProcessing forSaleOrder:self.processingOrder];
 
     }
     
@@ -351,6 +353,7 @@
         STMOrderEditablesVC *vc = [[STMOrderEditablesVC alloc] init];
         
         vc.fromProcessing = self.processingOrder.processing;
+        vc.toProcessing = self.nextProcessing;
         
         UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:vc];
         popover.delegate = self;
