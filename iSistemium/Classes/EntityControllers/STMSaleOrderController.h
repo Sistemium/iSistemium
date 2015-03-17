@@ -24,5 +24,6 @@
 + (NSString *)labelForEditableProperty:(NSString *)editableProperty;
 
 + (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder;
++ (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder withFields:(NSDictionary *)fields;
 
 @end

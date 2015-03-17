@@ -300,12 +300,10 @@
             [self showEditablesPopover];
             
         } else {
-
-//            [STMSaleOrderController setProcessing:processing forSaleOrder:self.processingOrder];
+            
+            [STMSaleOrderController setProcessing:self.nextProcessing forSaleOrder:self.processingOrder];
 
         }
-        
-        [STMSaleOrderController setProcessing:self.nextProcessing forSaleOrder:self.processingOrder];
 
     }
     
@@ -347,10 +345,13 @@
         vc.fromProcessing = self.processingOrder.processing;
         vc.toProcessing = self.nextProcessing;
         vc.editableFields = self.editableProperties;
+        vc.saleOrder = self.processingOrder;
         
         UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:vc];
         popover.delegate = self;
         popover.popoverContentSize = CGSizeMake(vc.view.frame.size.width, vc.view.frame.size.height);
+        
+        vc.popover = popover;
         
         _editablesPopover = popover;
 

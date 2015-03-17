@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMOrdersSVC.h"
+
 
 @interface STMOrderEditablesVC : UIViewController
 
 @property (nonatomic, strong) NSArray *editableFields;
 @property (nonatomic, strong) NSString *fromProcessing;
 @property (nonatomic, strong) NSString *toProcessing;
-
+@property (nonatomic, strong) STMSaleOrder *saleOrder;
+@property (nonatomic, weak) UIPopoverController *popover;
 
 @end

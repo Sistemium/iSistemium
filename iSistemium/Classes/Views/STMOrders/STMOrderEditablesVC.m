@@ -7,7 +7,6 @@
 //
 
 #import "STMOrderEditablesVC.h"
-#import "STMOrdersSVC.h"
 
 #define H_SPACE 20
 #define V_SPACE 20
@@ -66,14 +65,9 @@
     self.h_edge = MAX(self.h_edge, h_edge);
     self.v_edge = MAX(self.v_edge, v_edge);
     
-//    NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
-//    NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
-    
 }
 
 - (void)setupFields {
-    
-//    self.editableFields = @[@"processingMessage", @"somethingElse", @"oneMore"];
     
     self.fields[@"fields"] = self.editableFields;
 
@@ -98,6 +92,10 @@
     }
     
     self.fields[@"textViews"] = textViews;
+    
+    if (textViews.count > 0) {
+        [textViews[0] becomeFirstResponder];
+    }
     
 }
 
@@ -161,7 +159,6 @@
     tv.frame = CGRectMake(self.textView_h_start + H_SPACE, self.v_edge + V_SPACE, width, height);
     tv.layer.borderColor = [[UIColor grayColor] CGColor];
     tv.layer.borderWidth = 1.0f;
-    [tv becomeFirstResponder];
     
     [self.view addSubview:tv];
     
@@ -171,9 +168,6 @@
     
     self.h_edge = MAX(self.h_edge, h_edge);
     self.v_edge = MAX(self.v_edge, v_edge);
-    
-//    NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
-//    NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
     
     return tv;
 
@@ -186,9 +180,15 @@
     UIToolbar *toolbar = [[UIToolbar alloc] init];
     toolbar.frame = CGRectMake(0, self.v_edge + V_SPACE, self.h_edge + H_SPACE, height);
     
-    STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:nil action:nil];
+    STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                                target:self
+                                                                                                action:@selector(cancelButtonPressed)];
+    
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-    STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:nil action:nil];
+    
+    STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                          target:self
+                                                                                          action:@selector(doneButtonPressed)];
 
     [toolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
     
@@ -196,6 +196,42 @@
     
     self.v_edge += height + V_SPACE;
     
+}
+
+
+#pragma mark - buttons
+
+- (void)cancelButtonPressed {
+
+    [self.popover dismissPopoverAnimated:YES];
+    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
+    
+}
+
+- (void)doneButtonPressed {
+    
+    NSMutableDictionary *editableValues = [NSMutableDictionary dictionary];
+    
+    NSArray *textViews = self.fields[@"textViews"];
+    
+    for (UITextView *tv in textViews) {
+        
+        if (tv.text && ![[tv.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+
+            NSUInteger index = [textViews indexOfObject:tv];
+            NSString *editableField = self.fields[@"fields"][index];
+            
+            editableValues[editableField] = tv.text;
+            
+        }
+        
+    }
+    
+    [STMSaleOrderController setProcessing:self.toProcessing forSaleOrder:self.saleOrder withFields:editableValues];
+    
+    [self.popover dismissPopoverAnimated:YES];
+    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
+
 }
 
 #pragma mark - view lifecycle

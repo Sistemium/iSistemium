@@ -183,9 +183,23 @@
 
 
 + (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder {
+    [self setProcessing:processing forSaleOrder:saleOrder withFields:nil];
+}
+
++ (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder withFields:(NSDictionary *)fields {
     
     if (saleOrder.processing != processing) {
+        
+        for (NSString *field in fields) {
+            
+            if ([saleOrder.entity.propertiesByName.allKeys containsObject:field]) {
+                [saleOrder setValue:fields[field] forKey:field];
+            }
+            
+        }
+
         saleOrder.processing = processing;
+        
     }
     
     [[self document] saveDocument:^(BOOL success) {
@@ -193,7 +207,7 @@
     }];
     
     [[self syncer] setSyncerState:STMSyncerSendDataOnce];
-    
+
 }
 
 
