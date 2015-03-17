@@ -165,17 +165,22 @@
     
 }
 
-+ (id)editingPropertiesForProcessing:(NSString *)processing {
++ (NSArray *)editablesPropertiesForProcessing:(NSString *)processing {
     
     NSDictionary *workflow = [self sharedInstance].workflow;
     
     NSDictionary *dictionaryForProcessing = workflow[processing];
     
-    id editableProperties = dictionaryForProcessing[@"editable"];
+    NSArray *editableProperties = dictionaryForProcessing[@"editables"];
     
     return editableProperties;
     
 }
+
++ (NSString *)labelForEditableProperty:(NSString *)editableProperty {
+    return ([editableProperty isEqualToString:@"processingMessage"]) ? NSLocalizedString(@"PROCESSING MESSAGE", nil) : editableProperty;
+}
+
 
 + (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder {
     

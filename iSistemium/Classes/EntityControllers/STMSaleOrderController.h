@@ -20,7 +20,8 @@
 
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing;
 
-+ (id)editingPropertiesForProcessing:(NSString *)processing;
++ (NSArray *)editablesPropertiesForProcessing:(NSString *)processing;
++ (NSString *)labelForEditableProperty:(NSString *)editableProperty;
 
 + (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder;
 
