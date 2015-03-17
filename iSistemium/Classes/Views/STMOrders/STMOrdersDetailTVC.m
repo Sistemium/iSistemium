@@ -396,11 +396,9 @@
     }
     
     if (self.editablesPopover.isPopoverVisible) {
-        
         self.editablesPopoverWasVisible = YES;
-        [self hideEditablesPopover];
-        
     }
+    [self hideEditablesPopover];
     
 }
 
