@@ -10,51 +10,32 @@
 #import "STMSaleOrderController.h"
 
 #define H_SPACE 20
-#define V_SPACE 10
+#define V_SPACE 20
 
 
 @interface STMOrderEditablesVC ()
 
+@property (nonatomic) CGFloat h_edge;
+@property (nonatomic) CGFloat v_edge;
+
+
 @end
+
 
 @implementation STMOrderEditablesVC
 
 - (void)setupHeader {
     
-    UILabel *fromLabel = [[UILabel alloc] init];
-    
-    NSDictionary *attributes = @{NSFontAttributeName:fromLabel.font};
-
-    NSString *text = [STMSaleOrderController labelForProcessing:self.fromProcessing];
-    CGSize size = [text sizeWithAttributes:attributes];
-    CGFloat width = ceil(size.width);
-    CGFloat height = ceil(size.height);
-    
-    fromLabel.frame = CGRectMake(H_SPACE, V_SPACE, width, height);
-    fromLabel.text = text;
-    fromLabel.textColor = [STMSaleOrderController colorForProcessing:self.fromProcessing];
-    
-    [self.view addSubview:fromLabel];
-    
-    CGFloat h_edge = H_SPACE + width;
-    CGFloat v_edge = V_SPACE + height;
-    
-    UILabel *midLabel = [[UILabel alloc] init];
-    
-    text = @">>>";
-    size = [text sizeWithAttributes:attributes];
-    width = ceil(size.width);
-    height = ceil(size.height);
-
-    midLabel.frame = CGRectMake(h_edge + H_SPACE, V_SPACE, width, height);
-    midLabel.text = text;
-    
-    [self.view addSubview:midLabel];
-    
-    h_edge += H_SPACE + width;
+    CGSize size;
+    CGFloat width = 0;
+    CGFloat height = 0;
+    CGFloat h_edge = 0;
+    CGFloat v_edge = 0;
+    NSString *text;
+    NSDictionary *attributes;
     
     UILabel *toLabel = [[UILabel alloc] init];
-    
+    attributes = @{NSFontAttributeName:toLabel.font};
     text = [STMSaleOrderController labelForProcessing:self.toProcessing];
     size = [text sizeWithAttributes:attributes];
     width = ceil(size.width);
@@ -67,19 +48,82 @@
     [self.view addSubview:toLabel];
     
     h_edge += H_SPACE + width;
+    v_edge = MAX((V_SPACE + height), v_edge);
 
+    self.h_edge = MAX(self.h_edge, h_edge);
+    self.v_edge = MAX(self.v_edge, v_edge);
+    
     NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
+    NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
     
 }
 
+- (void)setupFields {
+    
+    CGSize size;
+    CGFloat width = 0;
+    CGFloat height = 0;
+    CGFloat h_edge = 0;
+    CGFloat v_edge = 0;
+    NSString *text;
+    NSDictionary *attributes;
+    
+// Setup label:
+
+    UILabel *nameLabel = [[UILabel alloc] init];
+    attributes = @{NSFontAttributeName:nameLabel.font};
+    text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
+    size = [text sizeWithAttributes:attributes];
+    width = ceil(size.width);
+    height = ceil(size.height);
+    
+    nameLabel.frame = CGRectMake(H_SPACE, self.v_edge + V_SPACE, width, height);
+    nameLabel.text = text;
+    nameLabel.textColor = [UIColor grayColor];
+    
+    [self.view addSubview:nameLabel];
+    
+    h_edge += H_SPACE + width;
+    v_edge = MAX((self.v_edge + V_SPACE + height), v_edge);
+    
+// Setup textview:
+    
+    UITextView *tv = [[UITextView alloc] init];
+//    attributes = @{NSFontAttributeName:tv.font};
+//    text = @"";
+//    size = [text sizeWithAttributes:attributes];
+    width = 250;
+    height = 150;
+
+    tv.frame = CGRectMake(h_edge + H_SPACE, self.v_edge + V_SPACE, width, height);
+    [tv becomeFirstResponder];
+    
+    [self.view addSubview:tv];
+    
+    h_edge = h_edge + H_SPACE + width;
+    v_edge = MAX((self.v_edge + V_SPACE + height), v_edge);
+    
+    
+    self.h_edge = MAX(self.h_edge, h_edge);
+    self.v_edge = MAX(self.v_edge, v_edge);
+    
+    NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
+    NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
+
+    
+}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    [self setupHeader];
+    self.h_edge = 0;
+    self.v_edge = 0;
     
-    self.view.frame = CGRectMake(0, 0, 300, 150);
+    [self setupHeader];
+    [self setupFields];
+    
+    self.view.frame = CGRectMake(0, 0, self.h_edge + H_SPACE, self.v_edge + V_SPACE);
 
 }
 
