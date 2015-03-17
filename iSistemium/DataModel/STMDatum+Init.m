@@ -41,9 +41,11 @@
         if (!largestId) {
             largestId = @1;
         } else {
-            largestId = @((int)[largestId integerValue]+1);
+            largestId = @((long long)[largestId longLongValue]+1);
         }
 
+//        NSLog(@"largestId %@", largestId);
+        
         [self setPrimitiveValue:largestId forKey:@"id"];
 
         [defaults setObject:largestId forKey:@"largestId"];
