@@ -333,6 +333,7 @@
     
     cell.textLabel.text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
     cell.detailTextLabel.text = self.saleOrder.processingMessage;
+    cell.detailTextLabel.textColor = [STMSaleOrderController messageColorForProcessing:self.saleOrder.processing];
 
 }
 

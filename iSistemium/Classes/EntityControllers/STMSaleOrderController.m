@@ -127,22 +127,34 @@
 
 + (UIColor *)colorForProcessing:(NSString *)processing {
     
+    return [self colorForType:@"cls" andProcessing:processing];
+
+}
+
++ (UIColor *)messageColorForProcessing:(NSString *)processing {
+
+    return [self colorForType:@"messageCls" andProcessing:processing];
+
+}
+
++ (UIColor *)colorForType:(NSString *)type andProcessing:(NSString *)processing {
+    
     NSDictionary *workflow = [self sharedInstance].workflow;
     
     NSDictionary *dictionaryForProcessing = workflow[processing];
-
-    NSString *colorString = dictionaryForProcessing[@"cls"];
+    
+    NSString *colorString = dictionaryForProcessing[type];
     
     if (colorString) {
-
+        
         return [STMFunctions colorForColorString:colorString];
-
+        
     } else {
-    
+        
         return nil;
-
+        
     }
-    
+
 }
 
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing {

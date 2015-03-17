@@ -17,6 +17,7 @@
 + (NSString *)processingForLabel:(NSString *)label;
 
 + (UIColor *)colorForProcessing:(NSString *)processing;
++ (UIColor *)messageColorForProcessing:(NSString *)processing;
 
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing;
 
