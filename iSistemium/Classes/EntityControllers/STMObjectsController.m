@@ -806,7 +806,7 @@
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
@@ -825,7 +825,7 @@
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
         

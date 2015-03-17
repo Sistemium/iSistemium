@@ -44,7 +44,7 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSaleOrder class])];
         
-        NSSortDescriptor *xidDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:NO selector:@selector(compare:)];
+        NSSortDescriptor *xidDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:NO selector:@selector(compare:)];
         request.sortDescriptors = @[xidDescriptor];
         
         request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", self.saleOrder.xid];

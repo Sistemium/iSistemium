@@ -405,7 +405,7 @@
 + (void)checkBrokenPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
@@ -436,7 +436,7 @@
 + (void)checkUploadedPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
     
     NSError *error;
