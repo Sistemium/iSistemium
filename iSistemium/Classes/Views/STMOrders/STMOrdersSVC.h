@@ -7,6 +7,7 @@
 //
 
 #import "STMSplitViewController.h"
+#import "STMSaleOrderController.h"
 #import "STMOrdersMasterPVC.h"
 #import "STMOrdersDetailTVC.h"
 

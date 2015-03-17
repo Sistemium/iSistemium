@@ -7,13 +7,13 @@
 //
 
 #import "STMOrderEditablesVC.h"
-#import "STMSaleOrderController.h"
+#import "STMOrdersSVC.h"
 
 #define H_SPACE 20
 #define V_SPACE 20
 #define TEXT_VIEW_WIDTH 350
-#define TEXT_VIEW_HEGHT 50
-
+#define TEXT_VIEW_HEIGHT 50
+#define TOOLBAR_HEIGHT 44;
 
 @interface STMOrderEditablesVC ()
 
@@ -66,8 +66,8 @@
     self.h_edge = MAX(self.h_edge, h_edge);
     self.v_edge = MAX(self.v_edge, v_edge);
     
-    NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
-    NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
+//    NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
+//    NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
     
 }
 
@@ -141,7 +141,7 @@
     
     UITextView *tv = [[UITextView alloc] init];
     width = TEXT_VIEW_WIDTH;
-    height = TEXT_VIEW_HEGHT;
+    height = TEXT_VIEW_HEIGHT;
     
     tv.frame = CGRectMake(self.textView_h_start + H_SPACE, self.v_edge + V_SPACE, width, height);
     tv.layer.borderColor = [[UIColor grayColor] CGColor];
@@ -157,11 +157,29 @@
     self.h_edge = MAX(self.h_edge, h_edge);
     self.v_edge = MAX(self.v_edge, v_edge);
     
-    NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
-    NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
+//    NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
+//    NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
 
 }
 
+- (void)setupButtons {
+
+    CGFloat height = TOOLBAR_HEIGHT;
+
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    toolbar.frame = CGRectMake(0, self.v_edge + V_SPACE, self.h_edge + H_SPACE, height);
+    
+    STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:nil action:nil];
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+    STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:nil action:nil];
+
+    [toolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
+    
+    [self.view addSubview:toolbar];
+    
+    self.v_edge += height + V_SPACE;
+    
+}
 
 #pragma mark - view lifecycle
 
@@ -172,8 +190,9 @@
     
     [self setupHeader];
     [self setupFields];
+    [self setupButtons];
     
-    self.view.frame = CGRectMake(0, 0, self.h_edge + H_SPACE, self.v_edge + V_SPACE);
+    self.view.frame = CGRectMake(0, 0, self.h_edge + H_SPACE, self.v_edge);
 
 }
 
