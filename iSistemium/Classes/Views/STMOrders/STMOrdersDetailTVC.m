@@ -298,7 +298,9 @@
 
         if (self.editableProperties) {
             
-            [self showEditablesPopover];
+            [self hideRoutesActionSheet];
+            
+            [self performSelector:@selector(showEditablesPopover) withObject:nil afterDelay:0];
             
         } else {
             
@@ -329,7 +331,7 @@
 
 - (void)hideRoutesActionSheet {
     
-    [self.routesActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+    [self.routesActionSheet dismissWithClickedButtonIndex:-1 animated:NO];
     self.routesActionSheet = nil;
     
 }
@@ -366,7 +368,10 @@
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
     STMInfoTableViewCell *cell = (STMInfoTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
     
-    [self.editablesPopover presentPopoverFromRect:cell.infoLabel.frame inView:cell.contentView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.editablesPopover presentPopoverFromRect:cell.infoLabel.frame
+                                           inView:cell.contentView
+                         permittedArrowDirections:UIPopoverArrowDirectionAny
+                                         animated:YES];
     
 }
 
