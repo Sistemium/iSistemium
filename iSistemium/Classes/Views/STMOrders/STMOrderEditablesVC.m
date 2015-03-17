@@ -11,18 +11,31 @@
 
 #define H_SPACE 20
 #define V_SPACE 20
+#define TEXT_VIEW_WIDTH 350
+#define TEXT_VIEW_HEGHT 50
 
 
 @interface STMOrderEditablesVC ()
 
 @property (nonatomic) CGFloat h_edge;
 @property (nonatomic) CGFloat v_edge;
+@property (nonatomic) CGFloat textView_h_start;
 
+@property (nonatomic, strong) NSMutableDictionary *fields;
 
 @end
 
 
 @implementation STMOrderEditablesVC
+
+- (NSMutableDictionary *)fields {
+    
+    if (!_fields) {
+        _fields = [NSMutableDictionary dictionary];
+    }
+    return _fields;
+    
+}
 
 - (void)setupHeader {
     
@@ -60,6 +73,43 @@
 
 - (void)setupFields {
     
+    self.editableFields = @[@"processingMessage", @"somethingElse", @"oneMore"];
+    
+    NSArray *labels = self.editableFields;
+    
+    self.textView_h_start = [self maxWidthForLabels:labels] + H_SPACE;
+    
+    for (NSString *name in self.editableFields) {
+        [self setupEditableFieldWithName:name];
+    }
+    
+}
+
+- (CGFloat)maxWidthForLabels:(NSArray *)labels {
+    
+    CGFloat width = 0;
+    NSDictionary *attributes = @{NSFontAttributeName:[self labelFont]};
+    
+    for (NSString *name in labels) {
+        
+        CGSize size = [name sizeWithAttributes:attributes];
+        width = MAX(ceil(size.width), width);
+
+    }
+    
+    return width;
+    
+}
+
+- (UIFont *)labelFont {
+
+    UILabel *label = [[UILabel alloc] init];
+    return label.font;
+
+}
+
+- (void)setupEditableFieldWithName:(NSString *)name {
+    
     CGSize size;
     CGFloat width = 0;
     CGFloat height = 0;
@@ -68,11 +118,12 @@
     NSString *text;
     NSDictionary *attributes;
     
-// Setup label:
-
+    // Setup label:
+    
     UILabel *nameLabel = [[UILabel alloc] init];
     attributes = @{NSFontAttributeName:nameLabel.font};
-    text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
+//    text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
+    text = name;
     size = [text sizeWithAttributes:attributes];
     width = ceil(size.width);
     height = ceil(size.height);
@@ -86,21 +137,20 @@
     h_edge += H_SPACE + width;
     v_edge = MAX((self.v_edge + V_SPACE + height), v_edge);
     
-// Setup textview:
+    // Setup textview:
     
     UITextView *tv = [[UITextView alloc] init];
-//    attributes = @{NSFontAttributeName:tv.font};
-//    text = @"";
-//    size = [text sizeWithAttributes:attributes];
-    width = 250;
-    height = 150;
-
-    tv.frame = CGRectMake(h_edge + H_SPACE, self.v_edge + V_SPACE, width, height);
+    width = TEXT_VIEW_WIDTH;
+    height = TEXT_VIEW_HEGHT;
+    
+    tv.frame = CGRectMake(self.textView_h_start + H_SPACE, self.v_edge + V_SPACE, width, height);
+    tv.layer.borderColor = [[UIColor grayColor] CGColor];
+    tv.layer.borderWidth = 1.0f;
     [tv becomeFirstResponder];
     
     [self.view addSubview:tv];
     
-    h_edge = h_edge + H_SPACE + width;
+    h_edge = self.textView_h_start + H_SPACE + width;
     v_edge = MAX((self.v_edge + V_SPACE + height), v_edge);
     
     
@@ -110,8 +160,8 @@
     NSLog(@"h_edge %f, v_edge %f", h_edge, v_edge);
     NSLog(@"self.h_edge %f, self.v_edge %f", self.h_edge, self.v_edge);
 
-    
 }
+
 
 #pragma mark - view lifecycle
 
