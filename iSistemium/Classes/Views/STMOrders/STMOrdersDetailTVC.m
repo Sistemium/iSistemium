@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSString *nextProcessing;
 @property (nonatomic, strong) NSArray *editableProperties;
 @property (nonatomic, strong) UIPopoverController *editablesPopover;
+@property (nonatomic) BOOL editablesPopoverWasVisible;
 
 @end
 
@@ -369,11 +370,58 @@
     
 }
 
+- (void)hideEditablesPopover {
+    
+    [self.editablesPopover dismissPopoverAnimated:YES];
+    self.editablesPopover = nil;
+    
+}
+
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
     
     self.editablesPopover = nil;
     
 }
+
+
+#pragma mark - rotate
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+
+    if (self.routesActionSheet.isVisible) {
+        
+        self.routesActionSheetWasVisible = YES;
+        [self hideRoutesActionSheet];
+        
+    }
+    
+    if (self.editablesPopover.isPopoverVisible) {
+        
+        self.editablesPopoverWasVisible = YES;
+        [self hideEditablesPopover];
+        
+    }
+    
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    if (self.routesActionSheetWasVisible) {
+        
+        self.routesActionSheetWasVisible = NO;
+        [self showRoutesActionSheet];
+        
+    }
+    
+    if (self.editablesPopoverWasVisible) {
+        
+        self.editablesPopoverWasVisible = NO;
+        [self showEditablesPopover];
+        
+    }
+    
+}
+
 
 #pragma mark - Table view data source
 

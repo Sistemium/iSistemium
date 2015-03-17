@@ -69,32 +69,36 @@
 
 - (void)setupFields {
     
-    self.fields[@"fields"] = self.editableFields;
+    if (self.editableFields.count > 0) {
+        
+        self.fields[@"fields"] = self.editableFields;
+        
+        NSArray *labels = @[];
+        
+        for (NSString *field in self.editableFields) {
+            
+            labels = [labels arrayByAddingObjectsFromArray:@[[STMSaleOrderController labelForEditableProperty:field]]];
+            
+        }
+        
+        self.fields[@"labels"] = labels;
+        
+        self.textView_h_start = [self maxWidthForLabels:labels] + H_SPACE;
+        
+        NSArray *textViews = @[];
+        
+        for (NSString *name in labels) {
+            
+            textViews = [textViews arrayByAddingObjectsFromArray:@[[self setupEditableFieldWithName:name]]];
+            
+        }
+        
+        self.fields[@"textViews"] = textViews;
+        
+        if (textViews.count > 0) {
+            [textViews[0] becomeFirstResponder];
+        }
 
-    NSArray *labels = @[];
-    
-    for (NSString *field in self.editableFields) {
-    
-        labels = [labels arrayByAddingObjectsFromArray:@[[STMSaleOrderController labelForEditableProperty:field]]];
-        
-    }
-    
-    self.fields[@"labels"] = labels;
-    
-    self.textView_h_start = [self maxWidthForLabels:labels] + H_SPACE;
-    
-    NSArray *textViews = @[];
-    
-    for (NSString *name in labels) {
-        
-        textViews = [textViews arrayByAddingObjectsFromArray:@[[self setupEditableFieldWithName:name]]];
-        
-    }
-    
-    self.fields[@"textViews"] = textViews;
-    
-    if (textViews.count > 0) {
-        [textViews[0] becomeFirstResponder];
     }
     
 }
