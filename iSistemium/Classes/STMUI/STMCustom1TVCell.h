@@ -11,9 +11,9 @@
 
 @interface STMCustom1TVCell : STMTableViewCell
 
-@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *detailLabel;
-@property (weak, nonatomic) IBOutlet UILabel *messageLabel;
+@property (weak, nonatomic) IBOutlet STMLabel *titleLabel;
+@property (weak, nonatomic) IBOutlet STMLabel *detailLabel;
+@property (weak, nonatomic) IBOutlet STMLabel *messageLabel;
 @property (weak, nonatomic) IBOutlet STMInsetLabel *infoLabel;
 
 

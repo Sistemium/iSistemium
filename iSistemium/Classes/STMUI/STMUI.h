@@ -25,6 +25,7 @@
 
 #include "STMSegmentedControl.h"
 
+#include "STMLabel.h"
 #include "STMInsetLabel.h"
 
 

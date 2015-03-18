@@ -14,25 +14,25 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ueR-gU-NBI" id="Kum-ty-hqH">
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DP3-MY-XRI">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="169" translatesAutoresizingMaskIntoConstraints="NO" id="DP3-MY-XRI" customClass="STMLabel">
                         <rect key="frame" x="15" y="6" width="169" height="19.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FeI-gf-7q3">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="169" translatesAutoresizingMaskIntoConstraints="NO" id="FeI-gf-7q3" customClass="STMLabel">
                         <rect key="frame" x="15" y="25" width="169" height="13.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Message" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hk3-sz-UDT">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Message" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="169" translatesAutoresizingMaskIntoConstraints="NO" id="hk3-sz-UDT" customClass="STMLabel">
                         <rect key="frame" x="15" y="38" width="169" height="15.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Info" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="C5P-M0-IKX" customClass="STMInsetLabel">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Info" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="11" preferredMaxLayoutWidth="128" translatesAutoresizingMaskIntoConstraints="NO" id="C5P-M0-IKX" customClass="STMInsetLabel">
                         <rect key="frame" x="192" y="0.0" width="128" height="58"/>
                         <color key="backgroundColor" white="0.96999999999999997" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -45,7 +45,6 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottomMargin" secondItem="C5P-M0-IKX" secondAttribute="bottom" constant="-8" id="1om-9g-8QJ"/>
-                    <constraint firstItem="FeI-gf-7q3" firstAttribute="leading" secondItem="Kum-ty-hqH" secondAttribute="leadingMargin" constant="7" id="468-Q8-ByT"/>
                     <constraint firstItem="C5P-M0-IKX" firstAttribute="leading" secondItem="DP3-MY-XRI" secondAttribute="trailing" constant="8" id="4v3-Of-scy"/>
                     <constraint firstItem="FeI-gf-7q3" firstAttribute="leading" secondItem="Kum-ty-hqH" secondAttribute="leadingMargin" constant="7" id="5lz-Ld-5we"/>
                     <constraint firstItem="C5P-M0-IKX" firstAttribute="leading" secondItem="FeI-gf-7q3" secondAttribute="trailing" constant="8" id="Cjo-pD-uVY"/>
@@ -54,7 +53,6 @@
                     <constraint firstAttribute="trailingMargin" secondItem="C5P-M0-IKX" secondAttribute="trailing" constant="-8" id="QOC-9H-ajJ"/>
                     <constraint firstItem="FeI-gf-7q3" firstAttribute="top" secondItem="DP3-MY-XRI" secondAttribute="bottom" id="RVq-jt-wDe"/>
                     <constraint firstItem="DP3-MY-XRI" firstAttribute="top" secondItem="Kum-ty-hqH" secondAttribute="topMargin" constant="-2" id="fyL-u3-40V"/>
-                    <constraint firstItem="hk3-sz-UDT" firstAttribute="leading" secondItem="Kum-ty-hqH" secondAttribute="leadingMargin" constant="7" id="gAZ-vV-bR4"/>
                     <constraint firstItem="hk3-sz-UDT" firstAttribute="leading" secondItem="Kum-ty-hqH" secondAttribute="leadingMargin" constant="7" id="pfz-Xh-nmY"/>
                     <constraint firstItem="C5P-M0-IKX" firstAttribute="top" secondItem="Kum-ty-hqH" secondAttribute="topMargin" constant="-8" id="pyu-mQ-OGf"/>
                     <constraint firstItem="hk3-sz-UDT" firstAttribute="top" secondItem="FeI-gf-7q3" secondAttribute="bottom" id="s77-4X-7mD"/>

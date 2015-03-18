@@ -12,7 +12,7 @@
 #import "STMOrderInfoTVC.h"
 #import "STMOrderEditablesVC.h"
 
-static NSString *Custom1CellIdentifier = @"STMCuatom1TVCell";
+static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 
 @interface STMOrdersDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
@@ -35,6 +35,9 @@ static NSString *Custom1CellIdentifier = @"STMCuatom1TVCell";
 @property (nonatomic, strong) UIPopoverController *editablesPopover;
 @property (nonatomic) BOOL editablesPopoverWasVisible;
 
+//@property (strong, nonatomic) NSMutableDictionary *cellsForHeightCalc;
+
+
 @end
 
 
@@ -54,6 +57,15 @@ static NSString *Custom1CellIdentifier = @"STMCuatom1TVCell";
     return _splitVC;
     
 }
+
+//- (NSMutableDictionary *)cellsForHeightCalc {
+//    
+//    if (!_cellsForHeightCalc) {
+//        _cellsForHeightCalc = [NSMutableDictionary dictionary];
+//    }
+//    return _cellsForHeightCalc;
+//    
+//}
 
 - (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
     
@@ -450,6 +462,26 @@ static NSString *Custom1CellIdentifier = @"STMCuatom1TVCell";
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    static STMCustom1TVCell *sizingCell = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sizingCell = [self.tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
+    });
+    
+    [self fillCell:sizingCell atIndexPath:indexPath];
+
+    sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(sizingCell.bounds));
+    
+    [sizingCell setNeedsLayout];
+    [sizingCell layoutIfNeeded];
+    
+    CGSize size = [sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    return size.height + 1.0f; // Add 1.0f for the cell separator height
+
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
 /*
@@ -486,27 +518,64 @@ static NSString *Custom1CellIdentifier = @"STMCuatom1TVCell";
 
     STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
 
+    [self fillCell:cell atIndexPath:indexPath];
+
+    return cell;
+    
+}
+
+- (void)fillCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
     cell.titleLabel.text = @"Title Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ";
     cell.detailLabel.text = @"";
     cell.messageLabel.text = @"";
     cell.infoLabel.text = @"Заказ отклонён сервером навсегда, ныне и присно и вовеки веков ваще";
     
     if (indexPath.row % 2 == 1) {
+        
         cell.messageLabel.text = @"Message test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test ";
         cell.infoLabel.text = @"Отклонён";
+        
     } else if (indexPath.row == 2) {
+        
         cell.detailLabel.text = @"Detail";
         cell.infoLabel.text = @"";
+        
     }
- 
+
+//    STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
+    
+//    cell.titleLabel.text = saleOrder.outlet.name;
+    
+//    NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
+//    NSString *totalCostString = [currencyFormatter stringFromNumber:saleOrder.totalCost];
+//    
+//    NSUInteger positionsCount = saleOrder.saleOrderPositions.count;
+//    NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];
+//    
+//    NSString *positionsCountString = nil;
+//    
+//    if (positionsCount == 0) {
+//        positionsCountString = [NSString stringWithFormat:@"%@",NSLocalizedString(pluralTypeString, nil)];
+//    } else {
+//        positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
+//    }
+//    
+//    NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
+//    
+//    cell.detailLabel.text = detailText;
+//    
+//    cell.messageLabel.text = saleOrder.processingMessage;
+//    cell.messageLabel.textColor = [STMSaleOrderController messageColorForProcessing:saleOrder.processing];
+//    
+//    [self setupInfoLabelForCell:cell andSaleOrder:saleOrder];
+    
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
 
-    return cell;
-    
 }
 
-- (void)setupInfoLabelForCell:(STMInfoTableViewCell *)cell andSaleOrder:(STMSaleOrder *)saleOrder {
+- (void)setupInfoLabelForCell:(STMCustom1TVCell *)cell andSaleOrder:(STMSaleOrder *)saleOrder {
 
     NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
     
@@ -690,7 +759,8 @@ static NSString *Custom1CellIdentifier = @"STMCuatom1TVCell";
 //    [self setupToolbar];
 
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
-    
+    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
+
     [self performFetch];
     
 }
