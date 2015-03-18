@@ -12,6 +12,8 @@
 #import "STMOrderInfoTVC.h"
 #import "STMOrderEditablesVC.h"
 
+static NSString *Custom1CellIdentifier = @"STMCuatom1TVCell";
+
 
 @interface STMOrdersDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
@@ -449,6 +451,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+/*
     
     static NSString *cellIdentifier = @"orderCell";
     
@@ -477,7 +481,16 @@
     cell.detailTextLabel.text = detailText;
 
     [self setupInfoLabelForCell:cell andSaleOrder:saleOrder];
-    
+
+*/
+
+    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
+
+    cell.titleLabel.text = @"Title Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ";
+    cell.detailLabel.text = @"Detail";
+    cell.messageLabel.text = @"Message test test test test test test test test test test test test test test test test test test test ";
+    cell.infoLabel.text = @"Info";
+ 
     return cell;
     
 }
@@ -664,6 +677,9 @@
 - (void)customInit {
     
 //    [self setupToolbar];
+
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
+    
     [self performFetch];
     
 }
