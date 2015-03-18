@@ -10,12 +10,19 @@
 #define iSistemium_STMUI_h
 
 #include "STMBarButtonItem.h"
+
 #include "STMSplitViewController.h"
+
 #include "STMImagePickerController.h"
+
 #include "STMSpinnerView.h"
+
 #include "STMFetchedResultsControllerTVC.h"
+
 #include "STMTableViewCell.h"
 #include "STMInfoTableViewCell.h"
+#include "STMCustom1TVC.h"
+
 #include "STMSegmentedControl.h"
 
 
