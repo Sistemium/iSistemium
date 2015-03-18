@@ -215,7 +215,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         UITapGestureRecognizer *tap = (UITapGestureRecognizer *)sender;
         
-        STMInfoTableViewCell *cell = [self cellForView:tap.view];
+        STMCustom1TVCell *cell = [self cellForView:tap.view];
         
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         
@@ -239,14 +239,14 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (STMInfoTableViewCell *)cellForView:(UIView *)view {
+- (STMCustom1TVCell *)cellForView:(UIView *)view {
     
     UIView *superView = view.superview;
     
     if (superView) {
         
-        if ([superView isKindOfClass:[STMInfoTableViewCell class]]) {
-            return (STMInfoTableViewCell *)superView;
+        if ([superView isKindOfClass:[STMCustom1TVCell class]]) {
+            return (STMCustom1TVCell *)superView;
         } else {
             return [self cellForView:superView];
         }
