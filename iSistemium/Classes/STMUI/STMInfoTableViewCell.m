@@ -16,10 +16,6 @@
     
     self.infoLabel.textAlignment = NSTextAlignmentCenter;
     self.infoLabel.backgroundColor = STM_SECTION_HEADER_COLOR;
-//    CGFloat red = 239.0/255;
-//    CGFloat green = 239.0/255;
-//    CGFloat blue = 244.0/255;
-//    self.infoLabel.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
 
 }
 
