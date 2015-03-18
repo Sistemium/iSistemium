@@ -7,13 +7,14 @@
 //
 
 #import "STMTableViewCell.h"
+#import "STMInsetLabel.h"
 
 @interface STMCustom1TVCell : STMTableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *detailLabel;
 @property (weak, nonatomic) IBOutlet UILabel *messageLabel;
-@property (weak, nonatomic) IBOutlet UILabel *infoLabel;
+@property (weak, nonatomic) IBOutlet STMInsetLabel *infoLabel;
 
 
 

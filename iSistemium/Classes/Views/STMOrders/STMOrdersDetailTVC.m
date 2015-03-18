@@ -487,10 +487,21 @@ static NSString *Custom1CellIdentifier = @"STMCuatom1TVCell";
     STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
 
     cell.titleLabel.text = @"Title Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ";
-    cell.detailLabel.text = @"Detail";
-    cell.messageLabel.text = @"Message test test test test test test test test test test test test test test test test test test test ";
-    cell.infoLabel.text = @"Info";
+    cell.detailLabel.text = @"";
+    cell.messageLabel.text = @"";
+    cell.infoLabel.text = @"Заказ отклонён сервером навсегда, ныне и присно и вовеки веков ваще";
+    
+    if (indexPath.row % 2 == 1) {
+        cell.messageLabel.text = @"Message test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test ";
+        cell.infoLabel.text = @"Отклонён";
+    } else if (indexPath.row == 2) {
+        cell.detailLabel.text = @"Detail";
+        cell.infoLabel.text = @"";
+    }
  
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+
     return cell;
     
 }
