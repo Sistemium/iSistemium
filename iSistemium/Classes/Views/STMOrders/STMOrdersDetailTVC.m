@@ -484,15 +484,19 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-/*
-    
-    static NSString *cellIdentifier = @"orderCell";
-    
-    STMInfoButtonTableViewCell *cell = [[STMInfoButtonTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
 
+    [self fillCell:cell atIndexPath:indexPath];
+
+    return cell;
+    
+}
+
+- (void)fillCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = saleOrder.outlet.name;
+    cell.titleLabel.text = saleOrder.outlet.name;
     
     NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
     NSString *totalCostString = [currencyFormatter stringFromNumber:saleOrder.totalCost];
@@ -509,66 +513,13 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     }
     
     NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
-
-    cell.detailTextLabel.text = detailText;
-
+    
+    cell.detailLabel.text = detailText;
+    
+    cell.messageLabel.text = saleOrder.processingMessage;
+    cell.messageLabel.textColor = [STMSaleOrderController messageColorForProcessing:saleOrder.processing];
+    
     [self setupInfoLabelForCell:cell andSaleOrder:saleOrder];
-
-*/
-
-    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
-
-    [self fillCell:cell atIndexPath:indexPath];
-
-    return cell;
-    
-}
-
-- (void)fillCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
-    cell.titleLabel.text = @"Title Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ";
-    cell.detailLabel.text = @"";
-    cell.messageLabel.text = @"";
-    cell.infoLabel.text = @"Заказ отклонён сервером навсегда, ныне и присно и вовеки веков ваще";
-    
-    if (indexPath.row % 2 == 1) {
-        
-        cell.messageLabel.text = @"Message test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test ";
-        cell.infoLabel.text = @"Отклонён";
-        
-    } else if (indexPath.row == 2) {
-        
-        cell.detailLabel.text = @"Detail";
-        cell.infoLabel.text = @"";
-        
-    }
-
-//    STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
-    
-//    cell.titleLabel.text = saleOrder.outlet.name;
-    
-//    NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
-//    NSString *totalCostString = [currencyFormatter stringFromNumber:saleOrder.totalCost];
-//    
-//    NSUInteger positionsCount = saleOrder.saleOrderPositions.count;
-//    NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];
-//    
-//    NSString *positionsCountString = nil;
-//    
-//    if (positionsCount == 0) {
-//        positionsCountString = [NSString stringWithFormat:@"%@",NSLocalizedString(pluralTypeString, nil)];
-//    } else {
-//        positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
-//    }
-//    
-//    NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
-//    
-//    cell.detailLabel.text = detailText;
-//    
-//    cell.messageLabel.text = saleOrder.processingMessage;
-//    cell.messageLabel.textColor = [STMSaleOrderController messageColorForProcessing:saleOrder.processing];
-//    
-//    [self setupInfoLabelForCell:cell andSaleOrder:saleOrder];
     
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
