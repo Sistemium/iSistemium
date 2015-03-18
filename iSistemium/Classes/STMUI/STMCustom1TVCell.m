@@ -7,8 +7,18 @@
 //
 
 #import "STMCustom1TVCell.h"
+#import "STMConstants.h"
 
 @implementation STMCustom1TVCell
+
+- (void)layoutSubviews {
+    
+    [super layoutSubviews];
+    
+    self.infoLabel.textAlignment = NSTextAlignmentCenter;
+    self.infoLabel.backgroundColor = STM_SECTION_HEADER_COLOR;
+    
+}
 
 
 #pragma mark - view lifecycle

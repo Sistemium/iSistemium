@@ -546,8 +546,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         cell.infoLabel.textColor = processingColor;
     }
     
-    cell.infoLabel.backgroundColor = [UIColor blackColor];
-    
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
