@@ -1,18 +1,21 @@
 //
-//  STMCustom1TVC.m
+//  STMInsetLabel.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 18/03/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMCustom1TVC.h"
+#import "STMInsetLabel.h"
 
-@implementation STMCustom1TVC
+@implementation STMInsetLabel
 
-
-#pragma mark - view lifecycle
-
+- (void)drawTextInRect:(CGRect)rect {
+    
+    UIEdgeInsets insets = {5, 5, 5, 5};
+    [super drawTextInRect:UIEdgeInsetsInsetRect(rect, insets)];
+    
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.
