@@ -107,8 +107,10 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
         NSSortDescriptor *salesmanDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"salesman.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *statusDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"processing" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *outletDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         
-        request.sortDescriptors = @[dateDescriptor, salesmanDescriptor];
+        request.sortDescriptors = @[dateDescriptor, salesmanDescriptor, statusDescriptor, outletDescriptor];
         
         NSCompoundPredicate *predicate = [self requestPredicate];
         if (predicate.subpredicates.count > 0) request.predicate = predicate;
