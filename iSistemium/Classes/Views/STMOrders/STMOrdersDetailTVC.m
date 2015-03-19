@@ -67,30 +67,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
-    
-    NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:processing];
-    
-    STMSegmentedControl *filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
-    filterProcessedSegmentedControl.selectedSegmentIndex = 0;
-        
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonPressed:)];
-    [filterProcessedSegmentedControl addGestureRecognizer:tap];
-
-    STMBarButtonItem *filterButton = [[STMBarButtonItem alloc] initWithCustomView:filterProcessedSegmentedControl];
-    return filterButton;
-    
-}
-
-- (NSMutableDictionary *)filterButtons {
-    
-    if (!_filterButtons) {
-        _filterButtons = [NSMutableDictionary dictionary];
-    }
-    return _filterButtons;
-    
-}
-
 - (NSMutableArray *)currentFilterProcessings {
     
     if (!_currentFilterProcessings) {
@@ -228,18 +204,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         self.processingOrder = saleOrder;
         [self showRoutesActionSheet];
 
-//        if (self.processingRoutes.count > 0) {
-//            
-//            self.processingOrder = saleOrder;
-//            [self showRoutesActionSheet];
-//            
-//        } else {
-//            
-//            [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
-//            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-//            
-//        }
-
     }
     
 }
@@ -259,6 +223,36 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     } else {
         return nil;
     }
+    
+}
+
+
+#pragma mark - filter buttons
+
+- (NSMutableDictionary *)filterButtons {
+    
+    if (!_filterButtons) {
+        _filterButtons = [NSMutableDictionary dictionary];
+    }
+    return _filterButtons;
+    
+}
+
+- (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
+    
+    NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:processing];
+    
+    STMSegmentedControl *filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
+    filterProcessedSegmentedControl.selectedSegmentIndex = 0;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonPressed:)];
+    [filterProcessedSegmentedControl addGestureRecognizer:tap];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonLongPressed:)];
+    [filterProcessedSegmentedControl addGestureRecognizer:longPress];
+    
+    STMBarButtonItem *filterButton = [[STMBarButtonItem alloc] initWithCustomView:filterProcessedSegmentedControl];
+    return filterButton;
     
 }
 
@@ -284,6 +278,48 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         [self refreshTable];
 
+    }
+    
+}
+
+- (void)filterButtonLongPressed:(id)sender {
+    
+    if ([sender isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        
+        STMSegmentedControl *pressedControl = (STMSegmentedControl *)[(UITapGestureRecognizer *)sender view];
+        NSString *title = [pressedControl titleForSegmentAtIndex:0];
+        NSString *processing = [STMSaleOrderController processingForLabel:title];
+
+        pressedControl.selectedSegmentIndex = 0;
+        [self.currentFilterProcessings removeObject:processing];
+        
+        for (NSString *key in [self.filterButtons allKeys]) {
+            
+            if (![key isEqualToString:processing]) {
+                
+                STMBarButtonItem *button = self.filterButtons[key];
+            
+                if ([button.customView isKindOfClass:[STMSegmentedControl class]]) {
+                    
+                    STMSegmentedControl *control = (STMSegmentedControl *)button.customView;
+                    
+                    if (![control isEqual:pressedControl]) {
+                        
+                        control.selectedSegmentIndex = -1;
+                        NSString *title = [control titleForSegmentAtIndex:0];
+                        NSString *processing = [STMSaleOrderController processingForLabel:title];
+                        [self.currentFilterProcessings addObject:processing];
+                        
+                    }
+                    
+                }
+
+            }
+            
+        }
+        
+        [self refreshTable];
+        
     }
     
 }
@@ -713,7 +749,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 - (void)setupToolbar {
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-//    [self setToolbarItems:@[flexibleSpace, self.filterProcessedButton, flexibleSpace]];
 
     NSMutableArray *toolbarItems = [NSMutableArray array];
     [toolbarItems addObject:flexibleSpace];
@@ -736,8 +771,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     NSSortDescriptor *labelDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"label" ascending:YES];
     
     processings = [processingArray sortedArrayUsingDescriptors:@[labelDescriptor]];
-    
-//    NSLog(@"processings %@", processings);
     
     for (NSDictionary *processing in processings) {
         
