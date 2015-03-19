@@ -873,7 +873,15 @@
     
     NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
     
-    for (NSString *key in object.entity.attributesByName.allKeys) {
+    NSArray *allKeys;
+    
+    if ([object.entity.name isEqualToString:NSStringFromClass([STMEntity class])]) {
+        allKeys = @[@"eTag", @"name", @"deviceCts", @"deviceTs"];
+    } else {
+        allKeys = object.entity.attributesByName.allKeys;
+    }
+    
+    for (NSString *key in allKeys) {
         
         if (![key isEqualToString:@"xid"]) {
             
