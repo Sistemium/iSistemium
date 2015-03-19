@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
+#import <AdSupport/AdSupport.h>
+
 #import "STMAppDelegate.h"
 #import "STMClientDataController.h"
 #import "STMClientData.h"
@@ -75,10 +77,18 @@
 
 + (NSData *)deviceUUID {
     
-    NSUUID *identifierForVendor = [UIDevice currentDevice].identifierForVendor;
-    uuid_t uuid;
-    [identifierForVendor getUUIDBytes:uuid];
+//    NSUUID *identifierForVendor = [UIDevice currentDevice].identifierForVendor;
+//    uuid_t uuid;
+//    [identifierForVendor getUUIDBytes:uuid];
+//    
+//    NSLog(@"identifierForVendor %@", identifierForVendor);
     
+    NSUUID *advertisingIdentifier = [ASIdentifierManager sharedManager].advertisingIdentifier;
+    uuid_t uuid;
+    [advertisingIdentifier getUUIDBytes:uuid];
+    
+//    NSLog(@"advertisingIdentifier %@", advertisingIdentifier);
+
     NSData *deviceUUID = [NSData dataWithBytes:uuid length:16];
     
     return deviceUUID;
@@ -121,6 +131,8 @@
         }
 
     }
+    
+    [[self document] saveDocument:^(BOOL success) {}];
     
 //    NSLog(@"clientData %@", clientData);
 
