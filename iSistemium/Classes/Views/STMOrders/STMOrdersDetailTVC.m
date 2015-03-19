@@ -35,7 +35,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 @property (nonatomic, strong) UIPopoverController *editablesPopover;
 @property (nonatomic) BOOL editablesPopoverWasVisible;
 
-//@property (strong, nonatomic) NSMutableDictionary *cellsForHeightCalc;
+@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 
 
 @end
@@ -58,14 +58,14 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-//- (NSMutableDictionary *)cellsForHeightCalc {
-//    
-//    if (!_cellsForHeightCalc) {
-//        _cellsForHeightCalc = [NSMutableDictionary dictionary];
-//    }
-//    return _cellsForHeightCalc;
-//    
-//}
+- (NSMutableDictionary *)cachedCellsHeights {
+    
+    if (!_cachedCellsHeights) {
+        _cachedCellsHeights = [NSMutableDictionary dictionary];
+    }
+    return _cachedCellsHeights;
+    
+}
 
 - (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
     
@@ -462,24 +462,54 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    static STMCustom1TVCell *sizingCell = nil;
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static CGFloat standardCellHeight;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sizingCell = [self.tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
+        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
     });
-    
-    [self fillCell:sizingCell atIndexPath:indexPath];
 
-    sizingCell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(sizingCell.bounds));
+    return standardCellHeight;
     
-    [sizingCell setNeedsLayout];
-    [sizingCell layoutIfNeeded];
-    
-    CGSize size = [sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    return size.height + 1.0f; // Add 1.0f for the cell separator height
+}
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static STMCustom1TVCell *cell = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
+    });
+
+    CGFloat height;
+    
+    if (self.cachedCellsHeights[indexPath]) {
+        height = [self.cachedCellsHeights[indexPath] floatValue];
+    } else {
+        height = [self heightForCell:cell atIndexPath:indexPath];
+    }
+    
+    return height;
+
+}
+
+- (CGFloat)heightForCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    [self fillCell:cell atIndexPath:indexPath];
+    
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+    
+    [cell setNeedsLayout];
+    [cell layoutIfNeeded];
+    
+    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+
+    self.cachedCellsHeights[indexPath] = @(height);
+    
+    return height;
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -708,7 +738,10 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 //    [self setupToolbar];
 
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
-    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
+
+//    CGFloat standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+//    self.tableView.estimatedRowHeight = standardCellHeight;
+    //    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
 
     [self performFetch];
     
