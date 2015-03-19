@@ -114,7 +114,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         if (predicate.subpredicates.count > 0) request.predicate = predicate;
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"date" cacheName:nil];
-        
+
         _resultsController.delegate = self;
         
     }
@@ -335,9 +335,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     if (!self.routesActionSheet.isVisible) {
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.processingOrder];
-        STMInfoTableViewCell *cell = (STMInfoTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        STMCustom1TVCell *cell = (STMCustom1TVCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         
-        [self.routesActionSheet showFromRect:cell.infoLabel.frame inView:cell.contentView animated:YES];
+        if (cell) [self.routesActionSheet showFromRect:cell.infoLabel.frame inView:cell.contentView animated:YES];
         
     }
     
@@ -439,6 +439,24 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
+#pragma mark - cell's height caching
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    
+    self.cachedCellsHeights[objectID] = @(height);
+    
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+
+    return self.cachedCellsHeights[objectID];
+    
+}
+
 
 #pragma mark - Table view data source
 
@@ -470,11 +488,20 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
     });
 
-    return standardCellHeight;
+    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
     
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+    
+    return height;
+
+}
+
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
     static STMCustom1TVCell *cell = nil;
     static dispatch_once_t onceToken;
@@ -482,20 +509,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         cell = [self.tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
     });
 
-    CGFloat height;
-    
-//    if (self.cachedCellsHeights[indexPath]) {
-//        height = [self.cachedCellsHeights[indexPath] floatValue];
-//    } else {
-        height = [self heightForCell:cell atIndexPath:indexPath];
-//    }
-    
-    return height;
-
-}
-
-- (CGFloat)heightForCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
     [self fillCell:cell atIndexPath:indexPath];
     
     cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
@@ -506,7 +519,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
     CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
 
-//    self.cachedCellsHeights[indexPath] = @(height);
+    [self putCachedHeight:height forIndexPath:indexPath];
     
     return height;
     
@@ -573,7 +586,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     UIColor *processingColor = [STMSaleOrderController colorForProcessing:saleOrder.processing];
     
     cell.infoLabel.textColor = (processingColor) ? processingColor : [UIColor blackColor];
-        
+    
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -602,13 +615,18 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
-//    NSLog(@"anObject xid %@", [anObject valueForKey:@"xid"]);
-//    NSLog(@"type %d", type);
+
+    if ([anObject isKindOfClass:[NSManagedObject class]]) {
+        
+        NSManagedObjectID *objectID = [(NSManagedObject *)anObject objectID];
+        [self.cachedCellsHeights removeObjectForKey:objectID];
+        
+    }
     
     [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
     
 }
+
 
 - (NSArray *)fetchProperty:(NSString *)property {
     
