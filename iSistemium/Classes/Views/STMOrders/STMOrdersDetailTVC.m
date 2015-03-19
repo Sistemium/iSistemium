@@ -484,11 +484,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
     CGFloat height;
     
-    if (self.cachedCellsHeights[indexPath]) {
-        height = [self.cachedCellsHeights[indexPath] floatValue];
-    } else {
+//    if (self.cachedCellsHeights[indexPath]) {
+//        height = [self.cachedCellsHeights[indexPath] floatValue];
+//    } else {
         height = [self heightForCell:cell atIndexPath:indexPath];
-    }
+//    }
     
     return height;
 
@@ -506,7 +506,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
     CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
 
-    self.cachedCellsHeights[indexPath] = @(height);
+//    self.cachedCellsHeights[indexPath] = @(height);
     
     return height;
     
@@ -572,10 +572,8 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     UIColor *processingColor = [STMSaleOrderController colorForProcessing:saleOrder.processing];
     
-    if (processingColor) {
-        cell.infoLabel.textColor = processingColor;
-    }
-    
+    cell.infoLabel.textColor = (processingColor) ? processingColor : [UIColor blackColor];
+        
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -741,7 +739,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 //    CGFloat standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
 //    self.tableView.estimatedRowHeight = standardCellHeight;
-    //    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
+//    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
 
     [self performFetch];
     
