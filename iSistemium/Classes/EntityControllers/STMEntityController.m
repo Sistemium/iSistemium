@@ -56,7 +56,6 @@
     NSError *error;
     NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
     
-<<<<<<< HEAD
     NSMutableArray *returnValue = result.mutableCopy;
     
 // insert duplicates
@@ -78,9 +77,6 @@
 // end of insert duplicates
     
     return returnValue;
-=======
-    return result;
->>>>>>> dev
     
 }
 
@@ -144,26 +140,18 @@
 
 + (void)checkEntitiesForDuplicates {
     
-<<<<<<< HEAD
+/* next two lines is for generating duplicates
+ 
     NSArray *entitiesArray = [self stcEntitiesArray];
-
     NSLog(@"entitiesArray.count %d", entitiesArray.count);
-    
-    NSString *entityName = NSStringFromClass([STMEntity class]);
-    NSString *property = @"name";
-
-    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
-
-    NSPropertyDescription *entityProperty = entity.propertiesByName[property];
-//    NSPropertyDescription *xidProperty = entity.propertiesByName[@"xid"];
-=======
+ 
+*/
     NSString *entityName = NSStringFromClass([STMEntity class]);
     NSString *property = @"name";
     
     STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
     
     NSPropertyDescription *entityProperty = entity.propertiesByName[property];
->>>>>>> dev
     
     if (entityProperty) {
         
@@ -184,11 +172,7 @@
         NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
         
         result = [result filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"count > 1"]];
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> dev
         if (result.count > 0) {
             
             for (NSDictionary *entity in result) {
@@ -216,17 +200,10 @@
     
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
-<<<<<<< HEAD
-
-    NSError *error;
-    NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
-
-=======
     
     NSError *error;
     NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
     
->>>>>>> dev
     STMEntity *actualEntity = [result lastObject];
     NSMutableArray *mutableResult = result.mutableCopy;
     [mutableResult removeObject:actualEntity];
