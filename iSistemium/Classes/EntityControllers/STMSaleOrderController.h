@@ -19,6 +19,8 @@
 + (UIColor *)colorForProcessing:(NSString *)processing;
 + (UIColor *)messageColorForProcessing:(NSString *)processing;
 
++ (NSString *)descriptionForProcessing:(NSString *)processing;
+
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing;
 
 + (NSArray *)editablesPropertiesForProcessing:(NSString *)processing;

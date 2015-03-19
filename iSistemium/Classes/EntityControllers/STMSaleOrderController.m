@@ -137,6 +137,16 @@
 
 }
 
++ (NSString *)descriptionForProcessing:(NSString *)processing {
+    
+    NSDictionary *workflow = [self sharedInstance].workflow;
+    
+    NSDictionary *dictionaryForProcessing = workflow[processing];
+    
+    return dictionaryForProcessing[@"desc"];
+    
+}
+
 + (UIColor *)colorForType:(NSString *)type andProcessing:(NSString *)processing {
     
     NSDictionary *workflow = [self sharedInstance].workflow;

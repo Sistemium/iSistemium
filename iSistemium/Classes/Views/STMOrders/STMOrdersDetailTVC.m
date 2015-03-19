@@ -225,17 +225,20 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         self.processingRoutes = [STMSaleOrderController availableRoutesForProcessing:saleOrder.processing];
 
-        if (self.processingRoutes.count > 0) {
-            
-            self.processingOrder = saleOrder;
-            [self showRoutesActionSheet];
-            
-        } else {
-            
-            [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
-            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-            
-        }
+        self.processingOrder = saleOrder;
+        [self showRoutesActionSheet];
+
+//        if (self.processingRoutes.count > 0) {
+//            
+//            self.processingOrder = saleOrder;
+//            [self showRoutesActionSheet];
+//            
+//        } else {
+//            
+//            [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+//            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+//            
+//        }
 
     }
     
@@ -291,12 +294,20 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     if (!_routesActionSheet) {
         
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        NSString *title = [STMSaleOrderController descriptionForProcessing:self.processingOrder.processing];
         
-        for (NSString *processing in self.processingRoutes) {
-            [actionSheet addButtonWithTitle:[STMSaleOrderController labelForProcessing:processing]];
-        }
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        if (self.processingRoutes.count > 0) {
+            
+            for (NSString *processing in self.processingRoutes) {
+                [actionSheet addButtonWithTitle:[STMSaleOrderController labelForProcessing:processing]];
+            }
 
+        } else {
+            [actionSheet addButtonWithTitle:@""];
+        }
+        
         _routesActionSheet = actionSheet;
         
     }
