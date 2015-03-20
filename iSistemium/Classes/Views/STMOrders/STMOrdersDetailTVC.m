@@ -488,6 +488,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
+
 #pragma mark - cell's height caching
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {

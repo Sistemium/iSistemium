@@ -8,14 +8,21 @@
 
 #import "STMOrderInfoTVC.h"
 #import "STMSaleOrderController.h"
+#import "STMOrderEditablesVC.h"
 
 
-@interface STMOrderInfoTVC () <UIActionSheetDelegate>
+@interface STMOrderInfoTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
 
-//@property (nonatomic, strong) STMSaleOrder *saleOrder;
 @property (nonatomic, strong) NSArray *saleOrderPositions;
 @property (nonatomic ,strong) NSArray *processingRoutes;
+
 @property (nonatomic, strong) UIActionSheet *routesActionSheet;
+@property (nonatomic) BOOL routesActionSheetWasVisible;
+
+@property (nonatomic, strong) NSString *nextProcessing;
+@property (nonatomic, strong) NSArray *editableProperties;
+@property (nonatomic, strong) UIPopoverController *editablesPopover;
+@property (nonatomic) BOOL editablesPopoverWasVisible;
 
 
 @end
@@ -98,10 +105,7 @@
     if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
         
         self.processingRoutes = [STMSaleOrderController availableRoutesForProcessing:self.saleOrder.processing];
-        
-        if (self.processingRoutes.count > 0) {
-            [self showRoutesActionSheet];
-        }
+        [self showRoutesActionSheet];
         
     }
     
@@ -114,14 +118,22 @@
     
     if (!_routesActionSheet) {
         
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        NSString *title = [STMSaleOrderController descriptionForProcessing:self.saleOrder.processing];
         
-        for (NSString *processing in self.processingRoutes) {
-            [actionSheet addButtonWithTitle:[STMSaleOrderController labelForProcessing:processing]];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        if (self.processingRoutes.count > 0) {
+            
+            for (NSString *processing in self.processingRoutes) {
+                [actionSheet addButtonWithTitle:[STMSaleOrderController labelForProcessing:processing]];
+            }
+            
+        } else {
+            [actionSheet addButtonWithTitle:@""];
         }
         
         _routesActionSheet = actionSheet;
-        
+
     }
     return _routesActionSheet;
     
@@ -130,7 +142,23 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (buttonIndex >= 0 && buttonIndex < self.processingRoutes.count) {
-        [STMSaleOrderController setProcessing:self.processingRoutes[buttonIndex] forSaleOrder:self.saleOrder];
+        
+        self.nextProcessing = self.processingRoutes[buttonIndex];
+        
+        self.editableProperties = [STMSaleOrderController editablesPropertiesForProcessing:self.nextProcessing];
+        
+        if (self.editableProperties) {
+            
+            [self hideRoutesActionSheet];
+            
+            [self performSelector:@selector(showEditablesPopover) withObject:nil afterDelay:0];
+            
+        } else {
+            
+            [STMSaleOrderController setProcessing:self.nextProcessing forSaleOrder:self.saleOrder];
+            
+        }
+        
     }
     
 }
@@ -146,9 +174,7 @@
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         
-        [self.routesActionSheet showFromRect:cell.detailTextLabel.frame inView:cell.contentView animated:YES];
-        
-//        [self.routesActionSheet showInView:self.view];
+        if (cell) [self.routesActionSheet showFromRect:cell.detailTextLabel.frame inView:cell.contentView animated:YES];
         
     }
     
@@ -158,6 +184,95 @@
     
     [self.routesActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
     self.routesActionSheet = nil;
+    
+}
+
+
+#pragma mark - editables popover
+
+- (UIPopoverController *)editablesPopover {
+    
+    if (!_editablesPopover) {
+        
+        STMOrderEditablesVC *vc = [[STMOrderEditablesVC alloc] init];
+        
+        vc.fromProcessing = self.saleOrder.processing;
+        vc.toProcessing = self.nextProcessing;
+        vc.editableFields = self.editableProperties;
+        vc.saleOrder = self.saleOrder;
+        
+        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:vc];
+        popover.delegate = self;
+        popover.popoverContentSize = CGSizeMake(vc.view.frame.size.width, vc.view.frame.size.height);
+        
+        vc.popover = popover;
+        
+        _editablesPopover = popover;
+        
+    }
+    return _editablesPopover;
+    
+}
+
+- (void)showEditablesPopover {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.saleOrder];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    
+    [self.editablesPopover presentPopoverFromRect:cell.detailTextLabel.frame
+                                           inView:cell.contentView
+                         permittedArrowDirections:UIPopoverArrowDirectionAny
+                                         animated:YES];
+    
+}
+
+- (void)hideEditablesPopover {
+    
+    [self.editablesPopover dismissPopoverAnimated:YES];
+    self.editablesPopover = nil;
+    
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    
+    self.editablesPopover = nil;
+    
+}
+
+
+#pragma mark - rotate
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    
+    if (self.routesActionSheet.isVisible) {
+        
+        self.routesActionSheetWasVisible = YES;
+        [self hideRoutesActionSheet];
+        
+    }
+    
+    if (self.editablesPopover.isPopoverVisible) {
+        self.editablesPopoverWasVisible = YES;
+    }
+    [self hideEditablesPopover];
+    
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    if (self.routesActionSheetWasVisible) {
+        
+        self.routesActionSheetWasVisible = NO;
+        [self showRoutesActionSheet];
+        
+    }
+    
+    if (self.editablesPopoverWasVisible) {
+        
+        self.editablesPopoverWasVisible = NO;
+        [self showEditablesPopover];
+        
+    }
     
 }
 
