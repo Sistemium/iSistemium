@@ -334,6 +334,32 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static CGFloat standardCellHeight;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+    });
+    
+    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+        
+    if (indexPath.section == 0) {
+        
+        return 66;
+        
+    } else {
+        
+        return [self tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
+        
+    }
+    
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *infoCellIdentifier = @"orderInfoCell";
