@@ -22,6 +22,7 @@
 #include "STMTableViewCell.h"
 #include "STMInfoTableViewCell.h"
 #include "STMCustom1TVCell.h"
+#include "STMCustom2TVCell.h"
 
 #include "STMSegmentedControl.h"
 

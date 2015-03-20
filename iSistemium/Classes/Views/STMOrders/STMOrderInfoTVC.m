@@ -10,6 +10,8 @@
 #import "STMSaleOrderController.h"
 #import "STMOrderEditablesVC.h"
 
+static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
+
 
 @interface STMOrderInfoTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
 
@@ -350,7 +352,7 @@
         
     if (indexPath.section == 0) {
         
-        return 66;
+        return [self heightForCellAtIndexPath:indexPath];
         
     } else {
         
@@ -360,17 +362,41 @@
     
 }
 
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static STMCustom2TVCell *cell = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom2CellIdentifier];
+    });
+    
+    [self fillOrderInfoCell:cell forRow:indexPath.row];
+    
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+    
+    [cell setNeedsLayout];
+    [cell layoutIfNeeded];
+    
+    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+    
+//    [self putCachedHeight:height forIndexPath:indexPath];
+    
+    return height;
+    
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *infoCellIdentifier = @"orderInfoCell";
+//    static NSString *infoCellIdentifier = @"orderInfoCell";
     static NSString *positionCellIdentifier = @"orderPositionCell";
     
     UITableViewCell *cell;
     
     switch (indexPath.section) {
         case 0:
-            cell = [tableView dequeueReusableCellWithIdentifier:infoCellIdentifier forIndexPath:indexPath];
-            [self fillOrderInfoCell:cell forRow:indexPath.row];
+            cell = [tableView dequeueReusableCellWithIdentifier:Custom2CellIdentifier forIndexPath:indexPath];
+            [self fillOrderInfoCell:(STMCustom2TVCell *)cell forRow:indexPath.row];
             break;
 
         case 1:
@@ -387,7 +413,11 @@
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    cell = nil;
+
+    if (indexPath.section == 1) {
+        cell = nil;
+    }
+
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -406,48 +436,49 @@
     
 }
 
-- (void)fillOrderInfoCell:(UITableViewCell *)cell forRow:(NSUInteger)row {
+- (void)fillOrderInfoCell:(STMCustom2TVCell *)cell forRow:(NSUInteger)row {
     
     for (UIGestureRecognizer *gestures in cell.detailTextLabel.gestureRecognizers) {
-        [cell.detailTextLabel removeGestureRecognizer:gestures];
+        [cell.detailLabel removeGestureRecognizer:gestures];
     }
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(statusLabelTapped:)];
     
-    cell.detailTextLabel.numberOfLines = 0;
+    cell.titleLabel.numberOfLines = 0;
+    cell.detailLabel.numberOfLines = 0;
     
     switch (row) {
         case 0:
-            cell.textLabel.text = NSLocalizedString(@"OUTLET", nil);
-            cell.detailTextLabel.text = self.saleOrder.outlet.name;
+            cell.titleLabel.text = NSLocalizedString(@"OUTLET", nil);
+            cell.detailLabel.text = self.saleOrder.outlet.name;
             break;
 
         case 1:
-            cell.textLabel.text = NSLocalizedString(@"SALESMAN", nil);
-            cell.detailTextLabel.text = self.saleOrder.salesman.name;
+            cell.titleLabel.text = NSLocalizedString(@"SALESMAN", nil);
+            cell.detailLabel.text = self.saleOrder.salesman.name;
             break;
 
         case 2:
-            cell.textLabel.text = NSLocalizedString(@"DISPATCH DATE", nil);
-            cell.detailTextLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.saleOrder.date];
+            cell.titleLabel.text = NSLocalizedString(@"DISPATCH DATE", nil);
+            cell.detailLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.saleOrder.date];
             break;
 
         case 3:
-            cell.textLabel.text = NSLocalizedString(@"COST", nil);
-            cell.detailTextLabel.text = [[STMFunctions currencyFormatter] stringFromNumber:self.saleOrder.totalCost];
+            cell.titleLabel.text = NSLocalizedString(@"COST", nil);
+            cell.detailLabel.text = [[STMFunctions currencyFormatter] stringFromNumber:self.saleOrder.totalCost];
             break;
 
         case 4:
-            cell.textLabel.text = NSLocalizedString(@"STATUS", nil);
+            cell.titleLabel.text = NSLocalizedString(@"STATUS", nil);
             
-            cell.detailTextLabel.userInteractionEnabled = YES;
-            [cell.detailTextLabel addGestureRecognizer:tap];
+            cell.detailLabel.userInteractionEnabled = YES;
+            [cell.detailLabel addGestureRecognizer:tap];
 
-            cell.detailTextLabel.text = [STMSaleOrderController labelForProcessing:self.saleOrder.processing];
+            cell.detailLabel.text = [STMSaleOrderController labelForProcessing:self.saleOrder.processing];
         
             if ([STMSaleOrderController colorForProcessing:self.saleOrder.processing]) {
-                cell.detailTextLabel.textColor =  [STMSaleOrderController colorForProcessing:self.saleOrder.processing];
+                cell.detailLabel.textColor =  [STMSaleOrderController colorForProcessing:self.saleOrder.processing];
             } else {
-                cell.detailTextLabel.textColor = [UIColor blackColor];
+                cell.detailLabel.textColor = [UIColor blackColor];
             }
             break;
 
@@ -463,20 +494,23 @@
             break;
     }
     
-}
-
-- (void)fillCommentForCell:(UITableViewCell *)cell {
-    
-    cell.textLabel.text = NSLocalizedString(@"COMMENT", nil);
-    cell.detailTextLabel.text = self.saleOrder.commentText;
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
     
 }
 
-- (void)fillProcessingMessageForCell:(UITableViewCell *)cell {
+- (void)fillCommentForCell:(STMCustom2TVCell *)cell {
     
-    cell.textLabel.text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
-    cell.detailTextLabel.text = self.saleOrder.processingMessage;
-    cell.detailTextLabel.textColor = [STMSaleOrderController messageColorForProcessing:self.saleOrder.processing];
+    cell.titleLabel.text = NSLocalizedString(@"COMMENT", nil);
+    cell.detailLabel.text = self.saleOrder.commentText;
+    
+}
+
+- (void)fillProcessingMessageForCell:(STMCustom2TVCell *)cell {
+    
+    cell.titleLabel.text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
+    cell.detailLabel.text = self.saleOrder.processingMessage;
+    cell.detailLabel.textColor = [STMSaleOrderController messageColorForProcessing:self.saleOrder.processing];
 
 }
 
@@ -607,12 +641,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
-//    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-//    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
-//
-//    [self setToolbarItems:@[flexibleSpace, closeButton]];
-    
+
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:Custom2CellIdentifier];
     [self performFetch];
 
 }

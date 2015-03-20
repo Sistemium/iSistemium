@@ -472,6 +472,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
+    self.cachedCellsHeights = nil;
+    [self.tableView reloadData];
+    
     if (self.routesActionSheetWasVisible) {
         
         self.routesActionSheetWasVisible = NO;
@@ -577,7 +580,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
+    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier forIndexPath:indexPath];
 
     [self fillCell:cell atIndexPath:indexPath];
 
@@ -639,9 +642,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    cell = nil;
-}
+//- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    cell = nil;
+//}
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     

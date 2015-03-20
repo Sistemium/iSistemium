@@ -14,7 +14,7 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="S52-en-Enu" id="bws-HZ-gkY">
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" horizontalHuggingPriority="249" text="Title" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jx4-6B-oI2">
+                    <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" horizontalHuggingPriority="249" text="Title" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="91" translatesAutoresizingMaskIntoConstraints="NO" id="Jx4-6B-oI2">
                         <rect key="frame" x="15" y="15" width="91" height="14.5"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="91" id="M17-lS-M0z"/>
@@ -23,9 +23,9 @@
                         <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vAK-WX-Rix">
-                        <rect key="frame" x="112" y="15" width="200" height="14.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="200" translatesAutoresizingMaskIntoConstraints="NO" id="vAK-WX-Rix">
+                        <rect key="frame" x="112" y="14" width="200" height="14.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -33,13 +33,13 @@
                 <constraints>
                     <constraint firstAttribute="bottomMargin" secondItem="Jx4-6B-oI2" secondAttribute="bottom" constant="6" id="9x4-GJ-BLo"/>
                     <constraint firstItem="Jx4-6B-oI2" firstAttribute="top" secondItem="bws-HZ-gkY" secondAttribute="topMargin" constant="7" id="KpP-oI-N6P"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="vAK-WX-Rix" secondAttribute="bottom" constant="6" id="Nqk-FU-Wzq"/>
-                    <constraint firstItem="vAK-WX-Rix" firstAttribute="top" secondItem="bws-HZ-gkY" secondAttribute="topMargin" constant="7" id="PzV-fd-Y59"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="vAK-WX-Rix" secondAttribute="bottom" constant="7" id="Nqk-FU-Wzq"/>
+                    <constraint firstItem="vAK-WX-Rix" firstAttribute="top" secondItem="bws-HZ-gkY" secondAttribute="topMargin" constant="6" id="PzV-fd-Y59"/>
                     <constraint firstItem="vAK-WX-Rix" firstAttribute="trailing" secondItem="bws-HZ-gkY" secondAttribute="trailingMargin" id="cHZ-b0-gbb"/>
                     <constraint firstItem="Jx4-6B-oI2" firstAttribute="leading" secondItem="bws-HZ-gkY" secondAttribute="leadingMargin" constant="7" id="eaC-yq-MD8"/>
                     <constraint firstAttribute="centerY" secondItem="Jx4-6B-oI2" secondAttribute="centerY" constant="-0.5" id="f0m-RP-wky"/>
                     <constraint firstItem="vAK-WX-Rix" firstAttribute="leading" secondItem="Jx4-6B-oI2" secondAttribute="trailing" constant="6" id="juR-gG-im9"/>
-                    <constraint firstAttribute="centerY" secondItem="vAK-WX-Rix" secondAttribute="centerY" constant="-0.5" id="xCr-98-nvd"/>
+                    <constraint firstAttribute="centerY" secondItem="vAK-WX-Rix" secondAttribute="centerY" constant="0.5" id="xCr-98-nvd"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
