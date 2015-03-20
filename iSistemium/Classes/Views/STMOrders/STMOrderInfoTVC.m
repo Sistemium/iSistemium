@@ -387,6 +387,8 @@
     }
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(statusLabelTapped:)];
     
+    cell.detailTextLabel.numberOfLines = 0;
+    
     switch (row) {
         case 0:
             cell.textLabel.text = NSLocalizedString(@"OUTLET", nil);
