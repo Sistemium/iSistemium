@@ -8,6 +8,11 @@
 
 #import "STMLabel.h"
 
+#define LABEL_TOP_INSET 5
+#define LABEL_BOTTOM_INSET 5
+#define LABEL_LEFT_INSET 5
+#define LABEL_RIGHT_INSET 5
+
 @interface STMInsetLabel : STMLabel
 
 @end

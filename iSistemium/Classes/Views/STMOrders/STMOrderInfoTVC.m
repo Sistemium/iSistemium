@@ -174,9 +174,9 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
     if (!self.routesActionSheet.isVisible) {
         
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        STMCustom2TVCell *cell = (STMCustom2TVCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         
-        if (cell) [self.routesActionSheet showFromRect:cell.detailTextLabel.frame inView:cell.contentView animated:YES];
+        if (cell) [self.routesActionSheet showFromRect:cell.detailLabel.frame inView:cell.contentView animated:YES];
         
     }
     
@@ -219,9 +219,9 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 - (void)showEditablesPopover {
     
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.saleOrder];
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    STMCustom2TVCell *cell = (STMCustom2TVCell *)[self.tableView cellForRowAtIndexPath:indexPath];
     
-    [self.editablesPopover presentPopoverFromRect:cell.detailTextLabel.frame
+    [self.editablesPopover presentPopoverFromRect:cell.detailLabel.frame
                                            inView:cell.contentView
                          permittedArrowDirections:UIPopoverArrowDirectionAny
                                          animated:YES];
@@ -373,14 +373,13 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
     [self fillOrderInfoCell:cell forRow:indexPath.row];
     
     cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
-    
+
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
     
-    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingExpandedSize];
     
-//    [self putCachedHeight:height forIndexPath:indexPath];
+    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
     
     return height;
     
@@ -438,7 +437,7 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 
 - (void)fillOrderInfoCell:(STMCustom2TVCell *)cell forRow:(NSUInteger)row {
     
-    for (UIGestureRecognizer *gestures in cell.detailTextLabel.gestureRecognizers) {
+    for (UIGestureRecognizer *gestures in cell.detailLabel.gestureRecognizers) {
         [cell.detailLabel removeGestureRecognizer:gestures];
     }
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(statusLabelTapped:)];
@@ -449,6 +448,7 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
     switch (row) {
         case 0:
             cell.titleLabel.text = NSLocalizedString(@"OUTLET", nil);
+//            cell.titleLabel.text = @"Title title title title title title title title title title title title title title title title title ";
             cell.detailLabel.text = self.saleOrder.outlet.name;
             break;
 
@@ -510,6 +510,9 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
     
     cell.titleLabel.text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
     cell.detailLabel.text = self.saleOrder.processingMessage;
+    
+//    NSLog(@"processingMessage %@", [cell.detailLabel.text dataUsingEncoding:NSUTF8StringEncoding]);
+    
     cell.detailLabel.textColor = [STMSaleOrderController messageColorForProcessing:self.saleOrder.processing];
 
 }

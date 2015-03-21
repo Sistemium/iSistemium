@@ -10,8 +10,8 @@
 
 @interface STMCustom2TVCell : STMTableViewCell
 
-@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *detailLabel;
+@property (weak, nonatomic) IBOutlet STMLabel *titleLabel;
+@property (weak, nonatomic) IBOutlet STMLabel *detailLabel;
 
 
 @end

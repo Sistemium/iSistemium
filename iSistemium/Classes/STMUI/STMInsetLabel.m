@@ -12,7 +12,8 @@
 
 - (void)drawTextInRect:(CGRect)rect {
     
-    UIEdgeInsets insets = {5, 5, 5, 5};
+//    UIEdgeInsets insets = {5, 5, 5, 5};
+    UIEdgeInsets insets = {LABEL_TOP_INSET, LABEL_LEFT_INSET, LABEL_BOTTOM_INSET, LABEL_RIGHT_INSET};
     [super drawTextInRect:UIEdgeInsetsInsetRect(rect, insets)];
     
 }
