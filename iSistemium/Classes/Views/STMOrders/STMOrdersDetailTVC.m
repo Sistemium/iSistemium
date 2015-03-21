@@ -58,15 +58,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (NSMutableDictionary *)cachedCellsHeights {
-    
-    if (!_cachedCellsHeights) {
-        _cachedCellsHeights = [NSMutableDictionary dictionary];
-    }
-    return _cachedCellsHeights;
-    
-}
-
 - (NSMutableArray *)currentFilterProcessings {
     
     if (!_currentFilterProcessings) {
@@ -493,6 +484,15 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 
 #pragma mark - cell's height caching
+
+- (NSMutableDictionary *)cachedCellsHeights {
+    
+    if (!_cachedCellsHeights) {
+        _cachedCellsHeights = [NSMutableDictionary dictionary];
+    }
+    return _cachedCellsHeights;
+    
+}
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
     

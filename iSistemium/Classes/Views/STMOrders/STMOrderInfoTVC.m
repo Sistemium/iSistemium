@@ -26,6 +26,7 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 @property (nonatomic, strong) UIPopoverController *editablesPopover;
 @property (nonatomic) BOOL editablesPopoverWasVisible;
 
+@property (nonatomic, strong) NSMutableDictionary *cachedCellsHeights;
 
 @end
 
@@ -262,6 +263,9 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
+    self.cachedCellsHeights = nil;
+    [self.tableView reloadData];
+
     if (self.routesActionSheetWasVisible) {
         
         self.routesActionSheetWasVisible = NO;
@@ -352,8 +356,11 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
         
     if (indexPath.section == 0) {
         
-        return [self heightForCellAtIndexPath:indexPath];
+        NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+        CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
         
+        return height;
+
     } else {
         
         return [self tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
@@ -381,6 +388,8 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
     
     CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
     
+    [self putCachedHeight:height forIndexPath:indexPath];
+
     return height;
     
 }
@@ -619,6 +628,47 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
     
 }
 
+
+#pragma mark - cell's height caching
+
+- (NSMutableDictionary *)cachedCellsHeights {
+    
+    if (!_cachedCellsHeights) {
+        _cachedCellsHeights = [NSMutableDictionary dictionary];
+    }
+    return _cachedCellsHeights;
+    
+}
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+
+        self.cachedCellsHeights[indexPath] = @(height);
+
+    } else {
+        
+        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+        self.cachedCellsHeights[objectID] = @(height);
+
+    }
+    
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        return self.cachedCellsHeights[indexPath];
+        
+    } else {
+        
+        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+        return self.cachedCellsHeights[objectID];
+        
+    }
+    
+}
 
 
 #pragma mark - NSFetchedResultsController delegate
