@@ -617,8 +617,8 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 
 - (NSString *)detailedTextForSaleOrderPosition:(STMSaleOrderPosition *)saleOrderPosition {
     
-    NSDecimalNumber *price0 = saleOrderPosition.price0;
-    NSDecimalNumber *price1 = saleOrderPosition.price1;
+    NSDecimalNumber *price = saleOrderPosition.price;
+    NSDecimalNumber *priceDoc = saleOrderPosition.priceDoc;
     NSDecimalNumber *priceOrigin = saleOrderPosition.priceOrigin;
     
     NSString *detailedText = @"";
@@ -633,20 +633,20 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE0", nil)];
     detailedText = [detailedText stringByAppendingString:appendString];
     
-    appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price0]];
+    appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price]];
     detailedText = [detailedText stringByAppendingString:appendString];
     
-    if ([price0 compare:price1] != NSOrderedSame) {
+    if ([price compare:priceDoc] != NSOrderedSame) {
         
         appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE1", nil)];
         detailedText = [detailedText stringByAppendingString:appendString];
         
-        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price1]];
+        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceDoc]];
         detailedText = [detailedText stringByAppendingString:appendString];
         
     }
     
-    if ([price0 compare:priceOrigin] != NSOrderedSame) {
+    if ([price compare:priceOrigin] != NSOrderedSame) {
         
         appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE ORIGIN", nil)];
         detailedText = [detailedText stringByAppendingString:appendString];
@@ -654,7 +654,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceOrigin]];
         detailedText = [detailedText stringByAppendingString:appendString];
         
-        NSDecimalNumber *result = [price0 decimalNumberBySubtracting:priceOrigin];
+        NSDecimalNumber *result = [price decimalNumberBySubtracting:priceOrigin];
         result = [result decimalNumberByDividingBy:priceOrigin];
         
         NSDecimalNumberHandler *behavior = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundDown scale:3 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];

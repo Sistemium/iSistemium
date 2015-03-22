@@ -40,6 +40,9 @@
 #import "STMCampaignGroup.h"
 #import "STMSaleOrder.h"
 #import "STMSaleOrderPosition.h"
+#import "STMPriceType.h"
+#import "STMPrice.h"
+#import "STMStock.h"
 
 #import "STMFetchRequest.h"
 
@@ -735,7 +738,7 @@
 
 }
 
-#pragma mark - recieve of objects is finished
+#pragma mark - finish of recieving objects
 
 + (void)dataLoadingFinished {
     
@@ -779,6 +782,9 @@
                              NSStringFromClass([STMClientData class]),
                              NSStringFromClass([STMRecordStatus class]),
                              NSStringFromClass([STMLogMessage class]),
+                             NSStringFromClass([STMPriceType class]),
+                             NSStringFromClass([STMPrice class]),
+                             NSStringFromClass([STMStock class]),
                              NSStringFromClass([STMEntity class])];
     
     NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];

@@ -2,7 +2,7 @@
 //  STMSaleOrderPosition.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/03/15.
+//  Created by Maxim Grigoriev on 22/03/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -13,11 +13,11 @@
 
 @implementation STMSaleOrderPosition
 
-@dynamic volume;
-@dynamic price0;
-@dynamic price1;
+@dynamic price;
+@dynamic priceDoc;
 @dynamic priceOrigin;
-@dynamic saleOrder;
+@dynamic volume;
 @dynamic article;
+@dynamic saleOrder;
 
 @end
