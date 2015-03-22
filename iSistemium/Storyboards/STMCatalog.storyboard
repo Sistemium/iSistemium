@@ -145,10 +145,10 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <toolbarItems>
-                        <barButtonItem title="PriceType:" id="RQd-SG-xp1"/>
-                        <barButtonItem title="Selector" id="hhe-b7-E7X"/>
+                        <barButtonItem title="PriceType:" id="RQd-SG-xp1" customClass="STMBarButtonItem"/>
+                        <barButtonItem title="Selector" id="hhe-b7-E7X" customClass="STMBarButtonItem"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="q8N-d4-wkH"/>
-                        <barButtonItem title="Info" id="tNC-PC-kOB"/>
+                        <barButtonItem title="Info" id="tNC-PC-kOB" customClass="STMBarButtonItem"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="cHP-29-uPc"/>
                     <connections>

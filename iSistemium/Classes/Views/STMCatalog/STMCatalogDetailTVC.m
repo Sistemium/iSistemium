@@ -13,13 +13,13 @@
 static NSString *defaultPriceTypeKey = @"priceTypeXid";
 
 
-@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate>
+@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *priceTypeLabel;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *priceTypeSelector;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *infoLabel;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeLabel;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeSelector;
 
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
@@ -114,26 +114,6 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
     
 }
 
-- (UISearchBar *)searchBar {
-    return self.searchDisplayController.searchBar;
-}
-
-- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
-    
-    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
-        
-        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
-        
-        if (_searchFieldIsScrolledAway) {
-            [self showSearchButton];
-        } else {
-            self.navigationItem.rightBarButtonItem = nil;
-        }
-        
-    }
-    
-}
-
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -211,6 +191,8 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 - (void)priceTypeSelectorSetup {
     
     self.priceTypeSelector.title = self.selectedPriceType.name;
+    self.priceTypeSelector.target = self;
+    self.priceTypeSelector.action = @selector(showPriceTypeSelector);
     
 }
 
@@ -251,7 +233,31 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 }
 
 
-#pragma mark - search button
+#pragma mark - priceType selector
+
+- (void)showPriceTypeSelector {
+    
+    [self.priceTypeSelectorActionSheet showFromBarButtonItem:self.priceTypeSelector animated:YES];
+    
+}
+
+- (UIActionSheet *)priceTypeSelectorActionSheet {
+
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"PRICE_TYPE_LABEL", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    
+    NSArray *priceTypes = [self availablePriceTypes];
+    
+    for (STMPriceType *priceType in priceTypes) {
+        
+        [actionSheet addButtonWithTitle:priceType.name];
+        
+    }
+    
+    return actionSheet;
+    
+}
+
+#pragma mark - search
 
 - (void)searchButtonPressed {
 
@@ -263,6 +269,26 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 - (void)showSearchButton {
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+}
+
+- (UISearchBar *)searchBar {
+    return self.searchDisplayController.searchBar;
+}
+
+- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
+    
+    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
+        
+        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
+        
+        if (_searchFieldIsScrolledAway) {
+            [self showSearchButton];
+        } else {
+            self.navigationItem.rightBarButtonItem = nil;
+        }
+        
+    }
+    
 }
 
 
