@@ -7,11 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+
 #import "STMCatalogMasterTVC.h"
 #import "STMCatalogDetailTVC.h"
+
 #import "STMArticle.h"
 #import "STMArticleGroupController.h"
 #import "STMArticlePicture.h"
+#import "STMPrice.h"
+#import "STMPriceType.h"
+
+#import "STMObjectsController.h"
+
 #import "STMFunctions.h"
 #import "STMUI.h"
 #import "STMConstants.h"

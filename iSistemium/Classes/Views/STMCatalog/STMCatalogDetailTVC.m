@@ -10,16 +10,27 @@
 #import "STMCatalogSVC.h"
 #import "STMArticleInfoVC.h"
 
+static NSString *defaultPriceTypeKey = @"priceTypeXid";
+
+
 @interface STMCatalogDetailTVC () <UIPopoverControllerDelegate>
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
+
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *priceTypeLabel;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *priceTypeSelector;
+
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
+
 @property (nonatomic, strong) UIPopoverController *articleInfoPopover;
 @property (nonatomic) BOOL articleInfoPopoverIsVisible;
+
 @property (nonatomic, strong) STMArticle *selectedArticle;
+
+@property (nonatomic, strong) STMPriceType *selectedPriceType;
 
 
 @end
@@ -28,6 +39,7 @@
 @implementation STMCatalogDetailTVC
 
 @synthesize resultsController = _resultsController;
+@synthesize selectedPriceType = _selectedPriceType;
 
 
 - (STMCatalogSVC *)splitVC {
@@ -40,6 +52,65 @@
         
     }
     return _splitVC;
+    
+}
+
+- (STMPriceType *)selectedPriceType {
+    
+    if (!_selectedPriceType) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        id priceTypeXid = [defaults objectForKey:defaultPriceTypeKey];
+        
+        if (priceTypeXid && [priceTypeXid isKindOfClass:[NSData class]]) {
+            
+            NSManagedObject *priceType = [STMObjectsController objectForXid:priceTypeXid];
+            
+            if ([priceType isKindOfClass:[STMPriceType class]]) _selectedPriceType = (STMPriceType *)priceType;
+            
+        } else {
+            
+            NSArray *priceTypes = [self availablePriceTypes];
+            
+            if (priceTypes.count > 0) {
+                
+                _selectedPriceType = priceTypes[0];
+                
+            } else {
+                
+                [[STMLogger sharedLogger] saveLogMessageWithText:@"priceTypes.count == 0"];
+                
+            }
+            
+        }
+        
+        if (_selectedPriceType) {
+            
+            [defaults setObject:_selectedPriceType.xid forKey:defaultPriceTypeKey];
+            [defaults synchronize];
+            
+        }
+        
+    }
+    return _selectedPriceType;
+    
+}
+
+- (NSArray *)availablePriceTypes {
+    return [STMObjectsController objectsForEntityName:NSStringFromClass([STMPriceType class])];
+}
+
+- (void)setSelectedPriceType:(STMPriceType *)selectedPriceType {
+    
+    if (![selectedPriceType isEqual:_selectedPriceType]) {
+        
+        _selectedPriceType = selectedPriceType;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:_selectedPriceType.xid forKey:defaultPriceTypeKey];
+        [defaults synchronize];
+
+    }
     
 }
 
@@ -116,13 +187,37 @@
     [self performFetch];
 }
 
+
+#pragma mark - toolbar items
+
+- (void)setupBarButton:(UIBarButtonItem *)barButton asLabelWithColor:(UIColor *)color {
+    
+    if (!color) color = [UIColor blackColor];
+
+    barButton.enabled = NO;
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:color};
+    [barButton setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [barButton setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+
+}
+
+- (void)priceTypeLabelSetup {
+    
+    self.priceTypeLabel.title = NSLocalizedString(@"PRICE_TYPE_LABEL", nil);
+    [self setupBarButton:self.priceTypeLabel asLabelWithColor:nil];
+    
+}
+
+- (void)priceTypeSelectorSetup {
+    
+    self.priceTypeSelector.title = self.selectedPriceType.name;
+    
+}
+
 - (void)infoLabelSetup {
     
     self.infoLabel.title = @"";
-    self.infoLabel.enabled = NO;
-    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
-    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateNormal];
-    [self.infoLabel setTitleTextAttributes:attributes forState:UIControlStateDisabled];
+    [self setupBarButton:self.infoLabel asLabelWithColor:nil];
 
 }
 
@@ -155,6 +250,9 @@
     
 }
 
+
+#pragma mark - search button
+
 - (void)searchButtonPressed {
 
     self.navigationItem.rightBarButtonItem = nil;
@@ -166,6 +264,7 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
 }
+
 
 - (void)hideKeyboard {
     
@@ -466,11 +565,19 @@
     
 }
 
+- (void)setupToolbar {
+    
+    [self priceTypeLabelSetup];
+    [self priceTypeSelectorSetup];
+    [self infoLabelSetup];
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    [self infoLabelSetup];
+    [self setupToolbar];
     [self performFetch];
     [self setupSearchBar];
     

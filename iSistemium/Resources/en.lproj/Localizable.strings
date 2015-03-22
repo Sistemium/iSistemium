@@ -182,4 +182,4 @@
 "5OBJECTS" = "objects";
 "PROFILE" = "Profile";
 "APP TERMINATE" = "App will be terminate. Please restart.";
-
+"PRICE_TYPE_LABEL" = "Price type: ";
