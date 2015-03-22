@@ -11,6 +11,7 @@
 #import "STMOrderEditablesVC.h"
 
 static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
+static NSString *positionCellIdentifier = @"orderPositionCell";
 
 
 @interface STMOrderInfoTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
@@ -354,22 +355,33 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
         
-    if (indexPath.section == 0) {
-        
         NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
         CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
         
         return height;
-
-    } else {
-        
-        return [self tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
-        
-    }
     
 }
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+        case 0:
+            return [self heightForInfoCellAtIndexPath:indexPath];
+            break;
+
+        case 1:
+            return [self heightForPositionCellAtIndexPath:indexPath];
+            break;
+            
+        default:
+            return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+            break;
+    }
+    
+    
+}
+
+- (CGFloat)heightForInfoCellAtIndexPath:(NSIndexPath *)indexPath {
     
     static STMCustom2TVCell *cell = nil;
     static dispatch_once_t onceToken;
@@ -380,7 +392,7 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
     [self fillOrderInfoCell:cell forRow:indexPath.row];
     
     cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
-
+    
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
     
@@ -389,15 +401,46 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
     CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
     
     [self putCachedHeight:height forIndexPath:indexPath];
-
+    
     return height;
+
+}
+
+- (CGFloat)heightForPositionCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static STMInfoTableViewCell *cell = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken,^{
+        cell = [[STMInfoTableViewCell alloc] init];
+//        cell = [self.tableView dequeueReusableCellWithIdentifier:positionCellIdentifier];
+    });
+
+    [self fillOrderPositionCell:cell forRow:indexPath.row];
+    
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+    
+    [cell setNeedsLayout];
+    [cell layoutIfNeeded];
+
+    NSDictionary *attributes = @{NSFontAttributeName:cell.textLabel.font};
+    
+    CGSize lineSize = [cell.textLabel.text sizeWithAttributes:attributes];
+    CGRect multilineRect = [cell.textLabel.text boundingRectWithSize:CGSizeMake(cell.textLabel.frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+    
+    CGFloat diff = ceil(multilineRect.size.height) - ceil(lineSize.height);
+    
+    CGFloat height = cell.frame.size.height + diff;
+    
+    return height;
+    
+//    return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
 //    static NSString *infoCellIdentifier = @"orderInfoCell";
-    static NSString *positionCellIdentifier = @"orderPositionCell";
+//    static NSString *positionCellIdentifier = @"orderPositionCell";
     
     UITableViewCell *cell;
     
@@ -408,7 +451,8 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
             break;
 
         case 1:
-            cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:positionCellIdentifier];
+//            cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:positionCellIdentifier];
+            cell = [tableView dequeueReusableCellWithIdentifier:positionCellIdentifier forIndexPath:indexPath];
             [self fillOrderPositionCell:(STMInfoTableViewCell *)cell forRow:indexPath.row];
             break;
 
@@ -528,6 +572,8 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 
 - (void)fillOrderPositionCell:(STMInfoTableViewCell *)cell forRow:(NSUInteger)row {
     
+    cell.textLabel.numberOfLines = 0;
+    
     STMSaleOrderPosition *saleOrderPosition = self.saleOrderPositions[row];
     
     cell.textLabel.text = saleOrderPosition.article.name;
@@ -566,7 +612,7 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
         cell.infoLabel.text = [NSString stringWithFormat:@"%@ %@", saleOrderPosition.volume, volumeUnitString];
 
     }
-        
+    
 }
 
 - (NSString *)detailedTextForSaleOrderPosition:(STMSaleOrderPosition *)saleOrderPosition {
@@ -648,7 +694,7 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 
     } else {
         
-        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+        NSManagedObjectID *objectID = [self.saleOrderPositions[indexPath.row] objectID];
         self.cachedCellsHeights[objectID] = @(height);
 
     }
@@ -663,7 +709,7 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
         
     } else {
         
-        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+        NSManagedObjectID *objectID = [self.saleOrderPositions[indexPath.row] objectID];
         return self.cachedCellsHeights[objectID];
         
     }
@@ -696,6 +742,7 @@ static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 - (void)customInit {
 
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:Custom2CellIdentifier];
+    [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:positionCellIdentifier];
     [self performFetch];
 
 }
