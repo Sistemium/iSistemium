@@ -10,8 +10,6 @@
 #import "STMCatalogSVC.h"
 #import "STMArticleInfoVC.h"
 
-static NSString *defaultPriceTypeKey = @"priceTypeXid";
-
 
 @interface STMCatalogDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
@@ -30,8 +28,6 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 
 @property (nonatomic, strong) STMArticle *selectedArticle;
 
-@property (nonatomic, strong) STMPriceType *selectedPriceType;
-
 
 @end
 
@@ -39,7 +35,6 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 @implementation STMCatalogDetailTVC
 
 @synthesize resultsController = _resultsController;
-@synthesize selectedPriceType = _selectedPriceType;
 
 
 - (STMCatalogSVC *)splitVC {
@@ -55,65 +50,6 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
     
 }
 
-- (STMPriceType *)selectedPriceType {
-    
-    if (!_selectedPriceType) {
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        id priceTypeXid = [defaults objectForKey:defaultPriceTypeKey];
-        
-        if (priceTypeXid && [priceTypeXid isKindOfClass:[NSData class]]) {
-            
-            NSManagedObject *priceType = [STMObjectsController objectForXid:priceTypeXid];
-            
-            if ([priceType isKindOfClass:[STMPriceType class]]) _selectedPriceType = (STMPriceType *)priceType;
-            
-        } else {
-            
-            NSArray *priceTypes = [self availablePriceTypes];
-            
-            if (priceTypes.count > 0) {
-                
-                _selectedPriceType = priceTypes[0];
-                
-            } else {
-                
-                [[STMLogger sharedLogger] saveLogMessageWithText:@"priceTypes.count == 0"];
-                
-            }
-            
-        }
-        
-        if (_selectedPriceType) {
-            
-            [defaults setObject:_selectedPriceType.xid forKey:defaultPriceTypeKey];
-            [defaults synchronize];
-            
-        }
-        
-    }
-    return _selectedPriceType;
-    
-}
-
-- (NSArray *)availablePriceTypes {
-    return [STMObjectsController objectsForEntityName:NSStringFromClass([STMPriceType class])];
-}
-
-- (void)setSelectedPriceType:(STMPriceType *)selectedPriceType {
-    
-    if (![selectedPriceType isEqual:_selectedPriceType]) {
-        
-        _selectedPriceType = selectedPriceType;
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:_selectedPriceType.xid forKey:defaultPriceTypeKey];
-        [defaults synchronize];
-
-    }
-    
-}
-
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -125,12 +61,8 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
         
         request.sortDescriptors = @[nameDescriptor, volumeDescriptor];
         
-        if (self.splitVC.currentArticleGroup) {
-            
-            NSArray *filterArray = [self.splitVC nestedArticleGroups];
-            request.predicate = [NSPredicate predicateWithFormat:@"articleGroup IN %@", filterArray];
-    
-        }
+        NSCompoundPredicate *predicate = [self requestPredicate];
+        if (predicate.subpredicates.count > 0) request.predicate = predicate;
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
@@ -140,6 +72,29 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
     
     return _resultsController;
     
+}
+
+- (NSCompoundPredicate *)requestPredicate {
+    
+    NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
+    
+    if (self.splitVC.currentArticleGroup) {
+        
+        NSArray *filterArray = [self.splitVC nestedArticleGroups];
+        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup IN %@", filterArray];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+        
+    }
+    
+    if (self.splitVC.selectedPriceType) {
+        
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY prices.priceType == %@", self.splitVC.selectedPriceType];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
+        
+    }
+
+    return predicate;
+
 }
 
 - (void)performFetch {
@@ -190,7 +145,7 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 
 - (void)priceTypeSelectorSetup {
     
-    self.priceTypeSelector.title = self.selectedPriceType.name;
+    self.priceTypeSelector.title = self.splitVC.selectedPriceType.name;
     self.priceTypeSelector.target = self;
     self.priceTypeSelector.action = @selector(showPriceTypeSelector);
     
@@ -245,7 +200,7 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"PRICE_TYPE_LABEL", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     
-    NSArray *priceTypes = [self availablePriceTypes];
+    NSArray *priceTypes = self.splitVC.availablePriceTypes;
     
     for (STMPriceType *priceType in priceTypes) {
         
@@ -374,26 +329,13 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
     NSString *detailedText = @"";
     NSString *appendString = @"";
     
-//    appendString = [NSString stringWithFormat:@"%@, ", article.code];
-//    detailedText = [detailedText stringByAppendingString:appendString];
-//    
-//    NSString *packageString = NSLocalizedString(@"PACKAGE REL", nil);
-//    appendString = [NSString stringWithFormat:@"%@: %@, ", packageString, article.packageRel];
-//    detailedText = [detailedText stringByAppendingString:appendString];
-//
-//    NSString *factorString = NSLocalizedString(@"FACTOR", nil);
-//    appendString = [NSString stringWithFormat:@"%@: %@, ", factorString, article.factor];
-//    detailedText = [detailedText stringByAppendingString:appendString];
-//
-//    NSString *volumeString = NSLocalizedString(@"VOLUME", nil);
-//    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-//    appendString = [NSString stringWithFormat:@"%@: %@%@", volumeString, article.pieceVolume, volumeUnitString];
-//    detailedText = [detailedText stringByAppendingString:appendString];
-
-//    NSString *priceString = NSLocalizedString(@"PRICE", nil);
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
-//    appendString = [NSString stringWithFormat:@"%@: %@", priceString, [numberFormatter stringFromNumber:article.price]];
-    appendString = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:article.price]];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"priceType = %@", self.splitVC.selectedPriceType];
+    
+    STMPrice *price = [article.prices filteredSetUsingPredicate:predicate].allObjects.lastObject;
+    
+    appendString = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:price.price]];
     detailedText = [detailedText stringByAppendingString:appendString];
     
     if (article.extraLabel) {

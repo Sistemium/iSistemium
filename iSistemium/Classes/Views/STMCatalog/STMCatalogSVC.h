@@ -30,6 +30,9 @@
 
 @property (nonatomic, strong) STMArticleGroup *currentArticleGroup;
 
+@property (nonatomic, strong) STMPriceType *selectedPriceType;
+@property (nonatomic, strong) NSArray *availablePriceTypes;
+
 - (NSArray *)nestedArticleGroups;
 
 @end
