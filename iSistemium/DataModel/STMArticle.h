@@ -2,7 +2,7 @@
 //  STMArticle.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/03/15.
+//  Created by Maxim Grigoriev on 22/03/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMArticleGroup, STMArticlePicture, STMCampaign, STMSaleOrderPosition;
+@class STMArticleGroup, STMArticlePicture, STMCampaign, STMPrice, STMSaleOrderPosition, STMStock;
 
 @interface STMArticle : STMComment
 
@@ -23,8 +23,10 @@
 @property (nonatomic, retain) NSDecimalNumber * price;
 @property (nonatomic, retain) STMArticleGroup *articleGroup;
 @property (nonatomic, retain) NSSet *campaigns;
+@property (nonatomic, retain) NSSet *prices;
 @property (nonatomic, retain) NSSet *pictures;
 @property (nonatomic, retain) NSSet *saleOrderPositions;
+@property (nonatomic, retain) STMStock *stock;
 @end
 
 @interface STMArticle (CoreDataGeneratedAccessors)
@@ -33,6 +35,11 @@
 - (void)removeCampaignsObject:(STMCampaign *)value;
 - (void)addCampaigns:(NSSet *)values;
 - (void)removeCampaigns:(NSSet *)values;
+
+- (void)addPricesObject:(STMPrice *)value;
+- (void)removePricesObject:(STMPrice *)value;
+- (void)addPrices:(NSSet *)values;
+- (void)removePrices:(NSSet *)values;
 
 - (void)addPicturesObject:(STMArticlePicture *)value;
 - (void)removePicturesObject:(STMArticlePicture *)value;

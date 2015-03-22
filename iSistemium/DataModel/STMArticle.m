@@ -2,7 +2,7 @@
 //  STMArticle.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/03/15.
+//  Created by Maxim Grigoriev on 22/03/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -10,7 +10,9 @@
 #import "STMArticleGroup.h"
 #import "STMArticlePicture.h"
 #import "STMCampaign.h"
+#import "STMPrice.h"
 #import "STMSaleOrderPosition.h"
+#import "STMStock.h"
 
 
 @implementation STMArticle
@@ -24,7 +26,9 @@
 @dynamic price;
 @dynamic articleGroup;
 @dynamic campaigns;
+@dynamic prices;
 @dynamic pictures;
 @dynamic saleOrderPositions;
+@dynamic stock;
 
 @end
