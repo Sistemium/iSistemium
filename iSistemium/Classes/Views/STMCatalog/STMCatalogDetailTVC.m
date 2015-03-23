@@ -78,9 +78,6 @@
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
     
-    NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
-    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
-
     if (self.splitVC.currentArticleGroup) {
         
         NSArray *filterArray = [self.splitVC nestedArticleGroups];
@@ -96,6 +93,9 @@
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
         
     }
+
+    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
 
     return predicate;
 
@@ -471,40 +471,42 @@
     
     NSPredicate *scopePredicate = [NSPredicate predicateWithValue:YES];
     
+    NSString *key = @"article.pieceVolume";
+    
     switch (searchScope) {
         case 0:
             break;
             
         case 1:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume < 0.2"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"%K < 0.2", key];
             break;
             
         case 2:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume >= 0.2 AND pieceVolume < 0.5"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"%K >= 0.2 AND %K < 0.5", key, key];
             break;
             
         case 3:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume == 0.5"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"%K == 0.5", key];
             break;
             
         case 4:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume > 0.5 AND pieceVolume < 1"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"%K > 0.5 AND %K < 1", key, key];
             break;
             
         case 5:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume == 1"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"%K == 1", key];
             break;
             
         case 6:
-            scopePredicate = [NSPredicate predicateWithFormat:@"pieceVolume > 1"];
+            scopePredicate = [NSPredicate predicateWithFormat:@"%K > 1", key];
             break;
             
         default:
             break;
     }
     
-    NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText];
-    NSPredicate *extraLabelPredicate = [NSPredicate predicateWithFormat:@"extraLabel CONTAINS[cd] %@", searchText];
+    NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"article.name CONTAINS[cd] %@", searchText];
+    NSPredicate *extraLabelPredicate = [NSPredicate predicateWithFormat:@"article.extraLabel CONTAINS[cd] %@", searchText];
     NSCompoundPredicate *textPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[namePredicate, extraLabelPredicate]];
     NSCompoundPredicate *resultPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[scopePredicate, textPredicate]];
     
