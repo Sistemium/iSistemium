@@ -47,8 +47,11 @@
         
         request.sortDescriptors = @[ordDescriptor, nameDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.splitVC.currentArticleGroup];
+//        request.predicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.splitVC.currentArticleGroup];
         
+        NSCompoundPredicate *predicate = [self requestPredicate];
+        if (predicate.subpredicates.count > 0) request.predicate = predicate;
+
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
         _resultsController.delegate = self;
@@ -56,6 +59,35 @@
     }
     
     return _resultsController;
+    
+}
+
+- (NSCompoundPredicate *)requestPredicate {
+    
+    NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
+    
+    NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.splitVC.currentArticleGroup];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+    
+//    if (self.splitVC.selectedPriceType) {
+//        
+//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY articles.prices.priceType == %@", self.splitVC.selectedPriceType];
+//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@ AND $x.price == 0).@count > 0", self.splitVC.selectedPriceType];
+//        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
+//        
+//    }
+    
+//    if (!self.splitVC.showZeroStock) {
+//        
+//        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.stock.volume.integerValue > 0"];
+//        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+//        
+//    }
+//    
+//    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
+    
+    return predicate;
     
 }
 

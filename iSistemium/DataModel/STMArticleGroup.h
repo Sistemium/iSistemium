@@ -2,7 +2,7 @@
 //  STMArticleGroup.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 02/03/15.
+//  Created by Maxim Grigoriev on 23/03/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -16,9 +16,11 @@
 
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * ord;
-@property (nonatomic, retain) NSSet *articleGroups;
 @property (nonatomic, retain) STMArticleGroup *articleGroup;
+@property (nonatomic, retain) NSSet *articleGroups;
 @property (nonatomic, retain) NSSet *articles;
+@property (nonatomic, retain) STMArticleGroup *parents;
+@property (nonatomic, retain) STMArticleGroup *children;
 @end
 
 @interface STMArticleGroup (CoreDataGeneratedAccessors)
