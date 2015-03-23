@@ -21,8 +21,8 @@
         <relationship name="articleGroup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articleGroups" inverseEntity="STMArticleGroup" syncable="YES"/>
         <relationship name="articleGroups" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articleGroup" inverseEntity="STMArticleGroup" syncable="YES"/>
         <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="articleGroup" inverseEntity="STMArticle" syncable="YES"/>
-        <relationship name="children" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="parents" inverseEntity="STMArticleGroup" syncable="YES"/>
-        <relationship name="parents" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="children" inverseEntity="STMArticleGroup" syncable="YES"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="parents" inverseEntity="STMArticleGroup" syncable="YES"/>
+        <relationship name="parents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="children" inverseEntity="STMArticleGroup" syncable="YES"/>
     </entity>
     <entity name="STMArticlePicture" representedClassName="STMArticlePicture" parentEntity="STMPicture" syncable="YES">
         <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="pictures" inverseEntity="STMArticle" syncable="YES"/>
@@ -221,7 +221,7 @@
         <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMUncashingPicture" inverseName="uncashing" inverseEntity="STMUncashingPicture" syncable="YES"/>
         <relationship name="uncashingPlace" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMUncashingPlace" inverseName="uncashings" inverseEntity="STMUncashingPlace" syncable="YES"/>
     </entity>
-    <entity name="STMUncashingPicture" representedClassName="STMUncashingPicture" parentEntity="STMPicture" syncable="YES">
+    <entity name="STMUncashingPicture" representedClassName="STMUncashingPicture" parentEntity="STMPhoto" syncable="YES">
         <relationship name="uncashing" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMUncashing" inverseName="pictures" inverseEntity="STMUncashing" syncable="YES"/>
     </entity>
     <entity name="STMUncashingPlace" representedClassName="STMUncashingPlace" parentEntity="STMComment" syncable="YES">

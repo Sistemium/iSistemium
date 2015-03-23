@@ -26,8 +26,26 @@
 + (void)checkParentAndChildrenFields {
     
     NSArray *articleGroups = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticleGroup class])];
+
+    NSMutableSet *parentsSet = [NSMutableSet set];
     
-    NSLog(@"articleGroups.count %d", articleGroups.count);
+    for (STMArticleGroup *articleGroup in articleGroups) {
+        
+        [self addParentFromArticleGroup:articleGroup toMutableset:parentsSet];
+        [articleGroup addParents:parentsSet];
+        
+    }
+    
+}
+
++ (void)addParentFromArticleGroup:(STMArticleGroup *)articleGroup toMutableset:(NSMutableSet *)parentsSet {
+    
+    if (articleGroup.articleGroup) {
+        
+        [parentsSet addObject:articleGroup.articleGroup];
+        [self addParentFromArticleGroup:articleGroup.articleGroup toMutableset:parentsSet];
+        
+    }
     
 }
 

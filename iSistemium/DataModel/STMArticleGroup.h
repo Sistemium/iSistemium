@@ -19,8 +19,8 @@
 @property (nonatomic, retain) STMArticleGroup *articleGroup;
 @property (nonatomic, retain) NSSet *articleGroups;
 @property (nonatomic, retain) NSSet *articles;
-@property (nonatomic, retain) STMArticleGroup *parents;
-@property (nonatomic, retain) STMArticleGroup *children;
+@property (nonatomic, retain) NSSet *parents;
+@property (nonatomic, retain) NSSet *children;
 @end
 
 @interface STMArticleGroup (CoreDataGeneratedAccessors)
@@ -34,5 +34,15 @@
 - (void)removeArticlesObject:(STMArticle *)value;
 - (void)addArticles:(NSSet *)values;
 - (void)removeArticles:(NSSet *)values;
+
+- (void)addParentsObject:(STMArticleGroup *)value;
+- (void)removeParentsObject:(STMArticleGroup *)value;
+- (void)addParents:(NSSet *)values;
+- (void)removeParents:(NSSet *)values;
+
+- (void)addChildrenObject:(STMArticleGroup *)value;
+- (void)removeChildrenObject:(STMArticleGroup *)value;
+- (void)addChildren:(NSSet *)values;
+- (void)removeChildren:(NSSet *)values;
 
 @end
