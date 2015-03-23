@@ -9,6 +9,7 @@
 #import "STMCatalogSVC.h"
 
 static NSString *defaultPriceTypeKey = @"priceTypeXid";
+static NSString *showZeroStockKey = @"showZeroStock";
 
 
 @interface STMCatalogSVC () <NSFetchedResultsControllerDelegate>
@@ -22,7 +23,7 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 @implementation STMCatalogSVC
 
 @synthesize selectedPriceType = _selectedPriceType;
-
+@synthesize showZeroStock = _showZeroStock;
 
 #pragma mark - subviews
 
@@ -97,6 +98,42 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
 //    self.availablePriceTypes = nil;
 //}
 
+- (BOOL)showZeroStock {
+
+    if (!_showZeroStock) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        id showZeroStock = [defaults objectForKey:showZeroStockKey];
+
+        if (!showZeroStock) {
+            
+            showZeroStock = @(NO);
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setObject:showZeroStock forKey:showZeroStockKey];
+            [defaults synchronize];
+
+        }
+        _showZeroStock = [showZeroStock boolValue];
+        
+    }
+    return _showZeroStock;
+    
+}
+
+- (void)setShowZeroStock:(BOOL)showZeroStock {
+    
+    if (showZeroStock != _showZeroStock) {
+        
+        _showZeroStock = showZeroStock;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:@(showZeroStock) forKey:showZeroStockKey];
+        [defaults synchronize];
+
+    }
+    
+}
+
 #pragma mark - selectedPriceType
 
 - (STMPriceType *)selectedPriceType {
@@ -156,6 +193,8 @@ static NSString *defaultPriceTypeKey = @"priceTypeXid";
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:_selectedPriceType.xid forKey:defaultPriceTypeKey];
         [defaults synchronize];
+        
+        [self.detailTVC refreshTable];
         
     }
     

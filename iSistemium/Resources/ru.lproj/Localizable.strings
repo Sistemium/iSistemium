@@ -182,7 +182,10 @@
 "5OBJECTS" = "объектов";
 "PROFILE" = "Профиль";
 "APP TERMINATE" = "Что-то пошло не так. Перезапустите меня.";
-"PRICE_TYPE_LABEL" = "Цены: ";
+"PRICE_TYPE_LABEL" = "Цены:";
 "ZERO STOCK" = "Нет в наличии";
+"SHOW ARTICLES" = "Показывать:";
+"SHOW ALL ARTICLES" = "Все позиции";
+"SHOW NONZERO STOCK ARTICLES" = "Есть в наличии";
 
 

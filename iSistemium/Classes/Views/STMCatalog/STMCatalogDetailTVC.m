@@ -18,6 +18,8 @@
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *infoLabel;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeLabel;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeSelector;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeLabel;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeButton;
 
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
@@ -25,6 +27,9 @@
 
 @property (nonatomic, strong) UIPopoverController *articleInfoPopover;
 @property (nonatomic) BOOL articleInfoPopoverIsVisible;
+
+@property (nonatomic, strong) UIActionSheet *priceTypeSelectorActionSheet;
+@property (nonatomic, strong) UIActionSheet *stockVolumeFilterActionSheet;
 
 @property (nonatomic, strong) STMArticle *selectedArticle;
 
@@ -93,6 +98,13 @@
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
         
     }
+    
+    if (!self.splitVC.showZeroStock) {
+        
+        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.stock.volume.integerValue > 0"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+        
+    }
 
     NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
@@ -123,7 +135,10 @@
 }
 
 - (void)refreshTable {
+    
     [self performFetch];
+//    [self setupToolbar];
+    
 }
 
 
@@ -152,6 +167,23 @@
     self.priceTypeSelector.title = self.splitVC.selectedPriceType.name;
     self.priceTypeSelector.target = self;
     self.priceTypeSelector.action = @selector(showPriceTypeSelector);
+    
+}
+
+- (void)stockVolumeLabelSetup {
+    
+    self.stockVolumeLabel.title = NSLocalizedString(@"SHOW ARTICLES", nil);
+    [self setupBarButton:self.stockVolumeLabel asLabelWithColor:nil];
+    
+}
+
+- (void)stockVolumeButtonSetup {
+    
+    NSString *title = (self.splitVC.showZeroStock) ? NSLocalizedString(@"SHOW ALL ARTICLES", nil) : NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil);
+    
+    self.stockVolumeButton.title = title;
+    self.stockVolumeButton.target = self;
+    self.stockVolumeButton.action = @selector(showStockVolumeFilter);
     
 }
 
@@ -187,7 +219,7 @@
     
     NSString *infoString = [numberString stringByAppendingString:NSLocalizedString(labelString, nil)];
     
-    [self.infoLabel setTitle:infoString];
+    self.infoLabel.title = infoString;
     
 }
 
@@ -196,23 +228,86 @@
 
 - (void)showPriceTypeSelector {
     
-    [self.priceTypeSelectorActionSheet showFromBarButtonItem:self.priceTypeSelector animated:YES];
+    if (!self.priceTypeSelectorActionSheet.isVisible) {
+        [self.priceTypeSelectorActionSheet showFromBarButtonItem:self.priceTypeSelector animated:YES];
+    }
     
 }
 
 - (UIActionSheet *)priceTypeSelectorActionSheet {
 
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"PRICE_TYPE_LABEL", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    
-    NSArray *priceTypes = self.splitVC.availablePriceTypes;
-    
-    for (STMPriceType *priceType in priceTypes) {
+    if (!_priceTypeSelectorActionSheet) {
         
-        [actionSheet addButtonWithTitle:priceType.name];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"PRICE_TYPE_LABEL", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        NSArray *priceTypes = self.splitVC.availablePriceTypes;
+        
+        for (STMPriceType *priceType in priceTypes) {
+            
+            [actionSheet addButtonWithTitle:priceType.name];
+            
+        }
+        
+        actionSheet.delegate = self;
+        
+        _priceTypeSelectorActionSheet = actionSheet;
         
     }
+    return _priceTypeSelectorActionSheet;
     
-    return actionSheet;
+}
+
+
+#pragma mark - stockVolume filter
+
+- (void)showStockVolumeFilter {
+    
+    if (!self.stockVolumeFilterActionSheet.isVisible) {
+        [[self stockVolumeFilterActionSheet] showFromBarButtonItem:self.stockVolumeButton animated:YES];
+    }
+    
+}
+
+- (UIActionSheet *)stockVolumeFilterActionSheet {
+    
+    if (!_stockVolumeFilterActionSheet) {
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SHOW ARTICLES", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil), NSLocalizedString(@"SHOW ALL ARTICLES", nil), nil];
+        
+        actionSheet.delegate = self;
+
+        _stockVolumeFilterActionSheet = actionSheet;
+        
+    }
+    return _stockVolumeFilterActionSheet;
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet.title isEqualToString:NSLocalizedString(@"PRICE_TYPE_LABEL", nil)]) {
+        
+        if (buttonIndex != -1) {
+            
+            self.splitVC.selectedPriceType = self.splitVC.availablePriceTypes[buttonIndex];
+            [self priceTypeSelectorSetup];
+            
+        }
+        
+    } else if ([actionSheet.title isEqualToString:NSLocalizedString(@"SHOW ARTICLES", nil)]) {
+        
+        if (buttonIndex != -1) {
+
+            self.splitVC.showZeroStock = [@(buttonIndex) boolValue];
+            [self refreshTable];
+            [self stockVolumeButtonSetup];
+            
+        }
+        
+    }
     
 }
 
@@ -578,6 +673,8 @@
     
     [self priceTypeLabelSetup];
     [self priceTypeSelectorSetup];
+    [self stockVolumeLabelSetup];
+    [self stockVolumeButtonSetup];
     [self infoLabelSetup];
     
 }

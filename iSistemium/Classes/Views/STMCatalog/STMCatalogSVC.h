@@ -34,6 +34,9 @@
 @property (nonatomic, strong) STMPriceType *selectedPriceType;
 @property (nonatomic, strong) NSArray *availablePriceTypes;
 
+@property (nonatomic) BOOL showZeroStock;
+
 - (NSArray *)nestedArticleGroups;
+
 
 @end

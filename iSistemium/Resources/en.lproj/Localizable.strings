@@ -182,6 +182,10 @@
 "5OBJECTS" = "objects";
 "PROFILE" = "Profile";
 "APP TERMINATE" = "App will be terminate. Please restart.";
-"PRICE_TYPE_LABEL" = "Price type: ";
+"PRICE_TYPE_LABEL" = "Price type:";
 "ZERO STOCK" = "Zero stock";
+"SHOW ARTICLES" = "Show:";
+"SHOW ALL ARTICLES" = "All articles";
+"SHOW NONZERO STOCK ARTICLES" = "Nonzero stock";
+
 
