@@ -95,6 +95,8 @@
     
     self.resultsController = nil;
     
+    [STMArticleGroupController checkParentAndChildrenFields];
+    
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
         

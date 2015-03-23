@@ -13,5 +13,6 @@
 
 + (NSUInteger)numberOfArticlesInGroup:(STMArticleGroup *)articleGroup;
 
++ (void)checkParentAndChildrenFields;
 
 @end

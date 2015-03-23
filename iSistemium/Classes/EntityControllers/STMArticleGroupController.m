@@ -7,6 +7,7 @@
 //
 
 #import "STMArticleGroupController.h"
+#import "STMObjectsController.h"
 
 @implementation STMArticleGroupController
 
@@ -22,5 +23,12 @@
     
 }
 
++ (void)checkParentAndChildrenFields {
+    
+    NSArray *articleGroups = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticleGroup class])];
+    
+    NSLog(@"articleGroups.count %d", articleGroups.count);
+    
+}
 
 @end
