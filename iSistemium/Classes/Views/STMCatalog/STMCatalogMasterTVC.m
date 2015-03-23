@@ -95,7 +95,9 @@
     
     self.resultsController = nil;
     
-    [STMArticleGroupController checkParentAndChildrenFields];
+    TICK;
+    [STMArticleGroupController refillParents];
+    TOCK;
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
@@ -171,6 +173,27 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
+
+//    NSLog(@"parents.count %d", articleGroup.parents.count);
+//    NSLog(@"children.count %d", articleGroup.children.count);
+//    NSLog(@"articleGroups.count %d", articleGroup.articleGroups.count);
+//    
+//    NSLog(@"articleGroup.articleGroup.name %@", articleGroup.articleGroup.name);
+//    
+//    for (STMArticleGroup *parent in articleGroup.parents) {
+//        NSLog(@"parent.name %@", parent.name);
+//    }
+//
+//    for (STMArticleGroup *child in articleGroup.children) {
+//        NSLog(@"child.name %@", child.name);
+//    }
+//
+//    for (STMArticleGroup *child in articleGroup.articleGroups) {
+//        NSLog(@"articleGroups.name %@", child.name);
+//    }
+//    
+//    [STMArticleGroupController parentsForArticleGroup:articleGroup];
+//    
 
     NSArray *selectedIndexPaths = [tableView indexPathsForSelectedRows];
     

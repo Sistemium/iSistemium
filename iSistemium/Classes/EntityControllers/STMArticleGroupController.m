@@ -9,7 +9,28 @@
 #import "STMArticleGroupController.h"
 #import "STMObjectsController.h"
 
+@interface STMArticleGroupController()
+
+@property (nonatomic, strong) NSMutableDictionary *articleGroupsDic;
+
+@end
+
+
 @implementation STMArticleGroupController
+
++ (STMArticleGroupController *)sharedInstance {
+    
+    static dispatch_once_t pred = 0;
+    __strong static id _sharedInstance = nil;
+    
+    dispatch_once(&pred, ^{
+        _sharedInstance = [[self alloc] init];
+    });
+    
+    return _sharedInstance;
+    
+}
+
 
 + (NSUInteger)numberOfArticlesInGroup:(STMArticleGroup *)articleGroup {
 
@@ -23,30 +44,57 @@
     
 }
 
-+ (void)checkParentAndChildrenFields {
++ (void)refillParents {
     
     NSArray *articleGroups = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticleGroup class])];
-
-    NSMutableSet *parentsSet = [NSMutableSet set];
     
     for (STMArticleGroup *articleGroup in articleGroups) {
         
-        [self addParentFromArticleGroup:articleGroup toMutableset:parentsSet];
-        [articleGroup addParents:parentsSet];
+        [articleGroup removeParents:articleGroup.parents];
+        [articleGroup removeChildren:articleGroup.children];
+        
+    }
+
+    [self sharedInstance].articleGroupsDic = [NSMutableDictionary dictionary];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"articleGroups.@count == 0"];
+    NSArray *childlessArticleGroups = [articleGroups filteredArrayUsingPredicate:predicate];
+    
+    for (STMArticleGroup *articleGroup in childlessArticleGroups) [self parentsForArticleGroup:articleGroup];
+    
+}
+
++ (NSSet *)parentsForArticleGroup:(STMArticleGroup *)articleGroup {
+    
+    if (articleGroup.articleGroup) {
+        
+        NSMutableSet *parents = [NSMutableSet setWithObject:articleGroup.articleGroup];
+
+        NSSet *cachedParents = [self sharedInstance].articleGroupsDic[articleGroup.articleGroup.xid];
+        
+        if (cachedParents) {
+            [parents unionSet:cachedParents];
+        } else {
+            [parents unionSet:[self parentsForArticleGroup:articleGroup.articleGroup]];
+        }
+        
+        [self sharedInstance].articleGroupsDic[articleGroup.xid] = parents;
+        [articleGroup addParents:parents];
+        
+        return parents;
+
+    } else {
+        
+        NSSet *emptySet = [NSSet set];
+        
+        [self sharedInstance].articleGroupsDic[articleGroup.xid] = emptySet;
+        [articleGroup addParents:emptySet];
+        
+        return emptySet;
         
     }
     
 }
 
-+ (void)addParentFromArticleGroup:(STMArticleGroup *)articleGroup toMutableset:(NSMutableSet *)parentsSet {
-    
-    if (articleGroup.articleGroup) {
-        
-        [parentsSet addObject:articleGroup.articleGroup];
-        [self addParentFromArticleGroup:articleGroup.articleGroup toMutableset:parentsSet];
-        
-    }
-    
-}
 
 @end
