@@ -54,10 +54,10 @@
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPrice class])];
         
-        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"pieceVolume" ascending:YES selector:@selector(compare:)];
+        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.pieceVolume" ascending:YES selector:@selector(compare:)];
         
         request.sortDescriptors = @[nameDescriptor, volumeDescriptor];
         
@@ -78,17 +78,20 @@
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
     
+    NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
+
     if (self.splitVC.currentArticleGroup) {
         
         NSArray *filterArray = [self.splitVC nestedArticleGroups];
-        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup IN %@", filterArray];
+        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.articleGroup IN %@", filterArray];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
         
     }
     
     if (self.splitVC.selectedPriceType) {
         
-        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY prices.priceType == %@", self.splitVC.selectedPriceType];
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.splitVC.selectedPriceType];
 //        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@ AND $x.price == 0).@count > 0", self.splitVC.selectedPriceType];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
         
@@ -366,19 +369,27 @@
     
     STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
 
-    STMArticle *article = nil;
+//    STMArticle *article = nil;
+    
+    STMPrice *price = nil;
 
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        article = [self.searchResults objectAtIndex:indexPath.row];
+
+//        article = [self.searchResults objectAtIndex:indexPath.row];
+        price = [self.searchResults objectAtIndex:indexPath.row];
+
     } else {
-        article = [self.resultsController objectAtIndexPath:indexPath];
+        
+//        article = [self.resultsController objectAtIndexPath:indexPath];
+        price = [self.resultsController objectAtIndexPath:indexPath];
+        
     }
     
-    cell.textLabel.text = article.name;
-    cell.detailTextLabel.text = [self detailedTextForArticle:article];
+    cell.textLabel.text = price.article.name;
+    cell.detailTextLabel.text = [self detailedTextForArticle:price.article];
     
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-    cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", article.pieceVolume, volumeUnitString];
+    cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
     
     return cell;
     
@@ -390,11 +401,21 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    STMPrice *price = nil;
+    
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        self.selectedArticle = [self.searchResults objectAtIndex:indexPath.row];
+        
+//        self.selectedArticle = [self.searchResults objectAtIndex:indexPath.row];
+        price = [self.searchResults objectAtIndex:indexPath.row];
+        
     } else {
-        self.selectedArticle = [self.resultsController objectAtIndexPath:indexPath];
+        
+//        self.selectedArticle = [self.resultsController objectAtIndexPath:indexPath];
+        price = [self.resultsController objectAtIndexPath:indexPath];
+        
     }
+    
+    self.selectedArticle = price.article;
     
     [self.view endEditing:NO];
 
