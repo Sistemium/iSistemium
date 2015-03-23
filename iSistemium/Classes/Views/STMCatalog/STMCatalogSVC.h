@@ -16,6 +16,7 @@
 #import "STMArticlePicture.h"
 #import "STMPrice.h"
 #import "STMPriceType.h"
+#import "STMStock.h"
 
 #import "STMObjectsController.h"
 

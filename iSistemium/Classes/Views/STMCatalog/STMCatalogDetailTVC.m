@@ -349,6 +349,13 @@
         
     }
     
+    if (article.stock.volume.integerValue <= 0) {
+        
+        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"ZERO STOCK", nil)];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+    }
+    
     return detailedText;
     
 }
@@ -390,6 +397,16 @@
     
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
     cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
+    
+    if (price.article.stock.volume.integerValue <= 0) {
+        
+        UIColor *lightGrayColor = [UIColor lightGrayColor];
+        
+        cell.textLabel.textColor = lightGrayColor;
+        cell.detailTextLabel.textColor = lightGrayColor;
+        cell.infoLabel.textColor = lightGrayColor;
+
+    }
     
     return cell;
     
