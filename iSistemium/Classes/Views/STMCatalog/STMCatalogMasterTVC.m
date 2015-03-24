@@ -95,7 +95,7 @@
     
     if (self.splitVC.selectedPriceType) {
         
-        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"(ANY articlesPriceTypes == %@)", self.splitVC.selectedPriceType];
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"(ANY articlesPriceTypes == %@) OR (ANY children.@distinctUnionOfSets.articlesPriceTypes == %@)", self.splitVC.selectedPriceType, self.splitVC.selectedPriceType];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
         
     }
@@ -108,9 +108,17 @@
     
     self.resultsController = nil;
     
+    
+//TODO:[STMArticleGroupController refillParentsFor:(NSArray *)fetchResults];
+    
+    
 //    TICK;
     [STMArticleGroupController refillParents];
 //    TOCK;
+    
+    
+    
+    
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
@@ -133,13 +141,45 @@
     NSCompoundPredicate *predicate = [self requestPredicate];
     if (predicate.subpredicates.count > 0) request.predicate = predicate;
 
-    self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+//    [self nsLogFetchResults:self.resultsController.fetchedObjects];
     
+    self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+
+//    [self nsLogFetchResults:self.filteredFetchResults];
+
 //    NSLog(@"catalogMasterTVC %@", self);
 //    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
     
     [self.tableView reloadData];
 
+}
+
+- (void)nsLogFetchResults:(NSArray *)fetchResults {
+    
+    NSLog(@"------------------------------------------------s");
+    
+    for (STMArticleGroup *articleGroup in fetchResults) {
+        
+        NSLog(@"group %@ priceTypes %d", articleGroup.name, articleGroup.articlesPriceTypes.count);
+        NSLog(@" articles.count %d", articleGroup.articles.count)
+        
+        for (STMPriceType *priceType in articleGroup.articlesPriceTypes) {
+            
+            NSLog(@"    priceType.name %@", priceType.name);
+//            NSLog(@"    priceType.xid %@", priceType.xid);
+            
+            if ([priceType isEqual:self.splitVC.selectedPriceType]) {
+                
+                NSLog(@" isEqual:self.splitVC.selectedPriceType");
+                
+            }
+            
+        }
+        
+    }
+
+    NSLog(@"------------------------------------------------f");
+    
 }
 
 - (void)refreshTable {

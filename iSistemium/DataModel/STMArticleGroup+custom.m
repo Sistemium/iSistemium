@@ -13,7 +13,7 @@
 @implementation STMArticleGroup (custom)
 
 @dynamic articlesStockVolume;
-
+@dynamic articlesPriceTypes;
 
 - (NSInteger)articlesCount {
     return self.articles.count;
