@@ -95,7 +95,7 @@
     
     if (self.splitVC.selectedPriceType) {
         
-        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"(ANY articlesPriceTypes != %@) OR (ANY children.articlesPriceTypes != %@)", self.splitVC.selectedPriceType, self.splitVC.selectedPriceType];
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"(ANY articlesPriceTypes == %@)", self.splitVC.selectedPriceType];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
         
     }
@@ -135,8 +135,8 @@
 
     self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
     
-    NSLog(@"rc %@", self.resultsController);
-    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
+//    NSLog(@"catalogMasterTVC %@", self);
+//    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
     
     [self.tableView reloadData];
 

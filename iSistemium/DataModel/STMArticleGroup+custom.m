@@ -25,12 +25,28 @@
 
 - (NSSet *)articlesPriceTypes {
     
-    NSSet *articlesPriceTypes = [self.articles valueForKeyPath:@"@distinctUnionOfObjects.prices.priceType"];
+    NSSet *articlesPriceTypes = [self.articles valueForKeyPath:@"@distinctUnionOfSets.prices.@distinctUnionOfObjects.priceType"];
     
-//    NSLog(@"articlesPriceTypes %@", articlesPriceTypes);
-//
 //    if (articlesPriceTypes.count > 0) {
+//
 //        NSLog(@"self.name %@", self.name);
+//        NSLog(@"articlesPriceTypes.count %d", articlesPriceTypes.count);
+//        
+//        if (articlesPriceTypes.count == 3) {
+//            
+//            static dispatch_once_t onceToken;
+//            dispatch_once(&onceToken, ^{
+//                
+//                for (STMPriceType *priceType in articlesPriceTypes) {
+//                    
+//                    NSLog(@"priceType %@", priceType);
+//                    
+//                }
+//                
+//            });
+//            
+//        }
+//
 //    }
     
     return articlesPriceTypes;
