@@ -13,7 +13,10 @@
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
 @property (nonatomic) CGFloat heightCorrection;
+@property (nonatomic, strong) NSArray *filteredFetchResults;
 
+@property (nonatomic, strong) STMArticleGroup *baseArticleGroup;
+@property (nonatomic) BOOL baseArticleIsAssigned;
 
 @end
 
@@ -36,6 +39,22 @@
     
 }
 
+- (STMArticleGroup *)baseArticleGroup {
+    
+    if (!_baseArticleGroup) {
+
+        if (!self.baseArticleIsAssigned) {
+            
+            _baseArticleGroup = self.splitVC.currentArticleGroup;
+            self.baseArticleIsAssigned = YES;
+            
+        }
+        
+    }
+    return _baseArticleGroup;
+    
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -47,11 +66,8 @@
         
         request.sortDescriptors = @[ordDescriptor, nameDescriptor];
         
-//        request.predicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.splitVC.currentArticleGroup];
+        request.predicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.baseArticleGroup];
         
-        NSCompoundPredicate *predicate = [self requestPredicate];
-        if (predicate.subpredicates.count > 0) request.predicate = predicate;
-
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
         _resultsController.delegate = self;
@@ -66,7 +82,7 @@
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
     
-    NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.splitVC.currentArticleGroup];
+    NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.baseArticleGroup];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
     
 //    if (self.splitVC.selectedPriceType) {
@@ -77,15 +93,15 @@
 //        
 //    }
     
-//    if (!self.splitVC.showZeroStock) {
-//        
-//        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.stock.volume.integerValue > 0"];
-//        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
-//        
-//    }
-//    
-//    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
-//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
+    if (!self.splitVC.showZeroStock) {
+        
+//        NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"ANY chilrdren.atricles"];
+//        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
+        
+    }
+    
+//    NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"ANY "];
+//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
     
     return predicate;
     
@@ -106,12 +122,26 @@
         
     } else {
         
+        [self filterFetchResults];
         //        [self.tableView reloadData];
         
     }
     
 }
 
+- (void)filterFetchResults {
+    
+    NSFetchRequest *request = self.resultsController.fetchRequest;
+    
+    NSCompoundPredicate *predicate = [self requestPredicate];
+    if (predicate.subpredicates.count > 0) request.predicate = predicate;
+
+    self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+    
+//    NSLog(@"rc %@", self.resultsController);
+//    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
+    
+}
 
 #pragma mark - keyboard show / hide
 
@@ -148,13 +178,20 @@
 
 #pragma mark - Table view data source
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return self.filteredFetchResults.count;
+    
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *cellIdentifier = @"catalogMasterCell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
 
-    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
+//    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
+    STMArticleGroup *articleGroup = [self.filteredFetchResults objectAtIndex:indexPath.row];
     
     cell.textLabel.text = articleGroup.name;
     cell.detailTextLabel.text = nil;
@@ -172,7 +209,8 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
+//    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
+    STMArticleGroup *articleGroup = [self.filteredFetchResults objectAtIndex:indexPath.row];
 
 //    NSLog(@"parents.count %d", articleGroup.parents.count);
 //    NSLog(@"children.count %d", articleGroup.children.count);
@@ -219,6 +257,18 @@
         return indexPath;
 
     }
+    
+}
+
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [super controllerDidChangeContent:controller];
+
+    [self filterFetchResults];
+    [self.tableView reloadData];
     
 }
 
