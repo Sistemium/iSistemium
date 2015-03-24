@@ -82,8 +82,8 @@
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
     
-    NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.baseArticleGroup];
-    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+//    NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.baseArticleGroup];
+//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
     
 //    if (self.splitVC.selectedPriceType) {
 //        
@@ -100,8 +100,8 @@
         
     }
     
-//    NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"ANY "];
-//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
+    NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"articles.@count > 0 OR ANY children.articlesCount > 0"];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
     
     return predicate;
     
@@ -131,15 +131,15 @@
 
 - (void)filterFetchResults {
     
-    NSFetchRequest *request = self.resultsController.fetchRequest;
+    NSFetchRequest *request = self.resultsController.fetchRequest.copy;
     
     NSCompoundPredicate *predicate = [self requestPredicate];
     if (predicate.subpredicates.count > 0) request.predicate = predicate;
 
     self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
     
-//    NSLog(@"rc %@", self.resultsController);
-//    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
+    NSLog(@"rc %@", self.resultsController);
+    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
     
 }
 
@@ -265,7 +265,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    [super controllerDidChangeContent:controller];
+//    [super controllerDidChangeContent:controller];
 
     [self filterFetchResults];
     [self.tableView reloadData];
