@@ -8,23 +8,27 @@
 
 #import "STMArticleInfoVC.h"
 
-@interface STMArticleInfoVC ()
+@interface STMArticleInfoVC () <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UITextView *nameTextView;
-@property (weak, nonatomic) IBOutlet UILabel *extraLabel;
-@property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
-@property (weak, nonatomic) IBOutlet UILabel *priceLabel;
-@property (weak, nonatomic) IBOutlet UILabel *factorLabel;
-@property (weak, nonatomic) IBOutlet UILabel *packageLabel;
-@property (weak, nonatomic) IBOutlet UILabel *codeLabel;
-//@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (nonatomic, strong) NSMutableArray *articleInfo;
 
 
 @end
 
 
 @implementation STMArticleInfoVC
+
+- (NSMutableArray *)articleInfo {
+    
+    if (!_articleInfo) {
+        _articleInfo = [NSMutableArray array];
+    }
+    return _articleInfo;
+    
+}
 
 - (void)closeButtonPressed {
     [self.parentVC dismissArticleInfoPopover];
@@ -43,51 +47,6 @@
         self.imageView.image = [UIImage imageNamed:@"wine_bottle-512.png"];
     }
     
-}
-
-- (void)setupLabels {
-    
-    self.nameTextView.text = self.article.name;
-    self.nameTextView.font = [UIFont boldSystemFontOfSize:18];
-    self.nameTextView.textAlignment = NSTextAlignmentRight;
-
-    if (self.article.extraLabel) {
-        
-        self.extraLabel.text = self.article.extraLabel;
-        self.extraLabel.font = [UIFont systemFontOfSize:17];
-        self.extraLabel.textAlignment = NSTextAlignmentRight;
-        
-    } else {
-        self.extraLabel.text = nil;
-    }
-    
-    NSString *volumeString = NSLocalizedString(@"VOLUME", nil);
-    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-    self.volumeLabel.text = [NSString stringWithFormat:@"%@: %@%@", volumeString, self.article.pieceVolume, volumeUnitString];
-    self.volumeLabel.font = [UIFont systemFontOfSize:17];
-    self.volumeLabel.textAlignment = NSTextAlignmentRight;
-    
-    NSString *priceString = NSLocalizedString(@"PRICE", nil);
-    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
-    self.priceLabel.text = [NSString stringWithFormat:@"%@: %@", priceString, [numberFormatter stringFromNumber:self.article.price]];
-    self.priceLabel.font = [UIFont boldSystemFontOfSize:17];
-    self.priceLabel.textAlignment = NSTextAlignmentRight;
-
-    NSString *factorString = NSLocalizedString(@"FACTOR", nil);
-    self.factorLabel.text = [NSString stringWithFormat:@"%@: %@", factorString, self.article.factor];
-    self.factorLabel.font = [UIFont systemFontOfSize:17];
-    self.factorLabel.textAlignment = NSTextAlignmentRight;
-
-    NSString *packageString = NSLocalizedString(@"PACKAGE REL", nil);
-    self.packageLabel.text = [NSString stringWithFormat:@"%@: %@", packageString, self.article.packageRel];
-    self.packageLabel.font = [UIFont systemFontOfSize:17];
-    self.packageLabel.textAlignment = NSTextAlignmentRight;
-
-    NSString *codeString = NSLocalizedString(@"CODE", nil);
-    self.codeLabel.text = [NSString stringWithFormat:@"%@: %@", codeString, self.article.code];
-    self.codeLabel.font = [UIFont systemFontOfSize:17];
-    self.codeLabel.textAlignment = NSTextAlignmentRight;
-
 }
 
 - (void)setupToolbar {
@@ -109,6 +68,93 @@
     
 }
 
+- (void)prepareInfo {
+
+    [self.articleInfo addObject:@{
+                                  @"key": @"name",
+                                  @"value": self.article.name
+                                  }];
+    
+    if (self.article.extraLabel) [self.articleInfo addObject:@{
+                                                               @"key": @"extraLabel",
+                                                               @"value": self.article.extraLabel
+                                                               }];
+
+    
+    NSString *volumeString = NSLocalizedString(@"VOLUME", nil);
+    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    [self.articleInfo addObject:@{
+                                  @"key": @"pieceVolume",
+                                  @"value": [NSString stringWithFormat:@"%@: %@%@", volumeString, self.article.pieceVolume, volumeUnitString]
+                                  }];
+    
+    NSSortDescriptor *priceDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"priceType.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    NSArray *prices = [self.article.prices sortedArrayUsingDescriptors:@[priceDescriptor]];
+    
+    for (STMPrice *price in prices) {
+        
+        NSString *priceString = NSLocalizedString(@"PRICE", nil);
+        NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+        NSString *priceValue = [numberFormatter stringFromNumber:price.price];
+        [self.articleInfo addObject:@{
+                                      @"key": price.priceType.name,
+                                      @"value": [NSString stringWithFormat:@"%@: %@", priceString, priceValue],
+                                      @"detail": price.priceType.name
+                                      }];
+        
+    }
+
+    NSString *factorString = NSLocalizedString(@"FACTOR", nil);
+    [self.articleInfo addObject:@{
+                                  @"key": @"factor",
+                                  @"value": [NSString stringWithFormat:@"%@: %@", factorString, self.article.factor]
+                                  }];
+    
+    NSString *packageString = NSLocalizedString(@"PACKAGE REL", nil);
+    [self.articleInfo addObject:@{
+                                  @"key": @"packageRel",
+                                  @"value": [NSString stringWithFormat:@"%@: %@", packageString, self.article.packageRel]
+                                  }];
+    
+    NSString *codeString = NSLocalizedString(@"CODE", nil);
+    [self.articleInfo addObject:@{
+                                  @"key": @"code",
+                                  @"value": [NSString stringWithFormat:@"%@: %@", codeString, self.article.code]
+                                  }];
+
+}
+
+
+#pragma mark - <UITableViewDelegate, UITableViewDataSource>
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.articleInfo.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *cellIdentifier = @"articleInfoCell";
+    
+    STMInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    [self fillCell:cell forIndexPath:indexPath];
+    
+    cell.textLabel.textAlignment = NSTextAlignmentRight;
+    cell.detailTextLabel.textAlignment = NSTextAlignmentRight;
+    
+    return cell;
+    
+}
+
+- (void)fillCell:(STMInfoTableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    
+    NSDictionary *info = self.articleInfo[indexPath.row];
+    
+    cell.textLabel.text = info[@"value"];
+    cell.detailTextLabel.text = info[@"detail"];
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -116,7 +162,11 @@
     if (self.article) {
         
         [self setupImage];
-        [self setupLabels];
+        [self prepareInfo];
+        
+        [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:@"articleInfoCell"];
+        self.tableView.delegate = self;
+        self.tableView.dataSource = self;
         
     }
     

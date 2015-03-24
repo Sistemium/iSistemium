@@ -183,7 +183,10 @@ static NSString *showZeroStockKey = @"showZeroStock";
 
 - (NSArray *)availablePriceTypes {
     
-    return self.resultsController.fetchedObjects;
+    NSSortDescriptor *priceTypeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    NSArray *prices = [self.resultsController.fetchedObjects sortedArrayUsingDescriptors:@[priceTypeDescriptor]];
+
+    return prices;
     
 }
 
