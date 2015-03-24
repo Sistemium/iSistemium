@@ -10,6 +10,8 @@
 
 @implementation STMArticleGroup (custom)
 
+@dynamic articlesStockVolume;
+
 - (NSInteger)articlesCount {
     return self.articles.count;
 }

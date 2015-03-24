@@ -244,6 +244,10 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
 
+    UIColor *blackColor = [UIColor blackColor];
+    cell.textLabel.textColor = blackColor;
+    cell.detailTextLabel.textColor = blackColor;
+    
 //    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
     STMArticleGroup *articleGroup = [self.filteredFetchResults objectAtIndex:indexPath.row];
     
@@ -255,7 +259,24 @@
     if ([STMArticleGroupController numberOfArticlesInGroup:articleGroup] == 0) {
         cell.detailTextLabel.text = NSLocalizedString(@"NO ARTICLES", nil);
     }
+    
+    if (self.splitVC.showZeroStock) {
+        
+        NSInteger stockVolume = articleGroup.articlesStockVolume;
+        for (STMArticleGroup *child in articleGroup.children) stockVolume += child.articlesStockVolume;
+        
+        if (stockVolume <= 0) {
+            
+            UIColor *lightGrayColor = [UIColor lightGrayColor];
+            cell.textLabel.textColor = lightGrayColor;
+            cell.detailTextLabel.textColor = lightGrayColor;
 
+            cell.detailTextLabel.text = NSLocalizedString(@"ZERO STOCK", nil);
+            
+        }
+
+    }
+    
     if ([articleGroup isEqual:self.splitVC.currentArticleGroup]) {
         [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
     }

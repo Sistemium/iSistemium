@@ -10,4 +10,7 @@
 
 @interface STMArticleGroup (custom)
 
+@property (nonatomic) NSInteger articlesStockVolume;
+
+
 @end
