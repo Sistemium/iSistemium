@@ -130,6 +130,9 @@ static NSString *showZeroStockKey = @"showZeroStock";
         [defaults setObject:@(showZeroStock) forKey:showZeroStockKey];
         [defaults synchronize];
 
+        [self.masterTVC refreshTable];
+        [self.detailTVC refreshTable];
+
     }
     
 }
@@ -194,6 +197,7 @@ static NSString *showZeroStockKey = @"showZeroStock";
         [defaults setObject:_selectedPriceType.xid forKey:defaultPriceTypeKey];
         [defaults synchronize];
         
+        [self.masterTVC refreshTable];
         [self.detailTVC refreshTable];
         
     }

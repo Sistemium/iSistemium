@@ -320,7 +320,6 @@
         if (buttonIndex != -1) {
 
             self.splitVC.showZeroStock = [@(buttonIndex) boolValue];
-            [self refreshTable];
             [self stockVolumeButtonSetup];
             
         }

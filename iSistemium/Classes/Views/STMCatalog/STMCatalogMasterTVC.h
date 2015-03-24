@@ -10,5 +10,7 @@
 
 @interface STMCatalogMasterTVC : STMFetchedResultsControllerTVC
 
+- (void)refreshTable;
+
 
 @end

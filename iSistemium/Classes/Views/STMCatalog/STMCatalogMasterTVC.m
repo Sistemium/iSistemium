@@ -147,6 +147,54 @@
 //    NSLog(@"rc %@", self.resultsController);
 //    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
     
+    [self.tableView reloadData];
+
+}
+
+- (void)refreshTable {
+    
+    STMCatalogMasterTVC *nextTVC = [self nextTVC];
+    
+    if (nextTVC) {
+        [nextTVC refreshTable];
+    }
+    
+    [self performFetch];
+
+    if ([self isEqual:self.navigationController.topViewController]) {
+
+        NSUInteger row = [self.filteredFetchResults indexOfObject:self.splitVC.currentArticleGroup];
+        
+        if (row == NSNotFound) {
+            self.splitVC.currentArticleGroup = self.splitVC.currentArticleGroup.articleGroup;
+        }
+
+    }
+
+}
+
+- (STMCatalogMasterTVC *)nextTVC {
+    
+    NSArray *vcs = self.navigationController.viewControllers;
+    NSUInteger index = [vcs indexOfObject:self];
+    index++;
+    
+    if (vcs.count > index) {
+        
+        UIViewController *vc = vcs[index];
+        
+        if ([vc isKindOfClass:[STMCatalogMasterTVC class]]) {
+            
+            return (STMCatalogMasterTVC *)vc;
+
+        } else {
+            return nil;
+        }
+        
+    } else {
+        return nil;
+    }
+    
 }
 
 #pragma mark - keyboard show / hide
@@ -208,6 +256,9 @@
         cell.detailTextLabel.text = NSLocalizedString(@"NO ARTICLES", nil);
     }
 
+    if ([articleGroup isEqual:self.splitVC.currentArticleGroup]) {
+        [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+    }
     
     return cell;
     
@@ -253,7 +304,6 @@
 //    [super controllerDidChangeContent:controller];
 
     [self filterFetchResults];
-    [self.tableView reloadData];
     
 }
 
