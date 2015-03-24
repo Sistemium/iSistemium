@@ -82,32 +82,23 @@
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
 
-//    NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.baseArticleGroup];
-//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
-    
 // filter empty articleGroups
-    NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"articlesCount > 0 OR ANY children.articlesCount > 0"];
+    NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"(articlesCount > 0) OR (ANY children.articlesCount > 0)"];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
 
     if (!self.splitVC.showZeroStock) {
         
-        NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"articlesStockVolume > 0 OR ANY children.articlesStockVolume > 0"];
+        NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"(articlesStockVolume > 0) OR (ANY children.articlesStockVolume > 0)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
         
     }
     
-    
-    
-    
-    
-//    if (self.splitVC.selectedPriceType) {
-//        
-//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY articles.prices.priceType == %@", self.splitVC.selectedPriceType];
-//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@ AND $x.price == 0).@count > 0", self.splitVC.selectedPriceType];
-//        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
-//        
-//    }
-    
+    if (self.splitVC.selectedPriceType) {
+        
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"(ANY articlesPriceTypes != %@) OR (ANY children.articlesPriceTypes != %@)", self.splitVC.selectedPriceType, self.splitVC.selectedPriceType];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
+        
+    }
     
     return predicate;
     
@@ -117,9 +108,9 @@
     
     self.resultsController = nil;
     
-    TICK;
+//    TICK;
     [STMArticleGroupController refillParents];
-    TOCK;
+//    TOCK;
     
     NSError *error;
     if (![self.resultsController performFetch:&error]) {
@@ -144,8 +135,8 @@
 
     self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
     
-//    NSLog(@"rc %@", self.resultsController);
-//    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
+    NSLog(@"rc %@", self.resultsController);
+    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
     
     [self.tableView reloadData];
 

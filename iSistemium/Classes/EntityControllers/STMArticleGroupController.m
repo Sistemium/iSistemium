@@ -46,7 +46,7 @@
 
 + (void)refillParents {
     
-    NSLog(@"refillParents");
+//    NSLog(@"refillParents");
     
     NSArray *articleGroups = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticleGroup class])];
     
