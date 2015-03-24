@@ -59,11 +59,16 @@
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPrice class])];
+//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPrice class])];
+//        
+//        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//        NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.pieceVolume" ascending:YES selector:@selector(compare:)];
+
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
         
-        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.pieceVolume" ascending:YES selector:@selector(compare:)];
-        
+        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"pieceVolume" ascending:YES selector:@selector(compare:)];
+
         request.sortDescriptors = @[nameDescriptor, volumeDescriptor];
         
         NSCompoundPredicate *predicate = [self requestPredicate];
@@ -86,28 +91,33 @@
     if (self.splitVC.currentArticleGroup) {
         
         NSArray *filterArray = [self.splitVC nestedArticleGroups];
-        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.articleGroup IN %@", filterArray];
+//        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.articleGroup IN %@", filterArray];
+        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup IN %@", filterArray];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
         
     }
     
     if (self.splitVC.selectedPriceType) {
         
-        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.splitVC.selectedPriceType];
+//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.splitVC.selectedPriceType];
+
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY prices.priceType == %@", self.splitVC.selectedPriceType];
 //        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@ AND $x.price == 0).@count > 0", self.splitVC.selectedPriceType];
+//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@).@count > 0", self.splitVC.selectedPriceType];
+        
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
         
     }
     
-    if (!self.splitVC.showZeroStock) {
-        
-        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.stock.volume.integerValue > 0"];
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
-        
-    }
-
-    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
-    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
+//    if (!self.splitVC.showZeroStock) {
+//        
+//        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.stock.volume.integerValue > 0"];
+//        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+//        
+//    }
+//
+//    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
 
     return predicate;
 
@@ -118,6 +128,14 @@
     self.resultsController = nil;
     
     NSError *error;
+
+// Just a time checking
+//
+//    TICK;
+    [self.resultsController performFetch:&error];
+//    TOCK;
+//
+    
     if (![self.resultsController performFetch:&error]) {
         
         NSLog(@"performFetch error %@", error);
