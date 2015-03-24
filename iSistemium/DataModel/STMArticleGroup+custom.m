@@ -14,5 +14,8 @@
     return self.articles.count;
 }
 
+- (NSInteger)articlesStockVolume {
+    return [[self.articles valueForKeyPath:@"@sum.stock.volume"] integerValue];
+}
 
 @end

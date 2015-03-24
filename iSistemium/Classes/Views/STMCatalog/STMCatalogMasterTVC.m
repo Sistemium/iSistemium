@@ -81,9 +81,24 @@
 - (NSCompoundPredicate *)requestPredicate {
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
-    
+
 //    NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"articleGroup == %@", self.baseArticleGroup];
 //    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+    
+// filter empty articleGroups
+    NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"articlesCount > 0 OR ANY children.articlesCount > 0"];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
+
+    if (!self.splitVC.showZeroStock) {
+        
+        NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"articlesStockVolume > 0 OR ANY children.articlesStockVolume > 0"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
+        
+    }
+    
+    
+    
+    
     
 //    if (self.splitVC.selectedPriceType) {
 //        
@@ -93,15 +108,6 @@
 //        
 //    }
     
-    if (!self.splitVC.showZeroStock) {
-        
-//        NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"ANY chilrdren.atricles"];
-//        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
-        
-    }
-    
-    NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"articles.@count > 0 OR ANY children.articlesCount > 0"];
-    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
     
     return predicate;
     
@@ -138,8 +144,8 @@
 
     self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
     
-    NSLog(@"rc %@", self.resultsController);
-    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
+//    NSLog(@"rc %@", self.resultsController);
+//    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
     
 }
 
@@ -211,28 +217,7 @@
 
 //    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
     STMArticleGroup *articleGroup = [self.filteredFetchResults objectAtIndex:indexPath.row];
-
-//    NSLog(@"parents.count %d", articleGroup.parents.count);
-//    NSLog(@"children.count %d", articleGroup.children.count);
-//    NSLog(@"articleGroups.count %d", articleGroup.articleGroups.count);
-//    
-//    NSLog(@"articleGroup.articleGroup.name %@", articleGroup.articleGroup.name);
-//    
-//    for (STMArticleGroup *parent in articleGroup.parents) {
-//        NSLog(@"parent.name %@", parent.name);
-//    }
-//
-//    for (STMArticleGroup *child in articleGroup.children) {
-//        NSLog(@"child.name %@", child.name);
-//    }
-//
-//    for (STMArticleGroup *child in articleGroup.articleGroups) {
-//        NSLog(@"articleGroups.name %@", child.name);
-//    }
-//    
-//    [STMArticleGroupController parentsForArticleGroup:articleGroup];
-//    
-
+    
     NSArray *selectedIndexPaths = [tableView indexPathsForSelectedRows];
     
     if ([selectedIndexPaths containsObject:indexPath]) {
