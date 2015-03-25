@@ -184,6 +184,8 @@
 
 - (void)refreshTable {
     
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+
     STMCatalogMasterTVC *nextTVC = [self nextTVC];
     
     if (nextTVC) {
@@ -196,7 +198,7 @@
 
         NSUInteger row = [self.filteredFetchResults indexOfObject:self.splitVC.currentArticleGroup];
         
-        if (row == NSNotFound) {
+        if (selectedIndexPath && row == NSNotFound) {
             self.splitVC.currentArticleGroup = self.splitVC.currentArticleGroup.articleGroup;
         }
 

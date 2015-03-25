@@ -153,6 +153,8 @@
 
     }
     
+//    [self nsLogCatalogDetails];
+
 }
 
 - (void)refreshTable {
@@ -241,9 +243,91 @@
     NSString *infoString = [numberString stringByAppendingString:NSLocalizedString(labelString, nil)];
     
     self.infoLabel.title = infoString;
-    
+ 
 }
 
+- (void)nsLogCatalogDetails {
+    
+    NSArray *result = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])];
+    
+    NSMutableArray *resultsGorod = [NSMutableArray array];
+    NSMutableArray *resultsDobronom = [NSMutableArray array];
+    NSMutableArray *resultsRoznica = [NSMutableArray array];
+    
+    for (STMArticle *article in result) {
+        
+        BOOL isCurrentGroup = [article.articleGroup isEqual:self.splitVC.currentArticleGroup];
+        BOOL insideCurrentGroup = [self articleGroup:article.articleGroup hasInParents:self.splitVC.currentArticleGroup];
+        
+        if (isCurrentGroup || insideCurrentGroup) {
+            
+            BOOL zeroStock = NO;
+            
+            if (!self.splitVC.showZeroStock) {
+                if ([article.stock.volume integerValue] <= 0) zeroStock = YES;
+            }
+            
+            BOOL checkGorod = NO;
+            BOOL checkDobronom = NO;
+            BOOL checkRoznica = NO;
+            
+            for (STMPrice *price in article.prices) {
+                
+                if ([price.price integerValue] > 0) {
+                    
+                    if ([price.priceType.name isEqualToString:@"Город Изобилия"]) {
+                        checkGorod = YES;
+                    } else if ([price.priceType.name isEqualToString:@"Доброном"]) {
+                        checkDobronom = YES;
+                    } else if ([price.priceType.name isEqualToString:@"Розница"]) {
+                        checkRoznica = YES;
+                    }
+
+                }
+                
+            }
+            
+            if (checkGorod && !zeroStock) {
+                [resultsGorod addObject:article];
+            }
+            if (checkDobronom && !zeroStock) {
+                [resultsDobronom addObject:article];
+            }
+            if (checkRoznica && !zeroStock) {
+                [resultsRoznica addObject:article];
+            }
+            
+        }
+        
+    }
+
+    NSLog(@"-------------------------------s");
+
+    NSLog(@"resultsGorod.count %d", resultsGorod.count);
+    NSLog(@"resultsDobronom.count %d", resultsDobronom.count);
+    NSLog(@"resultsRoznica.count %d", resultsRoznica.count);
+    
+    NSLog(@"-------------------------------f");
+
+}
+
+- (BOOL)articleGroup:(STMArticleGroup *)articleGroup hasInParents:(STMArticleGroup *)parentArticleGroup {
+    
+    if (!parentArticleGroup) {
+        return YES;
+    } else {
+        
+        if (!articleGroup.articleGroup) {
+            return NO;
+        } else if ([articleGroup.articleGroup isEqual:parentArticleGroup]) {
+            return YES;
+        } else {
+            return [self articleGroup:articleGroup.articleGroup hasInParents:parentArticleGroup];
+        }
+
+    }
+
+}
 
 #pragma mark - priceType selector
 
