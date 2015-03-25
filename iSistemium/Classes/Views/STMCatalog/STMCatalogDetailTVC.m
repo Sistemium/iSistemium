@@ -147,6 +147,8 @@
         
         [self.tableView reloadData];
         
+//        self.navigationItem.title = self.splitVC.currentArticleGroup.name;
+        
         if (self.searchDisplayController.active) {
             self.searchBar.text = self.searchBar.text;
         }
