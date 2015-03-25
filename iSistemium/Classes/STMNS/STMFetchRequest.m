@@ -7,6 +7,13 @@
 //
 
 #import "STMFetchRequest.h"
+#import "STMNS.h"
+
+@interface STMFetchRequest()
+
+
+@end
+
 
 @implementation STMFetchRequest
 
@@ -18,5 +25,12 @@
     
 }
 
+- (void)setPredicate:(NSPredicate *)predicate {
+    
+    predicate  = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
+    
+    [super setPredicate:predicate];
+    
+}
 
 @end

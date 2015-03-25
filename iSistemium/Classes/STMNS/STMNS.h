@@ -11,6 +11,7 @@
 
 #include "STMEntityDescription.h"
 #include "STMFetchRequest.h"
+#include "STMPredicate.h"
 
 
 #endif

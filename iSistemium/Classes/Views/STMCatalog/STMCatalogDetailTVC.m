@@ -62,7 +62,7 @@
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPrice class])];
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPrice class])];
         
         NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.pieceVolume" ascending:YES selector:@selector(compare:)];
@@ -105,7 +105,7 @@
         NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.selectedPriceType];
 
 //        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY prices.priceType == %@", self.selectedPriceType];
-//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@ AND $x.price == 0).@count > 0", self.selectedPriceType];
+//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@ AND $x.price > 0).@count > 0", self.selectedPriceType];
 //        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@).@count > 0", self.selectedPriceType];
         
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
@@ -119,8 +119,11 @@
         
     }
 
-    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
-    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
+//    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
+
+    NSPredicate *fantomPredicate = [NSPredicate predicateWithFormat:@"article.isFantom == NO"];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, fantomPredicate]];
 
     return predicate;
 
@@ -248,6 +251,9 @@
  
 }
 
+
+#pragma mark - NSLogs
+
 - (void)nsLogCatalogDetails {
     
     NSArray *result = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])];
@@ -330,6 +336,7 @@
     }
 
 }
+
 
 #pragma mark - priceType selector
 

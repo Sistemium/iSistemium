@@ -22,6 +22,7 @@
 
 #import "STMFunctions.h"
 #import "STMUI.h"
+#import "STMNS.h"
 #import "STMConstants.h"
 
 @interface STMCatalogSVC : STMSplitViewController
