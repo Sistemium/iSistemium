@@ -75,29 +75,33 @@
                                   @"value": (self.article.name) ? self.article.name : @""
                                   }];
     
-    if (self.article.extraLabel) [self.articleInfo addObject:@{
-                                                               @"key": @"extraLabel",
-                                                               @"value": (self.article.extraLabel) ? self.article.extraLabel : @""
-                                                               }];
+    if (self.article.extraLabel)
+        [self.articleInfo addObject:@{
+                                      @"key": @"extraLabel",
+                                      @"value": (self.article.extraLabel) ? self.article.extraLabel : @""
+                                      }];
 
     
     NSString *keyString = NSLocalizedString(@"VOLUME", nil);
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    NSString *valueString = [NSString stringWithFormat:@"%@: %@%@", keyString, self.article.pieceVolume, volumeUnitString];
     [self.articleInfo addObject:@{
                                   @"key": @"pieceVolume",
-                                  @"value": [NSString stringWithFormat:@"%@: %@%@", keyString, self.article.pieceVolume, volumeUnitString]
+                                  @"value": valueString
                                   }];
 
     keyString = NSLocalizedString(@"FACTOR", nil);
+    valueString = [NSString stringWithFormat:@"%@: %@", keyString, self.article.factor];
     [self.articleInfo addObject:@{
                                   @"key": @"factor",
-                                  @"value": [NSString stringWithFormat:@"%@: %@", keyString, self.article.factor]
+                                  @"value": valueString
                                   }];
     
     keyString = NSLocalizedString(@"PACKAGE REL", nil);
+    valueString = [NSString stringWithFormat:@"%@: %@", keyString, self.article.packageRel];
     [self.articleInfo addObject:@{
                                   @"key": @"packageRel",
-                                  @"value": [NSString stringWithFormat:@"%@: %@", keyString, self.article.packageRel]
+                                  @"value": valueString
                                   }];
 
     NSSortDescriptor *priceDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"priceType.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
@@ -108,9 +112,10 @@
         keyString = NSLocalizedString(@"PRICE", nil);
         NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
         NSString *priceValue = [numberFormatter stringFromNumber:price.price];
+        valueString = [NSString stringWithFormat:@"%@: %@", keyString, priceValue];
         [self.articleInfo addObject:@{
                                       @"key": price.priceType.name,
-                                      @"value": [NSString stringWithFormat:@"%@: %@", keyString, priceValue],
+                                      @"value": valueString,
                                       @"detail": price.priceType.name
                                       }];
         
@@ -118,22 +123,27 @@
     
     keyString = NSLocalizedString(@"STOCK", nil);
     NSString *stockVolume = ([self.article.stock.volume integerValue] > 0) ? self.article.stock.displayVolume : NSLocalizedString(@"ZERO STOCK", nil);
+    valueString = [NSString stringWithFormat:@"%@: %@", keyString, stockVolume];
     [self.articleInfo addObject:@{
                                   @"key": @"stockVolume",
-                                  @"value": [NSString stringWithFormat:@"%@: %@", keyString, stockVolume]
+                                  @"value": valueString
                                   }];
 
+/*
     keyString = NSLocalizedString(@"CODE", nil);
+    valueString = [NSString stringWithFormat:@"%@: %@", keyString, self.article.code];
     [self.articleInfo addObject:@{
                                   @"key": @"code",
-                                  @"value": [NSString stringWithFormat:@"%@: %@", keyString, self.article.code]
+                                  @"value": valueString
                                   }];
 
     keyString = NSLocalizedString(@"SECTION", nil);
+    valueString = [NSString stringWithFormat:@"%@: %@", keyString, self.article.articleGroup.name];
     [self.articleInfo addObject:@{
                                   @"key": @"section",
-                                  @"value": [NSString stringWithFormat:@"%@: %@", keyString, self.article.articleGroup.name]
+                                  @"value": valueString
                                   }];
+*/
 
 }
 
