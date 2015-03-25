@@ -258,6 +258,16 @@
 
 }
 
+- (void)setupTableView {
+
+    [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:@"articleInfoCell"];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+
+    self.tableView.separatorColor = [UIColor whiteColor];
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -266,10 +276,7 @@
         
         [self setupImage];
         [self prepareInfo];
-        
-        [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:@"articleInfoCell"];
-        self.tableView.delegate = self;
-        self.tableView.dataSource = self;
+        [self setupTableView];
         
     }
     
