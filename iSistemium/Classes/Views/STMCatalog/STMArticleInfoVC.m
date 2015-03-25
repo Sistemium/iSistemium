@@ -116,6 +116,13 @@
         
     }
     
+    keyString = NSLocalizedString(@"STOCK", nil);
+    NSString *stockVolume = ([self.article.stock.volume integerValue] > 0) ? self.article.stock.displayVolume : NSLocalizedString(@"ZERO STOCK", nil);
+    [self.articleInfo addObject:@{
+                                  @"key": @"stockVolume",
+                                  @"value": [NSString stringWithFormat:@"%@: %@", keyString, stockVolume]
+                                  }];
+
     keyString = NSLocalizedString(@"CODE", nil);
     [self.articleInfo addObject:@{
                                   @"key": @"code",
@@ -133,6 +140,58 @@
 
 #pragma mark - <UITableViewDelegate, UITableViewDataSource>
 
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static CGFloat standardCellHeight;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+    });
+    
+    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row == 0) {
+        
+        static STMInfoTableViewCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken,^{
+            cell = [[STMInfoTableViewCell alloc] init];
+        });
+
+        [self fillCell:cell forIndexPath:indexPath];
+        
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+        
+        [cell setNeedsLayout];
+        [cell layoutIfNeeded];
+
+        UIFont *font = [self boldFontForLabel:cell.textLabel];
+
+        NSDictionary *attributes = @{NSFontAttributeName:font};
+        
+        CGSize lineSize = [cell.textLabel.text sizeWithAttributes:attributes];
+        CGSize boundSize = CGSizeMake(cell.textLabel.frame.size.width, CGFLOAT_MAX);
+        CGRect multilineRect = [cell.textLabel.text boundingRectWithSize:boundSize
+                                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                                              attributes:attributes
+                                                                 context:nil];
+        
+        CGFloat diff = ceil(multilineRect.size.height) - ceil(lineSize.height);
+        
+        CGFloat height = cell.frame.size.height + diff;
+        
+        return height;
+
+    } else {
+        return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+    }
+    
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.articleInfo.count;
 }
@@ -142,11 +201,15 @@
     static NSString *cellIdentifier = @"articleInfoCell";
     
     STMInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+
+    [self setLabelsColor:[UIColor blackColor] forCell:cell];
     
     [self fillCell:cell forIndexPath:indexPath];
     
     cell.textLabel.textAlignment = NSTextAlignmentRight;
     cell.detailTextLabel.textAlignment = NSTextAlignmentRight;
+    
+    if ([self.article.stock.volume integerValue] <= 0) [self setLabelsColor:[UIColor lightGrayColor] forCell:cell];
     
     return cell;
     
@@ -156,9 +219,43 @@
     
     NSDictionary *info = self.articleInfo[indexPath.row];
     
+    NSString *key = info[@"key"];
+    
     cell.textLabel.text = info[@"value"];
     cell.detailTextLabel.text = info[@"detail"];
     
+    if ([key isEqualToString:self.parentVC.selectedPriceType.name] || [key isEqualToString:@"name"]) {
+        [self boldFontForCell:cell];
+    }
+    
+    if ([key isEqualToString:@"name"]) {
+        cell.textLabel.numberOfLines = 0;
+    }
+    
+}
+
+- (void)setLabelsColor:(UIColor *)color forCell:(STMInfoTableViewCell *)cell {
+
+    cell.textLabel.textColor = color;
+    cell.detailTextLabel.textColor = color;
+
+}
+
+- (void)boldFontForCell:(STMInfoTableViewCell *)cell {
+    
+    [self boldFontForLabel:cell.textLabel];
+    [self boldFontForLabel:cell.detailTextLabel];
+    
+}
+
+- (UIFont *)boldFontForLabel:(UILabel *)label {
+
+    CGFloat fontSize = label.font.pointSize;
+    UIFont *font = [UIFont boldSystemFontOfSize:fontSize];
+    label.font = font;
+    
+    return font;
+
 }
 
 #pragma mark - view lifecycle

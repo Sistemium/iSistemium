@@ -7,11 +7,16 @@
 //
 
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMPriceType.h"
+
 
 @interface STMCatalogDetailTVC : STMFetchedResultsControllerTVC
+
+@property (nonatomic, strong) STMPriceType *selectedPriceType;
 
 - (void)refreshTable;
 - (void)dismissArticleInfoPopover;
 - (void)hideKeyboard;
+
 
 @end

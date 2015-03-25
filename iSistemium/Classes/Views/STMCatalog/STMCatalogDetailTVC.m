@@ -7,7 +7,6 @@
 //
 
 #import "STMCatalogDetailTVC.h"
-#import "STMCatalogSVC.h"
 #import "STMArticleInfoVC.h"
 
 
@@ -55,6 +54,10 @@
     
 }
 
+- (STMPriceType *)selectedPriceType {
+    return self.splitVC.selectedPriceType;
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -97,13 +100,13 @@
         
     }
     
-    if (self.splitVC.selectedPriceType) {
+    if (self.selectedPriceType) {
         
-        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.splitVC.selectedPriceType];
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.selectedPriceType];
 
-//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY prices.priceType == %@", self.splitVC.selectedPriceType];
-//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@ AND $x.price == 0).@count > 0", self.splitVC.selectedPriceType];
-//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@).@count > 0", self.splitVC.selectedPriceType];
+//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY prices.priceType == %@", self.selectedPriceType];
+//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@ AND $x.price == 0).@count > 0", self.selectedPriceType];
+//        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(prices, $x, $x.priceType == %@).@count > 0", self.selectedPriceType];
         
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
         
@@ -182,7 +185,7 @@
 
 - (void)priceTypeSelectorSetup {
     
-    self.priceTypeSelector.title = self.splitVC.selectedPriceType.name;
+    self.priceTypeSelector.title = self.selectedPriceType.name;
     self.priceTypeSelector.target = self;
     self.priceTypeSelector.action = @selector(showPriceTypeSelector);
     
@@ -447,7 +450,7 @@
     
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"priceType = %@", self.splitVC.selectedPriceType];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"priceType = %@", self.selectedPriceType];
     
     STMPrice *price = [article.prices filteredSetUsingPredicate:predicate].allObjects.lastObject;
     
