@@ -626,8 +626,9 @@
         NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
         NSString *entityName = object.entity.name;
         BOOL isInSyncList = [entityNamesForSending containsObject:entityName];
+        BOOL isFantom = [[object valueForKey:@"isFantom"] boolValue];
         
-        if (isInSyncList) {
+        if (isInSyncList && !isFantom) {
             
             if ([entityName isEqualToString:NSStringFromClass([STMLogMessage class])]) {
 
