@@ -315,6 +315,8 @@
 
 - (void)uncashingProcessStart {
     
+    self.addButton.enabled = NO;
+    
     [self.tableView setEditing:YES animated:YES];
     
     self.tableView.allowsSelectionDuringEditing = YES;
@@ -354,6 +356,8 @@
     [self setInfoLabelTitle];
     [self.splitVC.masterVC selectRowWithUncashing:nil];
     
+    self.addButton.enabled = YES;
+
 }
 
 
