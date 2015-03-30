@@ -913,6 +913,8 @@
     NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
     //    NSLog(@"headers %@", headers);
     
+//    NSLog(@"!!!!!!! expectedContentLength %d", response.expectedContentLength);
+    
     NSString *entityName = [self entityNameForConnection:connection];
     
     if (statusCode == 200) {
@@ -999,6 +1001,8 @@
     
     NSString *entityName = [self entityNameForConnection:connection];
     NSMutableData *responseData = (self.responses)[entityName];
+    
+    NSLog(@"!!!!!! responseData.length %d", responseData.length);
     
     if (responseData) {
         [self parseResponse:responseData fromConnection:connection];
