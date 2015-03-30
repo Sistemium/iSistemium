@@ -805,6 +805,11 @@
             self.syncerState = STMSyncerIdle;
             
         } else {
+            
+            NSDate *start = [NSDate date];
+            NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
+            NSLog(@"--------------------S %@ %@", startString, eTag);
+            
 //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
         }
         
@@ -918,6 +923,14 @@
         
         if (eTag && entityName && self.syncerState != STMSyncerIdle) [self.temporaryETag setValue:eTag forKey:entityName];
         
+        
+        STMEntity *entity = (self.stcEntities)[entityName];
+        NSDate *middle = [NSDate date];
+        NSString *middleString = [[STMFunctions dateFormatter] stringFromDate:middle];
+        NSLog(@"--------------------M %@ %@", middleString, entity.eTag);
+
+        
+        
     } else if (statusCode == 410) {
         
         NSLog(@"%@: 410 Gone", entityName);
@@ -1021,6 +1034,10 @@
         
         if (entity) {
             
+//            NSDate *start = [NSDate date];
+//            NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
+//            NSLog(@"--------------------S %@", startString);
+            
             [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
 
                 if (success) {
@@ -1080,8 +1097,13 @@
 
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
-    entity.eTag = eTag;
     
+    NSDate *finish = [NSDate date];
+    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
+    NSLog(@"--------------------F %@ %@", finishString, entity.eTag);
+    
+    entity.eTag = eTag;
+
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }

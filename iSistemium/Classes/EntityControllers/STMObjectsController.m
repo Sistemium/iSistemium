@@ -63,6 +63,7 @@
         _timesDic[@"1"] = [@[] mutableCopy];
         _timesDic[@"2"] = [@[] mutableCopy];
         _timesDic[@"3"] = [@[] mutableCopy];
+        _timesDic[@"4"] = [@[] mutableCopy];
         
     }
     return _timesDic;
@@ -117,6 +118,10 @@
 
 + (void)processingOfDataArray:(NSArray *)array roleName:(NSString *)roleName withCompletionHandler:(void (^)(BOOL success))completionHandler {
 
+//    NSDate *start = [NSDate date];
+//    NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
+//    NSLog(@"--------------------s %@", startString);
+    
     if (roleName) {
         
         [self setRelationshipsFromArray:array withCompletionHandler:^(BOOL success) {
@@ -130,6 +135,10 @@
         }];
         
     }
+
+//    NSDate *finish = [NSDate date];
+//    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
+//    NSLog(@"--------------------f %@", finishString);
 
 }
 
@@ -153,7 +162,9 @@
 
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
 
+// time checking
     NSDate *start = [NSDate date];
+//
     
     NSString *name = dictionary[@"name"];
     NSDictionary *properties = dictionary[@"properties"];
@@ -188,7 +199,9 @@
                 
             }
 
+// time checking
             [[self sharedController].timesDic[@"1"] addObject:@([start timeIntervalSinceNow])];
+//
             
             if (!object) {
             
@@ -196,7 +209,9 @@
 
             }
             
+// time checking
             [[self sharedController].timesDic[@"2"] addObject:@([start timeIntervalSinceNow])];
+//
             
             if (![self isWaitingToSyncForObject:object]) {
                 
@@ -205,8 +220,10 @@
                 
             }
             
+// time checking
             [[self sharedController].timesDic[@"3"] addObject:@([start timeIntervalSinceNow])];
-
+//
+            
         } else {
             
             NSLog(@"object %@ with xid %@ have recordStatus.isRemoved == YES", entityName, xid);
@@ -226,6 +243,10 @@
 }
 
 + (void)processingOfObject:(NSManagedObject *)object withEntityName:(NSString *)entityName fillWithValues:(NSDictionary *)properties {
+    
+// time checking
+    NSDate *start = [NSDate date];
+//
     
     NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
     
@@ -260,6 +281,10 @@
 
     [self postprocessingForObject:object withEntityName:entityName];
 
+// time checking
+    [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
+//
+    
 }
 
 + (id)typeConversionForValue:(id)value key:(NSString *)key entityAttributes:(NSDictionary *)entityAttributes {
@@ -818,12 +843,17 @@
     NSArray *first = [self sharedController].timesDic[@"1"];
     NSArray *second = [self sharedController].timesDic[@"2"];
     NSArray *third = [self sharedController].timesDic[@"3"];
+    NSArray *fourth = [self sharedController].timesDic[@"4"];
     
     NSNumber *avgFirst = [first valueForKeyPath:@"@avg.self"];
     NSNumber *avgSecond = [second valueForKeyPath:@"@avg.self"];
     NSNumber *avgThird = [third valueForKeyPath:@"@avg.self"];
+    NSNumber *avgFourth = [fourth valueForKeyPath:@"@avg.self"];
     
-    NSLog(@"avgFirst %@, avgSecond %@, avgThird %@", avgFirst, avgSecond, avgThird);
+    NSLog(@"avgFirst %@", avgFirst);
+    NSLog(@"avgSecond %@", avgSecond);
+    NSLog(@"avgThird %@", avgThird);
+    NSLog(@"avgFourth %@", avgFourth);
     
 }
 
