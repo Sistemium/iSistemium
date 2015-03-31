@@ -78,13 +78,9 @@
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         
         request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", nil];
-<<<<<<< HEAD:iSistemium/Classes/Views/STMUncashing/STMUncashingMasterTVC.m
-        
-        _cashingSumResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-        
-=======
+
         _cashingSumResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:nil cacheName:nil];
->>>>>>> _dev:iSistemium/Classes/Views/STMUncashingMasterTVC.m
+
         _cashingSumResultsController.delegate = self.cashingSumFRCD;
         
     }
