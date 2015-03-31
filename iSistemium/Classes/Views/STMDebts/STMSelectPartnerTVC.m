@@ -32,7 +32,7 @@
         request.sortDescriptors = @[nameSortDescriptor];
         request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:nil cacheName:nil];
         _resultsController.delegate = self;
         
     }

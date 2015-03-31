@@ -78,9 +78,13 @@
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         
         request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", nil];
+<<<<<<< HEAD:iSistemium/Classes/Views/STMUncashing/STMUncashingMasterTVC.m
         
         _cashingSumResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
+=======
+        _cashingSumResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:nil cacheName:nil];
+>>>>>>> _dev:iSistemium/Classes/Views/STMUncashingMasterTVC.m
         _cashingSumResultsController.delegate = self.cashingSumFRCD;
         
     }
@@ -96,7 +100,7 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMUncashing class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)]];
 //        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:nil cacheName:nil];
         _resultsController.delegate = self;
         
     }

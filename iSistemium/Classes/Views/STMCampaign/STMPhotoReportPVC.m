@@ -65,7 +65,7 @@
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:photoReport];
     recordStatus.isRemoved = @YES;
     
-    [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photoReport];
+    [[[STMSessionManager sharedManager].currentSession document].mainContext deleteObject:photoReport];
 
     [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     

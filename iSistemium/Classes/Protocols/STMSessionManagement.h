@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "STMRequestAuthenticatable.h"
-
+#import "STMDocument.h"
 
 typedef NS_ENUM(NSInteger, STMSyncerState) {
     STMSyncerIdle,
@@ -48,7 +48,7 @@ typedef NS_ENUM(NSInteger, STMSyncerState) {
 
 + (id <STMSession>)initWithUID:(NSString *)uid authDelegate:(id <STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings documentPrefix:(NSString *)prefix;
 
-@property (nonatomic, strong) UIManagedDocument *document;
+@property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSString *uid;
 @property (nonatomic, strong) NSString *status;
 @property (nonatomic, strong) id <STMSettingsController> settingsController;
