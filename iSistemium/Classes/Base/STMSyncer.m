@@ -806,9 +806,9 @@
             
         } else {
             
-            NSDate *start = [NSDate date];
-            NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
-            NSLog(@"--------------------S %@ %@", startString, eTag);
+//            NSDate *start = [NSDate date];
+//            NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
+//            NSLog(@"--------------------S %@ %@", startString, eTag);
             
 //            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
         }
@@ -926,10 +926,10 @@
         if (eTag && entityName && self.syncerState != STMSyncerIdle) [self.temporaryETag setValue:eTag forKey:entityName];
         
         
-        STMEntity *entity = (self.stcEntities)[entityName];
-        NSDate *middle = [NSDate date];
-        NSString *middleString = [[STMFunctions dateFormatter] stringFromDate:middle];
-        NSLog(@"--------------------M %@ %@", middleString, entity.eTag);
+//        STMEntity *entity = (self.stcEntities)[entityName];
+//        NSDate *middle = [NSDate date];
+//        NSString *middleString = [[STMFunctions dateFormatter] stringFromDate:middle];
+//        NSLog(@"--------------------M %@ %@", middleString, entity.eTag);
 
         
         
@@ -1002,7 +1002,7 @@
     NSString *entityName = [self entityNameForConnection:connection];
     NSMutableData *responseData = (self.responses)[entityName];
     
-    NSLog(@"!!!!!! responseData.length %d", responseData.length);
+//    NSLog(@"!!!!!! responseData.length %d", responseData.length);
     
     if (responseData) {
         [self parseResponse:responseData fromConnection:connection];
@@ -1102,9 +1102,9 @@
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
     
-    NSDate *finish = [NSDate date];
-    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
-    NSLog(@"--------------------F %@ %@", finishString, entity.eTag);
+//    NSDate *finish = [NSDate date];
+//    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
+//    NSLog(@"--------------------F %@ %@", finishString, entity.eTag);
     
     entity.eTag = eTag;
 

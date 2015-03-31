@@ -859,7 +859,7 @@
 
 + (void)dataLoadingFinished {
     
-    [self avgTimesCalc];
+//    [self avgTimesCalc];
     
     [self checkObjectsForFlushing];
     
