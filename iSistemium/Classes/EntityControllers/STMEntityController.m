@@ -54,7 +54,7 @@
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
     
     NSError *error;
-    NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
+    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
     
     return result;
     
@@ -89,7 +89,7 @@
     request.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
     
     NSError *error;
-    NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
+    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
     
     return [result lastObject];
     
@@ -123,7 +123,7 @@
     NSString *entityName = NSStringFromClass([STMEntity class]);
     NSString *property = @"name";
     
-    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
+    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.mainContext];
     
     NSPropertyDescription *entityProperty = entity.propertiesByName[property];
     
@@ -143,7 +143,7 @@
         request.resultType = NSDictionaryResultType;
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:property ascending:YES]];
         
-        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+        NSArray *result = [self.document.mainContext executeFetchRequest:request error:nil];
         
         result = [result filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"count > 1"]];
         
@@ -176,14 +176,14 @@
     request.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
     
     NSError *error;
-    NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
+    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
     
     STMEntity *actualEntity = [result lastObject];
     NSMutableArray *mutableResult = result.mutableCopy;
     [mutableResult removeObject:actualEntity];
     
     for (STMEntity *entity in mutableResult) {
-        [[self document].managedObjectContext deleteObject:entity];
+        [[self document].mainContext deleteObject:entity];
     }
     
     [[self document] saveDocument:^(BOOL success) {}];

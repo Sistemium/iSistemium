@@ -200,7 +200,7 @@
 
         request.sortDescriptors = @[groupSortDescriptor, nameSortDescriptor];
         
-        _fetchedSettingsResultController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.session.document.managedObjectContext sectionNameKeyPath:@"group" cacheName:nil];
+        _fetchedSettingsResultController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.session.document.mainContext sectionNameKeyPath:@"group" cacheName:nil];
         _fetchedSettingsResultController.delegate = self;
         
     }
@@ -263,7 +263,7 @@
         result = [result filteredArrayUsingPredicate:predicate];
         
         for (STMSetting *settingObject in result) {
-            [self.session.document.managedObjectContext deleteObject:settingObject];
+            [self.session.document.mainContext deleteObject:settingObject];
         }
         
     }
@@ -306,7 +306,7 @@
             if (!settingToCheck) {
                 
 //                    NSLog(@"settingName %@", settingName);
-                STMSetting *newSetting = (STMSetting *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
+                STMSetting *newSetting = (STMSetting *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.mainContext];
                 newSetting.group = settingsGroupName;
                 newSetting.name = settingName;
                 newSetting.value = settingValue;
@@ -353,7 +353,7 @@
             
             if (!setting) {
                 
-                setting = (STMSetting *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
+                setting = (STMSetting *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.mainContext];
                 setting.group = group;
                 setting.name = settingName;
                 

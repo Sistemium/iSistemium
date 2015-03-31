@@ -103,7 +103,7 @@
                         [tracker prepareToDestroy];
                     }
                     [self.syncer prepareToDestroy];
-                    [self.document.managedObjectContext reset];
+                    [self.document.mainContext reset];
                     [self.manager removeSessionForUID:self.uid];
                     
                 }

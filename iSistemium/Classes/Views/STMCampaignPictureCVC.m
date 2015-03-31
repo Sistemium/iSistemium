@@ -54,7 +54,7 @@
         request.sortDescriptors = @[nameSortDescriptor, deviceCtsSortDescriptor];
         
         request.predicate = [NSPredicate predicateWithFormat:@"ANY campaigns == %@", self.campaign];
-        _campaignPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _campaignPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:nil cacheName:nil];
         _campaignPicturesResultsController.delegate = self;
         
         //        NSLog(@"_resultsController %@", _resultsController);

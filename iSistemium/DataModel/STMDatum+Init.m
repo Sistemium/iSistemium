@@ -27,8 +27,8 @@
     
 //    [super awakeFromInsert];
     
-    if (self.managedObjectContext.parentContext) {
-        
+//    if (self.managedObjectContext.parentContext) {
+    
         [self setPrimitiveValue:[self newXid] forKey:@"xid"];
         
         NSDate *ts = [NSDate date];
@@ -49,7 +49,7 @@
         [defaults setObject:largestId forKey:@"largestId"];
         [defaults synchronize];
         
-    }
+//    }
     
 }
 

@@ -370,7 +370,7 @@
     request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
     
     for (STMPicture *picture in result) {
         
@@ -401,7 +401,7 @@
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
     
     NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
     
     for (STMPicture *picture in result) {
         
@@ -687,7 +687,7 @@
     
     [self removeImageFilesForPicture:picture];
     
-    [[self document].managedObjectContext deleteObject:picture];
+    [[self document].mainContext deleteObject:picture];
 
     [[self document] saveDocument:^(BOOL success) {
         

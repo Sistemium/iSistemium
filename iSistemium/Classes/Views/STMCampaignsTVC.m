@@ -62,7 +62,7 @@
         request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                 managedObjectContext:self.document.mainContext
                                                                    sectionNameKeyPath:@"campaignGroup.name"
                                                                             cacheName:nil];
         
@@ -169,7 +169,7 @@
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", campaign];
     NSError *error;
-    NSArray *campaignPhotos = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *campaignPhotos = [self.document.mainContext executeFetchRequest:request error:&error];
 
     int photosCount = (int)campaignPhotos.count;
     

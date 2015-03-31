@@ -402,8 +402,8 @@
             
             if ([recordStatus.isRemoved boolValue]) {
                 
-                [[self document].managedObjectContext deleteObject:affectedObject];
-//                [[self document].managedObjectContext deleteObject:recordStatus];
+                [[self document].mainContext deleteObject:affectedObject];
+//                [[self document].mainContext deleteObject:recordStatus];
                 
             }
             
@@ -568,7 +568,7 @@
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
     
     NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *fetchResult = [[self document].mainContext executeFetchRequest:request error:&error];
     
     NSManagedObject *object = [fetchResult lastObject];
 
@@ -614,7 +614,7 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
     
-    NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].mainContext];
     [object setValue:@YES forKey:@"isFantom"];
     
     return object;
@@ -631,10 +631,10 @@
     
     if (!objectKeys) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].mainContext];
         NSSet *coreKeys = [NSSet setWithArray:[[coreEntity attributesByName] allKeys]];
 
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].mainContext];
         objectKeys = [NSMutableSet setWithArray:[[objectEntity attributesByName] allKeys]];
         [objectKeys minusSet:coreKeys];
         
@@ -653,10 +653,10 @@
     
     if (!objectRelationships) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].mainContext];
         NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
         
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].mainContext];
         NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
         
         [objectRelationshipNames minusSet:coreRelationshipNames];
@@ -687,10 +687,10 @@
     
     if (!objectRelationships) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].mainContext];
         NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
         
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].mainContext];
         NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
         
         [objectRelationshipNames minusSet:coreRelationshipNames];
@@ -729,7 +729,7 @@
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:object];
     recordStatus.isRemoved = @YES;
     
-    [self.document.managedObjectContext deleteObject:object];
+    [self.document.mainContext deleteObject:object];
     [self.document saveDocument:^(BOOL success) {
         
         if (success) {
@@ -764,7 +764,7 @@
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
-        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        NSArray *fetchResult = [[self document].mainContext executeFetchRequest:request error:&error];
         
         for (NSManagedObject *object in fetchResult) {
             [self checkObject:object forAddingTo:objectsSet];
@@ -777,7 +777,7 @@
         NSLog(@"flush %d objects with expired lifetime", objectsSet.count);
         
         for (NSManagedObject *object in objectsSet) {
-            [[[self document] managedObjectContext] deleteObject:object];
+            [[self document].mainContext deleteObject:object];
         }
 
     } else {
@@ -927,7 +927,7 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
         NSError *error;
-        NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+        NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
         
         return result;
 
@@ -946,7 +946,7 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
         NSError *error;
-        NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
+        NSUInteger result = [[self document].mainContext countForFetchRequest:request error:&error];
         
         return result;
         
@@ -968,7 +968,7 @@
 //    request.predicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
     
     NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
     
     NSMutableArray *messageXids = [NSMutableArray array];
     
@@ -982,11 +982,11 @@
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
 
-    NSUInteger resultCount = [[self document].managedObjectContext countForFetchRequest:request error:&error];
+    NSUInteger resultCount = [[self document].mainContext countForFetchRequest:request error:&error];
     
     return messageXids.count - resultCount;
 
-//    result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+//    result = [[self document].mainContext executeFetchRequest:request error:&error];
 //    
 //    return messageXids.count - result.count;
     
@@ -1104,14 +1104,14 @@
 //        __weak __block
         NSManagedObject *object = [self objectForXid:xidData];
         
-//        __weak NSManagedObjectContext *context = object.managedObjectContext;
+//        __weak NSManagedObjectContext *context = object.mainContext;
 //        
 //        [context performBlock:^{
         
             if (object) {
                 
                 if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
-                    [[self session].document.managedObjectContext deleteObject:object];
+                    [[self session].document.mainContext deleteObject:object];
                 } else {
                     [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
                 }
