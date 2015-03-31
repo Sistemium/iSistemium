@@ -64,7 +64,7 @@
         
         STMEntity *result0 = result[20];
 
-        STMEntity *duplicateEntity = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMEntity class]) inManagedObjectContext:[self document].managedObjectContext];
+        STMEntity *duplicateEntity = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMEntity class]) inManagedObjectContext:[self document].main];
 
         duplicateEntity.name = result0.name;
 

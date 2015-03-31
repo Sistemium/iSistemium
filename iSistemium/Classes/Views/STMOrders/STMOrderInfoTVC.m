@@ -60,7 +60,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         
         request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", self.saleOrder.xid];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:nil cacheName:nil];
         
         _resultsController.delegate = self;
         
