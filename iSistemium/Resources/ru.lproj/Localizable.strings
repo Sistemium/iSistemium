@@ -133,7 +133,6 @@
 "BASIS" = "Обоснование: ";
 "OUTLET" = "Точка: ";
 "DEBT COMMENT" = "Комментарий: ";
-<<<<<<< HEAD
 "CATALOG" = "Каталог";
 "NO ARTICLES" = "Нет товаров";
 "VOLUME" = "Объём";
@@ -190,8 +189,6 @@
 "SHOW NONZERO STOCK ARTICLES" = "Есть в наличии";
 "SECTION" = "Раздел";
 "STOCK" = "Количество";
-=======
 "TIMEOUT ERROR" = "Соединение прервано. Повторить попытку?";
->>>>>>> dev
 
 

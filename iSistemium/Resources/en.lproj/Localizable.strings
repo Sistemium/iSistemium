@@ -133,7 +133,6 @@
 "BASIS" = "Basis: ";
 "OUTLET" = "Outlet";
 "DEBT COMMENT" = "Comment: ";
-<<<<<<< HEAD
 "CATALOG" = "Catalog";
 "NO ARTICLES" = "No articles";
 "VOLUME" = "Volume";
@@ -190,7 +189,5 @@
 "SHOW NONZERO STOCK ARTICLES" = "Nonzero stock";
 "SECTION" = "Section";
 "STOCK" = "Stock volume";
-=======
 "TIMEOUT ERROR" = "Timeout error. Repeat send/receive attempt?";
 
->>>>>>> dev

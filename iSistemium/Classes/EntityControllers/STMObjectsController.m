@@ -1009,17 +1009,15 @@
                 NSLog(logMessage);
                 
 //                if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
-<<<<<<< HEAD
-//                    
+//
 //                    STMEntity *entity = (STMEntity *)object;
 //                    
 //                    if ([entity.name isEqualToString:@"Salesman"]) {
 //                        NSLog(@"object %@", object);
 //                    }
 //                    
-=======
 //                    NSLog(@"object %@", object);
->>>>>>> dev
+//                
 //                }
                 
             } else {
