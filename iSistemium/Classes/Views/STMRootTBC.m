@@ -425,6 +425,14 @@
     
 }
 
+- (void)checkTimeoutAlert {
+    
+    if (self.timeoutAlert.visible) {
+        if (self.session.syncer.syncerState != STMSyncerIdle) [self.timeoutAlert dismissWithClickedButtonIndex:0 animated:YES];
+    }
+    
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (alertView.tag == 1) {
@@ -486,6 +494,7 @@
 - (void)syncStateChanged {
 
     [UIApplication sharedApplication].applicationIconBadgeNumber = [STMObjectsController unreadMessagesCount];
+    [self checkTimeoutAlert];
     
 }
 
