@@ -982,9 +982,9 @@
                 NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
                 NSLog(logMessage);
                 
-                if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
-                    NSLog(@"object %@", object);
-                }
+//                if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
+//                    NSLog(@"object %@", object);
+//                }
                 
             } else {
                 
