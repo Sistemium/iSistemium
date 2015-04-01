@@ -1134,31 +1134,26 @@
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
     
-<<<<<<< HEAD
 //    NSDate *finish = [NSDate date];
 //    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
 //    NSLog(@"--------------------F %@ %@", finishString, entity.eTag);
     
-    entity.eTag = eTag;
-
-=======
-    if ([entityName isEqualToString:@"STMSalesman"]) {
-        
-        NSLog(@"entity.deviceTs1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
-        NSLog(@"entity.lts1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
-        
-    }
+//    if ([entityName isEqualToString:@"STMSalesman"]) {
+//        
+//        NSLog(@"entity.deviceTs1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
+//        NSLog(@"entity.lts1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
+//        
+//    }
     
     entity.eTag = eTag;
 
-    if ([entityName isEqualToString:@"STMSalesman"]) {
+//    if ([entityName isEqualToString:@"STMSalesman"]) {
+//
+//        NSLog(@"entity.deviceTs2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
+//        NSLog(@"entity.lts2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
+//
+//    }
 
-        NSLog(@"entity.deviceTs2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
-        NSLog(@"entity.lts2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
-
-    }
-
->>>>>>> prices
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }
