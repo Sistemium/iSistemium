@@ -189,3 +189,5 @@
 "SHOW NONZERO STOCK ARTICLES" = "Nonzero stock";
 "SECTION" = "Section";
 "STOCK" = "Stock volume";
+"TIMEOUT ERROR" = "Timeout error. Repeat send/receive attempt?";
+

@@ -21,6 +21,7 @@
 
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
+@property (nonatomic, strong) UIAlertView *timeoutAlert;
 @property (nonatomic, strong) STMSession *session;
 
 @property (nonatomic, strong) NSString *appDownloadUrl;
@@ -377,10 +378,13 @@
     
     if (!_authAlert) {
         
-        _authAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"U R NOT AUTH", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+        _authAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                message:NSLocalizedString(@"U R NOT AUTH", nil)
+                                               delegate:self
+                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                      otherButtonTitles:nil];
         
     }
-    
     return _authAlert;
     
 }
@@ -394,6 +398,33 @@
     
 }
 
+- (UIAlertView *)timeoutAlert {
+    
+    if (!_timeoutAlert) {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"TIMEOUT ERROR", nil)
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        
+        alertView.tag = 2;
+
+        _timeoutAlert = alertView;
+        
+    }
+    return _timeoutAlert;
+    
+}
+
+- (void)showTimeoutAlert {
+    
+    if (!self.timeoutAlert.visible) {
+        [self.timeoutAlert show];
+    }
+    
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (alertView.tag == 1) {
@@ -402,7 +433,6 @@
             
             NSLog(@"self.appDownloadUrl %@", self.appDownloadUrl);
             NSURL *updateURL = [NSURL URLWithString:self.appDownloadUrl];
-//            NSURL *updateURL = [NSURL URLWithString:@"http://www.iptm.ru"];
             [[UIApplication sharedApplication] openURL:updateURL];
 
         } else {
@@ -412,6 +442,10 @@
         
         self.updateAlertIsShowing = NO;
         
+    } else if (alertView.tag == 2) {
+
+        if (buttonIndex == 1) [self.session.syncer setSyncerState:self.session.syncer.timeoutErrorSyncerState];
+    
     }
     
 }
@@ -453,6 +487,12 @@
 
     [UIApplication sharedApplication].applicationIconBadgeNumber = [STMObjectsController unreadMessagesCount];
     
+}
+
+- (void)syncerTimeoutError {
+    
+    [self showTimeoutAlert];
+
 }
 
 - (void)showUnreadMessageCount {
@@ -554,13 +594,15 @@
                name:@"documentReady"
              object:nil];
     
+    [nc addObserver:self
+           selector:@selector(syncerTimeoutError)
+               name:@"NSURLErrorTimedOut"
+             object:self.session.syncer];
+    
 }
 
 - (void)removeObservers {
-    
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notAuthorized" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
 }
 
 #pragma mark - view lifecycle

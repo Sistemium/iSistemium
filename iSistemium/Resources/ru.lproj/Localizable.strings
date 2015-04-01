@@ -189,5 +189,6 @@
 "SHOW NONZERO STOCK ARTICLES" = "Есть в наличии";
 "SECTION" = "Раздел";
 "STOCK" = "Количество";
+"TIMEOUT ERROR" = "Соединение прервано. Повторить попытку?";
 
 
