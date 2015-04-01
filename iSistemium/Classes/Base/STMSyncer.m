@@ -895,6 +895,8 @@
 
     if (error.code == NSURLErrorTimedOut) {
         
+        self.timeoutErrorSyncerState = (self.syncerState != STMSyncerIdle) ? self.syncerState : self.timeoutErrorSyncerState;
+        
         NSLog(@"NSURLErrorFailingURLStringErrorKey %@", [error.userInfo valueForKey:NSURLErrorFailingURLStringErrorKey]);
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"NSURLErrorTimedOut" object:self userInfo:error.userInfo];
