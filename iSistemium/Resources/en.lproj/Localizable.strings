@@ -133,4 +133,5 @@
 "BASIS" = "Basis: ";
 "OUTLET" = "Outlet";
 "DEBT COMMENT" = "Comment: ";
+"TIMEOUT ERROR" = "Timeout error. Repeat send/receive attempt?";
 
