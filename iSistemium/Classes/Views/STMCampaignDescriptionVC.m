@@ -22,6 +22,7 @@
 
 - (void)customInit {
     
+    self.descriptionTextView.editable = NO;
     self.descriptionTextView.text = self.descriptionText;
     
 }
