@@ -1062,9 +1062,14 @@
             [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
 
                 if (success) {
-                    [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
                     
-//                    NSLog(@"%@: get %d objects", connectionEntityName, dataArray.count);
+                    if ([connectionEntityName isEqualToString:@"STMSalesman"]) {
+                        NSLog(@"temporaryETag %@", self.temporaryETag);
+                    }
+                    
+                    NSLog(@"    %@: get %d objects", connectionEntityName, dataArray.count);
+                    
+                    [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
                     
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"getBunchOfObjects" object:self userInfo:@{@"count":@(dataArray.count)}];
                     
@@ -1076,6 +1081,8 @@
             }];
             
         } else {
+            
+//            NSLog(@"dataArray %@", dataArray);
             
             for (NSDictionary *datum in dataArray) {
                 [STMObjectsController syncObject:datum];
@@ -1123,16 +1130,35 @@
 }
 
 - (void)fillETagWithTemporaryValueForEntityName:(NSString *)entityName {
-
+    
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
     
+<<<<<<< HEAD
 //    NSDate *finish = [NSDate date];
 //    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
 //    NSLog(@"--------------------F %@ %@", finishString, entity.eTag);
     
     entity.eTag = eTag;
 
+=======
+    if ([entityName isEqualToString:@"STMSalesman"]) {
+        
+        NSLog(@"entity.deviceTs1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
+        NSLog(@"entity.lts1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
+        
+    }
+    
+    entity.eTag = eTag;
+
+    if ([entityName isEqualToString:@"STMSalesman"]) {
+
+        NSLog(@"entity.deviceTs2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
+        NSLog(@"entity.lts2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
+
+    }
+
+>>>>>>> prices
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }
