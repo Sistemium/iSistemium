@@ -1008,15 +1008,15 @@
                 NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
                 NSLog(logMessage);
                 
-                if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
-                    
-                    STMEntity *entity = (STMEntity *)object;
-                    
-                    if ([entity.name isEqualToString:@"Salesman"]) {
-                        NSLog(@"object %@", object);
-                    }
-                    
-                }
+//                if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
+//                    
+//                    STMEntity *entity = (STMEntity *)object;
+//                    
+//                    if ([entity.name isEqualToString:@"Salesman"]) {
+//                        NSLog(@"object %@", object);
+//                    }
+//                    
+//                }
                 
             } else {
                 

@@ -105,7 +105,7 @@
 //    }
 
     
-//    if ([self.entity.name isEqualToString:@"STMOutlet"] || [self.entity.name isEqualToString:@"STMSalesman"]) {
+//    if ([self.entity.name isEqualToString:@"STMSalesman"]) {
 //        
 //        NSLog(@"self1 %@", self)
 //        
@@ -140,14 +140,22 @@
         [self setPrimitiveValue:sqts forKey:@"sqts"];
 
         
-        if ([self.entity.name isEqualToString:@"STMOutlet"] || [self.entity.name isEqualToString:@"STMSalesman"]) {
-            
-            NSArray *keys = self.changedValues.allKeys;
-            NSLog(@"self.changedValues.allKeys %@", keys);
-
-            NSLog(@"self2 %@", self)
-            
-        }
+//        if ([self.entity.name isEqualToString:@"STMEntity"]) {
+//            
+//            NSString *name = [self primitiveValueForKey:@"name"];
+//            
+//            if ([name isEqualToString:@"Salesman"]) {
+//                
+//                NSArray *keys = self.changedValues.allKeys;
+//                NSLog(@"self.changedValues.allKeys %@", keys);
+//                
+//                for (NSString *key in keys) NSLog(@"%@: %@", key, self.changedValues[key]);
+//
+//                NSLog(@"self2 %@", self)
+//
+//            }
+//            
+//        }
     
         
     }
