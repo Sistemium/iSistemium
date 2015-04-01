@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSMutableDictionary *stcEntities;
 @property (nonatomic) double syncInterval;
 @property (nonatomic) STMSyncerState syncerState;
+@property (nonatomic) STMSyncerState timeoutErrorSyncerState;
 
 - (void)prepareToDestroy;
 - (void) setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler;
