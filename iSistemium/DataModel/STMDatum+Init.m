@@ -72,6 +72,7 @@
     BOOL notCalculatedSum = ![changedKeys containsObject:@"calculatedSum"];
     
     BOOL notEmpty = (changedKeys.count != 0);
+    
     BOOL notToMany = YES;
     
     NSMutableArray *relationshipsToMany = [NSMutableArray array];
@@ -85,10 +86,28 @@
         }
         
     }
+
+    BOOL allChangesIsToMany = YES;
+    for (NSString *key in changedKeys) allChangesIsToMany &= [relationshipsToMany containsObject:key];
+
+    notToMany = !allChangesIsToMany;
     
-//    if ([self.entity.name isEqualToString:@"STMSaleOrder"]) {
+//    if (changedKeys.count == 1) {
 //        
-////        NSLog(@"self1 %@", self)
+//        NSString *key = [changedKeys lastObject];
+//        if ([relationshipsToMany containsObject:key]) {
+//            notToMany = NO;
+//            
+//            //            NSLog(@"%@ is toMany", key);
+//            
+//        }
+//        
+//    }
+
+    
+//    if ([self.entity.name isEqualToString:@"STMOutlet"] || [self.entity.name isEqualToString:@"STMSalesman"]) {
+//        
+//        NSLog(@"self1 %@", self)
 //        
 //        NSArray *keys = self.changedValues.allKeys;
 //        NSLog(@"self.changedValues.allKeys %@", self.changedValues.allKeys);
@@ -101,17 +120,6 @@
 //        
 //    }
     
-    if (changedKeys.count == 1) {
-        
-        NSString *key = [changedKeys lastObject];
-        if ([relationshipsToMany containsObject:key]) {
-            notToMany = NO;
-            
-//            NSLog(@"%@ is toMany", key);
-            
-        }
-        
-    }
     
     if (notLts && notSts && notSqts && notDeviceTs && notEmpty && notToMany && notImagePath && notResizedImagePath && notCalculatedSum) {
         
@@ -131,12 +139,17 @@
         
         [self setPrimitiveValue:sqts forKey:@"sqts"];
 
-//        if ([self.entity.name isEqualToString:@"STMDebt"]) {
-//            
-//            NSLog(@"self2 %@", self)
-//            
-//        }
+        
+        if ([self.entity.name isEqualToString:@"STMOutlet"] || [self.entity.name isEqualToString:@"STMSalesman"]) {
+            
+            NSArray *keys = self.changedValues.allKeys;
+            NSLog(@"self.changedValues.allKeys %@", keys);
+
+            NSLog(@"self2 %@", self)
+            
+        }
     
+        
     }
     
     [super willSave];
