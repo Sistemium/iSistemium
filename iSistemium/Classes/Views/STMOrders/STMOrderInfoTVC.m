@@ -579,7 +579,9 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     cell.textLabel.text = saleOrderPosition.article.name;
 //    cell.textLabel.font = [UIFont systemFontOfSize:16];
     
-    cell.detailTextLabel.text = [self detailedTextForSaleOrderPosition:saleOrderPosition];
+//    cell.detailTextLabel.text = [self detailedTextForSaleOrderPosition:saleOrderPosition];
+    cell.detailTextLabel.attributedText = [self attributedDetailedTextForSaleOrderPosition:saleOrderPosition
+                                                                                  withFont:cell.detailTextLabel.font];
     
     NSString *volumeUnitString = nil;
     
@@ -615,6 +617,90 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
 }
 
+- (NSAttributedString *)attributedDetailedTextForSaleOrderPosition:(STMSaleOrderPosition *)saleOrderPosition withFont:(UIFont *)font {
+
+    NSDictionary *attributes = @{NSFontAttributeName:font};
+    
+    NSMutableAttributedString *attributedDetailedString = [[NSMutableAttributedString alloc] initWithString:@"" attributes:attributes];
+    NSString *appendString = @"";
+    
+    NSDecimalNumber *price = saleOrderPosition.price;
+    NSDecimalNumber *priceDoc = saleOrderPosition.priceDoc;
+    NSDecimalNumber *priceOrigin = saleOrderPosition.priceOrigin;
+
+    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    appendString = [NSString stringWithFormat:@"%@%@", saleOrderPosition.article.pieceVolume, volumeUnitString];
+    [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+    
+    appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE0", nil)];
+    [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+    
+    appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price]];
+    [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+
+    if ([price compare:priceDoc] != NSOrderedSame) {
+        
+        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE1", nil)];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+        
+        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceDoc]];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+        
+    }
+
+    if ([price compare:priceOrigin] != NSOrderedSame) {
+        
+        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE ORIGIN", nil)];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+        
+        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceOrigin]];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+        
+        NSDecimalNumber *result = [price decimalNumberBySubtracting:priceOrigin];
+        result = [result decimalNumberByDividingBy:priceOrigin];
+        
+        NSDecimalNumberHandler *behavior = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundDown scale:3 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
+        
+        NSDecimalNumber *discount = [result decimalNumberByRoundingAccordingToBehavior:behavior];
+        
+        numberFormatter = [STMFunctions percentFormatter];
+        
+        NSString *discountString = [numberFormatter stringFromNumber:discount];
+        
+        if ([discount compare:[NSDecimalNumber zero]] == NSOrderedAscending) {
+            
+            attributes = @{NSFontAttributeName: font,
+                           NSForegroundColorAttributeName: [UIColor redColor]};
+            
+        } else {
+
+            attributes = @{NSFontAttributeName: font,
+                           NSForegroundColorAttributeName: [UIColor purpleColor]};
+
+        }
+        
+        appendString = [NSString stringWithFormat:@", %@", discountString];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+        
+    }
+
+    
+    return attributedDetailedString;
+    
+}
+
+- (void)appendString:(NSString *)appendString toAttributedDetailedString:(NSMutableAttributedString *)attributedDetailedString withAttributes:(NSDictionary *)attributes {
+    
+    NSMutableAttributedString *attributedAppendString = [[NSMutableAttributedString alloc] initWithString:@"" attributes:attributes];
+
+    attributedAppendString = [[NSMutableAttributedString alloc] initWithString:appendString attributes:attributes];
+    [attributedDetailedString appendAttributedString:attributedAppendString];
+
+}
+
+/*
 - (NSString *)detailedTextForSaleOrderPosition:(STMSaleOrderPosition *)saleOrderPosition {
     
     NSDecimalNumber *price = saleOrderPosition.price;
@@ -673,6 +759,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     return detailedText;
     
 }
+*/
 
 
 #pragma mark - cell's height caching
