@@ -27,6 +27,9 @@
 #import "STMEntity.h"
 
 
+#define SEND_DATA_CONNECTION @"SEND_DATA"
+
+
 @interface STMSyncer() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
@@ -770,7 +773,7 @@
             
             NSURL *requestURL = [NSURL URLWithString:url];
             
-//            NSLog(@"entityName %@", entityName);
+//            NSLog(@"receiving %@ with eTag %@", entityName, eTag);
             
             [self startReceiveDataFromURL:requestURL withETag:eTag];
             
@@ -847,7 +850,7 @@
     
     if ([urlString isEqualToString:self.apiUrlString]) {
         
-        return @"SEND_DATA";
+        return SEND_DATA_CONNECTION;
         
     } else {
         
@@ -932,7 +935,15 @@
         
         NSString *eTag = headers[@"eTag"];
         
-        if (eTag && entityName && self.syncerState != STMSyncerIdle) [self.temporaryETag setValue:eTag forKey:entityName];
+        if (eTag) {
+            
+            if (entityName && self.syncerState != STMSyncerIdle) self.temporaryETag[entityName] = eTag;
+            
+        } else {
+            
+            if (![entityName isEqualToString:SEND_DATA_CONNECTION]) [self receiveNoContentStatusForEntityWithName:entityName];
+            
+        }
         
     } else if (statusCode == 410) {
         
@@ -945,26 +956,7 @@
     }  else if (statusCode == 204) {
         
         NSLog(@"%@: 204 No Content", entityName);
-        
-        [self.responses removeObjectForKey:entityName];
-        
-        if ([entityName isEqualToString:@"STMEntity"]) {
-            
-            self.stcEntities = nil;
-            NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
-            [entityNames removeObject:entityName];
-
-            self.entityCount = entityNames.count;
-
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"entitiesReceivingDidFinish" object:self];
-            
-            for (NSString *name in entityNames) {
-                [self checkConditionForReceivingEntityWithName:name];
-            }
-            
-        } else {
-            [self entityCountDecrease];
-        }
+        [self receiveNoContentStatusForEntityWithName:entityName];
         
     } else {
         
@@ -991,6 +983,30 @@
         }
     }
     
+}
+
+- (void)receiveNoContentStatusForEntityWithName:(NSString *)entityName {
+    
+    [self.responses removeObjectForKey:entityName];
+    
+    if ([entityName isEqualToString:@"STMEntity"]) {
+        
+        self.stcEntities = nil;
+        NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
+        [entityNames removeObject:entityName];
+        
+        self.entityCount = entityNames.count;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"entitiesReceivingDidFinish" object:self];
+        
+        for (NSString *name in entityNames) {
+            [self checkConditionForReceivingEntityWithName:name];
+        }
+        
+    } else {
+        [self entityCountDecrease];
+    }
+
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -1115,6 +1131,7 @@
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
     
+<<<<<<< HEAD
 //    if ([entityName isEqualToString:@"STMSalesman"]) {
 //        
 //        NSLog(@"entity.deviceTs1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
@@ -1131,6 +1148,10 @@
 //
 //    }
 
+=======
+//    NSLog(@"set eTag %@ for %@", eTag, entityName);
+    
+>>>>>>> dev
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }
