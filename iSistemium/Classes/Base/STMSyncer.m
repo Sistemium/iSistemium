@@ -1131,27 +1131,10 @@
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
     
-<<<<<<< HEAD
-//    if ([entityName isEqualToString:@"STMSalesman"]) {
-//        
-//        NSLog(@"entity.deviceTs1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
-//        NSLog(@"entity.lts1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
-//        
-//    }
-    
     entity.eTag = eTag;
 
-//    if ([entityName isEqualToString:@"STMSalesman"]) {
-//
-//        NSLog(@"entity.deviceTs2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
-//        NSLog(@"entity.lts2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
-//
-//    }
-
-=======
 //    NSLog(@"set eTag %@ for %@", eTag, entityName);
     
->>>>>>> dev
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }
