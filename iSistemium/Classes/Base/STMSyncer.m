@@ -1152,33 +1152,14 @@
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
     
-<<<<<<< HEAD
 //    NSDate *finish = [NSDate date];
 //    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
 //    NSLog(@"--------------------F %@ %@", finishString, entity.eTag);
     
-//    if ([entityName isEqualToString:@"STMSalesman"]) {
-//        
-//        NSLog(@"entity.deviceTs1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
-//        NSLog(@"entity.lts1 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
-//        
-//    }
-    
-    entity.eTag = eTag;
-
-//    if ([entityName isEqualToString:@"STMSalesman"]) {
-//
-//        NSLog(@"entity.deviceTs2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.deviceTs]);
-//        NSLog(@"entity.lts2 %@", [[STMFunctions dateFormatter] stringFromDate:entity.lts]);
-//
-//    }
-
-=======
     entity.eTag = eTag;
 
 //    NSLog(@"set eTag %@ for %@", eTag, entityName);
     
->>>>>>> prices
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }
