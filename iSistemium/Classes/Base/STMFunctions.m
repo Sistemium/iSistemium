@@ -34,6 +34,7 @@
 + (STMDateFormatter *)dateFormatter {
     
     STMDateFormatter *dateFormatter = [[STMDateFormatter alloc] init];
+    dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
     dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
     dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
     
