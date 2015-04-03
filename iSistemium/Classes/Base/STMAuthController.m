@@ -20,6 +20,7 @@
 @property (nonatomic, strong) NSMutableData *responseData;
 @property (nonatomic, strong) NSString *requestID;
 @property (nonatomic, strong) NSString *serviceUri;
+@property (nonatomic, strong) NSString *apiURL;
 @property (nonatomic, strong) KeychainItemWrapper *keychainItem;
 
 @end
@@ -381,6 +382,15 @@
 
 #endif
     
+    if (self.apiURL) {
+        
+        NSMutableDictionary *tempDictionary = [startSettings mutableCopy];
+        [tempDictionary addEntriesFromDictionary:@{@"API.url":self.apiURL}];
+        
+        startSettings = tempDictionary;
+        
+    }
+    
     [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionNotAuthorized) name:@"notAuthorized" object:[STMSessionManager sharedManager].currentSession.syncer];
@@ -552,6 +562,11 @@
         } else if (self.controllerState == STMAuthEnterSMSCode) {
             
             self.serviceUri = responseJSON[@"redirectUri"];
+
+//#warning Switch comment line when server give correct apiURL
+            self.apiURL = responseJSON[@"apiUrl"];
+//            self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
+            
             self.userID = responseJSON[@"ID"];
             self.userName = responseJSON[@"name"];
             self.accessToken = responseJSON[@"accessToken"];

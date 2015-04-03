@@ -214,13 +214,13 @@
     if (!self.syncing && syncerState != _syncerState) {
         
         syncerState = (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
-        
-//        NSLog(@"syncerState %d", syncerState);
+
+        STMSyncerState previousState = _syncerState;
         
         _syncerState = syncerState;
         
         NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self userInfo:@{@"from":@(previousState), @"to":@(syncerState)}];
         
         NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
 //        [(STMLogger *)self.session.logger saveLogMessageWithText:logMessage];
@@ -339,6 +339,7 @@
         [STMEntityController checkEntitiesForDuplicates];
         [STMPicturesController checkPhotos];
         [STMClientDataController checkClientData];
+        [STMEntityController checkEntitiesForDuplicates];
         [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
         [self initTimer];
         [self addObservers];
@@ -380,7 +381,13 @@
 }
 
 - (void)appDidBecomeActive {
+    
+#ifdef DEBUG
+    [self setSyncerState: STMSyncerSendData];
+#else
     [self setSyncerState: STMSyncerSendDataOnce];
+#endif
+
 }
 
 - (void)syncerDidReceiveRemoteNotification:(NSNotification *)notification {
@@ -537,7 +544,8 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
-        [request setIncludesSubentities:YES];
+        request.includesSubentities = YES;
+//        request.includesPendingChanges = YES;
         
         request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
         
@@ -621,8 +629,9 @@
         NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
         NSString *entityName = object.entity.name;
         BOOL isInSyncList = [entityNamesForSending containsObject:entityName];
+        BOOL isFantom = [[object valueForKey:@"isFantom"] boolValue];
         
-        if (isInSyncList) {
+        if (isInSyncList && !isFantom) {
             
             if ([entityName isEqualToString:NSStringFromClass([STMLogMessage class])]) {
 
@@ -682,6 +691,8 @@
 - (void)startConnectionForSendData:(NSData *)sendData {
     
     if (self.apiUrlString) {
+        
+//        NSLog(@"self.apiUrlString %@", self.apiUrlString);
         
         NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
@@ -868,6 +879,9 @@
     if (self.entityCount == 0) {
         
         self.syncing = NO;
+        
+        [self saveReceiveDate];
+        
         self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
         
     }
@@ -947,6 +961,9 @@
     } else {
         
         NSLog(@"%@: HTTP status %d", entityName, statusCode);
+        
+//        NSLog(@"connection.originalRequest %@", connection.originalRequest);
+//        NSLog(@"allHTTPHeaderFields %@", [connection.originalRequest allHTTPHeaderFields]);
         
         if ([entityName isEqualToString:@"SEND_DATA"]) {
             
@@ -1031,7 +1048,7 @@
         NSString *connectionEntityName = [self entityNameForConnection:connection];
         NSArray *dataArray = responseJSON[@"data"];
         
-//        if ([connectionEntityName isEqualToString:@"STMEntity"]) {
+//        if ([connectionEntityName isEqualToString:@"STMSaleOrder"]) {
 //            NSLog(@"responseJSON %@", responseJSON);
 //        }
         
@@ -1042,8 +1059,17 @@
             [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
 
                 if (success) {
+                    
+//                    if ([connectionEntityName isEqualToString:@"STMSalesman"]) {
+//                        NSLog(@"temporaryETag %@", self.temporaryETag);
+//                    }
+                    
+                    NSLog(@"    %@: get %d objects", connectionEntityName, dataArray.count);
+                    
                     [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
-//                    NSLog(@"%@: get %d objects", connectionEntityName, dataArray.count);
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"getBunchOfObjects" object:self userInfo:@{@"count":@(dataArray.count)}];
+                    
                 } else {
                     self.errorOccured = YES;
                     [self entityCountDecrease];
@@ -1053,12 +1079,18 @@
             
         } else {
             
+//            NSLog(@"dataArray %@", dataArray);
+            
             for (NSDictionary *datum in dataArray) {
                 [STMObjectsController syncObject:datum];
             }
+
+            [self saveSendDate];
             
             self.syncing = NO;
 
+//TODO: Check if STMEntity was changed — receive data againg
+            
             [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMEntity class])]];
             
             BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
@@ -1095,16 +1127,41 @@
 }
 
 - (void)fillETagWithTemporaryValueForEntityName:(NSString *)entityName {
-
+    
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
-    entity.eTag = eTag;
     
+    entity.eTag = eTag;
+
 //    NSLog(@"set eTag %@ for %@", eTag, entityName);
     
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }
 
+- (void)saveSendDate {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *key = [@"sendDate" stringByAppendingString:self.session.uid];
+    NSString *sendDateString = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:[NSDate date]];
+    
+    [defaults setObject:sendDateString forKey:key];
+    [defaults synchronize];
+    
+}
+
+- (void)saveReceiveDate {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *key = [@"receiveDate" stringByAppendingString:self.session.uid];
+
+    NSString *receiveDateString = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:[NSDate date]];
+    
+    [defaults setObject:receiveDateString forKey:key];
+    [defaults synchronize];
+    
+}
 
 @end

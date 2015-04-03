@@ -56,7 +56,27 @@
     NSError *error;
     NSArray *result = [[[self document] managedObjectContext] executeFetchRequest:request error:&error];
     
-    return result;
+    NSMutableArray *returnValue = result.mutableCopy;
+    
+// insert duplicates
+/*
+    if (result.count < 40) {
+        
+        STMEntity *result0 = result[20];
+
+        STMEntity *duplicateEntity = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMEntity class]) inManagedObjectContext:[self document].managedObjectContext];
+
+        duplicateEntity.name = result0.name;
+
+        [returnValue addObject:duplicateEntity];
+        
+        [[self document] saveDocument:^(BOOL success) {}];
+
+    }
+*/
+// end of insert duplicates
+    
+    return returnValue;
     
 }
 
@@ -120,6 +140,12 @@
 
 + (void)checkEntitiesForDuplicates {
     
+/* next two lines is for generating duplicates
+ 
+    NSArray *entitiesArray = [self stcEntitiesArray];
+    NSLog(@"entitiesArray.count %d", entitiesArray.count);
+ 
+*/
     NSString *entityName = NSStringFromClass([STMEntity class]);
     NSString *property = @"name";
     
@@ -146,7 +172,7 @@
         NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
         
         result = [result filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"count > 1"]];
-        
+
         if (result.count > 0) {
             
             for (NSDictionary *entity in result) {

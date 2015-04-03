@@ -7,6 +7,7 @@
 //
 
 #import "STMLogMessage+dayAsString.h"
+#import "STMFunctions.h"
 
 @implementation STMLogMessage (dayAsString)
 
@@ -15,11 +16,8 @@
     static NSDateFormatter *formatter;
     static dispatch_once_t onceToken;
     
-    dispatch_once(&onceToken, ^{
-        
-        formatter = [[NSDateFormatter alloc] init];
-        formatter.dateFormat = @"yyyy/MM/dd";
-        
+    dispatch_once(&onceToken, ^{        
+        formatter = [STMFunctions dateNumbersFormatter];
     });
     
     return [formatter stringFromDate:self.deviceCts];

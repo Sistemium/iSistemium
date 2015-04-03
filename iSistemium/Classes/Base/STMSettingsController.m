@@ -78,7 +78,8 @@
     NSArray *URIValues = @[@"restServerURI",
                            @"xmlNamespace",
                            @"recieveDataServerURI",
-                           @"sendDataServerURI"];
+                           @"sendDataServerURI",
+                           @"API.url"];
 
     NSArray *timeValues = @[];
     NSArray *timeValueSuffixes = @[@"TrackerStartTime",
@@ -309,7 +310,8 @@
                 STMSetting *newSetting = (STMSetting *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMSetting class]) inManagedObjectContext:self.session.document.managedObjectContext];
                 newSetting.group = settingsGroupName;
                 newSetting.name = settingName;
-                newSetting.value = settingValue;
+//                newSetting.value = settingValue;
+                newSetting.value = [self normalizeValue:settingValue forKey:settingName];
                 [newSetting addObserver:self forKeyPath:@"value" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
                 
 //                NSLog(@"newSetting %@", newSetting);
@@ -404,7 +406,12 @@
     if ([anObject isKindOfClass:[STMSetting class]]) {
         
         NSString *notificationName = [NSString stringWithFormat:@"%@SettingsChanged", [anObject valueForKey:@"group"]];
-        NSDictionary *userInfo = @{[anObject valueForKey:@"name"]: [anObject valueForKey:@"value"]};
+        
+        NSDictionary *userInfo = nil;
+        
+        if ([anObject valueForKey:@"value"]) {
+            userInfo = @{[anObject valueForKey:@"name"]: [anObject valueForKey:@"value"]};
+        }
         
         [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self.session userInfo:userInfo];
         

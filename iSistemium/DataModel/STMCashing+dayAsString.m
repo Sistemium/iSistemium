@@ -9,6 +9,7 @@
 #import "STMCashing+dayAsString.h"
 #import "STMDebt+Cashing.h"
 #import "STMOutlet+photoReportsArePresent.h"
+#import "STMFunctions.h"
 
 @implementation STMCashing (dayAsString)
 
@@ -19,9 +20,7 @@
     
     dispatch_once(&onceToken, ^{
         
-        formatter = [[NSDateFormatter alloc] init];
-        formatter.dateStyle = NSDateFormatterMediumStyle;
-        formatter.timeStyle = NSDateFormatterNoStyle;
+        formatter = [STMFunctions dateMediumNoTimeFormatter];
 
     });
     

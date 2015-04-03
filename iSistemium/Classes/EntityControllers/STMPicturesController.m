@@ -64,6 +64,45 @@
 
 #pragma mark - instance properties
 
+- (instancetype)init {
+    
+    self = [super init];
+    
+    if (self) [self addObservers];
+    return self;
+    
+}
+
+- (void)addObservers {
+ 
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(authStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
+
+}
+
+- (void)authStateChanged {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        
+        self.downloadQueue = nil;
+        self.uploadQueue = nil;
+        self.hrefDictionary = nil;
+        self.secondAttempt = nil;
+        self.s3keychainItem = nil;
+        self.accessKey = nil;
+        self.secretKey = nil;
+        self.s3Initialized = NO;
+        self.session = nil;
+        self.settings = nil;
+        
+    }
+    
+}
+
 - (STMSession *)session {
     
     return [STMSessionManager sharedManager].currentSession;
@@ -366,7 +405,7 @@
 + (void)checkBrokenPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"imageThumbnail == %@", nil];
     
     NSError *error;
@@ -396,8 +435,8 @@
 
 + (void)checkUploadedPhotos {
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
     
     NSError *error;

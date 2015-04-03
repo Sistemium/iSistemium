@@ -28,7 +28,20 @@
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
 + (STMDateFormatter *)dateFormatter;
++ (NSDateFormatter *)dateNumbersFormatter;
++ (NSDateFormatter *)dateShortNoTimeFormatter;
++ (NSDateFormatter *)dateMediumNoTimeFormatter;
++ (NSDateFormatter *)dateMediumTimeMediumFormatter;
++ (NSDateFormatter *)dateLongNoTimeFormatter;
+
 + (NSNumberFormatter *)decimalFormatter;
++ (NSNumberFormatter *)decimalMaxTwoDigitFormatter;
++ (NSNumberFormatter *)decimalMinTwoDigitFormatter;
++ (NSNumberFormatter *)decimalMaxTwoMinTwoDigitFormatter;
++ (NSNumberFormatter *)currencyFormatter;
++ (NSNumberFormatter *)percentFormatter;
+
++ (NSString *)dayWithDayOfWeekFromDate:(NSDate *)date;
 
 + (NSString *)MD5FromString:(NSString *)string;
 
@@ -37,6 +50,9 @@
 + (NSString *)documentsDirectory;
 + (NSString *)absolutePathForPath:(NSString *)path;
 
++ (UIColor *)colorForColorString:(NSString *)colorSting;
+
 + (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController;
+
 
 @end

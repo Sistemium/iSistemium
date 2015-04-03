@@ -181,18 +181,23 @@
         },
         {
           "name": "restServerURI",
-          "value": "https://system.unact.ru/iproxy/rest",
+          "value": "",
           "control": "textField"
         },
         {
-          "name": "xmlNamespace",
-          "value": "https://github.com/sys-team/ASA.chest",
-          "control": "textField"
+           "name": "API.url",
+           "value": "",
+           "control": "textField"
         },
         {
-        "name": "uploadLog.type",
-        "value": "",
-        "control": "textField"
+            "name": "xmlNamespace",
+            "value": "https://github.com/sys-team/ASA.chest",
+            "control": "textField"
+        },
+        {
+            "name": "uploadLog.type",
+            "value": "",
+            "control": "textField"
         },
         {
            "name": "http.timeout.foreground",

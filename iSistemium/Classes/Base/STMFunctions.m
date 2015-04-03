@@ -42,11 +42,120 @@
     
 }
 
-+ (NSNumberFormatter *)decimalFormatter {
++ (NSDateFormatter *)dateNumbersFormatter {
     
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy/MM/dd";
+
+    return dateFormatter;
+    
+}
+
++ (NSDateFormatter *)dateNoTimeFormatter {
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    
+    return dateFormatter;
+
+}
+
++ (NSDateFormatter *)dateMediumNoTimeFormatter {
+    
+    NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+
+    return dateFormatter;
+    
+}
+
++ (NSDateFormatter *)dateShortNoTimeFormatter {
+    
+    NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
+    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    
+    return dateFormatter;
+    
+}
+
++ (NSDateFormatter *)dateMediumTimeMediumFormatter {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+
+    return dateFormatter;
+
+}
+
++ (NSDateFormatter *)dateLongNoTimeFormatter {
+    
+    NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
+    
+    return dateFormatter;
+    
+}
+
++ (NSNumberFormatter *)trueMinusFormatter {
+
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    numberFormatter.minusSign = @"\u2212"; // U+2212 TRUE MINUS SIGN
+    
+    return numberFormatter;
+
+}
+
++ (NSNumberFormatter *)decimalFormatter {
+
+    NSNumberFormatter *numberFormatter = [self trueMinusFormatter];
     numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
+    return numberFormatter;
+
+}
+
++ (NSNumberFormatter *)decimalMaxTwoDigitFormatter {
+    
+    NSNumberFormatter *numberFormatter = [self decimalFormatter];
     numberFormatter.maximumFractionDigits = 2;
+
+    return numberFormatter;
+    
+}
+
++ (NSNumberFormatter *)decimalMinTwoDigitFormatter {
+
+    NSNumberFormatter *numberFormatter = [self decimalFormatter];
+    numberFormatter.minimumFractionDigits = 2;
+    
+    return numberFormatter;
+
+}
+
++ (NSNumberFormatter *)decimalMaxTwoMinTwoDigitFormatter {
+    
+    NSNumberFormatter *numberFormatter = [self decimalMaxTwoDigitFormatter];
+    numberFormatter.minimumFractionDigits = 2;
+
+    return numberFormatter;
+    
+}
+
++ (NSNumberFormatter *)currencyFormatter {
+    
+    NSNumberFormatter *numberFormatter = [self trueMinusFormatter];
+    numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+    
+    return numberFormatter;
+    
+}
+
++ (NSNumberFormatter *)percentFormatter {
+    
+    NSNumberFormatter *numberFormatter = [self trueMinusFormatter];
+    numberFormatter.numberStyle = NSNumberFormatterPercentStyle;
+    numberFormatter.positivePrefix = @"+";
 
     return numberFormatter;
     
@@ -56,9 +165,7 @@
     
     NSDate *today = [NSDate date];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateStyle = NSDateFormatterShortStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    NSDateFormatter *dateFormatter = [self dateShortNoTimeFormatter];
     
     today = [dateFormatter dateFromString:[dateFormatter stringFromDate:today]];
     date = [dateFormatter dateFromString:[dateFormatter stringFromDate:date]];
@@ -68,6 +175,37 @@
     int numberOfDays = floor(interval / (60 * 60 * 24));
     
     return @(numberOfDays);
+    
+}
+
++ (NSString *)dayWithDayOfWeekFromDate:(NSDate *)date {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"dd MMMM yyyy, EEE";
+    
+    NSString *dateString = [dateFormatter stringFromDate:date];
+    
+    NSNumber *numberOfDays = [STMFunctions daysFromTodayToDate:date];
+
+    NSString *dayString = nil;
+    
+    if ([numberOfDays intValue] == 0) {
+        
+        dayString = NSLocalizedString(@"TODAY", nil);
+        
+    } else if ([numberOfDays intValue] == -1) {
+        
+        dayString = NSLocalizedString(@"YESTERDAY", nil);
+        
+    } else if ([numberOfDays intValue] == 1) {
+        
+        dayString = NSLocalizedString(@"TOMORROW", nil);
+        
+    }
+    
+    if (dayString) dateString = [NSString stringWithFormat:@"%@, %@", dateString, [dayString lowercaseString]];
+    
+    return dateString;
     
 }
 
@@ -287,6 +425,29 @@
 
 + (NSString *)absolutePathForPath:(NSString *)path {
     return [[self documentsDirectory] stringByAppendingPathComponent:path];
+}
+
++ (UIColor *)colorForColorString:(NSString *)colorSting {
+    
+    NSString *selectorString = [colorSting stringByAppendingString:@"Color"];
+    
+    SEL selector = NSSelectorFromString(selectorString);
+    
+    if ([UIColor respondsToSelector:selector]) {
+        
+// next 3 lines — implementation of id value = [self performSelector:selector] w/o warning
+        IMP imp = [UIColor methodForSelector:selector];
+        id (*func)(id, SEL) = (void *)imp;
+        id value = func([UIColor class], selector);
+        
+        return value;
+        
+    } else {
+        
+        return nil;
+        
+    }
+    
 }
 
 + (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController {

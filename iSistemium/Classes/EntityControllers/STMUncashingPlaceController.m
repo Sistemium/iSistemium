@@ -36,11 +36,31 @@
     
     if (self) {
         
+        [self addObservers];
         [self performFetch];
         
     }
     
     return self;
+}
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(authStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
+    
+}
+
+- (void)authStateChanged {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        self.resultsController = nil;
+    }
+    
 }
 
 - (NSFetchedResultsController *)resultsController {

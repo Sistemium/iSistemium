@@ -9,6 +9,7 @@
 #import "STMLogger.h"
 #import "STMDocument.h"
 #import "STMEntityDescription.h"
+#import "STMFunctions.h"
 
 @interface STMLogger() <NSFetchedResultsControllerDelegate>
 
@@ -278,13 +279,11 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][section];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"yyyy/MM/dd";
+    NSDateFormatter *dateFormatter = [STMFunctions dateNumbersFormatter];
 
     NSDate *date = [dateFormatter dateFromString:[sectionInfo name]];
     
-    dateFormatter.dateStyle = NSDateFormatterLongStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    dateFormatter = [STMFunctions dateLongNoTimeFormatter];
     
     return [dateFormatter stringFromDate:date];
     
@@ -297,9 +296,7 @@
   
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    NSDateFormatter *startDateFormatter = [[NSDateFormatter alloc] init];
-    [startDateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    [startDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    NSDateFormatter *startDateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
     
     STMLogMessage *logMessage = [self.resultsController objectAtIndexPath:indexPath];
     

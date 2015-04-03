@@ -115,13 +115,37 @@
                                 <rect key="frame" x="16" y="200" width="288" height="2"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             </progressView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Number of objects received" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4Uq-pD-OHj">
+                                <rect key="frame" x="16" y="210" width="288" height="21"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data send: 2015/03/03 12:34:56" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Qzp-l1-rW5">
+                                <rect key="frame" x="16" y="239" width="288" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data receive: 2015/03/03 12:34:56" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gix-oQ-bmy">
+                                <rect key="frame" x="16" y="268" width="288" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
                         <outlet property="nameLabel" destination="RMe-BJ-cRW" id="mFX-1R-aES"/>
+                        <outlet property="numberOfObjectLabel" destination="4Uq-pD-OHj" id="IB6-bg-WS6"/>
                         <outlet property="phoneNumberLabel" destination="o9x-eM-R98" id="KSL-qp-ZNL"/>
                         <outlet property="progressBar" destination="e0q-Uv-EeH" id="OhC-FC-fgd"/>
+                        <outlet property="receiveDateLabel" destination="gix-oQ-bmy" id="EIj-U4-8YC"/>
+                        <outlet property="sendDateLabel" destination="Qzp-l1-rW5" id="u6K-C4-2eH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GvF-LL-Ze1" userLabel="First Responder" sceneMemberID="firstResponder"/>

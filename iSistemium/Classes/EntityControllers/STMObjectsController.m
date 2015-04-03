@@ -23,6 +23,7 @@
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
 #import "STMArticle.h"
+#import "STMArticleGroup.h"
 #import "STMArticlePicture.h"
 #import "STMSetting.h"
 #import "STMLogMessage.h"
@@ -37,6 +38,11 @@
 #import "STMTrack.h"
 #import "STMEntity.h"
 #import "STMCampaignGroup.h"
+#import "STMSaleOrder.h"
+#import "STMSaleOrderPosition.h"
+#import "STMPriceType.h"
+#import "STMPrice.h"
+#import "STMStock.h"
 
 #import "STMFetchRequest.h"
 
@@ -228,48 +234,61 @@
     
     for (NSString *relationship in [ownObjectRelationships allKeys]) {
         
-        NSDictionary *relationshipDictionary = properties[relationship];
-        NSString *destinationObjectXid = relationshipDictionary[@"xid"];
-        
-        if (destinationObjectXid) {
+        if ([properties[relationship] isKindOfClass:[NSDictionary class]]) {
             
-            NSManagedObject *destinationObject = [self objectForEntityName:ownObjectRelationships[relationship] andXid:destinationObjectXid];
+            NSDictionary *relationshipDictionary = properties[relationship];
+            NSString *destinationObjectXid = relationshipDictionary[@"xid"];
             
-            if (![[object valueForKey:relationship] isEqual:destinationObject]) {
+            if (destinationObjectXid) {
                 
-                BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                NSManagedObject *destinationObject = [self objectForEntityName:ownObjectRelationships[relationship] andXid:destinationObjectXid];
                 
-                [object setValue:destinationObject forKey:relationship];
-                
-                if (!waitingForSync) {
+                if (![[object valueForKey:relationship] isEqual:destinationObject]) {
                     
-                    [destinationObject addObserver:[self sharedController]
-                                        forKeyPath:@"deviceTs"
-                                           options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
-                                           context:nil];
+                    BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                    
+                    [object setValue:destinationObject forKey:relationship];
+                    
+                    if (!waitingForSync) {
+                        
+                        [destinationObject addObserver:[self sharedController]
+                                            forKeyPath:@"deviceTs"
+                                               options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                               context:nil];
+                        
+                    }
+                    
+                }
+                
+            } else {
+                
+                NSManagedObject *destinationObject = [object valueForKey:relationship];
+                
+                if (destinationObject) {
+                    
+                    BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                    
+                    [object setValue:nil forKey:relationship];
+                    
+                    if (!waitingForSync) {
+                        
+                        [destinationObject addObserver:[self sharedController]
+                                            forKeyPath:@"deviceTs"
+                                               options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                               context:nil];
+                        
+                    }
                     
                 }
                 
             }
-            
+
         } else {
             
-            NSManagedObject *destinationObject = [object valueForKey:relationship];
-            
-            if (destinationObject) {
+            if (properties[relationship]) {
                 
-                BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
-                
-                [object setValue:nil forKey:relationship];
-                
-                if (!waitingForSync) {
-
-                    [destinationObject addObserver:[self sharedController]
-                                        forKeyPath:@"deviceTs"
-                                           options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
-                                           context:nil];
-
-                }
+                NSString *logMessage = [NSString stringWithFormat:@"not correct %@ relationship dictionary for %@ %@", relationship, entityName, [object valueForKey:@"xid"]];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
 
             }
             
@@ -459,6 +478,7 @@
                                        NSStringFromClass([STMOutlet class]),
                                        NSStringFromClass([STMPartner class]),
                                        NSStringFromClass([STMLocation class]),
+                                       NSStringFromClass([STMSaleOrder class]),
                                        NSStringFromClass([STMLogMessage class])
                                        ];
     
@@ -472,7 +492,7 @@
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
     
     NSError *error;
@@ -718,7 +738,7 @@
 
 }
 
-#pragma mark - recieve of objects is finished
+#pragma mark - finish of recieving objects
 
 + (void)dataLoadingFinished {
     
@@ -739,26 +759,32 @@
 + (void)totalNumberOfObjects {
     
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
-                             NSStringFromClass([STMSetting class]),
-                             NSStringFromClass([STMLogMessage class]),
                              NSStringFromClass([STMPartner class]),
                              NSStringFromClass([STMCampaign class]),
-                             NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMCampaignGroup class]),
                              NSStringFromClass([STMCampaignPicture class]),
-                             NSStringFromClass([STMSalesman class]),
-                             NSStringFromClass([STMOutlet class]),
                              NSStringFromClass([STMPhotoReport class]),
+                             NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMArticleGroup class]),
+                             NSStringFromClass([STMSalesman class]),
+                             NSStringFromClass([STMSaleOrder class]),
+                             NSStringFromClass([STMSaleOrderPosition class]),
+                             NSStringFromClass([STMOutlet class]),
                              NSStringFromClass([STMDebt class]),
                              NSStringFromClass([STMCashing class]),
                              NSStringFromClass([STMUncashing class]),
-                             NSStringFromClass([STMMessage class]),
-                             NSStringFromClass([STMClientData class]),
-                             NSStringFromClass([STMRecordStatus class]),
-                             NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMUncashingPicture class]),
+                             NSStringFromClass([STMMessage class]),
                              NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMLocation class]),
-                             NSStringFromClass([STMCampaignGroup class]),
+                             NSStringFromClass([STMSetting class]),
+                             NSStringFromClass([STMClientData class]),
+                             NSStringFromClass([STMRecordStatus class]),
+                             NSStringFromClass([STMLogMessage class]),
+                             NSStringFromClass([STMPriceType class]),
+                             NSStringFromClass([STMPrice class]),
+                             NSStringFromClass([STMStock class]),
                              NSStringFromClass([STMEntity class])];
     
     NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
@@ -786,7 +812,7 @@
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
@@ -805,7 +831,7 @@
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"xid" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
         NSError *error;
         NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
         
@@ -983,7 +1009,15 @@
                 NSLog(logMessage);
                 
 //                if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
+//
+//                    STMEntity *entity = (STMEntity *)object;
+//                    
+//                    if ([entity.name isEqualToString:@"Salesman"]) {
+//                        NSLog(@"object %@", object);
+//                    }
+//                    
 //                    NSLog(@"object %@", object);
+//                
 //                }
                 
             } else {
