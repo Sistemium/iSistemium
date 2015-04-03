@@ -120,6 +120,7 @@
 "PARTNERS" = "Партнёры";
 "PARTNER LABEL" = "Партнёр: ";
 "IORDERS" = "Заказы";
+"OTHER" = "Прочее";
 "DELETE OUTLET" = "Удалить точку";
 "RELOAD" = "Перезагрузить";
 "CAMPAIGN TERMS" = "Условия акции";
@@ -142,7 +143,7 @@
 "ALL" = "Всё";
 "CODE" = "Код";
 "PRICE" = "Цена";
-"ORDERS" = "Заказы 2";
+"ORDERS" = "Заказы";
 "ALL DATES" = "Все даты";
 "ALL OUTLETS" = "Все точки";
 "ALL SALESMANS" = "Все менеджеры";

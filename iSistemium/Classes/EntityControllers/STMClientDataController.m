@@ -26,7 +26,7 @@
 #pragma mark - clientData properties
 
 + (NSString *)appVersion {
-    return [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    return BUNDLE_VERSION;
 }
 
 + (NSString *)buildType {
@@ -172,7 +172,7 @@
         
         if (clientData) {
             
-            NSString *bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+            NSString *bundleVersion = BUNDLE_VERSION;
             if (![bundleVersion isEqualToString:clientData.appVersion]) {
                 clientData.appVersion = bundleVersion;
             }

@@ -199,18 +199,28 @@
                         title:NSLocalizedString(@"UNCASHING", nil)
                         image:[UIImage imageNamed:@"banknotes-128.png"]];
 
-    [self registerTabWithStoryboardName:@"STMCatalog"
-                        title:NSLocalizedString(@"CATALOG", nil)
-                        image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
+    if ([BUNDLE_VERSION integerValue] >= 70) {
+        
+        [self registerTabWithStoryboardName:@"STMCatalog"
+                                      title:NSLocalizedString(@"CATALOG", nil)
+                                      image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
 
-    [self registerTabWithStoryboardName:@"STMWebView"
-                        title:NSLocalizedString(@"IORDERS", nil)
-                        image:[UIImage imageNamed:@"purchase_order-128.png"]];
+        [self registerTabWithStoryboardName:@"STMOrders"
+                                      title:NSLocalizedString(@"ORDERS", nil)
+                                      image:[UIImage imageNamed:@"bill-128.png"]];
 
-    [self registerTabWithStoryboardName:@"STMOrders"
-                        title:NSLocalizedString(@"ORDERS", nil)
-                        image:[UIImage imageNamed:@"bill-128.png"]];
+        [self registerTabWithStoryboardName:@"STMWebView"
+                                      title:NSLocalizedString(@"OTHER", nil)
+                                      image:[UIImage imageNamed:@"purchase_order-128.png"]];
 
+    } else {
+    
+        [self registerTabWithStoryboardName:@"STMWebView"
+                                      title:NSLocalizedString(@"IORDERS", nil)
+                                      image:[UIImage imageNamed:@"purchase_order-128.png"]];
+
+    }
+    
     [self registerTabWithStoryboardName:@"STMMessages"
                         title:NSLocalizedString(@"MESSAGES", nil)
                         image:[UIImage imageNamed:@"message-128.png"]];
