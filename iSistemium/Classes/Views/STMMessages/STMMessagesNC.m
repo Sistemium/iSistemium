@@ -7,11 +7,17 @@
 //
 
 #import "STMMessagesNC.h"
+#import "STMMessageVC.h"
+
 #import "STMFunctions.h"
+
 
 @interface STMMessagesNC () <UIActionSheetDelegate>
 
+@property (nonatomic, strong) STMMessageVC *messageVC;
+
 @end
+
 
 @implementation STMMessagesNC
 
@@ -20,20 +26,45 @@
 
 - (void)showActionSheetFromTabBarItem {
     
-//    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
-//    
-//    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-//    
-//    [actionSheet showFromRect:rect inView:self.view animated:YES];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
+    
+    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+    
+    [actionSheet showFromRect:rect inView:self.view animated:YES];
     
 }
 
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex != -1) {
+        
+        [self.tabBarController presentViewController:self.messageVC animated:YES completion:^{
+            
+        }];
+        
+    }
+    
+}
+
+- (void)initMessageVC {
+
+    UIStoryboard *messageVCStoryboard = [UIStoryboard storyboardWithName:@"STMMessageVC" bundle:nil];
+    STMMessageVC *messageVC = [messageVCStoryboard instantiateInitialViewController];
+    self.messageVC = messageVC;
+
+}
 
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    [self initMessageVC];
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning {

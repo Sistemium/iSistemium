@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="ei6-Tn-mH6">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--MessageVC-->
+        <scene sceneID="y6p-lX-ihH">
+            <objects>
+                <viewController id="ei6-Tn-mH6" customClass="STMMessageVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="REZ-qT-mSh"/>
+                        <viewControllerLayoutGuide type="bottom" id="RYT-0f-b6R"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8i9-Pa-TjS">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fTH-Ls-E1T">
+                                <rect key="frame" x="20" y="838" width="728" height="166"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="tJw-1s-J6F">
+                                <rect key="frame" x="16" y="194" width="736" height="636"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="636" id="2qU-KJ-AmW"/>
+                                    <constraint firstAttribute="width" constant="736" id="lJC-61-jfw"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="tJw-1s-J6F" secondAttribute="centerY" id="Bt5-aE-I4w"/>
+                            <constraint firstItem="fTH-Ls-E1T" firstAttribute="trailing" secondItem="8i9-Pa-TjS" secondAttribute="trailingMargin" id="CZ5-Rg-2nS"/>
+                            <constraint firstAttribute="centerX" secondItem="tJw-1s-J6F" secondAttribute="centerX" id="bz1-pg-XHi"/>
+                            <constraint firstItem="RYT-0f-b6R" firstAttribute="top" secondItem="fTH-Ls-E1T" secondAttribute="bottom" constant="20" id="iJc-Lf-EUz"/>
+                            <constraint firstItem="fTH-Ls-E1T" firstAttribute="leading" secondItem="8i9-Pa-TjS" secondAttribute="leadingMargin" id="it2-GB-9WC"/>
+                            <constraint firstItem="fTH-Ls-E1T" firstAttribute="top" secondItem="tJw-1s-J6F" secondAttribute="bottom" constant="8" id="kQl-sS-lJU"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="tJw-1s-J6F" id="Iwq-Ub-AVF"/>
+                        <outlet property="textView" destination="fTH-Ls-E1T" id="KVk-6z-6oI"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7fe-Y0-3at" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="632" y="477"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
+</document>
