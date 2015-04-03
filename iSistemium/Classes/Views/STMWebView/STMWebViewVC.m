@@ -217,7 +217,7 @@
 
 //    [self flushCookie];
 
-    self.tabBarItem.title = [self webViewTitle];
+//    self.tabBarItem.title = [self webViewTitle];
     self.webView.delegate = self;
     [self loadWebView];
     
