@@ -1,21 +1,17 @@
 //
-//  STMMessage.m
+//  STMMessagePicture.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 03/04/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMMessage.h"
 #import "STMMessagePicture.h"
+#import "STMMessage.h"
 
 
-@implementation STMMessage
+@implementation STMMessagePicture
 
-@dynamic body;
-@dynamic cts;
-@dynamic subject;
-@dynamic schedule;
-@dynamic pictures;
+@dynamic message;
 
 @end
