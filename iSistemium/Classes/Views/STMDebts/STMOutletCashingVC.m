@@ -155,7 +155,7 @@
         request.sortDescriptors = @[dateSortDescriptor];
         request.predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.outlet];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"dayAsString" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:@"dayAsString" cacheName:nil];
         
         _resultsController.delegate = self;
         
@@ -352,7 +352,7 @@
         STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:cashing];
         recordStatus.isRemoved = @YES;
         
-        [self.document.managedObjectContext deleteObject:cashing];
+        [self.document.mainContext deleteObject:cashing];
         
         [self.document saveDocument:^(BOOL success) {
             

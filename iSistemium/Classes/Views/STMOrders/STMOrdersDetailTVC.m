@@ -82,7 +82,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         NSCompoundPredicate *predicate = [self requestPredicate];
         if (predicate.subpredicates.count > 0) request.predicate = predicate;
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"date" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:@"date" cacheName:nil];
 
         _resultsController.delegate = self;
         
@@ -685,7 +685,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     NSString *entityName = NSStringFromClass([STMSaleOrder class]);
     
-    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
+    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.mainContext];
     
     NSPropertyDescription *entityProperty = entity.propertiesByName[property];
 
@@ -695,7 +695,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         request.resultType = NSManagedObjectResultType;
         
-        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+        NSArray *result = [self.document.mainContext executeFetchRequest:request error:nil];
         
         NSMutableArray *resultArray = [NSMutableArray array];
         
@@ -733,7 +733,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 //        
 //        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:propertyName ascending:YES]];
 //        
-//        result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+//        result = [self.document.mainContext executeFetchRequest:request error:nil];
 //        
 //        NSLog(@"result %@", result);
 //

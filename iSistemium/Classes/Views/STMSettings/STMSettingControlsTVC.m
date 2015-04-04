@@ -28,7 +28,7 @@
 
         request.sortDescriptors = @[groupSortDescriptor, nameSortDescriptor];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"group" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:@"group" cacheName:nil];
         _resultsController.delegate = self;
         
     }
