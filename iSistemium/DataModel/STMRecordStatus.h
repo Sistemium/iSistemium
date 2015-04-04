@@ -2,8 +2,8 @@
 //  STMRecordStatus.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 09/09/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 04/04/15.
+//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -16,5 +16,6 @@
 @property (nonatomic, retain) NSNumber * isRead;
 @property (nonatomic, retain) NSNumber * isRemoved;
 @property (nonatomic, retain) NSData * objectXid;
+@property (nonatomic, retain) NSNumber * isTemporary;
 
 @end

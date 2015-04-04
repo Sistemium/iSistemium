@@ -2,7 +2,7 @@
 //  STMMessage.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 03/04/15.
+//  Created by Maxim Grigoriev on 04/04/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -16,8 +16,9 @@
 
 @property (nonatomic, retain) NSString * body;
 @property (nonatomic, retain) NSDate * cts;
-@property (nonatomic, retain) NSString * subject;
 @property (nonatomic, retain) NSString * schedule;
+@property (nonatomic, retain) NSString * subject;
+@property (nonatomic, retain) NSNumber * showOnEnterForeground;
 @property (nonatomic, retain) NSSet *pictures;
 @end
 
