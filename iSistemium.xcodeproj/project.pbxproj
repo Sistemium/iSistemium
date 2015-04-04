@@ -319,6 +319,7 @@
 		2C5297F81ACFFCAD008496AE /* STMMessagePicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessagePicture.m; sourceTree = "<group>"; };
 		2C5297FA1ACFFCEA008496AE /* STMRecordStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRecordStatus.h; sourceTree = "<group>"; };
 		2C5297FB1ACFFCEA008496AE /* STMRecordStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRecordStatus.m; sourceTree = "<group>"; };
+		2C5297FD1AD000F8008496AE /* STMDataModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDataModel.h; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
 		2C53B88919409E42002298A5 /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
 		2C53B88C19409E71002298A5 /* STMSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSessionManager.h; sourceTree = "<group>"; };
@@ -815,6 +816,7 @@
 			isa = PBXGroup;
 			children = (
 				2C9051881A276E9200EFE40D /* STMDataModel.xcdatamodeld */,
+				2C5297FD1AD000F8008496AE /* STMDataModel.h */,
 				2C7E7DB21ABEEA0500A26185 /* STMArticle.h */,
 				2C7E7DB31ABEEA0500A26185 /* STMArticle.m */,
 				2C559F661AC040BB00E25831 /* STMArticleGroup.h */,

@@ -17,36 +17,9 @@
 
 #import "STMConstants.h"
 
-#import "STMPartner.h"
-#import "STMOutlet.h"
-#import "STMSalesman.h"
-#import "STMCampaign.h"
-#import "STMCampaignPicture.h"
-#import "STMPhotoReport.h"
-#import "STMPhoto.h"
-#import "STMArticle.h"
-#import "STMArticleGroup.h"
-#import "STMArticlePicture.h"
-#import "STMSetting.h"
-#import "STMLogMessage.h"
-#import "STMDebt.h"
-#import "STMCashing.h"
-#import "STMUncashing.h"
-#import "STMMessage.h"
-#import "STMClientData.h"
-#import "STMLocation.h"
-#import "STMUncashingPicture.h"
-#import "STMUncashingPlace.h"
-#import "STMTrack.h"
-#import "STMEntity.h"
-#import "STMCampaignGroup.h"
-#import "STMSaleOrder.h"
-#import "STMSaleOrderPosition.h"
-#import "STMPriceType.h"
-#import "STMPrice.h"
-#import "STMStock.h"
+#import "STMDataModel.h"
 
-#import "STMFetchRequest.h"
+#import "STMNS.h"
 
 @interface STMObjectsController()
 
@@ -898,34 +871,35 @@
 }
 
 + (void)totalNumberOfObjects {
-    
+
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
-                             NSStringFromClass([STMPartner class]),
+                             NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMArticleGroup class]),
                              NSStringFromClass([STMCampaign class]),
                              NSStringFromClass([STMCampaignGroup class]),
                              NSStringFromClass([STMCampaignPicture class]),
+                             NSStringFromClass([STMCashing class]),
+                             NSStringFromClass([STMClientData class]),
+                             NSStringFromClass([STMDebt class]),
+                             NSStringFromClass([STMLocation class]),
+                             NSStringFromClass([STMLogMessage class]),
+                             NSStringFromClass([STMMessage class]),
+                             NSStringFromClass([STMMessagePicture class]),
+                             NSStringFromClass([STMOutlet class]),
+                             NSStringFromClass([STMPartner class]),
                              NSStringFromClass([STMPhotoReport class]),
-                             NSStringFromClass([STMArticle class]),
-                             NSStringFromClass([STMArticleGroup class]),
-                             NSStringFromClass([STMSalesman class]),
+                             NSStringFromClass([STMPrice class]),
+                             NSStringFromClass([STMPriceType class]),
+                             NSStringFromClass([STMRecordStatus class]),
                              NSStringFromClass([STMSaleOrder class]),
                              NSStringFromClass([STMSaleOrderPosition class]),
-                             NSStringFromClass([STMOutlet class]),
-                             NSStringFromClass([STMDebt class]),
-                             NSStringFromClass([STMCashing class]),
-                             NSStringFromClass([STMUncashing class]),
-                             NSStringFromClass([STMUncashingPlace class]),
-                             NSStringFromClass([STMUncashingPicture class]),
-                             NSStringFromClass([STMMessage class]),
-                             NSStringFromClass([STMTrack class]),
-                             NSStringFromClass([STMLocation class]),
+                             NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMSetting class]),
-                             NSStringFromClass([STMClientData class]),
-                             NSStringFromClass([STMRecordStatus class]),
-                             NSStringFromClass([STMLogMessage class]),
-                             NSStringFromClass([STMPriceType class]),
-                             NSStringFromClass([STMPrice class]),
                              NSStringFromClass([STMStock class]),
+                             NSStringFromClass([STMTrack class]),
+                             NSStringFromClass([STMUncashing class]),
+                             NSStringFromClass([STMUncashingPicture class]),
+                             NSStringFromClass([STMUncashingPlace class]),
                              NSStringFromClass([STMEntity class])];
     
     NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
