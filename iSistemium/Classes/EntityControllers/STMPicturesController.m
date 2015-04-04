@@ -484,16 +484,16 @@
     
     NSString *fileName = nil;
     
-    if ([picture isKindOfClass:[STMCampaignPicture class]]) {
-        
-        fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
-        
-    } else if ([picture isKindOfClass:[STMPhoto class]] || [picture isKindOfClass:[STMUncashingPicture class]]) {
+    if ([picture isKindOfClass:[STMPhoto class]]) {
         
         NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
         fileName = [xid stringByAppendingString:@".jpg"];
         
         [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
+
+    } else if ([picture isKindOfClass:[STMPicture class]]) {
+        
+        fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
         
     }
     

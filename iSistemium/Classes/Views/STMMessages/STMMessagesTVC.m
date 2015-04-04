@@ -192,6 +192,10 @@
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return indexPath;
+}
+
 - (void)showUnreadCount {
     
     NSMutableArray *messageXids = [NSMutableArray array];
