@@ -97,7 +97,7 @@
         
     }
     
-    STMUncashing *uncashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:[STMController document].managedObjectContext];
+    STMUncashing *uncashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashing class]) inManagedObjectContext:[STMController document].mainContext];
     
     NSArray *cashings = [self.cashingDictionary allValues];
     
@@ -113,7 +113,7 @@
     
     if (image) {
         
-        STMUncashingPicture *picture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:[STMController document].managedObjectContext];
+        STMUncashingPicture *picture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMUncashingPicture class]) inManagedObjectContext:[STMController document].mainContext];
         
         CGFloat jpgQuality = [STMPicturesController jpgQuality];
         [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:picture];

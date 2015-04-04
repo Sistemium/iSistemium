@@ -20,7 +20,7 @@
 
 + (STMCashing *)addCashingWithSum:(NSDecimalNumber *)sum ndoc:(NSString *)ndoc date:(NSDate *)date comment:(NSString *)comment debt:(STMDebt *)debt outlet:(STMOutlet *)outlet type:(STMCashingType)type {
     
-    STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:[STMController document].managedObjectContext];
+    STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:[STMController document].mainContext];
     
     if (type == STMCashingDeduction) {
 

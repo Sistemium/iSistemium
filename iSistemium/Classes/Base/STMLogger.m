@@ -126,7 +126,7 @@
 
     if (self.document) {
         
-        STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
+        STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.mainContext];
         logMessage.text = text;
         logMessage.type = type;
         
@@ -172,7 +172,7 @@
 
     for (NSDictionary *logMessageDic in [loggerDefaults allValues]) {
         
-        STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.managedObjectContext];
+        STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.mainContext];
         
         for (NSString *key in [logMessageDic allKeys]) {
             [logMessage setValue:logMessageDic[key] forKey:key];
@@ -200,7 +200,7 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLogMessage class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"dayAsString" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:@"dayAsString" cacheName:nil];
         _resultsController.delegate = self;
         
     }

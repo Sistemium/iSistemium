@@ -71,7 +71,7 @@
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
 //        request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                 managedObjectContext:[STMController document].managedObjectContext
+                                                                 managedObjectContext:[STMController document].mainContext
                                                                    sectionNameKeyPath:nil
                                                                             cacheName:nil];
         _resultsController.delegate = self;
