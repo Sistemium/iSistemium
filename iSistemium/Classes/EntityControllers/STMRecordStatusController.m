@@ -17,7 +17,7 @@
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", objectXid];
     
     NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *fetchResult = [[self document].mainContext executeFetchRequest:request error:&error];
     
     STMRecordStatus *recordStatus = [fetchResult lastObject];
     
@@ -33,7 +33,7 @@
     
     if (!recordStatus) {
         
-        recordStatus = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].managedObjectContext];
+        recordStatus = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].mainContext];
         recordStatus.objectXid = objectXid;
         
     }
