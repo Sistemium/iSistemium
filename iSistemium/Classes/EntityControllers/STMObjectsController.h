@@ -35,7 +35,6 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
-+ (NSUInteger)unreadMessagesCount;
 
 + (NSArray *)entityNamesForSyncing;
 

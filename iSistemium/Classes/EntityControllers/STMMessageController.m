@@ -15,6 +15,10 @@
 
 @implementation STMMessageController
 
+
+/**
+ *  method for testing multiple pictures in messages, should be removed after checking
+ */
 + (void)generateTestMessages {
     
     STMMessage *message = (STMMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessage class])];
@@ -49,11 +53,14 @@
     [[self document] saveDocument:^(BOOL success) {}];
     
 }
+// ------------------------ end of test method -----------------------
 
-+ (NSArray *)picturesArrayForMessage:(STMMessage *)message {
+
++ (NSArray *)sortedPicturesArrayForMessage:(STMMessage *)message {
     
-    NSSortDescriptor *picturesSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
-    NSArray *picturesArray = [message.pictures sortedArrayUsingDescriptors:@[picturesSortDescriptor]];
+    NSSortDescriptor *ordSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+    NSSortDescriptor *idSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
+    NSArray *picturesArray = [message.pictures sortedArrayUsingDescriptors:@[ordSortDescriptor, idSortDescriptor]];
 
     return picturesArray;
     
@@ -104,7 +111,7 @@
 
 + (void)showMessageVCsForMessage:(STMMessage *)message {
 
-    NSArray *picturesArray = [self picturesArrayForMessage:message];
+    NSArray *picturesArray = [self sortedPicturesArrayForMessage:message];
     
     for (STMMessagePicture *picture in picturesArray) {
     
@@ -127,6 +134,26 @@
     
     return messageVC;
 
+}
+
++ (NSUInteger)unreadMessagesCount {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    
+    NSError *error;
+    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
+    
+    NSArray *messageXids = [result valueForKeyPath:@"xid"];
+    
+    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
+    
+    NSUInteger resultCount = [[self document].mainContext countForFetchRequest:request error:&error];
+    
+    return messageXids.count - resultCount;
+    
 }
 
 

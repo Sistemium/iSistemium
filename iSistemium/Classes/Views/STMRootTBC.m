@@ -304,7 +304,7 @@
     
     if (messageVC) {
         
-        NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+        NSUInteger unreadCount = [STMMessageController unreadMessagesCount];
         NSString *badgeValue = (unreadCount == 0) ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
         messageVC.tabBarItem.badgeValue = badgeValue;
         [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
@@ -522,7 +522,7 @@
 
 - (void)syncStateChanged {
 
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMObjectsController unreadMessagesCount];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMMessageController unreadMessagesCount];
     [self checkTimeoutAlert];
     
 }
@@ -539,7 +539,7 @@
     
     if (vc) {
         
-        NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+        NSUInteger unreadCount = [STMMessageController unreadMessagesCount];
         NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
         vc.tabBarItem.badgeValue = badgeValue;
         [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];

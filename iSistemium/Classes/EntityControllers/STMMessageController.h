@@ -12,11 +12,12 @@
 
 + (void)generateTestMessages;
 
-+ (NSArray *)picturesArrayForMessage:(STMMessage *)message;
++ (NSArray *)sortedPicturesArrayForMessage:(STMMessage *)message;
 
 + (void)showMessageVCsIfNeeded;
 + (void)showMessageVCsForMessages:(NSArray *)messages;
 + (void)showMessageVCsForMessage:(STMMessage *)message;
 
++ (NSUInteger)unreadMessagesCount;
 
 @end

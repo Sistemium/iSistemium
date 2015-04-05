@@ -959,40 +959,6 @@
 }
 
 
-#pragma mark - messages
-
-+ (NSUInteger)unreadMessagesCount {
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-//    request.predicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
-    
-    NSError *error;
-    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
-    
-    NSMutableArray *messageXids = [NSMutableArray array];
-    
-    for (STMMessage *message in result) {
-        
-        [messageXids addObject:message.xid];
-        
-    }
-    
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
-
-    NSUInteger resultCount = [[self document].mainContext countForFetchRequest:request error:&error];
-    
-    return messageXids.count - resultCount;
-
-//    result = [[self document].mainContext executeFetchRequest:request error:&error];
-//    
-//    return messageXids.count - result.count;
-    
-}
-
-
 #pragma mark - create dictionary from object
 
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object {

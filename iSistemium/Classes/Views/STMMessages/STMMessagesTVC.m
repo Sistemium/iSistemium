@@ -196,9 +196,9 @@ static NSString *cellIdentifier = @"messageCell";
 
 - (void)addImageFromMessage:(STMMessage *)message toCell:(STMCustom3TVCell *)cell {
     
-    NSArray *picturesArray = [STMMessageController picturesArrayForMessage:message];
+    NSArray *picturesArray = [STMMessageController sortedPicturesArrayForMessage:message];
     
-    STMMessagePicture *picture = picturesArray.firstObject;
+    STMMessagePicture *picture = picturesArray.lastObject;
     
     if (!picture.imageThumbnail && picture.href) {
         
@@ -257,7 +257,7 @@ static NSString *cellIdentifier = @"messageCell";
         STMMessagePicture *messagePicture = (STMMessagePicture *)notification.object;
         
         NSIndexPath *indexPath = [self.resultsController indexPathForObject:messagePicture.message];
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
     }
     
