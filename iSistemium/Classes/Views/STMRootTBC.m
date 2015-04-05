@@ -7,15 +7,19 @@
 //
 
 #import "STMRootTBC.h"
-#import "STMAuthController.h"
 #import "STMAuthTVC.h"
-#import "STMFunctions.h"
+
 #import "STMSessionManager.h"
 #import "STMSession.h"
+
+#import "STMFunctions.h"
+#import "STMConstants.h"
+
 #import "STMObjectsController.h"
 #import "STMTabBarViewController.h"
 #import "STMClientDataController.h"
-#import "STMConstants.h"
+#import "STMAuthController.h"
+#import "STMMessageController.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
@@ -574,7 +578,10 @@
 }
 
 - (void) setDocumentReady {
+    
     [STMClientDataController checkAppVersion];
+    [STMMessageController showMessageVCsIfNeeded];
+    
 }
 
 #pragma mark - notifications

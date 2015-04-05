@@ -8,6 +8,7 @@
 
 #import "STMMessageController.h"
 #import "STMObjectsController.h"
+#import "STMRecordStatusController.h"
 
 #import "STMMessageVC.h"
 #import "STMRootTBC.h"
@@ -58,6 +59,41 @@
     
 }
 
++ (void)showMessageVCsIfNeeded {
+    
+    NSArray *messages = [self messagesWithShowOnEnterForeground];
+    
+    NSArray *messagesXids = [messages valueForKeyPath:@"xid"];
+    
+    NSArray *recordStatuses = [STMRecordStatusController recordStatusesForXids:messagesXids];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isRead == YES"];
+    recordStatuses = [recordStatuses filteredArrayUsingPredicate:predicate];
+    
+    NSArray *xids = [recordStatuses valueForKeyPath:@"objectXid"];
+    
+    predicate = [NSPredicate predicateWithFormat:@"NOT (xid IN %@)", xids];
+    messages = [messages filteredArrayUsingPredicate:predicate];
+    
+    [self showMessageVCsForMessages:messages];
+    
+}
+
++ (NSArray *)messagesWithShowOnEnterForeground {
+    
+    STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMMessage class])];
+    
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:YES selector:@selector(compare:)];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"showOnEnterForeground == YES"];
+    
+    request.sortDescriptors = @[sortDescriptor];
+    request.predicate = predicate;
+    
+    NSArray *messages = [[self document].mainContext executeFetchRequest:request error:nil];
+
+    return messages;
+    
+}
+
 + (void)showMessageVCsForMessages:(NSArray *)messages {
     
     for (STMMessage *message in messages) {
@@ -67,7 +103,7 @@
 }
 
 + (void)showMessageVCsForMessage:(STMMessage *)message {
-    
+
     NSArray *picturesArray = [self picturesArrayForMessage:message];
     
     for (STMMessagePicture *picture in picturesArray) {

@@ -14,6 +14,7 @@
 
 + (NSArray *)picturesArrayForMessage:(STMMessage *)message;
 
++ (void)showMessageVCsIfNeeded;
 + (void)showMessageVCsForMessages:(NSArray *)messages;
 + (void)showMessageVCsForMessage:(STMMessage *)message;
 
