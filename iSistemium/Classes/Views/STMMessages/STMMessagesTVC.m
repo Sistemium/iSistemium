@@ -280,7 +280,7 @@ static NSString *cellIdentifier = @"messageCell";
 
 - (void)customInit {
     
-    [STMMessageController generateTestMessages];
+//    [STMMessageController generateTestMessages];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom3TVCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
 

@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMDataModel.h"
 
 @interface STMMessageVC : UIViewController
 
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) STMMessagePicture *picture;
 @property (nonatomic, strong) NSString *text;
 
 @end

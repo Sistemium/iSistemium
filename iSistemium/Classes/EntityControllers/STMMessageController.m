@@ -27,8 +27,25 @@
     
     STMMessagePicture *newPicture = (STMMessagePicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessagePicture class])];
     newPicture.href = picture.href;
+    newPicture.isFantom = @NO;
     
     [message addPicturesObject:newPicture];
+
+    STMMessagePicture *newPicture1 = (STMMessagePicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessagePicture class])];
+    newPicture1.href = @"http://i.imgur.com/Z9dCA7D.jpg";
+    newPicture1.isFantom = @NO;
+    
+    [message addPicturesObject:newPicture1];
+
+    STMMessagePicture *newPicture2 = (STMMessagePicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessagePicture class])];
+    newPicture2.href = @"http://upload.wikimedia.org/wikipedia/en/archive/3/3e/20141001152415!IOS_8_Homescreen.png";
+    newPicture1.isFantom = @NO;
+    
+    [message addPicturesObject:newPicture2];
+
+    NSLog(@"add message %@", message);
+    
+    [[self document] saveDocument:^(BOOL success) {}];
     
 }
 
@@ -57,30 +74,19 @@
     
         UIViewController *presenter = [[STMRootTBC sharedRootVC] topmostVC];
 
-        UIImage *image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
-        STMMessageVC *messageVC = [self messageVCWithImage:image andText:message.body];
+        STMMessageVC *messageVC = [self messageVCWithPicture:picture andText:message.body];
         [presenter presentViewController:messageVC animated:NO completion:nil];
         
-//        presenter = [[STMRootTBC sharedRootVC] topmostVC];
-//
-//        STMMessageVC *messageVC1 = [self messageVCWithImage:image andText:@"SECOND VC"];
-//        [presenter presentViewController:messageVC1 animated:NO completion:nil];
-//
-//        presenter = [[STMRootTBC sharedRootVC] topmostVC];
-//        
-//        STMMessageVC *messageVC2 = [self messageVCWithImage:image andText:@"THIRD VC"];
-//        [presenter presentViewController:messageVC2 animated:NO completion:nil];
-
     }
     
 }
 
-+ (STMMessageVC *)messageVCWithImage:(UIImage *)image andText:(NSString *)text {
++ (STMMessageVC *)messageVCWithPicture:(STMMessagePicture *)picture andText:(NSString *)text {
     
     UIStoryboard *messageVCStoryboard = [UIStoryboard storyboardWithName:@"STMMessageVC" bundle:nil];
     STMMessageVC *messageVC = [messageVCStoryboard instantiateInitialViewController];
     
-    messageVC.image = image;
+    messageVC.picture = picture;
     messageVC.text = text;
     
     return messageVC;
