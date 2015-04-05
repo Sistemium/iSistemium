@@ -501,7 +501,6 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     switch (row) {
         case 0:
             cell.titleLabel.text = NSLocalizedString(@"OUTLET", nil);
-//            cell.titleLabel.text = @"Title title title title title title title title title title title title title title title title title ";
             cell.detailLabel.text = self.saleOrder.outlet.name;
             break;
 
