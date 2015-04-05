@@ -195,10 +195,9 @@ static NSString *cellIdentifier = @"messageCell";
 
 - (void)addImageFromMessage:(STMMessage *)message toCell:(STMCustom3TVCell *)cell {
     
-    NSSortDescriptor *picturesSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
-    NSArray *pictures = [message.pictures sortedArrayUsingDescriptors:@[picturesSortDescriptor]];
+    NSArray *picturesArray = [STMMessageController picturesArrayForMessage:message];
     
-    STMMessagePicture *picture = pictures.firstObject;
+    STMMessagePicture *picture = picturesArray.firstObject;
     UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
     
     cell.pictureView.image = image;

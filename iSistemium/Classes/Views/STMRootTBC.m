@@ -49,6 +49,21 @@
     
 }
 
+- (UIViewController *)topmostVC {
+    return [self topmostVCForVC:self];
+}
+
+- (UIViewController *)topmostVCForVC:(UIViewController *)vc {
+    
+    UIViewController *topVC = vc.presentedViewController;
+    if (topVC) {
+        return [self topmostVCForVC:topVC];
+    } else {
+        return vc;
+    }
+    
+}
+
 - (STMSession *)session {
     
     return [STMSessionManager sharedManager].currentSession;

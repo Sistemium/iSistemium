@@ -29,6 +29,7 @@
         <scene sceneID="YhF-Iy-cUV">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Kfv-XK-snZ" customClass="STMMessagesNC" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Dra-ex-Sn3">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>

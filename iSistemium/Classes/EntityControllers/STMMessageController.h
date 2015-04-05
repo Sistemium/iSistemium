@@ -10,6 +10,10 @@
 
 @interface STMMessageController : STMController
 
++ (NSArray *)picturesArrayForMessage:(STMMessage *)message;
+
+
++ (void)showMessageVCsForMessages:(NSArray *)messages;
 + (void)showMessageVCsForMessage:(STMMessage *)message;
 
 

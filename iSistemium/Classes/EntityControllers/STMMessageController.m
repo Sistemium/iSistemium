@@ -12,20 +12,44 @@
 
 @implementation STMMessageController
 
++ (NSArray *)picturesArrayForMessage:(STMMessage *)message {
+    
+    NSSortDescriptor *picturesSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+    NSArray *picturesArray = [message.pictures sortedArrayUsingDescriptors:@[picturesSortDescriptor]];
+
+    return picturesArray;
+    
+}
+
++ (void)showMessageVCsForMessages:(NSArray *)messages {
+    
+    for (STMMessage *message in messages) {
+        [self showMessageVCsForMessage:message];
+    }
+    
+}
+
 + (void)showMessageVCsForMessage:(STMMessage *)message {
     
-    UIViewController *presenter = [STMRootTBC sharedRootVC];
+    NSArray *picturesArray = [self picturesArrayForMessage:message];
     
-    for (STMMessagePicture *picture in message.pictures) {
-        
+    for (STMMessagePicture *picture in picturesArray) {
+    
+        UIViewController *presenter = [[STMRootTBC sharedRootVC] topmostVC];
+
         UIImage *image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
         STMMessageVC *messageVC = [self messageVCWithImage:image andText:message.body];
         [presenter presentViewController:messageVC animated:NO completion:nil];
         
-        presenter = messageVC;
+        presenter = [[STMRootTBC sharedRootVC] topmostVC];
 
         STMMessageVC *messageVC1 = [self messageVCWithImage:image andText:@"SECOND VC"];
         [presenter presentViewController:messageVC1 animated:NO completion:nil];
+
+        presenter = [[STMRootTBC sharedRootVC] topmostVC];
+        
+        STMMessageVC *messageVC2 = [self messageVCWithImage:image andText:@"THIRD VC"];
+        [presenter presentViewController:messageVC2 animated:NO completion:nil];
 
     }
     
@@ -42,5 +66,6 @@
     return messageVC;
 
 }
+
 
 @end
