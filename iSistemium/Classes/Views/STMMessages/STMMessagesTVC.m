@@ -14,6 +14,7 @@
 
 #import "STMMessageController.h"
 #import "STMRecordStatusController.h"
+#import "STMPicturesController.h"
 
 #import "STMConstants.h"
 
@@ -198,9 +199,17 @@ static NSString *cellIdentifier = @"messageCell";
     NSArray *picturesArray = [STMMessageController picturesArrayForMessage:message];
     
     STMMessagePicture *picture = picturesArray.firstObject;
-    UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
     
-    cell.pictureView.image = image;
+    if (!picture.imageThumbnail && picture.href) {
+        
+        [STMPicturesController hrefProcessingForObject:picture];
+        
+    } else {
+    
+        UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
+        cell.pictureView.image = image;
+
+    }
     
 }
 
@@ -241,11 +250,25 @@ static NSString *cellIdentifier = @"messageCell";
     
 }
 
+- (void)downloadPicture:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMMessagePicture class]]) {
+        
+        STMMessagePicture *messagePicture = (STMMessagePicture *)notification.object;
+        
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:messagePicture.message];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageIsRead) name:@"messageIsRead" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadPicture:) name:@"downloadPicture" object:nil];
     
 }
 
@@ -256,6 +279,8 @@ static NSString *cellIdentifier = @"messageCell";
 }
 
 - (void)customInit {
+    
+    [STMMessageController generateTestMessages];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom3TVCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
 

@@ -7,10 +7,30 @@
 //
 
 #import "STMMessageController.h"
+#import "STMObjectsController.h"
+
 #import "STMMessageVC.h"
 #import "STMRootTBC.h"
 
 @implementation STMMessageController
+
++ (void)generateTestMessages {
+    
+    STMMessage *message = (STMMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessage class])];
+    
+    message.body = [NSString stringWithFormat:@"TEST MESSAGE %@", [NSDate date]];
+    message.subject = @"Test message subject";
+    message.cts = [NSDate date];
+    
+    NSArray *pictures = [STMObjectsController objectsForEntityName:NSStringFromClass([STMMessagePicture class])];
+    STMMessagePicture *picture = pictures.lastObject;
+    
+    STMMessagePicture *newPicture = (STMMessagePicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessagePicture class])];
+    newPicture.href = picture.href;
+    
+    [message addPicturesObject:newPicture];
+    
+}
 
 + (NSArray *)picturesArrayForMessage:(STMMessage *)message {
     
@@ -41,15 +61,15 @@
         STMMessageVC *messageVC = [self messageVCWithImage:image andText:message.body];
         [presenter presentViewController:messageVC animated:NO completion:nil];
         
-        presenter = [[STMRootTBC sharedRootVC] topmostVC];
-
-        STMMessageVC *messageVC1 = [self messageVCWithImage:image andText:@"SECOND VC"];
-        [presenter presentViewController:messageVC1 animated:NO completion:nil];
-
-        presenter = [[STMRootTBC sharedRootVC] topmostVC];
-        
-        STMMessageVC *messageVC2 = [self messageVCWithImage:image andText:@"THIRD VC"];
-        [presenter presentViewController:messageVC2 animated:NO completion:nil];
+//        presenter = [[STMRootTBC sharedRootVC] topmostVC];
+//
+//        STMMessageVC *messageVC1 = [self messageVCWithImage:image andText:@"SECOND VC"];
+//        [presenter presentViewController:messageVC1 animated:NO completion:nil];
+//
+//        presenter = [[STMRootTBC sharedRootVC] topmostVC];
+//        
+//        STMMessageVC *messageVC2 = [self messageVCWithImage:image andText:@"THIRD VC"];
+//        [presenter presentViewController:messageVC2 animated:NO completion:nil];
 
     }
     

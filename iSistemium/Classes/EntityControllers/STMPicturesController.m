@@ -501,6 +501,8 @@
     [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
     [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"downloadPicture" object:weakPicture];
+    
 }
 
 + (void)setThumbnailForPicture:(STMPicture *)picture fromImageData:(NSData *)data {
