@@ -203,14 +203,35 @@ static NSString *cellIdentifier = @"messageCell";
     if (!picture.imageThumbnail && picture.href) {
         
         [STMPicturesController hrefProcessingForObject:picture];
+        [self addSpinnerToCell:cell];
         
     } else {
     
         UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
+        [[cell.pictureView viewWithTag:555] removeFromSuperview];
         cell.pictureView.image = image;
 
     }
     
+}
+
+- (void)addSpinnerToCell:(STMCustom3TVCell *)cell {
+    
+    UIView *view = [[UIView alloc] initWithFrame:cell.pictureView.bounds];
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.backgroundColor = [UIColor whiteColor];
+    view.alpha = 0.75;
+    view.tag = 555;
+    
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.center = view.center;
+    spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    [spinner startAnimating];
+    
+    [view addSubview:spinner];
+    
+    [cell.pictureView addSubview:view];
+
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
