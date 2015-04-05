@@ -10,4 +10,7 @@
 
 @interface STMMessageVC : UIViewController
 
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) NSString *text;
+
 @end

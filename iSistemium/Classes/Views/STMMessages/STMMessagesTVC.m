@@ -7,12 +7,18 @@
 //
 
 #import "STMMessagesTVC.h"
+
 #import "STMMessage.h"
 #import "STMMessagePicture.h"
-#import "STMConstants.h"
-#import "STMSyncer.h"
 #import "STMRecordStatus.h"
+
+#import "STMMessageController.h"
 #import "STMRecordStatusController.h"
+
+#import "STMConstants.h"
+
+#import "STMSyncer.h"
+
 #import "STMUI.h"
 
 //#define MESSAGE_BODY @"Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб."
@@ -200,7 +206,13 @@ static NSString *cellIdentifier = @"messageCell";
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+    
+    if (message.pictures.count > 0) [STMMessageController showMessageVCsForMessage:message];
+    
     return indexPath;
+    
 }
 
 - (void)showUnreadCount {

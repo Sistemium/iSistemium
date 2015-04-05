@@ -26,38 +26,27 @@
 
 - (void)showActionSheetFromTabBarItem {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
-    
-    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-    
-    [actionSheet showFromRect:rect inView:self.view animated:YES];
+//    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
+//    
+//    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+//    
+//    [actionSheet showFromRect:rect inView:self.view animated:YES];
     
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if (buttonIndex != -1) {
-        
-        [self.tabBarController presentViewController:self.messageVC animated:YES completion:^{
-            
-        }];
-        
-    }
+//    if (buttonIndex != -1) {
+//
+//    }
     
 }
 
-- (void)initMessageVC {
-
-    UIStoryboard *messageVCStoryboard = [UIStoryboard storyboardWithName:@"STMMessageVC" bundle:nil];
-    STMMessageVC *messageVC = [messageVCStoryboard instantiateInitialViewController];
-    self.messageVC = messageVC;
-
-}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    [self initMessageVC];
+
 }
 
 - (void)viewDidLoad {

@@ -33,8 +33,10 @@
 - (void)customInit {
     
     self.modalPresentationStyle = UIModalPresentationFullScreen;
+//    self.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     
-    self.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://s3-eu-west-1.amazonaws.com/gkgradus/etc/2015-04-marketing-01.jpg"]]];
+    self.imageView.image = self.image;
+    self.textView.text = self.text;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapView)];
     
