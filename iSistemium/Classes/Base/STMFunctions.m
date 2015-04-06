@@ -30,6 +30,7 @@
 
 @implementation STMFunctions
 
+#pragma mark - date formatters
 
 + (STMDateFormatter *)dateFormatter {
     
@@ -97,6 +98,9 @@
     
 }
 
+
+#pragma mark - number formatters
+
 + (NSNumberFormatter *)trueMinusFormatter {
 
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
@@ -161,6 +165,9 @@
     
 }
 
+
+#pragma mark - days calc
+
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date {
     
     NSDate *today = [NSDate date];
@@ -209,6 +216,9 @@
     
 }
 
+
+#pragma mark - phone number & sms-code checking
+
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString {
     
     if ([phoneNumberString hasPrefix:@"8"]) {
@@ -241,6 +251,9 @@
     
 }
 
+
+#pragma mark - NSString <-> NSData manipulation
+
 + (NSData *)dataFromString:(NSString *)string {
     
     NSMutableData *data = [NSMutableData data];
@@ -258,6 +271,14 @@
     }
     
     return data;
+    
+}
+
++ (NSData *)xidDataFromXidString:(NSString *)xidString {
+    
+    NSData *xidData = (xidString) ? [self dataFromString:[xidString stringByReplacingOccurrencesOfString:@"-" withString:@""]] : nil;
+    
+    return xidData;
     
 }
 
@@ -289,6 +310,9 @@
     return string;
     
 }
+
+
+#pragma mark - some other usefull methods
 
 + (NSString *)pluralTypeForCount:(NSUInteger)count {
     

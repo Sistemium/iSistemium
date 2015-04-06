@@ -124,9 +124,9 @@
 
 + (void)processingOfDataArray:(NSArray *)array roleName:(NSString *)roleName withCompletionHandler:(void (^)(BOOL success))completionHandler {
 
-//    NSDate *start = [NSDate date];
-//    NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
-//    NSLog(@"--------------------s %@", startString);
+    NSDate *start = [NSDate date];
+    NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
+    NSLog(@"--------------------s %@", startString);
     
     if (roleName) {
         
@@ -142,15 +142,17 @@
         
     }
 
-//    NSDate *finish = [NSDate date];
-//    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
-//    NSLog(@"--------------------f %@", finishString);
+    NSDate *finish = [NSDate date];
+    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
+    NSLog(@"--------------------f %@", finishString);
 
 }
 
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     __block BOOL result = YES;
+    
+//    NSArray *xids = [array ]
     
     for (NSDictionary *datum in array) {
         
@@ -170,7 +172,7 @@
 
 // time checking
     NSDate *start = [NSDate date];
-//
+// -------------
     
     NSString *name = dictionary[@"name"];
     NSDictionary *properties = dictionary[@"properties"];
@@ -186,7 +188,7 @@
     if ([dataModelEntityNames containsObject:entityName]) {
         
         NSString *xid = dictionary[@"xid"];
-        NSData *xidData = (xid) ? [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]] : nil;
+        NSData *xidData = [STMFunctions xidDataFromXidString:xid];
         
         STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:xidData];
         
@@ -207,7 +209,7 @@
 
 // time checking
             [[self sharedController].timesDic[@"1"] addObject:@([start timeIntervalSinceNow])];
-//
+// -------------
             
             if (!object) {
             
@@ -217,7 +219,7 @@
             
 // time checking
             [[self sharedController].timesDic[@"2"] addObject:@([start timeIntervalSinceNow])];
-//
+// -------------
             
             if (![self isWaitingToSyncForObject:object]) {
                 
@@ -228,7 +230,7 @@
             
 // time checking
             [[self sharedController].timesDic[@"3"] addObject:@([start timeIntervalSinceNow])];
-//
+// -------------
             
         } else {
             
@@ -252,7 +254,7 @@
     
 // time checking
     NSDate *start = [NSDate date];
-//
+// -------------
     
     NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
     
@@ -289,7 +291,7 @@
 
 // time checking
     [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
-//
+// -------------
     
 }
 
@@ -639,6 +641,19 @@
     
     return object;
     
+}
+
++ (NSArray *)objectsWithXids:(NSArray *)xids {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"xid IN %@", xids];
+    
+    NSError *error;
+    NSArray *fetchResult = [[self document].mainContext executeFetchRequest:request error:&error];
+    
+    return fetchResult;
+
 }
 
 
