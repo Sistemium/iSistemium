@@ -173,7 +173,14 @@ static NSString *cellIdentifier = @"messageCell";
     } else {
         
         cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-        if (indexPath) [self performSelector:@selector(markMessageAsRead:) withObject:@{@"message": message, @"indexPath": indexPath} afterDelay:2];
+        
+        if (indexPath && message.pictures.count == 0) {
+            
+            [self performSelector:@selector(markMessageAsRead:)
+                       withObject:@{@"message": message, @"indexPath": indexPath}
+                       afterDelay:2];
+
+        }
         
     }
     
