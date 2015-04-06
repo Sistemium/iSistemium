@@ -753,6 +753,11 @@
         
         self.entityCount = 1;
         self.errorOccured = NO;
+
+//        NSDate *start = [NSDate date];
+//        NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
+//        NSLog(@"--------------------S %@", startString);
+        
         [self checkConditionForReceivingEntityWithName:@"STMEntity"];
         
     }
@@ -1177,6 +1182,10 @@
 }
 
 - (void)saveReceiveDate {
+    
+//    NSDate *finish = [NSDate date];
+//    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
+//    NSLog(@"--------------------F %@", finishString);
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     

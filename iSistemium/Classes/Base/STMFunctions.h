@@ -19,6 +19,7 @@
 + (BOOL)isCorrectSMSCode:(NSString *)SMSCode;
 
 + (NSData *)dataFromString:(NSString *)string;
++ (NSData *)xidDataFromXidString:(NSString *)xidString;
 + (NSString *)xidStringFromXidData:(NSData *)xidData;
 + (NSString *)hexStringFromData:(NSData *)data;
 

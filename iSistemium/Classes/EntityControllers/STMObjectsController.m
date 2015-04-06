@@ -54,6 +54,7 @@
 @property (nonatomic, strong) NSMutableDictionary *entitiesOwnKeys;
 @property (nonatomic, strong) NSMutableDictionary *entitiesOwnRelationships;
 @property (nonatomic, strong) NSMutableDictionary *entitiesSingleRelationships;
+@property (nonatomic, strong) NSMutableDictionary *objectsCache;
 
 
 @end
@@ -70,6 +71,9 @@
         _timesDic[@"2"] = [@[] mutableCopy];
         _timesDic[@"3"] = [@[] mutableCopy];
         _timesDic[@"4"] = [@[] mutableCopy];
+        _timesDic[@"5"] = [@[] mutableCopy];
+        _timesDic[@"6"] = [@[] mutableCopy];
+        _timesDic[@"7"] = [@[] mutableCopy];
         
     }
     return _timesDic;
@@ -103,6 +107,53 @@
     
 }
 
+- (NSMutableDictionary *)objectsCache {
+    
+    if (!_objectsCache) {
+        _objectsCache = [@{} mutableCopy];
+    }
+    return _objectsCache;
+    
+}
+
+- (instancetype)init {
+    
+    self = [super init];
+    if (self) {
+        [self addObservers];
+    }
+    return self;
+    
+}
+
+- (void)addObservers {
+    
+    NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(sessionStatusChanged:)
+               name:@"sessionStatusChanged"
+             object:nil];
+
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)sessionStatusChanged:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMSession class]]) {
+        
+        STMSession *session = notification.object;
+        
+        if (![session.status isEqualToString:@"running"]) {
+            self.objectsCache = nil;
+        }
+        
+    }
+    
+}
 
 #pragma mark - singleton
 
@@ -169,8 +220,8 @@
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
 
 // time checking
-    NSDate *start = [NSDate date];
-//
+//    NSDate *start = [NSDate date];
+// -------------
     
     NSString *name = dictionary[@"name"];
     NSDictionary *properties = dictionary[@"properties"];
@@ -186,7 +237,7 @@
     if ([dataModelEntityNames containsObject:entityName]) {
         
         NSString *xid = dictionary[@"xid"];
-        NSData *xidData = (xid) ? [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]] : nil;
+        NSData *xidData = [STMFunctions xidDataFromXidString:xid];
         
         STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:xidData];
         
@@ -206,18 +257,16 @@
             }
 
 // time checking
-            [[self sharedController].timesDic[@"1"] addObject:@([start timeIntervalSinceNow])];
-//
+//            [[self sharedController].timesDic[@"1"] addObject:@([start timeIntervalSinceNow])];
+// -------------
             
             if (!object) {
-            
                 object = (xid) ? [self objectForEntityName:entityName andXid:xid] : [self newObjectForEntityName:entityName];
-
             }
             
 // time checking
-            [[self sharedController].timesDic[@"2"] addObject:@([start timeIntervalSinceNow])];
-//
+//            [[self sharedController].timesDic[@"2"] addObject:@([start timeIntervalSinceNow])];
+// -------------
             
             if (![self isWaitingToSyncForObject:object]) {
                 
@@ -227,8 +276,8 @@
             }
             
 // time checking
-            [[self sharedController].timesDic[@"3"] addObject:@([start timeIntervalSinceNow])];
-//
+//            [[self sharedController].timesDic[@"3"] addObject:@([start timeIntervalSinceNow])];
+// -------------
             
         } else {
             
@@ -251,8 +300,8 @@
 + (void)processingOfObject:(NSManagedObject *)object withEntityName:(NSString *)entityName fillWithValues:(NSDictionary *)properties {
     
 // time checking
-    NSDate *start = [NSDate date];
-//
+//    NSDate *start = [NSDate date];
+// -------------
     
     NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
     
@@ -288,8 +337,8 @@
     [self postprocessingForObject:object withEntityName:entityName];
 
 // time checking
-    [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
-//
+//    [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
+// -------------
     
 }
 
@@ -465,6 +514,10 @@
 
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
+// time checking
+//    NSDate *start = [NSDate date];
+// -------------
+    
     NSString *name = dictionary[@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [@"STM" stringByAppendingString:nameExplode[1]];
@@ -493,11 +546,19 @@
             NSLog(@"Not ok relationship dictionary %@", dictionary);
             
         }
+
+// time checking
+//        [[self sharedController].timesDic[@"5"] addObject:@([start timeIntervalSinceNow])];
+// -------------
         
         if (ok) {
             
             NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
             NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
+            
+// time checking
+//            [[self sharedController].timesDic[@"6"] addObject:@([start timeIntervalSinceNow])];
+// -------------
             
             NSSet *destinationSet = [ownerObject valueForKey:roleName];
             
@@ -528,6 +589,10 @@
             
             
         }
+        
+// time checking
+//        [[self sharedController].timesDic[@"7"] addObject:@([start timeIntervalSinceNow])];
+// -------------
         
         completionHandler(YES);
         
@@ -602,27 +667,46 @@
     
     if ([dataModelEntityNames containsObject:entityName]) {
         
-        NSData *xidData = [STMFunctions dataFromString:[xid stringByReplacingOccurrencesOfString:@"-" withString:@""]];
+        NSManagedObject *cachedObject = [self sharedController].objectsCache[xid];
+        
+        if (cachedObject) {
+            
+            if (![cachedObject.entity.name isEqualToString:entityName]) {
 
-        NSManagedObject *object = [self objectForXid:xidData];
+                NSLog(@"No %@ cachedObject with xid %@, %@ cachedObject fetched instead", entityName, xid, cachedObject.entity.name);
+                cachedObject = nil;
+
+            }
+            
+            return cachedObject;
+
+        } else {
         
-        if (object) {
-        
-            if (![object.entity.name isEqualToString:entityName]) {
+            NSData *xidData = [STMFunctions xidDataFromXidString:xid];
+            
+            NSManagedObject *object = [self objectForXid:xidData];
+            
+            if (object) {
                 
-                NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
-                object = nil;
+                if (![object.entity.name isEqualToString:entityName]) {
+                    
+                    NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
+                    object = nil;
+                    
+                }
+                
+            } else {
+                
+                object = [self newObjectForEntityName:entityName];
+                [object setValue:xidData forKey:@"xid"];
                 
             }
-        
-        } else {
             
-            object = [self newObjectForEntityName:entityName];
-            [object setValue:xidData forKey:@"xid"];
+            [self sharedController].objectsCache[xid] = object;
             
+            return object;
+
         }
-        
-        return object;
         
     } else {
         
@@ -639,6 +723,19 @@
     
     return object;
     
+}
+
++ (NSArray *)objectsWithXids:(NSArray *)xids {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"xid IN %@", xids];
+    
+    NSError *error;
+    NSArray *fetchResult = [[self document].mainContext executeFetchRequest:request error:&error];
+    
+    return fetchResult;
+
 }
 
 
@@ -864,16 +961,25 @@
     NSArray *second = [self sharedController].timesDic[@"2"];
     NSArray *third = [self sharedController].timesDic[@"3"];
     NSArray *fourth = [self sharedController].timesDic[@"4"];
+    NSArray *fifth = [self sharedController].timesDic[@"5"];
+    NSArray *sixth = [self sharedController].timesDic[@"6"];
+    NSArray *seventh = [self sharedController].timesDic[@"7"];
     
     NSNumber *avgFirst = [first valueForKeyPath:@"@avg.self"];
     NSNumber *avgSecond = [second valueForKeyPath:@"@avg.self"];
     NSNumber *avgThird = [third valueForKeyPath:@"@avg.self"];
     NSNumber *avgFourth = [fourth valueForKeyPath:@"@avg.self"];
+    NSNumber *avgFifth = [fifth valueForKeyPath:@"@avg.self"];
+    NSNumber *avgSixth = [sixth valueForKeyPath:@"@avg.self"];
+    NSNumber *avgSeventh = [seventh valueForKeyPath:@"@avg.self"];
     
     NSLog(@"avgFirst %@", avgFirst);
     NSLog(@"avgSecond %@", avgSecond);
     NSLog(@"avgThird %@", avgThird);
     NSLog(@"avgFourth %@", avgFourth);
+    NSLog(@"avgFifth %@", avgFifth);
+    NSLog(@"avgSixth %@", avgSixth);
+    NSLog(@"avgSeventh %@", avgSeventh);
     
 }
 
