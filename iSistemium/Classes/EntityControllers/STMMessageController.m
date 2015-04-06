@@ -13,7 +13,28 @@
 #import "STMMessageVC.h"
 #import "STMRootTBC.h"
 
+@interface STMMessageController()
+
+@property (nonatomic, strong) NSMutableDictionary *shownPictures;
+
+
+@end
+
+
 @implementation STMMessageController
+
++ (STMMessageController *)sharedInstance {
+    
+    static dispatch_once_t pred = 0;
+    __strong static id _sharedInstance = nil;
+    
+    dispatch_once(&pred, ^{
+        _sharedInstance = [[self alloc] init];
+    });
+    
+    return _sharedInstance;
+    
+}
 
 
 /**
@@ -136,10 +157,32 @@
 
 }
 
++ (void)pictureDidShown:(STMMessagePicture *)picture {
+    [[self sharedInstance] pictureDidShown:picture];
+}
+
++ (void)markMessageAsRead:(STMMessage *)message {
+    
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
+    recordStatus.isRead = @YES;
+    
+    self.syncer.syncerState = STMSyncerSendDataOnce;
+    [self.document saveDocument:^(BOOL success) {}];
+    
+}
+
++ (BOOL)messageIsRead:(STMMessage *)message {
+
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
+
+    return [recordStatus.isRead boolValue];
+    
+}
+
 + (NSUInteger)unreadMessagesCount {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     
     NSError *error;
     NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
@@ -147,12 +190,50 @@
     NSArray *messageXids = [result valueForKeyPath:@"xid"];
     
     request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"(objectXid IN %@) && (isRead == YES)", messageXids];
     
     NSUInteger resultCount = [[self document].mainContext countForFetchRequest:request error:&error];
     
     return messageXids.count - resultCount;
+    
+}
+
+
+#pragma mark - singletone properties & methods
+
+- (NSMutableDictionary *)shownPictures {
+    
+    if (!_shownPictures) {
+        _shownPictures = [@{} mutableCopy];
+    }
+    return _shownPictures;
+    
+}
+
+- (void)pictureDidShown:(STMMessagePicture *)picture {
+
+    STMMessage *message = picture.message;
+    
+    if (![STMMessageController messageIsRead:message]) {
+        
+        NSMutableArray *shownPicturesArray = self.shownPictures[message.xid];
+        if (!shownPicturesArray) shownPicturesArray = [@[] mutableCopy];
+        [shownPicturesArray addObject:picture.xid];
+        self.shownPictures[message.xid] = shownPicturesArray;
+        
+        NSSet *picturesXids = [message valueForKeyPath:@"pictures.xid"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (self IN %@)", shownPicturesArray];
+        NSUInteger unshownPicturesCount = [picturesXids.allObjects filteredArrayUsingPredicate:predicate].count;
+        
+        if (unshownPicturesCount == 0) {
+            
+            [STMMessageController markMessageAsRead:message];
+            [self.shownPictures removeObjectForKey:message.xid];
+            
+        }
+
+    }
     
 }
 

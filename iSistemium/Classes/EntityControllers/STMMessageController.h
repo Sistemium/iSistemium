@@ -18,6 +18,10 @@
 + (void)showMessageVCsForMessages:(NSArray *)messages;
 + (void)showMessageVCsForMessage:(STMMessage *)message;
 
++ (void)pictureDidShown:(STMMessagePicture *)picture;
+
++ (void)markMessageAsRead:(STMMessage *)message;
+
 + (NSUInteger)unreadMessagesCount;
 
 @end

@@ -7,7 +7,10 @@
 //
 
 #import "STMMessageVC.h"
+
 #import "STMFunctions.h"
+
+#import "STMMessageController.h"
 #import "STMPicturesController.h"
 
 
@@ -46,6 +49,8 @@
 }
 
 - (void)tapView {
+    
+    [STMMessageController pictureDidShown:self.picture];
     
     [self removeObservers];
     [self dismissViewControllerAnimated:YES completion:nil];

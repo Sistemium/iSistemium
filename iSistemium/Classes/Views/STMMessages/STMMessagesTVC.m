@@ -76,22 +76,12 @@ static NSString *cellIdentifier = @"messageCell";
 
     STMMessage *message = messageData[@"message"];
     NSIndexPath *indexPath = messageData[@"indexPath"];
-    
-    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
-    recordStatus.isRead = @YES;
+
+    [STMMessageController markMessageAsRead:message];
     
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     
     [self showUnreadCount];
-
-    STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-    syncer.syncerState = STMSyncerSendDataOnce;
-
-    [self.document saveDocument:^(BOOL success) {
-        if (success) {
-            
-        }
-    }];
     
 }
 
@@ -246,17 +236,7 @@ static NSString *cellIdentifier = @"messageCell";
 
 - (void)showUnreadCount {
     
-    NSMutableArray *messageXids = [NSMutableArray array];
-    
-    for (STMMessage *message in self.resultsController.fetchedObjects) [messageXids addObject:message.xid];
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
-    
-    NSError *error;
-    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
-    NSInteger unreadCount = messageXids.count - result.count;
+    NSInteger unreadCount = [STMMessageController unreadMessagesCount];
     
     NSString *badgeValue = unreadCount > 0 ? [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount] : nil;
     self.navigationController.tabBarItem.badgeValue = badgeValue;
