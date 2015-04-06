@@ -384,18 +384,8 @@
         
         if (affectedObject) {
             
-            if ([recordStatus.isRead boolValue]) {
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-                
-            }
-            
-            if ([recordStatus.isRemoved boolValue]) {
-                
-                [[self document].mainContext deleteObject:affectedObject];
-//                [[self document].mainContext deleteObject:recordStatus];
-                
-            }
+            if ([recordStatus.isRead boolValue]) [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+            if ([recordStatus.isRemoved boolValue]) [[self document].mainContext deleteObject:affectedObject];
             
         }
         
