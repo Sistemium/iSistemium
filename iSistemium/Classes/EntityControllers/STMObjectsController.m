@@ -195,7 +195,7 @@
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
 
 // time checking
-    NSDate *start = [NSDate date];
+//    NSDate *start = [NSDate date];
 // -------------
     
     NSString *name = dictionary[@"name"];
@@ -232,7 +232,7 @@
             }
 
 // time checking
-            [[self sharedController].timesDic[@"1"] addObject:@([start timeIntervalSinceNow])];
+//            [[self sharedController].timesDic[@"1"] addObject:@([start timeIntervalSinceNow])];
 // -------------
             
             if (!object) {
@@ -240,7 +240,7 @@
             }
             
 // time checking
-            [[self sharedController].timesDic[@"2"] addObject:@([start timeIntervalSinceNow])];
+//            [[self sharedController].timesDic[@"2"] addObject:@([start timeIntervalSinceNow])];
 // -------------
             
             if (![self isWaitingToSyncForObject:object]) {
@@ -251,7 +251,7 @@
             }
             
 // time checking
-            [[self sharedController].timesDic[@"3"] addObject:@([start timeIntervalSinceNow])];
+//            [[self sharedController].timesDic[@"3"] addObject:@([start timeIntervalSinceNow])];
 // -------------
             
         } else {
@@ -275,7 +275,7 @@
 + (void)processingOfObject:(NSManagedObject *)object withEntityName:(NSString *)entityName fillWithValues:(NSDictionary *)properties {
     
 // time checking
-    NSDate *start = [NSDate date];
+//    NSDate *start = [NSDate date];
 // -------------
     
     NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
@@ -310,7 +310,7 @@
     [self postprocessingForObject:object withEntityName:entityName];
 
 // time checking
-    [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
+//    [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
 // -------------
     
 }
@@ -480,7 +480,7 @@
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
 // time checking
-    NSDate *start = [NSDate date];
+//    NSDate *start = [NSDate date];
 // -------------
     
     NSString *name = dictionary[@"name"];
@@ -513,7 +513,7 @@
         }
 
 // time checking
-        [[self sharedController].timesDic[@"5"] addObject:@([start timeIntervalSinceNow])];
+//        [[self sharedController].timesDic[@"5"] addObject:@([start timeIntervalSinceNow])];
 // -------------
         
         if (ok) {
@@ -522,7 +522,7 @@
             NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
             
 // time checking
-            [[self sharedController].timesDic[@"6"] addObject:@([start timeIntervalSinceNow])];
+//            [[self sharedController].timesDic[@"6"] addObject:@([start timeIntervalSinceNow])];
 // -------------
             
             NSSet *destinationSet = [ownerObject valueForKey:roleName];
@@ -556,7 +556,7 @@
         }
         
 // time checking
-        [[self sharedController].timesDic[@"7"] addObject:@([start timeIntervalSinceNow])];
+//        [[self sharedController].timesDic[@"7"] addObject:@([start timeIntervalSinceNow])];
 // -------------
         
         completionHandler(YES);
@@ -615,6 +615,8 @@
     
     NSManagedObject *cachedObject = [self sharedController].objectsCache[xidData];
     
+    return cachedObject;
+
 //    if (!cachedObject) {
 //        
 //// time checking
@@ -640,9 +642,9 @@
 //        return object;
 //        
 //    } else {
-    
-        return cachedObject;
-        
+//    
+//        return cachedObject;
+//        
 //    }
     
 }
@@ -684,9 +686,9 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData {
 
-    // time checking
-    NSDate *start = [NSDate date];
-    // -------------
+// time checking
+//    NSDate *start = [NSDate date];
+// -------------
     
     NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].mainContext];
     [object setValue:@YES forKey:@"isFantom"];
@@ -700,9 +702,9 @@
     [self sharedController].objectsCache[xidData] = object;
 
 
-    // time checking
-    [[self sharedController].timesDic[@"9"] addObject:@([start timeIntervalSinceNow])];
-    // -------------
+// time checking
+//    [[self sharedController].timesDic[@"9"] addObject:@([start timeIntervalSinceNow])];
+// -------------
     
     return object;
 
@@ -741,10 +743,10 @@
 
     [self sharedController].objectsCache = nil;
     
-    NSLog(@"initObjectsCache");
-    TICK;
+//    NSLog(@"initObjectsCache");
+//    TICK;
     NSArray *allObects = [self allObjects];
-    TOCK;
+//    TOCK;
     
     NSArray *keys = [allObects valueForKeyPath:@"xid"];
     
@@ -1008,7 +1010,7 @@
 
 + (void)dataLoadingFinished {
     
-    [self avgTimesCalc];
+//    [self avgTimesCalc];
     
     [self checkObjectsForFlushing];
     
