@@ -14,6 +14,8 @@
 
 + (STMObjectsController *)sharedController;
 
++ (void)initObjectsCache;
+
 + (void)checkObjectsForFlushing;
 
 + (void)processingOfDataArray:(NSArray *)array roleName:(NSString *)roleName withCompletionHandler:(void (^)(BOOL success))completionHandler;
@@ -42,5 +44,7 @@
 + (NSArray *)localDataModelEntityNames;
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName;
+
+
 
 @end

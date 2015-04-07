@@ -10,6 +10,7 @@
 #import "STMEntityDescription.h"
 
 #import "STMClientDataController.h"
+#import "STMObjectsController.h"
 
 @interface STMLocationTracker() <CLLocationManagerDelegate>
 
@@ -434,7 +435,8 @@
 
 - (void)startNewTrack {
     
-    STMTrack *track = (STMTrack *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMTrack class]) inManagedObjectContext:self.document.mainContext];
+    STMTrack *track = (STMTrack *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMTrack class])];
+    track.isFantom = @NO;
     track.startTime = [NSDate date];
     self.currentTrack = track;
     //    NSLog(@"track %@", track);
@@ -473,7 +475,8 @@
 
 - (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location {
     
-    STMLocation *locationObject = (STMLocation *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLocation class]) inManagedObjectContext:self.document.mainContext];
+    STMLocation *locationObject = (STMLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLocation class])];
+    locationObject.isFantom = @NO;
     [locationObject setLatitude:@(location.coordinate.latitude)];
     [locationObject setLongitude:@(location.coordinate.longitude)];
     [locationObject setHorizontalAccuracy:@(location.horizontalAccuracy)];

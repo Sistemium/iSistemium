@@ -9,6 +9,7 @@
 #import "STMBatteryTracker.h"
 #import "STMBatteryStatus.h"
 #import "STMEntityDescription.h"
+#import "STMObjectsController.h"
 
 @implementation STMBatteryTracker
 
@@ -54,7 +55,8 @@
 
 - (void)getBatteryStatus {
     
-    STMBatteryStatus *batteryStatus = (STMBatteryStatus *)[STMEntityDescription insertNewObjectForEntityForName:@"STBatteryStatus" inManagedObjectContext:self.document.mainContext];
+    STMBatteryStatus *batteryStatus = (STMBatteryStatus *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBatteryStatus class])];
+    batteryStatus.isFantom = @NO;
     batteryStatus.batteryLevel = @((double)[UIDevice currentDevice].batteryLevel);
     NSString *batteryState;
     

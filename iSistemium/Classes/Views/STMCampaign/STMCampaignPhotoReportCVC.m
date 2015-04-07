@@ -16,7 +16,7 @@
 #import "STMPhoto.h"
 #import "STMPhotoReportPVC.h"
 #import "STMFunctions.h"
-//#import "STMObjectsController.h"
+#import "STMObjectsController.h"
 #import "STMPicturesController.h"
 #import "STMCampaignsSVC.h"
 #import "STMConstants.h"
@@ -287,7 +287,8 @@
     [self cancelButtonPressed:sender];
     
     STMOutlet *outlet = self.outlets[self.currentSection];
-    STMPhotoReport *photoReport = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.mainContext];
+    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
+    photoReport.isFantom = @NO;
     photoReport.outlet = outlet;
     self.selectedPhotoReport = photoReport;
 
@@ -341,7 +342,8 @@
     
     STMOutlet *outlet = self.outlets[tag];
     
-    STMPhotoReport *photoReport = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMPhotoReport class]) inManagedObjectContext:self.document.mainContext];
+    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
+    photoReport.isFantom = @NO;
     photoReport.outlet = outlet;
 
 //    [self.document saveDocument:^(BOOL success) {

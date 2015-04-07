@@ -197,7 +197,7 @@
     
 }
 
-- (void) setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
+- (void)setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
     
     self.fetchCompletionHandler = handler;
     self.syncerState = syncerState;
@@ -336,6 +336,7 @@
         
         self.settings = nil;
         self.running = YES;
+        [STMObjectsController initObjectsCache];
         [STMEntityController checkEntitiesForDuplicates];
         [STMPicturesController checkPhotos];
         [STMClientDataController checkClientData];
