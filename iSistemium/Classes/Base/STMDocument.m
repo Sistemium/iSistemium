@@ -239,6 +239,8 @@
     }
     
     [document addObservers];
+    
+    [[document undoManager] disableUndoRegistration];
 
     return document;
     

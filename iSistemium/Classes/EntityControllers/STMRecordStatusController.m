@@ -7,6 +7,8 @@
 //
 
 #import "STMRecordStatusController.h"
+#import "STMObjectsController.h"
+
 
 @implementation STMRecordStatusController
 
@@ -33,7 +35,8 @@
     
     if (!recordStatus) {
         
-        recordStatus = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMRecordStatus class]) inManagedObjectContext:[self document].mainContext];
+        recordStatus = (STMRecordStatus *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMRecordStatus class])];
+        recordStatus.isFantom = @NO;
         recordStatus.objectXid = objectXid;
         
     }
