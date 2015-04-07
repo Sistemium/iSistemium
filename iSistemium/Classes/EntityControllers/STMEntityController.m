@@ -57,25 +57,7 @@
     NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
     
     NSMutableArray *returnValue = result.mutableCopy;
-    
-// insert duplicates
-/*
-    if (result.count < 40) {
         
-        STMEntity *result0 = result[20];
-
-        STMEntity *duplicateEntity = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMEntity class]) inManagedObjectContext:[self document].main];
-
-        duplicateEntity.name = result0.name;
-
-        [returnValue addObject:duplicateEntity];
-        
-        [[self document] saveDocument:^(BOOL success) {}];
-
-    }
-*/
-// end of insert duplicates
-    
     return returnValue;
     
 }

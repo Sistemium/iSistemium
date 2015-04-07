@@ -11,6 +11,8 @@
 #import "STMEntityDescription.h"
 #import "STMFunctions.h"
 
+#import "STMObjectsController.h"
+
 @interface STMLogger() <NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) STMDocument *document;
@@ -126,7 +128,8 @@
 
     if (self.document) {
         
-        STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.mainContext];
+        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class])];
+        logMessage.isFantom = @NO;
         logMessage.text = text;
         logMessage.type = type;
         
@@ -172,7 +175,8 @@
 
     for (NSDictionary *logMessageDic in [loggerDefaults allValues]) {
         
-        STMLogMessage *logMessage = (STMLogMessage *)[STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMLogMessage class]) inManagedObjectContext:self.document.mainContext];
+        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class])];
+        logMessage.isFantom = @NO;
         
         for (NSString *key in [logMessageDic allKeys]) {
             [logMessage setValue:logMessageDic[key] forKey:key];

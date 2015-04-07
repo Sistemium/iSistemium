@@ -151,7 +151,10 @@
         STMClientData *clientData = [fetchResult lastObject];
         
         if (!clientData) {
-            clientData = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].mainContext];
+            
+            clientData = (STMClientData *)[STMObjectsController newObjectForEntityName:entityName];
+            clientData.isFantom = @NO;
+            
         }
         
         return clientData;

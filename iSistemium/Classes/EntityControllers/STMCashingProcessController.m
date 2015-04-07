@@ -271,16 +271,6 @@
         
         [STMCashingController addCashingWithSum:summ ndoc:nil date:date comment:commentText debt:debt outlet:self.outlet];
         
-//        STMCashing *cashing = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMCashing class]) inManagedObjectContext:[STMController document].mainContext];
-//        
-//        cashing.date = date;
-//        cashing.summ = summ;
-//        cashing.debt = debt;
-//        cashing.commentText = commentText;
-//        cashing.outlet = self.outlet;
-//        
-//        debt.calculatedSum = [debt cashingCalculatedSum];
-        
     }
     
     [[STMController document] saveDocument:^(BOOL success) {
