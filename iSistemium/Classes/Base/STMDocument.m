@@ -84,7 +84,7 @@
 
 - (void)saveDocument:(void (^)(BOOL success))completionHandler {
 
-    [self saveContexts];
+//    [self saveContexts];
     
     if (!self.saving) {
 
@@ -240,7 +240,7 @@
     
     [document addObservers];
     
-    [[document undoManager] disableUndoRegistration];
+//    [[document undoManager] disableUndoRegistration];
 
     return document;
     
