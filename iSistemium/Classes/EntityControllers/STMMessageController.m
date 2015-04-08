@@ -197,7 +197,11 @@
     
     NSUInteger resultCount = [[self document].managedObjectContext countForFetchRequest:request error:&error];
     
-    return messageXids.count - resultCount;
+    NSInteger unreadMessageCount = messageXids.count - resultCount;
+    
+    if (unreadMessageCount <= 0) unreadMessageCount = 0;
+    
+    return (NSUInteger)unreadMessageCount;
     
 }
 
