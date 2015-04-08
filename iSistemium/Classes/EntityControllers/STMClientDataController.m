@@ -140,14 +140,14 @@
 
 + (STMClientData *)clientData {
     
-    if ([self document].mainContext) {
+    if ([self document].managedObjectContext) {
         
         NSString *entityName = NSStringFromClass([STMClientData class]);
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         
-        NSArray *fetchResult = [[self document].mainContext executeFetchRequest:request error:nil];
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
         STMClientData *clientData = [fetchResult lastObject];
         
         if (!clientData) {
@@ -169,7 +169,7 @@
 
 + (void)checkAppVersion {
     
-    if ([self document].mainContext) {
+    if ([self document].managedObjectContext) {
         
         STMClientData *clientData = [self clientData];
         
@@ -186,7 +186,7 @@
             request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
             request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"availableVersion"];
             
-            NSArray *fetchResult = [[self document].mainContext executeFetchRequest:request error:nil];
+            NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
             STMSetting *availableVersionSetting = [fetchResult lastObject];
             
             if (availableVersionSetting) {
@@ -214,7 +214,7 @@
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"appDownloadUrl"];
         
-        NSArray *fetchResult = [[self document].mainContext executeFetchRequest:request error:nil];
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
         STMSetting *appDownloadUrlSetting = [fetchResult lastObject];
         
         if (appDownloadUrlSetting) {

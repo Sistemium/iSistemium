@@ -27,7 +27,7 @@
     
 //    [super awakeFromInsert];
     
-//    if (self.managedObjectContext.parentContext) {
+    if (self.managedObjectContext.parentContext) {
     
         [self setPrimitiveValue:[self newXid] forKey:@"xid"];
         
@@ -51,7 +51,7 @@
         [defaults setObject:largestId forKey:@"largestId"];
         [defaults synchronize];
         
-//    }
+    }
     
 }
 

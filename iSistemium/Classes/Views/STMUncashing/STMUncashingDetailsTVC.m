@@ -165,7 +165,7 @@
         
 //        request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@ AND outlet.name != %@", self.uncashing, nil];
         request.predicate = [NSPredicate predicateWithFormat:@"uncashing == %@", self.uncashing];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:@"outletSectionName" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"outletSectionName" cacheName:nil];
         _resultsController.delegate = self;
 
     }
