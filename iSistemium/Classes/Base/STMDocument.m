@@ -96,6 +96,10 @@
                 
                 if (success) {
                     
+//                    for (NSManagedObject *object in [self.managedObjectContext registeredObjects]) {
+//                        [self.managedObjectContext refreshObject:object mergeChanges:NO];
+//                    }
+
                     completionHandler(YES);
                     
                 } else {
@@ -240,7 +244,7 @@
     
     [document addObservers];
     
-//    [[document undoManager] disableUndoRegistration];
+    [[document undoManager] disableUndoRegistration];
 
     return document;
     

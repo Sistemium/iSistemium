@@ -167,7 +167,11 @@
         }];
         
     }
-
+    
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+    
 //    NSDate *finish = [NSDate date];
 //    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
 //    NSLog(@"--------------------f %@", finishString);
