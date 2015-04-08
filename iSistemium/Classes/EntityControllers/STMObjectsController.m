@@ -702,7 +702,7 @@
     } else {
         xidData = [object valueForKey:@"xid"];
     }
-
+    
     [self sharedController].objectsCache[xidData] = object;
 
 

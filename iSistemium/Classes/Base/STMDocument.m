@@ -95,10 +95,6 @@
             [self saveToURL:self.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
                 
                 if (success) {
-                    
-//                    for (NSManagedObject *object in [self.managedObjectContext registeredObjects]) {
-//                        [self.managedObjectContext refreshObject:object mergeChanges:NO];
-//                    }
 
                     completionHandler(YES);
                     

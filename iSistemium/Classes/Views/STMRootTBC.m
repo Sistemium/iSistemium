@@ -529,7 +529,11 @@
 
 - (void)syncerTimeoutError {
     
+#ifdef DEBUG
+
     [self showTimeoutAlert];
+    
+#endif
 
 }
 
