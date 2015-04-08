@@ -46,7 +46,7 @@ static NSString *cellIdentifier = @"messageCell";
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
         //        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:@"xid" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"xid" cacheName:nil];
         _resultsController.delegate = self;
         
     }

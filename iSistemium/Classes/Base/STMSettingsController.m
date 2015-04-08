@@ -202,7 +202,7 @@
 
         request.sortDescriptors = @[groupSortDescriptor, nameSortDescriptor];
         
-        _fetchedSettingsResultController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.session.document.mainContext sectionNameKeyPath:@"group" cacheName:nil];
+        _fetchedSettingsResultController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.session.document.managedObjectContext sectionNameKeyPath:@"group" cacheName:nil];
         _fetchedSettingsResultController.delegate = self;
         
     }
@@ -265,7 +265,7 @@
         result = [result filteredArrayUsingPredicate:predicate];
         
         for (STMSetting *settingObject in result) {
-            [self.session.document.mainContext deleteObject:settingObject];
+            [self.session.document.managedObjectContext deleteObject:settingObject];
         }
         
     }

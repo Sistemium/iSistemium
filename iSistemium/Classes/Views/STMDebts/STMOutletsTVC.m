@@ -83,7 +83,7 @@
 
         }
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:@"partner.name" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"partner.name" cacheName:nil];
         _resultsController.delegate = self;
         
     }

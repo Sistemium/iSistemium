@@ -83,7 +83,7 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
-        _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.mainContext sectionNameKeyPath:nil cacheName:nil];
+        _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 
     }
     
@@ -113,7 +113,7 @@
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
         
         NSError *error;
-        NSArray *outlets = [self.document.mainContext executeFetchRequest:request error:&error];
+        NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
 
         NSMutableSet *outletsSet = [NSMutableSet setWithArray:outlets];
         
@@ -373,7 +373,7 @@
         
     } else {
         
-        [self.document.mainContext deleteObject:self.selectedPhotoReport];
+        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
 
     }
     
@@ -537,13 +537,13 @@
     [picker dismissViewControllerAnimated:NO completion:^{
         
 //        [self.spinnerView removeFromSuperview];
-//        [self.document.mainContext deleteObject:self.selectedPhotoReport];
+//        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
 //        self.imagePickerController = nil;
         
     }];
 
     [self.spinnerView removeFromSuperview];
-    [self.document.mainContext deleteObject:self.selectedPhotoReport];
+    [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
     self.imagePickerController = nil;
 
 }

@@ -72,7 +72,7 @@ static NSString *showZeroStockKey = @"showZeroStock";
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPriceType class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[[STMSessionManager sharedManager].currentSession document].mainContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[[STMSessionManager sharedManager].currentSession document].managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         _resultsController.delegate = self;
         
     }
