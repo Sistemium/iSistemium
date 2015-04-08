@@ -127,7 +127,7 @@
 //        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMTrack class])];
 //        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:NO selector:@selector(compare:)]];
 //        NSError *error;
-//        NSArray *result = [self.document.mainContext executeFetchRequest:request error:&error];
+//        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
 //        
 //        if (result.count > 0) {
 //            _currentTrack = [result objectAtIndex:0];
@@ -154,7 +154,7 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLocation class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         NSError *error;
-        NSArray *result = [self.document.mainContext executeFetchRequest:request error:&error];
+        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
         
         STMLocation *lastLocation = [result lastObject];
         if (lastLocation) {
@@ -454,7 +454,7 @@
 
 - (void)deleteTrack:(STMTrack *)track {
     
-    [self.document.mainContext deleteObject:track];
+    [self.document.managedObjectContext deleteObject:track];
     [self.document saveDocument:^(BOOL success) {
         if (success) {
             NSLog(@"deleteTrack success");
