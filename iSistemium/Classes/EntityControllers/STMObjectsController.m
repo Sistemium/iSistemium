@@ -440,7 +440,7 @@
             
         }
         
-        if (recordStatus.isTemporary) [[self document].managedObjectContext deleteObject:recordStatus];
+        if (recordStatus.isTemporary.boolValue) [[self document].managedObjectContext deleteObject:recordStatus];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
         
