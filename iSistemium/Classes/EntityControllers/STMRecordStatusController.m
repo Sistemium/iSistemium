@@ -55,7 +55,7 @@
     request.predicate = predicate;
     
     NSError *error;
-    NSArray *recordStatuses = [[self document].mainContext executeFetchRequest:request error:&error];
+    NSArray *recordStatuses = [[self document].managedObjectContext executeFetchRequest:request error:&error];
 
     return recordStatuses;
     

@@ -116,7 +116,7 @@
     request.sortDescriptors = @[sortDescriptor];
     request.predicate = predicate;
     
-    NSArray *messages = [[self document].mainContext executeFetchRequest:request error:nil];
+    NSArray *messages = [[self document].managedObjectContext executeFetchRequest:request error:nil];
 
     return messages;
     
@@ -187,7 +187,7 @@
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     
     NSError *error;
-    NSArray *result = [[self document].mainContext executeFetchRequest:request error:&error];
+    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
     
     NSArray *messageXids = [result valueForKeyPath:@"xid"];
     
@@ -195,7 +195,7 @@
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"(objectXid IN %@) && (isRead == YES)", messageXids];
     
-    NSUInteger resultCount = [[self document].mainContext countForFetchRequest:request error:&error];
+    NSUInteger resultCount = [[self document].managedObjectContext countForFetchRequest:request error:&error];
     
     return messageXids.count - resultCount;
     
