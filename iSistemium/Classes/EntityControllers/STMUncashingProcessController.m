@@ -192,15 +192,28 @@
 
 - (BOOL)uncashingIsValid {
     
-    if (self.uncashingSum.doubleValue <= 0) {
+//    if (self.uncashingSum.doubleValue <= 0) {
+//        
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+//                                                        message:NSLocalizedString(@"UNCASHING SUM NOT VALID", nil)
+//                                                       delegate:nil
+//                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+//                                              otherButtonTitles:nil];
+//        [alert show];
+//        
+//        return NO;
+//        
+//    } else
         
+    if (self.cashingDictionary.allValues.count == 0) {
+
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                        message:NSLocalizedString(@"UNCASHING SUM NOT VALID", nil)
+                                                        message:NSLocalizedString(@"U SHOULD SELECT AT LEAST ONE CASHING", nil)
                                                        delegate:nil
                                               cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
                                               otherButtonTitles:nil];
         [alert show];
-        
+
         return NO;
         
     } else if (!self.uncashingType) {

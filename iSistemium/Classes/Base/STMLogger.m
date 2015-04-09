@@ -125,24 +125,16 @@
     if (![[self availableTypes] containsObject:type]) type = @"info";
     
     NSLog(@"Log %@: %@", type, text);
-
-    if (self.document) {
+    
+    BOOL sessionIsRunning = [[self.session status] isEqualToString:@"running"];
+    
+    if (sessionIsRunning && self.document) {
         
         STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class])];
         logMessage.isFantom = @NO;
         logMessage.text = text;
         logMessage.type = type;
         
-//        [self.document saveDocument:^(BOOL success) {
-//            
-//            if (success) {
-//                //            NSLog(@"save logMessage success");
-//            } else {
-//                //            NSLog(@"save logMessage fail");
-//            }
-//            
-//        }];
-
     } else {
         [self saveLogMessageDictionary:@{@"text": text, @"type": type}];
     }
@@ -192,7 +184,7 @@
 - (NSString *)loggerKey {
     
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    NSString *loggerKey = [bundleIdentifier stringByAppendingString:@".logger"];
+    NSString *loggerKey = [bundleIdentifier stringByAppendingString:@".logger."];
 
     return loggerKey;
     

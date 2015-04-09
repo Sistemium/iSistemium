@@ -90,6 +90,7 @@
 "ATTENTION" = "Внимание!";
 "DETAILS" = "Подробности";
 "UNCASHING SUM NOT VALID" = "Неверная сумма выручки";
+"U SHOULD SELECT AT LEAST ONE CASHING" = "Не выбрана ни одна сумма";
 "NO UNCASHING TYPE" = "Не выбрано место сдачи выручки";
 "NO CHECK IMAGE" = "Нет фотографии чека";
 "NO CASH DESK CHOOSEN" = "Не выбрана касса";

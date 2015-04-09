@@ -90,6 +90,7 @@
 "ATTENTION" = "Attention!";
 "DETAILS" = "Details";
 "UNCASHING SUM NOT VALID" = "Uncashing sum not valid";
+"U SHOULD SELECT AT LEAST ONE CASHING" = "You should select at least one cashing";
 "NO UNCASHING TYPE" = "No uncashing type";
 "NO CHECK IMAGE" = "No check image";
 "NO CASH DESK CHOOSEN" = "No cash desk choosen";
