@@ -20,6 +20,7 @@
 - (void)saveLogMessageWithText:(NSString *)text;
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
 - (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic;
+- (void)saveLogMessageDictionaryToDocument;
 
 - (NSArray *)syncingTypesForSettingType:(NSString *)settingType;
 

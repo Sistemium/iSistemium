@@ -62,14 +62,8 @@
         
         if (_document) {
             
-            [self saveLogMessageDictionaryToDocument];
-            
             NSError *error;
-            if (![self.resultsController performFetch:&error]) {
-                
-                NSLog(@"performFetch error %@", error);
-                
-            }
+            if (![self.resultsController performFetch:&error]) NSLog(@"performFetch error %@", error);
 
         }
         
@@ -161,6 +155,8 @@
 
 - (void)saveLogMessageDictionaryToDocument {
     
+    NSLog(@"saveLogMessageDictionaryToDocument");
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSDictionary *loggerDefaults = [defaults dictionaryForKey:[self loggerKey]];
@@ -173,6 +169,8 @@
         for (NSString *key in [logMessageDic allKeys]) {
             [logMessage setValue:logMessageDic[key] forKey:key];
         }
+        
+//        if ([logMessage.type isEqualToString:@"error"]) NSLog(@"logMessage %@", logMessage);
         
     }
     

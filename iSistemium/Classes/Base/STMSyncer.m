@@ -346,6 +346,7 @@
                 [STMPicturesController checkPhotos];
                 [STMClientDataController checkClientData];
                 [STMEntityController checkEntitiesForDuplicates];
+                [self.session.logger saveLogMessageDictionaryToDocument];
                 [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
                 [self initTimer];
                 [self addObservers];

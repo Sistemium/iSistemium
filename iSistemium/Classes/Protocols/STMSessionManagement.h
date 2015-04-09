@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, STMSyncerState) {
 @protocol STMLogger <NSObject, UITableViewDataSource, UITableViewDelegate>
 
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
+- (void)saveLogMessageDictionaryToDocument;
 
 @property (nonatomic, weak) UITableView *tableView;
 
