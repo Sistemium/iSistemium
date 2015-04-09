@@ -68,8 +68,13 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
         
-        NSSortDescriptor *partnerNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"partner.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"shortName" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *partnerNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"partner.name"
+                                                                                    ascending:YES
+                                                                                     selector:@selector(caseInsensitiveCompare:)];
+        
+        NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"shortName"
+                                                                             ascending:YES
+                                                                              selector:@selector(caseInsensitiveCompare:)];
                 
         request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
         
@@ -83,7 +88,13 @@
 
         }
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"partner.name" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:@"partner.name"
+                                                                            cacheName:nil];
+        
+#warning returned nil value for section name key path 'partner.name'. Object will be placed in unnamed section
+        
         _resultsController.delegate = self;
         
     }

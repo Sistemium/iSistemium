@@ -617,9 +617,16 @@
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
-    NSManagedObject *cachedObject = [self sharedController].objectsCache[xidData];
+    id cachedObject = [self sharedController].objectsCache[xidData];
     
-    return cachedObject;
+    if ([cachedObject isKindOfClass:[NSManagedObjectID class]]) {
+        
+        cachedObject = [[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)cachedObject error:nil];
+        [self sharedController].objectsCache[xidData] = cachedObject;
+        
+    }
+    
+    return (NSManagedObject *)cachedObject;
 
 //    if (!cachedObject) {
 //        
@@ -731,13 +738,46 @@
 
 }
 
-+ (NSArray *)allObjects {
++ (NSArray *)allObjectsFromContext:(NSManagedObjectContext *)context {
+    
+    if (!context) context = [self document].managedObjectContext;
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     
     NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *fetchResult = [context executeFetchRequest:request error:&error];
+    
+    return fetchResult;
+
+}
+
++ (NSArray *)allObjectIDsFromContext:(NSManagedObjectContext *)context {
+    
+    if (!context) context = [self document].managedObjectContext;
+
+    NSString *entityName = NSStringFromClass([STMDatum class]);
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
+//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+//    request.resultType = NSManagedObjectIDResultType;
+    
+    request.resultType = NSDictionaryResultType;
+    
+    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
+    NSPropertyDescription *xidProperty = entity.propertiesByName[@"xid"];
+
+    NSExpressionDescription* objectIDDescription = [NSExpressionDescription new];
+    objectIDDescription.name = @"objectID";
+    objectIDDescription.expression = [NSExpression expressionForEvaluatedObject];
+    objectIDDescription.expressionResultType = NSObjectIDAttributeType;
+
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    
+    request.propertiesToFetch = @[xidProperty, objectIDDescription];
+    
+    NSError *error;
+    NSArray *fetchResult = [context executeFetchRequest:request error:&error];
     
     return fetchResult;
 
@@ -745,19 +785,79 @@
 
 + (void)initObjectsCache {
 
+/*
+    
     [self sharedController].objectsCache = nil;
+        
+    NSLog(@"initObjectsCache");
+    TICK;
+    NSArray *allObjectIDs = [self allObjectIDsFromContext:nil];
+    TOCK;
     
-//    NSLog(@"initObjectsCache");
-//    TICK;
-    NSArray *allObects = [self allObjects];
-//    TOCK;
+    NSMutableArray *allObjects = [@[] mutableCopy];
     
-    NSArray *keys = [allObects valueForKeyPath:@"xid"];
+    [allObjectIDs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [allObjects addObject:[[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)obj error:nil]];
+    }];
     
-    [self sharedController].objectsCache = [NSMutableDictionary dictionaryWithObjects:allObects forKeys:keys];
+    TOCK;
     
+    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
+    
+    [self sharedController].objectsCache = [NSMutableDictionary dictionaryWithObjects:allObjects forKeys:keys];
+
+*/
+
 }
 
++ (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler {
+    
+    TICK;
+    NSLog(@"initObjectsCache");
+    
+    [self sharedController].objectsCache = nil;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    
+        __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
+        
+        [context performBlock:^{
+            
+            __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
+            
+            TOCK;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+//                NSMutableArray *allObjects = [@[] mutableCopy];
+//                
+//                [allObjectIDs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//                    [allObjects addObject:[[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)obj error:nil]];
+//                }];
+
+                NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
+                NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
+                NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+
+                [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+                
+                TOCK;
+                
+//                NSMutableArray *ma = [[self sharedController].objectsCache.allValues mutableCopy];
+//                
+//                [ma removeObjectsInArray:allObjects];
+                
+                
+                
+                completionHandler(YES);
+                
+            });
+            
+        }];
+        
+    });
+    
+}
 
 #pragma mark - getting entity properties
 
