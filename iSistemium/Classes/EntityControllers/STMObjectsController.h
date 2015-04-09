@@ -14,7 +14,6 @@
 
 + (STMObjectsController *)sharedController;
 
-+ (void)initObjectsCache;
 + (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler;
 
 + (void)checkObjectsForFlushing;

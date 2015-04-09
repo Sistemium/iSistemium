@@ -750,33 +750,6 @@
 
 }
 
-+ (void)initObjectsCache {
-
-/*
-    
-    [self sharedController].objectsCache = nil;
-        
-    NSLog(@"initObjectsCache");
-    TICK;
-    NSArray *allObjectIDs = [self allObjectIDsFromContext:nil];
-    TOCK;
-    
-    NSMutableArray *allObjects = [@[] mutableCopy];
-    
-    [allObjectIDs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [allObjects addObject:[[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)obj error:nil]];
-    }];
-    
-    TOCK;
-    
-    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
-    
-    [self sharedController].objectsCache = [NSMutableDictionary dictionaryWithObjects:allObjects forKeys:keys];
-
-*/
-
-}
-
 + (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     TICK;
@@ -813,6 +786,7 @@
     });
     
 }
+
 
 #pragma mark - getting entity properties
 
@@ -920,6 +894,8 @@
     
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:object];
     recordStatus.isRemoved = @YES;
+    
+    [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
     
     [self.document.managedObjectContext deleteObject:object];
     [self.document saveDocument:^(BOOL success) {
