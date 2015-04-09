@@ -627,36 +627,6 @@
     }
     
     return (NSManagedObject *)cachedObject;
-
-//    if (!cachedObject) {
-//        
-//// time checking
-//        NSDate *start = [NSDate date];
-//// -------------
-//        
-//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-//        request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
-//        request.fetchLimit = 1;
-//        
-//        NSError *error;
-//        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-//        
-//        NSManagedObject *object = [fetchResult lastObject];
-//
-//// time checking
-//        [[self sharedController].timesDic[@"8"] addObject:@([start timeIntervalSinceNow])];
-//// -------------
-//        
-//        [self sharedController].objectsCache[xidData] = object;
-//
-//        return object;
-//        
-//    } else {
-//    
-//        return cachedObject;
-//        
-//    }
     
 }
 
@@ -759,9 +729,6 @@
     NSString *entityName = NSStringFromClass([STMDatum class]);
     
     STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-//    request.resultType = NSManagedObjectIDResultType;
-    
     request.resultType = NSDictionaryResultType;
     
     STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
@@ -829,12 +796,6 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-//                NSMutableArray *allObjects = [@[] mutableCopy];
-//                
-//                [allObjectIDs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-//                    [allObjects addObject:[[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)obj error:nil]];
-//                }];
-
                 NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
                 NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
                 NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
@@ -842,12 +803,6 @@
                 [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
                 
                 TOCK;
-                
-//                NSMutableArray *ma = [[self sharedController].objectsCache.allValues mutableCopy];
-//                
-//                [ma removeObjectsInArray:allObjects];
-                
-                
                 
                 completionHandler(YES);
                 
