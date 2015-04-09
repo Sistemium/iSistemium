@@ -7,6 +7,7 @@
 //
 
 #import "STMEntityController.h"
+#import "STMObjectsController.h"
 
 @interface STMEntityController()
 
@@ -191,7 +192,7 @@
     [mutableResult removeObject:actualEntity];
     
     for (STMEntity *entity in mutableResult) {
-        [[self document].managedObjectContext deleteObject:entity];
+        [STMObjectsController removeObject:entity];
     }
     
     [[self document] saveDocument:^(BOOL success) {}];

@@ -730,7 +730,7 @@
     
     [self removeImageFilesForPicture:picture];
     
-    [[self document].managedObjectContext deleteObject:picture];
+    [STMObjectsController removeObject:picture];
 
     [[self document] saveDocument:^(BOOL success) {
         

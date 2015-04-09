@@ -373,7 +373,7 @@
         
     } else {
         
-        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+        [STMObjectsController removeObject:self.selectedPhotoReport];
 
     }
     
@@ -536,14 +536,10 @@
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
-//        [self.spinnerView removeFromSuperview];
-//        [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
-//        self.imagePickerController = nil;
-        
     }];
 
     [self.spinnerView removeFromSuperview];
-    [self.document.managedObjectContext deleteObject:self.selectedPhotoReport];
+    [STMObjectsController removeObject:self.selectedPhotoReport];
     self.imagePickerController = nil;
 
 }

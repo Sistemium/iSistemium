@@ -35,7 +35,7 @@
         [STMOutletController removeOutlet:outlet];
     }
     
-    [STMObjectsController removeObject:partner];
+    [STMObjectsController createRecordStatusAndRemoveObject:partner];
     
 }
 

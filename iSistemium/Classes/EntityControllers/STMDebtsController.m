@@ -41,7 +41,7 @@
 
 + (void)removeDebt:(STMDebt *)debt {
 
-    [STMObjectsController removeObject:debt];
+    [STMObjectsController createRecordStatusAndRemoveObject:debt];
 
 }
 

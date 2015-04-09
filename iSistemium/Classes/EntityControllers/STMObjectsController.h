@@ -31,7 +31,8 @@
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object;
 + (void)syncObject:(NSDictionary *)objectDictionary;
 
-+ (STMRecordStatus *)removeObject:(NSManagedObject *)object;
++ (void)removeObject:(NSManagedObject *)object;
++ (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object;
 
 + (void)dataLoadingFinished;
 

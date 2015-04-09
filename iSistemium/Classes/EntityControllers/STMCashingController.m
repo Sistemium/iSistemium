@@ -54,7 +54,7 @@
 
 + (void)removeCashing:(STMCashing *)cashing {
     
-    [STMObjectsController removeObject:cashing];
+    [STMObjectsController createRecordStatusAndRemoveObject:cashing];
 
 }
 

@@ -265,7 +265,7 @@
         result = [result filteredArrayUsingPredicate:predicate];
         
         for (STMSetting *settingObject in result) {
-            [self.session.document.managedObjectContext deleteObject:settingObject];
+            [STMObjectsController removeObject:settingObject];
         }
         
     }

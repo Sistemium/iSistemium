@@ -454,7 +454,7 @@
 
 - (void)deleteTrack:(STMTrack *)track {
     
-    [self.document.managedObjectContext deleteObject:track];
+    [STMObjectsController removeObject:track];
     [self.document saveDocument:^(BOOL success) {
         if (success) {
             NSLog(@"deleteTrack success");

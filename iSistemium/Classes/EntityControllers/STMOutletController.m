@@ -46,10 +46,10 @@
 
     NSArray *cashings = [outlet.cashings copy];
     for (STMCashing *cashing in cashings) {
-        [STMObjectsController removeObject:cashing];
+        [STMObjectsController createRecordStatusAndRemoveObject:cashing];
     }
 
-    [STMObjectsController removeObject:outlet];
+    [STMObjectsController createRecordStatusAndRemoveObject:outlet];
     
     if (partner.outlets.count == 0) {
         [STMPartnerController removePartner:partner];

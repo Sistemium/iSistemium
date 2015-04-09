@@ -13,6 +13,7 @@
 #import "STMRecordStatus.h"
 #import "STMRecordStatusController.h"
 #import "STMFunctions.h"
+#import "STMObjectsController.h"
 
 @interface STMPhotoReportPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
@@ -61,24 +62,11 @@
     
     STMPhotoReport *photoReport = (notification.userInfo)[@"photo2delete"];
     STMCampaign *campaign = photoReport.campaign;
-    
-    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:photoReport];
-    recordStatus.isRemoved = @YES;
-    
-    [[[STMSessionManager sharedManager].currentSession document].managedObjectContext deleteObject:photoReport];
 
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+    [STMObjectsController createRecordStatusAndRemoveObject:photoReport];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged" object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:@{@"campaign": campaign}];
-
-    [(STMDocument *)[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-        
-        if (success) {
-    
-        }
-        
-    }];
     
     if (self.photoArray.count == 1) {
         

@@ -440,11 +440,11 @@
         if (affectedObject) {
             
             if ([recordStatus.isRead boolValue]) [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-            if ([recordStatus.isRemoved boolValue]) [[self document].managedObjectContext deleteObject:affectedObject];
+            if ([recordStatus.isRemoved boolValue]) [self removeObject:affectedObject];
             
         }
         
-        if (recordStatus.isTemporary.boolValue) [[self document].managedObjectContext deleteObject:recordStatus];
+        if (recordStatus.isTemporary.boolValue) [self removeObject:recordStatus];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
         
@@ -890,22 +890,22 @@
 
 #pragma mark - flushing
 
-+ (STMRecordStatus *)removeObject:(NSManagedObject *)object {
++ (void)removeObject:(NSManagedObject *)object {
+
+    [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
+    [self.document.managedObjectContext deleteObject:object];
+
+}
+
++ (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object {
     
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:object];
     recordStatus.isRemoved = @YES;
     
-    [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
+    [self removeObject:object];
     
-    [self.document.managedObjectContext deleteObject:object];
     [self.document saveDocument:^(BOOL success) {
-        
-        if (success) {
-            
-            [self syncer].syncerState = STMSyncerSendDataOnce;
-            
-        }
-        
+        if (success) [self syncer].syncerState = STMSyncerSendDataOnce;
     }];
 
     return recordStatus;
@@ -945,7 +945,7 @@
         NSLog(@"flush %d objects with expired lifetime", objectsSet.count);
         
         for (NSManagedObject *object in objectsSet) {
-            [[self document].managedObjectContext deleteObject:object];
+            [self removeObject:object];
         }
 
     } else {
@@ -1269,7 +1269,7 @@
             if (object) {
                 
                 if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
-                    [[self session].document.managedObjectContext deleteObject:object];
+                    [self removeObject:object];
                 } else {
                     [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
                 }

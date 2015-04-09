@@ -35,9 +35,9 @@
 
 - (void)removeUncashing:(STMUncashing *)uncashing {
 
-    for (STMUncashingPicture *picture in uncashing.pictures) [STMObjectsController removeObject:picture];
+    for (STMUncashingPicture *picture in uncashing.pictures) [STMObjectsController createRecordStatusAndRemoveObject:picture];
 
-    [STMObjectsController removeObject:uncashing];
+    [STMObjectsController createRecordStatusAndRemoveObject:uncashing];
         
 }
 
