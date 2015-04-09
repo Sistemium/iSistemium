@@ -10,10 +10,16 @@
 #import "STMDocument.h"
 #import "STMSyncer.h"
 #import "STMSession.h"
-#import "STMEntityDescription.h"
+
+#import "STMNS.h"
+
 #import "STMFunctions.h"
 #import "STMConstants.h"
+
 #import "STMAuthController.h"
+
+#import "STMDataModel.h"
+
 
 @interface STMController : NSObject
 

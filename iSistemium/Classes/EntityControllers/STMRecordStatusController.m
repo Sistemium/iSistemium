@@ -45,5 +45,20 @@
     
 }
 
++ (NSArray *)recordStatusesForXids:(NSArray *)xids {
+    
+    STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMRecordStatus class])];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@", xids];
+    
+    request.sortDescriptors = @[sortDescriptor];
+    request.predicate = predicate;
+    
+    NSError *error;
+    NSArray *recordStatuses = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+
+    return recordStatuses;
+    
+}
 
 @end

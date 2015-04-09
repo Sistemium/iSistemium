@@ -25,7 +25,7 @@
     
 //    NSLog(@"awakeFromInsert");
     
-//    [super awakeFromInsert];
+    [super awakeFromInsert];
     
     if (self.managedObjectContext.parentContext) {
     

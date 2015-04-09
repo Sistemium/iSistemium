@@ -336,23 +336,32 @@
         
         self.settings = nil;
         self.running = YES;
-        [STMObjectsController initObjectsCache];
-        [STMEntityController checkEntitiesForDuplicates];
-        [STMPicturesController checkPhotos];
-        [STMClientDataController checkClientData];
-        [STMEntityController checkEntitiesForDuplicates];
-        [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
-        [self initTimer];
-        [self addObservers];
         
-        NSError *error;
-        if (![self.resultsController performFetch:&error]) {
+//        [STMObjectsController initObjectsCache];
+        [STMObjectsController initObjectsCacheWithCompletionHandler:^(BOOL success) {
+           
+            if (success) {
+        
+                [STMEntityController checkEntitiesForDuplicates];
+                [STMPicturesController checkPhotos];
+                [STMClientDataController checkClientData];
+                [STMEntityController checkEntitiesForDuplicates];
+                [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
+                [self initTimer];
+                [self addObservers];
+                
+                NSError *error;
+                if (![self.resultsController performFetch:&error]) {
+                    
+                    NSLog(@"fetch error %@", error);
+                    
+                } else {
+                    
+                }
+
+            }
             
-            NSLog(@"fetch error %@", error);
-            
-        } else {
-            
-        }
+        }];
         
     }
     

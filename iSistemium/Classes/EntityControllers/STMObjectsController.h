@@ -15,6 +15,7 @@
 + (STMObjectsController *)sharedController;
 
 + (void)initObjectsCache;
++ (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler;
 
 + (void)checkObjectsForFlushing;
 
@@ -37,7 +38,6 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
-+ (NSUInteger)unreadMessagesCount;
 
 + (NSArray *)entityNamesForSyncing;
 

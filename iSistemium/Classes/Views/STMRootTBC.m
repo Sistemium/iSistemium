@@ -7,15 +7,19 @@
 //
 
 #import "STMRootTBC.h"
-#import "STMAuthController.h"
 #import "STMAuthTVC.h"
-#import "STMFunctions.h"
+
 #import "STMSessionManager.h"
 #import "STMSession.h"
+
+#import "STMFunctions.h"
+#import "STMConstants.h"
+
 #import "STMObjectsController.h"
 #import "STMTabBarViewController.h"
 #import "STMClientDataController.h"
-#import "STMConstants.h"
+#import "STMAuthController.h"
+#import "STMMessageController.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
@@ -46,6 +50,21 @@
     });
     
     return _sharedRootVC;
+    
+}
+
+- (UIViewController *)topmostVC {
+    return [self topmostVCForVC:self];
+}
+
+- (UIViewController *)topmostVCForVC:(UIViewController *)vc {
+    
+    UIViewController *topVC = vc.presentedViewController;
+    if (topVC) {
+        return [self topmostVCForVC:topVC];
+    } else {
+        return vc;
+    }
     
 }
 
@@ -285,7 +304,7 @@
     
     if (messageVC) {
         
-        NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+        NSUInteger unreadCount = [STMMessageController unreadMessagesCount];
         NSString *badgeValue = (unreadCount == 0) ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
         messageVC.tabBarItem.badgeValue = badgeValue;
         [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
@@ -503,14 +522,18 @@
 
 - (void)syncStateChanged {
 
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMObjectsController unreadMessagesCount];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMMessageController unreadMessagesCount];
     [self checkTimeoutAlert];
     
 }
 
 - (void)syncerTimeoutError {
     
+#ifdef DEBUG
+
     [self showTimeoutAlert];
+    
+#endif
 
 }
 
@@ -520,7 +543,7 @@
     
     if (vc) {
         
-        NSUInteger unreadCount = [STMObjectsController unreadMessagesCount];
+        NSUInteger unreadCount = [STMMessageController unreadMessagesCount];
         NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
         vc.tabBarItem.badgeValue = badgeValue;
         [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
@@ -559,7 +582,10 @@
 }
 
 - (void) setDocumentReady {
+    
     [STMClientDataController checkAppVersion];
+    [STMMessageController showMessageVCsIfNeeded];
+    
 }
 
 #pragma mark - notifications

@@ -17,36 +17,9 @@
 
 #import "STMConstants.h"
 
-#import "STMPartner.h"
-#import "STMOutlet.h"
-#import "STMSalesman.h"
-#import "STMCampaign.h"
-#import "STMCampaignPicture.h"
-#import "STMPhotoReport.h"
-#import "STMPhoto.h"
-#import "STMArticle.h"
-#import "STMArticleGroup.h"
-#import "STMArticlePicture.h"
-#import "STMSetting.h"
-#import "STMLogMessage.h"
-#import "STMDebt.h"
-#import "STMCashing.h"
-#import "STMUncashing.h"
-#import "STMMessage.h"
-#import "STMClientData.h"
-#import "STMLocation.h"
-#import "STMUncashingPicture.h"
-#import "STMUncashingPlace.h"
-#import "STMTrack.h"
-#import "STMEntity.h"
-#import "STMCampaignGroup.h"
-#import "STMSaleOrder.h"
-#import "STMSaleOrderPosition.h"
-#import "STMPriceType.h"
-#import "STMPrice.h"
-#import "STMStock.h"
+#import "STMDataModel.h"
 
-#import "STMFetchRequest.h"
+#import "STMNS.h"
 
 @interface STMObjectsController()
 
@@ -194,7 +167,11 @@
         }];
         
     }
-
+    
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+    
 //    NSDate *finish = [NSDate date];
 //    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
 //    NSLog(@"--------------------f %@", finishString);
@@ -320,9 +297,7 @@
             
             [object setValue:value forKey:key];
             
-            if ([key isEqualToString:@"href"]) {
-                [STMPicturesController hrefProcessingForObject:object];
-            }
+            if ([key isEqualToString:@"href"]) [STMPicturesController hrefProcessingForObject:object];
             
         } else {
             
@@ -464,20 +439,12 @@
         
         if (affectedObject) {
             
-            if ([recordStatus.isRead boolValue]) {
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-                
-            }
-            
-            if ([recordStatus.isRemoved boolValue]) {
-                
-                [[self document].managedObjectContext deleteObject:affectedObject];
-//                [[self document].managedObjectContext deleteObject:recordStatus];
-                
-            }
+            if ([recordStatus.isRead boolValue]) [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+            if ([recordStatus.isRemoved boolValue]) [[self document].managedObjectContext deleteObject:affectedObject];
             
         }
+        
+        if (recordStatus.isTemporary.boolValue) [[self document].managedObjectContext deleteObject:recordStatus];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
         
@@ -650,39 +617,16 @@
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
-    NSManagedObject *cachedObject = [self sharedController].objectsCache[xidData];
+    id cachedObject = [self sharedController].objectsCache[xidData];
     
-    return cachedObject;
-
-//    if (!cachedObject) {
-//        
-//// time checking
-//        NSDate *start = [NSDate date];
-//// -------------
-//        
-//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-//        request.predicate = [NSPredicate predicateWithFormat:@"SELF.xid == %@", xidData];
-//        request.fetchLimit = 1;
-//        
-//        NSError *error;
-//        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-//        
-//        NSManagedObject *object = [fetchResult lastObject];
-//
-//// time checking
-//        [[self sharedController].timesDic[@"8"] addObject:@([start timeIntervalSinceNow])];
-//// -------------
-//        
-//        [self sharedController].objectsCache[xidData] = object;
-//
-//        return object;
-//        
-//    } else {
-//    
-//        return cachedObject;
-//        
-//    }
+    if ([cachedObject isKindOfClass:[NSManagedObjectID class]]) {
+        
+        cachedObject = [[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)cachedObject error:nil];
+        [self sharedController].objectsCache[xidData] = cachedObject;
+        
+    }
+    
+    return (NSManagedObject *)cachedObject;
     
 }
 
@@ -735,7 +679,7 @@
     } else {
         xidData = [object valueForKey:@"xid"];
     }
-
+    
     [self sharedController].objectsCache[xidData] = object;
 
 
@@ -764,13 +708,43 @@
 
 }
 
-+ (NSArray *)allObjects {
++ (NSArray *)allObjectsFromContext:(NSManagedObjectContext *)context {
+    
+    if (!context) context = [self document].managedObjectContext;
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     
     NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *fetchResult = [context executeFetchRequest:request error:&error];
+    
+    return fetchResult;
+
+}
+
++ (NSArray *)allObjectIDsFromContext:(NSManagedObjectContext *)context {
+    
+    if (!context) context = [self document].managedObjectContext;
+
+    NSString *entityName = NSStringFromClass([STMDatum class]);
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
+    request.resultType = NSDictionaryResultType;
+    
+    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
+    NSPropertyDescription *xidProperty = entity.propertiesByName[@"xid"];
+
+    NSExpressionDescription* objectIDDescription = [NSExpressionDescription new];
+    objectIDDescription.name = @"objectID";
+    objectIDDescription.expression = [NSExpression expressionForEvaluatedObject];
+    objectIDDescription.expressionResultType = NSObjectIDAttributeType;
+
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    
+    request.propertiesToFetch = @[xidProperty, objectIDDescription];
+    
+    NSError *error;
+    NSArray *fetchResult = [context executeFetchRequest:request error:&error];
     
     return fetchResult;
 
@@ -778,19 +752,67 @@
 
 + (void)initObjectsCache {
 
+/*
+    
     [self sharedController].objectsCache = nil;
+        
+    NSLog(@"initObjectsCache");
+    TICK;
+    NSArray *allObjectIDs = [self allObjectIDsFromContext:nil];
+    TOCK;
     
-//    NSLog(@"initObjectsCache");
-//    TICK;
-    NSArray *allObects = [self allObjects];
-//    TOCK;
+    NSMutableArray *allObjects = [@[] mutableCopy];
     
-    NSArray *keys = [allObects valueForKeyPath:@"xid"];
+    [allObjectIDs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [allObjects addObject:[[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)obj error:nil]];
+    }];
     
-    [self sharedController].objectsCache = [NSMutableDictionary dictionaryWithObjects:allObects forKeys:keys];
+    TOCK;
     
+    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
+    
+    [self sharedController].objectsCache = [NSMutableDictionary dictionaryWithObjects:allObjects forKeys:keys];
+
+*/
+
 }
 
++ (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler {
+    
+    TICK;
+    NSLog(@"initObjectsCache");
+    
+    [self sharedController].objectsCache = nil;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    
+        __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
+        
+        [context performBlock:^{
+            
+            __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
+            
+            TOCK;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
+                NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
+                NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+
+                [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+                
+                TOCK;
+                
+                completionHandler(YES);
+                
+            });
+            
+        }];
+        
+    });
+    
+}
 
 #pragma mark - getting entity properties
 
@@ -1064,34 +1086,35 @@
 }
 
 + (void)totalNumberOfObjects {
-    
+
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
-                             NSStringFromClass([STMPartner class]),
+                             NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMArticleGroup class]),
                              NSStringFromClass([STMCampaign class]),
                              NSStringFromClass([STMCampaignGroup class]),
                              NSStringFromClass([STMCampaignPicture class]),
+                             NSStringFromClass([STMCashing class]),
+                             NSStringFromClass([STMClientData class]),
+                             NSStringFromClass([STMDebt class]),
+                             NSStringFromClass([STMLocation class]),
+                             NSStringFromClass([STMLogMessage class]),
+                             NSStringFromClass([STMMessage class]),
+                             NSStringFromClass([STMMessagePicture class]),
+                             NSStringFromClass([STMOutlet class]),
+                             NSStringFromClass([STMPartner class]),
                              NSStringFromClass([STMPhotoReport class]),
-                             NSStringFromClass([STMArticle class]),
-                             NSStringFromClass([STMArticleGroup class]),
-                             NSStringFromClass([STMSalesman class]),
+                             NSStringFromClass([STMPrice class]),
+                             NSStringFromClass([STMPriceType class]),
+                             NSStringFromClass([STMRecordStatus class]),
                              NSStringFromClass([STMSaleOrder class]),
                              NSStringFromClass([STMSaleOrderPosition class]),
-                             NSStringFromClass([STMOutlet class]),
-                             NSStringFromClass([STMDebt class]),
-                             NSStringFromClass([STMCashing class]),
-                             NSStringFromClass([STMUncashing class]),
-                             NSStringFromClass([STMUncashingPlace class]),
-                             NSStringFromClass([STMUncashingPicture class]),
-                             NSStringFromClass([STMMessage class]),
-                             NSStringFromClass([STMTrack class]),
-                             NSStringFromClass([STMLocation class]),
+                             NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMSetting class]),
-                             NSStringFromClass([STMClientData class]),
-                             NSStringFromClass([STMRecordStatus class]),
-                             NSStringFromClass([STMLogMessage class]),
-                             NSStringFromClass([STMPriceType class]),
-                             NSStringFromClass([STMPrice class]),
                              NSStringFromClass([STMStock class]),
+                             NSStringFromClass([STMTrack class]),
+                             NSStringFromClass([STMUncashing class]),
+                             NSStringFromClass([STMUncashingPicture class]),
+                             NSStringFromClass([STMUncashingPlace class]),
                              NSStringFromClass([STMEntity class])];
     
     NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
@@ -1150,40 +1173,6 @@
         
     }
 
-}
-
-
-#pragma mark - messages
-
-+ (NSUInteger)unreadMessagesCount {
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-//    request.predicate = [NSPredicate predicateWithFormat:@"isRead == NO || isRead == nil"];
-    
-    NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
-    NSMutableArray *messageXids = [NSMutableArray array];
-    
-    for (STMMessage *message in result) {
-        
-        [messageXids addObject:message.xid];
-        
-    }
-    
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
-
-    NSUInteger resultCount = [[self document].managedObjectContext countForFetchRequest:request error:&error];
-    
-    return messageXids.count - resultCount;
-
-//    result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-//    
-//    return messageXids.count - result.count;
-    
 }
 
 

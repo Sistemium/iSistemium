@@ -65,6 +65,8 @@
                                                                  managedObjectContext:self.document.managedObjectContext
                                                                    sectionNameKeyPath:@"campaignGroup.name"
                                                                             cacheName:nil];
+    
+#warning returned nil value for section name key path 'campaignGroup.name'. Object will be placed in unnamed section
         
         _resultsController.delegate = self;
     

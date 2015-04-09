@@ -13,6 +13,6 @@
 
 + (STMRecordStatus *)existingRecordStatusForXid:(NSData *)objectXid;
 + (STMRecordStatus *)recordStatusForObject:(NSManagedObject *)object;
-
++ (NSArray *)recordStatusesForXids:(NSArray *)xids;
 
 @end

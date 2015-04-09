@@ -7,10 +7,14 @@
 //
 
 #import "STMAppDelegate.h"
+
 #import "STMAuthController.h"
+#import "STMMessageController.h"
+
 #import "STMSessionManager.h"
-#import "STMRootTBC.h"
 #import "STMLogger.h"
+
+#import "STMRootTBC.h"
 
 #import "STMAuthNC.h"
 
@@ -146,6 +150,11 @@
 
     [self setupWindow];
 
+    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+    if ([[session status] isEqualToString:@"running"]) {
+        [STMMessageController showMessageVCsIfNeeded];
+    }
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

@@ -12,6 +12,8 @@
 
 + (STMRootTBC *)sharedRootVC;
 
+- (UIViewController *)topmostVC;
+
 - (void)showTabWithName:(NSString *)tabName;
 - (void)showTabAtIndex:(NSUInteger)index;
 - (void)newAppVersionAvailable:(NSNotification *)notification;

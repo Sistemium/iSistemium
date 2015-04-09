@@ -7,11 +7,17 @@
 //
 
 #import "STMMessagesNC.h"
+#import "STMMessageVC.h"
+
 #import "STMFunctions.h"
+
 
 @interface STMMessagesNC () <UIActionSheetDelegate>
 
+@property (nonatomic, strong) STMMessageVC *messageVC;
+
 @end
+
 
 @implementation STMMessagesNC
 
@@ -28,12 +34,26 @@
     
 }
 
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+//    if (buttonIndex != -1) {
+//
+//    }
+    
+}
+
 
 #pragma mark - view lifecycle
 
+- (void)customInit {
+
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning {

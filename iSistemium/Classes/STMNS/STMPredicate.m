@@ -12,7 +12,7 @@
 
 + (NSPredicate *)predicateWithNoFantomsFromPredicate:(NSPredicate *)predicate {
     
-    NSPredicate *notFantom = [NSPredicate predicateWithFormat:@"isFantom == NO"];
+    NSPredicate *notFantom = [NSPredicate predicateWithFormat:@"(isFantom == NO) OR (isFantom == nil)"];
 
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, notFantom]];
     

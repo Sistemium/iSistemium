@@ -84,7 +84,7 @@
 
 - (void)saveDocument:(void (^)(BOOL success))completionHandler {
 
-    [self saveContexts];
+//    [self saveContexts];
     
     if (!self.saving) {
 
@@ -95,7 +95,7 @@
             [self saveToURL:self.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
                 
                 if (success) {
-                    
+
                     completionHandler(YES);
                     
                 } else {

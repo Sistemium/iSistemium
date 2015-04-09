@@ -7,58 +7,27 @@
 //
 
 #import "STMMessagesTVC.h"
-#import "STMMessage.h"
-#import "STMConstants.h"
-#import "STMSyncer.h"
-#import "STMRecordStatus.h"
-#import "STMRecordStatusController.h"
 
-#define STMTextFont [UIFont systemFontOfSize:12]
-#define STMDetailTextFont [UIFont systemFontOfSize:18]
-#define STMHPadding 15
+#import "STMMessage.h"
+#import "STMMessagePicture.h"
+#import "STMRecordStatus.h"
+
+#import "STMMessageController.h"
+#import "STMRecordStatusController.h"
+#import "STMPicturesController.h"
+
+#import "STMConstants.h"
+
+#import "STMSyncer.h"
+
+#import "STMUI.h"
+
+//#define MESSAGE_BODY @"Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб."
+
+static NSString *cellIdentifier = @"messageCell";
+
 
 @interface STMMessagesTVC () <UIActionSheetDelegate>
-
-@end
-
-
-@interface STMMessageCell : UITableViewCell
-
-@end
-
-#pragma mark - STMMessageCell
-
-@implementation STMMessageCell
-
-- (void)layoutSubviews {
-    
-    self.textLabel.font = STMTextFont;
-    self.detailTextLabel.font = STMDetailTextFont;
-    
-    self.detailTextLabel.numberOfLines = 0;
-    self.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    
-    [super layoutSubviews];
-
-}
-
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    
-    if (self) {
-
-    }
-    
-    return self;
-    
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    
-    [super setSelected:selected animated:animated];
-    
-}
 
 @end
 
@@ -107,22 +76,12 @@
 
     STMMessage *message = messageData[@"message"];
     NSIndexPath *indexPath = messageData[@"indexPath"];
-    
-    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
-    recordStatus.isRead = @YES;
+
+    [STMMessageController markMessageAsRead:message];
     
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     
     [self showUnreadCount];
-
-    STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-    syncer.syncerState = STMSyncerSendDataOnce;
-
-    [self.document saveDocument:^(BOOL success) {
-        if (success) {
-            
-        }
-    }];
     
 }
 
@@ -145,70 +104,146 @@
     
 }
 
-- (STMMessageCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"messageCell" forIndexPath:indexPath];
-
-    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+    static CGFloat cellHeight;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cellHeight = [[STMCustom3TVCell alloc] init].frame.size.height;
+    });
     
-    NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
-    
-    cell.textLabel.text = [dateFormatter stringFromDate:message.cts];
-    cell.detailTextLabel.text = message.body;
-
-    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
-    
-    if ([recordStatus.isRead boolValue]) {
-        
-        cell.textLabel.textColor = [UIColor blackColor];
-        
-    } else {
-        
-        cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
-        [self performSelector:@selector(markMessageAsRead:) withObject:@{@"message": message, @"indexPath": indexPath} afterDelay:2];
-        
-    }
-    
-    return cell;
+    return cellHeight + 1.0f;  // Add 1.0f for the cell separator height
     
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMMessageCell *cell = [[STMMessageCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"messageCell"];
+    static STMCustom3TVCell *cell = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    });
+    
     STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
     
-    CGFloat contentWidth = tableView.frame.size.width - 2 * STMHPadding;
-    CGSize contentSize = {contentWidth, tableView.frame.size.height};
-    UIFont *defaultFont = cell.detailTextLabel.font;
+    [self fillCell:cell atIndexPath:nil withMessage:message];
     
-    CGRect defaultTextFrame = [message.body boundingRectWithSize:contentSize options:NSStringDrawingTruncatesLastVisibleLine attributes:@{NSFontAttributeName:defaultFont} context:nil];
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
     
-    CGRect detailTextFrame = [message.body boundingRectWithSize:contentSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:STMDetailTextFont} context:nil];
+    [cell setNeedsLayout];
+    [cell layoutIfNeeded];
+    
+    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+    
+    return height;
+    
+}
 
-    CGFloat hDiff = ceil(detailTextFrame.size.height) - ceil(defaultTextFrame.size.height);
+- (STMCustom3TVCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return cell.frame.size.height + hDiff;
+    STMCustom3TVCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+
+    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+
+    [self fillCell:cell atIndexPath:indexPath withMessage:message];
+    
+    return cell;
+    
+}
+
+- (void)fillCell:(STMCustom3TVCell *)cell atIndexPath:(NSIndexPath *)indexPath withMessage:(STMMessage *)message {
+    
+    cell.titleLabel.numberOfLines = 0;
+    cell.detailLabel.numberOfLines = 0;
+    
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
+    
+    cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
+    
+    cell.detailLabel.text = message.body;
+//    cell.detailLabel.text = MESSAGE_BODY;
+    
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
+    
+    if ([recordStatus.isRead boolValue]) {
+        
+        cell.titleLabel.textColor = [UIColor blackColor];
+        
+    } else {
+        
+        cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+        
+        if (indexPath && message.pictures.count == 0) {
+            
+            [self performSelector:@selector(markMessageAsRead:)
+                       withObject:@{@"message": message, @"indexPath": indexPath}
+                       afterDelay:2];
+
+        }
+        
+    }
+    
+    if (message.pictures.count > 0) [self addImageFromMessage:message toCell:cell];
+
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+
+}
+
+- (void)addImageFromMessage:(STMMessage *)message toCell:(STMCustom3TVCell *)cell {
+    
+    NSArray *picturesArray = [STMMessageController sortedPicturesArrayForMessage:message];
+    
+    STMMessagePicture *picture = picturesArray.lastObject;
+    
+    if (!picture.imageThumbnail && picture.href) {
+        
+        [STMPicturesController hrefProcessingForObject:picture];
+        [self addSpinnerToCell:cell];
+        
+    } else {
+    
+        UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
+        [[cell.pictureView viewWithTag:555] removeFromSuperview];
+        cell.pictureView.image = image;
+
+    }
+    
+}
+
+- (void)addSpinnerToCell:(STMCustom3TVCell *)cell {
+    
+    UIView *view = [[UIView alloc] initWithFrame:cell.pictureView.bounds];
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.backgroundColor = [UIColor whiteColor];
+    view.alpha = 0.75;
+    view.tag = 555;
+    
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.center = view.center;
+    spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    [spinner startAnimating];
+    
+    [view addSubview:spinner];
+    
+    [cell.pictureView addSubview:view];
+
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+    
+    if (message.pictures.count > 0) [STMMessageController showMessageVCsForMessage:message];
+    
+    return indexPath;
     
 }
 
 - (void)showUnreadCount {
     
-    NSMutableArray *messageXids = [NSMutableArray array];
-    
-    for (STMMessage *message in self.resultsController.fetchedObjects) {
-        
-        [messageXids addObject:message.xid];
-        
-    }
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"objectXid IN %@ && isRead == YES", messageXids];
-    
-    NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    NSInteger unreadCount = messageXids.count - result.count;
+    NSInteger unreadCount = [STMMessageController unreadMessagesCount];
     
     NSString *badgeValue = unreadCount > 0 ? [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount] : nil;
     self.navigationController.tabBarItem.badgeValue = badgeValue;
@@ -223,11 +258,25 @@
     
 }
 
+- (void)downloadPicture:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMMessagePicture class]]) {
+        
+        STMMessagePicture *messagePicture = (STMMessagePicture *)notification.object;
+        
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:messagePicture.message];
+        if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageIsRead) name:@"messageIsRead" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadPicture:) name:@"downloadPicture" object:nil];
     
 }
 
@@ -239,6 +288,10 @@
 
 - (void)customInit {
     
+//    [STMMessageController generateTestMessages];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom3TVCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
+
     [self performFetch];
     [self showUnreadCount];
     [self addObservers];
