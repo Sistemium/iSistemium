@@ -20,6 +20,7 @@
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
++ (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data;
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture;
 

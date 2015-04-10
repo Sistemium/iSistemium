@@ -60,7 +60,14 @@
     UIImage *image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.picture.imagePath]];
     
     CGFloat maxDimension = MAX(image.size.height, image.size.width);
-    if (maxDimension > MAX_PICTURE_SIZE) image = [STMFunctions resizeImage:image toSize:CGSizeMake(MAX_PICTURE_SIZE, MAX_PICTURE_SIZE)];
+    if (maxDimension > MAX_PICTURE_SIZE) {
+        
+        image = [STMFunctions resizeImage:image toSize:CGSizeMake(MAX_PICTURE_SIZE, MAX_PICTURE_SIZE)];
+        NSData *imageData = UIImageJPEGRepresentation(image, STMPicturesController.jpgQuality);
+        NSString *filename = self.picture.href.lastPathComponent;
+        [STMPicturesController saveImageFile:filename forPicture:self.picture fromImageData:imageData];
+        
+    }
     
     self.image = image;
     
