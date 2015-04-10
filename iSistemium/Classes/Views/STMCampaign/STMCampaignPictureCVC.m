@@ -92,12 +92,8 @@
         
     } else {
 
-        if (!self.isUpdating) {
-            
-            [self.collectionView reloadData];
-            
-        }
-        
+        if (!self.isUpdating) [self.collectionView reloadData];
+
     }
     
 }

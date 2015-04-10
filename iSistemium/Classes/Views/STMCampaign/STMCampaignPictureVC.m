@@ -10,6 +10,8 @@
 #import "STMPicturesController.h"
 #import "STMFunctions.h"
 
+#define MAX_SIZE 3500.0
+
 @interface STMCampaignPictureVC () <UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -55,7 +57,14 @@
 - (void)updatePicture {
     
     [self removeObservers];
-    self.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.picture.imagePath]];
+    
+    UIImage *image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.picture.imagePath]];
+    
+    CGFloat maxDimension = MAX(image.size.height, image.size.width);
+    if (maxDimension > MAX_SIZE) image = [STMFunctions resizeImage:image toSize:CGSizeMake(MAX_SIZE, MAX_SIZE)];
+    
+    self.image = image;
+    
     [self setupScrollView];
     
 }
@@ -68,6 +77,26 @@
         [self.imageView removeFromSuperview];
         
         self.imageView = [[UIImageView alloc] initWithImage:self.image];
+        
+//        CGRect frame = self.imageView.frame;
+//        CGFloat maxDimension = MAX(frame.size.height, frame.size.width);
+//
+//        if (maxDimension > MAX_SIZE) {
+//            
+//            CGFloat x = frame.origin.x;
+//            CGFloat y = frame.origin.y;
+//            
+//            CGFloat k = maxDimension / MAX_SIZE;
+//            
+//            CGFloat height = ceil(frame.size.height / k);
+//            CGFloat width = ceil(frame.size.width / k);
+//
+//            CGRect resizedFrame = CGRectMake(x, y, width, height);
+//            
+//            self.imageView.frame = resizedFrame;
+//            
+//        }
+        
         self.scrollView.contentSize = self.imageView.frame.size;
         [self.scrollView addSubview:self.imageView];
         
