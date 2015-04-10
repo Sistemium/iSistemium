@@ -520,6 +520,16 @@
 
 + (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
     
+    UIImage *image = [UIImage imageWithData:data];
+    CGFloat maxDimension = MAX(image.size.height, image.size.width);
+    
+    if (maxDimension > MAX_PICTURE_SIZE) {
+        
+        image = [STMFunctions resizeImage:image toSize:CGSizeMake(MAX_PICTURE_SIZE, MAX_PICTURE_SIZE)];
+        data = UIImageJPEGRepresentation(image, [self jpgQuality]);
+
+    }
+    
     NSString *imagePath = [STMFunctions absolutePathForPath:fileName];
     [data writeToFile:imagePath atomically:YES];
     

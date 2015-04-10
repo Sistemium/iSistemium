@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "STMConstants.h"
 
 @interface STMDateFormatter : NSDateFormatter
 
