@@ -89,12 +89,19 @@
 
 - (void)authControllerError:(NSNotification *)notification {
     
-    NSString *error = [notification userInfo][@"error"];
-    
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    alertView.tag = 0;
-    alertView.delegate = self;
-    [alertView show];
+    if (self.tabBarController) {
+        
+        NSString *error = notification.userInfo[@"error"];
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:error
+                                                           delegate:self
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+        alertView.tag = 0;
+        [alertView show];
+
+    }
     
 }
 
