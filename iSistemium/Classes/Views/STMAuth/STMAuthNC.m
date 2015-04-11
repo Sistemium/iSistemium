@@ -89,6 +89,8 @@
 
 - (void)authControllerError:(NSNotification *)notification {
     
+#warning have to refactor STMRootTBC to prevent multiple instance of VCs creating
+    
     if (self.tabBarController) {
         
         NSString *error = notification.userInfo[@"error"];
