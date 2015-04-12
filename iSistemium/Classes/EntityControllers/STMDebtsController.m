@@ -28,12 +28,10 @@
     debt.commentText = commentText;
     
     [[self document] saveDocument:^(BOOL success) {
-        
+        if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
-    [[self syncer] setSyncerState:STMSyncerSendDataOnce];
-    
-    NSLog(@"debt %@", debt);
+//    NSLog(@"debt %@", debt);
     
     return debt;
     

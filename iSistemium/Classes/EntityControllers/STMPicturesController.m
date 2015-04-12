@@ -699,7 +699,12 @@
                             
                             picture.href = href;
                             picture.deviceTs = [NSDate date];
-                            [(STMSyncer *)[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendDataOnce];
+                            
+                            __block STMSession *session = [STMSessionManager sharedManager].currentSession;
+                            
+                            [session.document saveDocument:^(BOOL success) {
+                                if (success) [session.syncer setSyncerState:STMSyncerSendDataOnce];
+                            }];
                             
                         });
                         
