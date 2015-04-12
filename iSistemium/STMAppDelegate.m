@@ -182,18 +182,39 @@
     
     NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
+
+    [self routeNotificationUserInfo:userInfo];
+
+//    [self showLocalNotification];
+
+}
+
+- (void)routeNotificationUserInfo:(NSDictionary *)userInfo {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    UIApplication *app = [UIApplication sharedApplication];
+
+    BOOL meaningfulUserInfo = NO;
     
     if (userInfo[@"syncer"]) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidReceiveRemoteNotification" object:application userInfo:userInfo];
-
-    } else {
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationDidReceiveRemoteNotification" object:application userInfo: userInfo];
+        [nc postNotificationName:@"syncerDidReceiveRemoteNotification" object:app userInfo:userInfo];
+        meaningfulUserInfo = YES;
         
     }
-
-//    [self showLocalNotification];
+    
+    if (userInfo[@"requestInfo"]) {
+        
+        [nc postNotificationName:@"loggerDidReceiveRemoteNotification" object:app userInfo:userInfo];
+        meaningfulUserInfo = YES;
+        
+    }
+    
+    if (!meaningfulUserInfo) {
+        
+        [nc postNotificationName:@"applicationDidReceiveRemoteNotification" object:app userInfo:userInfo];
+        
+    }
 
 }
 
