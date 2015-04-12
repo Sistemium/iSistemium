@@ -899,11 +899,14 @@
     
     if (self.entityCount == 0) {
         
-        self.syncing = NO;
-        
         [self saveReceiveDate];
+
+        [self.document saveDocument:^(BOOL success) {
         
-        self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
+            self.syncing = NO;
+            self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
+
+        }];
         
     }
     
