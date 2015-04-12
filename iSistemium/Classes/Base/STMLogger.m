@@ -72,7 +72,7 @@
 }
 
 - (NSArray *)availableTypes {
-    return @[@"error", @"warning", @"info", @"debug"];
+    return @[@"error", @"warning", @"info", @"debug", @"important"];
 }
 
 - (NSArray *)syncingTypesForSettingType:(NSString *)settingType {
@@ -107,6 +107,8 @@
         }
         
     }
+    
+// type @"important" sync always
     
 }
 
@@ -182,7 +184,7 @@
 - (NSString *)loggerKey {
     
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    NSString *loggerKey = [bundleIdentifier stringByAppendingString:@".logger."];
+    NSString *loggerKey = [bundleIdentifier stringByAppendingString:@".logger"];
 
     return loggerKey;
     

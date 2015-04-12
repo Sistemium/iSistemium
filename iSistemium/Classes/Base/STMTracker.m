@@ -342,7 +342,7 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStart", self.group] object:self];
         self.tracking = YES;
-        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Start tracking %@", self.group] type:@"error"];
+        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Start tracking %@", self.group] type:@"important"];
         
     }
     
@@ -356,7 +356,7 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStop", self.group] object:self];
         self.tracking = NO;
-        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Stop tracking %@", self.group] type:@"error"];
+        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Stop tracking %@", self.group] type:@"important"];
 
     }
     
