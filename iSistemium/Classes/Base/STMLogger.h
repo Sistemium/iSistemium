@@ -17,6 +17,8 @@
 
 + (STMLogger *)sharedLogger;
 
++ (void)requestInfo:(NSString *)xidString;
+
 - (void)saveLogMessageWithText:(NSString *)text;
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
 - (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic;

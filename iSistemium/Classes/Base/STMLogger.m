@@ -42,6 +42,10 @@
     
 }
 
++ (void)requestInfo:(NSString *)xidString {
+    [[self sharedLogger] requestInfo:xidString];
+}
+
 - (instancetype)init {
     
     self = [super init];
@@ -68,6 +72,12 @@
 - (void)loggerDidReceiveRemoteNotification:(NSNotification *)notification {
 
     NSString *xidString = notification.userInfo[@"requestInfo"];
+    [self requestInfo:xidString];
+    
+}
+
+- (void)requestInfo:(NSString *)xidString {
+    
     NSData *xidData = [STMFunctions xidDataFromXidString:xidString];
     
     NSManagedObject *object = [STMObjectsController objectForXid:xidData];
@@ -77,7 +87,7 @@
         
         NSData *JSONData = [NSJSONSerialization dataWithJSONObject:objectDic options:0 error:nil];
         NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-
+        
         [self saveLogMessageWithText:JSONString type:@"important"];
         
         [self.document saveDocument:^(BOOL success) {
