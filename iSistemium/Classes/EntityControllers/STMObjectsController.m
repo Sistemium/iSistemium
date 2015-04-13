@@ -777,7 +777,9 @@
                 
                 TOCK;
                 
-                completionHandler(YES);
+                [[self document] saveDocument:^(BOOL success) {
+                    completionHandler(YES);
+                }];
                 
             });
             
