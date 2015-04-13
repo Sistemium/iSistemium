@@ -112,13 +112,15 @@
 
 + (void)noWarningPerformSelector:(SEL)selector withObject:(id)object onReceiver:(id)receiver {
 
-    IMP imp = [receiver methodForSelector:selector];
+    [receiver performSelector:selector withObject:object afterDelay:0];
     
-// --- if need to get return value from method then use this two lines instead of imp()
-//    id (*func)(id, SEL, id) = (id (*)(id,SEL,id))imp;
-//    id value = func(receiver, selector, object);
-    
-    imp(receiver, selector, object);
+//    IMP imp = [receiver methodForSelector:selector];
+//    
+//// --- if need to get return value from method then use this two lines instead of imp()
+////    id (*func)(id, SEL, id) = (id (*)(id,SEL,id))imp;
+////    id value = func(receiver, selector, object);
+//    
+//    imp(receiver, selector, object);
 
 }
 
