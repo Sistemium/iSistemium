@@ -18,18 +18,14 @@
 }
 
 + (void)receiveRemoteCommands:(NSDictionary *)remoteCommands {
-    [self parseCommands:remoteCommands];
-}
 
-+ (void)parseCommands:(NSDictionary *)commands {
-    
-    for (NSString *className in commands.allKeys) {
+    for (NSString *className in remoteCommands.allKeys) {
         
         Class theClass = NSClassFromString(className);
         
         if (theClass) {
             
-            id payload = commands[className];
+            id payload = remoteCommands[className];
             
             if ([payload isKindOfClass:[NSString class]]) {
                 
@@ -39,7 +35,11 @@
             } else if ([payload isKindOfClass:[NSDictionary class]]) {
                 
                 // payload is dic of method:object
-                [self parseCommands:payload];
+                NSDictionary *methodsDic = (NSDictionary *)payload;
+                
+                for (NSString *methodName in methodsDic.allKeys) {
+                    [self performMethod:methodName withObject:methodsDic[methodName] onClass:theClass];
+                }
                 
             } else {
                 
@@ -60,23 +60,27 @@
 }
 
 + (void)performMethod:(NSString *)methodName onClass:(Class)theClass {
-    
+    [self performMethod:methodName withObject:nil onClass:theClass];
+}
+
++ (void)performMethod:(NSString *)methodName withObject:(id)object onClass:(Class)theClass {
+
     SEL selector = NSSelectorFromString(methodName);
     
     if ([theClass respondsToSelector:selector]) {
-
-        [self noWarningPerformSelector:selector forObject:theClass];
+        
+        [self noWarningPerformSelector:selector withObject:object onReceiver:theClass];
         
     } else if ([theClass instancesRespondToSelector:selector]) {
         
         id instance = [self instanceForClass:theClass];
-        [self noWarningPerformSelector:selector forObject:instance];
+        [self noWarningPerformSelector:selector withObject:object onReceiver:instance];
         
     } else {
         
         NSString *logMessage = [NSString stringWithFormat:@"%@ have no method %@", NSStringFromClass([theClass class]), methodName];
         [STMLogger.sharedLogger saveLogMessageWithText:logMessage type:@"error"];
-
+        
     }
 
 }
@@ -102,12 +106,14 @@
     }
 }
 
-+ (void)noWarningPerformSelector:(SEL)selector forObject:(id)object {
-    
-    IMP imp = [object methodForSelector:selector];
-    id (*func)(id, SEL) = (void *)imp;
-    func(object, selector);
++ (void)noWarningPerformSelector:(SEL)selector withObject:(id)object onReceiver:(id)receiver {
+
+    IMP imp = [receiver methodForSelector:selector];
+//    id (*func)(id, SEL) = (void *)imp;    <- this only needs if
+//    func(receiver, selector);             <- the method doesn't return void
+    imp(receiver, selector, object);
 
 }
+
 
 @end

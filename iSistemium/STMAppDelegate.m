@@ -9,6 +9,7 @@
 #import "STMAppDelegate.h"
 
 #import "STMAuthController.h"
+#import "STMRemoteController.h"
 #import "STMMessageController.h"
 
 #import "STMSessionManager.h"
@@ -196,6 +197,13 @@
 
     BOOL meaningfulUserInfo = NO;
     
+    if (userInfo[@"remoteCommands"]) {
+        
+        [STMRemoteController receiveRemoteCommands:userInfo[@"remoteCommands"]];
+        meaningfulUserInfo = YES;
+        
+    }
+
     if (userInfo[@"syncer"]) {
         
         [nc postNotificationName:@"syncerDidReceiveRemoteNotification" object:app userInfo:userInfo];
