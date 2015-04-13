@@ -793,7 +793,12 @@
             
             NSURL *requestURL = [NSURL URLWithString:url];
             
-//            NSLog(@"receiving %@ with eTag %@", entityName, eTag);
+//            if ([entityName isEqualToString:@"STMSetting"]) {
+//                
+//                NSLog(@"receiving %@ with eTag %@", entityName, eTag);
+//                NSLog(@"entity %@", entity);
+//                
+//            }
             
             [self startReceiveDataFromURL:requestURL withETag:eTag];
             
@@ -1177,7 +1182,9 @@
     
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
-    
+
+//    NSLog(@"entity 1 %@", entity);
+
 //    NSDate *finish = [NSDate date];
 //    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
 //    NSLog(@"--------------------F %@ %@", finishString, entity.eTag);
@@ -1185,6 +1192,7 @@
     entity.eTag = eTag;
 
 //    NSLog(@"set eTag %@ for %@", eTag, entityName);
+//    NSLog(@"entity 2 %@", entity);
     
     [self checkConditionForReceivingEntityWithName:entityName];
     
