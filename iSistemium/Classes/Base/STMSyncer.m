@@ -1165,7 +1165,8 @@
             NSLog(@"requestBody %@", requestBody);
             NSLog(@"responseJSON %@", responseJSON);
 #endif
-            
+            [self entityCountDecrease];
+
         }
         
     }
