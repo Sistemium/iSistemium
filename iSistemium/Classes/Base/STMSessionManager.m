@@ -110,6 +110,8 @@
         session.status = @"stopped";
         [self removeSessionForUID:session.uid];
         
+    } else {
+        [self removeSessionForUID:session.uid];
     }
     
 }
