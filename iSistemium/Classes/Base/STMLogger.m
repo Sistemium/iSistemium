@@ -78,24 +78,51 @@
 
 - (void)requestInfo:(NSString *)xidString {
     
-    NSData *xidData = [STMFunctions xidDataFromXidString:xidString];
-    
-    NSManagedObject *object = [STMObjectsController objectForXid:xidData];
-    NSDictionary *objectDic = [STMObjectsController dictionaryForObject:object];
-    
-    if ([NSJSONSerialization isValidJSONObject:objectDic]) {
+    if (![xidString isEqual:[NSNull null]]) {
         
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:objectDic options:0 error:nil];
-        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+        NSData *xidData = [STMFunctions xidDataFromXidString:xidString];
         
-        [self saveLogMessageWithText:JSONString type:@"important"];
+        NSManagedObject *object = [STMObjectsController objectForXid:xidData];
+        
+        if (object) {
+            
+            NSDictionary *objectDic = [STMObjectsController dictionaryForObject:object];
+            
+            if ([NSJSONSerialization isValidJSONObject:objectDic]) {
+                
+                NSData *JSONData = [NSJSONSerialization dataWithJSONObject:objectDic options:0 error:nil];
+                NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+                
+                [self saveLogMessageWithText:JSONString type:@"important"];
+                
+                [self.document saveDocument:^(BOOL success) {
+                    if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+                }];
+                
+            }
+            
+        } else {
+            
+            NSString *logMessage = [NSString stringWithFormat:@"no object with xid %@", xidString];
+            [self saveLogMessageWithText:logMessage type:@"important"];
+            
+            [self.document saveDocument:^(BOOL success) {
+                if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+            }];
+            
+        }
+
+    } else {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"xidSting is NSNull"];
+        [self saveLogMessageWithText:logMessage type:@"error"];
         
         [self.document saveDocument:^(BOOL success) {
             if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
         }];
         
     }
-
+    
 }
 
 - (void)setSession:(id <STMSession>)session {

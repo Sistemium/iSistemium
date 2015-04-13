@@ -913,7 +913,7 @@
 }
 
 + (void)checkObjectsForFlushing {
-
+    
     NSArray *entitiesWithLifeTime = [STMEntityController entitiesWithLifeTime];
 
     NSMutableSet *objectsSet = [NSMutableSet set];
@@ -953,7 +953,7 @@
         NSLog(@"No objects for flushing");
         
     }
-    
+
 }
 
 + (void)checkObject:(NSManagedObject *)object forAddingTo:(NSMutableSet *)objectsSet {
@@ -1156,14 +1156,20 @@
 
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object {
     
-    NSString *entityName = object.entity.name;
-    NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
-    NSData *xidData = [object valueForKey:@"xid"];
-    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
-    
-    NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
-    
-    return @{@"name":name, @"xid":xid, @"properties":propertiesDictionary};
+    if (object) {
+        
+        NSString *entityName = object.entity.name;
+        NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
+        NSData *xidData = [object valueForKey:@"xid"];
+        NSString *xid = [STMFunctions xidStringFromXidData:xidData];
+        
+        NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+        
+        return @{@"name":name, @"xid":xid, @"properties":propertiesDictionary};
+
+    } else {
+        return nil;
+    }
     
 }
 

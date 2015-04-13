@@ -74,7 +74,8 @@
     } else if ([theClass instancesRespondToSelector:selector]) {
         
         id instance = [self instanceForClass:theClass];
-        [self noWarningPerformSelector:selector withObject:object onReceiver:instance];
+        
+        if (instance) [self noWarningPerformSelector:selector withObject:object onReceiver:instance];
         
     } else {
         
@@ -101,6 +102,9 @@
 
     } else {
         
+        NSString *logMessage = [NSString stringWithFormat:@"no registered instance for class %@", NSStringFromClass([class class])];
+        [STMLogger.sharedLogger saveLogMessageWithText:logMessage type:@"error"];
+
         return nil;
         
     }
@@ -109,8 +113,11 @@
 + (void)noWarningPerformSelector:(SEL)selector withObject:(id)object onReceiver:(id)receiver {
 
     IMP imp = [receiver methodForSelector:selector];
-//    id (*func)(id, SEL) = (void *)imp;    <- this only needs if
-//    func(receiver, selector);             <- the method doesn't return void
+    
+// --- if need to get return value from method then use this two lines instead of imp()
+//    id (*func)(id, SEL, id) = (id (*)(id,SEL,id))imp;
+//    id value = func(receiver, selector, object);
+    
     imp(receiver, selector, object);
 
 }

@@ -338,12 +338,14 @@
     
 //    NSLog(@"%@ startTracking %@", self.group, [NSDate date]);
     
-    if ([[(id <STMSession>)self.session status] isEqualToString:@"running"]) {
+    if ([[(id <STMSession>)self.session status] isEqualToString:@"running"] && !self.tracking) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStart", self.group] object:self];
         self.tracking = YES;
         [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Start tracking %@", self.group] type:@"important"];
         
+    } else {
+        NSLog(@"%@ tracker already started", self.group);
     }
     
 }
@@ -358,6 +360,8 @@
         self.tracking = NO;
         [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Stop tracking %@", self.group] type:@"important"];
 
+    } else {
+        NSLog(@"%@ tracker already stopped", self.group);
     }
     
 }
