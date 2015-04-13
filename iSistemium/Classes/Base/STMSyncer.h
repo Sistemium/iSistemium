@@ -21,6 +21,8 @@
 @property (nonatomic) STMSyncerState timeoutErrorSyncerState;
 
 - (void)prepareToDestroy;
-- (void) setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler;
+- (void)setSyncerState:(STMSyncerState)syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))handler;
+
+- (void)upload;
 
 @end

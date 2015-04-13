@@ -50,29 +50,9 @@
     
     self = [super init];
     if (self) {
-        [self addObservers];
+
     }
     return self;
-    
-}
-
-- (void)addObservers {
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(loggerDidReceiveRemoteNotification:)
-                                                 name:@"loggerDidReceiveRemoteNotification"
-                                               object:nil];
-    
-}
-
-- (void)removeObservers {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)loggerDidReceiveRemoteNotification:(NSNotification *)notification {
-
-    NSString *xidString = notification.userInfo[@"requestInfo"];
-    [self requestInfo:xidString];
     
 }
 

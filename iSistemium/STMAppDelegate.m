@@ -210,14 +210,7 @@
         meaningfulUserInfo = YES;
         
     }
-    
-    if (userInfo[@"requestInfo"]) {
         
-        [nc postNotificationName:@"loggerDidReceiveRemoteNotification" object:app userInfo:userInfo];
-        meaningfulUserInfo = YES;
-        
-    }
-    
     if (!meaningfulUserInfo) {
         
         [nc postNotificationName:@"applicationDidReceiveRemoteNotification" object:app userInfo:userInfo];

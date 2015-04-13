@@ -383,8 +383,12 @@
     }
 }
 
-- (void)didReceiveRemoteNotification {
+- (void)upload {
     [self setSyncerState: STMSyncerSendData];
+}
+
+- (void)didReceiveRemoteNotification {
+    [self upload];
 }
 
 - (void)didEnterBackground {
