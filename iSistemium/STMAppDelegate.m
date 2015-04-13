@@ -44,6 +44,22 @@
     
 }
 
+- (void)receiveRemoteNotification:(NSDictionary *)remoteNotification {
+    
+    NSString *msg = [NSString stringWithFormat:@"%@", remoteNotification[@"aps"][@"alert"]];
+    NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
+    
+    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
+    
+    if ([[session status] isEqualToString:@"running"]) {
+        
+        [[session syncer] setSyncerState:STMSyncerSendData];
+        
+    }
+    
+}
+
 - (void)registerForNotification {
     
     float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
@@ -91,22 +107,6 @@
 - (void)recieveDeviceToken:(NSData *)deviceToken {
 
     self.deviceToken = deviceToken;
-    
-}
-
-- (void)receiveRemoteNotification:(NSDictionary *)remoteNotification {
-    
-    NSString *msg = [NSString stringWithFormat:@"%@", remoteNotification[@"aps"][@"alert"]];
-    NSString *logMessage = [NSString stringWithFormat:@"didReceiveRemoteNotification: %@", msg];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
-    
-    id <STMSession> session = [STMSessionManager sharedManager].currentSession;
-    
-    if ([[session status] isEqualToString:@"running"]) {
-        
-        [[session syncer] setSyncerState:STMSyncerSendData];
-
-    }
     
 }
 
