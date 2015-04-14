@@ -210,7 +210,7 @@
 
 + (void)setProcessing:(NSString *)processing forSaleOrder:(STMSaleOrder *)saleOrder withFields:(NSDictionary *)fields {
     
-    if (saleOrder.processing != processing) {
+    if (![saleOrder.processing isEqualToString:processing]) {
         
         for (NSString *field in fields) {
             
