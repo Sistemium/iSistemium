@@ -14,6 +14,7 @@
 #import "STMLogger.h"
 
 #define AUTH_URL @"https://sistemium.com/auth.php"
+#define TIMEOUT 15.0
 
 @interface STMAuthController() <NSURLConnectionDataDelegate>
 
@@ -405,7 +406,7 @@
 
 #pragma mark - STMRequestAuthenticatable
 
-- (NSURLRequest *) authenticateRequest:(NSURLRequest *)request {
+- (NSURLRequest *)authenticateRequest:(NSURLRequest *)request {
     
     NSMutableURLRequest *resultingRequest = nil;
     
@@ -502,6 +503,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"GET"];
     [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+    request.timeoutInterval = TIMEOUT;
 
     return request;
     

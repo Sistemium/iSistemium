@@ -405,14 +405,22 @@
 - (void)receiveEntities:(NSArray *)entitiesNames {
     
     if ([entitiesNames isKindOfClass:[NSArray class]]) {
+
+        NSArray *localDataModelEntityNames = [STMObjectsController localDataModelEntityNames];
+        NSMutableArray *existingNames = [@[] mutableCopy];
         
-        NSSet *localDataModelEntityNames = [NSSet setWithArray:[STMObjectsController localDataModelEntityNames]];
-        NSMutableSet *existingNames = [NSMutableSet setWithArray:entitiesNames];
-        [existingNames intersectSet:localDataModelEntityNames];
+        for (NSString *entityName in entitiesNames) {
+            
+            NSString *name = [@"STM" stringByAppendingString:entityName];
+            if ([localDataModelEntityNames containsObject:name]) {
+                [existingNames addObject:name];
+            }
+            
+        }
         
         if (existingNames.count > 0) {
             
-            self.receivingEntitiesNames = existingNames.allObjects;
+            self.receivingEntitiesNames = existingNames;
             [self setSyncerState:STMSyncerReceiveData];
             
         }
@@ -621,7 +629,7 @@
 #pragma mark - syncing
 
 - (void)sendData {
-    
+        
     if (self.syncerState == STMSyncerSendData || self.syncerState == STMSyncerSendDataOnce) {
         
         if (self.resultsController.fetchedObjects.count > 0) {
