@@ -550,16 +550,21 @@
     appendString = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:price.price]];
     detailedText = [detailedText stringByAppendingString:appendString];
     
-    if (article.extraLabel) {
-        
-        appendString = [NSString stringWithFormat:@", %@", article.extraLabel];
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
-    }
-    
     if (article.stock.volume.integerValue <= 0) {
         
         appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"ZERO STOCK", nil)];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+    } else {
+        
+        appendString = [NSString stringWithFormat:@", %@", article.stock.displayVolume];
+        detailedText = [detailedText stringByAppendingString:appendString];
+        
+    }
+
+    if (article.extraLabel) {
+        
+        appendString = [NSString stringWithFormat:@", %@", article.extraLabel];
         detailedText = [detailedText stringByAppendingString:appendString];
         
     }
