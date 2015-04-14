@@ -215,8 +215,6 @@
     
     self.sendOnce = (syncerState != STMSyncerIdle) && ((self.sendOnce) || (self.syncing && syncerState == STMSyncerSendDataOnce))? YES : NO;
     
-//    NSLog(@"self.sendOnce %d", self.sendOnce);
-    
     if (!self.syncing && syncerState != _syncerState) {
         
         syncerState = (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
@@ -229,7 +227,6 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self userInfo:@{@"from":@(previousState), @"to":@(syncerState)}];
         
         NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
-//        [(STMLogger *)self.session.logger saveLogMessageWithText:logMessage];
         NSLog(logMessage);
         
         switch (syncerState) {
@@ -356,7 +353,6 @@
         self.settings = nil;
         self.running = YES;
         
-//        [STMObjectsController initObjectsCache];
         [STMObjectsController initObjectsCacheWithCompletionHandler:^(BOOL success) {
            
             if (success) {
@@ -505,8 +501,6 @@
 
 - (void)sessionStatusChanged:(NSNotification *)notification {
     
-    //    NSLog(@"session status %@", [(id <STMSession>)notification.object status]);
-    
     if ([[(id <STMSession>)notification.object status] isEqualToString:@"finishing"]) {
         [self stopSyncer];
     } else if ([[(id <STMSession>)notification.object status] isEqualToString:@"running"]) {
@@ -603,11 +597,8 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
         request.includesSubentities = YES;
-//        request.includesPendingChanges = YES;
         
         request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
-        
-//        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts) && href != %@", nil, nil];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         _resultsController.delegate = self;
@@ -716,7 +707,6 @@
     } else {
         
         NSString *logMessage = [NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count];
-//        [(STMLogger *)self.session.logger saveLogMessageWithText:logMessage];
         NSLog(logMessage);
 
         NSDictionary *dataDictionary = @{@"data": syncDataArray};
@@ -750,8 +740,6 @@
     
     if (self.apiUrlString) {
         
-//        NSLog(@"self.apiUrlString %@", self.apiUrlString);
-        
         NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
         
@@ -761,15 +749,11 @@
             
             request.timeoutInterval = [self timeout];
             request.HTTPShouldHandleCookies = NO;
-            //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
             [request setHTTPMethod:@"POST"];
             [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-//            [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
             [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
             
             request.HTTPBody = sendData;
-            
-//            NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
             
             NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
             
@@ -780,9 +764,6 @@
                 self.syncerState = STMSyncerIdle;
                 
             } else {
-                
-//                NSLog(@"connection %@", connection);
-//                [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
                 
             }
             
@@ -844,13 +825,6 @@
             
             NSURL *requestURL = [NSURL URLWithString:url];
             
-//            if ([entityName isEqualToString:@"STMSetting"]) {
-//                
-//                NSLog(@"receiving %@ with eTag %@", entityName, eTag);
-//                NSLog(@"entity %@", entity);
-//                
-//            }
-            
             [self startReceiveDataFromURL:requestURL withETag:eTag];
             
         } else {
@@ -874,18 +848,12 @@
         
         request.timeoutInterval = [self timeout];
         request.HTTPShouldHandleCookies = NO;
-        //        [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
         [request setHTTPMethod:@"GET"];
         
         [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
         [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
-//        [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
         [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
 
-//        NSLog(@"requestURL %@", requestURL);
-//        NSLog(@"eTag %@", eTag);
-//        NSLog(@"request.allHTTPHeaderFields %@", request.allHTTPHeaderFields);
-        
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         
         if (!connection) {
@@ -896,11 +864,6 @@
             
         } else {
             
-//            NSDate *start = [NSDate date];
-//            NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
-//            NSLog(@"--------------------S %@ %@", startString, eTag);
-            
-//            [self.session.logger saveLogMessageWithText:@"Syncer: send request" type:@""];
         }
         
     } else {
@@ -955,8 +918,6 @@
     
     self.entityCount -= 1;
     
-//    NSLog(@"self.entityCount %d", self.entityCount);
-    
     if (self.entityCount == 0) {
         
         [self saveReceiveDate];
@@ -995,25 +956,12 @@
     self.syncing = NO;
     self.syncerState = STMSyncerIdle;
     
-//    if (self.syncerState == STMSyncerSendData) {
-//        
-//        self.syncerState = STMSyncerReceiveData;
-//
-//    } else {
-//        
-//        self.syncerState = STMSyncerIdle;
-//        
-//    }
-    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     
     NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
     NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
-    //    NSLog(@"headers %@", headers);
-    
-//    NSLog(@"!!!!!!! expectedContentLength %d", response.expectedContentLength);
     
     NSString *entityName = [self entityNameForConnection:connection];
     
@@ -1024,22 +972,10 @@
         NSString *eTag = headers[@"eTag"];
         
         if (eTag) {
-            
             if (entityName && self.syncerState != STMSyncerIdle) self.temporaryETag[entityName] = eTag;
-            
         } else {
-            
             if (![entityName isEqualToString:SEND_DATA_CONNECTION]) [self receiveNoContentStatusForEntityWithName:entityName];
-            
         }
-        
-        
-//        STMEntity *entity = (self.stcEntities)[entityName];
-//        NSDate *middle = [NSDate date];
-//        NSString *middleString = [[STMFunctions dateFormatter] stringFromDate:middle];
-//        NSLog(@"--------------------M %@ %@", middleString, entity.eTag);
-
-        
         
     } else if (statusCode == 410) {
         
@@ -1057,9 +993,6 @@
     } else {
         
         NSLog(@"%@: HTTP status %d", entityName, statusCode);
-        
-//        NSLog(@"connection.originalRequest %@", connection.originalRequest);
-//        NSLog(@"allHTTPHeaderFields %@", [connection.originalRequest allHTTPHeaderFields]);
         
         if ([entityName isEqualToString:@"SEND_DATA"]) {
             
@@ -1118,8 +1051,6 @@
     NSString *entityName = [self entityNameForConnection:connection];
     NSMutableData *responseData = (self.responses)[entityName];
     
-//    NSLog(@"!!!!!! responseData.length %d", responseData.length);
-    
     if (responseData) {
         [self parseResponse:responseData fromConnection:connection];
     }
@@ -1146,25 +1077,13 @@
         NSString *connectionEntityName = [self entityNameForConnection:connection];
         NSArray *dataArray = responseJSON[@"data"];
         
-//        if ([connectionEntityName isEqualToString:@"STMSaleOrder"]) {
-//            NSLog(@"responseJSON %@", responseJSON);
-//        }
-        
         STMEntity *entity = (self.stcEntities)[connectionEntityName];
         
         if (entity) {
             
-//            NSDate *start = [NSDate date];
-//            NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
-//            NSLog(@"--------------------S %@", startString);
-            
             [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
-
+                
                 if (success) {
-                    
-//                    if ([connectionEntityName isEqualToString:@"STMSalesman"]) {
-//                        NSLog(@"temporaryETag %@", self.temporaryETag);
-//                    }
                     
                     NSLog(@"    %@: get %d objects", connectionEntityName, dataArray.count);
                     
@@ -1176,12 +1095,10 @@
                     self.errorOccured = YES;
                     [self entityCountDecrease];
                 }
-
+                
             }];
             
         } else {
-            
-//            NSLog(@"dataArray %@", dataArray);
             
             for (NSDictionary *datum in dataArray) {
                 [STMObjectsController syncObject:datum];
@@ -1233,17 +1150,8 @@
     
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
-
-//    NSLog(@"entity 1 %@", entity);
-
-//    NSDate *finish = [NSDate date];
-//    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
-//    NSLog(@"--------------------F %@ %@", finishString, entity.eTag);
     
     entity.eTag = eTag;
-
-//    NSLog(@"set eTag %@ for %@", eTag, entityName);
-//    NSLog(@"entity 2 %@", entity);
     
     [self checkConditionForReceivingEntityWithName:entityName];
     
@@ -1263,10 +1171,6 @@
 
 - (void)saveReceiveDate {
     
-//    NSDate *finish = [NSDate date];
-//    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
-//    NSLog(@"--------------------F %@", finishString);
-
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSString *key = [@"receiveDate" stringByAppendingString:self.session.uid];
