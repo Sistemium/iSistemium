@@ -24,5 +24,6 @@
 - (void)setSyncerState:(STMSyncerState)syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))handler;
 
 - (void)upload;
+- (void)receiveEntities:(NSArray *)entitiesNames;
 
 @end

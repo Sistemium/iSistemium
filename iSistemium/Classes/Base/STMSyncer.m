@@ -33,6 +33,8 @@
 @interface STMSyncer() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
+
+@property (nonatomic, strong) NSMutableDictionary *settings;
 @property (nonatomic) int fetchLimit;
 @property (nonatomic, strong) NSString *restServerURI;
 @property (nonatomic, strong) NSString *apiUrlString;
@@ -40,22 +42,26 @@
 @property (nonatomic) NSTimeInterval httpTimeoutForeground;
 @property (nonatomic) NSTimeInterval httpTimeoutBackground;
 @property (nonatomic, strong) NSString *uploadLogType;
+
 @property (nonatomic, strong) NSTimer *syncTimer;
+
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
-@property (nonatomic, strong) NSMutableDictionary *settings;
+
 @property (nonatomic) BOOL running;
-@property (nonatomic, strong) NSMutableDictionary *responses;
-@property (nonatomic) NSUInteger entityCount;
 @property (nonatomic) BOOL syncing;
 @property (nonatomic) BOOL checkSending;
 @property (nonatomic) BOOL sendOnce;
-@property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
-@property (nonatomic, strong) NSMutableDictionary *temporaryETag;
 @property (nonatomic) BOOL errorOccured;
-@property (nonatomic, strong) NSMutableArray *sendedEntities;
 
-- (void) didReceiveRemoteNotification;
-- (void) didEnterBackground;
+@property (nonatomic, strong) NSMutableDictionary *responses;
+@property (nonatomic, strong) NSMutableDictionary *temporaryETag;
+@property (nonatomic, strong) NSMutableArray *sendedEntities;
+@property (nonatomic, strong) NSArray *receivingEntitiesNames;
+@property (nonatomic) NSUInteger entityCount;
+@property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
+
+- (void)didReceiveRemoteNotification;
+- (void)didEnterBackground;
 
 @end
 
@@ -229,35 +235,48 @@
         switch (syncerState) {
                 
             case STMSyncerSendData:
+                
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 [STMClientDataController checkClientData];
                 self.syncing = YES;
                 [self sendData];
+                
                 break;
 
+                
             case STMSyncerSendDataOnce:
+                
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 [STMClientDataController checkClientData];
                 self.syncing = YES;
                 [self sendData];
+                
                 break;
 
+                
             case STMSyncerReceiveData:
+                
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 self.syncing = YES;
                 [self receiveData];
+                
                 break;
                 
+                
             case STMSyncerIdle:
+                
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 self.syncing = NO;
                 self.sendOnce = NO;
+
                 [STMObjectsController dataLoadingFinished];
                 [STMPicturesController checkUploadedPhotos];
-                if (self.fetchCompletionHandler) {
-                    self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
-                }
+                
+                if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
+                if (self.fetchCompletionHandler) self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
+                
                 break;
+                
                 
             default:
                 break;
@@ -384,7 +403,31 @@
 }
 
 - (void)upload {
-    [self setSyncerState: STMSyncerSendData];
+    [self setSyncerState:STMSyncerSendData];
+}
+
+- (void)receiveEntities:(NSArray *)entitiesNames {
+    
+    if ([entitiesNames isKindOfClass:[NSArray class]]) {
+        
+        NSSet *localDataModelEntityNames = [NSSet setWithArray:[STMObjectsController localDataModelEntityNames]];
+        NSMutableSet *existingNames = [NSMutableSet setWithArray:entitiesNames];
+        [existingNames intersectSet:localDataModelEntityNames];
+        
+        if (existingNames.count > 0) {
+            
+            self.receivingEntitiesNames = existingNames.allObjects;
+            [self setSyncerState:STMSyncerReceiveData];
+            
+        }
+        
+    } else {
+        
+        NSString *logMessage = @"receiveEntities: argument is not an array";
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+        
+    }
+    
 }
 
 - (void)didReceiveRemoteNotification {
@@ -392,15 +435,15 @@
 }
 
 - (void)didEnterBackground {
-    [self setSyncerState: STMSyncerSendDataOnce];
+    [self setSyncerState:STMSyncerSendDataOnce];
 }
 
 - (void)appDidBecomeActive {
     
 #ifdef DEBUG
-    [self setSyncerState: STMSyncerSendData];
+    [self setSyncerState:STMSyncerSendData];
 #else
-    [self setSyncerState: STMSyncerSendDataOnce];
+    [self setSyncerState:STMSyncerSendDataOnce];
 #endif
 
 }
@@ -408,7 +451,7 @@
 - (void)syncerDidReceiveRemoteNotification:(NSNotification *)notification {
     
     if ([(notification.userInfo)[@"syncer"] isEqualToString:@"upload"]) {
-        [self setSyncerState: STMSyncerSendDataOnce];
+        [self setSyncerState:STMSyncerSendDataOnce];
     }
     
 }
@@ -430,12 +473,12 @@
     [nc addObserver:self
            selector:@selector(didReceiveRemoteNotification)
                name:@"applicationDidReceiveRemoteNotification"
-             object: nil];
+             object:nil];
     
     [nc addObserver:self
            selector:@selector(appDidBecomeActive)
                name:UIApplicationDidBecomeActiveNotification
-             object: nil];
+             object:nil];
     
     [nc addObserver:self
            selector:@selector(didReceiveRemoteNotification)
@@ -445,7 +488,7 @@
     [nc addObserver:self
            selector:@selector(didEnterBackground)
                name:UIApplicationDidEnterBackgroundNotification
-             object: nil];
+             object:nil];
     
     [nc addObserver:self
            selector:@selector(syncerDidReceiveRemoteNotification:)
@@ -766,14 +809,22 @@
     
     if (self.syncerState == STMSyncerReceiveData) {
         
-        self.entityCount = 1;
-        self.errorOccured = NO;
+        if (!self.receivingEntitiesNames || [self.receivingEntitiesNames containsObject:@"STMEntity"]) {
+            
+            self.entityCount = 1;
+            self.errorOccured = NO;
+            
+            [self checkConditionForReceivingEntityWithName:@"STMEntity"];
 
-//        NSDate *start = [NSDate date];
-//        NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
-//        NSLog(@"--------------------S %@", startString);
-        
-        [self checkConditionForReceivingEntityWithName:@"STMEntity"];
+        } else {
+
+            self.entityCount = self.receivingEntitiesNames.count;
+            
+            for (NSString *name in self.receivingEntitiesNames) {
+                [self checkConditionForReceivingEntityWithName:name];
+            }
+            
+        }
         
     }
     
@@ -909,7 +960,7 @@
     if (self.entityCount == 0) {
         
         [self saveReceiveDate];
-
+        
         [self.document saveDocument:^(BOOL success) {
         
             if (success) {
