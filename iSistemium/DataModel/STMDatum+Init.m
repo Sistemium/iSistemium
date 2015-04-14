@@ -11,6 +11,73 @@
 
 @implementation STMDatum (Init)
 
++ (void)load {
+    
+    @autoreleasepool {
+        [[NSNotificationCenter defaultCenter] addObserver:(id)[self class]
+                                                 selector:@selector(objectContextWillSave:)
+                                                     name:NSManagedObjectContextWillSaveNotification
+                                                   object:nil];
+    }
+    
+}
+
++ (void)objectContextWillSave:(NSNotification*)notification {
+    
+    NSManagedObjectContext *context = [notification object];
+    
+    if (context.parentContext) {
+    
+        NSSet *modifiedObjects = [context.insertedObjects setByAddingObjectsFromSet:context.updatedObjects];
+        [modifiedObjects makeObjectsPerformSelector:@selector(setLastModifiedTimestamp)];
+
+    }
+    
+}
+
+- (void)setLastModifiedTimestamp{
+    
+    if (![self.changedValues.allKeys containsObject:@"lts"]) {
+        
+        NSArray *excludeProperties = @[@"lts",
+                                       @"sts",
+                                       @"sqts",
+                                       @"deviceTs",
+                                       @"imagePath",
+                                       @"resizedImagePath",
+                                       @"calculatedSum"];
+        
+        NSMutableArray *changedKeysArray = self.changedValues.allKeys.mutableCopy;
+        [changedKeysArray removeObjectsInArray:excludeProperties];
+        
+        NSMutableArray *relationshipsToMany = [NSMutableArray array];
+        
+        for (NSRelationshipDescription *relationship in [self.entity.relationshipsByName allValues]) {
+            if ([relationship isToMany]) [relationshipsToMany addObject:relationship.name];
+        }
+        
+        [changedKeysArray removeObjectsInArray:relationshipsToMany];
+        
+        if (changedKeysArray.count > 0) {
+            
+            NSDate *ts = [NSDate date];
+            
+            [self willChangeValueForKey:@"deviceTs"];
+            [self setPrimitiveValue:ts forKey:@"deviceTs"];
+            [self didChangeValueForKey:@"deviceTs"];
+            
+            NSDate *lts = [self primitiveValueForKey:@"lts"];
+            NSDate *deviceTs = [self primitiveValueForKey:@"deviceTs"];
+            NSDate *deviceCts = [self primitiveValueForKey:@"deviceCts"];
+            NSDate *sqts = lts ? deviceTs : deviceCts;
+            
+            [self setPrimitiveValue:sqts forKey:@"sqts"];
+            
+        }
+
+    }
+    
+}
 
 - (NSData *)newXid {
     
@@ -56,109 +123,6 @@
 }
 
 - (void)willSave {
-    
-//    NSLog(@"STGTDatum willSave");
-    
-//    NSLog(@"[self changedValues] %@", [self changedValues]);
-    
-    NSArray *changedKeys = [[self changedValues] allKeys];
-    
-    BOOL notLts = ![changedKeys containsObject:@"lts"];
-    BOOL notSts = ![changedKeys containsObject:@"sts"];
-    BOOL notSqts = ![changedKeys containsObject:@"sqts"];
-    BOOL notDeviceTs = ![changedKeys containsObject:@"deviceTs"];
-    BOOL notImagePath = ![changedKeys containsObject:@"imagePath"];
-    BOOL notResizedImagePath = ![changedKeys containsObject:@"resizedImagePath"];
-    BOOL notCalculatedSum = ![changedKeys containsObject:@"calculatedSum"];
-    
-    BOOL notEmpty = (changedKeys.count != 0);
-    
-    BOOL notToMany = YES;
-    
-    NSMutableArray *relationshipsToMany = [NSMutableArray array];
-
-    for (NSRelationshipDescription *relationship in [self.entity.relationshipsByName allValues]) {
-        
-        if ([relationship isToMany]) {
-            
-            [relationshipsToMany addObject:relationship.name];
-            
-        }
-        
-    }
-
-    BOOL allChangesIsToMany = YES;
-    for (NSString *key in changedKeys) allChangesIsToMany &= [relationshipsToMany containsObject:key];
-
-    notToMany = !allChangesIsToMany;
-    
-//    if (changedKeys.count == 1) {
-//        
-//        NSString *key = [changedKeys lastObject];
-//        if ([relationshipsToMany containsObject:key]) {
-//            notToMany = NO;
-//            
-//            //            NSLog(@"%@ is toMany", key);
-//            
-//        }
-//        
-//    }
-
-    
-//    if ([self.entity.name isEqualToString:@"STMSalesman"]) {
-//        
-//        NSLog(@"self1 %@", self)
-//        
-//        NSArray *keys = self.changedValues.allKeys;
-//        NSLog(@"self.changedValues.allKeys %@", self.changedValues.allKeys);
-//        
-//        for (NSString *key in keys) {
-//            
-//            NSLog(@"%@: %@", key, self.changedValues[key]);
-//            
-//        }
-//        
-//    }
-    
-    
-    if (notLts && notSts && notSqts && notDeviceTs && notEmpty && notToMany && notImagePath && notResizedImagePath && notCalculatedSum) {
-        
-        NSDate *ts = [NSDate date];
-        
-        [self willChangeValueForKey:@"deviceTs"];
-        [self setPrimitiveValue:ts forKey:@"deviceTs"];
-        [self didChangeValueForKey:@"deviceTs"];
-        
-        NSDate *lts = [self primitiveValueForKey:@"lts"];
-        
-        NSDate *deviceTs = [self primitiveValueForKey:@"deviceTs"];
-        
-        NSDate *deviceCts = [self primitiveValueForKey:@"deviceCts"];
-        
-        NSDate *sqts = lts ? deviceTs : deviceCts;
-        
-        [self setPrimitiveValue:sqts forKey:@"sqts"];
-
-        
-//        if ([self.entity.name isEqualToString:@"STMEntity"]) {
-//            
-//            NSString *name = [self primitiveValueForKey:@"name"];
-//            
-//            if ([name isEqualToString:@"Salesman"]) {
-//                
-//                NSArray *keys = self.changedValues.allKeys;
-//                NSLog(@"self.changedValues.allKeys %@", keys);
-//                
-//                for (NSString *key in keys) NSLog(@"%@: %@", key, self.changedValues[key]);
-//
-//                NSLog(@"self2 %@", self)
-//
-//            }
-//            
-//        }
-    
-        
-    }
     
     [super willSave];
 
