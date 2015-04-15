@@ -41,7 +41,8 @@
     
     if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
         
-        NSDictionary *objectDic = @{@"saleOrderChangedValues":self.changedValues};
+        NSString *xidString = [STMFunctions xidStringFromXidData:self.xid];
+        NSDictionary *objectDic = @{@"saleOrderXid":xidString, @"saleOrderChangedValues":self.changedValues};
         NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
         [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
         
