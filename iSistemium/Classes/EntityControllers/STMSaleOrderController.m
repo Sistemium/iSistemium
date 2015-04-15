@@ -219,13 +219,18 @@
             }
             
         }
+        
+//        NSLog(@"saleOrder --- before --- %@", saleOrder);
 
         saleOrder.processing = processing;
-        
+
     }
     
     [[self document] saveDocument:^(BOOL success) {
+
         if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+//        NSLog(@"saleOrder --- after --- %@", saleOrder);
+
     }];
     
 }
