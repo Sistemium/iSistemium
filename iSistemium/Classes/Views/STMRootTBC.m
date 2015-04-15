@@ -218,6 +218,10 @@
                         title:NSLocalizedString(@"UNCASHING", nil)
                         image:[UIImage imageNamed:@"banknotes-128.png"]];
 
+    [self registerTabWithStoryboardName:@"STMMessages"
+                                  title:NSLocalizedString(@"MESSAGES", nil)
+                                  image:[UIImage imageNamed:@"message-128.png"]];
+
     if ([BUNDLE_VERSION integerValue] >= 70) {
         
         [self registerTabWithStoryboardName:@"STMCatalog"
@@ -240,10 +244,6 @@
 
     }
     
-    [self registerTabWithStoryboardName:@"STMMessages"
-                        title:NSLocalizedString(@"MESSAGES", nil)
-                        image:[UIImage imageNamed:@"message-128.png"]];
-
 #ifdef DEBUG
     
     [self registerTabWithStoryboardName:@"STMSettings"
