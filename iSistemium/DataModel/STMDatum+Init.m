@@ -9,6 +9,8 @@
 #import "STMDatum+Init.h"
 #import "STMMessage.h"
 
+#import "STMSaleOrderController.h"
+
 @implementation STMDatum (Init)
 
 + (void)load {
@@ -36,6 +38,14 @@
 }
 
 - (void)setLastModifiedTimestamp{
+    
+    if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
+        
+        NSDictionary *objectDic = @{@"saleOrderChangedValues":self.changedValues};
+        NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+        [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+        
+    }
     
     if (![self.changedValues.allKeys containsObject:@"lts"]) {
         

@@ -498,5 +498,23 @@
     
 }
 
++ (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic {
+
+    if ([NSJSONSerialization isValidJSONObject:objectDic]) {
+        
+        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:objectDic options:0 error:nil];
+        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+        
+        return JSONString;
+        
+    } else {
+        
+        return @"dictionary is not valid json object";
+        
+    }
+
+}
+
+
 
 @end

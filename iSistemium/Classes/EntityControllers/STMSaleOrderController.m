@@ -8,6 +8,8 @@
 
 #import "STMSaleOrderController.h"
 #import "STMEntityController.h"
+#import "STMObjectsController.h"
+
 
 @interface STMSaleOrderController()
 
@@ -220,18 +222,27 @@
             
         }
         
-//        NSLog(@"saleOrder --- before --- %@", saleOrder);
+        NSDictionary *objectDic = @{@"saleOrderBefore":[STMObjectsController dictionaryForObject:saleOrder]};
+        NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+        [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+
+        [STMSaleOrderController sharedInstance].processingDidChanged = YES;
 
         saleOrder.processing = processing;
 
+        [[self document] saveDocument:^(BOOL success) {
+            
+            NSDictionary *objectDic = @{@"saleOrderAfter":[STMObjectsController dictionaryForObject:saleOrder]};
+            NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+            [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+
+            [STMSaleOrderController sharedInstance].processingDidChanged = NO;
+            
+            if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+            
+        }];
+
     }
-    
-    [[self document] saveDocument:^(BOOL success) {
-
-        if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
-//        NSLog(@"saleOrder --- after --- %@", saleOrder);
-
-    }];
     
 }
 

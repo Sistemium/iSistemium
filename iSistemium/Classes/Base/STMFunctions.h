@@ -57,5 +57,7 @@
 
 + (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController;
 
++ (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic;
+
 
 @end

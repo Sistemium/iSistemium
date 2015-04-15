@@ -11,6 +11,8 @@
 
 @interface STMSaleOrderController : STMController
 
+@property (nonatomic) BOOL processingDidChanged;
+
 + (STMSaleOrderController *)sharedInstance;
 
 + (NSString *)labelForProcessing:(NSString *)processing;
