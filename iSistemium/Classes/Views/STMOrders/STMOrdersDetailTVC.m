@@ -252,8 +252,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
         
         STMSegmentedControl *segmentedControl = (STMSegmentedControl *)[(UITapGestureRecognizer *)sender view];
-        NSString *title = [segmentedControl titleForSegmentAtIndex:0];
-        NSString *processing = [STMSaleOrderController processingForLabel:title];
+        NSString *processing = [self processingForSegmentedControl:segmentedControl];
         
         if (segmentedControl.selectedSegmentIndex == 0) {
             
@@ -277,43 +276,82 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     if ([sender isKindOfClass:[UILongPressGestureRecognizer class]]) {
         
-        STMSegmentedControl *pressedControl = (STMSegmentedControl *)[(UITapGestureRecognizer *)sender view];
-        NSString *title = [pressedControl titleForSegmentAtIndex:0];
-        NSString *processing = [STMSaleOrderController processingForLabel:title];
-
-        pressedControl.selectedSegmentIndex = 0;
-        [self.currentFilterProcessings removeObject:processing];
+        UILongPressGestureRecognizer *longPressGesture = (UILongPressGestureRecognizer *)sender;
         
-        for (NSString *key in [self.filterButtons allKeys]) {
-            
-            if (![key isEqualToString:processing]) {
-                
-                STMBarButtonItem *button = self.filterButtons[key];
-            
-                if ([button.customView isKindOfClass:[STMSegmentedControl class]]) {
-                    
-                    STMSegmentedControl *control = (STMSegmentedControl *)button.customView;
-                    
-                    if (![control isEqual:pressedControl]) {
-                        
-                        control.selectedSegmentIndex = -1;
-                        NSString *title = [control titleForSegmentAtIndex:0];
-                        NSString *processing = [STMSaleOrderController processingForLabel:title];
-                        [self.currentFilterProcessings addObject:processing];
-                        
-                    }
-                    
-                }
+        if (longPressGesture.state == UIGestureRecognizerStateBegan) {
+     
+            self.currentFilterProcessings = nil;
 
-            }
+            STMSegmentedControl *pressedControl = (STMSegmentedControl *)[(UITapGestureRecognizer *)sender view];
+            NSString *pressedProcessing = [self processingForSegmentedControl:pressedControl];
+            
+            pressedControl.selectedSegmentIndex = 0;
+
+            NSMutableArray *remainingProcessings = [self.filterButtons.allKeys mutableCopy];
+            [remainingProcessings removeObject:pressedProcessing];
+            
+            BOOL isAlone = YES;
+            
+            for (NSString *key in remainingProcessings) isAlone &= ![self processingIsSelectedForButton:self.filterButtons[key]];
+
+            [self setProcessings:remainingProcessings selected:isAlone];
+            
+            [self refreshTable];
             
         }
-        
-        [self refreshTable];
         
     }
     
 }
+
+- (STMSegmentedControl *)segmentedControlForButton:(STMBarButtonItem *)button {
+    
+    if ([button.customView isKindOfClass:[STMSegmentedControl class]]) {
+        return (STMSegmentedControl *)button.customView;
+    } else {
+        return nil;
+    }
+    
+}
+
+- (NSString *)processingForSegmentedControl:(STMSegmentedControl *)segmentedControl {
+    
+    NSString *title = [segmentedControl titleForSegmentAtIndex:0];
+    NSString *processing = [STMSaleOrderController processingForLabel:title];
+    
+    return processing;
+    
+}
+
+- (BOOL)processingIsSelectedForButton:(STMBarButtonItem *)button {
+    
+    STMSegmentedControl *control = [self segmentedControlForButton:button];
+    return (control.selectedSegmentIndex != -1);
+    
+}
+
+- (void)setProcessings:(NSArray *)processings selected:(BOOL)selected {
+    
+    for (NSString *processing in processings) {
+        
+        STMSegmentedControl *control = [self segmentedControlForButton:self.filterButtons[processing]];
+
+        if (selected) {
+
+            control.selectedSegmentIndex = 0;
+            [self.currentFilterProcessings removeObject:processing];
+
+        } else {
+            
+            control.selectedSegmentIndex = -1;
+            [self.currentFilterProcessings addObject:processing];
+
+        }
+        
+    }
+
+}
+
 
 #pragma mark - routesActionSheet
 
