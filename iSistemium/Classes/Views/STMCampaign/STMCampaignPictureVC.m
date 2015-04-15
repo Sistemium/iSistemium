@@ -83,26 +83,7 @@
         [self.imageView removeFromSuperview];
         
         self.imageView = [[UIImageView alloc] initWithImage:self.image];
-        
-//        CGRect frame = self.imageView.frame;
-//        CGFloat maxDimension = MAX(frame.size.height, frame.size.width);
-//
-//        if (maxDimension > MAX_SIZE) {
-//            
-//            CGFloat x = frame.origin.x;
-//            CGFloat y = frame.origin.y;
-//            
-//            CGFloat k = maxDimension / MAX_SIZE;
-//            
-//            CGFloat height = ceil(frame.size.height / k);
-//            CGFloat width = ceil(frame.size.width / k);
-//
-//            CGRect resizedFrame = CGRectMake(x, y, width, height);
-//            
-//            self.imageView.frame = resizedFrame;
-//            
-//        }
-        
+                
         self.scrollView.contentSize = self.imageView.frame.size;
         [self.scrollView addSubview:self.imageView];
         
@@ -168,16 +149,6 @@
     
 }
 
-//- (void)deviceOrientationDidChangeNotification:(NSNotification*)note {
-//
-//    CGPoint offset = self.scrollView.contentOffset;
-//    
-//    [self updateScrollView];
-//    
-//    self.scrollView.contentOffset = CGPointMake(offset.y, offset.x);
-//
-//}
-
 - (void)updateScrollView {
     
     CGFloat scale = self.scrollView.zoomScale;
@@ -229,11 +200,6 @@
     
     self.scrollView.delegate = self;
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(deviceOrientationDidChangeNotification:)
-//                                                 name:UIDeviceOrientationDidChangeNotification
-//                                               object:nil];
-
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
