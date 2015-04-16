@@ -71,10 +71,29 @@
         
         if (changedKeysArray.count > 0) {
             
-            NSDate *ts = NSDate.date;
+            NSDate *ts = [NSDate date];
             
             [self willChangeValueForKey:@"deviceTs"];
+
             [self setPrimitiveValue:ts forKey:@"deviceTs"];
+            
+            if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
+                
+                NSString *xidString = [STMFunctions xidStringFromXidData:self.xid];
+                NSDictionary *objectDic = @{
+                                            @"saleOrderXid":xidString,
+                                            @"tsValues":@{
+                                                          @"ts":[[STMFunctions dateFormatter] stringFromDate:ts],
+                                                          @"[NSDate date]":[[STMFunctions dateFormatter] stringFromDate:[NSDate date]],
+                                                          @"primitiveDeviceTs":[[STMFunctions dateFormatter] stringFromDate:[self primitiveValueForKey:@"deviceTs"]],
+                                                          @"deviceTs":[[STMFunctions dateFormatter] stringFromDate:[self valueForKey:@"deviceTs"]]
+                                                          }
+                                            };
+                NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+                [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+
+            }
+            
             [self didChangeValueForKey:@"deviceTs"];
             
             NSDate *lts = [self primitiveValueForKey:@"lts"];
