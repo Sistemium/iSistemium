@@ -63,15 +63,15 @@
         
         NSMutableArray *relationshipsToMany = [NSMutableArray array];
         
-        for (NSRelationshipDescription *relationship in [self.entity.relationshipsByName allValues]) {
-            if ([relationship isToMany]) [relationshipsToMany addObject:relationship.name];
+        for (NSRelationshipDescription *relationship in self.entity.relationshipsByName.allValues) {
+            if (relationship.isToMany) [relationshipsToMany addObject:relationship.name];
         }
         
         [changedKeysArray removeObjectsInArray:relationshipsToMany];
         
         if (changedKeysArray.count > 0) {
             
-            NSDate *ts = [NSDate date];
+            NSDate *ts = NSDate.date;
             
             [self willChangeValueForKey:@"deviceTs"];
             [self setPrimitiveValue:ts forKey:@"deviceTs"];
