@@ -9,6 +9,8 @@
 #import "STMDatum+Init.h"
 #import "STMMessage.h"
 
+#import "STMSaleOrderController.h"
+
 @implementation STMDatum (Init)
 
 + (void)load {
@@ -37,6 +39,15 @@
 
 - (void)setLastModifiedTimestamp{
     
+    if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
+        
+        NSString *xidString = [STMFunctions xidStringFromXidData:self.xid];
+        NSDictionary *objectDic = @{@"saleOrderXid":xidString, @"saleOrderChangedValues":self.changedValues};
+        NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+        [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+        
+    }
+    
     if (![self.changedValues.allKeys containsObject:@"lts"]) {
         
         NSArray *excludeProperties = @[@"lts",
@@ -52,8 +63,8 @@
         
         NSMutableArray *relationshipsToMany = [NSMutableArray array];
         
-        for (NSRelationshipDescription *relationship in [self.entity.relationshipsByName allValues]) {
-            if ([relationship isToMany]) [relationshipsToMany addObject:relationship.name];
+        for (NSRelationshipDescription *relationship in self.entity.relationshipsByName.allValues) {
+            if (relationship.isToMany) [relationshipsToMany addObject:relationship.name];
         }
         
         [changedKeysArray removeObjectsInArray:relationshipsToMany];
@@ -63,7 +74,26 @@
             NSDate *ts = [NSDate date];
             
             [self willChangeValueForKey:@"deviceTs"];
+
             [self setPrimitiveValue:ts forKey:@"deviceTs"];
+            
+            if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
+                
+                NSString *xidString = [STMFunctions xidStringFromXidData:self.xid];
+                NSDictionary *objectDic = @{
+                                            @"saleOrderXid":xidString,
+                                            @"tsValues":@{
+                                                          @"ts":[[STMFunctions dateFormatter] stringFromDate:ts],
+                                                          @"[NSDate date]":[[STMFunctions dateFormatter] stringFromDate:[NSDate date]],
+                                                          @"primitiveDeviceTs":[[STMFunctions dateFormatter] stringFromDate:[self primitiveValueForKey:@"deviceTs"]],
+                                                          @"deviceTs":[[STMFunctions dateFormatter] stringFromDate:[self valueForKey:@"deviceTs"]]
+                                                          }
+                                            };
+                NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+                [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+
+            }
+            
             [self didChangeValueForKey:@"deviceTs"];
             
             NSDate *lts = [self primitiveValueForKey:@"lts"];
