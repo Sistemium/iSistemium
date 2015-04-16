@@ -6,3 +6,7 @@ xcuserdata
 /Pods/*
 
 *.xcuserstate
+
+/Crashlytics.framework/*
+
+

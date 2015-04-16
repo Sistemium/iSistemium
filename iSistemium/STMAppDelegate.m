@@ -8,6 +8,8 @@
 
 #import "STMAppDelegate.h"
 
+#import <Crashlytics/Crashlytics.h>
+
 #import "STMAuthController.h"
 #import "STMRemoteController.h"
 #import "STMMessageController.h"
@@ -22,6 +24,8 @@
 @implementation STMAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [Crashlytics startWithAPIKey:@"035bda92bd5b13402aaf2c6cb5f66b8ff23f2166"];
     
     [STMAuthController authController];
     
