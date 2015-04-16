@@ -444,7 +444,7 @@
     
     for (STMPicture *picture in result) {
         
-        NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
+        NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
         NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
@@ -486,7 +486,7 @@
     
     if ([picture isKindOfClass:[STMPhoto class]]) {
         
-        NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
+        NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
         fileName = [xid stringByAppendingString:@".jpg"];
         
         [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
@@ -624,7 +624,7 @@
         
         STMPicture *picture = (STMPicture *)object;
         
-        NSString *xid = [STMFunctions xidStringFromXidData:picture.xid];
+        NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
         NSData *data = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
