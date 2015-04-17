@@ -98,6 +98,10 @@
     
 }
 
++ (void)NSLogCurrentDateWithMilliseconds {
+    NSLog(@"%@", [[self dateFormatter] stringFromDate:[NSDate date]]);
+}
+
 
 #pragma mark - number formatters
 

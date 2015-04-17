@@ -36,6 +36,7 @@
 + (NSDateFormatter *)dateMediumNoTimeFormatter;
 + (NSDateFormatter *)dateMediumTimeMediumFormatter;
 + (NSDateFormatter *)dateLongNoTimeFormatter;
++ (void)NSLogCurrentDateWithMilliseconds;
 
 + (NSNumberFormatter *)decimalFormatter;
 + (NSNumberFormatter *)decimalMaxTwoDigitFormatter;
