@@ -21,7 +21,7 @@
 
 + (NSData *)dataFromString:(NSString *)string;
 + (NSData *)xidDataFromXidString:(NSString *)xidString;
-+ (NSString *)xidStringFromXidData:(NSData *)xidData;
++ (NSString *)UUIDStringFromUUIDData:(NSData *)UUIDData;
 + (NSString *)hexStringFromData:(NSData *)data;
 
 + (NSString *)pluralTypeForCount:(NSUInteger)count;

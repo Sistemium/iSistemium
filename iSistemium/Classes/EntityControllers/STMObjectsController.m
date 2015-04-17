@@ -1163,7 +1163,7 @@
         NSString *entityName = object.entity.name;
         NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
         NSData *xidData = [object valueForKey:@"xid"];
-        NSString *xid = [STMFunctions xidStringFromXidData:xidData];
+        NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
         
         NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
         
@@ -1201,9 +1201,9 @@
                     
                 } else if ([value isKindOfClass:[NSData class]]) {
                     
-                    if ([key isEqualToString:@"objectXid"]) {
+                    if ([@[@"deviceUUID", @"objectXid"] containsObject:key]) {
                         
-                        value = [STMFunctions xidStringFromXidData:value];
+                        value = [STMFunctions UUIDStringFromUUIDData:value];
                         
                     } else {
                         
@@ -1235,7 +1235,7 @@
                 
                 if (xidData.length != 0) {
                     
-                    NSString *xid = [STMFunctions xidStringFromXidData:xidData];
+                    NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
                     NSString *entityName = key;
                     [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
                     

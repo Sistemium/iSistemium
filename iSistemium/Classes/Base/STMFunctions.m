@@ -282,18 +282,18 @@
     
 }
 
-+ (NSString *)xidStringFromXidData:(NSData *)xidData {
++ (NSString *)UUIDStringFromUUIDData:(NSData *)UUIDData {
     
-    CFUUIDBytes uuidBytes;
-    [xidData getBytes:&uuidBytes length:xidData.length];
+    CFUUIDBytes UUIDBytes;
+    [UUIDData getBytes:&UUIDBytes length:UUIDData.length];
     
-    CFUUIDRef CFXid = CFUUIDCreateFromUUIDBytes(kCFAllocatorDefault, uuidBytes);
-    CFStringRef CFXidString = CFUUIDCreateString(kCFAllocatorDefault, CFXid);
-    CFRelease(CFXid);
+    CFUUIDRef CFUUID = CFUUIDCreateFromUUIDBytes(kCFAllocatorDefault, UUIDBytes);
+    CFStringRef CFUUIDString = CFUUIDCreateString(kCFAllocatorDefault, CFUUID);
+    CFRelease(CFUUID);
     
-    NSString *xidString = (NSString *)CFBridgingRelease(CFXidString);
+    NSString *UUIDString = (NSString *)CFBridgingRelease(CFUUIDString);
     
-    return xidString;
+    return UUIDString;
     
 }
 
