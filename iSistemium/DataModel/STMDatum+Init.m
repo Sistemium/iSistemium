@@ -79,45 +79,29 @@
             if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
                 
                 NSString *xidString = [STMFunctions UUIDStringFromUUIDData:self.xid];
-
-                [self willAccessValueForKey:@"deviceTs"];
                 
                 NSDictionary *objectDic = @{
                                             @"saleOrderXid":xidString,
                                             @"tsValues":@{
                                                           @"ts":[[STMFunctions dateFormatter] stringFromDate:newDeviceTs],
-                                                          @"[NSDate date]":[[STMFunctions dateFormatter] stringFromDate:[NSDate date]],
                                                           @"primitiveDeviceTs":[[STMFunctions dateFormatter] stringFromDate:[self primitiveValueForKey:@"deviceTs"]],
                                                           @"deviceTs":[[STMFunctions dateFormatter] stringFromDate:[self valueForKey:@"deviceTs"]]
                                                           }
                                             };
-                
-                [self didAccessValueForKey:@"deviceTs"];
                 
                 NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
                 [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
 
             }
             
-            [self didChangeValueForKey:@"deviceTs"];
-          
-            [self willAccessValueForKey:@"lts"];
             NSDate *lts = [self primitiveValueForKey:@"lts"];
-            [self didAccessValueForKey:@"lts"];
-          
-            [self willAccessValueForKey:@"deviceTs"];
             NSDate *deviceTs = [self primitiveValueForKey:@"deviceTs"];
-            [self didAccessValueForKey:@"deviceTs"];
-
-            [self willAccessValueForKey:@"deviceCts"];
             NSDate *deviceCts = [self primitiveValueForKey:@"deviceCts"];
-            [self didAccessValueForKey:@"deviceCts"];
-            
             NSDate *sqts = lts ? deviceTs : deviceCts;
             
-            [self willChangeValueForKey:@"sqts"];
             [self setPrimitiveValue:sqts forKey:@"sqts"];
-            [self didChangeValueForKey:@"sqts"];
+            
+            [self didChangeValueForKey:@"deviceTs"];
             
         }
 
