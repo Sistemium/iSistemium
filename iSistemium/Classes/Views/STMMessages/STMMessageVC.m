@@ -74,7 +74,7 @@
         self.spinnerView = nil;
 
         self.imageView.image = image;
-        [self.imageView setNeedsDisplay];
+//        [self.imageView setNeedsDisplay];
         
     } else {
         
