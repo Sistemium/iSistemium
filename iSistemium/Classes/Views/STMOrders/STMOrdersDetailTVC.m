@@ -719,7 +719,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 }
 
 
-- (NSArray *)fetchProperty:(NSString *)property {
+#pragma mark - toolbar
+
+- (NSArray *)fetchSaleOrderProperty:(NSString *)property {
     
     NSString *entityName = NSStringFromClass([STMSaleOrder class]);
     
@@ -747,36 +749,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
                 [resultArray addObject:dic];
             }
             
-//            NSLog(@"%@.%@ %@", entityName, property, propertyValue);
-            
         }
         
 //        NSLog(@"resultArray %@", resultArray);
         
         return resultArray;
-        
-        
-//        NSString *propertyName = property;
-//        
-//        //    NSExpression *keypath = [NSExpression expressionForKeyPath:propertyName];
-//        //    NSExpressionDescription *description = [[NSExpressionDescription alloc] init];
-//        //    description.expression = keypath;
-//        //    description.name = propertyName;
-//        //    description.expressionResultType = NSStringAttributeType;
-//        
-//        request.propertiesToFetch = @[entityProperty];
-//        request.propertiesToGroupBy = @[propertyName];
-//        
-//        request.resultType = NSDictionaryResultType;
-//        
-//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:propertyName ascending:YES]];
-//        
-//        result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
-//        
-//        NSLog(@"result %@", result);
-//
-//        return result;
-
         
     } else {
         
@@ -786,33 +763,39 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-#pragma mark - view lifecycle
+- (NSArray *)processingLabelsForPropertyName:(NSString *)propertyName {
 
-- (void)setupToolbar {
+    NSArray *processings = [self fetchSaleOrderProperty:propertyName];
     
-    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-
-    NSMutableArray *toolbarItems = [NSMutableArray array];
-    [toolbarItems addObject:flexibleSpace];
-    
-    NSString *propertyName = @"processing";
-    
-    NSArray *processings = [self fetchProperty:propertyName];
-    
-    NSMutableArray *processingArray = [NSMutableArray array];
+    NSMutableArray *processingLabels = [NSMutableArray array];
     
     for (NSDictionary *processing in processings) {
         
         NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:processing];
         [dic setObject:[STMSaleOrderController labelForProcessing:processing[propertyName]] forKey:@"label"];
         
-        [processingArray addObject:dic];
+        [processingLabels addObject:dic];
         
     }
     
     NSSortDescriptor *labelDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"label" ascending:YES];
     
-    processings = [processingArray sortedArrayUsingDescriptors:@[labelDescriptor]];
+    NSArray *result = [processingLabels sortedArrayUsingDescriptors:@[labelDescriptor]];
+    
+    return result;
+
+}
+
+- (void)setupToolbar {
+    
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+
+    NSString *propertyName = @"processing";
+
+    NSMutableArray *toolbarItems = [NSMutableArray array];
+    [toolbarItems addObject:flexibleSpace];
+    
+    NSArray *processings = [self processingLabelsForPropertyName:propertyName];
     
     for (NSDictionary *processing in processings) {
         
@@ -833,20 +816,38 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     [toolbarItems addObject:flexibleSpace];
     
-    [self setToolbarItems:toolbarItems];
+//    [self setToolbarItems:toolbarItems];
+    
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    UIView *toolbarSuperView = toolbar.superview;
+    [toolbar removeFromSuperview];
+    
+    UIScrollView *scrollView = [[UIScrollView alloc] init];
+    scrollView.frame = toolbar.frame;
+    scrollView.bounds = toolbar.bounds;
+    scrollView.autoresizingMask = toolbar.autoresizingMask;
+
+    UIToolbar *filtersToolbar = [[UIToolbar alloc] init];
+    
+    filtersToolbar.autoresizingMask = UIViewAutoresizingNone;
+    filtersToolbar.frame = CGRectMake(0, 0, 1400, toolbar.frame.size.height);
+    
+    [filtersToolbar setItems:toolbarItems];
+    
+    scrollView.contentSize = filtersToolbar.frame.size;
+    
+    [scrollView addSubview:filtersToolbar];
+    
+    [toolbarSuperView addSubview:scrollView];
     
 }
 
+
+#pragma mark - view lifecycle
+
 - (void)customInit {
     
-//    [self setupToolbar];
-
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
-
-//    CGFloat standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-//    self.tableView.estimatedRowHeight = standardCellHeight;
-//    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
-
     [self performFetch];
     
 }
