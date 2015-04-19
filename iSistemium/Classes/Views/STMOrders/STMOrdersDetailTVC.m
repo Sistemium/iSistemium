@@ -813,10 +813,23 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         [toolbarItems addObject:button];
         
     }
-    
+// ------------------- TESTING DUBLICATE
+//    for (NSDictionary *processing in processings) {
+//        NSString *processingName = processing[propertyName];
+//        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
+//        [self.filterButtons setObject:button forKey:processingName];
+//        [toolbarItems addObject:button];
+//    }
+//    for (NSDictionary *processing in processings) {
+//        NSString *processingName = processing[propertyName];
+//        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
+//        [self.filterButtons setObject:button forKey:processingName];
+//        [toolbarItems addObject:button];
+//    }
+// -------------------
     [toolbarItems addObject:flexibleSpace];
     
-//    [self setToolbarItems:toolbarItems];
+    [self setToolbarItems:toolbarItems];
     
     UIToolbar *toolbar = self.navigationController.toolbar;
     UIView *toolbarSuperView = toolbar.superview;
@@ -826,15 +839,20 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     scrollView.frame = toolbar.frame;
     scrollView.bounds = toolbar.bounds;
     scrollView.autoresizingMask = toolbar.autoresizingMask;
+    scrollView.bounces = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.showsHorizontalScrollIndicator = NO;
 
     UIToolbar *filtersToolbar = [[UIToolbar alloc] init];
     
+    CGRect frame = [self requiredFrameForToolbar:toolbar];
+    
     filtersToolbar.autoresizingMask = UIViewAutoresizingNone;
-    filtersToolbar.frame = CGRectMake(0, 0, 1400, toolbar.frame.size.height);
+    filtersToolbar.frame = frame;
     
     [filtersToolbar setItems:toolbarItems];
     
-    scrollView.contentSize = filtersToolbar.frame.size;
+    scrollView.contentSize = frame.size;
     
     [scrollView addSubview:filtersToolbar];
     
@@ -842,6 +860,39 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
+- (CGRect)requiredFrameForToolbar:(UIToolbar *)toolbar {
+    
+    BOOL firstSegmentedControl = YES;
+    CGFloat minX = 0.0;
+    CGFloat maxX = 0.0;
+    
+    for (UIView *view in toolbar.subviews) {
+        
+        if ([view isKindOfClass:[STMSegmentedControl class]]) {
+            
+            if (firstSegmentedControl) {
+                
+                minX = view.frame.origin.x;
+                maxX = view.frame.origin.x + view.frame.size.width;
+                firstSegmentedControl = NO;
+
+            }
+            
+            minX = (minX <= view.frame.origin.x) ? minX : view.frame.origin.x;
+            maxX = (maxX >= view.frame.origin.x + view.frame.size.width) ? maxX : view.frame.origin.x + view.frame.size.width;
+            
+        }
+        
+    }
+
+    CGFloat padding = 10;
+    CGFloat width = maxX - minX + 2 * padding;
+    
+    width = (width > toolbar.frame.size.width) ? width : toolbar.frame.size.width;
+    
+    return CGRectMake(0, 0, width, toolbar.frame.size.height);
+    
+}
 
 #pragma mark - view lifecycle
 
