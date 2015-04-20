@@ -29,6 +29,8 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 @property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
 @property (nonatomic, strong) NSMutableDictionary *filterButtons;
+@property (nonatomic, strong) UIToolbar *filtersToolbar;
+@property (nonatomic) BOOL isToolbarScrollable;
 
 @property (nonatomic, strong) NSString *nextProcessing;
 @property (nonatomic, strong) NSArray *editableProperties;
@@ -788,11 +790,22 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 - (void)setupToolbar {
     
-    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-
     NSString *propertyName = @"processing";
 
+    NSArray *toolbarItems = [self toolbarItemsForPropertyName:propertyName];
+
+    self.filtersToolbar = (self.filtersToolbar) ? self.filtersToolbar : self.navigationController.toolbar;
+    
+//    [self setToolbarItems:toolbarItems];
+    [self setScrollViewForToolbar:self.filtersToolbar withItems:toolbarItems];
+    
+}
+
+- (NSArray *)toolbarItemsForPropertyName:(NSString *)propertyName {
+
     NSMutableArray *toolbarItems = [NSMutableArray array];
+    
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     [toolbarItems addObject:flexibleSpace];
     
     NSArray *processings = [self processingLabelsForPropertyName:propertyName];
@@ -813,50 +826,68 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         [toolbarItems addObject:button];
         
     }
-// ------------------- TESTING DUBLICATE
-//    for (NSDictionary *processing in processings) {
-//        NSString *processingName = processing[propertyName];
-//        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
-//        [self.filterButtons setObject:button forKey:processingName];
-//        [toolbarItems addObject:button];
-//    }
-//    for (NSDictionary *processing in processings) {
-//        NSString *processingName = processing[propertyName];
-//        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
-//        [self.filterButtons setObject:button forKey:processingName];
-//        [toolbarItems addObject:button];
-//    }
-// -------------------
+    // ------------------- TESTING DUBLICATE
+    //    for (NSDictionary *processing in processings) {
+    //        NSString *processingName = processing[propertyName];
+    //        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
+    //        [self.filterButtons setObject:button forKey:processingName];
+    //        [toolbarItems addObject:button];
+    //    }
+    //    for (NSDictionary *processing in processings) {
+    //        NSString *processingName = processing[propertyName];
+    //        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
+    //        [self.filterButtons setObject:button forKey:processingName];
+    //        [toolbarItems addObject:button];
+    //    }
+    // -------------------
     [toolbarItems addObject:flexibleSpace];
+
+    return toolbarItems;
     
-    [self setToolbarItems:toolbarItems];
+}
+
+- (void)setScrollViewForToolbar:(UIToolbar *)toolbar withItems:(NSArray *)toolbarItems {
     
-    UIToolbar *toolbar = self.navigationController.toolbar;
-    UIView *toolbarSuperView = toolbar.superview;
-    [toolbar removeFromSuperview];
+    UIView *toolbarSuperView;
+    
+    if (self.isToolbarScrollable) {
+     
+        toolbarSuperView = toolbar.superview.superview;
+        [toolbar.superview removeFromSuperview];
+        
+    } else {
+        
+//        toolbarSuperView = toolbar.superview;
+//        [toolbar removeFromSuperview];
+
+    }
     
     UIScrollView *scrollView = [[UIScrollView alloc] init];
-    scrollView.frame = toolbar.frame;
+    scrollView.frame = CGRectMake(0, 0, toolbar.frame.size.width, toolbar.frame.size.height);
     scrollView.bounds = toolbar.bounds;
     scrollView.autoresizingMask = toolbar.autoresizingMask;
     scrollView.bounces = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.showsHorizontalScrollIndicator = NO;
-
+    
     UIToolbar *filtersToolbar = [[UIToolbar alloc] init];
-    
-    CGRect frame = [self requiredFrameForToolbar:toolbar];
-    
     filtersToolbar.autoresizingMask = UIViewAutoresizingNone;
+    [filtersToolbar setItems:toolbarItems];
+
+    CGRect frame = [self requiredFrameForToolbar:filtersToolbar];
     filtersToolbar.frame = frame;
     
-    [filtersToolbar setItems:toolbarItems];
+    self.filtersToolbar = filtersToolbar;
     
     scrollView.contentSize = frame.size;
     
     [scrollView addSubview:filtersToolbar];
+  
+    [toolbar addSubview:scrollView];
     
-    [toolbarSuperView addSubview:scrollView];
+//    [toolbarSuperView addSubview:scrollView];
+    
+    self.isToolbarScrollable = YES;
     
 }
 
@@ -888,9 +919,20 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     CGFloat padding = 10;
     CGFloat width = maxX - minX + 2 * padding;
     
-    width = (width > toolbar.frame.size.width) ? width : toolbar.frame.size.width;
+    CGFloat minWidth = self.navigationController.toolbar.frame.size.width;
+    
+    width = (width > minWidth) ? width : minWidth;
     
     return CGRectMake(0, 0, width, toolbar.frame.size.height);
+    
+}
+
+
+#pragma mark - device orientation
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+    [self setupToolbar];
     
 }
 
@@ -899,6 +941,12 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 - (void)customInit {
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChangeNotification:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+
     [self performFetch];
     
 }
