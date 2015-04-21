@@ -29,8 +29,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 @property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
 @property (nonatomic, strong) NSMutableDictionary *filterButtons;
-@property (nonatomic, strong) UIToolbar *filtersToolbar;
-@property (nonatomic) BOOL isToolbarScrollable;
 
 @property (nonatomic, strong) NSString *nextProcessing;
 @property (nonatomic, strong) NSArray *editableProperties;
@@ -793,11 +791,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     NSString *propertyName = @"processing";
 
     NSArray *toolbarItems = [self toolbarItemsForPropertyName:propertyName];
-
-//    self.filtersToolbar = (self.filtersToolbar) ? self.filtersToolbar : self.navigationController.toolbar;
     
-//    [self setToolbarItems:toolbarItems];
-//    [self setScrollViewForToolbar:self.filtersToolbar withItems:toolbarItems];
     [self setScrollViewForToolbar:self.navigationController.toolbar withItems:toolbarItems];
     
 }
@@ -849,20 +843,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 - (void)setScrollViewForToolbar:(UIToolbar *)toolbar withItems:(NSArray *)toolbarItems {
     
-//    UIView *toolbarSuperView;
-//    
-//    if (self.isToolbarScrollable) {
-//     
-//        toolbarSuperView = toolbar.superview.superview;
-//        [toolbar.superview removeFromSuperview];
-//        
-//    } else {
-//        
-//        toolbarSuperView = toolbar.superview;
-//        [toolbar removeFromSuperview];
-//
-//    }
-    
     UIScrollView *scrollView = [[UIScrollView alloc] init];
     scrollView.frame = CGRectMake(0, 0, toolbar.frame.size.width, toolbar.frame.size.height);
     scrollView.bounds = toolbar.bounds;
@@ -878,17 +858,13 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     CGRect frame = [self requiredFrameForToolbar:filtersToolbar];
     filtersToolbar.frame = frame;
     
-//    self.filtersToolbar = filtersToolbar;
-    
     scrollView.contentSize = frame.size;
     
+    scrollView.tag = 1;
+    [[toolbar viewWithTag:1] removeFromSuperview];
+    
     [scrollView addSubview:filtersToolbar];
-  
     [toolbar addSubview:scrollView];
-    
-//    [toolbarSuperView addSubview:scrollView];
-    
-//    self.isToolbarScrollable = YES;
     
 }
 
@@ -938,7 +914,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 #pragma mark - device orientation
 
 - (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
-    
+
     [self setupToolbar];
     
 }

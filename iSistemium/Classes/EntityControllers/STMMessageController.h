@@ -10,8 +10,6 @@
 
 @interface STMMessageController : STMController
 
-+ (void)generateTestMessages;
-
 + (NSArray *)sortedPicturesArrayForMessage:(STMMessage *)message;
 
 + (void)showMessageVCsIfNeeded;
