@@ -21,6 +21,8 @@
 
 #import "STMNS.h"
 
+#import <Crashlytics/Crashlytics.h>
+
 @interface STMObjectsController()
 
 @property (nonatomic, strong) NSMutableDictionary *timesDic;
@@ -414,6 +416,11 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+
+    if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
+        CLS_LOG(@"object %@", object);
+        CLS_LOG(@"change %@", change);
+    }
     
     [object removeObserver:self forKeyPath:keyPath];
     
