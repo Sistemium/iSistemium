@@ -821,7 +821,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         [toolbarItems addObject:button];
         
     }
-// ------------------- TESTING DUBLICATE
+//// ------------------- TESTING DUBLICATE
 //    for (NSDictionary *processing in processings) {
 //        NSString *processingName = processing[propertyName];
 //        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
@@ -834,7 +834,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 //        [self.filterButtons setObject:button forKey:processingName];
 //        [toolbarItems addObject:button];
 //    }
-// -------------------
+//// -------------------
     [toolbarItems addObject:flexibleSpace];
 
     return toolbarItems;
@@ -910,12 +910,15 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
+- (void)toolBarLayoutDone {
+
+    [self setupToolbar];
+
+}
 
 #pragma mark - device orientation
 
 - (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
-
-    [self setupToolbar];
     
 }
 
@@ -924,6 +927,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 - (void)customInit {
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(toolBarLayoutDone)
+                                                 name:@"toolBarLayoutDone"
+                                               object:self.navigationController.toolbar];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deviceOrientationDidChangeNotification:)
