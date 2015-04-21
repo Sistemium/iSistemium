@@ -66,7 +66,7 @@
 
 - (void)setupImage {
     
-    UIImage *image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.picture.imagePath]];
+    UIImage *image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.picture.resizedImagePath]];
     
     if (image) {
         

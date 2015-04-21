@@ -36,47 +36,6 @@
     
 }
 
-
-/**
- *  method for testing multiple pictures in messages, should be removed after checking
- */
-+ (void)generateTestMessages {
-    
-    STMMessage *message = (STMMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessage class])];
-    
-    message.body = [NSString stringWithFormat:@"TEST MESSAGE %@", [NSDate date]];
-    message.subject = @"Test message subject";
-    message.cts = [NSDate date];
-    
-    NSArray *pictures = [STMObjectsController objectsForEntityName:NSStringFromClass([STMMessagePicture class])];
-    STMMessagePicture *picture = pictures.lastObject;
-    
-    STMMessagePicture *newPicture = (STMMessagePicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessagePicture class])];
-    newPicture.href = picture.href;
-    newPicture.isFantom = @NO;
-    
-    [message addPicturesObject:newPicture];
-
-    STMMessagePicture *newPicture1 = (STMMessagePicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessagePicture class])];
-    newPicture1.href = @"http://i.imgur.com/Z9dCA7D.jpg";
-    newPicture1.isFantom = @NO;
-    
-    [message addPicturesObject:newPicture1];
-
-    STMMessagePicture *newPicture2 = (STMMessagePicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMMessagePicture class])];
-    newPicture2.href = @"http://upload.wikimedia.org/wikipedia/en/archive/3/3e/20141001152415!IOS_8_Homescreen.png";
-    newPicture1.isFantom = @NO;
-    
-    [message addPicturesObject:newPicture2];
-
-    NSLog(@"add message %@", message);
-    
-    [[self document] saveDocument:^(BOOL success) {}];
-    
-}
-// ------------------------ end of test method -----------------------
-
-
 + (NSArray *)sortedPicturesArrayForMessage:(STMMessage *)message {
     
     NSSortDescriptor *ordSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
