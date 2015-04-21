@@ -30,5 +30,7 @@
 #include "STMLabel.h"
 #include "STMInsetLabel.h"
 
+#include "UIToolbar+custom.h"
+
 
 #endif

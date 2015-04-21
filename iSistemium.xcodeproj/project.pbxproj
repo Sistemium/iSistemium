@@ -186,6 +186,7 @@
 		2CA611EC19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */; };
 		2CA6A9A81A8796E5003BD9B3 /* STMClientData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA6A9A71A8796E5003BD9B3 /* STMClientData.m */; };
 		2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */; };
+		2CC47BD11AE63D0C008F5250 /* UIToolbar+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */; };
 		2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */; };
 		2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CD443F0195AD76E004ADE58 /* photo-icon.png */; };
 		2CD657A61AC17E3D00EAB4FF /* STMArticleGroup+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD657A51AC17E3D00EAB4FF /* STMArticleGroup+custom.m */; };
@@ -599,6 +600,8 @@
 		2CA6A9A61A8796E5003BD9B3 /* STMClientData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMClientData.h; sourceTree = "<group>"; };
 		2CA6A9A71A8796E5003BD9B3 /* STMClientData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMClientData.m; sourceTree = "<group>"; };
 		2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCameraOverlayView.xib; sourceTree = "<group>"; };
+		2CC47BCF1AE63D0C008F5250 /* UIToolbar+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIToolbar+custom.h"; sourceTree = "<group>"; };
+		2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIToolbar+custom.m"; sourceTree = "<group>"; };
 		2CD4311B1A850A4F00AFB5DE /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		2CD443F0195AD76E004ADE58 /* photo-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo-icon.png"; sourceTree = "<group>"; };
@@ -742,6 +745,8 @@
 				2C1D72E91AB9D48400C97599 /* STMLabel.m */,
 				2C1D72E51AB9BCFE00C97599 /* STMInsetLabel.h */,
 				2C1D72E61AB9BCFE00C97599 /* STMInsetLabel.m */,
+				2CC47BCF1AE63D0C008F5250 /* UIToolbar+custom.h */,
+				2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */,
 			);
 			path = STMUI;
 			sourceTree = "<group>";
@@ -1613,6 +1618,7 @@
 				2C5763EF1AA5E13600B9FD2C /* STMCampaignDescriptionVC.m in Sources */,
 				2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */,
 				2C5297F31ACFFCAC008496AE /* STMMessage.m in Sources */,
+				2CC47BD11AE63D0C008F5250 /* UIToolbar+custom.m in Sources */,
 				2C57646F1AAB272400B9FD2C /* STMOrdersSalesmanTVC.m in Sources */,
 				2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */,
 				2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */,

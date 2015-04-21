@@ -719,7 +719,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 }
 
 
-- (NSArray *)fetchProperty:(NSString *)property {
+#pragma mark - toolbar
+
+- (NSArray *)fetchSaleOrderProperty:(NSString *)property {
     
     NSString *entityName = NSStringFromClass([STMSaleOrder class]);
     
@@ -747,36 +749,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
                 [resultArray addObject:dic];
             }
             
-//            NSLog(@"%@.%@ %@", entityName, property, propertyValue);
-            
         }
         
 //        NSLog(@"resultArray %@", resultArray);
         
         return resultArray;
-        
-        
-//        NSString *propertyName = property;
-//        
-//        //    NSExpression *keypath = [NSExpression expressionForKeyPath:propertyName];
-//        //    NSExpressionDescription *description = [[NSExpressionDescription alloc] init];
-//        //    description.expression = keypath;
-//        //    description.name = propertyName;
-//        //    description.expressionResultType = NSStringAttributeType;
-//        
-//        request.propertiesToFetch = @[entityProperty];
-//        request.propertiesToGroupBy = @[propertyName];
-//        
-//        request.resultType = NSDictionaryResultType;
-//        
-//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:propertyName ascending:YES]];
-//        
-//        result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
-//        
-//        NSLog(@"result %@", result);
-//
-//        return result;
-
         
     } else {
         
@@ -786,33 +763,47 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-#pragma mark - view lifecycle
+- (NSArray *)processingLabelsForPropertyName:(NSString *)propertyName {
 
-- (void)setupToolbar {
+    NSArray *processings = [self fetchSaleOrderProperty:propertyName];
     
-    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-
-    NSMutableArray *toolbarItems = [NSMutableArray array];
-    [toolbarItems addObject:flexibleSpace];
-    
-    NSString *propertyName = @"processing";
-    
-    NSArray *processings = [self fetchProperty:propertyName];
-    
-    NSMutableArray *processingArray = [NSMutableArray array];
+    NSMutableArray *processingLabels = [NSMutableArray array];
     
     for (NSDictionary *processing in processings) {
         
         NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:processing];
         [dic setObject:[STMSaleOrderController labelForProcessing:processing[propertyName]] forKey:@"label"];
         
-        [processingArray addObject:dic];
+        [processingLabels addObject:dic];
         
     }
     
     NSSortDescriptor *labelDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"label" ascending:YES];
     
-    processings = [processingArray sortedArrayUsingDescriptors:@[labelDescriptor]];
+    NSArray *result = [processingLabels sortedArrayUsingDescriptors:@[labelDescriptor]];
+    
+    return result;
+
+}
+
+- (void)setupToolbar {
+    
+    NSString *propertyName = @"processing";
+
+    NSArray *toolbarItems = [self toolbarItemsForPropertyName:propertyName];
+    
+    [self setScrollViewForToolbar:self.navigationController.toolbar withItems:toolbarItems];
+    
+}
+
+- (NSArray *)toolbarItemsForPropertyName:(NSString *)propertyName {
+
+    NSMutableArray *toolbarItems = [NSMutableArray array];
+    
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+    [toolbarItems addObject:flexibleSpace];
+    
+    NSArray *processings = [self processingLabelsForPropertyName:propertyName];
     
     for (NSDictionary *processing in processings) {
         
@@ -830,22 +821,122 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         [toolbarItems addObject:button];
         
     }
-    
+//// ------------------- TESTING DUBLICATE
+//    for (NSDictionary *processing in processings) {
+//        NSString *processingName = processing[propertyName];
+//        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
+//        [self.filterButtons setObject:button forKey:processingName];
+//        [toolbarItems addObject:button];
+//    }
+//    for (NSDictionary *processing in processings) {
+//        NSString *processingName = processing[propertyName];
+//        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
+//        [self.filterButtons setObject:button forKey:processingName];
+//        [toolbarItems addObject:button];
+//    }
+//// -------------------
     [toolbarItems addObject:flexibleSpace];
-    
-    [self setToolbarItems:toolbarItems];
+
+    return toolbarItems;
     
 }
 
+- (void)setScrollViewForToolbar:(UIToolbar *)toolbar withItems:(NSArray *)toolbarItems {
+    
+    UIScrollView *scrollView = [[UIScrollView alloc] init];
+    scrollView.frame = CGRectMake(0, 0, toolbar.frame.size.width, toolbar.frame.size.height);
+    scrollView.bounds = toolbar.bounds;
+    scrollView.autoresizingMask = toolbar.autoresizingMask;
+    scrollView.bounces = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.showsHorizontalScrollIndicator = NO;
+    
+    UIToolbar *filtersToolbar = [[UIToolbar alloc] init];
+    filtersToolbar.autoresizingMask = UIViewAutoresizingNone;
+    [filtersToolbar setItems:toolbarItems];
+
+    CGRect frame = [self requiredFrameForToolbar:filtersToolbar];
+    filtersToolbar.frame = frame;
+    
+    scrollView.contentSize = frame.size;
+    
+    scrollView.tag = 1;
+    [[toolbar viewWithTag:1] removeFromSuperview];
+    
+    [scrollView addSubview:filtersToolbar];
+    [toolbar addSubview:scrollView];
+    
+}
+
+- (CGRect)requiredFrameForToolbar:(UIToolbar *)toolbar {
+    
+    BOOL firstSegmentedControl = YES;
+    CGFloat minX = 0.0;
+    CGFloat maxX = 0.0;
+    
+    for (UIView *view in toolbar.subviews) {
+        
+        if ([view isKindOfClass:[STMSegmentedControl class]]) {
+            
+            CGPoint origin = view.frame.origin;
+            CGSize size = view.frame.size;
+            
+            if (firstSegmentedControl) {
+                
+                minX = origin.x;
+                maxX = origin.x + size.width;
+                firstSegmentedControl = NO;
+
+            }
+            
+            minX = (minX <= origin.x) ? minX : origin.x;
+            maxX = (maxX >= origin.x + size.width) ? maxX : origin.x + size.width;
+            
+        }
+        
+    }
+
+    CGFloat padding = 10;
+    CGFloat width = maxX - minX + 2 * padding;
+    
+    UIToolbar *standardToolbar = self.navigationController.toolbar;
+    CGSize standardSize = standardToolbar.frame.size;
+
+    CGFloat minWidth = standardSize.width;
+    
+    width = (width > minWidth) ? width : minWidth;
+    
+    return CGRectMake(0, 0, width, standardSize.height);
+    
+}
+
+- (void)toolBarLayoutDone {
+
+    [self setupToolbar];
+
+}
+
+#pragma mark - device orientation
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+}
+
+#pragma mark - view lifecycle
+
 - (void)customInit {
     
-//    [self setupToolbar];
-
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
-
-//    CGFloat standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-//    self.tableView.estimatedRowHeight = standardCellHeight;
-//    self.tableView.estimatedRowHeight = UITableViewAutomaticDimension;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(toolBarLayoutDone)
+                                                 name:@"toolBarLayoutDone"
+                                               object:self.navigationController.toolbar];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChangeNotification:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
 
     [self performFetch];
     
