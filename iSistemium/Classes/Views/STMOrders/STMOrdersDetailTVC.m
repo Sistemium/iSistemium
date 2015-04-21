@@ -794,10 +794,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
     NSArray *toolbarItems = [self toolbarItemsForPropertyName:propertyName];
 
-    self.filtersToolbar = (self.filtersToolbar) ? self.filtersToolbar : self.navigationController.toolbar;
+//    self.filtersToolbar = (self.filtersToolbar) ? self.filtersToolbar : self.navigationController.toolbar;
     
 //    [self setToolbarItems:toolbarItems];
-    [self setScrollViewForToolbar:self.filtersToolbar withItems:toolbarItems];
+//    [self setScrollViewForToolbar:self.filtersToolbar withItems:toolbarItems];
+    [self setScrollViewForToolbar:self.navigationController.toolbar withItems:toolbarItems];
     
 }
 
@@ -826,20 +827,20 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         [toolbarItems addObject:button];
         
     }
-    // ------------------- TESTING DUBLICATE
-    //    for (NSDictionary *processing in processings) {
-    //        NSString *processingName = processing[propertyName];
-    //        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
-    //        [self.filterButtons setObject:button forKey:processingName];
-    //        [toolbarItems addObject:button];
-    //    }
-    //    for (NSDictionary *processing in processings) {
-    //        NSString *processingName = processing[propertyName];
-    //        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
-    //        [self.filterButtons setObject:button forKey:processingName];
-    //        [toolbarItems addObject:button];
-    //    }
-    // -------------------
+// ------------------- TESTING DUBLICATE
+//    for (NSDictionary *processing in processings) {
+//        NSString *processingName = processing[propertyName];
+//        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
+//        [self.filterButtons setObject:button forKey:processingName];
+//        [toolbarItems addObject:button];
+//    }
+//    for (NSDictionary *processing in processings) {
+//        NSString *processingName = processing[propertyName];
+//        STMBarButtonItem *button = [self filterButtonForProcessing:processingName];
+//        [self.filterButtons setObject:button forKey:processingName];
+//        [toolbarItems addObject:button];
+//    }
+// -------------------
     [toolbarItems addObject:flexibleSpace];
 
     return toolbarItems;
@@ -848,19 +849,19 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 - (void)setScrollViewForToolbar:(UIToolbar *)toolbar withItems:(NSArray *)toolbarItems {
     
-    UIView *toolbarSuperView;
-    
-    if (self.isToolbarScrollable) {
-     
-        toolbarSuperView = toolbar.superview.superview;
-        [toolbar.superview removeFromSuperview];
-        
-    } else {
-        
+//    UIView *toolbarSuperView;
+//    
+//    if (self.isToolbarScrollable) {
+//     
+//        toolbarSuperView = toolbar.superview.superview;
+//        [toolbar.superview removeFromSuperview];
+//        
+//    } else {
+//        
 //        toolbarSuperView = toolbar.superview;
 //        [toolbar removeFromSuperview];
-
-    }
+//
+//    }
     
     UIScrollView *scrollView = [[UIScrollView alloc] init];
     scrollView.frame = CGRectMake(0, 0, toolbar.frame.size.width, toolbar.frame.size.height);
@@ -877,7 +878,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     CGRect frame = [self requiredFrameForToolbar:filtersToolbar];
     filtersToolbar.frame = frame;
     
-    self.filtersToolbar = filtersToolbar;
+//    self.filtersToolbar = filtersToolbar;
     
     scrollView.contentSize = frame.size;
     
@@ -887,7 +888,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 //    [toolbarSuperView addSubview:scrollView];
     
-    self.isToolbarScrollable = YES;
+//    self.isToolbarScrollable = YES;
     
 }
 
@@ -901,16 +902,19 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         if ([view isKindOfClass:[STMSegmentedControl class]]) {
             
+            CGPoint origin = view.frame.origin;
+            CGSize size = view.frame.size;
+            
             if (firstSegmentedControl) {
                 
-                minX = view.frame.origin.x;
-                maxX = view.frame.origin.x + view.frame.size.width;
+                minX = origin.x;
+                maxX = origin.x + size.width;
                 firstSegmentedControl = NO;
 
             }
             
-            minX = (minX <= view.frame.origin.x) ? minX : view.frame.origin.x;
-            maxX = (maxX >= view.frame.origin.x + view.frame.size.width) ? maxX : view.frame.origin.x + view.frame.size.width;
+            minX = (minX <= origin.x) ? minX : origin.x;
+            maxX = (maxX >= origin.x + size.width) ? maxX : origin.x + size.width;
             
         }
         
@@ -919,11 +923,14 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     CGFloat padding = 10;
     CGFloat width = maxX - minX + 2 * padding;
     
-    CGFloat minWidth = self.navigationController.toolbar.frame.size.width;
+    UIToolbar *standardToolbar = self.navigationController.toolbar;
+    CGSize standardSize = standardToolbar.frame.size;
+
+    CGFloat minWidth = standardSize.width;
     
     width = (width > minWidth) ? width : minWidth;
     
-    return CGRectMake(0, 0, width, toolbar.frame.size.height);
+    return CGRectMake(0, 0, width, standardSize.height);
     
 }
 
