@@ -222,9 +222,9 @@
             
         }
         
-        NSDictionary *objectDic = @{@"saleOrderBefore":[STMObjectsController dictionaryForObject:saleOrder]};
-        NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
-        [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+//        NSDictionary *objectDic = @{@"saleOrderBefore":[STMObjectsController dictionaryForObject:saleOrder]};
+//        NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+//        [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
 
         [STMSaleOrderController sharedInstance].processingDidChanged = YES;
 
@@ -232,9 +232,9 @@
 
         [[self document] saveDocument:^(BOOL success) {
             
-            NSDictionary *objectDic = @{@"saleOrderAfter":[STMObjectsController dictionaryForObject:saleOrder]};
-            NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
-            [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+//            NSDictionary *objectDic = @{@"saleOrderAfter":[STMObjectsController dictionaryForObject:saleOrder]};
+//            NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+//            [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
 
             [STMSaleOrderController sharedInstance].processingDidChanged = NO;
             
