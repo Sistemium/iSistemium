@@ -137,7 +137,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-//    [self showLocalNotification];
+//    [self showTestLocalNotification];
     
 }
 
@@ -190,7 +190,7 @@
 
     [self routeNotificationUserInfo:userInfo];
 
-//    [self showLocalNotification];
+//    [self showTestLocalNotification];
 
 }
 
@@ -255,7 +255,7 @@
 
 }
 
-- (void)showLocalNotification {
+- (void)showTestLocalNotification {
     
     UILocalNotification *localNotification = [[UILocalNotification alloc] init];
     localNotification.alertBody = NSLocalizedString(@"APP TERMINATE", nil);;

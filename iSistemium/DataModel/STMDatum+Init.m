@@ -39,14 +39,14 @@
 
 - (void)setLastModifiedTimestamp{
     
-    if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
-        
-        NSString *xidString = [STMFunctions UUIDStringFromUUIDData:self.xid];
-        NSDictionary *objectDic = @{@"saleOrderXid":xidString, @"saleOrderChangedValues":self.changedValues};
-        NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
-        [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
-        
-    }
+//    if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
+//        
+//        NSString *xidString = [STMFunctions UUIDStringFromUUIDData:self.xid];
+//        NSDictionary *objectDic = @{@"saleOrderXid":xidString, @"saleOrderChangedValues":self.changedValues};
+//        NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+//        [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+//        
+//    }
     
     if (![self.changedValues.allKeys containsObject:@"lts"]) {
         
@@ -81,11 +81,18 @@
                 
                 NSString *xidString = [STMFunctions UUIDStringFromUUIDData:self.xid];
                 
+                if ([self.deviceTs compare:newDeviceTs] != NSOrderedSame) {
+                    
+                    NSString *logMessage = [NSString stringWithFormat:@"deviceTs might not updated to %@", [[STMFunctions dateFormatter] stringFromDate:newDeviceTs]];
+                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+                    
+                }
+                                
                 NSDictionary *objectDic = @{
                                             @"saleOrderXid":xidString,
                                             @"tsValues":@{
                                                           @"ts":[[STMFunctions dateFormatter] stringFromDate:newDeviceTs],
-                                                          @"primitiveDeviceTs":[[STMFunctions dateFormatter] stringFromDate:[self primitiveValueForKey:@"deviceTs"]],
+                                                          @"dotDeviceTs":[[STMFunctions dateFormatter] stringFromDate:self.deviceTs],
                                                           @"deviceTs":[[STMFunctions dateFormatter] stringFromDate:[self valueForKey:@"deviceTs"]]
                                                           }
                                             };
