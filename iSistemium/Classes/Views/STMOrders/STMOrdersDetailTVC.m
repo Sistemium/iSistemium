@@ -92,8 +92,8 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (NSCompoundPredicate *)requestPredicate {
-    
+- (NSCompoundPredicate *)selectingPredicate {
+
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
     
     if (self.splitVC.selectedDate) {
@@ -109,13 +109,21 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, outletPredicate]];
         
     }
-
+    
     if (self.splitVC.selectedSalesman) {
         
         NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"salesman == %@", self.splitVC.selectedSalesman];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, salesmanPredicate]];
         
     }
+    
+    return predicate;
+
+}
+
+- (NSCompoundPredicate *)requestPredicate {
+    
+    NSCompoundPredicate *predicate = [self selectingPredicate];
     
     for (NSString *processing in self.currentFilterProcessings) {
         
@@ -141,6 +149,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         [self.tableView reloadData];
         [self updateTitle];
+        [self setupToolbar];
         
     }
     
@@ -733,27 +742,32 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         
-        request.resultType = NSManagedObjectResultType;
+//        request.resultType = NSManagedObjectResultType;
+
+        request.resultType = NSDictionaryResultType;
+        request.returnsDistinctResults = YES;
+        request.predicate = [self selectingPredicate];
+        request.propertiesToFetch = @[property];
         
         NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
         
-        NSMutableArray *resultArray = [NSMutableArray array];
+//        NSMutableArray *resultArray = [NSMutableArray array];
+//        
+//        for (STMSaleOrder *saleOrder in result) {
+//            
+//            NSString *propertyValue = [saleOrder valueForKey:property];
+//            
+//            NSDictionary *dic = @{property:propertyValue};
+//            
+//            if (![resultArray containsObject:dic]) {
+//                [resultArray addObject:dic];
+//            }
+//            
+//        }
         
-        for (STMSaleOrder *saleOrder in result) {
-            
-            NSString *propertyValue = [saleOrder valueForKey:property];
-            
-            NSDictionary *dic = @{property:propertyValue};
-            
-            if (![resultArray containsObject:dic]) {
-                [resultArray addObject:dic];
-            }
-            
-        }
+//        NSLog(@"result %@", result);
         
-//        NSLog(@"resultArray %@", resultArray);
-        
-        return resultArray;
+        return result;
         
     } else {
         
@@ -766,6 +780,8 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 - (NSArray *)processingLabelsForPropertyName:(NSString *)propertyName {
 
     NSArray *processings = [self fetchSaleOrderProperty:propertyName];
+
+//    NSLog(@"processings %@", processings);
     
     NSMutableArray *processingLabels = [NSMutableArray array];
     
