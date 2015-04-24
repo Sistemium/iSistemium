@@ -903,23 +903,23 @@
     
     if (!context) context = [self document].managedObjectContext;
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
+//    dispatch_async(dispatch_get_main_queue(), ^{
+    
         if ([object valueForKey:@"xid"]) {
             [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
         }
         
-    });
+//    });
     
-    [context performBlock:^{
-        
+//    [context performBlock:^{
+    
         [context deleteObject:object];
         
-        [[self document] saveDocument:^(BOOL success) {
-            
-        }];
+//        [[self document] saveDocument:^(BOOL success) {
+//            
+//        }];
         
-    }];
+//    }];
 
 }
 
@@ -960,9 +960,9 @@
 //    backThreadEntitiesLifetimesDic = @{@"Location": @(0.1),
 //                                       @"LogMessage": @(0.1)};
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
     
-        NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
+        NSManagedObjectContext *context = [self document].managedObjectContext;
         
         NSMutableSet *objectsSet = [NSMutableSet set];
         
@@ -1003,7 +1003,7 @@
             
         }
 
-    });
+//    });
     
 }
 
