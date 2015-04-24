@@ -957,8 +957,8 @@
 
     NSDictionary *backThreadEntitiesLifetimesDic = [entityDic copy];
     
-    backThreadEntitiesLifetimesDic = @{@"Location": @(0.1),
-                                       @"LogMessage": @(0.1)};
+//    backThreadEntitiesLifetimesDic = @{@"Location": @(0.1),
+//                                       @"LogMessage": @(0.1)};
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
     
