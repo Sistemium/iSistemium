@@ -949,6 +949,8 @@
 
 + (void)checkObjectsForFlushing {
     
+    NSDate *startFlushing = [NSDate date];
+    
     NSArray *entitiesWithLifeTime = [STMEntityController entitiesWithLifeTime];
 
     NSMutableDictionary *entityDic = [NSMutableDictionary dictionary];
@@ -990,12 +992,14 @@
         
         if (objectsSet.count > 0) {
             
-            NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime", (unsigned long)objectsSet.count];
-            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
-            
             for (NSManagedObject *object in objectsSet) {
                 [self removeObject:object inContext:context];
             }
+            
+            NSTimeInterval flushingTime = [[NSDate date] timeIntervalSinceDate:startFlushing];
+            
+            NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
             
         } else {
             
