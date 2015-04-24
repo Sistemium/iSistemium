@@ -25,13 +25,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-<<<<<<< HEAD
     [Crashlytics startWithAPIKey:@"035bda92bd5b13402aaf2c6cb5f66b8ff23f2166"];
-=======
+
     NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
->>>>>>> dev
-    
+
     [STMAuthController authController];
     
     [self registerForNotification];
