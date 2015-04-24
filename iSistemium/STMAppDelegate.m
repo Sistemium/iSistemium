@@ -23,6 +23,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions"];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+    
     [STMAuthController authController];
     
     [self registerForNotification];

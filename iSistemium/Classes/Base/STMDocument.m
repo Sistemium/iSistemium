@@ -211,8 +211,12 @@
         [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
             
             if (success) {
-                NSLog(@"document UIDocumentSaveForCreating success");
+                
+                NSString *logMessage = @"document UIDocumentSaveForCreating success";
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+                
                 [self document:document readyWithUID:uid];
+                
             } else {
                 [self document:document notReadyWithUID:uid];
             }
@@ -224,7 +228,10 @@
         [document openWithCompletionHandler:^(BOOL success) {
             
             if (success) {
-                NSLog(@"document openWithCompletionHandler success");
+
+                NSString *logMessage = @"document openWithCompletionHandler success";
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+
                 [self document:document readyWithUID:uid];
             } else {
                 [self document:document notReadyWithUID:uid];

@@ -293,6 +293,9 @@
 }
 
 - (void)initAllTabs {
+    
+    NSString *logMessage = @"init all tabs";
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
 
     [self prepareTabs];
     
@@ -352,7 +355,8 @@
         self.currentTappedVC = viewController;
     }
     
-//    NSLog(@"shouldSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
+    NSString *logMessage = [NSString stringWithFormat:@"shouldSelect tab %@", viewController.tabBarItem.title];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
 
     return YES;
     
@@ -367,7 +371,8 @@
         
     }
     
-//    NSLog(@"didSelect viewController.tabBarItem.title %@", viewController.tabBarItem.title);
+    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
 
 }
 
