@@ -899,10 +899,36 @@
 
 #pragma mark - flushing
 
++ (void)removeObject:(NSManagedObject *)object inContext:(NSManagedObjectContext *)context {
+    
+    if (!context) context = [self document].managedObjectContext;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        if ([object valueForKey:@"xid"]) {
+            [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
+        }
+        
+    });
+    
+    [context performBlock:^{
+        
+        [context deleteObject:object];
+        
+        [[self document] saveDocument:^(BOOL success) {
+            
+        }];
+        
+    }];
+
+}
+
 + (void)removeObject:(NSManagedObject *)object {
 
-    [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
-    [self.document.managedObjectContext deleteObject:object];
+    [self removeObject:object inContext:nil];
+    
+//    [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
+//    [self.document.managedObjectContext deleteObject:object];
 
 }
 
@@ -925,44 +951,59 @@
     
     NSArray *entitiesWithLifeTime = [STMEntityController entitiesWithLifeTime];
 
-    NSMutableSet *objectsSet = [NSMutableSet set];
+    NSMutableDictionary *entityDic = [NSMutableDictionary dictionary];
     
-    for (STMEntity *entity in entitiesWithLifeTime) {
+    for (STMEntity *entity in entitiesWithLifeTime) entityDic[entity.name] = entity.lifeTime;
+
+    NSDictionary *backThreadEntitiesLifetimesDic = [entityDic copy];
+    
+    backThreadEntitiesLifetimesDic = @{@"Location": @(0.1),
+                                       @"LogMessage": @(0.1)};
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    
+        NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
         
-        double lifeTime = [entity.lifeTime doubleValue];
-        NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
+        NSMutableSet *objectsSet = [NSMutableSet set];
         
-        NSString *capFirstLetter = (entity.name) ? [[entity.name substringToIndex:1] capitalizedString] : nil;
-        NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
-        NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
-        
-        NSError *error;
-        
-        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-        request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
-        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-        
-        for (NSManagedObject *object in fetchResult) {
-            [self checkObject:object forAddingTo:objectsSet];
+        for (NSString *name in backThreadEntitiesLifetimesDic.allKeys) {
+            
+            double lifeTime = [backThreadEntitiesLifetimesDic[name] doubleValue];
+            NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
+            
+            NSString *capFirstLetter = (name) ? [[name substringToIndex:1] capitalizedString] : nil;
+            NSString *capEntityName = [name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
+            NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
+            
+            NSError *error;
+            
+            STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
+            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+            request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
+            NSArray *fetchResult = [context executeFetchRequest:request error:&error];
+            
+            for (NSManagedObject *object in fetchResult) {
+                [self checkObject:object forAddingTo:objectsSet];
+            }
+            
         }
         
-    }
-    
-    if (objectsSet.count > 0) {
-        
-        NSLog(@"flush %d objects with expired lifetime", objectsSet.count);
-        
-        for (NSManagedObject *object in objectsSet) {
-            [self removeObject:object];
+        if (objectsSet.count > 0) {
+            
+            NSLog(@"flush %d objects with expired lifetime", objectsSet.count);
+            
+            for (NSManagedObject *object in objectsSet) {
+                [self removeObject:object inContext:context];
+            }
+            
+        } else {
+            
+            NSLog(@"No objects for flushing");
+            
         }
 
-    } else {
-        
-        NSLog(@"No objects for flushing");
-        
-    }
-
+    });
+    
 }
 
 + (void)checkObject:(NSManagedObject *)object forAddingTo:(NSMutableSet *)objectsSet {
@@ -971,7 +1012,7 @@
     
         STMTrack *track = (STMTrack *)object;
 
-        if (track != [self session].locationTracker.currentTrack) {
+        if (![track.objectID isEqual:[self session].locationTracker.currentTrack.objectID]) {
             [objectsSet addObject:object];
         } else {
             NSLog(@"track %@ is current track now, flush declined", track.xid);
@@ -995,7 +1036,7 @@
 //                
 //                STMTrack *track = (STMTrack *)object;
 //                
-//                if (track != [self session].locationTracker.currentTrack) {
+//                if (![track.objectID isEqual:[self session].locationTracker.currentTrack.objectID]) {
 //                    [objectsSet addObject:object];
 //                } else {
 //                    NSLog(@"track %@ is in use now, flush declined", track.xid);
