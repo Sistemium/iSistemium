@@ -46,6 +46,10 @@
     [[self sharedLogger] requestInfo:xidString];
 }
 
++ (void)requestObjects:(NSDictionary *)parameters {
+    [[self sharedLogger] requestObjects:parameters];
+}
+
 - (instancetype)init {
     
     self = [super init];
@@ -70,18 +74,10 @@
             NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
             [self saveLogMessageWithText:JSONString type:@"important"];
             
-            [self.document saveDocument:^(BOOL success) {
-                if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
-            }];
-            
         } else {
             
             NSString *logMessage = [NSString stringWithFormat:@"no object with xid %@", xidString];
-            [self saveLogMessageWithText:logMessage type:@"important"];
-            
-            [self.document saveDocument:^(BOOL success) {
-                if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
-            }];
+            [self saveLogMessageWithText:logMessage type:@"error"];
             
         }
 
@@ -90,12 +86,88 @@
         NSString *logMessage = [NSString stringWithFormat:@"xidSting is NSNull"];
         [self saveLogMessageWithText:logMessage type:@"error"];
         
-        [self.document saveDocument:^(BOOL success) {
-            if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
-        }];
+    }
+    
+    [self.document saveDocument:^(BOOL success) {
+        if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+    }];
+    
+}
+
+- (void)requestObjects:(NSDictionary *)parameters {
+    
+    if ([parameters isKindOfClass:[NSDictionary class]]) {
+        
+        NSString *entityName = parameters[@"entityName"];
+        NSString *size = parameters[@"size"];
+        NSString *orderBy = parameters[@"orderBy"];
+        NSString *order = parameters[@"order"];
+        
+        if ([[STMObjectsController localDataModelEntityNames] containsObject:entityName]) {
+            
+            BOOL sessionIsRunning = [[self.session status] isEqualToString:@"running"];
+            if (sessionIsRunning && self.document) {
+            
+                NSArray *objects = [STMObjectsController objectsForEntityName:entityName];
+                
+                STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
+            
+                if ([entity.propertiesByName.allKeys containsObject:orderBy]) {
+                    
+                    BOOL ascending = (order && [order caseInsensitiveCompare:@"acs"] == NSOrderedSame);
+                    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending];
+                    
+                    objects = [objects sortedArrayUsingDescriptors:@[sortDescriptor]];
+                    
+                    NSInteger requestedNumberOfObjects = MIN([size integerValue], objects.count);
+                    NSRange range;
+                    range.location = 0;
+                    range.length = requestedNumberOfObjects;
+                    
+                    objects = [objects subarrayWithRange:range];
+
+                    NSMutableArray *jsonObjectsArray = [NSMutableArray array];
+                    
+                    for (NSManagedObject *object in objects) [jsonObjectsArray addObject:[STMObjectsController dictionaryForObject:object]];
+
+                    NSDictionary *jsonDic = @{@"objects": jsonObjectsArray,
+                                              @"requestParameters": parameters};
+                    
+                    NSString *JSONString = [STMFunctions jsonStringFromDictionary:jsonDic];
+                    [self saveLogMessageWithText:JSONString type:@"important"];
+
+                } else {
+
+                    NSString *logMessage = [NSString stringWithFormat:@"%@ property %@ not found", entityName, orderBy];
+                    [self saveLogMessageWithText:logMessage type:@"error"];
+
+                }
+                
+            } else {
+
+                NSString *logMessage = [NSString stringWithFormat:@"session is not running, please try later"];
+                [self saveLogMessageWithText:logMessage type:@"error"];
+
+            }
+            
+        } else {
+
+            NSString *logMessage = [NSString stringWithFormat:@"%@ not found in data model", entityName];
+            [self saveLogMessageWithText:logMessage type:@"error"];
+
+        }
+        
+    } else {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"requestObjects: parameters is not NSDictionary"];
+        [self saveLogMessageWithText:logMessage type:@"error"];
         
     }
     
+    [self.document saveDocument:^(BOOL success) {
+        if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+    }];
+
 }
 
 - (void)setSession:(id <STMSession>)session {
