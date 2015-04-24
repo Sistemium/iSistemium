@@ -990,7 +990,8 @@
         
         if (objectsSet.count > 0) {
             
-            NSLog(@"flush %d objects with expired lifetime", objectsSet.count);
+            NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime", (unsigned long)objectsSet.count];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
             
             for (NSManagedObject *object in objectsSet) {
                 [self removeObject:object inContext:context];
