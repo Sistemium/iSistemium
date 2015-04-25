@@ -502,21 +502,84 @@
     
 }
 
+
+#pragma mark - JSON representation
+
 + (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic {
 
-    if ([NSJSONSerialization isValidJSONObject:objectDic]) {
+    if (![NSJSONSerialization isValidJSONObject:objectDic]) {
         
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:objectDic options:0 error:nil];
-        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-        
-        return JSONString;
-        
-    } else {
-        
-        return @"dictionary is not valid json object";
+        objectDic = [self validJSONDictionaryFromDictionary:objectDic];
         
     }
+    
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:objectDic options:0 error:nil];
+    NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+    
+    return JSONString;
 
+}
+
++ (NSDictionary *)validJSONDictionaryFromDictionary:(NSDictionary *)dictionary {
+    
+    NSMutableDictionary *validDictionary = [NSMutableDictionary dictionary];
+    
+    for (id key in dictionary.allKeys) {
+        
+        NSString *keyString = ([key isKindOfClass:[NSString class]]) ? key : [key description];
+        
+        if ([dictionary[key] isKindOfClass:[NSDictionary class]]) {
+            
+            validDictionary[keyString] = [self validJSONDictionaryFromDictionary:dictionary[key]];
+            
+        } else if ([dictionary[key] isKindOfClass:[NSArray class]]) {
+            
+            validDictionary[keyString] = [self validJSONArrayFromArray:dictionary[key]];
+            
+        } else if (![dictionary[key] isKindOfClass:[NSString class]]) {
+            
+            validDictionary[keyString] = [dictionary[key] description];
+            
+        } else {
+            
+            validDictionary[keyString] = dictionary[key];
+            
+        }
+        
+    }
+    
+    return validDictionary;
+    
+}
+
++ (NSArray *)validJSONArrayFromArray:(NSArray *)array {
+    
+    NSMutableArray *validArray = [NSMutableArray array];
+    
+    for (id arrayItem in array) {
+        
+        if ([arrayItem isKindOfClass:[NSDictionary class]]) {
+            
+            [validArray addObject:[self validJSONDictionaryFromDictionary:arrayItem]];
+            
+        } else if ([arrayItem isKindOfClass:[NSArray class]]) {
+            
+            [validArray addObject:[self validJSONArrayFromArray:arrayItem]];
+            
+        } else if (![arrayItem isKindOfClass:[NSString class]]) {
+            
+            [validArray addObject:[arrayItem description]];
+            
+        } else {
+            
+            [validArray addObject:arrayItem];
+            
+        }
+        
+    }
+    
+    return validArray;
+    
 }
 
 

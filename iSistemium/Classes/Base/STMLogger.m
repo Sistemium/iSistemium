@@ -29,6 +29,9 @@
 
 @implementation STMLogger
 
+
+#pragma mark - class methods
+
 + (STMLogger *)sharedLogger {
     
     static dispatch_once_t pred = 0;
@@ -49,6 +52,13 @@
 + (void)requestObjects:(NSDictionary *)parameters {
     [[self sharedLogger] requestObjects:parameters];
 }
+
++ (void)requestDefaults {
+    [[self sharedLogger] requestDefaults];
+}
+
+
+#pragma mark - instance methods
 
 - (instancetype)init {
     
@@ -168,6 +178,23 @@
         if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
 
+}
+
+- (void)requestDefaults {
+    
+    NSDictionary *defaultsDic = @{@"userDefault": [NSUserDefaults standardUserDefaults].dictionaryRepresentation};
+
+    if (defaultsDic) {
+        
+        NSString *JSONString = [STMFunctions jsonStringFromDictionary:defaultsDic];
+        
+        [self saveLogMessageWithText:JSONString type:@"important"];
+
+        [self.document saveDocument:^(BOOL success) {
+            if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+        }];
+
+    }
 }
 
 - (void)setSession:(id <STMSession>)session {
