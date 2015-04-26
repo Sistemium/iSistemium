@@ -183,7 +183,7 @@
             NSString *entityName = NSStringFromClass([STMSetting class]);
             
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
             request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"availableVersion"];
             
             NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
@@ -211,7 +211,7 @@
         NSString *entityName = NSStringFromClass([STMSetting class]);
 
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"name == %@", @"appDownloadUrl"];
         
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
