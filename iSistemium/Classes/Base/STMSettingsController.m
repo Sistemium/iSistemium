@@ -86,7 +86,8 @@
     NSArray *timeValueSuffixes = @[@"TrackerStartTime",
                                    @"TrackerFinishTime"];
     
-    NSArray *stringValue = @[@"uploadLog.type"];
+    NSArray *stringValue = @[@"uploadLog.type",
+                             @"genericPriceType"];
     
     if ([positiveDoubleValues containsObject:key]) {
         if ([self isPositiveDouble:value]) {

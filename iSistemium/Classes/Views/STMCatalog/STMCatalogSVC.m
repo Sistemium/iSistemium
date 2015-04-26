@@ -156,14 +156,38 @@ static NSString *showZeroStockKey = @"showZeroStock";
             
             NSArray *priceTypes = [self availablePriceTypes];
             
-            if (priceTypes.count > 0) {
+            NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
+            
+            NSString *genericPriceTypeXidString = appSettings[@"genericPriceType"];
+            
+            if (genericPriceTypeXidString) {
                 
-                _selectedPriceType = priceTypes[0];
+                NSData *genericPriceTypeXidData = [STMFunctions xidDataFromXidString:genericPriceTypeXidString];
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"xid == %@", genericPriceTypeXidData];
+                NSArray *genericPriceTypes = [priceTypes filteredArrayUsingPredicate:predicate];
+
+                if (genericPriceTypes.firstObject) {
+                    
+                    _selectedPriceType = genericPriceTypes.firstObject;
+                    
+                } else {
+
+                    if (priceTypes.count > 0) {
+                        _selectedPriceType = priceTypes.firstObject;
+                    } else {
+                        [[STMLogger sharedLogger] saveLogMessageWithText:@"priceTypes.count == 0"];
+                    }
+                    
+                }
                 
             } else {
-                
-                [[STMLogger sharedLogger] saveLogMessageWithText:@"priceTypes.count == 0"];
-                
+            
+                if (priceTypes.count > 0) {
+                    _selectedPriceType = priceTypes.firstObject;
+                } else {
+                    [[STMLogger sharedLogger] saveLogMessageWithText:@"priceTypes.count == 0"];
+                }
+
             }
             
         }

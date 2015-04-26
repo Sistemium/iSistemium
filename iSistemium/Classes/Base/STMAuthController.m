@@ -13,7 +13,11 @@
 #import "STMSessionManager.h"
 #import "STMLogger.h"
 
-#define AUTH_URL @"https://sistemium.com/auth.php"
+//#define AUTH_URL @"https://sistemium.com/auth.php"
+#define AUTH_URL @"https://api.sistemium.com/pha/auth"
+
+#define ROLES_URL @"https://api.sistemium.com/pha/roles"
+
 #define TIMEOUT 15.0
 
 @interface STMAuthController() <NSURLConnectionDataDelegate>
