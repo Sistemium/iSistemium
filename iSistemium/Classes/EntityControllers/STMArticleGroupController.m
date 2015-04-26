@@ -11,7 +11,7 @@
 
 @interface STMArticleGroupController()
 
-@property (nonatomic, strong) NSMutableDictionary *articleGroupsDic;
+@property (nonatomic, strong) NSMutableDictionary *articleGroupParentsDic;
 
 @end
 
@@ -57,7 +57,7 @@
         
     }
 
-    [self sharedInstance].articleGroupsDic = [NSMutableDictionary dictionary];
+    [self sharedInstance].articleGroupParentsDic = [NSMutableDictionary dictionary];
 
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"articleGroups.@count == 0"];
     NSArray *childlessArticleGroups = [articleGroups filteredArrayUsingPredicate:predicate];
@@ -68,19 +68,21 @@
 
 + (NSSet *)parentsForArticleGroup:(STMArticleGroup *)articleGroup {
     
-    if (articleGroup.articleGroup) {
+    STMArticleGroup *parentGroup = articleGroup.articleGroup;
+    
+    if (parentGroup) {
         
-        NSMutableSet *parents = [NSMutableSet setWithObject:articleGroup.articleGroup];
+        NSMutableSet *parents = [NSMutableSet setWithObject:parentGroup];
 
-        NSSet *cachedParents = [self sharedInstance].articleGroupsDic[articleGroup.articleGroup.xid];
+        NSSet *cachedParents = [self sharedInstance].articleGroupParentsDic[parentGroup.xid];
         
         if (cachedParents) {
             [parents unionSet:cachedParents];
         } else {
-            [parents unionSet:[self parentsForArticleGroup:articleGroup.articleGroup]];
+            [parents unionSet:[self parentsForArticleGroup:parentGroup]];
         }
         
-        [self sharedInstance].articleGroupsDic[articleGroup.xid] = parents;
+        [self sharedInstance].articleGroupParentsDic[articleGroup.xid] = parents;
         [articleGroup addParents:parents];
         
         return parents;
@@ -89,7 +91,7 @@
         
         NSSet *emptySet = [NSSet set];
         
-        [self sharedInstance].articleGroupsDic[articleGroup.xid] = emptySet;
+        [self sharedInstance].articleGroupParentsDic[articleGroup.xid] = emptySet;
         [articleGroup addParents:emptySet];
         
         return emptySet;
