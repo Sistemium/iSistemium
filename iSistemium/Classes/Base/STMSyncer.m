@@ -58,6 +58,9 @@
 @property (nonatomic, strong) NSMutableArray *sendedEntities;
 @property (nonatomic, strong) NSArray *receivingEntitiesNames;
 @property (nonatomic) NSUInteger entityCount;
+@property (nonatomic, strong) NSMutableArray *entitySyncNames;
+
+
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 
 - (void)didReceiveRemoteNotification;
@@ -103,6 +106,13 @@
         
     }
     
+}
+
+- (NSMutableArray *)entitySyncNames {
+    if (!_entitySyncNames) {
+        _entitySyncNames = [NSMutableArray array];
+    }
+    return _entitySyncNames;
 }
 
 - (NSMutableDictionary *)settings {
@@ -269,6 +279,7 @@
                 [STMObjectsController dataLoadingFinished];
                 [STMPicturesController checkUploadedPhotos];
                 
+                self.entitySyncNames = nil;
                 if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
                 if (self.fetchCompletionHandler) self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
                 
@@ -799,7 +810,7 @@
     if (self.syncerState == STMSyncerReceiveData) {
         
         if (!self.receivingEntitiesNames || [self.receivingEntitiesNames containsObject:@"STMEntity"]) {
-            
+        
             self.entityCount = 1;
             self.errorOccured = NO;
             
@@ -939,6 +950,12 @@
             
         }];
         
+    } else {
+        
+        [self.entitySyncNames removeObject:self.entitySyncNames.firstObject];
+        
+        [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+        
     }
     
 }
@@ -1032,13 +1049,18 @@
         NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
         [entityNames removeObject:entityName];
         
+        self.entitySyncNames = entityNames;
+        
         self.entityCount = entityNames.count;
+        
+        NSUInteger settingsIndex = [self.entitySyncNames indexOfObject:@"STMSetting"];        
+        if (settingsIndex != NSNotFound) [self.entitySyncNames exchangeObjectAtIndex:settingsIndex withObjectAtIndex:0];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"entitiesReceivingDidFinish" object:self];
         
-        for (NSString *name in entityNames) {
-            [self checkConditionForReceivingEntityWithName:name];
-        }
+//        for (NSString *name in entityNames) {
+            [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+//        }
         
     } else {
         [self entityCountDecrease];
