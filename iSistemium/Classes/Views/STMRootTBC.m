@@ -355,8 +355,8 @@
         self.currentTappedVC = viewController;
     }
     
-    NSString *logMessage = [NSString stringWithFormat:@"shouldSelect tab %@", viewController.tabBarItem.title];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+//    NSString *logMessage = [NSString stringWithFormat:@"shouldSelect tab %@", viewController.tabBarItem.title];
+//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
 
     return YES;
     
@@ -371,8 +371,8 @@
         
     }
     
-    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+//    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
+//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
 
 }
 
