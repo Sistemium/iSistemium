@@ -442,6 +442,21 @@
     
 }
 
++ (NSString *)currentAppVersion {
+    
+    NSDictionary *infoDictionary = [NSBundle mainBundle].infoDictionary;
+    NSString *displayName = infoDictionary[@"CFBundleDisplayName"];
+    NSString *shortVersionString = infoDictionary[@"CFBundleShortVersionString"];
+    NSString *bundleVersion = infoDictionary[@"CFBundleVersion"];
+    
+    NSString *result = [NSString stringWithFormat:@"%@, %@ %@(%@)", displayName, NSLocalizedString(@"VERSION", nil), shortVersionString, bundleVersion];
+    
+    NSLog(@"infoDictionary %@", infoDictionary);
+    
+    return result;
+    
+}
+
 + (NSString *)documentsDirectory {
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

@@ -18,8 +18,10 @@
 @property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
 @property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
-@property (nonatomic) float totalEntityCount;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
+
+@property (nonatomic) float totalEntityCount;
 @property (nonatomic) int previousNumberOfObjects;
 
 @end
@@ -258,9 +260,9 @@
     
     self.nameLabel.text = [STMAuthController authController].userName;
     self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
-//    self.progressBar.progress = 0.0;
     self.progressBar.hidden = ([[STMSessionManager sharedManager].currentSession syncer].syncerState == STMSyncerIdle);
-
+    self.versionLabel.text = [STMFunctions currentAppVersion];
+    
     [super viewWillAppear:animated];
     
     if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {

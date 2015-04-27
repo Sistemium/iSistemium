@@ -50,6 +50,7 @@
 + (NSString *)MD5FromString:(NSString *)string;
 
 + (NSString *)devicePlatform;
++ (NSString *)currentAppVersion;
 
 + (NSString *)documentsDirectory;
 + (NSString *)absolutePathForPath:(NSString *)path;

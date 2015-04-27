@@ -192,4 +192,4 @@
 "SECTION" = "Section";
 "STOCK" = "Stock volume";
 "TIMEOUT ERROR" = "Timeout error. Repeat send/receive attempt?";
-
+"VERSION" = "version";
