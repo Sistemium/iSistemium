@@ -8,6 +8,8 @@
 
 #import "STMAuthSuccessVC.h"
 #import "STMSessionManager.h"
+#import "STMSession.h"
+#import "STMLocationTracker.h"
 #import "STMSyncer.h"
 #import "STMEntityController.h"
 
@@ -20,6 +22,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
+@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
+@property (weak, nonatomic) IBOutlet UILabel *locationStatusLabel;
 
 @property (nonatomic) float totalEntityCount;
 @property (nonatomic) int previousNumberOfObjects;
@@ -233,6 +237,21 @@
                name:@"newAppVersionAvailable"
              object:nil];
 
+    [nc addObserver:self
+           selector:@selector(setupLabels)
+               name:UIApplicationDidBecomeActiveNotification
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(setupLocationLabel)
+               name:@"lastLocationUpdated"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(currentAccuracyUpdated:)
+               name:@"currentAccuracyUpdated"
+             object:nil];
+    
 }
 
 - (void)removeObservers {
@@ -252,16 +271,89 @@
 
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
+- (void)setupLabels {
     
     self.nameLabel.text = [STMAuthController authController].userName;
     self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
     self.progressBar.hidden = ([[STMSessionManager sharedManager].currentSession syncer].syncerState == STMSyncerIdle);
     self.versionLabel.text = [STMFunctions currentAppVersion];
+
+    [self setupLocationLabel];
+    [self setupLocationStatusLabel];
+    
+}
+
+- (void)setupLocationLabel {
+    
+    STMLocationTracker *locationTracker = [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
+    
+    NSString *lastLocationTime;
+    
+    if (locationTracker.lastLocation) {
+        lastLocationTime = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:locationTracker.lastLocation.timestamp];
+    } else {
+        lastLocationTime = @"__ ____ _______, __:__:__";
+    }
+    
+    self.locationLabel.textColor = [UIColor blackColor];
+    self.locationLabel.text = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
+
+}
+
+- (void)setupLocationStatusLabel {
+
+    if ([CLLocationManager locationServicesEnabled]) {
+        
+        switch ([CLLocationManager authorizationStatus]) {
+            case kCLAuthorizationStatusAuthorizedAlways:
+                self.locationStatusLabel.textColor = [UIColor greenColor];
+                self.locationStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                self.locationStatusLabel.textColor = [UIColor brownColor];
+                self.locationStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
+                break;
+                
+            default:
+                self.locationStatusLabel.textColor = [UIColor redColor];
+                self.locationStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+                break;
+        }
+        
+    } else {
+        
+        self.locationStatusLabel.textColor = [UIColor redColor];
+        self.locationStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+        
+    }
+
+}
+
+- (void)currentAccuracyUpdated:(NSNotification *)notification {
+
+    BOOL isAccuracySufficient = [notification.userInfo[@"isAccuracySufficient"] boolValue];
+
+    if (isAccuracySufficient) {
+        
+        [self setupLocationStatusLabel];
+        
+    } else {
+        
+        self.locationStatusLabel.textColor = [UIColor brownColor];
+        self.locationStatusLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+
+    }
+    
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [self setupLabels];
     
     [super viewWillAppear:animated];
     

@@ -31,8 +31,7 @@
 
 @implementation STMLocationTracker
 
-//@synthesize desiredAccuracy = _desiredAccuracy;
-//@synthesize distanceFilter = _distanceFilter;
+@synthesize lastLocation = _lastLocation;
 
 
 - (void)customInit {
@@ -158,11 +157,34 @@
         
         STMLocation *lastLocation = [result lastObject];
         if (lastLocation) {
+            
             _lastLocation = [self locationFromLocationObject:lastLocation];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"lastLocationUpdated" object:self];
+
         }
 
     }
     return _lastLocation;
+    
+}
+
+- (void)setLastLocation:(CLLocation *)lastLocation {
+    
+    _lastLocation = lastLocation;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"lastLocationUpdated" object:self];
+    
+}
+
+- (void)setCurrentAccuracy:(CLLocationAccuracy)currentAccuracy {
+    
+    if (_currentAccuracy != currentAccuracy) {
+        
+        _currentAccuracy = currentAccuracy;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentAccuracyUpdated" object:self userInfo:@{@"isAccuracySufficient":@(currentAccuracy <= self.requiredAccuracy)}];
+
+    }
     
 }
 
@@ -311,10 +333,8 @@
     self.currentAccuracy = newLocation.horizontalAccuracy;
     
     if (locationAge < 5.0 &&
-        
         newLocation.horizontalAccuracy > 0 &&
         newLocation.horizontalAccuracy <= self.requiredAccuracy) {
-        
         
         if (!self.getLocationsWithNegativeSpeed && newLocation.speed < 0) {
             
@@ -349,7 +369,9 @@
                         }
                         
                         self.singlePointMode = NO;
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":newLocation}];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated"
+                                                                            object:self
+                                                                          userInfo:@{@"currentLocation":newLocation}];
                         self.lastLocation = newLocation;
 
                     }

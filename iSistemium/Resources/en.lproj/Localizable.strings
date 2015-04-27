@@ -193,3 +193,9 @@
 "STOCK" = "Stock volume";
 "TIMEOUT ERROR" = "Timeout error. Repeat send/receive attempt?";
 "VERSION" = "version";
+"LOCATIONS ON" = "Locations on";
+"LOCATIONS OFF" = "Locations off";
+"LOCATIONS BACKGROUND OFF" = "Locations background off";
+"LAST LOCATION" = "Last location: ";
+"ACCURACY IS NOT SUFFICIENT" = "Accuracy is not sufficient";
+

@@ -143,11 +143,27 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location receive: 2015/04/27 12:13:14" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="WCn-9T-OQ2">
+                                <rect key="frame" x="9" y="297" width="295" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location status" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZEF-kC-Exg">
+                                <rect key="frame" x="9" y="326" width="295" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>
+                        <outlet property="locationLabel" destination="WCn-9T-OQ2" id="z9D-AD-Njt"/>
+                        <outlet property="locationStatusLabel" destination="ZEF-kC-Exg" id="7Gv-Iw-nDA"/>
                         <outlet property="nameLabel" destination="RMe-BJ-cRW" id="mFX-1R-aES"/>
                         <outlet property="numberOfObjectLabel" destination="4Uq-pD-OHj" id="IB6-bg-WS6"/>
                         <outlet property="phoneNumberLabel" destination="o9x-eM-R98" id="KSL-qp-ZNL"/>

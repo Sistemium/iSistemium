@@ -451,7 +451,7 @@
     
     NSString *result = [NSString stringWithFormat:@"%@, %@ %@(%@)", displayName, NSLocalizedString(@"VERSION", nil), shortVersionString, bundleVersion];
     
-    NSLog(@"infoDictionary %@", infoDictionary);
+//    NSLog(@"infoDictionary %@", infoDictionary);
     
     return result;
     

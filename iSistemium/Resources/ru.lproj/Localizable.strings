@@ -193,5 +193,10 @@
 "STOCK" = "Количество";
 "TIMEOUT ERROR" = "Соединение прервано. Повторить попытку?";
 "VERSION" = "версия";
+"LOCATIONS ON" = "Геолокация включена";
+"LOCATIONS OFF" = "Геолокация выключена";
+"LOCATIONS BACKGROUND OFF" = "Фоновая геолокация выключена";
+"LAST LOCATION" = "Геолокация получена: ";
+"ACCURACY IS NOT SUFFICIENT" = "Недостаточная точность геолокации";
 
 
