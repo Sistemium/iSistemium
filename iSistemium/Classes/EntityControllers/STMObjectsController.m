@@ -772,6 +772,7 @@
             
             __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
             
+            NSLog(@"fetch existing objectIDs for initObjectsCache");
             TOCK;
             
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -782,6 +783,7 @@
 
                 [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
                 
+                NSLog(@"finish initObjectsCache");
                 TOCK;
                 
                 [[self document] saveDocument:^(BOOL success) {
