@@ -7,7 +7,6 @@
 //
 
 #import "STMRootTBC.h"
-#import "STMAuthTVC.h"
 
 #import "STMSessionManager.h"
 #import "STMSession.h"
