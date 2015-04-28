@@ -449,7 +449,7 @@
     NSString *shortVersionString = infoDictionary[@"CFBundleShortVersionString"];
     NSString *bundleVersion = infoDictionary[@"CFBundleVersion"];
     
-    NSString *result = [NSString stringWithFormat:@"%@, %@ %@(%@)", displayName, NSLocalizedString(@"VERSION", nil), shortVersionString, bundleVersion];
+    NSString *result = [NSString stringWithFormat:@"%@ %@ (%@)", displayName, shortVersionString, bundleVersion];
     
 //    NSLog(@"infoDictionary %@", infoDictionary);
     

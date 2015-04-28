@@ -21,7 +21,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
-@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationStatusLabel;
 
@@ -260,7 +259,7 @@
 
 - (void)customInit {
     
-    self.navigationItem.title = NSLocalizedString(@"SISTEMIUM", nil);
+    self.navigationItem.title = [STMFunctions currentAppVersion];
 
     self.numberOfObjectLabel.text = @"";
     
@@ -276,7 +275,6 @@
     self.nameLabel.text = [STMAuthController authController].userName;
     self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
     self.progressBar.hidden = ([[STMSessionManager sharedManager].currentSession syncer].syncerState == STMSyncerIdle);
-    self.versionLabel.text = [STMFunctions currentAppVersion];
 
     [self setupLocationLabel];
     [self setupLocationStatusLabel];
