@@ -418,8 +418,16 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 
     if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
+        
         CLS_LOG(@"object %@", object);
         CLS_LOG(@"change %@", change);
+        
+        if ([object isKindOfClass:[NSManagedObject class]]) {
+            
+            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
+            
+        }
+        
     }
     
     [object removeObserver:self forKeyPath:keyPath];
