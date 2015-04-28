@@ -21,8 +21,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
-@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
-@property (weak, nonatomic) IBOutlet UILabel *locationStatusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *lastLocationLabel;
+@property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
 
 @property (nonatomic) float totalEntityCount;
 @property (nonatomic) int previousNumberOfObjects;
@@ -203,6 +205,95 @@
 }
 
 
+#pragma mark - labels setup
+
+- (void)setupLabels {
+    
+    self.nameLabel.text = [STMAuthController authController].userName;
+    self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
+    self.progressBar.hidden = ([[STMSessionManager sharedManager].currentSession syncer].syncerState == STMSyncerIdle);
+    
+    [self hideLocationLabels];
+    
+    [self setupLastLocationLabel];
+    [self setupLocationSystemStatusLabel];
+    
+}
+
+- (void)hideLocationLabels {
+    
+    self.lastLocationLabel.text = @"";
+    self.locationAppStatusLabel.text = @"";
+    self.locationSystemStatusLabel.text = @"";
+    self.locationWarningLabel.text = @"";
+    
+}
+
+- (void)setupLastLocationLabel {
+    
+    STMLocationTracker *locationTracker = [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
+    
+    NSString *lastLocationTime;
+    
+    if (locationTracker.lastLocation) {
+        lastLocationTime = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:locationTracker.lastLocation.timestamp];
+    } else {
+        lastLocationTime = @"__ ____ _______, __:__:__";
+    }
+    
+    self.lastLocationLabel.textColor = [UIColor blackColor];
+    self.lastLocationLabel.text = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
+    
+}
+
+- (void)setupLocationSystemStatusLabel {
+    
+    if ([CLLocationManager locationServicesEnabled]) {
+        
+        switch ([CLLocationManager authorizationStatus]) {
+            case kCLAuthorizationStatusAuthorizedAlways:
+                self.locationSystemStatusLabel.textColor = [UIColor greenColor];
+                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
+                break;
+                
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
+                self.locationSystemStatusLabel.textColor = [UIColor brownColor];
+                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
+                break;
+                
+            default:
+                self.locationSystemStatusLabel.textColor = [UIColor redColor];
+                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+                break;
+        }
+        
+    } else {
+        
+        self.locationSystemStatusLabel.textColor = [UIColor redColor];
+        self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+        
+    }
+    
+}
+
+- (void)currentAccuracyUpdated:(NSNotification *)notification {
+    
+    BOOL isAccuracySufficient = [notification.userInfo[@"isAccuracySufficient"] boolValue];
+    
+    if (isAccuracySufficient) {
+        
+        self.locationWarningLabel.text = @"";
+        
+    } else {
+        
+        self.locationWarningLabel.textColor = [UIColor brownColor];
+        self.locationWarningLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+        
+    }
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -242,7 +333,7 @@
              object:nil];
 
     [nc addObserver:self
-           selector:@selector(setupLocationLabel)
+           selector:@selector(setupLastLocationLabel)
                name:@"lastLocationUpdated"
              object:nil];
     
@@ -268,81 +359,6 @@
     
     [super customInit];
 
-}
-
-- (void)setupLabels {
-    
-    self.nameLabel.text = [STMAuthController authController].userName;
-    self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
-    self.progressBar.hidden = ([[STMSessionManager sharedManager].currentSession syncer].syncerState == STMSyncerIdle);
-
-    [self setupLocationLabel];
-    [self setupLocationStatusLabel];
-    
-}
-
-- (void)setupLocationLabel {
-    
-    STMLocationTracker *locationTracker = [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
-    
-    NSString *lastLocationTime;
-    
-    if (locationTracker.lastLocation) {
-        lastLocationTime = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:locationTracker.lastLocation.timestamp];
-    } else {
-        lastLocationTime = @"__ ____ _______, __:__:__";
-    }
-    
-    self.locationLabel.textColor = [UIColor blackColor];
-    self.locationLabel.text = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
-
-}
-
-- (void)setupLocationStatusLabel {
-
-    if ([CLLocationManager locationServicesEnabled]) {
-        
-        switch ([CLLocationManager authorizationStatus]) {
-            case kCLAuthorizationStatusAuthorizedAlways:
-                self.locationStatusLabel.textColor = [UIColor greenColor];
-                self.locationStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
-                break;
-                
-            case kCLAuthorizationStatusAuthorizedWhenInUse:
-                self.locationStatusLabel.textColor = [UIColor brownColor];
-                self.locationStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
-                break;
-                
-            default:
-                self.locationStatusLabel.textColor = [UIColor redColor];
-                self.locationStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
-                break;
-        }
-        
-    } else {
-        
-        self.locationStatusLabel.textColor = [UIColor redColor];
-        self.locationStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
-        
-    }
-
-}
-
-- (void)currentAccuracyUpdated:(NSNotification *)notification {
-
-    BOOL isAccuracySufficient = [notification.userInfo[@"isAccuracySufficient"] boolValue];
-
-    if (isAccuracySufficient) {
-        
-        [self setupLocationStatusLabel];
-        
-    } else {
-        
-        self.locationStatusLabel.textColor = [UIColor brownColor];
-        self.locationStatusLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
-
-    }
-    
 }
 
 - (void)viewDidLoad {

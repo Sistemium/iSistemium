@@ -169,8 +169,10 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <connections>
-                        <outlet property="locationLabel" destination="WCn-9T-OQ2" id="z9D-AD-Njt"/>
-                        <outlet property="locationStatusLabel" destination="ZEF-kC-Exg" id="7Gv-Iw-nDA"/>
+                        <outlet property="lastLocationLabel" destination="WCn-9T-OQ2" id="HTQ-r9-Tyf"/>
+                        <outlet property="locationAppStatusLabel" destination="qIe-7I-TDE" id="UrT-Gk-qCZ"/>
+                        <outlet property="locationSystemStatusLabel" destination="ZEF-kC-Exg" id="z88-nR-QkS"/>
+                        <outlet property="locationWarningLabel" destination="bad-Tf-k6h" id="Lh3-Oa-VFE"/>
                         <outlet property="nameLabel" destination="RMe-BJ-cRW" id="mFX-1R-aES"/>
                         <outlet property="numberOfObjectLabel" destination="4Uq-pD-OHj" id="IB6-bg-WS6"/>
                         <outlet property="phoneNumberLabel" destination="o9x-eM-R98" id="KSL-qp-ZNL"/>
