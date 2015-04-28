@@ -188,6 +188,8 @@
     [[NSRunLoop currentRunLoop] addTimer:self.startTimer forMode:NSRunLoopCommonModes];
     [[NSRunLoop currentRunLoop] addTimer:self.finishTimer forMode:NSRunLoopCommonModes];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TimersInit", self.group] object:self];
+    
 }
 
 - (void)releaseTimers {
@@ -197,6 +199,8 @@
     self.startTimer = nil;
     self.finishTimer = nil;
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TimersRelease", self.group] object:self];
+
 }
 
 - (NSTimer *)startTimer {

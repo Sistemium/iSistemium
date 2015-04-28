@@ -29,10 +29,17 @@
 @property (nonatomic) float totalEntityCount;
 @property (nonatomic) int previousNumberOfObjects;
 
+@property (nonatomic, strong) STMLocationTracker *locationTracker;
+
+
 @end
 
 
 @implementation STMAuthSuccessVC
+
+- (STMLocationTracker *)locationTracker {
+    return [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
+}
 
 - (void)backButtonPressed {
     
@@ -215,9 +222,6 @@
     
     [self hideLocationLabels];
     
-    [self setupLastLocationLabel];
-    [self setupLocationSystemStatusLabel];
-    
 }
 
 - (void)hideLocationLabels {
@@ -229,14 +233,21 @@
     
 }
 
-- (void)setupLastLocationLabel {
+- (void)setupLocationLabels {
     
-    STMLocationTracker *locationTracker = [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
+    [self setupLastLocationLabel];
+    [self setupLocationSystemStatusLabel];
+    [self setupLocationAppStatusLabel];
+    [self setupLocationWarningLabel];
+
+}
+
+- (void)setupLastLocationLabel {
     
     NSString *lastLocationTime;
     
-    if (locationTracker.lastLocation) {
-        lastLocationTime = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:locationTracker.lastLocation.timestamp];
+    if (self.locationTracker.lastLocation) {
+        lastLocationTime = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
     } else {
         lastLocationTime = @"__ ____ _______, __:__:__";
     }
@@ -273,6 +284,24 @@
         self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
         
     }
+    
+}
+
+- (void)setupLocationAppStatusLabel {
+    
+    if (self.locationTracker.trackerAutoStart) {
+        
+        self.locationAppStatusLabel.text = @"ON";
+        
+    } else {
+        
+        self.locationAppStatusLabel.text = @"OFF";
+        
+    }
+    
+}
+
+- (void)setupLocationWarningLabel {
     
 }
 
@@ -342,6 +371,16 @@
                name:@"currentAccuracyUpdated"
              object:nil];
     
+    [nc addObserver:self
+           selector:@selector(setupLocationLabels)
+               name:[NSString stringWithFormat:@"locationTimersInit"]
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(hideLocationLabels)
+               name:[NSString stringWithFormat:@"locationTimersRelease"]
+             object:nil];
+
 }
 
 - (void)removeObservers {
