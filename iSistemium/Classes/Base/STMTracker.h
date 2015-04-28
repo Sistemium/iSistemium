@@ -10,6 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "STMSessionManagement.h"
 #import "STMDocument.h"
+#import "STMFunctions.h"
 
 @interface STMTracker : NSObject
 
@@ -19,6 +20,8 @@
 @property (nonatomic, strong) NSString *group;
 @property (nonatomic) BOOL tracking;
 @property (nonatomic) BOOL trackerAutoStart;
+@property (nonatomic) double trackerStartTime;
+@property (nonatomic) double trackerFinishTime;
 
 - (void)customInit;
 - (void)startTracking;

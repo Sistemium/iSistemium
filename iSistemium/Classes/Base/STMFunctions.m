@@ -61,6 +61,15 @@
 
 }
 
++ (NSDateFormatter *)dateShortNoTimeFormatter {
+    
+    NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
+    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    
+    return dateFormatter;
+    
+}
+
 + (NSDateFormatter *)dateMediumNoTimeFormatter {
     
     NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
@@ -70,10 +79,10 @@
     
 }
 
-+ (NSDateFormatter *)dateShortNoTimeFormatter {
++ (NSDateFormatter *)dateLongNoTimeFormatter {
     
     NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
-    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    dateFormatter.dateStyle = NSDateFormatterLongStyle;
     
     return dateFormatter;
     
@@ -89,17 +98,54 @@
 
 }
 
-+ (NSDateFormatter *)dateLongNoTimeFormatter {
-    
-    NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
-    dateFormatter.dateStyle = NSDateFormatterLongStyle;
++ (NSDateFormatter *)noDateShortTimeFormatter {
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterNoStyle;
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
     
     return dateFormatter;
-    
+
 }
 
 + (void)NSLogCurrentDateWithMilliseconds {
     NSLog(@"%@", [[self dateFormatter] stringFromDate:[NSDate date]]);
+}
+
+
+#pragma mark - date as double
+
++ (NSDate *)dateFromDouble:(double)time {
+    
+    NSDate *currentDate = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    double seconds = time * 3600;
+    currentDate = [dateFormatter dateFromString:[dateFormatter stringFromDate:currentDate]];
+    return [NSDate dateWithTimeInterval:seconds sinceDate:currentDate];
+    
+}
+
++ (double)currentTimeInDouble {
+    
+    NSDate *localDate = [NSDate date];
+    
+    NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
+    hourFormatter.dateFormat = @"HH";
+    double hour = [[hourFormatter stringFromDate:localDate] doubleValue];
+    
+    NSDateFormatter *minuteFormatter = [[NSDateFormatter alloc] init];
+    minuteFormatter.dateFormat = @"mm";
+    double minute = [[minuteFormatter stringFromDate:localDate] doubleValue];
+
+    NSDateFormatter *secondsFormatter = [[NSDateFormatter alloc] init];
+    secondsFormatter.dateFormat = @"ss";
+    double seconds = [[secondsFormatter stringFromDate:localDate] doubleValue];
+    
+    double currentTime = hour + minute/60 + seconds/3600;
+    
+    return currentTime;
+    
 }
 
 
