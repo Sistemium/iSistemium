@@ -196,7 +196,7 @@
 "LOCATIONS ON" = "Геолокация включена";
 "LOCATIONS OFF" = "Геолокация выключена";
 "LOCATIONS BACKGROUND OFF" = "Фоновая геолокация выключена";
-"LAST LOCATION" = "Геолокация получена: ";
+"LAST LOCATION" = "Последняя геометка: ";
 "ACCURACY IS NOT SUFFICIENT" = "Недостаточная точность геолокации";
 
 
