@@ -11,12 +11,8 @@
 
 @interface STMTracker()
 
-
 @property (nonatomic, strong) NSTimer *startTimer;
 @property (nonatomic, strong) NSTimer *finishTimer;
-
-@property (nonatomic) double trackerStartTime;
-@property (nonatomic) double trackerFinishTime;
 
 
 @end
@@ -96,6 +92,18 @@
     
     _session = session;
     self.document = (STMDocument *)[(id <STMSession>)session document];
+    
+}
+
+- (void)setTracking:(BOOL)tracking {
+    
+    if (_tracking != tracking) {
+        
+        _tracking = tracking;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackerStatusChanged", self.group] object:self];
+        
+    }
     
 }
 
@@ -188,6 +196,8 @@
     [[NSRunLoop currentRunLoop] addTimer:self.startTimer forMode:NSRunLoopCommonModes];
     [[NSRunLoop currentRunLoop] addTimer:self.finishTimer forMode:NSRunLoopCommonModes];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TimersInit", self.group] object:self];
+    
 }
 
 - (void)releaseTimers {
@@ -197,6 +207,8 @@
     self.startTimer = nil;
     self.finishTimer = nil;
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TimersRelease", self.group] object:self];
+
 }
 
 - (NSTimer *)startTimer {
@@ -205,7 +217,7 @@
         
         if (self.trackerStartTime) {
             
-            NSDate *startTime = [self dateFromDouble:self.trackerStartTime];
+            NSDate *startTime = [STMFunctions dateFromDouble:self.trackerStartTime];
             
             if ([startTime compare:[NSDate date]] == NSOrderedAscending) {
                 startTime = [NSDate dateWithTimeInterval:24*3600 sinceDate:startTime];
@@ -229,7 +241,7 @@
         
         if (self.trackerFinishTime) {
             
-            NSDate *finishTime = [self dateFromDouble:self.trackerFinishTime];
+            NSDate *finishTime = [STMFunctions dateFromDouble:self.trackerFinishTime];
             
             if ([finishTime compare:[NSDate date]] == NSOrderedAscending) {
                 finishTime = [NSDate dateWithTimeInterval:24*3600 sinceDate:finishTime];
@@ -275,7 +287,7 @@
 
 - (void)checkTimeForTracking {
     
-    double currentTime = [self currentTimeInDouble];
+    double currentTime = [STMFunctions currentTimeInDouble];
     
     if (!self.trackerAutoStart) return;
     
@@ -307,30 +319,6 @@
     
 }
 
-- (NSDate *)dateFromDouble:(double)time {
-    
-    NSDate *currentDate = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
-    double seconds = time * 3600;
-    currentDate = [dateFormatter dateFromString:[dateFormatter stringFromDate:currentDate]];
-    return [NSDate dateWithTimeInterval:seconds sinceDate:currentDate];
-    
-}
-
-- (double)currentTimeInDouble {
-    
-    NSDate *localDate = [NSDate date];
-    NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
-    hourFormatter.dateFormat = @"HH";
-    double hour = [[hourFormatter stringFromDate:localDate] doubleValue];
-    NSDateFormatter *minuteFormatter = [[NSDateFormatter alloc] init];
-    minuteFormatter.dateFormat = @"mm";
-    double minute = [[minuteFormatter stringFromDate:localDate] doubleValue];
-    double currentTime = hour + minute/60;
-    return currentTime;
-    
-}
 
 #pragma mark - tracking
 

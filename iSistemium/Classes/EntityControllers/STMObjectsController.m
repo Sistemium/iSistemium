@@ -418,8 +418,16 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 
     if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
+        
         CLS_LOG(@"object %@", object);
         CLS_LOG(@"change %@", change);
+        
+        if ([object isKindOfClass:[NSManagedObject class]]) {
+            
+            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
+            
+        }
+        
     }
     
     [object removeObserver:self forKeyPath:keyPath];
@@ -772,6 +780,7 @@
             
             __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
             
+            NSLog(@"fetch existing objectIDs for initObjectsCache");
             TOCK;
             
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -782,6 +791,7 @@
 
                 [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
                 
+                NSLog(@"finish initObjectsCache");
                 TOCK;
                 
                 [[self document] saveDocument:^(BOOL success) {
