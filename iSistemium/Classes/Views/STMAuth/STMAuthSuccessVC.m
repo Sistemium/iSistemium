@@ -246,15 +246,22 @@
 - (void)setupLastLocationLabel {
     
     NSString *lastLocationTime;
+    NSString *lastLocationLabelText;
+    
     
     if (self.locationTracker.lastLocation) {
+        
         lastLocationTime = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
+        lastLocationLabelText = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
+        
     } else {
-        lastLocationTime = @"__ ____ _______, __:__:__";
+        
+        lastLocationLabelText = NSLocalizedString(@"NO LAST LOCATION", nil);
+        
     }
     
     self.lastLocationLabel.textColor = [UIColor blackColor];
-    self.lastLocationLabel.text = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
+    self.lastLocationLabel.text = lastLocationLabelText;
     
 }
 

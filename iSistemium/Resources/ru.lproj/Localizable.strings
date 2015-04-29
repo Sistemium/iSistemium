@@ -197,6 +197,7 @@
 "LOCATIONS OFF" = "Геолокация запрещена";
 "LOCATIONS BACKGROUND OFF" = "Фоновая геолокация запрещена";
 "LAST LOCATION" = "Последняя геометка: ";
+"NO LAST LOCATION" = "Нет геометок";
 "ACCURACY IS NOT SUFFICIENT" = "Недостаточная точность геолокации";
 "WRONG LOCATION TIMERS SETTINGS" = "Неверные настройки трекера, обратитесь к разработчику";
 "LOCATION IS TRACKING UNTIL" = "Геолокация включена до";
