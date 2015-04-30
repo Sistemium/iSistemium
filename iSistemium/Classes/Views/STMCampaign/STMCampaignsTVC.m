@@ -96,11 +96,42 @@
     
 }
 
+- (void)campaignPictureIsRead:(NSNotification *)notification {
+
+    if ([notification.userInfo[@"picture"] isKindOfClass:[STMCampaignPicture class]]) {
+        
+        STMCampaignPicture *picture = (STMCampaignPicture *)notification.userInfo[@"picture"];
+
+        NSMutableArray *indexPathsArray = [NSMutableArray array];
+        
+        for (STMCampaign *campaign in picture.campaigns) {
+            
+            NSIndexPath *indexPath = [self.resultsController indexPathForObject:campaign];
+            if (indexPath && ![indexPathsArray containsObject:indexPath]) [indexPathsArray addObject:indexPath];
+            
+        }
+        
+        [self.tableView reloadRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationFade];
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoReportsChanged:) name:@"photoReportsChanged" object:nil];
+    [nc addObserver:self
+           selector:@selector(photoReportsChanged:)
+               name:@"photoReportsChanged"
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(campaignPictureIsRead:)
+               name:@"campaignPictureIsRead"
+             object:nil];
 
 }
 

@@ -131,7 +131,6 @@
     [[cell.contentView viewWithTag:1] removeFromSuperview];
     [[cell.contentView viewWithTag:2] removeFromSuperview];
     
-    
     STMCampaignPicture *picture = self.campaignPicturesResultsController.fetchedObjects[indexPath.row];
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 150)];
@@ -172,9 +171,14 @@
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:picture];
     
     if (recordStatus.isRead) {
+        
         label.textColor = [UIColor blackColor];
+        
     } else {
+        
         label.textColor = ACTIVE_BLUE_COLOR;
+        [self performSelector:@selector(setIsReadForPicture:) withObject:picture afterDelay:5];
+        
     }
     
     [cell.contentView addSubview:label];
@@ -187,10 +191,22 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    
     [self performSegueWithIdentifier:@"showCampaignPicture" sender:indexPath];
     
     return YES;
+    
+}
+
+- (void)setIsReadForPicture:(STMCampaignPicture *)picture {
+    
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:picture];
+    recordStatus.isRead = @YES;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"campaignPictureIsRead" object:self userInfo:@{@"picture":picture}];
+    
+    NSIndexPath *indexPath = [self.campaignPicturesResultsController indexPathForObject:picture];
+    
+    if (indexPath) [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
     
 }
 

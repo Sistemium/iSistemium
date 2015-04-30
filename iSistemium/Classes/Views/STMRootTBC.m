@@ -641,10 +641,25 @@
            selector:@selector(showUnreadMessageCount)
                name:@"gotNewMessage"
              object:nil];
-    
+
     [nc addObserver:self
            selector:@selector(showUnreadMessageCount)
                name:@"messageIsRead"
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(showUnreadCampaignCount)
+               name:@"gotNewCampaignPicture"
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(showUnreadCampaignCount)
+               name:@"gotNewCampaign"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(showUnreadCampaignCount)
+               name:@"campaignPictureIsRead"
              object:nil];
     
     [nc addObserver:self
