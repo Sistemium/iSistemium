@@ -419,14 +419,13 @@
 
     if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
         
+        if ([object isKindOfClass:[NSManagedObject class]]) {
+            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
+        }
+
+        CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
         CLS_LOG(@"object %@", object);
         CLS_LOG(@"change %@", change);
-        
-        if ([object isKindOfClass:[NSManagedObject class]]) {
-            
-            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
-            
-        }
         
     }
     

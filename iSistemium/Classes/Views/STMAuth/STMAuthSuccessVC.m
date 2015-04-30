@@ -220,6 +220,8 @@
     self.phoneNumberLabel.text = [STMAuthController authController].phoneNumber;
     self.progressBar.hidden = ([[STMSessionManager sharedManager].currentSession syncer].syncerState == STMSyncerIdle);
     
+    self.locationWarningLabel.text = @"";
+    
     BOOL autoStart = self.locationTracker.trackerAutoStart;
 
     (autoStart) ? [self setupLocationLabels] : [self hideLocationLabels];
