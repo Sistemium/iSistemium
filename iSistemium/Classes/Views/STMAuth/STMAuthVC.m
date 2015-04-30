@@ -8,6 +8,9 @@
 
 #import "STMAuthVC.h"
 
+#import <FLEX/FLEXManager.h>
+
+
 @interface STMAuthVC () <UITextFieldDelegate>
 
 @end
@@ -65,6 +68,10 @@
     
 }
 
+- (void)navBarDoubleTap {
+    [[FLEXManager sharedManager] showExplorer];
+}
+
 
 #pragma mark - view lifecycle
 
@@ -84,6 +91,12 @@
                                                                             target:self
                                                                             action:@selector(backButtonPressed)];
     
+#ifdef DEBUG
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(navBarDoubleTap)];
+    doubleTap.numberOfTapsRequired = 2;
+    [self.navigationController.navigationBar addGestureRecognizer:doubleTap];
+#endif
+
 }
 
 - (void)viewDidLoad {
