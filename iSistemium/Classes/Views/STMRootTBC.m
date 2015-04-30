@@ -76,7 +76,9 @@
 - (BOOL)newAppVersionAvailable {
     
     if ([self.session.status isEqualToString:@"running"]) {
-        
+
+        [STMClientDataController checkAppVersion];
+    
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         return [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
 

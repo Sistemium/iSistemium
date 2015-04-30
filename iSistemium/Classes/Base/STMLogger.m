@@ -286,6 +286,9 @@
         logMessage.text = text;
         logMessage.type = type;
         
+        [self.document saveDocument:^(BOOL success) {
+        }];
+        
     } else {
         [self saveLogMessageDictionary:@{@"text": text, @"type": type}];
     }
@@ -333,6 +336,9 @@
     
     [defaults removeObjectForKey:[self loggerKey]];
     [defaults synchronize];
+    
+    [self.document saveDocument:^(BOOL success) {
+    }];
     
 }
 
