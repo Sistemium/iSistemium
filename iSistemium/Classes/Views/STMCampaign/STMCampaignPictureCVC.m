@@ -7,13 +7,20 @@
 //
 
 #import "STMCampaignPictureCVC.h"
+
 #import "STMDocument.h"
 #import "STMSessionManager.h"
+
 #import "STMCampaignPicture.h"
-//#import "STMObjectsController.h"
-#import "STMPicturesController.h"
+
 #import "STMCampaignPicturePVC.h"
+
+#import "STMConstants.h"
 #import "STMFunctions.h"
+
+#import "STMPicturesController.h"
+#import "STMRecordStatusController.h"
+
 
 @interface STMCampaignPictureCVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
@@ -25,6 +32,7 @@
 
 
 @end
+
 
 @implementation STMCampaignPictureCVC
 
@@ -142,16 +150,6 @@
         
         imageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
         imageView.layer.borderWidth = 1.0f;
-
-//        if (picture.image) {
-//            [STMObjectsController setImagesFromData:picture.image forPicture:picture];
-//        } else {
-//            
-////            NSLog(@"picture.href %@", picture.href);
-//            [STMObjectsController hrefProcessingForObject:picture];
-//
-//        }
-
         
     } else {
     
@@ -170,6 +168,15 @@
     label.numberOfLines = 0;
     label.textAlignment = NSTextAlignmentCenter;
     label.tag = 2;
+    
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:picture];
+    
+    if (recordStatus.isRead) {
+        label.textColor = [UIColor blackColor];
+    } else {
+        label.textColor = ACTIVE_BLUE_COLOR;
+    }
+    
     [cell.contentView addSubview:label];
     
 //    NSLog(@"cell %@, indexPath %@", cell, indexPath);
