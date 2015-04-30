@@ -202,6 +202,9 @@
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:picture];
     recordStatus.isRead = @YES;
     
+    [self.document saveDocument:^(BOOL success) {
+    }];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"campaignPictureIsRead" object:self userInfo:@{@"picture":picture}];
     
     NSIndexPath *indexPath = [self.campaignPicturesResultsController indexPathForObject:picture];
