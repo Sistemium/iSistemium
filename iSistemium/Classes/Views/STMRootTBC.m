@@ -19,6 +19,7 @@
 #import "STMClientDataController.h"
 #import "STMAuthController.h"
 #import "STMMessageController.h"
+#import "STMCampaignController.h"
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
 
@@ -302,16 +303,19 @@
     vc.title = NSLocalizedString(@"PROFILE", nil);
     vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checked_user-128.png"] toSize:CGSizeMake(30, 30)];
     
-    UIViewController *messageVC = self.tabs[@"STMMessage"];
-    
-    if (messageVC) {
-        
-        NSUInteger unreadCount = [STMMessageController unreadMessagesCount];
-        NSString *badgeValue = (unreadCount == 0) ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
-        messageVC.tabBarItem.badgeValue = badgeValue;
-        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+//    UIViewController *messageVC = self.tabs[@"STMMessage"];
+//    
+//    if (messageVC) {
+//        
+//        NSUInteger unreadCount = [STMMessageController unreadMessagesCount];
+//        NSString *badgeValue = (unreadCount == 0) ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+//        messageVC.tabBarItem.badgeValue = badgeValue;
+//        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+//
+//    }
 
-    }
+    [self showUnreadMessageCount];
+    [self showUnreadCampaignCount];
     
     self.viewControllers = self.allTabsVCs;
 
@@ -554,6 +558,21 @@
         
     }
 
+}
+
+- (void)showUnreadCampaignCount {
+    
+    UIViewController *vc = (self.tabs)[@"STMCampaigns"];
+    
+    if (vc) {
+        
+        NSUInteger unreadCount = [STMCampaignController numberOfUnreadCampaign];
+        NSString *badgeValue = unreadCount == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
+        vc.tabBarItem.badgeValue = badgeValue;
+//        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
+        
+    }
+    
 }
 
 - (void)newAppVersionAvailable:(NSNotification *)notification {
