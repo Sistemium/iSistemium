@@ -13,6 +13,9 @@
 #import "STMSyncer.h"
 #import "STMEntityController.h"
 
+#import <Reachability/Reachability.h>
+
+
 @interface STMAuthSuccessVC () <UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -31,8 +34,8 @@
 @property (nonatomic) float totalEntityCount;
 @property (nonatomic) int previousNumberOfObjects;
 
-@property (nonatomic, strong) STMLocationTracker *locationTracker;
-
+//@property (nonatomic, strong) STMLocationTracker *locationTracker;
+@property (nonatomic, strong) Reachability *internetReachability;
 
 @end
 
@@ -102,26 +105,37 @@
     }
     
     [self updateSyncDatesLabels];
-    [self updateCloudImagesColor];
+    [self updateCloudImages];
     
 }
 
-- (void)updateCloudImagesColor {
+- (void)updateCloudImages {
     
-    STMSyncer *syncer = [self syncer];
+    NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
     
-    if (syncer.syncerState == STMSyncerIdle) {
-        
-        UIColor *uploadColor = ([syncer numbersOfUnsyncedObjects] > 0) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
-        
-        [self.uploadImageView setTintColor:uploadColor];
-        [self.downloadImageView setTintColor:ACTIVE_BLUE_COLOR];
+    if (networkStatus == NotReachable) {
 
+        [self.uploadImageView setTintColor:[UIColor redColor]];
+        [self.downloadImageView setTintColor:[UIColor redColor]];
+        
     } else {
+    
+        STMSyncer *syncer = [self syncer];
         
-        [self.uploadImageView setTintColor:[UIColor lightGrayColor]];
-        [self.downloadImageView setTintColor:[UIColor lightGrayColor]];
-        
+        if (syncer.syncerState == STMSyncerIdle) {
+            
+            UIColor *uploadColor = ([syncer numbersOfUnsyncedObjects] > 0) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
+            
+            [self.uploadImageView setTintColor:uploadColor];
+            [self.downloadImageView setTintColor:ACTIVE_BLUE_COLOR];
+            
+        } else {
+            
+            [self.uploadImageView setTintColor:[UIColor lightGrayColor]];
+            [self.downloadImageView setTintColor:[UIColor lightGrayColor]];
+            
+        }
+
     }
     
 }
@@ -163,7 +177,7 @@
 }
 
 - (void)syncerDidChangeContent:(NSNotification *)notification {
-    [self updateCloudImagesColor];
+    [self updateCloudImages];
 }
 
 - (void)hideNumberOfObjects {
@@ -402,6 +416,22 @@
     [self performSelector:@selector(setupLocationAppStatusLabel) withObject:nil afterDelay:5];
 }
 
+
+#pragma mark - Reachability
+
+- (void)startReachability {
+    
+//    Reachability *reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+    self.internetReachability = [Reachability reachabilityForInternetConnection];
+    [self.internetReachability startNotifier];
+
+}
+
+- (void)reachabilityChanged:(NSNotification *)notification {
+    [self updateCloudImages];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -470,6 +500,11 @@
                name:[NSString stringWithFormat:@"locationTrackerStatusChanged"]
              object:nil];
     
+    [nc addObserver:self
+           selector:@selector(reachabilityChanged:)
+               name:kReachabilityChangedNotification
+             object:nil];
+
 }
 
 - (void)removeObservers {
@@ -482,12 +517,12 @@
 
     self.uploadImageView.image = [self.uploadImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.downloadImageView.image = [self.downloadImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-
     
     self.numberOfObjectLabel.text = @"";
     
     [self updateSyncDatesLabels];
     [self addObservers];
+    [self startReachability];
     
     [super customInit];
 
