@@ -43,6 +43,10 @@
     return [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
 }
 
+- (STMSyncer *)syncer {
+    return [[STMSessionManager sharedManager].currentSession syncer];
+}
+
 - (void)backButtonPressed {
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil) message:NSLocalizedString(@"R U SURE TO LOGOUT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
@@ -69,9 +73,6 @@
                     
                     self.progressBar.hidden = YES;
                     
-                    [self.uploadImageView setTintColor:ACTIVE_BLUE_COLOR];
-                    [self.downloadImageView setTintColor:ACTIVE_BLUE_COLOR];
-
                 });
                 
             });
@@ -80,9 +81,6 @@
             
             self.progressBar.hidden = NO;
             self.totalEntityCount = 1;
-
-            [self.uploadImageView setTintColor:[UIColor lightGrayColor]];
-            [self.downloadImageView setTintColor:[UIColor lightGrayColor]];
 
         }
         
@@ -104,6 +102,27 @@
     }
     
     [self updateSyncDatesLabels];
+    [self updateCloudImagesColor];
+    
+}
+
+- (void)updateCloudImagesColor {
+    
+    STMSyncer *syncer = [self syncer];
+    
+    if (syncer.syncerState == STMSyncerIdle) {
+        
+        UIColor *uploadColor = ([syncer numbersOfUnsyncedObjects] > 0) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
+        
+        [self.uploadImageView setTintColor:uploadColor];
+        [self.downloadImageView setTintColor:ACTIVE_BLUE_COLOR];
+
+    } else {
+        
+        [self.uploadImageView setTintColor:[UIColor lightGrayColor]];
+        [self.downloadImageView setTintColor:[UIColor lightGrayColor]];
+        
+    }
     
 }
 
@@ -144,15 +163,7 @@
 }
 
 - (void)syncerDidChangeContent:(NSNotification *)notification {
-    
-    if ([notification.object isKindOfClass:[STMSyncer class]]) {
-        
-        STMSyncer *syncer = (STMSyncer *)notification.object;
-        
-        NSUInteger numberOfUnsyncedObjects = [syncer numbersOfUnsyncedObjects];
-        
-    }
-
+    [self updateCloudImagesColor];
 }
 
 - (void)hideNumberOfObjects {
@@ -397,7 +408,7 @@
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
+    STMSyncer *syncer = [self syncer];
 
     [nc addObserver:self
            selector:@selector(syncerStatusChanged:)
