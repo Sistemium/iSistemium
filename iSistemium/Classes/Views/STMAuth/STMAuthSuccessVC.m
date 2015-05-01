@@ -111,6 +111,8 @@
 
 - (void)updateCloudImages {
     
+    [self removeGestureRecognizersFromCloudImages];
+    
     NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
     
     if (networkStatus == NotReachable) {
@@ -124,10 +126,19 @@
         
         if (syncer.syncerState == STMSyncerIdle) {
             
-            UIColor *uploadColor = ([syncer numbersOfUnsyncedObjects] > 0) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
+            if ([syncer numbersOfUnsyncedObjects] > 0) {
+                
+                [self.uploadImageView setTintColor:ACTIVE_BLUE_COLOR];
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(uploadImageViewTapped)];
+                [self.uploadImageView addGestureRecognizer:tap];
+                
+            } else {
+                [self.uploadImageView setTintColor:[UIColor lightGrayColor]];
+            }
             
-            [self.uploadImageView setTintColor:uploadColor];
             [self.downloadImageView setTintColor:ACTIVE_BLUE_COLOR];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(downloadImageViewTapped)];
+            [self.downloadImageView addGestureRecognizer:tap];
             
         } else {
             
@@ -138,6 +149,29 @@
 
     }
     
+}
+
+- (void)removeGestureRecognizersFromCloudImages {
+
+    [self removeGestureRecognizersFrom:self.uploadImageView];
+    [self removeGestureRecognizersFrom:self.downloadImageView];
+    
+}
+
+- (void)removeGestureRecognizersFrom:(UIView *)view {
+    
+    for (UIGestureRecognizer *gesture in view.gestureRecognizers) {
+        [view removeGestureRecognizer:gesture];
+    }
+    
+}
+
+- (void)uploadImageViewTapped {
+    [self syncer].syncerState = STMSyncerSendDataOnce;
+}
+
+- (void)downloadImageViewTapped {
+    [self syncer].syncerState = STMSyncerReceiveData;
 }
 
 - (void)entitiesReceivingDidFinish {
