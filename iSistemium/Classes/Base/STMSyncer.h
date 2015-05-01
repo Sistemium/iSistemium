@@ -26,4 +26,6 @@
 - (void)upload;
 - (void)receiveEntities:(NSArray *)entitiesNames;
 
+- (NSUInteger)numbersOfUnsyncedObjects;
+
 @end

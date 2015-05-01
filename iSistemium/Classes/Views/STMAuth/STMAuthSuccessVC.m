@@ -135,6 +135,18 @@
 
 }
 
+- (void)syncerDidChangeContent:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMSyncer class]]) {
+        
+        STMSyncer *syncer = (STMSyncer *)notification.object;
+        
+        NSUInteger numberOfUnsyncedObjects = [syncer numbersOfUnsyncedObjects];
+        
+    }
+
+}
+
 - (void)hideNumberOfObjects {
     
     if ([[[STMSessionManager sharedManager].currentSession syncer] syncerState] != STMSyncerReceiveData) {
@@ -398,7 +410,12 @@
            selector:@selector(getBunchOfObjects:)
                name:@"getBunchOfObjects"
              object:syncer];
-
+    
+    [nc addObserver:self
+           selector:@selector(syncerDidChangeContent:)
+               name:@"syncerDidChangeContent"
+             object:syncer];
+    
     [nc addObserver:self
            selector:@selector(newAppVersionAvailable:)
                name:@"newAppVersionAvailable"
