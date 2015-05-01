@@ -165,6 +165,10 @@
     
 }
 
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"applicationDidReceiveMemoryWarning" type:@"important"];
+}
+
 - (void)applicationWillTerminate:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillTerminate"];
