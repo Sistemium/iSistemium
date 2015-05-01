@@ -123,14 +123,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data send: 2015/03/03 12:34" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Qzp-l1-rW5">
-                                <rect key="frame" x="16" y="239" width="259" height="21"/>
+                                <rect key="frame" x="15.999999803235635" y="239" width="259" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data receive: 2015/03/03 12:34" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gix-oQ-bmy">
-                                <rect key="frame" x="16" y="268" width="259" height="21"/>
+                                <rect key="frame" x="15.999999803235635" y="268" width="259" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -177,6 +177,7 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <connections>
+                        <outlet property="downloadImageView" destination="d90-56-y4l" id="XDa-jk-tgF"/>
                         <outlet property="lastLocationLabel" destination="WCn-9T-OQ2" id="HTQ-r9-Tyf"/>
                         <outlet property="locationAppStatusLabel" destination="qIe-7I-TDE" id="UrT-Gk-qCZ"/>
                         <outlet property="locationSystemStatusLabel" destination="ZEF-kC-Exg" id="z88-nR-QkS"/>
@@ -187,6 +188,7 @@
                         <outlet property="progressBar" destination="e0q-Uv-EeH" id="OhC-FC-fgd"/>
                         <outlet property="receiveDateLabel" destination="gix-oQ-bmy" id="EIj-U4-8YC"/>
                         <outlet property="sendDateLabel" destination="Qzp-l1-rW5" id="u6K-C4-2eH"/>
+                        <outlet property="uploadImageView" destination="J7f-yl-XYU" id="4ZE-Nf-WMW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GvF-LL-Ze1" userLabel="First Responder" sceneMemberID="firstResponder"/>

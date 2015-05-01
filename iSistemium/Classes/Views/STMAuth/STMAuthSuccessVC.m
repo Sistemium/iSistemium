@@ -21,6 +21,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *uploadImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *downloadImageView;
 @property (weak, nonatomic) IBOutlet UILabel *lastLocationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
@@ -67,6 +69,9 @@
                     
                     self.progressBar.hidden = YES;
                     
+                    [self.uploadImageView setTintColor:ACTIVE_BLUE_COLOR];
+                    [self.downloadImageView setTintColor:ACTIVE_BLUE_COLOR];
+
                 });
                 
             });
@@ -75,7 +80,10 @@
             
             self.progressBar.hidden = NO;
             self.totalEntityCount = 1;
-            
+
+            [self.uploadImageView setTintColor:[UIColor lightGrayColor]];
+            [self.downloadImageView setTintColor:[UIColor lightGrayColor]];
+
         }
         
         if (fromState == STMSyncerReceiveData) {
@@ -461,6 +469,10 @@
     
     self.navigationItem.title = [STMFunctions currentAppVersion];
 
+    self.uploadImageView.image = [self.uploadImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.downloadImageView.image = [self.downloadImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+    
     self.numberOfObjectLabel.text = @"";
     
     [self updateSyncDatesLabels];
