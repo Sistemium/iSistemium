@@ -155,12 +155,12 @@
 
     STMSyncer *syncer = [self syncer];
     BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
+    UIColor *color = (hasObjectsToUpload) ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
 
     NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
     
     if (networkStatus == NotReachable) {
         
-        UIColor *color = (hasObjectsToUpload) ? [UIColor redColor] : [UIColor blackColor];
         color = [color colorWithAlphaComponent:0.3];
         [self.syncImageView setTintColor:color];
         
@@ -168,7 +168,6 @@
         
         if (syncer.syncerState == STMSyncerIdle) {
             
-            UIColor *color = (hasObjectsToUpload) ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
             [self.syncImageView setTintColor:color];
             
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(uploadImageViewTapped)];
