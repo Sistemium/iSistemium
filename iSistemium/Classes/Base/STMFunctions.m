@@ -98,6 +98,16 @@
 
 }
 
++ (NSDateFormatter *)dateMediumTimeShortFormatter {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    
+    return dateFormatter;
+    
+}
+
 + (NSDateFormatter *)noDateShortTimeFormatter {
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

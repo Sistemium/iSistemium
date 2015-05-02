@@ -30,6 +30,8 @@
 		2C14D4441A3B73B400747844 /* STMLogMessagesDetailTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C14D4431A3B73B400747844 /* STMLogMessagesDetailTVC.m */; };
 		2C16CC3A1AF1FE9100A2EC2D /* STMCampaignGroup+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C16CC391AF1FE9100A2EC2D /* STMCampaignGroup+custom.m */; };
 		2C16CC3D1AF2051900A2EC2D /* STMCampaignController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C16CC3C1AF2051900A2EC2D /* STMCampaignController.m */; };
+		2C16CC401AF3940200A2EC2D /* Upload To Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C16CC3E1AF3940200A2EC2D /* Upload To Cloud-100.png */; };
+		2C16CC411AF3940200A2EC2D /* Download From Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C16CC3F1AF3940200A2EC2D /* Download From Cloud-100.png */; };
 		2C1D72DF1AB99DEC00C97599 /* STMCustom1TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D72DE1AB99DEC00C97599 /* STMCustom1TVCell.xib */; };
 		2C1D72E41AB9A88700C97599 /* STMCustom1TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */; };
 		2C1D72E71AB9BCFE00C97599 /* STMInsetLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1D72E61AB9BCFE00C97599 /* STMInsetLabel.m */; };
@@ -269,10 +271,11 @@
 		2C14D4421A3B73B400747844 /* STMLogMessagesDetailTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLogMessagesDetailTVC.h; sourceTree = "<group>"; };
 		2C14D4431A3B73B400747844 /* STMLogMessagesDetailTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMLogMessagesDetailTVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2C14D4451A3CB46800747844 /* STMDataModel 28.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 28.xcdatamodel"; sourceTree = "<group>"; };
-		2C16CC381AF1FE9100A2EC2D /* STMCampaignGroup+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMCampaignGroup+custom.h"; sourceTree = "<group>"; };
 		2C16CC391AF1FE9100A2EC2D /* STMCampaignGroup+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMCampaignGroup+custom.m"; sourceTree = "<group>"; };
 		2C16CC3B1AF2051900A2EC2D /* STMCampaignController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignController.h; sourceTree = "<group>"; };
 		2C16CC3C1AF2051900A2EC2D /* STMCampaignController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaignController.m; sourceTree = "<group>"; };
+		2C16CC3E1AF3940200A2EC2D /* Upload To Cloud-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Upload To Cloud-100.png"; sourceTree = "<group>"; };
+		2C16CC3F1AF3940200A2EC2D /* Download From Cloud-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Download From Cloud-100.png"; sourceTree = "<group>"; };
 		2C1D72DE1AB99DEC00C97599 /* STMCustom1TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom1TVCell.xib; sourceTree = "<group>"; };
 		2C1D72E21AB9A88700C97599 /* STMCustom1TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom1TVCell.h; sourceTree = "<group>"; };
 		2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom1TVCell.m; sourceTree = "<group>"; };
@@ -651,6 +654,7 @@
 		D94AC56B198BC6A300D8CD63 /* password2-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "password2-128.png"; sourceTree = "<group>"; };
 		D9527F6B1A3A504D0098885D /* STMSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSplitViewController.h; sourceTree = "<group>"; };
 		D9527F6C1A3A504D0098885D /* STMSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSplitViewController.m; sourceTree = "<group>"; };
+		D97A04021AF4B4BD00898FB4 /* STMCampaignGroup+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMCampaignGroup+custom.h"; sourceTree = "<group>"; };
 		DA862C898528F934A8DD1E78 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -859,7 +863,7 @@
 				2C4E44411A8209E6006E6AF1 /* STMCampaign.m */,
 				2C5764A41AB8718800B9FD2C /* STMCampaignGroup.h */,
 				2C5764A51AB8718800B9FD2C /* STMCampaignGroup.m */,
-				2C16CC381AF1FE9100A2EC2D /* STMCampaignGroup+custom.h */,
+				D97A04021AF4B4BD00898FB4 /* STMCampaignGroup+custom.h */,
 				2C16CC391AF1FE9100A2EC2D /* STMCampaignGroup+custom.m */,
 				2C6528F319576894008605D9 /* STMCampaignPicture.h */,
 				2C6528F419576894008605D9 /* STMCampaignPicture.m */,
@@ -1263,23 +1267,25 @@
 		2CD443EF195AD741004ADE58 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				2C81AD5A1AD1180F00246666 /* close-128.png */,
-				2C5764971AB4713B00B9FD2C /* checked_user-128.png */,
-				2C5764551AAA0A7D00B9FD2C /* bill-128.png */,
-				2C5764381AA8962600B9FD2C /* wine_bottle-512.png */,
-				2C5764361AA88ABA00B9FD2C /* Dossier Folder-100.png */,
+				2C734B8119B4E6FD00EE33FA /* archive-128.png */,
+				2C2968EF19A0C22F0038B122 /* banknotes-128.png */,
 				2C5763C01AA4752600B9FD2C /* beer_bottle-128.png */,
+				2C5764551AAA0A7D00B9FD2C /* bill-128.png */,
+				D94AC565198BC66700D8CD63 /* cash_receiving-128.png */,
+				2C5764971AB4713B00B9FD2C /* checked_user-128.png */,
+				D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */,
+				2C81AD5A1AD1180F00246666 /* close-128.png */,
+				2C5764361AA88ABA00B9FD2C /* Dossier Folder-100.png */,
+				2C16CC3F1AF3940200A2EC2D /* Download From Cloud-100.png */,
+				2C16CC3E1AF3940200A2EC2D /* Upload To Cloud-100.png */,
 				2C02F2C61A8B95F600E0E890 /* exit-128.png */,
 				2C02F2C41A8B503A00E0E890 /* full_moon-128.png */,
-				2C5797F11A43608300EEFBA7 /* purchase_order-128.png */,
-				D94AC56B198BC6A300D8CD63 /* password2-128.png */,
-				D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */,
-				D94AC565198BC66700D8CD63 /* cash_receiving-128.png */,
-				2CD443F0195AD76E004ADE58 /* photo-icon.png */,
-				2C2968EF19A0C22F0038B122 /* banknotes-128.png */,
 				2C29690519B1B4210038B122 /* message-128.png */,
-				2C734B8119B4E6FD00EE33FA /* archive-128.png */,
+				D94AC56B198BC6A300D8CD63 /* password2-128.png */,
+				2CD443F0195AD76E004ADE58 /* photo-icon.png */,
+				2C5797F11A43608300EEFBA7 /* purchase_order-128.png */,
 				2CF365AD19EE8C0100F078BD /* settings3-128.png */,
+				2C5764381AA8962600B9FD2C /* wine_bottle-512.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -1427,12 +1433,14 @@
 				2C2968F019A0C22F0038B122 /* banknotes-128.png in Resources */,
 				2C29690419B1B2B50038B122 /* STMMessages.storyboard in Resources */,
 				D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */,
+				2C16CC411AF3940200A2EC2D /* Download From Cloud-100.png in Resources */,
 				2C5763BC1AA472B700B9FD2C /* STMCatalog.storyboard in Resources */,
 				2C81AD501AD01FA300246666 /* STMCustom3TVCell.xib in Resources */,
 				2C2968EE19A0BFD10038B122 /* STMUncashing.storyboard in Resources */,
 				2C53B88A19409E42002298A5 /* settings_schema.json in Resources */,
 				2C5297E81ACECAA2008496AE /* STMMessageVC.storyboard in Resources */,
 				2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */,
+				2C16CC401AF3940200A2EC2D /* Upload To Cloud-100.png in Resources */,
 				2C5797ED1A432CDF00EEFBA7 /* STMWebView.storyboard in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */,
