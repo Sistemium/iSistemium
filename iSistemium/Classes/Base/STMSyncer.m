@@ -747,20 +747,24 @@
 
 - (NSUInteger)numbersOfUnsyncedObjects {
     
-    NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
-    NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
+    if (self.document.managedObjectContext) {
+        
+        NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
+        NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
+        
+        NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
+        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+        
+        NSArray *logMessageSyncTypes = [(STMLogger *)self.session.logger syncingTypesForSettingType:self.uploadLogType];
+        
+        predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
+        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+        
+        return unsyncedObjects.count;
 
-    NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
-    unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
-    
-    NSArray *logMessageSyncTypes = [(STMLogger *)self.session.logger syncingTypesForSettingType:self.uploadLogType];
-
-    predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
-    unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
-    
-    NSLog(@"unsyncedObjects.count %d", unsyncedObjects.count);
-    
-    return unsyncedObjects.count;
+    } else {
+        return 0;
+    }
     
 }
 

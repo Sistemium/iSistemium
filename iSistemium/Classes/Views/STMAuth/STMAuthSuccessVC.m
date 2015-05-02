@@ -24,8 +24,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *uploadImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *downloadImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *syncImageView;
 @property (weak, nonatomic) IBOutlet UILabel *lastLocationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
@@ -111,50 +110,84 @@
 
 - (void)updateCloudImages {
     
-    [self removeGestureRecognizersFromCloudImages];
+    [self setImageForSyncImageView];
+    [self setColorForSyncImageView];
     
+}
+
+- (void)setImageForSyncImageView {
+    
+    STMSyncer *syncer = [self syncer];
+    BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
+    
+    NSString *imageName;
+    
+    switch (syncer.syncerState) {
+        case STMSyncerIdle: {
+            imageName = (hasObjectsToUpload) ? @"Upload To Cloud-100" : @"Download From Cloud-100";
+            break;
+        }
+        case STMSyncerSendData: {
+            imageName = @"Upload To Cloud-100";
+            break;
+        }
+        case STMSyncerSendDataOnce: {
+            imageName = @"Upload To Cloud-100";
+            break;
+        }
+        case STMSyncerReceiveData: {
+            imageName = @"Download From Cloud-100";
+            break;
+        }
+        default: {
+            imageName = @"Download From Cloud-100";
+            break;
+        }
+    }
+    
+    self.syncImageView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+}
+
+- (void)setColorForSyncImageView {
+    
+    [self removeGestureRecognizersFromCloudImages];
+
+    STMSyncer *syncer = [self syncer];
+    BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
+
     NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
     
     if (networkStatus == NotReachable) {
-
-        [self.uploadImageView setTintColor:[UIColor redColor]];
-        [self.downloadImageView setTintColor:[UIColor redColor]];
+        
+        UIColor *color = (hasObjectsToUpload) ? [UIColor redColor] : [UIColor blackColor];
+        color = [color colorWithAlphaComponent:0.3];
+        [self.syncImageView setTintColor:color];
         
     } else {
-    
-        STMSyncer *syncer = [self syncer];
         
         if (syncer.syncerState == STMSyncerIdle) {
             
-            if ([syncer numbersOfUnsyncedObjects] > 0) {
-                
-                [self.uploadImageView setTintColor:ACTIVE_BLUE_COLOR];
-                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(uploadImageViewTapped)];
-                [self.uploadImageView addGestureRecognizer:tap];
-                
-            } else {
-                [self.uploadImageView setTintColor:[UIColor lightGrayColor]];
-            }
+            UIColor *color = (hasObjectsToUpload) ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
+            [self.syncImageView setTintColor:color];
             
-            [self.downloadImageView setTintColor:ACTIVE_BLUE_COLOR];
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(downloadImageViewTapped)];
-            [self.downloadImageView addGestureRecognizer:tap];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(uploadImageViewTapped)];
+            [self.syncImageView addGestureRecognizer:tap];
             
         } else {
             
-            [self.uploadImageView setTintColor:[UIColor lightGrayColor]];
-            [self.downloadImageView setTintColor:[UIColor lightGrayColor]];
+            [self.syncImageView setTintColor:[UIColor lightGrayColor]];
             
         }
-
+        
     }
-    
+
 }
 
 - (void)removeGestureRecognizersFromCloudImages {
 
-    [self removeGestureRecognizersFrom:self.uploadImageView];
-    [self removeGestureRecognizersFrom:self.downloadImageView];
+    [self removeGestureRecognizersFrom:self.syncImageView];
+//    [self removeGestureRecognizersFrom:self.downloadImageView];
     
 }
 
@@ -548,12 +581,10 @@
 - (void)customInit {
     
     self.navigationItem.title = [STMFunctions currentAppVersion];
-
-    self.uploadImageView.image = [self.uploadImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    self.downloadImageView.image = [self.downloadImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
     self.numberOfObjectLabel.text = @"";
     
+    [self updateCloudImages];
     [self updateSyncDatesLabels];
     [self addObservers];
     [self startReachability];
