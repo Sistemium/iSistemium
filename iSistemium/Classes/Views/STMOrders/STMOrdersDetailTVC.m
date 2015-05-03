@@ -117,6 +117,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
     }
     
+    NSPredicate *outletNamePredicate = [NSPredicate predicateWithFormat:@"outlet.name != %@", nil];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, outletNamePredicate]];
+    
     return predicate;
 
 }

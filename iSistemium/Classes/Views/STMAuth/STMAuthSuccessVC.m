@@ -13,6 +13,9 @@
 #import "STMSyncer.h"
 #import "STMEntityController.h"
 
+#import <Reachability/Reachability.h>
+
+
 @interface STMAuthSuccessVC () <UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -26,11 +29,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
 
+@property (weak, nonatomic) UIImageView *syncImageView;
+
 @property (nonatomic) float totalEntityCount;
 @property (nonatomic) int previousNumberOfObjects;
 
-@property (nonatomic, strong) STMLocationTracker *locationTracker;
-
+@property (nonatomic, strong) Reachability *internetReachability;
 
 @end
 
@@ -39,6 +43,10 @@
 
 - (STMLocationTracker *)locationTracker {
     return [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
+}
+
+- (STMSyncer *)syncer {
+    return [[STMSessionManager sharedManager].currentSession syncer];
 }
 
 - (void)backButtonPressed {
@@ -75,7 +83,7 @@
             
             self.progressBar.hidden = NO;
             self.totalEntityCount = 1;
-            
+
         }
         
         if (fromState == STMSyncerReceiveData) {
@@ -96,8 +104,113 @@
     }
     
     [self updateSyncDatesLabels];
+    [self updateCloudImages];
     
 }
+
+
+#pragma mark - cloud images for sync button
+
+- (void)updateCloudImages {
+    
+    [self setImageForSyncImageView];
+    [self setColorForSyncImageView];
+    
+}
+
+- (void)setImageForSyncImageView {
+    
+    STMSyncer *syncer = [self syncer];
+    BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
+    
+    NSString *imageName;
+    
+    switch (syncer.syncerState) {
+        case STMSyncerIdle: {
+            imageName = (hasObjectsToUpload) ? @"Upload To Cloud-100" : @"Download From Cloud-100";
+            break;
+        }
+        case STMSyncerSendData: {
+            imageName = @"Upload To Cloud-100";
+            break;
+        }
+        case STMSyncerSendDataOnce: {
+            imageName = @"Upload To Cloud-100";
+            break;
+        }
+        case STMSyncerReceiveData: {
+            imageName = @"Download From Cloud-100";
+            break;
+        }
+        default: {
+            imageName = @"Download From Cloud-100";
+            break;
+        }
+    }
+    
+    self.syncImageView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+}
+
+- (void)setColorForSyncImageView {
+    
+    [self removeGestureRecognizersFromCloudImages];
+
+    STMSyncer *syncer = [self syncer];
+    BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
+    UIColor *color = (hasObjectsToUpload) ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
+
+    NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
+    
+    if (networkStatus == NotReachable) {
+        
+        color = [color colorWithAlphaComponent:0.3];
+        [self.syncImageView setTintColor:color];
+        
+    } else {
+        
+        if (syncer.syncerState == STMSyncerIdle) {
+            
+            [self.syncImageView setTintColor:color];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(uploadImageViewTapped)];
+            [self.syncImageView addGestureRecognizer:tap];
+            
+        } else {
+            
+            [self.syncImageView setTintColor:[UIColor lightGrayColor]];
+            
+        }
+        
+    }
+
+}
+
+- (void)removeGestureRecognizersFromCloudImages {
+
+    [self removeGestureRecognizersFrom:self.syncImageView];
+//    [self removeGestureRecognizersFrom:self.downloadImageView];
+    
+}
+
+- (void)removeGestureRecognizersFrom:(UIView *)view {
+    
+    for (UIGestureRecognizer *gesture in view.gestureRecognizers) {
+        [view removeGestureRecognizer:gesture];
+    }
+    
+}
+
+- (void)uploadImageViewTapped {
+    [self syncer].syncerState = STMSyncerSendDataOnce;
+}
+
+- (void)downloadImageViewTapped {
+    [self syncer].syncerState = STMSyncerReceiveData;
+}
+
+
+#pragma mark -
 
 - (void)entitiesReceivingDidFinish {
     self.totalEntityCount = (float)[STMEntityController stcEntities].allKeys.count;
@@ -135,6 +248,10 @@
 
 }
 
+- (void)syncerDidChangeContent:(NSNotification *)notification {
+    [self updateCloudImages];
+}
+
 - (void)hideNumberOfObjects {
     
     if ([[[STMSessionManager sharedManager].currentSession syncer] syncerState] != STMSyncerReceiveData) {
@@ -164,7 +281,7 @@
 
 - (void)newAppVersionAvailable:(NSNotification *)notification {
     
-    [self showUpdateButton];
+//    [self showUpdateButton];
     
 }
 
@@ -191,6 +308,7 @@
     }
 
 }
+
 
 #pragma mark - UIAlertViewDelegate
 
@@ -253,7 +371,7 @@
     
     if (self.locationTracker.lastLocation) {
         
-        lastLocationTime = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
+        lastLocationTime = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
         lastLocationLabelText = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
         
     } else {
@@ -371,13 +489,29 @@
     [self performSelector:@selector(setupLocationAppStatusLabel) withObject:nil afterDelay:5];
 }
 
+
+#pragma mark - Reachability
+
+- (void)startReachability {
+    
+//    Reachability *reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+    self.internetReachability = [Reachability reachabilityForInternetConnection];
+    [self.internetReachability startNotifier];
+
+}
+
+- (void)reachabilityChanged:(NSNotification *)notification {
+    [self updateCloudImages];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
+    STMSyncer *syncer = [self syncer];
 
     [nc addObserver:self
            selector:@selector(syncerStatusChanged:)
@@ -398,7 +532,12 @@
            selector:@selector(getBunchOfObjects:)
                name:@"getBunchOfObjects"
              object:syncer];
-
+    
+    [nc addObserver:self
+           selector:@selector(syncerDidChangeContent:)
+               name:@"syncerDidChangeContent"
+             object:syncer];
+    
     [nc addObserver:self
            selector:@selector(newAppVersionAvailable:)
                name:@"newAppVersionAvailable"
@@ -434,6 +573,11 @@
                name:[NSString stringWithFormat:@"locationTrackerStatusChanged"]
              object:nil];
     
+    [nc addObserver:self
+           selector:@selector(reachabilityChanged:)
+               name:kReachabilityChangedNotification
+             object:nil];
+
 }
 
 - (void)removeObservers {
@@ -443,11 +587,17 @@
 - (void)customInit {
     
     self.navigationItem.title = [STMFunctions currentAppVersion];
-
-    self.numberOfObjectLabel.text = @"";
     
+    self.numberOfObjectLabel.text = @"";
+        
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+    self.syncImageView = imageView;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:imageView];
+
+    [self updateCloudImages];
     [self updateSyncDatesLabels];
     [self addObservers];
+    [self startReachability];
     
     [super customInit];
 

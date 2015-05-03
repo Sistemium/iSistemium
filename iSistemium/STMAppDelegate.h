@@ -17,4 +17,6 @@
 
 - (NSString *)currentNotificationTypes;
 
+- (void)testCrash;
+
 @end

@@ -617,7 +617,7 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
@@ -713,6 +713,8 @@
         
     } else {
         
+        [self numbersOfUnsyncedObjects];
+        
         NSString *logMessage = [NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count];
         NSLog(logMessage);
 
@@ -741,6 +743,29 @@
     
     [self.sendedEntities addObject:object.entity.name];
 
+}
+
+- (NSUInteger)numbersOfUnsyncedObjects {
+    
+    if (self.document.managedObjectContext) {
+        
+        NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
+        NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
+        
+        NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
+        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+        
+        NSArray *logMessageSyncTypes = [(STMLogger *)self.session.logger syncingTypesForSettingType:self.uploadLogType];
+        
+        predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
+        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+        
+        return unsyncedObjects.count;
+
+    } else {
+        return 0;
+    }
+    
 }
 
 - (void)startConnectionForSendData:(NSData *)sendData {
@@ -1169,7 +1194,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSString *key = [@"sendDate" stringByAppendingString:self.session.uid];
-    NSString *sendDateString = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:[NSDate date]];
+    NSString *sendDateString = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:[NSDate date]];
     
     [defaults setObject:sendDateString forKey:key];
     [defaults synchronize];
@@ -1182,7 +1207,7 @@
     
     NSString *key = [@"receiveDate" stringByAppendingString:self.session.uid];
 
-    NSString *receiveDateString = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:[NSDate date]];
+    NSString *receiveDateString = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:[NSDate date]];
     
     [defaults setObject:receiveDateString forKey:key];
     [defaults synchronize];

@@ -9,13 +9,18 @@
 #import "STMCampaignsTVC.h"
 
 #import "STMCampaign.h"
-//#import "STMArticlesTVC.h"
-#import "STMRootTBC.h"
-#import "STMCampaignsSVC.h"
-#import "STMFunctions.h"
+#import "STMCampaignGroup+custom.h"
 #import "STMOutlet.h"
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
+
+#import "STMRecordStatusController.h"
+#import "STMCampaignController.h"
+
+#import "STMRootTBC.h"
+#import "STMCampaignsSVC.h"
+
+#import "STMFunctions.h"
 #import "STMConstants.h"
 
 @interface STMCampaignsTVC ()
@@ -63,11 +68,9 @@
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
-                                                                   sectionNameKeyPath:@"campaignGroup.name"
+                                                                   sectionNameKeyPath:@"campaignGroup.displayName"
                                                                             cacheName:nil];
     
-#warning returned nil value for section name key path 'campaignGroup.name'. Object will be placed in unnamed section
-        
         _resultsController.delegate = self;
     
 //        NSLog(@"_resultsController %@", _resultsController);
@@ -93,11 +96,42 @@
     
 }
 
+- (void)campaignPictureIsRead:(NSNotification *)notification {
+
+    if ([notification.userInfo[@"picture"] isKindOfClass:[STMCampaignPicture class]]) {
+        
+        STMCampaignPicture *picture = (STMCampaignPicture *)notification.userInfo[@"picture"];
+
+        NSMutableArray *indexPathsArray = [NSMutableArray array];
+        
+        for (STMCampaign *campaign in picture.campaigns) {
+            
+            NSIndexPath *indexPath = [self.resultsController indexPathForObject:campaign];
+            if (indexPath && ![indexPathsArray containsObject:indexPath]) [indexPathsArray addObject:indexPath];
+            
+        }
+        
+        [self.tableView reloadRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationFade];
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoReportsChanged:) name:@"photoReportsChanged" object:nil];
+    [nc addObserver:self
+           selector:@selector(photoReportsChanged:)
+               name:@"photoReportsChanged"
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(campaignPictureIsRead:)
+               name:@"campaignPictureIsRead"
+             object:nil];
 
 }
 
@@ -164,6 +198,18 @@
 
     cell.textLabel.text = campaign.name;
     
+    [self setDetailTextForCell:cell campaign:campaign];
+
+    [self setTextColorForCell:cell campaign:campaign];
+
+    [self setSelectionColorForCell:cell];
+    
+    return cell;
+    
+}
+
+- (void)setDetailTextForCell:(UITableViewCell *)cell campaign:(STMCampaign *)campaign {
+    
     int articlesCount = (int)campaign.articles.count;
     int picturesCount = (int)campaign.pictures.count;
     
@@ -172,7 +218,7 @@
     request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", campaign];
     NSError *error;
     NSArray *campaignPhotos = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-
+    
     int photosCount = (int)campaignPhotos.count;
     
     NSString *articlesString = NSLocalizedString([[STMFunctions pluralTypeForCount:articlesCount] stringByAppendingString:@"ARTICLES"], nil);
@@ -203,22 +249,32 @@
     
     cell.detailTextLabel.text = [detailTextArray componentsJoinedByString:@" / "];
 
-    
-    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
-//    selectedBackgroundView.backgroundColor = [UIColor colorWithRed:0 green:0.48 blue:1 alpha:1];
-    selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
-    
-    cell.selectedBackgroundView = selectedBackgroundView;
-    
-    UIColor *highlightedTextColor = [UIColor whiteColor];
-    
-    cell.textLabel.highlightedTextColor = highlightedTextColor;
-    cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
-    
-    return cell;
-    
 }
 
+- (void)setTextColorForCell:(UITableViewCell *)cell campaign:(STMCampaign *)campaign {
+    
+    UIColor *textColor = [UIColor blackColor];
+    
+    if ([STMCampaignController hasUnreadPicturesInCampaign:campaign]) {
+        textColor = ACTIVE_BLUE_COLOR;
+    }
+        
+    cell.textLabel.textColor = textColor;
+    cell.detailTextLabel.textColor = textColor;
+
+}
+
+- (void)setSelectionColorForCell:(UITableViewCell *)cell {
+
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
+    selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
+    cell.selectedBackgroundView = selectedBackgroundView;
+
+    UIColor *highlightedTextColor = [UIColor whiteColor];
+    cell.textLabel.highlightedTextColor = highlightedTextColor;
+    cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
+
+}
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
