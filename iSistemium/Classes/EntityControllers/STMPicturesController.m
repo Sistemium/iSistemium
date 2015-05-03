@@ -16,8 +16,8 @@
 #import "STMUncashingPicture.h"
 #import "STMPhoto.h"
 
-#import <AWSiOSSDKv2/AWSCore.h>
-#import <AWSiOSSDKv2/S3.h>
+#import <AWSCore.h>
+#import <AWSS3.h>
 #import <objc/runtime.h>
 
 #import <Security/Security.h>
@@ -249,8 +249,8 @@
     
     if (self.accessKey && self.secretKey && !self.s3Initialized) {
         
-        AWSStaticCredentialsProvider *credentialsProvider = [AWSStaticCredentialsProvider credentialsWithAccessKey:self.accessKey secretKey:self.secretKey];
-        AWSServiceConfiguration *configuration = [AWSServiceConfiguration configurationWithRegion:AWSRegionEUWest1 credentialsProvider:credentialsProvider];
+        AWSStaticCredentialsProvider *credentialsProvider = [[AWSStaticCredentialsProvider alloc] initWithAccessKey:self.accessKey secretKey:self.secretKey];
+        AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUWest1 credentialsProvider:credentialsProvider];
         [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
         
         self.s3Initialized = YES;
@@ -666,7 +666,9 @@
                 
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 
-                AWSS3 *transferManager = [[AWSS3 alloc] initWithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration];
+                [AWSS3 registerS3WithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration  forKey: @"EUWest1S3"];
+                AWSS3 *transferManager = [AWSS3 S3ForKey:@"EUWest1S3"];
+                
                 AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
                 photoRequest.bucket = bucket;
                 photoRequest.key = filename;
