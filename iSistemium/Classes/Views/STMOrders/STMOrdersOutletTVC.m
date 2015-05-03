@@ -25,7 +25,7 @@
     
     request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
     
-    request.predicate = [NSPredicate predicateWithFormat:@"saleOrders.@count > 0"];
+    request.predicate = [NSPredicate predicateWithFormat:@"(saleOrders.@count > 0) AND (partner.name != %@)", nil];
     
     self.sectionNameKeyPath = @"partner.name";
     

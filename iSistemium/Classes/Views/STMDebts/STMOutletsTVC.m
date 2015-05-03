@@ -92,9 +92,7 @@
                                                                  managedObjectContext:self.document.managedObjectContext
                                                                    sectionNameKeyPath:@"partner.name"
                                                                             cacheName:nil];
-        
-#warning returned nil value for section name key path 'partner.name'. Object will be placed in unnamed section
-        
+
         _resultsController.delegate = self;
         
     }
