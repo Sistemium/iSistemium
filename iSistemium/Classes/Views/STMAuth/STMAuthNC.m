@@ -11,7 +11,7 @@
 #import "STMAuthSMSVC.h"
 #import "STMAuthSuccessVC.h"
 
-@interface STMAuthNC () <UINavigationControllerDelegate, UIAlertViewDelegate>
+@interface STMAuthNC () <UINavigationControllerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMAuthPhoneVC *phoneVC;
 @property (nonatomic, strong) STMAuthSMSVC *smsVC;
@@ -114,6 +114,7 @@
     [(STMAuthVC *)[self.viewControllers lastObject] dismissSpinner];
 }
 
+
 #pragma marl - UINavigationControllerDelegate
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -124,6 +125,31 @@
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
 //    NSLog(@"didShowViewController: %@", viewController);
 //    NSLog(@"navigationController %@", navigationController.viewControllers);
+}
+
+
+#pragma mark - STMTabBarViewController delegate
+
+- (void)showActionSheetFromTabBarItem {
+    
+    if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
+        
+//        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
+//        
+//        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+//        
+//        [actionSheet showFromRect:rect inView:self.view animated:YES];
+
+    }
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+//    if (buttonIndex != -1) {
+//
+//    }
+    
 }
 
 

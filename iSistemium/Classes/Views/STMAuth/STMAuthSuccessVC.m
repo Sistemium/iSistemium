@@ -33,7 +33,6 @@
 @property (nonatomic) float totalEntityCount;
 @property (nonatomic) int previousNumberOfObjects;
 
-//@property (nonatomic, strong) STMLocationTracker *locationTracker;
 @property (nonatomic, strong) Reachability *internetReachability;
 
 @end
@@ -107,6 +106,9 @@
     [self updateCloudImages];
     
 }
+
+
+#pragma mark - cloud images for sync button
 
 - (void)updateCloudImages {
     
@@ -206,6 +208,9 @@
     [self syncer].syncerState = STMSyncerReceiveData;
 }
 
+
+#pragma mark -
+
 - (void)entitiesReceivingDidFinish {
     self.totalEntityCount = (float)[STMEntityController stcEntities].allKeys.count;
 }
@@ -275,7 +280,7 @@
 
 - (void)newAppVersionAvailable:(NSNotification *)notification {
     
-    [self showUpdateButton];
+//    [self showUpdateButton];
     
 }
 
@@ -302,6 +307,7 @@
     }
 
 }
+
 
 #pragma mark - UIAlertViewDelegate
 
