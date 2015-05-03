@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
@@ -15,13 +15,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="169" translatesAutoresizingMaskIntoConstraints="NO" id="DP3-MY-XRI" customClass="STMLabel">
-                        <rect key="frame" x="15" y="6" width="169" height="19.5"/>
+                        <rect key="frame" x="15" y="6" width="169" height="20"/>
                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="169" translatesAutoresizingMaskIntoConstraints="NO" id="FeI-gf-7q3" customClass="STMLabel">
-                        <rect key="frame" x="15" y="25" width="169" height="13.5"/>
+                        <rect key="frame" x="15" y="26" width="169" height="14"/>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
@@ -33,7 +33,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Info" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="11" preferredMaxLayoutWidth="128" translatesAutoresizingMaskIntoConstraints="NO" id="C5P-M0-IKX" customClass="STMInsetLabel">
-                        <rect key="frame" x="192" y="0.0" width="128" height="58"/>
+                        <rect key="frame" x="192" y="0.0" width="128" height="57"/>
                         <color key="backgroundColor" white="0.96999999999999997" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="128" id="XGF-BC-t3v"/>
@@ -55,7 +55,7 @@
                     <constraint firstItem="DP3-MY-XRI" firstAttribute="top" secondItem="Kum-ty-hqH" secondAttribute="topMargin" constant="-2" id="fyL-u3-40V"/>
                     <constraint firstItem="hk3-sz-UDT" firstAttribute="leading" secondItem="Kum-ty-hqH" secondAttribute="leadingMargin" constant="7" id="pfz-Xh-nmY"/>
                     <constraint firstItem="C5P-M0-IKX" firstAttribute="top" secondItem="Kum-ty-hqH" secondAttribute="topMargin" constant="-8" id="pyu-mQ-OGf"/>
-                    <constraint firstItem="hk3-sz-UDT" firstAttribute="top" secondItem="FeI-gf-7q3" secondAttribute="bottom" id="s77-4X-7mD"/>
+                    <constraint firstItem="hk3-sz-UDT" firstAttribute="top" secondItem="FeI-gf-7q3" secondAttribute="bottom" constant="-2" id="s77-4X-7mD"/>
                     <constraint firstAttribute="centerY" secondItem="C5P-M0-IKX" secondAttribute="centerY" id="uXU-Gp-zmw"/>
                     <constraint firstItem="C5P-M0-IKX" firstAttribute="leading" secondItem="hk3-sz-UDT" secondAttribute="trailing" constant="8" id="wkd-UW-eIs"/>
                 </constraints>
