@@ -65,7 +65,7 @@
 
     [STMObjectsController createRecordStatusAndRemoveObject:photoReport];
     
-#warning probably have to tell STMCampaignPhotoReportCVC about photoReport deletion (remove it from waitingLocationPhotos)
+    [self.parentVC photoReportWasDeleted:photoReport];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged" object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self userInfo:@{@"campaign": campaign}];
