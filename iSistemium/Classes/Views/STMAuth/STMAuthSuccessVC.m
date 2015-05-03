@@ -24,11 +24,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *syncImageView;
 @property (weak, nonatomic) IBOutlet UILabel *lastLocationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
+
+@property (weak, nonatomic) UIImageView *syncImageView;
 
 @property (nonatomic) float totalEntityCount;
 @property (nonatomic) int previousNumberOfObjects;
@@ -588,7 +589,11 @@
     self.navigationItem.title = [STMFunctions currentAppVersion];
     
     self.numberOfObjectLabel.text = @"";
-    
+        
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+    self.syncImageView = imageView;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:imageView];
+
     [self updateCloudImages];
     [self updateSyncDatesLabels];
     [self addObservers];
