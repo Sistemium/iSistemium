@@ -790,9 +790,6 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 - (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 0) {
-        
-#warning have to check indexPath is in array range?
-//https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/5540b38f5141dcfd8f9d18db
 
         return self.cachedCellsHeights[indexPath];
         
@@ -813,7 +810,10 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    self.saleOrderPositions = nil;
     [self.tableView reloadData];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
