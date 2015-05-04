@@ -128,7 +128,7 @@
 }
 
 
-#pragma mark - STMTabBarViewController delegate
+#pragma mark - STMTabBarViewController protocol
 
 - (void)showActionSheetFromTabBarItem {
     
