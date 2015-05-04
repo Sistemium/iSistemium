@@ -367,7 +367,8 @@
     
 //    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
     
-    self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
+//    self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
+    self.controllerState = checkValue ? STMAuthRequestRoles : STMAuthEnterPhoneNumber;
 
 }
 
@@ -382,6 +383,7 @@
 
     self.userID = nil;
     self.accessToken = nil;
+    self.stcTabs = nil;
     [self.keychainItem resetKeychainItem];
 
 }
@@ -619,7 +621,7 @@
     id responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
     
 //    NSLog(@"responseData %@", responseData);
-    NSLog(@"responseJSON %@", responseJSON);
+//    NSLog(@"responseJSON %@", responseJSON);
 
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
         
@@ -634,7 +636,7 @@
             
             //#warning Switch comment line when server give correct apiURL
             self.apiURL = responseJSON[@"apiUrl"];
-            //            self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
+            //self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
             
             self.userID = responseJSON[@"ID"];
             self.userName = responseJSON[@"name"];

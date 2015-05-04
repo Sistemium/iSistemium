@@ -69,9 +69,7 @@
 }
 
 - (STMSession *)session {
-    
     return [STMSessionManager sharedManager].currentSession;
-    
 }
 
 - (BOOL)newAppVersionAvailable {
@@ -115,7 +113,8 @@
     
     self.tabBar.hidden = NO;
     
-    [self stateChanged];
+//    [self stateChanged];
+    [self initAuthTab];
     
 }
 
@@ -297,9 +296,9 @@
 
     [self prepareTabs];
     
-    UIViewController *vc = self.tabs[@"STMAuth"];
-    vc.title = NSLocalizedString(@"PROFILE", nil);
-    vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checked_user-128.png"] toSize:CGSizeMake(30, 30)];
+//    UIViewController *vc = self.tabs[@"STMAuth"];
+//    vc.title = NSLocalizedString(@"PROFILE", nil);
+//    vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checked_user-128.png"] toSize:CGSizeMake(30, 30)];
     
 //    UIViewController *messageVC = self.tabs[@"STMMessage"];
 //    
@@ -514,17 +513,26 @@
     
 //    [STMAuthController authController].controllerState != STMAuthSuccess ? [self initAuthTab] : [self initAllTabs];
     
-    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+    if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
         
         [self initAuthTab];
         
     } else {
         
-        [self initAllTabs];
+//        [self initAllTabs];
         
     }
     
 }
+
+- (void)sessionStatusChanged:(NSNotification *)notification {
+    
+    if ([self.session.status isEqualToString:@"running"]) {
+        [self initAllTabs];
+    }
+    
+}
+
 
 - (void)syncStateChanged {
 
@@ -602,7 +610,7 @@
 
 }
 
-- (void) setDocumentReady {
+- (void)setDocumentReady {
     
     [STMClientDataController checkAppVersion];
     [STMMessageController showMessageVCsIfNeeded];
@@ -680,6 +688,11 @@
                name:@"NSURLErrorTimedOut"
              object:self.session.syncer];
     
+    [nc addObserver:self
+           selector:@selector(sessionStatusChanged:)
+               name:@"sessionStatusChanged"
+             object:self.session];
+
 }
 
 - (void)removeObservers {
