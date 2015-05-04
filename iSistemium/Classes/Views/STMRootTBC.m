@@ -212,62 +212,38 @@
 
     } else {
     
-        [self registerTabWithStoryboardName:@"STMProfile"
-                                      title:NSLocalizedString(@"PROFILE", nil)
-                                      image:[UIImage imageNamed:@"checked_user-128.png"]];
+        NSArray *stcTabs = [STMAuthController authController].stcTabs;
         
-        [self registerTabWithStoryboardName:@"STMCampaigns"
-                                      title:NSLocalizedString(@"AD CAMPAIGNS", nil)
-                                      image:[UIImage imageNamed:@"christmas_gift-128.png"]];
-        
-        [self registerTabWithStoryboardName:@"STMDebts"
-                                      title:NSLocalizedString(@"DEBTS", nil)
-                                      image:[UIImage imageNamed:@"cash_receiving-128.png"]];
-        
-        [self registerTabWithStoryboardName:@"STMUncashing"
-                                      title:NSLocalizedString(@"UNCASHING", nil)
-                                      image:[UIImage imageNamed:@"banknotes-128.png"]];
-        
-        [self registerTabWithStoryboardName:@"STMMessages"
-                                      title:NSLocalizedString(@"MESSAGES", nil)
-                                      image:[UIImage imageNamed:@"message-128.png"]];
-        
-        if ([BUNDLE_VERSION integerValue] >= 70) {
+        for (NSDictionary *tabDictionary in stcTabs) {
             
-            [self registerTabWithStoryboardName:@"STMCatalog"
-                                          title:NSLocalizedString(@"CATALOG", nil)
-                                          image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
+            NSString *name = tabDictionary[@"name"];
+            NSString *title = tabDictionary[@"title"];
+            NSString *imageName = tabDictionary[@"imageName"];
+            NSString *minBuild = tabDictionary[@"minBuild"];
+            NSString *maxBuild = tabDictionary[@"maxBuild"];
+            BOOL isDebug = [tabDictionary[@"ifdef"] isEqualToString:@"DEBUG"];
             
-            [self registerTabWithStoryboardName:@"STMOrders"
-                                          title:NSLocalizedString(@"ORDERS", nil)
-                                          image:[UIImage imageNamed:@"bill-128.png"]];
-            
-            [self registerTabWithStoryboardName:@"STMWebView"
-                                          title:NSLocalizedString(@"OTHER", nil)
-                                          image:[UIImage imageNamed:@"purchase_order-128.png"]];
-            
-        } else {
-            
-            [self registerTabWithStoryboardName:@"STMWebView"
-                                          title:NSLocalizedString(@"IORDERS", nil)
-                                          image:[UIImage imageNamed:@"purchase_order-128.png"]];
+            if (minBuild && ([BUNDLE_VERSION integerValue] < [minBuild integerValue])) break;
+            if (maxBuild && ([BUNDLE_VERSION integerValue] > [maxBuild integerValue])) break;
+
+            if (isDebug) {
+#ifdef DEBUG
+                [self registerTabWithStoryboardName:name
+                                              title:title
+                                              image:[UIImage imageNamed:imageName]];
+#endif
+            } else {
+
+                [self registerTabWithStoryboardName:name
+                                              title:title
+                                              image:[UIImage imageNamed:imageName]];
+
+            }
             
         }
         
-#ifdef DEBUG
-        
-        [self registerTabWithStoryboardName:@"STMSettings"
-                                      title:NSLocalizedString(@"SETTINGS", nil)
-                                      image:[UIImage imageNamed:@"settings3-128.png"]];
-        
-        [self registerTabWithStoryboardName:@"STMLogs"
-                                      title:NSLocalizedString(@"LOGS", nil)
-                                      image:[UIImage imageNamed:@"archive-128.png"]];
-        
-#endif
-
     }
-    
+        
 }
 
 - (void)setupIPhoneTabs {

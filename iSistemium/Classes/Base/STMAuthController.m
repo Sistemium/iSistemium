@@ -38,6 +38,7 @@
 @synthesize userName = _userName;
 @synthesize accessToken = _accessToken;
 @synthesize serviceUri = _serviceUri;
+@synthesize stcTabs = _stcTabs;
 
 #pragma mark - singletone init
 
@@ -139,15 +140,21 @@
 }
 
 - (void)setControllerState:(STMAuthState)controllerState {
-    
-    if (controllerState == STMAuthSuccess) {
+
+    NSLog(@"authControllerState %d", controllerState);
+    _controllerState = controllerState;
+
+    if (controllerState == STMAuthRequestRoles) {
+        
+        [self requestRoles];
+        
+    } else if (controllerState == STMAuthSuccess) {
+        
         NSLog(@"login");
         [self startSession];
+
     }
     
-    NSLog(@"authControllerState %d", controllerState);
-    
-    _controllerState = controllerState;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged" object:self];
     
 }
@@ -309,6 +316,33 @@
     return _lastAuth;
     
 }
+
+- (NSArray *)stcTabs {
+    
+    if (!_stcTabs) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _stcTabs = [defaults objectForKey:@"stcTabs"];
+        
+    }
+    return _stcTabs;
+    
+}
+
+- (void)setStcTabs:(NSArray *)stcTabs {
+    
+    if (![stcTabs isEqual:_stcTabs]) {
+        
+        _stcTabs = stcTabs;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:stcTabs forKey:@"stcTabs"];
+        [defaults synchronize];
+        
+    }
+    
+}
+
 
 #pragma mark - instance methods
 
@@ -495,11 +529,39 @@
     
 }
 
-- (void)requestNewSMSCode {
+- (BOOL)requestNewSMSCode {
     
     self.controllerState = STMAuthNewSMSCode;
-    [self sendPhoneNumber:self.phoneNumber];
+    return [self sendPhoneNumber:self.phoneNumber];
     
+}
+
+- (BOOL)requestRoles {
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    
+    NSURLRequest *request = [self authenticateRequest:[self requestForURL:ROLES_URL]];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    if (connection) {
+        
+        return YES;
+        
+    } else {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError"
+                                                            object:self
+                                                          userInfo:@{@"error": NSLocalizedString(@"NO CONNECTION", nil)}];
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        
+        self.controllerState = STMAuthEnterPhoneNumber;
+        
+        return NO;
+        
+    }
+
+    return YES;
 }
 
 - (NSURLRequest *)requestForURL:(NSString *)urlString {
@@ -557,7 +619,7 @@
     id responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
     
 //    NSLog(@"responseData %@", responseData);
-//    NSLog(@"responseJSON %@", responseJSON);
+    NSLog(@"responseJSON %@", responseJSON);
 
     if ([responseJSON isKindOfClass:[NSDictionary class]]) {
         
@@ -569,14 +631,20 @@
         } else if (self.controllerState == STMAuthEnterSMSCode) {
             
             self.serviceUri = responseJSON[@"redirectUri"];
-
-//#warning Switch comment line when server give correct apiURL
+            
+            //#warning Switch comment line when server give correct apiURL
             self.apiURL = responseJSON[@"apiUrl"];
-//            self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
+            //            self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
             
             self.userID = responseJSON[@"ID"];
             self.userName = responseJSON[@"name"];
             self.accessToken = responseJSON[@"accessToken"];
+
+            self.controllerState = STMAuthRequestRoles;
+            
+        } else if (self.controllerState == STMAuthRequestRoles) {
+            
+            self.stcTabs = responseJSON[@"roles"][@"stcTabs"];
             self.controllerState = STMAuthSuccess;
             
         }
