@@ -619,6 +619,7 @@
     
     [super viewDidLoad];
     [self.navigationItem setHidesBackButton:YES animated:NO];
+    [self customInit];
 
 }
 

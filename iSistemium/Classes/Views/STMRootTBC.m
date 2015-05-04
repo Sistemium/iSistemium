@@ -204,86 +204,106 @@
     
     NSLog(@"device is iPad");
     
-    [self registerTabWithStoryboardName:@"STMAuth"
-                        title:NSLocalizedString(@"AUTHORIZATION", nil)
-                        image:[UIImage imageNamed:@"password2-128.png"]];
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
 
-    [self registerTabWithStoryboardName:@"STMCampaigns"
-                        title:NSLocalizedString(@"AD CAMPAIGNS", nil)
-                        image:[UIImage imageNamed:@"christmas_gift-128.png"]];
-
-    [self registerTabWithStoryboardName:@"STMDebts"
-                        title:NSLocalizedString(@"DEBTS", nil)
-                        image:[UIImage imageNamed:@"cash_receiving-128.png"]];
-
-    [self registerTabWithStoryboardName:@"STMUncashing"
-                        title:NSLocalizedString(@"UNCASHING", nil)
-                        image:[UIImage imageNamed:@"banknotes-128.png"]];
-
-    [self registerTabWithStoryboardName:@"STMMessages"
-                                  title:NSLocalizedString(@"MESSAGES", nil)
-                                  image:[UIImage imageNamed:@"message-128.png"]];
-
-    if ([BUNDLE_VERSION integerValue] >= 70) {
-        
-        [self registerTabWithStoryboardName:@"STMCatalog"
-                                      title:NSLocalizedString(@"CATALOG", nil)
-                                      image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
-
-        [self registerTabWithStoryboardName:@"STMOrders"
-                                      title:NSLocalizedString(@"ORDERS", nil)
-                                      image:[UIImage imageNamed:@"bill-128.png"]];
-
-        [self registerTabWithStoryboardName:@"STMWebView"
-                                      title:NSLocalizedString(@"OTHER", nil)
-                                      image:[UIImage imageNamed:@"purchase_order-128.png"]];
+        [self registerTabWithStoryboardName:@"STMAuth"
+                                      title:NSLocalizedString(@"AUTHORIZATION", nil)
+                                      image:[UIImage imageNamed:@"password2-128.png"]];
 
     } else {
     
-        [self registerTabWithStoryboardName:@"STMWebView"
-                                      title:NSLocalizedString(@"IORDERS", nil)
-                                      image:[UIImage imageNamed:@"purchase_order-128.png"]];
+        [self registerTabWithStoryboardName:@"STMProfile"
+                                      title:NSLocalizedString(@"PROFILE", nil)
+                                      image:[UIImage imageNamed:@"checked_user-128.png"]];
+        
+        [self registerTabWithStoryboardName:@"STMCampaigns"
+                                      title:NSLocalizedString(@"AD CAMPAIGNS", nil)
+                                      image:[UIImage imageNamed:@"christmas_gift-128.png"]];
+        
+        [self registerTabWithStoryboardName:@"STMDebts"
+                                      title:NSLocalizedString(@"DEBTS", nil)
+                                      image:[UIImage imageNamed:@"cash_receiving-128.png"]];
+        
+        [self registerTabWithStoryboardName:@"STMUncashing"
+                                      title:NSLocalizedString(@"UNCASHING", nil)
+                                      image:[UIImage imageNamed:@"banknotes-128.png"]];
+        
+        [self registerTabWithStoryboardName:@"STMMessages"
+                                      title:NSLocalizedString(@"MESSAGES", nil)
+                                      image:[UIImage imageNamed:@"message-128.png"]];
+        
+        if ([BUNDLE_VERSION integerValue] >= 70) {
+            
+            [self registerTabWithStoryboardName:@"STMCatalog"
+                                          title:NSLocalizedString(@"CATALOG", nil)
+                                          image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
+            
+            [self registerTabWithStoryboardName:@"STMOrders"
+                                          title:NSLocalizedString(@"ORDERS", nil)
+                                          image:[UIImage imageNamed:@"bill-128.png"]];
+            
+            [self registerTabWithStoryboardName:@"STMWebView"
+                                          title:NSLocalizedString(@"OTHER", nil)
+                                          image:[UIImage imageNamed:@"purchase_order-128.png"]];
+            
+        } else {
+            
+            [self registerTabWithStoryboardName:@"STMWebView"
+                                          title:NSLocalizedString(@"IORDERS", nil)
+                                          image:[UIImage imageNamed:@"purchase_order-128.png"]];
+            
+        }
+        
+#ifdef DEBUG
+        
+        [self registerTabWithStoryboardName:@"STMSettings"
+                                      title:NSLocalizedString(@"SETTINGS", nil)
+                                      image:[UIImage imageNamed:@"settings3-128.png"]];
+        
+        [self registerTabWithStoryboardName:@"STMLogs"
+                                      title:NSLocalizedString(@"LOGS", nil)
+                                      image:[UIImage imageNamed:@"archive-128.png"]];
+        
+#endif
 
     }
     
-#ifdef DEBUG
-    
-    [self registerTabWithStoryboardName:@"STMSettings"
-                        title:NSLocalizedString(@"SETTINGS", nil)
-                        image:[UIImage imageNamed:@"settings3-128.png"]];
-
-    [self registerTabWithStoryboardName:@"STMLogs"
-                        title:NSLocalizedString(@"LOGS", nil)
-                        image:[UIImage imageNamed:@"archive-128.png"]];
-    
-#endif
-
 }
 
 - (void)setupIPhoneTabs {
     
     NSLog(@"device is iPhone");
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
 
-    [self registerTabWithStoryboardName:@"STMAuth"
-                        title:NSLocalizedString(@"AUTHORIZATION", nil)
-                        image:[UIImage imageNamed:@"password2-128.png"]];
+        [self registerTabWithStoryboardName:@"STMAuth"
+                            title:NSLocalizedString(@"AUTHORIZATION", nil)
+                            image:[UIImage imageNamed:@"password2-128.png"]];
 
-    [self registerTabWithStoryboardName:@"STMMessages"
-                        title:NSLocalizedString(@"MESSAGES", nil)
-                        image:[UIImage imageNamed:@"message-128.png"]];
-
+    } else {
+        
+        [self registerTabWithStoryboardName:@"STMProfile"
+                                      title:NSLocalizedString(@"PROFILE", nil)
+                                      image:[UIImage imageNamed:@"checked_user-128.png"]];
+        
+        [self registerTabWithStoryboardName:@"STMMessages"
+                                      title:NSLocalizedString(@"MESSAGES", nil)
+                                      image:[UIImage imageNamed:@"message-128.png"]];
+        
 #ifdef DEBUG
-    
-    [self registerTabWithStoryboardName:@"STMSettings"
-                        title:NSLocalizedString(@"SETTINGS", nil)
-                        image:[UIImage imageNamed:@"settings3-128.png"]];
-    
-//    [self registerTabWithName:@"STMLogs"
-//                        title:NSLocalizedString(@"LOGS", nil)
-//                        image:[UIImage imageNamed:@"archive-128.png"]];
-    
+        
+        [self registerTabWithStoryboardName:@"STMSettings"
+                                      title:NSLocalizedString(@"SETTINGS", nil)
+                                      image:[UIImage imageNamed:@"settings3-128.png"]];
+        
+        //    [self registerTabWithName:@"STMLogs"
+        //                        title:NSLocalizedString(@"LOGS", nil)
+        //                        image:[UIImage imageNamed:@"archive-128.png"]];
+        
 #endif
 
+    }
+    
 }
 
 - (void)initAuthTab {
