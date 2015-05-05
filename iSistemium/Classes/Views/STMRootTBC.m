@@ -215,46 +215,10 @@
     
     NSLog(@"device is iPad");
     
-    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+    NSArray *stcTabs = [STMAuthController authController].stcTabs;
 
-        [self registerTabWithStoryboardName:@"STMAuth"
-                                      title:NSLocalizedString(@"AUTHORIZATION", nil)
-                                      image:[UIImage imageNamed:@"password2-128.png"]];
-
-    } else {
+    [self setupTabs:stcTabs];
     
-        NSArray *stcTabs = [STMAuthController authController].stcTabs;
-        
-        for (NSDictionary *tabDictionary in stcTabs) {
-            
-            NSString *name = tabDictionary[@"name"];
-            NSString *title = tabDictionary[@"title"];
-            NSString *imageName = tabDictionary[@"imageName"];
-            NSString *minBuild = tabDictionary[@"minBuild"];
-            NSString *maxBuild = tabDictionary[@"maxBuild"];
-            BOOL isDebug = [tabDictionary[@"ifdef"] isEqualToString:@"DEBUG"];
-            
-            if (minBuild && ([BUNDLE_VERSION integerValue] < [minBuild integerValue])) break;
-            if (maxBuild && ([BUNDLE_VERSION integerValue] > [maxBuild integerValue])) break;
-
-            if (isDebug) {
-#ifdef DEBUG
-                [self registerTabWithStoryboardName:name
-                                              title:title
-                                              image:[UIImage imageNamed:imageName]];
-#endif
-            } else {
-
-                [self registerTabWithStoryboardName:name
-                                              title:title
-                                              image:[UIImage imageNamed:imageName]];
-
-            }
-            
-        }
-        
-    }
-        
 }
 
 - (void)setupIPhoneTabs {
@@ -291,6 +255,48 @@
 
     }
     
+}
+
+- (void)setupTabs:(NSArray *)stcTabs {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        
+        [self registerTabWithStoryboardName:@"STMAuth"
+                                      title:NSLocalizedString(@"AUTHORIZATION", nil)
+                                      image:[UIImage imageNamed:@"password2-128.png"]];
+        
+    } else {
+        
+        for (NSDictionary *tabDictionary in stcTabs) {
+            
+            NSString *name = tabDictionary[@"name"];
+            NSString *title = tabDictionary[@"title"];
+            NSString *imageName = tabDictionary[@"imageName"];
+            NSString *minBuild = tabDictionary[@"minBuild"];
+            NSString *maxBuild = tabDictionary[@"maxBuild"];
+            BOOL isDebug = [tabDictionary[@"ifdef"] isEqualToString:@"DEBUG"];
+            
+            if (minBuild && ([BUNDLE_VERSION integerValue] < [minBuild integerValue])) break;
+            if (maxBuild && ([BUNDLE_VERSION integerValue] > [maxBuild integerValue])) break;
+            
+            if (isDebug) {
+#ifdef DEBUG
+                [self registerTabWithStoryboardName:name
+                                              title:title
+                                              image:[UIImage imageNamed:imageName]];
+#endif
+            } else {
+                
+                [self registerTabWithStoryboardName:name
+                                              title:title
+                                              image:[UIImage imageNamed:imageName]];
+                
+            }
+            
+        }
+        
+    }
+
 }
 
 - (void)initAuthTab {

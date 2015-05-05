@@ -1,0 +1,13 @@
+{
+    "STMAuth": "STMAuth",
+    "STMProfile": "STMProfile",
+    "STMCampaign": null,
+    "STMCatalog": null,
+    "STMDebts": null,
+    "STMLogs": null,
+    "STMMessages": "STMMessages",
+    "STMOrders": null,
+    "STMSettings": "STMSettings",
+    "STMUncashing": null,
+    "STMWebView": null
+}
