@@ -180,21 +180,33 @@
     
     if (storyboardName) {
         
-        (title) ? [self.storyboardTitles addObject:title] : [self.storyboardTitles addObject:storyboardName];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
-        UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = title;
-        vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
+        NSString *path = [[NSBundle mainBundle] pathForResource:storyboardName ofType:@"storyboardc"];
 
-        [self.allTabsVCs addObject:vc];
-        
-        (self.tabs)[storyboardName] = vc;
-        
-        if ([storyboardName hasPrefix:@"STMAuth"]) {
-            [self.authVCs addObject:vc];
+        if (path) {
+            
+            title = (title) ? title : storyboardName;
+            [self.storyboardTitles addObject:title];
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
+            UIViewController *vc = [storyboard instantiateInitialViewController];
+            vc.title = title;
+            vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
+            
+            [self.allTabsVCs addObject:vc];
+            
+            (self.tabs)[storyboardName] = vc;
+            
+            if ([storyboardName hasPrefix:@"STMAuth"]) {
+                [self.authVCs addObject:vc];
+            }
+
+        } else {
+            
+            NSString *logMessage = [NSString stringWithFormat:@"Storyboard %@ not found in app's bundle", storyboardName];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            
         }
-                
+        
     }
     
 }
@@ -296,21 +308,6 @@
 
     [self prepareTabs];
     
-//    UIViewController *vc = self.tabs[@"STMAuth"];
-//    vc.title = NSLocalizedString(@"PROFILE", nil);
-//    vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checked_user-128.png"] toSize:CGSizeMake(30, 30)];
-    
-//    UIViewController *messageVC = self.tabs[@"STMMessage"];
-//    
-//    if (messageVC) {
-//        
-//        NSUInteger unreadCount = [STMMessageController unreadMessagesCount];
-//        NSString *badgeValue = (unreadCount == 0) ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
-//        messageVC.tabBarItem.badgeValue = badgeValue;
-//        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
-//
-//    }
-
     [self showUnreadMessageCount];
     [self showUnreadCampaignCount];
     
