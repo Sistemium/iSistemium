@@ -224,37 +224,37 @@
 - (void)setupIPhoneTabs {
     
     NSLog(@"device is iPhone");
+
+    NSArray *iPhoneStcTabs = [self iPhoneStcTabsForStcTabs:[STMAuthController authController].stcTabs];
     
-    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+    [self setupTabs:iPhoneStcTabs];
+    
+}
 
-        [self registerTabWithStoryboardName:@"STMAuth"
-                            title:NSLocalizedString(@"AUTHORIZATION", nil)
-                            image:[UIImage imageNamed:@"password2-128.png"]];
+- (NSArray *)iPhoneStcTabsForStcTabs:(NSArray *)stcTabs {
 
-    } else {
+    NSString *iPhoneStoryboards = [[NSBundle mainBundle] pathForResource:@"iphoneTabs" ofType:@"json"];
+    NSData *iPhoneTabsData = [NSData dataWithContentsOfFile:iPhoneStoryboards];
+    
+    NSMutableDictionary *iPhoneTabsJSON = [NSJSONSerialization JSONObjectWithData:iPhoneTabsData options:NSJSONReadingMutableContainers error:nil];
+    NSArray *nullKeys = [iPhoneTabsJSON allKeysForObject:[NSNull null]];
+    [iPhoneTabsJSON removeObjectsForKeys:nullKeys];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name IN %@", iPhoneTabsJSON.allKeys];
+    stcTabs = [stcTabs filteredArrayUsingPredicate:predicate];
+    
+    NSMutableArray *iPhoneStcTabs = [NSMutableArray array];
+    
+    for (NSDictionary *stcTab in stcTabs) {
         
-        [self registerTabWithStoryboardName:@"STMProfile"
-                                      title:NSLocalizedString(@"PROFILE", nil)
-                                      image:[UIImage imageNamed:@"checked_user-128.png"]];
+        NSMutableDictionary *tab = [stcTab mutableCopy];
+        tab[@"name"] = iPhoneTabsJSON[stcTab[@"name"]];
+        [iPhoneStcTabs addObject:tab];
         
-        [self registerTabWithStoryboardName:@"STMMessages"
-                                      title:NSLocalizedString(@"MESSAGES", nil)
-                                      image:[UIImage imageNamed:@"message-128.png"]];
-        
-#ifdef DEBUG
-        
-        [self registerTabWithStoryboardName:@"STMSettings"
-                                      title:NSLocalizedString(@"SETTINGS", nil)
-                                      image:[UIImage imageNamed:@"settings3-128.png"]];
-        
-        //    [self registerTabWithName:@"STMLogs"
-        //                        title:NSLocalizedString(@"LOGS", nil)
-        //                        image:[UIImage imageNamed:@"archive-128.png"]];
-        
-#endif
-
     }
     
+    return iPhoneStcTabs;
+
 }
 
 - (void)setupTabs:(NSArray *)stcTabs {
