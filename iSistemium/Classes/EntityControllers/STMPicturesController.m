@@ -558,9 +558,9 @@
     
     NSString *href = [object valueForKey:@"href"];
     
-    if ([self.secondAttempt containsObject:href]) {
+//    if ([self.secondAttempt containsObject:href]) {
         //        NSLog(@"second attempt for %@", href);
-    }
+//    }
     
     __weak NSManagedObject *weakObject = object;
     
