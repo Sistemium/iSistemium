@@ -11,6 +11,7 @@
 @interface STMSession()
 
 @property (nonatomic, strong) NSDictionary *startSettings;
+@property (nonatomic, strong) NSArray *startTrackers;
 
 @end
 
@@ -25,23 +26,26 @@
         session.status = @"starting";
         session.startSettings = startSettings;
         session.authDelegate = authDelegate;
-        session.settingsController = [STMSettingsController initWithSettings:startSettings];
-        session.trackers = [NSMutableDictionary dictionary];
-        session.syncer = [[STMSyncer alloc] init];
-
-        if ([trackers containsObject:@"location"]) {
-            
-            session.locationTracker = [[STMLocationTracker alloc] init];
-            (session.trackers)[session.locationTracker.group] = session.locationTracker;
-
-        }
+        session.startTrackers = trackers;
         
-        if ([trackers containsObject:@"battery"]) {
-            
-            session.batteryTracker = [[STMBatteryTracker alloc] init];
-            (session.trackers)[session.batteryTracker.group] = session.batteryTracker;
-
-        }
+//#warning move settingController, trackers and syncer init to documentReady method
+//        session.settingsController = [STMSettingsController initWithSettings:startSettings];
+//        session.trackers = [NSMutableDictionary dictionary];
+//        session.syncer = [[STMSyncer alloc] init];
+//
+//        if ([trackers containsObject:@"location"]) {
+//            
+//            session.locationTracker = [[STMLocationTracker alloc] init];
+//            (session.trackers)[session.locationTracker.group] = session.locationTracker;
+//
+//        }
+//        
+//        if ([trackers containsObject:@"battery"]) {
+//            
+//            session.batteryTracker = [[STMBatteryTracker alloc] init];
+//            (session.trackers)[session.batteryTracker.group] = session.batteryTracker;
+//
+//        }
         
         [session addObservers];
 
@@ -132,7 +136,7 @@
              object:nil];
     
     [nc addObserver:self
-           selector:@selector(settingsLoadComplete)
+           selector:@selector(settingsLoadComplete:)
                name:@"settingsLoadComplete"
              object:self.settingsController];
     
@@ -151,17 +155,31 @@
 
 - (void)documentReady:(NSNotification *)notification {
     
-//    [[STMLogger sharedLogger] saveLogMessageWithText:@"test documentReady" type:@"debug"];
-    
     if ([[notification.userInfo valueForKey:@"uid"] isEqualToString:self.uid]) {
+    
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"document ready"];
+
+        self.settingsController = [STMSettingsController initWithSettings:self.startSettings];
+        self.trackers = [NSMutableDictionary dictionary];
+        self.syncer = [[STMSyncer alloc] init];
         
-//        self.logger = [[STMLogger alloc] init];
+        if ([self.startTrackers containsObject:@"location"]) {
+            
+            self.locationTracker = [[STMLocationTracker alloc] init];
+            (self.trackers)[self.locationTracker.group] = self.locationTracker;
+            
+        }
+        
+        if ([self.startTrackers containsObject:@"battery"]) {
+            
+            self.batteryTracker = [[STMBatteryTracker alloc] init];
+            (self.trackers)[self.batteryTracker.group] = self.batteryTracker;
+            
+        }
+        
         self.logger = [STMLogger sharedLogger];
         self.logger.session = self;
         self.settingsController.session = self;
-
-//        [self.logger saveLogMessageWithText:[NSString stringWithFormat:@"document ready: %@", notification.object] type:nil];
-        [self.logger saveLogMessageWithText:@"document ready"];
 
     }
     
@@ -175,14 +193,18 @@
     
 }
 
-- (void)settingsLoadComplete {
+- (void)settingsLoadComplete:(NSNotification *)notification {
     
-//    NSLog(@"currentSettings %@", [self.settingsController currentSettings]);
-    self.locationTracker.session = self;
-    self.batteryTracker.session = self;
-    self.syncer.session = self;
-    self.syncer.authDelegate = self.authDelegate;
-    self.status = @"running";
+    if (notification.object == self.settingsController) {
+    
+        //    NSLog(@"currentSettings %@", [self.settingsController currentSettings]);
+        self.locationTracker.session = self;
+        self.batteryTracker.session = self;
+        self.syncer.session = self;
+        self.syncer.authDelegate = self.authDelegate;
+        self.status = @"running";
+
+    }
     
 }
 
