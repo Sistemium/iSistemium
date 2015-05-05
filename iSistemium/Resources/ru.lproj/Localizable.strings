@@ -205,5 +205,7 @@
 "LOCATION WILL TRACKING AT" = "Геолокация остановлена до";
 "LOCATION SHOULD NOT BE TRACKING BUT GOING ON" = "Геолокация не выключилась по расписанию";
 "CHECK ROLES" = "Проверка ролей";
-
+"CAN NOT GET ROLES" = "Не могу получить роли. Повторить попытку?";
+"YES" = "Да";
+"NO" = "Нет";
 

@@ -20,7 +20,7 @@
 
 #define TIMEOUT 15.0
 
-@interface STMAuthController() <NSURLConnectionDataDelegate>
+@interface STMAuthController() <NSURLConnectionDataDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSMutableData *responseData;
 @property (nonatomic, strong) NSString *requestID;
@@ -552,14 +552,8 @@
         return YES;
         
     } else {
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError"
-                                                            object:self
-                                                          userInfo:@{@"error": NSLocalizedString(@"NO CONNECTION", nil)}];
-        
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        
-        self.controllerState = STMAuthEnterPhoneNumber;
+
+        [self connectionErrorWhileRequestingRoles];
         
         return NO;
         
@@ -590,11 +584,19 @@
     NSLog(@"%@", errorMessage);
 #endif
     
-    self.controllerState = STMAuthEnterPhoneNumber;
+    if (self.controllerState == STMAuthRequestRoles) {
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error.localizedDescription}];
+        [self connectionErrorWhileRequestingRoles];
+        
+    } else {
+        
+        self.controllerState = STMAuthEnterPhoneNumber;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error.localizedDescription}];
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    }
 
 }
 
@@ -642,6 +644,57 @@
     [self logout];
     
 }
+
+- (void)connectionErrorWhileRequestingRoles {
+    
+    if (self.stcTabs) {
+        
+        self.controllerState = STMAuthSuccess;
+        
+    } else {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"CAN NOT GET ROLES", nil)
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        alertView.tag = 1;
+        [alertView show];
+        
+    }
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+            
+        case 1:
+            switch (buttonIndex) {
+                    
+                case 0:
+                    [self logout];
+                    break;
+                    
+                case 1:
+                    [self requestRoles];
+                    break;
+                    
+                default:
+                    break;
+                    
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
 
 #pragma mark - parse response
 
