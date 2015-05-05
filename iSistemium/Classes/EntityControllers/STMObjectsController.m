@@ -1371,7 +1371,10 @@
                 
             } else {
                 
-                [[self session].logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
+                NSString *logMessage = [NSString stringWithFormat:@"Sync: no object with xid: %@", xid];
+                NSLog(logMessage);
+
+//                [[self session].logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
                 
             }
             
