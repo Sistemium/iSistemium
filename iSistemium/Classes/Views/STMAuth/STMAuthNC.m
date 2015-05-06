@@ -16,6 +16,7 @@
 @property (nonatomic, strong) STMAuthPhoneVC *phoneVC;
 @property (nonatomic, strong) STMAuthSMSVC *smsVC;
 @property (nonatomic, strong) STMAuthSuccessVC *successVC;
+@property (nonatomic, strong) UIViewController *requestRolesVC;
 
 @end
 
@@ -52,6 +53,16 @@
     
 }
 
+- (UIViewController *)requestRolesVC {
+    
+    if (!_requestRolesVC) {
+        _requestRolesVC = [self.storyboard instantiateViewControllerWithIdentifier:@"requestRoles"];
+        _requestRolesVC.title = NSLocalizedString(@"CHECK ROLES", nil);
+    }
+    return _requestRolesVC;
+    
+}
+
 - (STMAuthSuccessVC *)successVC {
     
     if (!_successVC) {
@@ -72,6 +83,11 @@
             
         case STMAuthEnterSMSCode:
             [self setViewControllers:@[self.smsVC] animated:YES];
+            
+            break;
+            
+        case STMAuthRequestRoles:
+            [self setViewControllers:@[self.requestRolesVC] animated:YES];
             
             break;
             
@@ -128,7 +144,7 @@
 }
 
 
-#pragma mark - STMTabBarViewController delegate
+#pragma mark - STMTabBarViewController protocol
 
 - (void)showActionSheetFromTabBarItem {
     

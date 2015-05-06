@@ -508,10 +508,20 @@
 
 - (void)sessionStatusChanged:(NSNotification *)notification {
     
-    if ([[(id <STMSession>)notification.object status] isEqualToString:@"finishing"]) {
-        [self stopSyncer];
-    } else if ([[(id <STMSession>)notification.object status] isEqualToString:@"running"]) {
-        [self startSyncer];
+    if ([notification.object isKindOfClass:[STMSession class]]) {
+        
+        STMSession *session = (STMSession *)notification.object;
+    
+        if (session == self.session) {
+            
+            if ([session.status isEqualToString:@"finishing"]) {
+                [self stopSyncer];
+            } else if ([session.status isEqualToString:@"running"]) {
+                [self startSyncer];
+            }
+
+        }
+        
     }
     
 }

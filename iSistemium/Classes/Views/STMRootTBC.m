@@ -8,6 +8,8 @@
 
 #import "STMRootTBC.h"
 
+#import "STMUI.h"
+
 #import "STMSessionManager.h"
 #import "STMSession.h"
 
@@ -69,9 +71,7 @@
 }
 
 - (STMSession *)session {
-    
     return [STMSessionManager sharedManager].currentSession;
-    
 }
 
 - (BOOL)newAppVersionAvailable {
@@ -115,7 +115,8 @@
     
     self.tabBar.hidden = NO;
     
-    [self stateChanged];
+//    [self stateChanged];
+    [self initAuthTab];
     
 }
 
@@ -177,112 +178,125 @@
     
 }
 
-- (void)registerTabWithStoryboardName:(NSString *)storyboardName title:(NSString *)title image:(UIImage *)image {
+- (void)registerTabWithStoryboardParameters:(NSDictionary *)parameters {
     
-    if (storyboardName) {
-        
-        (title) ? [self.storyboardTitles addObject:title] : [self.storyboardTitles addObject:storyboardName];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
-        UIViewController *vc = [storyboard instantiateInitialViewController];
-        vc.title = title;
-        vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
+    NSString *name = parameters[@"name"];
+    NSString *title = parameters[@"title"];
+    NSString *imageName = parameters[@"imageName"];
 
-        [self.allTabsVCs addObject:vc];
+    if (name) {
         
-        (self.tabs)[storyboardName] = vc;
+        NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"storyboardc"];
         
-        if ([storyboardName hasPrefix:@"STMAuth"]) {
-            [self.authVCs addObject:vc];
+        if (path) {
+            
+            title = (title) ? title : name;
+            [self.storyboardTitles addObject:title];
+            
+            STMStoryboard *storyboard = [STMStoryboard storyboardWithName:name bundle:nil];
+            storyboard.parameters = parameters;
+            
+            UIViewController *vc = [storyboard instantiateInitialViewController];
+            vc.title = title;
+            vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:imageName] toSize:CGSizeMake(30, 30)];
+            
+            [self.allTabsVCs addObject:vc];
+            
+            (self.tabs)[name] = vc;
+            
+            if ([name hasPrefix:@"STMAuth"]) {
+                [self.authVCs addObject:vc];
+            }
+            
+        } else {
+            
+            NSString *logMessage = [NSString stringWithFormat:@"Storyboard %@ not found in app's bundle", name];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            
         }
-                
+        
     }
-    
+
 }
 
 - (void)setupIPadTabs {
     
     NSLog(@"device is iPad");
     
-    [self registerTabWithStoryboardName:@"STMAuth"
-                        title:NSLocalizedString(@"AUTHORIZATION", nil)
-                        image:[UIImage imageNamed:@"password2-128.png"]];
+    NSArray *stcTabs = [STMAuthController authController].stcTabs;
 
-    [self registerTabWithStoryboardName:@"STMCampaigns"
-                        title:NSLocalizedString(@"AD CAMPAIGNS", nil)
-                        image:[UIImage imageNamed:@"christmas_gift-128.png"]];
-
-    [self registerTabWithStoryboardName:@"STMDebts"
-                        title:NSLocalizedString(@"DEBTS", nil)
-                        image:[UIImage imageNamed:@"cash_receiving-128.png"]];
-
-    [self registerTabWithStoryboardName:@"STMUncashing"
-                        title:NSLocalizedString(@"UNCASHING", nil)
-                        image:[UIImage imageNamed:@"banknotes-128.png"]];
-
-    [self registerTabWithStoryboardName:@"STMMessages"
-                                  title:NSLocalizedString(@"MESSAGES", nil)
-                                  image:[UIImage imageNamed:@"message-128.png"]];
-
-    if ([BUNDLE_VERSION integerValue] >= 70) {
-        
-        [self registerTabWithStoryboardName:@"STMCatalog"
-                                      title:NSLocalizedString(@"CATALOG", nil)
-                                      image:[UIImage imageNamed:@"Dossier Folder-100.png"]];
-
-        [self registerTabWithStoryboardName:@"STMOrders"
-                                      title:NSLocalizedString(@"ORDERS", nil)
-                                      image:[UIImage imageNamed:@"bill-128.png"]];
-
-        [self registerTabWithStoryboardName:@"STMWebView"
-                                      title:NSLocalizedString(@"OTHER", nil)
-                                      image:[UIImage imageNamed:@"purchase_order-128.png"]];
-
-    } else {
+    [self setupTabs:stcTabs];
     
-        [self registerTabWithStoryboardName:@"STMWebView"
-                                      title:NSLocalizedString(@"IORDERS", nil)
-                                      image:[UIImage imageNamed:@"purchase_order-128.png"]];
-
-    }
-    
-#ifdef DEBUG
-    
-    [self registerTabWithStoryboardName:@"STMSettings"
-                        title:NSLocalizedString(@"SETTINGS", nil)
-                        image:[UIImage imageNamed:@"settings3-128.png"]];
-
-    [self registerTabWithStoryboardName:@"STMLogs"
-                        title:NSLocalizedString(@"LOGS", nil)
-                        image:[UIImage imageNamed:@"archive-128.png"]];
-    
-#endif
-
 }
 
 - (void)setupIPhoneTabs {
     
     NSLog(@"device is iPhone");
 
-    [self registerTabWithStoryboardName:@"STMAuth"
-                        title:NSLocalizedString(@"AUTHORIZATION", nil)
-                        image:[UIImage imageNamed:@"password2-128.png"]];
+    NSArray *iPhoneStcTabs = [self iPhoneStcTabsForStcTabs:[STMAuthController authController].stcTabs];
+    
+    [self setupTabs:iPhoneStcTabs];
+    
+}
 
-    [self registerTabWithStoryboardName:@"STMMessages"
-                        title:NSLocalizedString(@"MESSAGES", nil)
-                        image:[UIImage imageNamed:@"message-128.png"]];
+- (NSArray *)iPhoneStcTabsForStcTabs:(NSArray *)stcTabs {
 
+    NSString *iPhoneStoryboards = [[NSBundle mainBundle] pathForResource:@"iphoneTabs" ofType:@"json"];
+    NSData *iPhoneTabsData = [NSData dataWithContentsOfFile:iPhoneStoryboards];
+    
+    NSMutableDictionary *iPhoneTabsJSON = [NSJSONSerialization JSONObjectWithData:iPhoneTabsData options:NSJSONReadingMutableContainers error:nil];
+    NSArray *nullKeys = [iPhoneTabsJSON allKeysForObject:[NSNull null]];
+    [iPhoneTabsJSON removeObjectsForKeys:nullKeys];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name IN %@", iPhoneTabsJSON.allKeys];
+    stcTabs = [stcTabs filteredArrayUsingPredicate:predicate];
+    
+    NSMutableArray *iPhoneStcTabs = [NSMutableArray array];
+    
+    for (NSDictionary *stcTab in stcTabs) {
+        
+        NSMutableDictionary *tab = [stcTab mutableCopy];
+        tab[@"name"] = iPhoneTabsJSON[stcTab[@"name"]];
+        [iPhoneStcTabs addObject:tab];
+        
+    }
+    
+    return iPhoneStcTabs;
+
+}
+
+- (void)setupTabs:(NSArray *)stcTabs {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        
+        [self registerTabWithStoryboardParameters:@{@"name": @"STMAuth",
+                                                    @"title": NSLocalizedString(@"AUTHORIZATION", nil),
+                                                    @"imageName": @"password2-128.png"}];
+        
+    } else {
+        
+        for (NSDictionary *parameters in stcTabs) {
+            
+            NSString *minBuild = parameters[@"minBuild"];
+            NSString *maxBuild = parameters[@"maxBuild"];
+            BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
+            
+            if (minBuild && ([BUNDLE_VERSION integerValue] < [minBuild integerValue])) break;
+            if (maxBuild && ([BUNDLE_VERSION integerValue] > [maxBuild integerValue])) break;
+            
+            if (isDebug) {
 #ifdef DEBUG
-    
-    [self registerTabWithStoryboardName:@"STMSettings"
-                        title:NSLocalizedString(@"SETTINGS", nil)
-                        image:[UIImage imageNamed:@"settings3-128.png"]];
-    
-//    [self registerTabWithName:@"STMLogs"
-//                        title:NSLocalizedString(@"LOGS", nil)
-//                        image:[UIImage imageNamed:@"archive-128.png"]];
-    
+                [self registerTabWithStoryboardParameters:parameters];
 #endif
+            } else {
+                
+                [self registerTabWithStoryboardParameters:parameters];
+                
+            }
+            
+        }
+        
+    }
 
 }
 
@@ -301,21 +315,6 @@
 
     [self prepareTabs];
     
-    UIViewController *vc = self.tabs[@"STMAuth"];
-    vc.title = NSLocalizedString(@"PROFILE", nil);
-    vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checked_user-128.png"] toSize:CGSizeMake(30, 30)];
-    
-//    UIViewController *messageVC = self.tabs[@"STMMessage"];
-//    
-//    if (messageVC) {
-//        
-//        NSUInteger unreadCount = [STMMessageController unreadMessagesCount];
-//        NSString *badgeValue = (unreadCount == 0) ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount];
-//        messageVC.tabBarItem.badgeValue = badgeValue;
-//        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
-//
-//    }
-
     [self showUnreadMessageCount];
     [self showUnreadCampaignCount];
     
@@ -518,17 +517,26 @@
     
 //    [STMAuthController authController].controllerState != STMAuthSuccess ? [self initAuthTab] : [self initAllTabs];
     
-    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+    if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
         
         [self initAuthTab];
         
     } else {
         
-        [self initAllTabs];
+//        [self initAllTabs];
         
     }
     
 }
+
+- (void)sessionStatusChanged:(NSNotification *)notification {
+    
+    if ([self.session.status isEqualToString:@"running"]) {
+        [self initAllTabs];
+    }
+    
+}
+
 
 - (void)syncStateChanged {
 
@@ -606,7 +614,7 @@
 
 }
 
-- (void) setDocumentReady {
+- (void)setDocumentReady {
     
     [STMClientDataController checkAppVersion];
     [STMMessageController showMessageVCsIfNeeded];
@@ -684,6 +692,11 @@
                name:@"NSURLErrorTimedOut"
              object:self.session.syncer];
     
+    [nc addObserver:self
+           selector:@selector(sessionStatusChanged:)
+               name:@"sessionStatusChanged"
+             object:self.session];
+
 }
 
 - (void)removeObservers {

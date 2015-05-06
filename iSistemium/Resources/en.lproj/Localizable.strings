@@ -204,4 +204,8 @@
 "LOCATION SHOULD BE TRACKING BUT NOT" = "Location should be tracking but not";
 "LOCATION WILL TRACKING AT" = "Location will tracking at";
 "LOCATION SHOULD NOT BE TRACKING BUT GOING ON" = "Location should not be tracking but going on";
+"CHECK ROLES" = "Check roles";
+"CAN NOT GET ROLES" = "Can not get roles. Repeat request?";
+"YES" = "Yes";
+"NO" = "No";
 

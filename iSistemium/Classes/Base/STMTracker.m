@@ -126,7 +126,7 @@
 
 - (void)trackerSettingsChanged:(NSNotification *)notification {
     
-    [self.settings addEntriesFromDictionary:notification.userInfo];
+    if (notification.object == self.session) [self.settings addEntriesFromDictionary:notification.userInfo];
 
 }
 
@@ -143,12 +143,19 @@
 
 - (void)sessionStatusChanged:(NSNotification *)notification {
     
-    if ([[(id <STMSession>)notification.object status] isEqualToString:@"finishing"]) {
-        [self releaseTimers];
-        [self stopTracking];
-    } else if ([[(id <STMSession>)notification.object status] isEqualToString:@"running"]) {
-        [self checkTrackerAutoStart];
-//        [self startTracking];
+    if (notification.object == self.session) {
+        
+        if ([self.session.status isEqualToString:@"finishing"]) {
+            
+            [self releaseTimers];
+            [self stopTracking];
+            
+        } else if ([self.session.status isEqualToString:@"running"]) {
+            
+            [self checkTrackerAutoStart];
+
+        }
+        
     }
     
 }
@@ -330,10 +337,11 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStart", self.group] object:self];
         self.tracking = YES;
-        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Start tracking %@", self.group] type:@"important"];
+        NSString *logMessage = [NSString stringWithFormat:@"Session #%@: start tracking %@", self.session.uid, self.group];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
         
     } else {
-        NSLog(@"%@ tracker already started", self.group);
+        NSLog(@"Session #%@: %@ tracker already started", self.session.uid, self.group);
     }
     
 }
@@ -346,10 +354,11 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStop", self.group] object:self];
         self.tracking = NO;
-        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Stop tracking %@", self.group] type:@"important"];
+        NSString *logMessage = [NSString stringWithFormat:@"Session #%@: stop tracking %@", self.session.uid, self.group];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
 
     } else {
-        NSLog(@"%@ tracker already stopped", self.group);
+        NSLog(@"Session #%@: %@ tracker already stopped", self.session.uid, self.group);
     }
     
 }
