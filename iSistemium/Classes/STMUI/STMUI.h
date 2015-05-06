@@ -9,6 +9,8 @@
 #ifndef iSistemium_STMUI_h
 #define iSistemium_STMUI_h
 
+#include "STMStoryboard.h"
+
 #include "STMBarButtonItem.h"
 
 #include "STMSplitViewController.h"

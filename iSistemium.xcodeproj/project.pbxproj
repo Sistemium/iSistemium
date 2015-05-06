@@ -154,6 +154,7 @@
 		2C734B7E19B4E5C400EE33FA /* STMLogs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C734B7D19B4E5C400EE33FA /* STMLogs.storyboard */; };
 		2C734B8219B4E6FD00EE33FA /* archive-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C734B8119B4E6FD00EE33FA /* archive-128.png */; };
 		2C73A9241AF8F59F00FB7662 /* iphoneTabs.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C73A9231AF8F59F00FB7662 /* iphoneTabs.json */; };
+		2C73A9271AF9E0BC00FB7662 /* STMStoryboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C73A9261AF9E0BC00FB7662 /* STMStoryboard.m */; };
 		2C7E7DA41ABCA77800A26185 /* STMCustom2TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */; };
 		2C7E7DA71ABCA94700A26185 /* STMCustom2TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */; };
 		2C7E7DB41ABEEA0500A26185 /* STMArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DB31ABEEA0500A26185 /* STMArticle.m */; };
@@ -524,6 +525,8 @@
 		2C734B7D19B4E5C400EE33FA /* STMLogs.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMLogs.storyboard; sourceTree = "<group>"; };
 		2C734B8119B4E6FD00EE33FA /* archive-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "archive-128.png"; sourceTree = "<group>"; };
 		2C73A9231AF8F59F00FB7662 /* iphoneTabs.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = iphoneTabs.json; sourceTree = "<group>"; };
+		2C73A9251AF9E0BC00FB7662 /* STMStoryboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMStoryboard.h; sourceTree = "<group>"; };
+		2C73A9261AF9E0BC00FB7662 /* STMStoryboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMStoryboard.m; sourceTree = "<group>"; };
 		2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom2TVCell.xib; sourceTree = "<group>"; };
 		2C7E7DA51ABCA94700A26185 /* STMCustom2TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom2TVCell.h; sourceTree = "<group>"; };
 		2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom2TVCell.m; sourceTree = "<group>"; };
@@ -737,6 +740,8 @@
 			isa = PBXGroup;
 			children = (
 				2C140AB91A18991B002C5C17 /* STMUI.h */,
+				2C73A9251AF9E0BC00FB7662 /* STMStoryboard.h */,
+				2C73A9261AF9E0BC00FB7662 /* STMStoryboard.m */,
 				2C140AB61A189772002C5C17 /* STMBarButtonItem.h */,
 				2C140AB71A189772002C5C17 /* STMBarButtonItem.m */,
 				D9527F6B1A3A504D0098885D /* STMSplitViewController.h */,
@@ -1610,6 +1615,7 @@
 				2C2968F319A0C31B0038B122 /* STMUncashingSVC.m in Sources */,
 				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,
 				2C57646C1AAB270F00B9FD2C /* STMOrdersOutletTVC.m in Sources */,
+				2C73A9271AF9E0BC00FB7662 /* STMStoryboard.m in Sources */,
 				2C5764521AA9F81300B9FD2C /* STMOutlet.m in Sources */,
 				2C5764961AB3189E00B9FD2C /* STMSegmentedControl.m in Sources */,
 				2C53B8A619409E71002298A5 /* STMSettingsController.m in Sources */,

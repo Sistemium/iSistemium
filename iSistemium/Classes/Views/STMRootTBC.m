@@ -8,6 +8,8 @@
 
 #import "STMRootTBC.h"
 
+#import "STMUI.h"
+
 #import "STMSessionManager.h"
 #import "STMSession.h"
 
@@ -176,39 +178,45 @@
     
 }
 
-- (void)registerTabWithStoryboardName:(NSString *)storyboardName title:(NSString *)title image:(UIImage *)image {
+- (void)registerTabWithStoryboardParameters:(NSDictionary *)parameters {
     
-    if (storyboardName) {
-        
-        NSString *path = [[NSBundle mainBundle] pathForResource:storyboardName ofType:@"storyboardc"];
+    NSString *name = parameters[@"name"];
+    NSString *title = parameters[@"title"];
+    NSString *imageName = parameters[@"imageName"];
 
+    if (name) {
+        
+        NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"storyboardc"];
+        
         if (path) {
             
-            title = (title) ? title : storyboardName;
+            title = (title) ? title : name;
             [self.storyboardTitles addObject:title];
             
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
+            STMStoryboard *storyboard = [STMStoryboard storyboardWithName:name bundle:nil];
+            storyboard.parameters = parameters;
+            
             UIViewController *vc = [storyboard instantiateInitialViewController];
             vc.title = title;
-            vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
+            vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:imageName] toSize:CGSizeMake(30, 30)];
             
             [self.allTabsVCs addObject:vc];
             
-            (self.tabs)[storyboardName] = vc;
+            (self.tabs)[name] = vc;
             
-            if ([storyboardName hasPrefix:@"STMAuth"]) {
+            if ([name hasPrefix:@"STMAuth"]) {
                 [self.authVCs addObject:vc];
             }
-
+            
         } else {
             
-            NSString *logMessage = [NSString stringWithFormat:@"Storyboard %@ not found in app's bundle", storyboardName];
+            NSString *logMessage = [NSString stringWithFormat:@"Storyboard %@ not found in app's bundle", name];
             [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
             
         }
         
     }
-    
+
 }
 
 - (void)setupIPadTabs {
@@ -261,35 +269,28 @@
     
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
         
-        [self registerTabWithStoryboardName:@"STMAuth"
-                                      title:NSLocalizedString(@"AUTHORIZATION", nil)
-                                      image:[UIImage imageNamed:@"password2-128.png"]];
+        [self registerTabWithStoryboardParameters:@{@"name": @"STMAuth",
+                                                    @"title": NSLocalizedString(@"AUTHORIZATION", nil),
+                                                    @"imageName": @"password2-128.png"}];
         
     } else {
         
-        for (NSDictionary *tabDictionary in stcTabs) {
+        for (NSDictionary *parameters in stcTabs) {
             
-            NSString *name = tabDictionary[@"name"];
-            NSString *title = tabDictionary[@"title"];
-            NSString *imageName = tabDictionary[@"imageName"];
-            NSString *minBuild = tabDictionary[@"minBuild"];
-            NSString *maxBuild = tabDictionary[@"maxBuild"];
-            BOOL isDebug = [tabDictionary[@"ifdef"] isEqualToString:@"DEBUG"];
+            NSString *minBuild = parameters[@"minBuild"];
+            NSString *maxBuild = parameters[@"maxBuild"];
+            BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
             
             if (minBuild && ([BUNDLE_VERSION integerValue] < [minBuild integerValue])) break;
             if (maxBuild && ([BUNDLE_VERSION integerValue] > [maxBuild integerValue])) break;
             
             if (isDebug) {
 #ifdef DEBUG
-                [self registerTabWithStoryboardName:name
-                                              title:title
-                                              image:[UIImage imageNamed:imageName]];
+                [self registerTabWithStoryboardParameters:parameters];
 #endif
             } else {
                 
-                [self registerTabWithStoryboardName:name
-                                              title:title
-                                              image:[UIImage imageNamed:imageName]];
+                [self registerTabWithStoryboardParameters:parameters];
                 
             }
             
