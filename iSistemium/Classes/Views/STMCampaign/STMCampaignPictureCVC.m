@@ -168,7 +168,7 @@
     label.textAlignment = NSTextAlignmentCenter;
     label.tag = 2;
     
-    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:picture];
+    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:picture.xid];
     
     if (recordStatus.isRead) {
         

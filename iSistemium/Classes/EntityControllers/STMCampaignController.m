@@ -19,7 +19,7 @@
     
     for (STMCampaignPicture *picture in campaign.pictures) {
         
-        STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:picture];
+        STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:picture.xid];
         
         if (!recordStatus.isRead) {
             
