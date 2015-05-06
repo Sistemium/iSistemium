@@ -642,6 +642,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
+    UIColor *textColor = (!saleOrder.outlet.isActive || [saleOrder.outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
+    
+    cell.titleLabel.textColor = textColor;
+//    cell.detailLabel.textColor = textColor;
+    
     cell.titleLabel.text = saleOrder.outlet.name;
     
     NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
