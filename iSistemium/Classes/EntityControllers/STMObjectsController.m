@@ -420,7 +420,15 @@
     if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
         
         if ([object isKindOfClass:[NSManagedObject class]]) {
+            
+            NSManagedObjectContext *context = [STMObjectsController document].managedObjectContext;
+            NSManagedObjectContext *parentContext = context.parentContext;
+            
+            CLS_LOG(@"context %@", context);
+            CLS_LOG(@"parentContext %@", parentContext);
             CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
+            CLS_LOG(@"object isDeleted %d", [(NSManagedObject *)object isDeleted]);
+            
         }
 
         CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
