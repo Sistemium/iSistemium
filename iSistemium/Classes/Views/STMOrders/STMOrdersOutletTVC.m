@@ -44,6 +44,11 @@
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
+    UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
+    
+    cell.textLabel.textColor = textColor;
+    cell.detailTextLabel.textColor = textColor;
+    
     cell.textLabel.text = outlet.shortName;
     
     NSUInteger count = outlet.saleOrders.count;

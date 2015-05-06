@@ -2,7 +2,7 @@
 //  STMOutlet.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/03/15.
+//  Created by Maxim Grigoriev on 06/05/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -17,13 +17,14 @@
 @property (nonatomic, retain) NSString * address;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * shortName;
+@property (nonatomic, retain) NSNumber * isActive;
 @property (nonatomic, retain) NSSet *campaigns;
 @property (nonatomic, retain) NSSet *cashings;
 @property (nonatomic, retain) NSSet *debts;
 @property (nonatomic, retain) STMPartner *partner;
 @property (nonatomic, retain) NSSet *photoReports;
-@property (nonatomic, retain) STMSalesman *salesman;
 @property (nonatomic, retain) NSSet *saleOrders;
+@property (nonatomic, retain) STMSalesman *salesman;
 @end
 
 @interface STMOutlet (CoreDataGeneratedAccessors)

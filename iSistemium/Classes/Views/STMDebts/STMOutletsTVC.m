@@ -334,6 +334,11 @@
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
+    UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
+    
+    cell.textLabel.textColor = textColor;
+    cell.detailTextLabel.textColor = textColor;
+    
     cell.textLabel.text = outlet.shortName;
     cell.detailTextLabel.text = [self detailedTextForOutlet:outlet];
     
@@ -358,8 +363,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
-    STMOutlet *outlet = sectionInfo.objects[indexPath.row];
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
     self.splitVC.detailVC.outlet = outlet;
     
