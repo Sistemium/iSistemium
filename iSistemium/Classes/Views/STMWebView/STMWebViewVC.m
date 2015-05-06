@@ -7,8 +7,12 @@
 //
 
 #import "STMWebViewVC.h"
+
+#import "STMUI.h"
+
 #import "STMSessionManager.h"
 #import "STMAuthController.h"
+
 #import "STMFunctions.h"
 
 @interface STMWebViewVC () <UIWebViewDelegate, UIActionSheetDelegate>
@@ -55,13 +59,29 @@
 
 - (NSString *)webViewUrlString {
     
-    return [[self webViewSettings] valueForKey:@"wv.url"];
+    if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
+
+        STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
+        NSString *url = storyboard.parameters[@"url"];
+        return url;
+        
+    } else {
+        return [[self webViewSettings] valueForKey:@"wv.url"];
+    }
     
 }
 
 - (NSString *)webViewSessionCheckJS {
     
-    return [[self webViewSettings] valueForKey:@"wv.session.check"];
+    if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
+        
+        STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
+        NSString *authCheck = storyboard.parameters[@"authCheck"];
+        return authCheck;
+        
+    } else {
+        return [[self webViewSettings] valueForKey:@"wv.session.check"];
+    }
     
 }
 
@@ -185,7 +205,7 @@
     
     NSString *bsAccessToken = [self.webView stringByEvaluatingJavaScriptFromString:[self webViewSessionCheckJS]];
 
-//    NSLog(@"bsAccessToken %@", bsAccessToken);
+    NSLog(@"bsAccessToken %@", bsAccessToken);
     
     if ([bsAccessToken isEqualToString:@""]) {
     
@@ -215,9 +235,6 @@
 
 - (void)customInit {
 
-//    [self flushCookie];
-
-//    self.tabBarItem.title = [self webViewTitle];
     self.webView.delegate = self;
     [self loadWebView];
     
