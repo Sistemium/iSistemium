@@ -502,10 +502,10 @@
     
     NSDictionary *infoDictionary = [NSBundle mainBundle].infoDictionary;
     NSString *displayName = infoDictionary[@"CFBundleDisplayName"];
-    NSString *shortVersionString = infoDictionary[@"CFBundleShortVersionString"];
-    NSString *bundleVersion = infoDictionary[@"CFBundleVersion"];
+    NSString *appVersionString = APP_VERSION;
+    NSString *buildVersion = BUILD_VERSION;
     
-    NSString *result = [NSString stringWithFormat:@"%@ %@ (%@)", displayName, shortVersionString, bundleVersion];
+    NSString *result = [NSString stringWithFormat:@"%@ %@ (%@)", displayName, appVersionString, buildVersion];
     
 //    NSLog(@"infoDictionary %@", infoDictionary);
     

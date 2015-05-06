@@ -2,7 +2,7 @@
 //  STMClientData.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/15.
+//  Created by Maxim Grigoriev on 06/05/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -17,11 +17,12 @@
 @dynamic devicePlatform;
 @dynamic deviceToken;
 @dynamic deviceTokenError;
+@dynamic deviceUUID;
 @dynamic lastAuth;
 @dynamic locationServiceStatus;
 @dynamic notificationTypes;
 @dynamic systemVersion;
 @dynamic tokenHash;
-@dynamic deviceUUID;
+@dynamic bundleVersion;
 
 @end

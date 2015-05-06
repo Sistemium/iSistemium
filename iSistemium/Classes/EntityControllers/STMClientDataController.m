@@ -26,7 +26,11 @@
 #pragma mark - clientData properties
 
 + (NSString *)appVersion {
-    return BUNDLE_VERSION;
+    return BUILD_VERSION;
+}
+
++ (NSString *)bundleVersion {
+    return APP_VERSION;
 }
 
 + (NSString *)buildType {
@@ -175,9 +179,9 @@
         
         if (clientData) {
             
-            NSString *bundleVersion = BUNDLE_VERSION;
-            if (![bundleVersion isEqualToString:clientData.appVersion]) {
-                clientData.appVersion = bundleVersion;
+            NSString *buildVersion = BUILD_VERSION;
+            if (![buildVersion isEqualToString:clientData.appVersion]) {
+                clientData.appVersion = buildVersion;
             }
             
             NSString *entityName = NSStringFromClass([STMSetting class]);

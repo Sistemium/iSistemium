@@ -281,8 +281,8 @@
             NSString *maxBuild = parameters[@"maxBuild"];
             BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
             
-            if (minBuild && ([BUNDLE_VERSION integerValue] < [minBuild integerValue])) break;
-            if (maxBuild && ([BUNDLE_VERSION integerValue] > [maxBuild integerValue])) break;
+            if (minBuild && ([BUILD_VERSION integerValue] < [minBuild integerValue])) break;
+            if (maxBuild && ([BUILD_VERSION integerValue] > [maxBuild integerValue])) break;
             
             if (isDebug) {
 #ifdef DEBUG
