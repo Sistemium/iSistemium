@@ -167,6 +167,7 @@
     STMSyncer *syncer = [self syncer];
     BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
     UIColor *color = (hasObjectsToUpload) ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
+    SEL cloudTapSelector = (hasObjectsToUpload) ? @selector(uploadCloudTapped) : @selector(downloadCloudTapped);
     
     NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
     
@@ -181,7 +182,7 @@
             
             [self.syncImageView setTintColor:color];
             
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(uploadImageViewTapped)];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:cloudTapSelector];
             [self.syncImageView addGestureRecognizer:tap];
             
         } else {
@@ -195,10 +196,7 @@
 }
 
 - (void)removeGestureRecognizersFromCloudImages {
-    
     [self removeGestureRecognizersFrom:self.syncImageView];
-    //    [self removeGestureRecognizersFrom:self.downloadImageView];
-    
 }
 
 - (void)removeGestureRecognizersFrom:(UIView *)view {
@@ -209,11 +207,11 @@
     
 }
 
-- (void)uploadImageViewTapped {
+- (void)uploadCloudTapped {
     [self syncer].syncerState = STMSyncerSendDataOnce;
 }
 
-- (void)downloadImageViewTapped {
+- (void)downloadCloudTapped {
     [self syncer].syncerState = STMSyncerReceiveData;
 }
 
