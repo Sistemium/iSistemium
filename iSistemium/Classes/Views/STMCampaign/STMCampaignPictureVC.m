@@ -62,7 +62,7 @@
     CGFloat maxDimension = MAX(image.size.height, image.size.width);
     if (maxDimension > MAX_PICTURE_SIZE) {
         
-        image = [STMFunctions resizeImage:image toSize:CGSizeMake(MAX_PICTURE_SIZE, MAX_PICTURE_SIZE)];
+        image = [STMFunctions resizeImage:image toSize:CGSizeMake(MAX_PICTURE_SIZE, MAX_PICTURE_SIZE) allowRetina:NO];
         NSData *imageData = UIImageJPEGRepresentation(image, STMPicturesController.jpgQuality);
         NSString *filename = self.picture.href.lastPathComponent;
         [STMPicturesController saveImageFile:filename forPicture:self.picture fromImageData:imageData];

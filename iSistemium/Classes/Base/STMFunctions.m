@@ -421,6 +421,10 @@
 }
 
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
+    return [self resizeImage:image toSize:size allowRetina:YES];
+}
+
++ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina {
     
     if (image.size.height > 0 && image.size.width > 0) {
         
@@ -439,13 +443,16 @@
         
         // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
         // Pass 1.0 to force exact pixel size.
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, 0.0);
+        
+        CGFloat scale = (retina) ? 0.0 : 1.0;
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, scale);
         [image drawInRect:CGRectMake(0, 0, width, height)];
         UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
         return resultImage;
-
+        
     } else {
         
         return nil;

@@ -525,7 +525,7 @@
     
     if (maxDimension > MAX_PICTURE_SIZE) {
         
-        image = [STMFunctions resizeImage:image toSize:CGSizeMake(MAX_PICTURE_SIZE, MAX_PICTURE_SIZE)];
+        image = [STMFunctions resizeImage:image toSize:CGSizeMake(MAX_PICTURE_SIZE, MAX_PICTURE_SIZE) allowRetina:NO];
         data = UIImageJPEGRepresentation(image, [self jpgQuality]);
 
     }
@@ -543,7 +543,7 @@
 
     NSString *resizedImagePath = [STMFunctions absolutePathForPath:resizedFileName];
     
-    UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024)];
+    UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024) allowRetina:NO];
     NSData *resizedImageData = nil;
     resizedImageData = UIImageJPEGRepresentation(resizedImage, [self jpgQuality]);
     [resizedImageData writeToFile:resizedImagePath atomically:YES];
