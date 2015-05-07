@@ -1189,6 +1189,7 @@
     }
     
     NSLog(@"unknow count %d", counter);
+    NSLog(@"fantoms count %d", [self numberOfFantoms]);
     NSLog(@"total count %d", totalCount);
 
 }
@@ -1228,6 +1229,18 @@
         return 0;
         
     }
+
+}
+
++ (NSUInteger)numberOfFantoms {
+
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"isFantom == YES"];
+    NSError *error;
+    NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
+    
+    return result;
 
 }
 

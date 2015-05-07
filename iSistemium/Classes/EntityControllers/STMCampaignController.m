@@ -39,6 +39,8 @@
     NSUInteger result = 0;
     
     NSArray *campaigns = [STMObjectsController objectsForEntityName:NSStringFromClass([STMCampaign class])];
+    NSPredicate *notFantomPredicate = [STMPredicate predicateWithNoFantoms];
+    campaigns = [campaigns filteredArrayUsingPredicate:notFantomPredicate];
     
     for (STMCampaign *campaign in campaigns) {
         

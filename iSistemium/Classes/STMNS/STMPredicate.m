@@ -10,13 +10,29 @@
 
 @implementation STMPredicate
 
-+ (NSPredicate *)predicateWithNoFantomsFromPredicate:(NSPredicate *)predicate {
-    
++ (NSPredicate *)predicateWithNoFantoms {
+
     NSPredicate *notFantom = [NSPredicate predicateWithFormat:@"(isFantom == NO) OR (isFantom == nil)"];
 
-    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, notFantom]];
+    return notFantom;
     
-    return predicate;
+}
+
++ (NSPredicate *)predicateWithNoFantomsFromPredicate:(NSPredicate *)predicate {
+
+    NSPredicate *notFantom = [self predicateWithNoFantoms];
+
+    if (predicate) {
+    
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, notFantom]];
+        
+        return predicate;
+
+    } else {
+        
+        return notFantom;
+        
+    }
     
 }
 

@@ -111,7 +111,7 @@
 
     self.delegate = self;
 
-    [self prepareTabs];
+//    [self prepareTabs];
     
     self.tabBar.hidden = NO;
     
@@ -301,7 +301,10 @@
 }
 
 - (void)initAuthTab {
-    
+
+    NSString *logMessage = @"init auth tab";
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+
     [self prepareTabs];
     
     self.viewControllers = self.authVCs;
