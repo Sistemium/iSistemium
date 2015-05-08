@@ -156,6 +156,7 @@
 		2C73A9271AF9E0BC00FB7662 /* STMStoryboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C73A9261AF9E0BC00FB7662 /* STMStoryboard.m */; };
 		2C73A92B1AF9FB5E00FB7662 /* STMOutlet.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C73A92A1AF9FB5E00FB7662 /* STMOutlet.m */; };
 		2C761BA61AFA06A4001DA33E /* STMClientData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C761BA51AFA06A4001DA33E /* STMClientData.m */; };
+		2C761BAA1AFCE3B7001DA33E /* STMClientEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C761BA91AFCE3B7001DA33E /* STMClientEntity.m */; };
 		2C7E7DA41ABCA77800A26185 /* STMCustom2TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */; };
 		2C7E7DA71ABCA94700A26185 /* STMCustom2TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */; };
 		2C7E7DB41ABEEA0500A26185 /* STMArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DB31ABEEA0500A26185 /* STMArticle.m */; };
@@ -531,6 +532,9 @@
 		2C761BA31AFA0650001DA33E /* STMDataModel 47.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 47.xcdatamodel"; sourceTree = "<group>"; };
 		2C761BA41AFA06A4001DA33E /* STMClientData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMClientData.h; sourceTree = "<group>"; };
 		2C761BA51AFA06A4001DA33E /* STMClientData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMClientData.m; sourceTree = "<group>"; };
+		2C761BA71AFCE351001DA33E /* STMDataModel 48.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 48.xcdatamodel"; sourceTree = "<group>"; };
+		2C761BA81AFCE3B7001DA33E /* STMClientEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMClientEntity.h; sourceTree = "<group>"; };
+		2C761BA91AFCE3B7001DA33E /* STMClientEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMClientEntity.m; sourceTree = "<group>"; };
 		2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom2TVCell.xib; sourceTree = "<group>"; };
 		2C7E7DA51ABCA94700A26185 /* STMCustom2TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom2TVCell.h; sourceTree = "<group>"; };
 		2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom2TVCell.m; sourceTree = "<group>"; };
@@ -902,6 +906,8 @@
 				2C2968DC199F8F220038B122 /* STMCashing+dayAsString.m */,
 				2C761BA41AFA06A4001DA33E /* STMClientData.h */,
 				2C761BA51AFA06A4001DA33E /* STMClientData.m */,
+				2C761BA81AFCE3B7001DA33E /* STMClientEntity.h */,
+				2C761BA91AFCE3B7001DA33E /* STMClientEntity.m */,
 				2C65290B19576895008605D9 /* STMComment.h */,
 				2C65290C19576895008605D9 /* STMComment.m */,
 				2C5764A11AB8718700B9FD2C /* STMDatum.h */,
@@ -1547,6 +1553,7 @@
 				2CFDD88B1A308B1C003515C5 /* STMUncashingProcessController.m in Sources */,
 				2C57641C1AA5E1E500B9FD2C /* STMCashingControlsVC.m in Sources */,
 				2C57648E1AB1B1EE00B9FD2C /* STMEntityDescription.m in Sources */,
+				2C761BAA1AFCE3B7001DA33E /* STMClientEntity.m in Sources */,
 				2C8047161A0E381400FEFEFF /* STMUncashingInfoVC.m in Sources */,
 				2C7E7DB71ABEEA0600A26185 /* STMPrice.m in Sources */,
 				2C73A92B1AF9FB5E00FB7662 /* STMOutlet.m in Sources */,
@@ -1956,6 +1963,7 @@
 		2C9051881A276E9200EFE40D /* STMDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2C761BA71AFCE351001DA33E /* STMDataModel 48.xcdatamodel */,
 				2C761BA31AFA0650001DA33E /* STMDataModel 47.xcdatamodel */,
 				2C73A9281AF9FAC500FB7662 /* STMDataModel 46.xcdatamodel */,
 				2C5297F01ACFFB88008496AE /* STMDataModel 45.xcdatamodel */,
@@ -2004,7 +2012,7 @@
 				2C9051A01A276E9200EFE40D /* STMDataModel 9.xcdatamodel */,
 				2C9051A11A276E9200EFE40D /* STMDataModel.xcdatamodel */,
 			);
-			currentVersion = 2C761BA31AFA0650001DA33E /* STMDataModel 47.xcdatamodel */;
+			currentVersion = 2C761BA71AFCE351001DA33E /* STMDataModel 48.xcdatamodel */;
 			path = STMDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
