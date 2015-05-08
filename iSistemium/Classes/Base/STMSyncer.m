@@ -14,6 +14,7 @@
 #import "STMPhotoReport.h"
 #import "STMFunctions.h"
 #import "STMEntityController.h"
+#import "STMClientEntityController.h"
 #import "STMClientDataController.h"
 #import "STMPicturesController.h"
 
@@ -861,8 +862,13 @@
         NSString *url = entity.url;
         
         if (url) {
+        
+            STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:entity.name];
             
-            NSString *eTag = entity.eTag;
+//            NSLog(@"entity.name %@ entity.eTag %@", entity.name, entity.eTag);
+//            NSLog(@"clientEntity.name %@ clientEntity.eTag %@", clientEntity.name, clientEntity.eTag);
+
+            NSString *eTag = clientEntity.eTag;
             eTag = eTag ? eTag : @"*";
             
             NSURL *requestURL = [NSURL URLWithString:url];
@@ -1192,8 +1198,9 @@
     
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
     STMEntity *entity = (self.stcEntities)[entityName];
+    STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:entity.name];
     
-    entity.eTag = eTag;
+    clientEntity.eTag = eTag;
     
     [self checkConditionForReceivingEntityWithName:entityName];
     

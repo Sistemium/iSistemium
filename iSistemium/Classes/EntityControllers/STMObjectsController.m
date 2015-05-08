@@ -623,6 +623,7 @@
     
     NSArray *entityNamesForSyncing = @[
                                        NSStringFromClass([STMEntity class]),
+                                       NSStringFromClass([STMClientEntity class]),
                                        NSStringFromClass([STMPhotoReport class]),
                                        NSStringFromClass([STMCashing class]),
                                        NSStringFromClass([STMUncashing class]),
