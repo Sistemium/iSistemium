@@ -1171,6 +1171,7 @@
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMClientEntity class]),
                              NSStringFromClass([STMEntity class])];
     
     NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
