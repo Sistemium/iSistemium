@@ -1146,6 +1146,7 @@
 
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
                              NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMArticlePicture class]),
                              NSStringFromClass([STMArticleGroup class]),
                              NSStringFromClass([STMCampaign class]),
                              NSStringFromClass([STMCampaignGroup class]),

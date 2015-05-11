@@ -93,6 +93,13 @@
         
     }
     
+    if (self.splitVC.showOnlyWithPictures) {
+        
+        NSPredicate *showOnlyWithPicturesPredicate = [NSPredicate predicateWithFormat:@"(articlesPicturesCount > 0) OR (ANY children.articlesPicturesCount > 0)"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, showOnlyWithPicturesPredicate]];
+        
+    }
+
     if (self.splitVC.selectedPriceType) {
         
         NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"(ANY articlesPriceTypes == %@) OR (ANY children.@distinctUnionOfSets.articlesPriceTypes == %@)", self.splitVC.selectedPriceType, self.splitVC.selectedPriceType];
