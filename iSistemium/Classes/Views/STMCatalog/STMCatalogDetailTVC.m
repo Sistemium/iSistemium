@@ -777,15 +777,11 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
     cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
     
-    if (price.article.stock.volume.integerValue <= 0) {
-        
-        UIColor *lightGrayColor = [UIColor lightGrayColor];
-        
-        cell.titleLabel.textColor = lightGrayColor;
-        cell.detailLabel.textColor = lightGrayColor;
-        cell.infoLabel.textColor = lightGrayColor;
-        
-    }
+    UIColor *textColor = (price.article.stock.volume.integerValue <= 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
+    cell.infoLabel.textColor = textColor;
     
 }
 
@@ -797,15 +793,11 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
     cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
     
-    if (price.article.stock.volume.integerValue <= 0) {
-        
-        UIColor *lightGrayColor = [UIColor lightGrayColor];
-        
-        cell.titleLabel.textColor = lightGrayColor;
-        cell.detailLabel.textColor = lightGrayColor;
-        cell.infoLabel.textColor = lightGrayColor;
-        
-    }
+    UIColor *textColor = (price.article.stock.volume.integerValue <= 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
+    cell.infoLabel.textColor = textColor;
     
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
     STMArticlePicture *picture = [price.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
