@@ -650,12 +650,12 @@
     
     id cachedObject = [self sharedController].objectsCache[xidData];
     
-    if ([cachedObject isKindOfClass:[NSManagedObjectID class]]) {
-        
-        cachedObject = [[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)cachedObject error:nil];
-        [self sharedController].objectsCache[xidData] = cachedObject;
-        
-    }
+//    if ([cachedObject isKindOfClass:[NSManagedObjectID class]]) {
+//        
+//        cachedObject = [[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)cachedObject error:nil];
+//        [self sharedController].objectsCache[xidData] = cachedObject;
+//        
+//    }
     
     return (NSManagedObject *)cachedObject;
     
@@ -784,10 +784,28 @@
 + (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     TICK;
-    NSLog(@"initObjectsCache");
+    NSLog(@"initObjectsCache tick");
     
     [self sharedController].objectsCache = nil;
+
+    NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
+
+    NSLog(@"fetch existing objects for initObjectsCache");
+    TOCK;
     
+    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
+    NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
+    
+    [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+
+    NSLog(@"finish initObjectsCache");
+    TOCK;
+    
+    [[self document] saveDocument:^(BOOL success) {
+        completionHandler(YES);
+    }];
+    
+/*
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
     
         __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
@@ -819,7 +837,8 @@
         }];
         
     });
-    
+*/
+
 }
 
 
