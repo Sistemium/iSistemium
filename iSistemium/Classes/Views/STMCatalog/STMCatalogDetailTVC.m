@@ -185,7 +185,10 @@
 
 - (void)priceTypeLabelSetup {
     
-    self.priceTypeLabel.title = NSLocalizedString(@"PRICE_TYPE_LABEL", nil);
+    UIInterfaceOrientation interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    NSString *title = UIInterfaceOrientationIsPortrait(interfaceOrientation) ? nil : NSLocalizedString(@"PRICE_TYPE_LABEL", nil);
+    
+    self.priceTypeLabel.title = title;
     [self setupBarButton:self.priceTypeLabel asLabelWithColor:nil];
     
 }
@@ -199,8 +202,11 @@
 }
 
 - (void)stockVolumeLabelSetup {
-    
-    self.stockVolumeLabel.title = NSLocalizedString(@"SHOW ARTICLES", nil);
+
+    UIInterfaceOrientation interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    NSString *title = UIInterfaceOrientationIsPortrait(interfaceOrientation) ? nil : NSLocalizedString(@"SHOW ARTICLES", nil);
+
+    self.stockVolumeLabel.title = title;
     [self setupBarButton:self.stockVolumeLabel asLabelWithColor:nil];
     
 }
@@ -251,6 +257,21 @@
  
 }
 
+
+#pragma mark
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+    [self toolbarLabelsSetup];
+    
+}
+
+- (void)toolbarLabelsSetup {
+    
+    [self priceTypeLabelSetup];
+    [self stockVolumeLabelSetup];
+    
+}
 
 #pragma mark - NSLogs
 
@@ -800,6 +821,11 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChangeNotification:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
     
     [self setupToolbar];
     [self performFetch];
