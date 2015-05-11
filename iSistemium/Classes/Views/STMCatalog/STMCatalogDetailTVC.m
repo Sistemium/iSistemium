@@ -10,6 +10,7 @@
 #import "STMArticleInfoVC.h"
 
 static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
+static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 
 @interface STMCatalogDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
@@ -706,7 +707,7 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
             cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier];
         });
 
-        [self fillPictureCell:cell withPrice:price indexPath:indexPath];
+        [self fillPictureCell:cell withPrice:price];
         
         cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
         
@@ -722,7 +723,25 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 
     } else {
         
-        return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+        static STMCustom5TVCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            cell = [self.tableView dequeueReusableCellWithIdentifier:Custom5CellIdentifier];
+        });
+        
+        [self fillCell:cell withPrice:price];
+        
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+        
+        [cell setNeedsLayout];
+        [cell layoutIfNeeded];
+        
+        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+        
+        [self putCachedHeight:height forIndexPath:indexPath];
+        
+        return height;
         
     }
 
@@ -730,33 +749,18 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    STMArticle *article = nil;
-    
-    STMPrice *price = nil;
-
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-
-//        article = [self.searchResults objectAtIndex:indexPath.row];
-        price = [self.searchResults objectAtIndex:indexPath.row];
-
-    } else {
-        
-//        article = [self.resultsController objectAtIndexPath:indexPath];
-        price = [self.resultsController objectAtIndexPath:indexPath];
-        
-    }
+    STMPrice *price = (tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
     
     if (price.article.pictures.count > 0) {
         
         STMCustom4TVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier forIndexPath:indexPath];
-        [self fillPictureCell:cell withPrice:price indexPath:indexPath];
+        [self fillPictureCell:cell withPrice:price];
         
         return cell;
         
     } else {
      
-        static NSString *cellIdentifier = @"catalogDetailCell";
-        STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+        STMCustom5TVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:Custom5CellIdentifier forIndexPath:indexPath];
         [self fillCell:cell withPrice:price];
         
         return cell;
@@ -765,10 +769,10 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
     
 }
 
-- (void)fillCell:(STMInfoTableViewCell *)cell withPrice:(STMPrice *)price {
+- (void)fillCell:(STMCustom5TVCell *)cell withPrice:(STMPrice *)price {
     
-    cell.textLabel.text = price.article.name;
-    cell.detailTextLabel.text = [self detailedTextForArticle:price.article];
+    cell.titleLabel.text = price.article.name;
+    cell.detailLabel.text = [self detailedTextForArticle:price.article];
     
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
     cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
@@ -777,15 +781,15 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
         
         UIColor *lightGrayColor = [UIColor lightGrayColor];
         
-        cell.textLabel.textColor = lightGrayColor;
-        cell.detailTextLabel.textColor = lightGrayColor;
+        cell.titleLabel.textColor = lightGrayColor;
+        cell.detailLabel.textColor = lightGrayColor;
         cell.infoLabel.textColor = lightGrayColor;
         
     }
     
 }
 
-- (void)fillPictureCell:(STMCustom4TVCell *)cell withPrice:(STMPrice *)price indexPath:(NSIndexPath *)indexPath {
+- (void)fillPictureCell:(STMCustom4TVCell *)cell withPrice:(STMPrice *)price {
     
     cell.titleLabel.text = price.article.name;
     cell.detailLabel.text = [self detailedTextForArticle:price.article];
@@ -1014,6 +1018,7 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 - (void)customInit {
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom4TVCell" bundle:nil] forCellReuseIdentifier:Custom4CellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil] forCellReuseIdentifier:Custom5CellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deviceOrientationDidChangeNotification:)
