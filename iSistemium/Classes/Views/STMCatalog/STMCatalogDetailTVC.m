@@ -35,6 +35,8 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 
 @property (nonatomic, strong) STMArticle *selectedArticle;
 
+@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
+
 
 @end
 
@@ -289,6 +291,8 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 - (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
     
     [self toolbarLabelsSetup];
+    self.cachedCellsHeights = nil;
+    [self.tableView reloadData];
     
 }
 
@@ -591,6 +595,35 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
     self.articleInfoPopover = nil;
 }
 
+
+#pragma mark - cell's height caching
+
+- (NSMutableDictionary *)cachedCellsHeights {
+    
+    if (!_cachedCellsHeights) {
+        _cachedCellsHeights = [NSMutableDictionary dictionary];
+    }
+    return _cachedCellsHeights;
+    
+}
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    
+    self.cachedCellsHeights[objectID] = @(height);
+    
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    
+    return self.cachedCellsHeights[objectID];
+    
+}
+
+
 #pragma mark - Table view data source
 
 - (NSString *)detailedTextForArticle:(STMArticle *)article {
@@ -640,6 +673,61 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static CGFloat standardCellHeight;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+    });
+    
+    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+    
+    return height;
+    
+}
+
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMPrice *price = (self.tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+  
+    if (price.article.pictures.count > 0) {
+     
+        static STMCustom4TVCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier];
+        });
+
+        [self fillPictureCell:cell withPrice:price indexPath:indexPath];
+        
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+        
+        [cell setNeedsLayout];
+        [cell layoutIfNeeded];
+        
+        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+        
+        [self putCachedHeight:height forIndexPath:indexPath];
+        
+        return height;
+
+    } else {
+        
+        return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+        
+    }
+
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
 //    STMArticle *article = nil;
@@ -658,15 +746,26 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
         
     }
     
-    return (price.article.pictures.count > 0) ? [self pictureCellWithPrice:price indexPath:indexPath] : [self cellWithPrice:price];
+    if (price.article.pictures.count > 0) {
+        
+        STMCustom4TVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier forIndexPath:indexPath];
+        [self fillPictureCell:cell withPrice:price indexPath:indexPath];
+        
+        return cell;
+        
+    } else {
+     
+        static NSString *cellIdentifier = @"catalogDetailCell";
+        STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+        [self fillCell:cell withPrice:price];
+        
+        return cell;
+        
+    }
     
 }
 
-- (UITableViewCell *)cellWithPrice:(STMPrice *)price {
-    
-    static NSString *cellIdentifier = @"catalogDetailCell";
-    
-    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+- (void)fillCell:(STMInfoTableViewCell *)cell withPrice:(STMPrice *)price {
     
     cell.textLabel.text = price.article.name;
     cell.detailTextLabel.text = [self detailedTextForArticle:price.article];
@@ -684,14 +783,10 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
         
     }
     
-    return cell;
-
 }
 
-- (UITableViewCell *)pictureCellWithPrice:(STMPrice *)price indexPath:(NSIndexPath *)indexPath {
+- (void)fillPictureCell:(STMCustom4TVCell *)cell withPrice:(STMPrice *)price indexPath:(NSIndexPath *)indexPath {
     
-    STMCustom4TVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier forIndexPath:indexPath];
-
     cell.titleLabel.text = price.article.name;
     cell.detailLabel.text = [self detailedTextForArticle:price.article];
     
@@ -713,7 +808,8 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 
     cell.pictureView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
     
-    return cell;
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
     
 }
 
@@ -889,6 +985,29 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
     [self infoLabelSetup];
     
 }
+
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [super controllerDidChangeContent:controller];
+        
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    if ([anObject isKindOfClass:[NSManagedObject class]]) {
+        
+        NSManagedObjectID *objectID = [(NSManagedObject *)anObject objectID];
+        [self.cachedCellsHeights removeObjectForKey:objectID];
+        
+    }
+    
+    [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
+    
+}
+
 
 #pragma mark - view lifecycle
 
