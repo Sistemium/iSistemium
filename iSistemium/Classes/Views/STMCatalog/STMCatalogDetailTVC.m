@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeSelector;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeLabel;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeButton;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *picturesButton;
 
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
@@ -119,6 +120,13 @@
         
     }
 
+    if (self.splitVC.showOnlyWithPictures) {
+
+        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.pictures.@count > 0"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+
+    }
+    
 //    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
 //    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
 
@@ -219,6 +227,22 @@
     self.stockVolumeButton.target = self;
     self.stockVolumeButton.action = @selector(showStockVolumeFilter);
     
+}
+
+- (void)picturesFilterButtonSetup {
+    
+    [self picturesButtonImageSetup];
+    self.picturesButton.target = self;
+    self.picturesButton.action = @selector(picturesButtonPressed);
+    
+}
+
+- (void)picturesButtonImageSetup {
+
+    NSString *imageName = (self.splitVC.showOnlyWithPictures) ? @"Picture Filled-25.png" : @"Picture-25.png";
+    UIImage *image = [UIImage imageNamed:imageName];
+    self.picturesButton.image = image;
+
 }
 
 - (void)infoLabelSetup {
@@ -415,6 +439,16 @@
         
     }
     return _stockVolumeFilterActionSheet;
+    
+}
+
+
+#pragma mark - pictures filter
+
+- (void)picturesButtonPressed {
+    
+    self.splitVC.showOnlyWithPictures = !self.splitVC.showOnlyWithPictures;
+    [self picturesButtonImageSetup];
     
 }
 
@@ -814,6 +848,7 @@
     [self priceTypeSelectorSetup];
     [self stockVolumeLabelSetup];
     [self stockVolumeButtonSetup];
+    [self picturesFilterButtonSetup];
     [self infoLabelSetup];
     
 }
