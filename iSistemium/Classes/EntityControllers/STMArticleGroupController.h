@@ -14,6 +14,7 @@
 + (NSUInteger)numberOfArticlesInGroup:(STMArticleGroup *)articleGroup;
 
 + (void)refillParents;
++ (void)refillParentsWithPredicate:(NSPredicate *)predicate;
 
 + (NSSet *)parentsForArticleGroup:(STMArticleGroup *)articleGroup;
 
