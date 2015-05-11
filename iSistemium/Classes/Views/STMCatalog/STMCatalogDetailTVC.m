@@ -9,6 +9,8 @@
 #import "STMCatalogDetailTVC.h"
 #import "STMArticleInfoVC.h"
 
+static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
+
 
 @interface STMCatalogDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
@@ -640,10 +642,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *cellIdentifier = @"catalogDetailCell";
-    
-    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-
 //    STMArticle *article = nil;
     
     STMPrice *price = nil;
@@ -660,6 +658,16 @@
         
     }
     
+    return (price.article.pictures.count > 0) ? [self pictureCellWithPrice:price indexPath:indexPath] : [self cellWithPrice:price];
+    
+}
+
+- (UITableViewCell *)cellWithPrice:(STMPrice *)price {
+    
+    static NSString *cellIdentifier = @"catalogDetailCell";
+    
+    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    
     cell.textLabel.text = price.article.name;
     cell.detailTextLabel.text = [self detailedTextForArticle:price.article];
     
@@ -673,8 +681,37 @@
         cell.textLabel.textColor = lightGrayColor;
         cell.detailTextLabel.textColor = lightGrayColor;
         cell.infoLabel.textColor = lightGrayColor;
-
+        
     }
+    
+    return cell;
+
+}
+
+- (UITableViewCell *)pictureCellWithPrice:(STMPrice *)price indexPath:(NSIndexPath *)indexPath {
+    
+    STMCustom4TVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier forIndexPath:indexPath];
+
+    cell.titleLabel.text = price.article.name;
+    cell.detailLabel.text = [self detailedTextForArticle:price.article];
+    
+    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
+    
+    if (price.article.stock.volume.integerValue <= 0) {
+        
+        UIColor *lightGrayColor = [UIColor lightGrayColor];
+        
+        cell.titleLabel.textColor = lightGrayColor;
+        cell.detailLabel.textColor = lightGrayColor;
+        cell.infoLabel.textColor = lightGrayColor;
+        
+    }
+    
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
+    STMArticlePicture *picture = [price.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
+
+    cell.pictureView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
     
     return cell;
     
@@ -856,6 +893,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom4TVCell" bundle:nil] forCellReuseIdentifier:Custom4CellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deviceOrientationDidChangeNotification:)
