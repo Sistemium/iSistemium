@@ -8,6 +8,7 @@
 
 #import "STMFetchedResultsControllerTVC.h"
 #import "STMPriceType.h"
+#import "STMArticle.h"
 
 
 @interface STMCatalogDetailTVC : STMFetchedResultsControllerTVC
@@ -19,5 +20,7 @@
 - (void)hideKeyboard;
 
 - (NSArray *)currentArticles;
+- (STMArticle *)selectPreviousArticle;
+- (STMArticle *)selectNextArticle;
 
 @end

@@ -196,6 +196,49 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
 }
 
+- (STMArticle *)selectPreviousArticle {
+    
+    NSArray *currentArticles = [self currentArticles];
+    NSUInteger index = [currentArticles indexOfObject:self.selectedArticle];
+    
+    if (index > 0) {
+        
+        index--;
+        
+        UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        
+        self.selectedArticle = currentArticles[index];
+        return self.selectedArticle;
+        
+    } else {
+        return nil;
+    }
+    
+}
+
+- (STMArticle *)selectNextArticle {
+
+    NSArray *currentArticles = [self currentArticles];
+    NSUInteger index = [currentArticles indexOfObject:self.selectedArticle];
+    
+    if (index < currentArticles.count-1) {
+        
+        index++;
+
+        UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        
+        self.selectedArticle = currentArticles[index];
+        return self.selectedArticle;
+        
+    } else {
+        return nil;
+    }
+
+}
 
 #pragma mark - toolbar items
 
@@ -563,9 +606,13 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (void)showArticleInfoPopover {
     
-    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-    [self.articleInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+    if (!self.articleInfoPopover.isPopoverVisible) {
 
+        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+        [self.articleInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+        
+    }
+    
 }
 
 - (void)dismissArticleInfoPopover {

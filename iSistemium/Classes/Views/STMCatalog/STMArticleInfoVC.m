@@ -52,12 +52,31 @@
 
 - (void)showPreviousArticle {
     
+    STMArticle *previousArticle = [self.parentVC selectPreviousArticle];
+    if (previousArticle) self.article = previousArticle;
+    
 }
 
 - (void)showNextArticle {
     
+    STMArticle *nextArticle = [self.parentVC selectNextArticle];
+    if (nextArticle) self.article = nextArticle;
+    
 }
 
+- (void)setArticle:(STMArticle *)article {
+    
+    if (article != _article) {
+
+        _article = article;
+        [self setupImage];
+        [self prepareInfo];
+        [self checkArticlesArray];
+        [self.tableView reloadData];
+
+    }
+    
+}
 
 #pragma mark - setup views
 
@@ -148,6 +167,8 @@
 
 - (void)prepareInfo {
 
+    self.articleInfo = nil;
+    
     [self.articleInfo addObject:@{
                                   @"key": @"name",
                                   @"value": (self.article.name) ? self.article.name : @""
