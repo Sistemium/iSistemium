@@ -18,5 +18,6 @@
 - (void)dismissArticleInfoPopover;
 - (void)hideKeyboard;
 
+- (NSArray *)currentArticles;
 
 @end

@@ -13,6 +13,11 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+@property (nonatomic, strong) STMBarButtonItem *upButton;
+@property (nonatomic, strong) STMBarButtonItem *downButton;
+@property (nonatomic, strong) UIImageView *upImageView;
+@property (nonatomic, strong) UIImageView *downImageView;
+
 @property (nonatomic, strong) NSMutableArray *articleInfo;
 
 
@@ -73,15 +78,18 @@
     CGRect frame = CGRectMake(x, y, width, height);
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:frame];
     
-    STMBarButtonItem *upButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Up4-25"]
-                                                                   style:UIBarButtonItemStylePlain
-                                                                  target:self
-                                                                  action:@selector(upButtonPressed)];
     
-    STMBarButtonItem *downButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Down4-25"]
-                                                                     style:UIBarButtonItemStylePlain
-                                                                    target:self
-                                                                    action:@selector(downButtonPressed)];
+    UIImage *upImage = [[UIImage imageNamed:@"Up4-25"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.upImageView = [[UIImageView alloc] initWithImage:upImage];
+    self.upButton = [[STMBarButtonItem alloc] initWithCustomView:self.upImageView];
+    self.upButton.target = self;
+    self.upButton.action = @selector(upButtonPressed);
+
+    UIImage *downImage = [[UIImage imageNamed:@"Down4-25"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.downImageView = [[UIImageView alloc] initWithImage:downImage];
+    self.downButton = [[STMBarButtonItem alloc] initWithCustomView:self.downImageView];
+    self.downButton.target = self;
+    self.downButton.action = @selector(downButtonPressed);
     
     STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
                                                                       style:UIBarButtonItemStylePlain
@@ -91,9 +99,32 @@
     STMBarButtonItem *fixedSpace = [STMBarButtonItem fixedSpaceWithWidth:50];
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
 
-    [toolbar setItems:@[upButton, fixedSpace, downButton, flexibleSpace, closeButton]];
+    [self checkArticlesArray];
+    
+    [toolbar setItems:@[self.upButton, fixedSpace, self.downButton, flexibleSpace, closeButton]];
 
     [self.view addSubview:toolbar];
+    
+}
+
+- (void)checkArticlesArray {
+    
+    NSArray *articlesArray = [self.parentVC currentArticles];
+    
+    if ([articlesArray.firstObject isEqual:self.article]) {
+        
+        self.upButton.customView.tintColor = [UIColor lightGrayColor];
+        
+    } else if ([articlesArray.lastObject isEqual:self.article]) {
+
+        self.downButton.customView.tintColor = [UIColor lightGrayColor];
+
+    } else {
+
+        self.upButton.customView.tintColor = ACTIVE_BLUE_COLOR;
+        self.downButton.customView.tintColor = ACTIVE_BLUE_COLOR;
+
+    }
     
 }
 

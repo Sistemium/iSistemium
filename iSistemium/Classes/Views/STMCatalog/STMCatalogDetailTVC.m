@@ -182,6 +182,20 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
 }
 
+- (NSArray *)currentArticles {
+    
+    NSArray *currentPrices = nil;
+    
+    if (self.searchDisplayController.active) {
+        currentPrices = self.searchResults;
+    } else {
+        currentPrices = self.resultsController.fetchedObjects;
+    }
+    
+    return [currentPrices valueForKeyPath:@"article"];
+    
+}
+
 
 #pragma mark - toolbar items
 
