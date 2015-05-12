@@ -39,19 +39,39 @@
 #pragma mark - buttons
 
 - (void)upButtonPressed {
-    
+    [self showPreviousArticle];
 }
 
 - (void)downButtonPressed {
-    
+    [self showNextArticle];
 }
 
 - (void)closeButtonPressed {
     [self.parentVC dismissArticleInfoPopover];
 }
 
+- (void)showPreviousArticle {
+    
+}
+
+- (void)showNextArticle {
+    
+}
+
 
 #pragma mark - setup views
+
+- (void)addSwipeGestures {
+    
+    UISwipeGestureRecognizer *swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNextArticle)];
+    swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
+    
+    UISwipeGestureRecognizer *swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPreviousArticle)];
+    swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
+    
+    self.view.gestureRecognizers = @[swipeUpGesture, swipeDownGesture];
+    
+}
 
 - (void)setupImage {
     
@@ -81,15 +101,13 @@
     
     UIImage *upImage = [[UIImage imageNamed:@"Up4-25"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.upImageView = [[UIImageView alloc] initWithImage:upImage];
+    [self.upImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(upButtonPressed)]];
     self.upButton = [[STMBarButtonItem alloc] initWithCustomView:self.upImageView];
-    self.upButton.target = self;
-    self.upButton.action = @selector(upButtonPressed);
 
     UIImage *downImage = [[UIImage imageNamed:@"Down4-25"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.downImageView = [[UIImageView alloc] initWithImage:downImage];
+    [self.downImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(downButtonPressed)]];
     self.downButton = [[STMBarButtonItem alloc] initWithCustomView:self.downImageView];
-    self.downButton.target = self;
-    self.downButton.action = @selector(downButtonPressed);
     
     STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
                                                                       style:UIBarButtonItemStylePlain
@@ -344,6 +362,7 @@
     
     if (self.article) {
         
+        [self addSwipeGestures];
         [self setupImage];
         [self prepareInfo];
         [self setupTableView];
