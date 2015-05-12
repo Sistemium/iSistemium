@@ -8,6 +8,8 @@
 
 #import "STMCatalogDetailTVC.h"
 #import "STMArticleInfoVC.h"
+#import "STMPicturesController.h"
+
 
 static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
@@ -863,10 +865,39 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
     STMArticlePicture *picture = [price.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
 
-    cell.pictureView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
+    if (!picture.imageThumbnail) {
+        
+        [STMPicturesController hrefProcessingForObject:picture];
+        [self addSpinnerToCell:cell];
+
+    } else {
+
+        [[cell.pictureView viewWithTag:555] removeFromSuperview];
+        cell.pictureView.image = [UIImage imageWithData:picture.imageThumbnail];
+        
+    }
     
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
+    
+}
+
+- (void)addSpinnerToCell:(STMCustom4TVCell *)cell {
+    
+    UIView *view = [[UIView alloc] initWithFrame:cell.pictureView.bounds];
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.backgroundColor = [UIColor whiteColor];
+    view.alpha = 0.75;
+    view.tag = 555;
+    
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.center = view.center;
+    spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    [spinner startAnimating];
+    
+    [view addSubview:spinner];
+    
+    [cell.pictureView addSubview:view];
     
 }
 
