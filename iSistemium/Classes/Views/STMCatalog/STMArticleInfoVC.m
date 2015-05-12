@@ -205,6 +205,8 @@
 
     NSSortDescriptor *priceDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"priceType.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
     NSArray *prices = [self.article.prices sortedArrayUsingDescriptors:@[priceDescriptor]];
+    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+    prices = [prices filteredArrayUsingPredicate:pricePredicate];
     
     for (STMPrice *price in prices) {
         
