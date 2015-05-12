@@ -1097,17 +1097,59 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 }
 
 
+- (void)pictureWasDownloaded:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMArticlePicture class]]) {
+        
+        STMArticlePicture *articlePicture = (STMArticlePicture *)notification.object;
+        
+        NSSet *prices = [articlePicture.articles valueForKeyPath:@"@distinctUnionOfSets.prices"];
+        
+        for (STMPrice *price in prices) {
+            
+            NSIndexPath *indexPath = nil;
+            UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
+            
+            if (self.searchDisplayController.isActive) {
+                
+                NSUInteger index = [self.searchResults indexOfObject:price];
+                indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                
+            } else {
+                
+                indexPath = [self.resultsController indexPathForObject:price];
+                
+            }
+            
+            if (indexPath) [currentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            
+        }
+        
+    }
+
+}
+
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(deviceOrientationDidChangeNotification:)
+               name:UIDeviceOrientationDidChangeNotification
+             object:nil];
+    
+    [nc addObserver:self selector:@selector(pictureWasDownloaded:) name:@"downloadPicture" object:nil];
+    
+}
 
 - (void)customInit {
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom4TVCell" bundle:nil] forCellReuseIdentifier:Custom4CellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil] forCellReuseIdentifier:Custom5CellIdentifier];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deviceOrientationDidChangeNotification:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
+    [self addObservers];
     
     [self setupToolbar];
     [self performFetch];
