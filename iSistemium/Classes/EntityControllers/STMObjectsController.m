@@ -796,7 +796,6 @@
     NSArray *keys = [allObjects valueForKeyPath:@"xid"];
     NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
     
-<<<<<<< HEAD
     [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
 
     NSLog(@"finish initObjectsCache");
@@ -840,59 +839,6 @@
     });
 */
 
-=======
-    NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
-    
-    NSLog(@"fetch existing objects for initObjectsCache");
-    TOCK;
-    
-    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
-    NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
-    
-    [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-    
-    NSLog(@"finish initObjectsCache");
-    TOCK;
-    
-    [[self document] saveDocument:^(BOOL success) {
-        completionHandler(YES);
-    }];
-    
-    /*
-     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-     
-     __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
-     
-     [context performBlock:^{
-     
-     __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
-     
-     NSLog(@"fetch existing objectIDs for initObjectsCache");
-     TOCK;
-     
-     dispatch_async(dispatch_get_main_queue(), ^{
-     
-     NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
-     NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
-     NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-     
-     [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-     
-     NSLog(@"finish initObjectsCache");
-     TOCK;
-     
-     [[self document] saveDocument:^(BOOL success) {
-     completionHandler(YES);
-     }];
-     
-     });
-     
-     }];
-     
-     });
-     */
-    
->>>>>>> dev
 }
 
 
