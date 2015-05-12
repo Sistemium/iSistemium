@@ -427,6 +427,10 @@
                 
             }
             
+        } else {
+            
+            [self hrefProcessingForObject:picture];
+            
         }
 
     }
