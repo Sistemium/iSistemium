@@ -46,6 +46,8 @@
         }
 
     }
+    
+    [self setupWindow];
 
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
