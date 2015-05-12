@@ -132,8 +132,8 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
     }
     
-//    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
-//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
+    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
 
     NSPredicate *fantomPredicate = [NSPredicate predicateWithFormat:@"article.isFantom == NO"];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, fantomPredicate]];
