@@ -30,9 +30,23 @@
     
 }
 
+
+#pragma mark - buttons
+
+- (void)upButtonPressed {
+    
+}
+
+- (void)downButtonPressed {
+    
+}
+
 - (void)closeButtonPressed {
     [self.parentVC dismissArticleInfoPopover];
 }
+
+
+#pragma mark - setup views
 
 - (void)setupImage {
     
@@ -59,10 +73,25 @@
     CGRect frame = CGRectMake(x, y, width, height);
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:frame];
     
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
+    STMBarButtonItem *upButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Up4-25"]
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(upButtonPressed)];
     
-    [toolbar setItems:@[flexibleSpace, closeButton]];
+    STMBarButtonItem *downButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Down4-25"]
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(downButtonPressed)];
+    
+    STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(closeButtonPressed)];
+    
+    STMBarButtonItem *fixedSpace = [STMBarButtonItem fixedSpaceWithWidth:50];
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+
+    [toolbar setItems:@[upButton, fixedSpace, downButton, flexibleSpace, closeButton]];
 
     [self.view addSubview:toolbar];
     
