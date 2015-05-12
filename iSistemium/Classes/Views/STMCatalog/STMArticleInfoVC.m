@@ -335,6 +335,8 @@
     
     if ([key isEqualToString:self.parentVC.selectedPriceType.name] || [key isEqualToString:@"name"]) {
         [self boldFontForCell:cell];
+    } else {
+        [self regularFontForCell:cell];
     }
     
     if ([key isEqualToString:@"name"]) {
@@ -357,10 +359,27 @@
     
 }
 
+- (void)regularFontForCell:(STMInfoTableViewCell *)cell {
+    
+    [self regularFontForLabel:cell.textLabel];
+    [self regularFontForLabel:cell.detailTextLabel];
+    
+}
+
 - (UIFont *)boldFontForLabel:(UILabel *)label {
 
     CGFloat fontSize = label.font.pointSize;
     UIFont *font = [UIFont boldSystemFontOfSize:fontSize];
+    label.font = font;
+    
+    return font;
+
+}
+
+- (UIFont *)regularFontForLabel:(UILabel *)label {
+
+    CGFloat fontSize = label.font.pointSize;
+    UIFont *font = [UIFont systemFontOfSize:fontSize];
     label.font = font;
     
     return font;
