@@ -155,15 +155,15 @@
 
 - (void)debtSummChanged:(NSNotification *)notification {
     
-    CLS_LOG(@"____________debtSummChanged____________");
+//    CLS_LOG(@"____________debtSummChanged____________");
     
     STMOutlet *outlet = (notification.userInfo)[@"outlet"];
     
-    CLS_LOG(@"outlet %@", outlet);
-    CLS_LOG(@"outlet.managedObjectContext %@", outlet.managedObjectContext);
-    CLS_LOG(@"self.resultsController.managedObjectContext %@", self.resultsController.managedObjectContext);
-    CLS_LOG(@"isMainThread %d", [NSThread isMainThread]);
-    CLS_LOG(@"____________debtSummChanged____________");
+//    CLS_LOG(@"outlet %@", outlet);
+//    CLS_LOG(@"outlet.managedObjectContext %@", outlet.managedObjectContext);
+//    CLS_LOG(@"self.resultsController.managedObjectContext %@", self.resultsController.managedObjectContext);
+//    CLS_LOG(@"isMainThread %d", [NSThread isMainThread]);
+//    CLS_LOG(@"____________debtSummChanged____________");
 
     [self reloadRowWithOutlet:outlet];
     
