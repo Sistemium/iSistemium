@@ -365,6 +365,8 @@
                 [self initTimer];
                 [self addObservers];
                 
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
+                
                 NSError *error;
                 if (![self.resultsController performFetch:&error]) {
                     

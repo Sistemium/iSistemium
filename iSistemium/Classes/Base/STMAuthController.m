@@ -411,7 +411,7 @@
                       @"locationTrackerFinishTime": @"22.0",
                       @"enableDebtsEditing"       : @YES,
                       @"enablePartnersEditing"    : @YES,
-                      @"http.timeout.foreground"  : @"15",
+                      @"http.timeout.foreground"  : @"60",
                       @"jpgQuality"               : @"0.0"
                       };
 
