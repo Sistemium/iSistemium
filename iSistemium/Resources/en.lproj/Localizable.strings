@@ -209,3 +209,6 @@
 "YES" = "Yes";
 "NO" = "No";
 "DOCUMENT_ERROR" = "Document error";
+"RESPONSE IS NOT A DICTIONARY" = "Response is not a dictionary";
+
+

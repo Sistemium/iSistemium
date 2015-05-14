@@ -785,7 +785,7 @@
 
 - (void)processingResponseJSONError {
     
-    NSString *error;
+    NSString *error = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
     
     if (self.controllerState == STMAuthEnterPhoneNumber) {
         
