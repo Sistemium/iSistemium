@@ -208,4 +208,4 @@
 "CAN NOT GET ROLES" = "Can not get roles. Repeat request?";
 "YES" = "Yes";
 "NO" = "No";
-
+"DOCUMENT_ERROR" = "Document error";

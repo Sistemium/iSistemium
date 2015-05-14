@@ -38,6 +38,8 @@
 @property (nonatomic, strong) NSMutableArray *allTabsVCs;
 @property (nonatomic, strong) NSMutableArray *authVCs;
 
+@property (nonatomic, strong) STMSpinnerView *spinnerView;
+
 @end
 
 @implementation STMRootTBC
@@ -52,6 +54,15 @@
     });
     
     return _sharedRootVC;
+    
+}
+
+- (STMSpinnerView *)spinnerView {
+    
+    if (!_spinnerView) {
+        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame];
+    }
+    return _spinnerView;
     
 }
 
@@ -524,9 +535,9 @@
         
         [self initAuthTab];
         
-    } else {
-        
-//        [self initAllTabs];
+    } else if ([STMAuthController authController].controllerState == STMAuthSuccess) {
+
+        [self.view addSubview:self.spinnerView];
         
     }
     
@@ -546,6 +557,10 @@
     [UIApplication sharedApplication].applicationIconBadgeNumber = [STMMessageController unreadMessagesCount];
     [self checkTimeoutAlert];
     
+}
+
+- (void)syncerInitSuccessfully {
+    [self.spinnerView removeFromSuperview];
 }
 
 - (void)syncerTimeoutError {
@@ -624,6 +639,19 @@
     
 }
 
+- (void)documentNotReady {
+    
+    [self.spinnerView removeFromSuperview];
+
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                        message:NSLocalizedString(@"DOCUMENT_ERROR", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+    [alertView show];
+    
+}
+
 #pragma mark - notifications
 
 - (void)addObservers {
@@ -648,6 +676,11 @@
     [nc addObserver:self
            selector:@selector(syncStateChanged)
                name:@"syncStatusChanged"
+             object:self.session.syncer];
+    
+    [nc addObserver:self
+           selector:@selector(syncerInitSuccessfully)
+               name:@"Syncer init successfully"
              object:self.session.syncer];
     
     [nc addObserver:self
@@ -688,6 +721,11 @@
     [nc addObserver:self
            selector:@selector(setDocumentReady)
                name:@"documentReady"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(documentNotReady)
+               name:@"documentNotReady"
              object:nil];
     
     [nc addObserver:self
