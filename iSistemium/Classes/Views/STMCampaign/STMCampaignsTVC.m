@@ -111,7 +111,13 @@
             
         }
         
+        NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+        
         [self.tableView reloadRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationFade];
+        
+        if (selectedIndexPath) {
+            [self.tableView selectRowAtIndexPath:selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        }
         
     }
     
