@@ -420,7 +420,15 @@
     if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
         
         if ([object isKindOfClass:[NSManagedObject class]]) {
+            
+            NSManagedObjectContext *context = [STMObjectsController document].managedObjectContext;
+            NSManagedObjectContext *parentContext = context.parentContext;
+            
+            CLS_LOG(@"context %@", context);
+            CLS_LOG(@"parentContext %@", parentContext);
             CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
+            CLS_LOG(@"object isDeleted %d", [(NSManagedObject *)object isDeleted]);
+            
         }
 
         CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
@@ -444,6 +452,14 @@
     if ([entityName isEqualToString:NSStringFromClass([STMMessage class])]) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
+        
+    } else if ([entityName isEqualToString:NSStringFromClass([STMCampaignPicture class])]) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaignPicture" object:nil];
+        
+    } else if ([entityName isEqualToString:NSStringFromClass([STMCampaign class])]) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaign" object:nil];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMRecordStatus class])]) {
         
@@ -633,12 +649,12 @@
     
     id cachedObject = [self sharedController].objectsCache[xidData];
     
-    if ([cachedObject isKindOfClass:[NSManagedObjectID class]]) {
-        
-        cachedObject = [[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)cachedObject error:nil];
-        [self sharedController].objectsCache[xidData] = cachedObject;
-        
-    }
+//    if ([cachedObject isKindOfClass:[NSManagedObjectID class]]) {
+//        
+//        cachedObject = [[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)cachedObject error:nil];
+//        [self sharedController].objectsCache[xidData] = cachedObject;
+//        
+//    }
     
     return (NSManagedObject *)cachedObject;
     
@@ -767,41 +783,60 @@
 + (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler {
     
     TICK;
-    NSLog(@"initObjectsCache");
+    NSLog(@"initObjectsCache tick");
     
     [self sharedController].objectsCache = nil;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
     
-        __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
-        
-        [context performBlock:^{
-            
-            __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
-            
-            NSLog(@"fetch existing objectIDs for initObjectsCache");
-            TOCK;
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
-                NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
-                NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-
-                [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-                
-                NSLog(@"finish initObjectsCache");
-                TOCK;
-                
-                [[self document] saveDocument:^(BOOL success) {
-                    completionHandler(YES);
-                }];
-                
-            });
-            
-        }];
-        
-    });
+    NSLog(@"fetch existing objects for initObjectsCache");
+    TOCK;
+    
+    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
+    NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
+    
+    [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+    
+    NSLog(@"finish initObjectsCache");
+    TOCK;
+    
+    [[self document] saveDocument:^(BOOL success) {
+        completionHandler(YES);
+    }];
+    
+    /*
+     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+     
+     __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
+     
+     [context performBlock:^{
+     
+     __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
+     
+     NSLog(@"fetch existing objectIDs for initObjectsCache");
+     TOCK;
+     
+     dispatch_async(dispatch_get_main_queue(), ^{
+     
+     NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
+     NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
+     NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+     
+     [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+     
+     NSLog(@"finish initObjectsCache");
+     TOCK;
+     
+     [[self document] saveDocument:^(BOOL success) {
+     completionHandler(YES);
+     }];
+     
+     });
+     
+     }];
+     
+     });
+     */
     
 }
 
@@ -1008,7 +1043,7 @@
             NSTimeInterval flushingTime = [[NSDate date] timeIntervalSinceDate:startFlushing];
             
             NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
-            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
             
         } else {
             
@@ -1173,6 +1208,7 @@
     }
     
     NSLog(@"unknow count %d", counter);
+    NSLog(@"fantoms count %d", [self numberOfFantoms]);
     NSLog(@"total count %d", totalCount);
 
 }
@@ -1212,6 +1248,18 @@
         return 0;
         
     }
+
+}
+
++ (NSUInteger)numberOfFantoms {
+
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"isFantom == YES"];
+    NSError *error;
+    NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
+    
+    return result;
 
 }
 
@@ -1363,7 +1411,10 @@
                 
             } else {
                 
-                [[self session].logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
+                NSString *logMessage = [NSString stringWithFormat:@"Sync: no object with xid: %@", xid];
+                NSLog(logMessage);
+
+//                [[self session].logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
                 
             }
             

@@ -11,4 +11,7 @@
 
 @interface STMCampaignPhotoReportCVC : STMCampaignPageCVC
 
+- (void)photoReportWasDeleted:(STMPhotoReport *)photoReport;
+
+
 @end

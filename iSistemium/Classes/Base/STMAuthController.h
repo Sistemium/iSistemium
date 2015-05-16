@@ -15,6 +15,7 @@ typedef enum STMAuthState {
     STMAuthEnterPhoneNumber,
     STMAuthEnterSMSCode,
     STMAuthNewSMSCode,
+    STMAuthRequestRoles,
     STMAuthSuccess
 } STMAuthState;
 
@@ -25,6 +26,7 @@ typedef enum STMAuthState {
 @property (nonatomic, strong) NSString *accessToken;
 @property (nonatomic, strong) NSString *tokenHash;
 @property (nonatomic, strong) NSDate *lastAuth;
+@property (nonatomic, strong) NSArray *stcTabs;
 @property (nonatomic) STMAuthState controllerState;
 
 
@@ -33,8 +35,9 @@ typedef enum STMAuthState {
 
 - (BOOL)sendPhoneNumber:(NSString *)phoneNumber;
 - (BOOL)sendSMSCode:(NSString *)SMSCode;
+- (BOOL)requestNewSMSCode;
+- (BOOL)requestRoles;
 
-- (void)requestNewSMSCode;
 - (void)logout;
 
 - (NSURLRequest *)authenticateRequest:(NSURLRequest *)request;

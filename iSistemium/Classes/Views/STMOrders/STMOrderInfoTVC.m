@@ -502,6 +502,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         case 0:
             cell.titleLabel.text = NSLocalizedString(@"OUTLET", nil);
             cell.detailLabel.text = self.saleOrder.outlet.name;
+            cell.detailLabel.textColor = (!self.saleOrder.outlet.isActive || [self.saleOrder.outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
             break;
 
         case 1:
@@ -790,7 +791,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 - (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 0) {
-        
+
         return self.cachedCellsHeights[indexPath];
         
     } else {
@@ -810,7 +811,10 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    self.saleOrderPositions = nil;
     [self.tableView reloadData];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo

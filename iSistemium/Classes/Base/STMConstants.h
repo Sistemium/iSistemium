@@ -29,7 +29,8 @@
 
 #define NSLogMethodName NSLog(@"%@", NSStringFromSelector(_cmd))
 
-#define BUNDLE_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey]
+#define BUILD_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]
+#define APP_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
 
 
 #endif

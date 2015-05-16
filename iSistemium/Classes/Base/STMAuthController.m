@@ -20,7 +20,7 @@
 
 #define TIMEOUT 15.0
 
-@interface STMAuthController() <NSURLConnectionDataDelegate>
+@interface STMAuthController() <NSURLConnectionDataDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSMutableData *responseData;
 @property (nonatomic, strong) NSString *requestID;
@@ -38,6 +38,7 @@
 @synthesize userName = _userName;
 @synthesize accessToken = _accessToken;
 @synthesize serviceUri = _serviceUri;
+@synthesize stcTabs = _stcTabs;
 
 #pragma mark - singletone init
 
@@ -139,15 +140,21 @@
 }
 
 - (void)setControllerState:(STMAuthState)controllerState {
-    
-    if (controllerState == STMAuthSuccess) {
+
+    NSLog(@"authControllerState %d", controllerState);
+    _controllerState = controllerState;
+
+    if (controllerState == STMAuthRequestRoles) {
+        
+        [self requestRoles];
+        
+    } else if (controllerState == STMAuthSuccess) {
+        
         NSLog(@"login");
         [self startSession];
+
     }
     
-    NSLog(@"authControllerState %d", controllerState);
-    
-    _controllerState = controllerState;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged" object:self];
     
 }
@@ -310,6 +317,33 @@
     
 }
 
+- (NSArray *)stcTabs {
+    
+    if (!_stcTabs) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _stcTabs = [defaults objectForKey:@"stcTabs"];
+        
+    }
+    return _stcTabs;
+    
+}
+
+- (void)setStcTabs:(NSArray *)stcTabs {
+    
+    if (![stcTabs isEqual:_stcTabs]) {
+        
+        _stcTabs = stcTabs;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:stcTabs forKey:@"stcTabs"];
+        [defaults synchronize];
+        
+    }
+    
+}
+
+
 #pragma mark - instance methods
 
 - (void)checkAccessToken {
@@ -333,7 +367,8 @@
     
 //    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
     
-    self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
+//    self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
+    self.controllerState = checkValue ? STMAuthRequestRoles : STMAuthEnterPhoneNumber;
 
 }
 
@@ -348,6 +383,7 @@
 
     self.userID = nil;
     self.accessToken = nil;
+    self.stcTabs = nil;
     [self.keychainItem resetKeychainItem];
 
 }
@@ -375,7 +411,7 @@
                       @"locationTrackerFinishTime": @"22.0",
                       @"enableDebtsEditing"       : @YES,
                       @"enablePartnersEditing"    : @YES,
-                      @"http.timeout.foreground"  : @"15",
+                      @"http.timeout.foreground"  : @"60",
                       @"jpgQuality"               : @"0.0"
                       };
 
@@ -416,8 +452,10 @@
     NSMutableURLRequest *resultingRequest = nil;
     
     if (self.accessToken) {
+        
         resultingRequest = [request mutableCopy];
         [resultingRequest addValue:self.accessToken forHTTPHeaderField:@"Authorization"];
+
     }
     
     return resultingRequest;
@@ -495,11 +533,33 @@
     
 }
 
-- (void)requestNewSMSCode {
+- (BOOL)requestNewSMSCode {
     
     self.controllerState = STMAuthNewSMSCode;
-    [self sendPhoneNumber:self.phoneNumber];
+    return [self sendPhoneNumber:self.phoneNumber];
     
+}
+
+- (BOOL)requestRoles {
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    
+    NSURLRequest *request = [self authenticateRequest:[self requestForURL:ROLES_URL]];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    if (connection) {
+        
+        return YES;
+        
+    } else {
+
+        [self connectionErrorWhileRequestingRoles];
+        
+        return NO;
+        
+    }
+
+    return YES;
 }
 
 - (NSURLRequest *)requestForURL:(NSString *)urlString {
@@ -524,16 +584,36 @@
     NSLog(@"%@", errorMessage);
 #endif
     
-    self.controllerState = STMAuthEnterPhoneNumber;
+    if (self.controllerState == STMAuthRequestRoles) {
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error.localizedDescription}];
+        [self connectionErrorWhileRequestingRoles];
+        
+    } else {
+        
+        self.controllerState = STMAuthEnterPhoneNumber;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error.localizedDescription}];
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    }
 
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    self.responseData = [NSMutableData data];
+    
+    NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+
+    switch (statusCode) {
+        case 401:
+            [self gotUnauthorizedStatus];
+            break;
+            
+        default:
+            self.responseData = [NSMutableData data];
+            break;
+    }
+    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -543,8 +623,75 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
     [self parseResponse:self.responseData fromConnection:connection];
-    
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    self.responseData = nil;
+    
+}
+
+- (void)gotUnauthorizedStatus {
+    
+    if (self.controllerState == STMAuthRequestRoles) {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"U R NOT AUTH", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+        [alertView show];
+        
+    }
+    
+    [self logout];
+    
+}
+
+- (void)connectionErrorWhileRequestingRoles {
+    
+    if (self.stcTabs) {
+        
+        self.controllerState = STMAuthSuccess;
+        
+    } else {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"CAN NOT GET ROLES", nil)
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        alertView.tag = 1;
+        [alertView show];
+        
+    }
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+            
+        case 1:
+            switch (buttonIndex) {
+                    
+                case 0:
+                    [self logout];
+                    break;
+                    
+                case 1:
+                    [self requestRoles];
+                    break;
+                    
+                default:
+                    break;
+                    
+            }
+            break;
+            
+        default:
+            break;
+    }
     
 }
 
@@ -553,56 +700,108 @@
 
 - (void)parseResponse:(NSData *)responseData fromConnection:(NSURLConnection *)connection {
     
-    NSError *error;
-    id responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-    
-//    NSLog(@"responseData %@", responseData);
-//    NSLog(@"responseJSON %@", responseJSON);
-
-    if ([responseJSON isKindOfClass:[NSDictionary class]]) {
+    if (responseData) {
         
-        if (self.controllerState == STMAuthEnterPhoneNumber || self.controllerState == STMAuthNewSMSCode) {
+        NSError *error;
+        id responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+        
+//        NSLog(@"responseData %@", responseData);
+//        NSLog(@"responseJSON %@", responseJSON);
+        
+        if ([responseJSON isKindOfClass:[NSDictionary class]]) {
             
-            self.requestID = responseJSON[@"ID"];
-            self.controllerState = STMAuthEnterSMSCode;
-
-        } else if (self.controllerState == STMAuthEnterSMSCode) {
+            [self processingResponseJSON:responseJSON];
             
-            self.serviceUri = responseJSON[@"redirectUri"];
-
-//#warning Switch comment line when server give correct apiURL
-            self.apiURL = responseJSON[@"apiUrl"];
-//            self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
+        } else {
             
-            self.userID = responseJSON[@"ID"];
-            self.userName = responseJSON[@"name"];
-            self.accessToken = responseJSON[@"accessToken"];
-            self.controllerState = STMAuthSuccess;
+            [self processingResponseJSONError];
             
         }
-        
-    } else {
-        
-        NSString *error;
-        
-        if (self.controllerState == STMAuthEnterPhoneNumber) {
 
-            error = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
-            self.controllerState = STMAuthEnterPhoneNumber;
-            
-        } else if (self.controllerState == STMAuthEnterSMSCode) {
-            
-            error = NSLocalizedString(@"WRONG SMS CODE", nil);
-            self.controllerState = STMAuthEnterSMSCode;
-
-        }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error}];
-        
     }
     
 }
 
+- (void)processingResponseJSON:(NSDictionary *)responseJSON {
+    
+    switch (self.controllerState) {
+            
+        case STMAuthEnterPhoneNumber: {
+            
+            self.requestID = responseJSON[@"ID"];
+            self.controllerState = STMAuthEnterSMSCode;
+            
+            break;
+            
+        }
+            
+        case STMAuthEnterSMSCode: {
+            
+            self.serviceUri = responseJSON[@"redirectUri"];
+            
+            //#warning Switch comment line when server give correct apiURL
+            self.apiURL = responseJSON[@"apiUrl"];
+            //self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
+            
+            self.userID = responseJSON[@"ID"];
+            self.userName = responseJSON[@"name"];
+            self.accessToken = responseJSON[@"accessToken"];
+            
+            self.controllerState = STMAuthRequestRoles;
+            
+            break;
+            
+        }
+            
+        case STMAuthNewSMSCode: {
+            
+            self.requestID = responseJSON[@"ID"];
+            self.controllerState = STMAuthEnterSMSCode;
+            
+            break;
+            
+        }
+            
+        case STMAuthRequestRoles: {
+            
+            self.stcTabs = responseJSON[@"roles"][@"stcTabs"];
+            self.controllerState = STMAuthSuccess;
+            
+            break;
+            
+        }
+            
+        case STMAuthSuccess: {
+            break;
+        }
+            
+        default: {
+            break;
+        }
+            
+    }
+
+}
+
+- (void)processingResponseJSONError {
+    
+    NSString *error = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
+    
+    if (self.controllerState == STMAuthEnterPhoneNumber) {
+        
+        error = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
+        self.controllerState = STMAuthEnterPhoneNumber;
+        
+    } else if (self.controllerState == STMAuthEnterSMSCode) {
+        
+        error = NSLocalizedString(@"WRONG SMS CODE", nil);
+        self.controllerState = STMAuthEnterSMSCode;
+        
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error}];
+
+}
 
 
 @end

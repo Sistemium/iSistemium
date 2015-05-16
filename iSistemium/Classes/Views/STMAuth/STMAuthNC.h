@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "STMAuthController.h"
 #import "STMRootTBC.h"
+#import "STMTabBarViewController.h"
 
-@interface STMAuthNC : UINavigationController
+@interface STMAuthNC : UINavigationController <STMTabBarViewController>
 
 + (STMAuthNC *)sharedAuthNC;
 

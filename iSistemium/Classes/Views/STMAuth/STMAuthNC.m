@@ -11,11 +11,12 @@
 #import "STMAuthSMSVC.h"
 #import "STMAuthSuccessVC.h"
 
-@interface STMAuthNC () <UINavigationControllerDelegate, UIAlertViewDelegate>
+@interface STMAuthNC () <UINavigationControllerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMAuthPhoneVC *phoneVC;
 @property (nonatomic, strong) STMAuthSMSVC *smsVC;
 @property (nonatomic, strong) STMAuthSuccessVC *successVC;
+@property (nonatomic, strong) UIViewController *requestRolesVC;
 
 @end
 
@@ -52,6 +53,16 @@
     
 }
 
+- (UIViewController *)requestRolesVC {
+    
+    if (!_requestRolesVC) {
+        _requestRolesVC = [self.storyboard instantiateViewControllerWithIdentifier:@"requestRoles"];
+        _requestRolesVC.title = NSLocalizedString(@"CHECK ROLES", nil);
+    }
+    return _requestRolesVC;
+    
+}
+
 - (STMAuthSuccessVC *)successVC {
     
     if (!_successVC) {
@@ -75,6 +86,11 @@
             
             break;
             
+        case STMAuthRequestRoles:
+            [self setViewControllers:@[self.requestRolesVC] animated:YES];
+            
+            break;
+            
         case STMAuthSuccess:
             [self setViewControllers:@[self.successVC] animated:YES];
             
@@ -89,7 +105,7 @@
 
 - (void)authControllerError:(NSNotification *)notification {
     
-#warning have to refactor STMRootTBC to prevent multiple instance of VCs creating
+//#warning have to refactor STMRootTBC to prevent multiple instance of VCs creating
     
     if (self.tabBarController) {
         
@@ -114,6 +130,7 @@
     [(STMAuthVC *)[self.viewControllers lastObject] dismissSpinner];
 }
 
+
 #pragma marl - UINavigationControllerDelegate
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -124,6 +141,31 @@
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
 //    NSLog(@"didShowViewController: %@", viewController);
 //    NSLog(@"navigationController %@", navigationController.viewControllers);
+}
+
+
+#pragma mark - STMTabBarViewController protocol
+
+- (void)showActionSheetFromTabBarItem {
+    
+    if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
+        
+//        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
+//        
+//        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+//        
+//        [actionSheet showFromRect:rect inView:self.view animated:YES];
+
+    }
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+//    if (buttonIndex != -1) {
+//
+//    }
+    
 }
 
 

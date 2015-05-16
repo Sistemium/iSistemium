@@ -201,8 +201,13 @@
 "ACCURACY IS NOT SUFFICIENT" = "Недостаточная точность геолокации";
 "WRONG LOCATION TIMERS SETTINGS" = "Неверные настройки трекера, обратитесь к разработчику";
 "LOCATION IS TRACKING UNTIL" = "Геолокация включена до";
-"LOCATION SHOULD BE TRACKING BUT NOT" = "Геолокация не включилась по расписанию, обратитесь к разработчику";
+"LOCATION SHOULD BE TRACKING BUT NOT" = "Геолокация не включилась по расписанию";
 "LOCATION WILL TRACKING AT" = "Геолокация остановлена до";
-"LOCATION SHOULD NOT BE TRACKING BUT GOING ON" = "Геолокация не выключилась по расписанию, обратитесь к разработчику";
-
+"LOCATION SHOULD NOT BE TRACKING BUT GOING ON" = "Геолокация не выключилась по расписанию";
+"CHECK ROLES" = "Проверка ролей";
+"CAN NOT GET ROLES" = "Не могу получить роли. Повторить попытку?";
+"YES" = "Да";
+"NO" = "Нет";
+"DOCUMENT_ERROR" = "Ошибка инициализации базы данных. Обратитесь в техподдержку.";
+"RESPONSE IS NOT A DICTIONARY" = "Ответ сервера не является словарём.";
 

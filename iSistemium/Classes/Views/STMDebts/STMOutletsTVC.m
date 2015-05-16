@@ -21,6 +21,9 @@
 #import "STMAddPopoverNC.h"
 #import "STMOutletController.h"
 
+#import <Crashlytics/Crashlytics.h>
+
+
 @interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMDebtsSVC *splitVC;
@@ -92,9 +95,7 @@
                                                                  managedObjectContext:self.document.managedObjectContext
                                                                    sectionNameKeyPath:@"partner.name"
                                                                             cacheName:nil];
-        
-#warning returned nil value for section name key path 'partner.name'. Object will be placed in unnamed section
-        
+
         _resultsController.delegate = self;
         
     }
@@ -154,7 +155,16 @@
 
 - (void)debtSummChanged:(NSNotification *)notification {
     
+//    CLS_LOG(@"____________debtSummChanged____________");
+    
     STMOutlet *outlet = (notification.userInfo)[@"outlet"];
+    
+//    CLS_LOG(@"outlet %@", outlet);
+//    CLS_LOG(@"outlet.managedObjectContext %@", outlet.managedObjectContext);
+//    CLS_LOG(@"self.resultsController.managedObjectContext %@", self.resultsController.managedObjectContext);
+//    CLS_LOG(@"isMainThread %d", [NSThread isMainThread]);
+//    CLS_LOG(@"____________debtSummChanged____________");
+
     [self reloadRowWithOutlet:outlet];
     
 }
@@ -322,9 +332,12 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtCell" forIndexPath:indexPath];
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][indexPath.section];
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
-    STMOutlet *outlet = sectionInfo.objects[indexPath.row];
+    UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
+    
+    cell.textLabel.textColor = textColor;
+    cell.detailTextLabel.textColor = textColor;
     
     cell.textLabel.text = outlet.shortName;
     cell.detailTextLabel.text = [self detailedTextForOutlet:outlet];
@@ -350,8 +363,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[indexPath.section];
-    STMOutlet *outlet = sectionInfo.objects[indexPath.row];
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
     self.splitVC.detailVC.outlet = outlet;
     
@@ -409,11 +421,7 @@
     NSDecimalNumber *debtSum = [NSDecimalNumber zero];
     
     for (STMDebt *debt in outlet.debts) {
-        
-        if (debt.summ) {
-            debtSum = [debtSum decimalNumberByAdding:debt.summ];
-        }
-        
+        if (debt.summ) debtSum = [debtSum decimalNumberByAdding:debt.summ];
     }
     
     NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
@@ -421,35 +429,13 @@
     NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", @YES];
     NSSet *cashings = [outlet.cashings filteredSetUsingPredicate:cashingPredicate];
     
-    for (STMCashing *cashing in cashings) {
-        
-        cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
-        
-    }
+    for (STMCashing *cashing in cashings) cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
     
     debtSum = [debtSum decimalNumberBySubtracting:cashingSum];
     
     NSString *debtSumString = [numberFormatter stringFromNumber:debtSum];
     
     return debtSumString;
-    
-    /*
-     NSString *cashingSumString = [numberFormatter stringFromNumber:cashingSum];
-     
-     NSString *detailedText = nil;
-     
-     if ([cashingSum compare:[NSDecimalNumber zero]] == NSOrderedSame) {
-     
-     detailedText = [NSString stringWithFormat:@"%@", debtSumString];
-     
-     } else {
-     
-     detailedText = [NSString stringWithFormat:@"%@ (%@)", debtSumString, cashingSumString];
-     
-     }
-     
-     return detailedText;
-     */
     
 }
 

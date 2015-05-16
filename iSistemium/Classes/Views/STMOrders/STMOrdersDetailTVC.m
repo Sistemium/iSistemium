@@ -117,6 +117,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
     }
     
+    NSPredicate *outletNamePredicate = [NSPredicate predicateWithFormat:@"outlet.name != %@", nil];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, outletNamePredicate]];
+    
     return predicate;
 
 }
@@ -638,6 +641,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 - (void)fillCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
+    
+    UIColor *textColor = (!saleOrder.outlet.isActive || [saleOrder.outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
+    
+    cell.titleLabel.textColor = textColor;
+//    cell.detailLabel.textColor = textColor;
     
     cell.titleLabel.text = saleOrder.outlet.name;
     

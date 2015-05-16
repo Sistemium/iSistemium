@@ -25,7 +25,7 @@
     
     request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
     
-    request.predicate = [NSPredicate predicateWithFormat:@"saleOrders.@count > 0"];
+    request.predicate = [NSPredicate predicateWithFormat:@"(saleOrders.@count > 0) AND (partner.name != %@)", nil];
     
     self.sectionNameKeyPath = @"partner.name";
     
@@ -43,6 +43,11 @@
     STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
+    
+    UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
+    
+    cell.textLabel.textColor = textColor;
+    cell.detailTextLabel.textColor = textColor;
     
     cell.textLabel.text = outlet.shortName;
     

@@ -98,6 +98,16 @@
 
 }
 
++ (NSDateFormatter *)dateMediumTimeShortFormatter {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    
+    return dateFormatter;
+    
+}
+
 + (NSDateFormatter *)noDateShortTimeFormatter {
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -411,6 +421,10 @@
 }
 
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
+    return [self resizeImage:image toSize:size allowRetina:YES];
+}
+
++ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina {
     
     if (image.size.height > 0 && image.size.width > 0) {
         
@@ -429,13 +443,16 @@
         
         // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
         // Pass 1.0 to force exact pixel size.
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, 0.0);
+        
+        CGFloat scale = (retina) ? 0.0 : 1.0;
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, scale);
         [image drawInRect:CGRectMake(0, 0, width, height)];
         UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
         return resultImage;
-
+        
     } else {
         
         return nil;
@@ -492,10 +509,10 @@
     
     NSDictionary *infoDictionary = [NSBundle mainBundle].infoDictionary;
     NSString *displayName = infoDictionary[@"CFBundleDisplayName"];
-    NSString *shortVersionString = infoDictionary[@"CFBundleShortVersionString"];
-    NSString *bundleVersion = infoDictionary[@"CFBundleVersion"];
+    NSString *appVersionString = APP_VERSION;
+    NSString *buildVersion = BUILD_VERSION;
     
-    NSString *result = [NSString stringWithFormat:@"%@ %@ (%@)", displayName, shortVersionString, bundleVersion];
+    NSString *result = [NSString stringWithFormat:@"%@ %@ (%@)", displayName, appVersionString, buildVersion];
     
 //    NSLog(@"infoDictionary %@", infoDictionary);
     

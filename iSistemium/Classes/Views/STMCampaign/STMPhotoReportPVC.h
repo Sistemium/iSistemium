@@ -9,11 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "STMPhotoReport.h"
 
+#import "STMCampaignPhotoReportCVC.h"
+
 @interface STMPhotoReportPVC : UIPageViewController
 
 @property (nonatomic, strong) STMPhotoReport *photoReport;
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic, strong) NSMutableArray *photoArray;
+
+@property (nonatomic, weak) STMCampaignPhotoReportCVC *parentVC;
 
 
 @end

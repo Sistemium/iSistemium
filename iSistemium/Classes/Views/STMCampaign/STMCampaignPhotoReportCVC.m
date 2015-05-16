@@ -81,10 +81,15 @@
     if (!_photoReportPicturesResultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
+        
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        
         request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
+        
         _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 
+//        _photoReportPicturesResultsController.delegate = self;
+        
     }
     
     return _photoReportPicturesResultsController;
@@ -111,6 +116,8 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
         
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
         
         NSError *error;
         NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
@@ -496,6 +503,10 @@
     
 }
 
+- (void)photoReportWasDeleted:(STMPhotoReport *)photoReport {
+    [self.waitingLocationPhotos removeObject:photoReport];
+}
+
 
 #pragma mark - UIAlertViewDelegate
 
@@ -707,32 +718,41 @@
     __weak UICollectionView *collectionView = self.collectionView;
     switch (type) {
         case NSFetchedResultsChangeInsert: {
+            
             [self.changeOperation addExecutionBlock:^{
                 [collectionView insertSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] ];
             }];
             break;
+            
         }
             
         case NSFetchedResultsChangeDelete: {
+            
+            [self.waitingLocationPhotos removeObject:anObject];
             [self.changeOperation addExecutionBlock:^{
                 [collectionView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]];
             }];
             break;
+            
         }
             
         case NSFetchedResultsChangeUpdate: {
+            
             [self.changeOperation addExecutionBlock:^{
                 [collectionView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"campaignPictureUpdate" object:anObject];
             }];
             break;
+            
         }
             
         case NSFetchedResultsChangeMove: {
+            
             [self.changeOperation addExecutionBlock:^{
                 [collectionView moveSection:indexPath.section toSection:newIndexPath.section];
             }];
             break;
+            
         }
             
         default:
@@ -814,9 +834,11 @@
 
     if ([segue.identifier isEqualToString:@"showPhotoReport"] && [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]]) {
         
-        [(STMPhotoReportPVC *)segue.destinationViewController setPhotoArray:[[self photoReportsInOutlet:self.selectedPhotoReport.outlet] mutableCopy]];
-        [(STMPhotoReportPVC *)segue.destinationViewController setCurrentIndex:[(NSIndexPath *)sender row]];
-
+        STMPhotoReportPVC *photoReportPVC = (STMPhotoReportPVC *)segue.destinationViewController;
+        
+        photoReportPVC.photoArray = [[self photoReportsInOutlet:self.selectedPhotoReport.outlet] mutableCopy];
+        photoReportPVC.currentIndex = [(NSIndexPath *)sender row];
+        photoReportPVC.parentVC = self;
         
     }
 

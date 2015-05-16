@@ -7,13 +7,20 @@
 //
 
 #import "STMCampaignPictureCVC.h"
+
 #import "STMDocument.h"
 #import "STMSessionManager.h"
+
 #import "STMCampaignPicture.h"
-//#import "STMObjectsController.h"
-#import "STMPicturesController.h"
+
 #import "STMCampaignPicturePVC.h"
+
+#import "STMConstants.h"
 #import "STMFunctions.h"
+
+#import "STMPicturesController.h"
+#import "STMRecordStatusController.h"
+
 
 @interface STMCampaignPictureCVC () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate>
 
@@ -25,6 +32,7 @@
 
 
 @end
+
 
 @implementation STMCampaignPictureCVC
 
@@ -123,7 +131,6 @@
     [[cell.contentView viewWithTag:1] removeFromSuperview];
     [[cell.contentView viewWithTag:2] removeFromSuperview];
     
-    
     STMCampaignPicture *picture = self.campaignPicturesResultsController.fetchedObjects[indexPath.row];
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 150)];
@@ -142,16 +149,6 @@
         
         imageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
         imageView.layer.borderWidth = 1.0f;
-
-//        if (picture.image) {
-//            [STMObjectsController setImagesFromData:picture.image forPicture:picture];
-//        } else {
-//            
-////            NSLog(@"picture.href %@", picture.href);
-//            [STMObjectsController hrefProcessingForObject:picture];
-//
-//        }
-
         
     } else {
     
@@ -170,6 +167,20 @@
     label.numberOfLines = 0;
     label.textAlignment = NSTextAlignmentCenter;
     label.tag = 2;
+    
+    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:picture.xid];
+    
+    if (recordStatus.isRead) {
+        
+        label.textColor = [UIColor blackColor];
+        
+    } else {
+        
+        label.textColor = ACTIVE_BLUE_COLOR;
+        [self performSelector:@selector(setIsReadForPicture:) withObject:picture afterDelay:5];
+        
+    }
+    
     [cell.contentView addSubview:label];
     
 //    NSLog(@"cell %@, indexPath %@", cell, indexPath);
@@ -180,10 +191,25 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    
     [self performSegueWithIdentifier:@"showCampaignPicture" sender:indexPath];
     
     return YES;
+    
+}
+
+- (void)setIsReadForPicture:(STMCampaignPicture *)picture {
+    
+    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:picture];
+    recordStatus.isRead = @YES;
+    
+    [self.document saveDocument:^(BOOL success) {
+    }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"campaignPictureIsRead" object:self userInfo:@{@"picture":picture}];
+    
+    NSIndexPath *indexPath = [self.campaignPicturesResultsController indexPathForObject:picture];
+    
+    if (indexPath) [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
     
 }
 

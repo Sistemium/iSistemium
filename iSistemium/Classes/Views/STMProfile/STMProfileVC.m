@@ -1,22 +1,30 @@
 //
-//  STMAuthSuccessVC.m
+//  STMProfileVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 10/02/15.
+//  Created by Maxim Grigoriev on 04/05/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMAuthSuccessVC.h"
+#import "STMProfileVC.h"
+
 #import "STMSessionManager.h"
 #import "STMSession.h"
+
 #import "STMLocationTracker.h"
 #import "STMSyncer.h"
 #import "STMEntityController.h"
 
+#import "STMAuthController.h"
+#import "STMRootTBC.h"
+
+#import "STMUI.h"
+#import "STMFunctions.h"
+
 #import <Reachability/Reachability.h>
 
 
-@interface STMAuthSuccessVC () <UIAlertViewDelegate>
+@interface STMProfileVC () <UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
@@ -36,10 +44,10 @@
 
 @property (nonatomic, strong) Reachability *internetReachability;
 
+
 @end
 
-
-@implementation STMAuthSuccessVC
+@implementation STMProfileVC
 
 - (STMLocationTracker *)locationTracker {
     return [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
@@ -55,7 +63,7 @@
     alertView.tag = 0;
     alertView.delegate = self;
     [alertView show];
-
+    
 }
 
 - (void)syncerStatusChanged:(NSNotification *)notification {
@@ -83,7 +91,7 @@
             
             self.progressBar.hidden = NO;
             self.totalEntityCount = 1;
-
+            
         }
         
         if (fromState == STMSyncerReceiveData) {
@@ -92,13 +100,13 @@
                 
                 sleep(5);
                 dispatch_async(dispatch_get_main_queue(), ^{
-
+                    
                     [self hideNumberOfObjects];
                     
                 });
                 
             });
-
+            
         }
         
     }
@@ -149,17 +157,18 @@
     }
     
     self.syncImageView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-
+    
 }
 
 - (void)setColorForSyncImageView {
     
     [self removeGestureRecognizersFromCloudImages];
-
+    
     STMSyncer *syncer = [self syncer];
     BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
     UIColor *color = (hasObjectsToUpload) ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
-
+    SEL cloudTapSelector = (hasObjectsToUpload) ? @selector(uploadCloudTapped) : @selector(downloadCloudTapped);
+    
     NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
     
     if (networkStatus == NotReachable) {
@@ -173,7 +182,7 @@
             
             [self.syncImageView setTintColor:color];
             
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(uploadImageViewTapped)];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:cloudTapSelector];
             [self.syncImageView addGestureRecognizer:tap];
             
         } else {
@@ -183,14 +192,11 @@
         }
         
     }
-
+    
 }
 
 - (void)removeGestureRecognizersFromCloudImages {
-
     [self removeGestureRecognizersFrom:self.syncImageView];
-//    [self removeGestureRecognizersFrom:self.downloadImageView];
-    
 }
 
 - (void)removeGestureRecognizersFrom:(UIView *)view {
@@ -201,11 +207,11 @@
     
 }
 
-- (void)uploadImageViewTapped {
+- (void)uploadCloudTapped {
     [self syncer].syncerState = STMSyncerSendDataOnce;
 }
 
-- (void)downloadImageViewTapped {
+- (void)downloadCloudTapped {
     [self syncer].syncerState = STMSyncerReceiveData;
 }
 
@@ -228,9 +234,9 @@
 }
 
 - (void)getBunchOfObjects:(NSNotification *)notification {
-
+    
     if ([notification.object isKindOfClass:[STMSyncer class]]) {
-
+        
         NSNumber *numberOfObjects = notification.userInfo[@"count"];
         
         numberOfObjects = @(self.previousNumberOfObjects + numberOfObjects.intValue);
@@ -245,7 +251,7 @@
         self.previousNumberOfObjects = numberOfObjects.intValue;
         
     }
-
+    
 }
 
 - (void)syncerDidChangeContent:(NSNotification *)notification {
@@ -281,7 +287,7 @@
 
 - (void)newAppVersionAvailable:(NSNotification *)notification {
     
-//    [self showUpdateButton];
+    //    [self showUpdateButton];
     
 }
 
@@ -306,7 +312,7 @@
     } else {
         self.receiveDateLabel.text = nil;
     }
-
+    
 }
 
 
@@ -341,7 +347,7 @@
     self.locationWarningLabel.text = @"";
     
     BOOL autoStart = self.locationTracker.trackerAutoStart;
-
+    
     (autoStart) ? [self setupLocationLabels] : [self hideLocationLabels];
     
 }
@@ -360,7 +366,7 @@
     [self setupLastLocationLabel];
     [self setupLocationSystemStatusLabel];
     [self setupLocationAppStatusLabel];
-
+    
 }
 
 - (void)setupLastLocationLabel {
@@ -494,10 +500,10 @@
 
 - (void)startReachability {
     
-//    Reachability *reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+    //    Reachability *reach = [Reachability reachabilityWithHostname:@"www.google.com"];
     self.internetReachability = [Reachability reachabilityForInternetConnection];
     [self.internetReachability startNotifier];
-
+    
 }
 
 - (void)reachabilityChanged:(NSNotification *)notification {
@@ -512,7 +518,7 @@
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
     STMSyncer *syncer = [self syncer];
-
+    
     [nc addObserver:self
            selector:@selector(syncerStatusChanged:)
                name:@"syncStatusChanged"
@@ -542,12 +548,12 @@
            selector:@selector(newAppVersionAvailable:)
                name:@"newAppVersionAvailable"
              object:nil];
-
+    
     [nc addObserver:self
            selector:@selector(setupLabels)
                name:UIApplicationDidBecomeActiveNotification
              object:nil];
-
+    
     [nc addObserver:self
            selector:@selector(setupLastLocationLabel)
                name:@"lastLocationUpdated"
@@ -562,12 +568,12 @@
            selector:@selector(setupLocationLabels)
                name:[NSString stringWithFormat:@"locationTimersInit"]
              object:nil];
-
+    
     [nc addObserver:self
            selector:@selector(hideLocationLabels)
                name:[NSString stringWithFormat:@"locationTimersRelease"]
              object:nil];
-
+    
     [nc addObserver:self
            selector:@selector(locationTrackerStatusChanged)
                name:[NSString stringWithFormat:@"locationTrackerStatusChanged"]
@@ -577,7 +583,7 @@
            selector:@selector(reachabilityChanged:)
                name:kReachabilityChangedNotification
              object:nil];
-
+    
 }
 
 - (void)removeObservers {
@@ -589,26 +595,34 @@
     self.navigationItem.title = [STMFunctions currentAppVersion];
     
     self.numberOfObjectLabel.text = @"";
-        
+    
+    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"exit-128.png"] toSize:CGSizeMake(22, 22)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(backButtonPressed)];
+
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
     self.syncImageView = imageView;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:imageView];
-
+    
     [self updateCloudImages];
     [self updateSyncDatesLabels];
     [self addObservers];
     [self startReachability];
-    
-    [super customInit];
-
+        
 }
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+    [self.navigationItem setHidesBackButton:YES animated:NO];
+    [self customInit];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-
+    
     [self setupLabels];
     
     [super viewWillAppear:animated];
@@ -616,7 +630,7 @@
     if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
         [[STMRootTBC sharedRootVC] newAppVersionAvailable:nil];
     }
-
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -625,13 +639,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

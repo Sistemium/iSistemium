@@ -8,6 +8,7 @@
 
 #import "STMAppDelegate.h"
 
+#import <AdSupport/AdSupport.h>
 #import <Crashlytics/Crashlytics.h>
 
 #import "STMAuthController.h"
@@ -25,7 +26,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [Crashlytics startWithAPIKey:@"035bda92bd5b13402aaf2c6cb5f66b8ff23f2166"];
+    [self startCrashlytics];
 
     NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
@@ -45,6 +46,8 @@
         }
 
     }
+    
+    [self setupWindow];
 
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
@@ -360,6 +363,8 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:deviceToken forKey:@"deviceToken"];
         [defaults synchronize];
+        
+        [Crashlytics setObjectValue:deviceToken forKey:@"deviceToken"];
 
     }
     
@@ -390,6 +395,26 @@
         
     }
     
+}
+
+
+#pragma mark - Crashlytics
+
+- (void)startCrashlytics {
+    
+    [Crashlytics startWithAPIKey:@"035bda92bd5b13402aaf2c6cb5f66b8ff23f2166"];
+    
+    [Crashlytics setObjectValue:[[UIDevice currentDevice] name] forKey:@"deviceName"];
+    [Crashlytics setObjectValue:[STMFunctions devicePlatform] forKey:@"devicePlatform"];
+    [Crashlytics setObjectValue:[ASIdentifierManager sharedManager].advertisingIdentifier forKey:@"advertisingIdentifier"];
+    [Crashlytics setObjectValue:[STMAuthController authController].userID forKey:@"userID"];
+    [Crashlytics setObjectValue:[STMAuthController authController].userName forKey:@"userName"];
+    [Crashlytics setObjectValue:[STMAuthController authController].phoneNumber forKey:@"phoneNumber"];
+    
+}
+
+- (void)testCrash {
+    [[Crashlytics sharedInstance] crash];
 }
 
 @end
