@@ -35,7 +35,8 @@
 
 @property (nonatomic, strong) UIViewController *currentTappedVC;
 
-@property (nonatomic, strong) NSMutableArray *allTabsVCs;
+@property (nonatomic, strong) NSMutableDictionary *allTabsVCs;
+@property (nonatomic, strong) NSMutableArray *currentTabsVCs;
 @property (nonatomic, strong) NSMutableArray *authVCs;
 
 @property (nonatomic, strong) STMSpinnerView *spinnerView;
@@ -146,18 +147,28 @@
 - (void)nullifyTabs {
     
     self.storyboardTitles = nil;
+    self.currentTabsVCs = nil;
     self.allTabsVCs = nil;
     self.tabs = nil;
     self.authVCs = nil;
 
 }
 
-- (NSMutableArray *)allTabsVCs {
+- (NSMutableDictionary *)allTabsVCs {
     
     if (!_allTabsVCs) {
-        _allTabsVCs = [NSMutableArray array];
+        _allTabsVCs = [NSMutableDictionary dictionary];
     }
     return _allTabsVCs;
+    
+}
+
+- (NSMutableArray *)currentTabsVCs {
+    
+    if (!_currentTabsVCs) {
+        _currentTabsVCs = [NSMutableArray array];
+    }
+    return _currentTabsVCs;
     
 }
 
@@ -189,7 +200,33 @@
     
 }
 
-- (void)registerTabWithStoryboardParameters:(NSDictionary *)parameters {
+- (NSArray *)siblingsForViewController:(UIViewController *)vc {
+    
+    NSArray *siblings = nil;
+    
+    for (NSArray *tabs in self.allTabsVCs.allValues) {
+        
+        if ([tabs containsObject:vc] && tabs.count > 1) {
+            siblings = [tabs mutableCopy];
+        }
+        
+    }
+    
+    return siblings;
+    
+}
+
+- (void)replaceVC:(UIViewController *)currentVC withVC:(UIViewController *)vc {
+    
+    NSUInteger index = [self.currentTabsVCs indexOfObject:currentVC];
+    
+    [self.currentTabsVCs replaceObjectAtIndex:index withObject:vc];
+    
+    [self showTabs];
+    
+}
+
+- (void)registerTabWithStoryboardParameters:(NSDictionary *)parameters atIndex:(NSUInteger)index{
     
     NSString *name = parameters[@"name"];
     NSString *title = parameters[@"title"];
@@ -211,7 +248,18 @@
             vc.title = title;
             vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:imageName] toSize:CGSizeMake(30, 30)];
             
-            [self.allTabsVCs addObject:vc];
+            if (!self.allTabsVCs[@(index)]) {
+            
+                self.allTabsVCs[@(index)] = @[vc];
+                [self.currentTabsVCs addObject:vc];
+
+            } else {
+                
+                NSMutableArray *tabs = [self.allTabsVCs[@(index)] mutableCopy];
+                [tabs addObject:vc];
+                self.allTabsVCs[@(index)] = tabs;
+                
+            }
             
             (self.tabs)[name] = vc;
             
@@ -282,26 +330,61 @@
         
         [self registerTabWithStoryboardParameters:@{@"name": @"STMAuth",
                                                     @"title": NSLocalizedString(@"AUTHORIZATION", nil),
-                                                    @"imageName": @"password2-128.png"}];
+                                                    @"imageName": @"password2-128.png"} atIndex:0];
         
     } else {
         
-        for (NSDictionary *parameters in stcTabs) {
+        stcTabs = [self testStcTabs];
+        
+//        NSLog(@"stcTabs %@", stcTabs);
+        
+        for (id tabsItem in stcTabs) {
             
-            NSString *minBuild = parameters[@"minBuild"];
-            NSString *maxBuild = parameters[@"maxBuild"];
-            BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
+            NSUInteger index = [stcTabs indexOfObject:tabsItem];
             
-            if (minBuild && ([BUILD_VERSION integerValue] < [minBuild integerValue])) continue;
-            if (maxBuild && ([BUILD_VERSION integerValue] > [maxBuild integerValue])) continue;
-            
-            if (isDebug) {
-#ifdef DEBUG
-                [self registerTabWithStoryboardParameters:parameters];
-#endif
-            } else {
+            if ([tabsItem isKindOfClass:[NSDictionary class]]) {
                 
-                [self registerTabWithStoryboardParameters:parameters];
+                NSDictionary *parameters = (NSDictionary *)tabsItem;
+            
+                NSString *minBuild = parameters[@"minBuild"];
+                NSString *maxBuild = parameters[@"maxBuild"];
+                BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
+                
+                if (minBuild && ([BUILD_VERSION integerValue] < [minBuild integerValue])) continue;
+                if (maxBuild && ([BUILD_VERSION integerValue] > [maxBuild integerValue])) continue;
+                
+                if (isDebug) {
+#ifdef DEBUG
+                    [self registerTabWithStoryboardParameters:parameters atIndex:index];
+#endif
+                } else {
+                    
+                    [self registerTabWithStoryboardParameters:parameters atIndex:index];
+                    
+                }
+
+            } else if ([tabsItem isKindOfClass:[NSArray class]]) {
+                
+                for (NSDictionary *parameters in tabsItem) {
+                    
+                    NSString *minBuild = parameters[@"minBuild"];
+                    NSString *maxBuild = parameters[@"maxBuild"];
+                    BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
+                    
+                    if (minBuild && ([BUILD_VERSION integerValue] < [minBuild integerValue])) continue;
+                    if (maxBuild && ([BUILD_VERSION integerValue] > [maxBuild integerValue])) continue;
+                    
+                    if (isDebug) {
+#ifdef DEBUG
+                        [self registerTabWithStoryboardParameters:parameters atIndex:index];
+#endif
+                    } else {
+                        
+                        [self registerTabWithStoryboardParameters:parameters atIndex:index];
+                        
+                    }
+                    
+                }
                 
             }
             
@@ -309,6 +392,71 @@
         
     }
 
+}
+
+- (NSArray *)testStcTabs {
+    
+    return @[
+                @{
+                    @"imageName": @"checked_user-128.png",
+                    @"name": @"STMProfile",
+                    @"title": @"Profile"
+                },
+                @{
+                    @"imageName": @"christmas_gift-128.png",
+                    @"name": @"STMCampaigns",
+                    @"title": @"Campaign"
+                },
+                @{
+                    @"imageName": @"cash_receiving-128.png",
+                    @"name": @"STMDebts",
+                    @"title": @"Debts"
+                },
+                @{
+                    @"imageName": @"banknotes-128.png",
+                    @"name": @"STMUncashing",
+                    @"title": @"Uncashing"
+                },
+//                {
+//                    imageName = "message-128.png";
+//                    name = STMMessages;
+//                    title = "\U0421\U043e\U043e\U0431\U0449\U0435\U043d\U0438\U044f";
+//                },
+//                {
+//                    imageName = "Dossier Folder-100.png";
+//                    minBuild = 70;
+//                    name = STMCatalog;
+//                    title = "\U041a\U0430\U0442\U0430\U043b\U043e\U0433";
+//                },
+//                {
+//                    imageName = "bill-128.png";
+//                    minBuild = 70;
+//                    name = STMOrders;
+//                    title = "\U0417\U0430\U043a\U0430\U0437\U044b";
+//                },
+//                {
+//                    authCheck = "localStorage.getItem('r50.accessToken')";
+//                    imageName = "purchase_order-128.png";
+//                    name = STMWebView;
+//                    title = "\U041f\U0440\U043e\U0447\U0435\U0435";
+//                    url = "https://sis.bis100.ru/r50/beta/tp/";
+//                },
+                @[
+                    @{
+                        @"ifdef": @"DEBUG",
+                        @"imageName": @"settings3-128.png",
+                        @"name": @"STMSettings",
+                        @"title": @"Settings"
+                        },
+                    @{
+                        @"ifdef": @"DEBUG",
+                        @"imageName": @"archive-128.png",
+                        @"name": @"STMLogs",
+                        @"title": @"Logs"
+                        }
+                ]
+                ];
+    
 }
 
 - (void)initAuthTab {
@@ -332,17 +480,29 @@
     [self showUnreadMessageCount];
     [self showUnreadCampaignCount];
     
-    self.viewControllers = self.allTabsVCs;
+    [self showTabs];
+    
+}
+
+- (void)showTabs {
+    
+    self.viewControllers = self.currentTabsVCs;
     
     NSArray *tabBarControlsArray = [self tabBarControlsArray];
     
     for (UIViewController *vc in self.viewControllers) {
         
-        if ([vc conformsToProtocol:@protocol(STMTabBarViewController)] && [(id <STMTabBarViewController>)vc shouldShowActionSheet]) {
+        if ([vc conformsToProtocol:@protocol(STMTabBarViewController)]) {
             
-            NSUInteger index = [self.viewControllers indexOfObject:vc];
-            UIControl *tabBarControl = tabBarControlsArray[index];
-            [self addMoreMarkLabelToControl:tabBarControl];
+            NSUInteger siblingsCount = [self siblingsForViewController:vc].count;
+            
+            if (siblingsCount > 1 || [(id <STMTabBarViewController>)vc shouldShowOwnActionSheet]) {
+                
+                NSUInteger index = [self.viewControllers indexOfObject:vc];
+                UIControl *tabBarControl = tabBarControlsArray[index];
+                [self addMoreMarkLabelToControl:tabBarControl];
+                
+            }
             
         }
         

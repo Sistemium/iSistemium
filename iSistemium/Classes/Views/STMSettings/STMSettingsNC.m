@@ -1,21 +1,34 @@
 //
-//  STMProfileNC.m
+//  STMSettingsNC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 04/05/15.
+//  Created by Maxim Grigoriev on 18/05/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMProfileNC.h"
+#import "STMSettingsNC.h"
 #import "STMRootTBC.h"
+#import "STMFunctions.h"
 
 
-@interface STMProfileNC ()
+@interface STMSettingsNC () <UIActionSheetDelegate>
+
+@property (nonatomic, strong) NSArray *siblings;
+
 
 @end
 
 
-@implementation STMProfileNC
+@implementation STMSettingsNC
+
+- (NSArray *)siblings {
+    
+    if (!_siblings) {
+        _siblings = [[STMRootTBC sharedRootVC] siblingsForViewController:self];
+    }
+    return _siblings;
+    
+}
 
 #pragma mark - STMTabBarViewController protocol
 
@@ -25,23 +38,32 @@
 
 - (void)showActionSheetFromTabBarItem {
     
-    if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.delegate = self;
+    
+    if (self.siblings.count > 1) {
         
-        //        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
-        //
-        //        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-        //
-        //        [actionSheet showFromRect:rect inView:self.view animated:YES];
+        for (UIViewController *vc in self.siblings) {
+            
+            [actionSheet addButtonWithTitle:vc.title];
+            
+        }
+    
+        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
         
+        [actionSheet showFromRect:rect inView:self.view animated:YES];
+
     }
     
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+    UIViewController *vc = self.siblings[buttonIndex];
     
-    //    if (buttonIndex != -1) {
-    //
-    //    }
+    if (vc != self) {
+        [[STMRootTBC sharedRootVC] replaceVC:self withVC:vc];
+    }
     
 }
 

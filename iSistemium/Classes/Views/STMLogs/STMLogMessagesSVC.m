@@ -53,6 +53,21 @@
 }
 
 
+#pragma mark - STMTabBarViewController protocol
+
+- (BOOL)shouldShowOwnActionSheet {
+    return NO;
+}
+
+- (void)showActionSheetFromTabBarItem {
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)viewDidLoad {

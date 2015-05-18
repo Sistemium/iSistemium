@@ -146,7 +146,7 @@
 
 #pragma mark - STMTabBarViewController protocol
 
-- (BOOL)shouldShowActionSheet {
+- (BOOL)shouldShowOwnActionSheet {
     return NO;
 }
 

@@ -24,7 +24,7 @@
 
 #pragma mark - STMTabBarViewController
 
-- (BOOL)shouldShowActionSheet {
+- (BOOL)shouldShowOwnActionSheet {
     return NO;
 }
 

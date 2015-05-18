@@ -14,6 +14,9 @@
 
 - (UIViewController *)topmostVC;
 
+- (NSArray *)siblingsForViewController:(UIViewController *)vc;
+- (void)replaceVC:(UIViewController *)currentVC withVC:(UIViewController *)vc;
+
 - (void)showTabWithName:(NSString *)tabName;
 - (void)showTabAtIndex:(NSUInteger)index;
 - (void)newAppVersionAvailable:(NSNotification *)notification;
