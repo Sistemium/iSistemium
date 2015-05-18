@@ -10,6 +10,7 @@
 
 @protocol STMTabBarViewController <NSObject>
 
+- (BOOL)shouldShowActionSheet;
 - (void)showActionSheetFromTabBarItem;
 
 

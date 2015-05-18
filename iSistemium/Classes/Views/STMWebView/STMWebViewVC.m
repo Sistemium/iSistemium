@@ -156,6 +156,10 @@
 
 #pragma mark - STMTabBarViewController
 
+- (BOOL)shouldShowActionSheet {
+    return YES;
+}
+
 - (void)showActionSheetFromTabBarItem {
     
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"IORDERS", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"RELOAD", nil), nil];

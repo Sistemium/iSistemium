@@ -333,6 +333,66 @@
     [self showUnreadCampaignCount];
     
     self.viewControllers = self.allTabsVCs;
+    
+    NSArray *tabBarControlsArray = [self tabBarControlsArray];
+    
+    for (UIViewController *vc in self.viewControllers) {
+        
+        if ([vc conformsToProtocol:@protocol(STMTabBarViewController)] && [(id <STMTabBarViewController>)vc shouldShowActionSheet]) {
+            
+            NSUInteger index = [self.viewControllers indexOfObject:vc];
+            UIControl *tabBarControl = tabBarControlsArray[index];
+            [self addMoreMarkLabelToControl:tabBarControl];
+            
+        }
+        
+    }
+    
+}
+
+- (NSArray *)tabBarControlsArray {
+    
+    NSMutableArray *tabBarControlsArray = [NSMutableArray array];
+    
+    for (UIView *view in self.tabBar.subviews) {
+        
+        if ([view isKindOfClass:[UIControl class]]) {
+            
+            UIControl *controlView = (UIControl *)view;
+            [tabBarControlsArray addObject:controlView];
+            
+        }
+        
+    }
+    
+    NSComparator frameComparator = ^NSComparisonResult(id obj1, id obj2) {
+        
+        CGRect frame1 = [(UIView *)obj1 frame];
+        CGRect frame2 = [(UIView *)obj2 frame];
+        
+        if (frame1.origin.x > frame2.origin.x) return (NSComparisonResult)NSOrderedDescending;
+        
+        if (frame1.origin.x < frame2.origin.x) return (NSComparisonResult)NSOrderedAscending;
+        
+        return (NSComparisonResult)NSOrderedSame;
+        
+    };
+    
+    [tabBarControlsArray sortUsingComparator:frameComparator];
+
+    return tabBarControlsArray;
+    
+}
+
+- (void)addMoreMarkLabelToControl:(UIControl *)controlView {
+    
+    UILabel *moreMarkLabel=[[UILabel alloc]init];
+    moreMarkLabel.font = [UIFont systemFontOfSize:14];
+    moreMarkLabel.text = @"▲";
+    moreMarkLabel.textAlignment=NSTextAlignmentCenter;
+    moreMarkLabel.frame=CGRectMake(4, 2, 16, 16);
+    moreMarkLabel.textColor=[UIColor lightGrayColor];
+    [controlView addSubview:moreMarkLabel];
 
 }
 

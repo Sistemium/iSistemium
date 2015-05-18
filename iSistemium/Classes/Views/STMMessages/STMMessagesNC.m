@@ -24,6 +24,10 @@
 
 #pragma mark - STMTabBarViewController
 
+- (BOOL)shouldShowActionSheet {
+    return NO;
+}
+
 - (void)showActionSheetFromTabBarItem {
     
 //    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];

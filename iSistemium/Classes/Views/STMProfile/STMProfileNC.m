@@ -19,6 +19,10 @@
 
 #pragma mark - STMTabBarViewController protocol
 
+- (BOOL)shouldShowActionSheet {
+    return NO;
+}
+
 - (void)showActionSheetFromTabBarItem {
     
     if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
