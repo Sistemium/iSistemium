@@ -11,7 +11,5 @@
 
 @interface STMMessagesNC : UINavigationController <STMTabBarViewController>
 
-- (void)showActionSheetFromTabBarItem;
-
 
 @end

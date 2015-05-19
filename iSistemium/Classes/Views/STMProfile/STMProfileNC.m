@@ -19,11 +19,11 @@
 
 #pragma mark - STMTabBarViewController protocol
 
-- (BOOL)shouldShowOwnActionSheet {
+- (BOOL)shouldShowOwnActions {
     return NO;
 }
 
-- (void)showActionSheetFromTabBarItem {
+- (void)showActionPopoverFromTabBarItem {
     
     if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
         
@@ -34,6 +34,14 @@
         //        [actionSheet showFromRect:rect inView:self.view animated:YES];
         
     }
+    
+}
+
+- (void)selectSiblingAtIndex:(NSUInteger)index {
+    
+}
+
+- (void)selectActionAtIndex:(NSUInteger)index {
     
 }
 

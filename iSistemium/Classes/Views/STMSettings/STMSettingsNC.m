@@ -51,14 +51,18 @@
     
 }
 
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    self.actionSheetPopover = nil;
+}
+
 
 #pragma mark - STMTabBarViewController protocol
 
-- (BOOL)shouldShowOwnActionSheet {
+- (BOOL)shouldShowOwnActions {
     return NO;
 }
 
-- (void)showActionSheetFromTabBarItem {
+- (void)showActionPopoverFromTabBarItem {
 
     CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
 
@@ -67,32 +71,27 @@
                            permittedArrowDirections:UIPopoverArrowDirectionAny
                                            animated:YES];
     
-//    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-//    actionSheet.delegate = self;
-//    
-//    if (self.siblings.count > 1) {
-//        
-//        for (UIViewController *vc in self.siblings) {
-//            
-//            [actionSheet addButtonWithTitle:vc.title];
-//            
-//        }
-//    
-//        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-//        
-//        [actionSheet showFromRect:rect inView:self.view animated:YES];
-//
-//    }
-    
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-
-    UIViewController *vc = self.siblings[buttonIndex];
+- (void)selectSiblingAtIndex:(NSUInteger)index {
+    
+    UIViewController *vc = self.siblings[index];
     
     if (vc != self) {
         [[STMRootTBC sharedRootVC] replaceVC:self withVC:vc];
     }
+    
+    [self.actionSheetPopover dismissPopoverAnimated:YES];
+
+}
+
+- (void)selectActionAtIndex:(NSUInteger)index {
+
+    [self.actionSheetPopover dismissPopoverAnimated:YES];
+
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
 }
 

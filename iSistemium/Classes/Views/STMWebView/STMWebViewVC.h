@@ -11,6 +11,4 @@
 
 @interface STMWebViewVC : UIViewController <STMTabBarViewController>
 
-- (void)showActionSheetFromTabBarItem;
-
 @end

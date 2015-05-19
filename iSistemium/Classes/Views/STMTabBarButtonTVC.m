@@ -123,7 +123,6 @@
     static NSString *reuseIdentifier = @"tabBarTVCell";
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     
-//    cell.textLabel.textAlignment = NSTextAlignmentCenter;
     cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
     
     if (self.hasSiblings && self.hasActions) {
@@ -175,6 +174,34 @@
 
 - (void)fillActionCell:(UITableViewCell *)cell forIndex:(NSUInteger)index {
     cell.textLabel.text = self.actions[index];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.hasSiblings && self.hasActions) {
+
+        if (indexPath.section == 0) {
+
+            [self.parentVC selectSiblingAtIndex:indexPath.row];
+            
+        } else if (indexPath.section == 1) {
+            
+            [self.parentVC selectActionAtIndex:indexPath.row];
+            
+        }
+        
+    } else if (self.hasSiblings) {
+        
+        [self.parentVC selectSiblingAtIndex:indexPath.row];
+        
+    } else if (self.hasActions) {
+
+        [self.parentVC selectActionAtIndex:indexPath.row];
+
+    } else {
+        
+    }
+
 }
 
 

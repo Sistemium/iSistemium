@@ -10,8 +10,12 @@
 
 @protocol STMTabBarViewController <NSObject>
 
-- (BOOL)shouldShowOwnActionSheet;
-- (void)showActionSheetFromTabBarItem;
+- (BOOL)shouldShowOwnActions;
+- (void)showActionPopoverFromTabBarItem;
+
+@optional
+- (void)selectSiblingAtIndex:(NSUInteger)index;
+- (void)selectActionAtIndex:(NSUInteger)index;
 
 
 @end

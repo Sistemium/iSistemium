@@ -156,11 +156,11 @@
 
 #pragma mark - STMTabBarViewController
 
-- (BOOL)shouldShowOwnActionSheet {
+- (BOOL)shouldShowOwnActions {
     return YES;
 }
 
-- (void)showActionSheetFromTabBarItem {
+- (void)showActionPopoverFromTabBarItem {
     
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"IORDERS", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"RELOAD", nil), nil];
     
@@ -169,6 +169,14 @@
     CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
     
     [actionSheet showFromRect:rect inView:self.view animated:YES];
+    
+}
+
+- (void)selectSiblingAtIndex:(NSUInteger)index {
+    
+}
+
+- (void)selectActionAtIndex:(NSUInteger)index {
     
 }
 
