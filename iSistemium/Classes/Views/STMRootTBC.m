@@ -407,6 +407,13 @@
                     @"name": @"STMCampaigns",
                     @"title": @"Campaign"
                 },
+                @{
+                    @"authCheck": @"localStorage.getItem('r50.accessToken')",
+                    @"imageName": @"purchase_order-128.png",
+                    @"name": @"STMWebView",
+                    @"title": @"WebView",
+                    @"url": @"https://sis.bis100.ru/r50/beta/tp/"
+                },
                 @[
                     @{
                         @"imageName": @"cash_receiving-128.png",
@@ -436,14 +443,7 @@
                         @"minBuild": @"70",
                         @"name": @"STMOrders",
                         @"title": @"Oreders"
-                        },
-                    @{
-                        @"authCheck": @"localStorage.getItem('r50.accessToken')",
-                        @"imageName": @"purchase_order-128.png",
-                        @"name": @"STMWebView",
-                        @"title": @"WebView",
-                        @"url": @"https://sis.bis100.ru/r50/beta/tp/"
-                        },
+                        }
                 ],
                 @[
                     @{

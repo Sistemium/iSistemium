@@ -12,4 +12,6 @@
 
 @interface STMActionPopoverNC : UINavigationController <STMTabBarViewController>
 
+@property (nonatomic, strong) NSArray *actions;
+
 @end

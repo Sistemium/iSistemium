@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMTabBarViewController.h"
 
-@interface STMWebViewVC : UIViewController <STMTabBarViewController>
+@interface STMWebViewVC : UIViewController
+
+- (void)loadWebView;
+
 
 @end

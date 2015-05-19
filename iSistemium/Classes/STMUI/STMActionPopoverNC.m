@@ -38,6 +38,7 @@
         STMTabBarButtonTVC *vc = [[STMTabBarButtonTVC alloc] init];
         
         vc.siblings = self.siblings;
+        vc.actions = self.actions;
         vc.parentVC = self;
         
         UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:vc];

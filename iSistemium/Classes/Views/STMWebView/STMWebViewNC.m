@@ -7,6 +7,8 @@
 //
 
 #import "STMWebViewNC.h"
+#import "STMWebViewVC.h"
+
 
 @interface STMWebViewNC ()
 
@@ -14,9 +16,40 @@
 
 @implementation STMWebViewNC
 
+#pragma mark - STMTabBarViewController
+
+- (BOOL)shouldShowOwnActions {
+    return YES;
+}
+
+- (void)selectActionAtIndex:(NSUInteger)index {
+    
+    [super selectActionAtIndex:index];
+    
+    NSString *action = self.actions[index];
+    
+    if ([action isEqualToString:NSLocalizedString(@"RELOAD", nil)]) {
+        
+        if ([self.topViewController isKindOfClass:[STMWebViewVC class]]) {
+            [(STMWebViewVC *)self.topViewController loadWebView];
+        }
+        
+    }
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    self.actions = @[NSLocalizedString(@"RELOAD", nil)];
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+    
 }
 
 - (void)didReceiveMemoryWarning {

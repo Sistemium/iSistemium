@@ -15,7 +15,7 @@
 
 #import "STMFunctions.h"
 
-@interface STMWebViewVC () <UIWebViewDelegate, UIActionSheetDelegate>
+@interface STMWebViewVC () <UIWebViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic) BOOL isAuthorizing;
@@ -150,58 +150,6 @@
     }
 
     NSLog(@"cookies %@", [cookieJar cookies]);
-
-}
-
-
-#pragma mark - STMTabBarViewController
-
-- (BOOL)shouldShowOwnActions {
-    return YES;
-}
-
-- (void)showActionPopoverFromTabBarItem {
-    
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"IORDERS", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"RELOAD", nil), nil];
-    
-    actionSheet.tag = 1;
-
-    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-    
-    [actionSheet showFromRect:rect inView:self.view animated:YES];
-    
-}
-
-- (void)selectSiblingAtIndex:(NSUInteger)index {
-    
-}
-
-- (void)selectActionAtIndex:(NSUInteger)index {
-    
-}
-
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    switch (actionSheet.tag) {
-        case 1:
-            
-            switch (buttonIndex) {
-                case 0:
-                    [self loadWebView];
-                    break;
-                    
-                default:
-                    break;
-            }
-            
-            break;
-            
-        default:
-            break;
-    }
 
 }
 

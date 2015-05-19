@@ -173,7 +173,10 @@
 }
 
 - (void)fillActionCell:(UITableViewCell *)cell forIndex:(NSUInteger)index {
+    
     cell.textLabel.text = self.actions[index];
+    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
