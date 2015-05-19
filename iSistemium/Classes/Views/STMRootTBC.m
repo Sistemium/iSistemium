@@ -419,30 +419,32 @@
                         @"title": @"Uncashing"
                         }
                 ],
-//                {
-//                    imageName = "message-128.png";
-//                    name = STMMessages;
-//                    title = "\U0421\U043e\U043e\U0431\U0449\U0435\U043d\U0438\U044f";
-//                },
-//                {
-//                    imageName = "Dossier Folder-100.png";
-//                    minBuild = 70;
-//                    name = STMCatalog;
-//                    title = "\U041a\U0430\U0442\U0430\U043b\U043e\U0433";
-//                },
-//                {
-//                    imageName = "bill-128.png";
-//                    minBuild = 70;
-//                    name = STMOrders;
-//                    title = "\U0417\U0430\U043a\U0430\U0437\U044b";
-//                },
-//                {
-//                    authCheck = "localStorage.getItem('r50.accessToken')";
-//                    imageName = "purchase_order-128.png";
-//                    name = STMWebView;
-//                    title = "\U041f\U0440\U043e\U0447\U0435\U0435";
-//                    url = "https://sis.bis100.ru/r50/beta/tp/";
-//                },
+                @[
+                    @{
+                        @"imageName": @"message-128.png",
+                        @"name": @"STMMessages",
+                        @"title": @"Messages"
+                        },
+                    @{
+                        @"imageName": @"Dossier Folder-100.png",
+                        @"minBuild": @"70",
+                        @"name": @"STMCatalog",
+                        @"title": @"Catalog"
+                        },
+                    @{
+                        @"imageName": @"bill-128.png",
+                        @"minBuild": @"70",
+                        @"name": @"STMOrders",
+                        @"title": @"Oreders"
+                        },
+                    @{
+                        @"authCheck": @"localStorage.getItem('r50.accessToken')",
+                        @"imageName": @"purchase_order-128.png",
+                        @"name": @"STMWebView",
+                        @"title": @"WebView",
+                        @"url": @"https://sis.bis100.ru/r50/beta/tp/"
+                        },
+                ],
                 @[
                     @{
                         @"ifdef": @"DEBUG",
