@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMTabBarViewController.h"
 
-@interface STMSplitViewController : UISplitViewController
+@interface STMSplitViewController : UISplitViewController <STMTabBarViewController>
 
 @end

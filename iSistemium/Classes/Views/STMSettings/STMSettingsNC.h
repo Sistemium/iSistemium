@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMTabBarViewController.h"
+#import "STMUI.h"
 
 
-@interface STMSettingsNC : UINavigationController <STMTabBarViewController>
+@interface STMSettingsNC : STMActionPopoverNC
 
 @end

@@ -9,10 +9,9 @@
 #import "STMSplitViewController.h"
 #import "STMLogMessagesMasterTVC.h"
 #import "STMLogMessagesDetailTVC.h"
-#import "STMTabBarViewController.h"
 
 
-@interface STMLogMessagesSVC : STMSplitViewController <STMTabBarViewController>
+@interface STMLogMessagesSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMLogMessagesMasterTVC *masterTVC;
 @property (nonatomic, strong) STMLogMessagesDetailTVC *detailTVC;

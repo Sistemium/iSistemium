@@ -407,16 +407,18 @@
                     @"name": @"STMCampaigns",
                     @"title": @"Campaign"
                 },
-                @{
-                    @"imageName": @"cash_receiving-128.png",
-                    @"name": @"STMDebts",
-                    @"title": @"Debts"
-                },
-                @{
-                    @"imageName": @"banknotes-128.png",
-                    @"name": @"STMUncashing",
-                    @"title": @"Uncashing"
-                },
+                @[
+                    @{
+                        @"imageName": @"cash_receiving-128.png",
+                        @"name": @"STMDebts",
+                        @"title": @"Debts"
+                        },
+                    @{
+                        @"imageName": @"banknotes-128.png",
+                        @"name": @"STMUncashing",
+                        @"title": @"Uncashing"
+                        }
+                ],
 //                {
 //                    imageName = "message-128.png";
 //                    name = STMMessages;
@@ -455,7 +457,7 @@
                         @"title": @"Logs"
                         }
                 ]
-                ];
+            ];
     
 }
 
@@ -504,6 +506,8 @@
                 
             }
             
+        } else {
+            NSLog(@"%@ is not conforms to protocol <STMTabBarViewController>", vc);
         }
         
     }

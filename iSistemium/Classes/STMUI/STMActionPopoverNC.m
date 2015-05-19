@@ -1,26 +1,26 @@
 //
-//  STMSettingsNC.m
+//  STMActionPopoverNC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 18/05/15.
+//  Created by Maxim Grigoriev on 19/05/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMSettingsNC.h"
+#import "STMActionPopoverNC.h"
 #import "STMRootTBC.h"
-#import "STMFunctions.h"
 #import "STMTabBarButtonTVC.h"
+#import "STMFunctions.h"
 
 
-@interface STMSettingsNC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
+@interface STMActionPopoverNC () <UIPopoverControllerDelegate>
 
 @property (nonatomic, strong) NSArray *siblings;
 @property (nonatomic, strong) UIPopoverController *actionSheetPopover;
 
+
 @end
 
-
-@implementation STMSettingsNC
+@implementation STMActionPopoverNC
 
 - (NSArray *)siblings {
     
@@ -63,9 +63,9 @@
 }
 
 - (void)showActionPopoverFromTabBarItem {
-
+    
     CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-
+    
     [self.actionSheetPopover presentPopoverFromRect:rect
                                              inView:self.tabBarController.view
                            permittedArrowDirections:UIPopoverArrowDirectionAny
@@ -82,16 +82,12 @@
     }
     
     [self.actionSheetPopover dismissPopoverAnimated:YES];
-
+    
 }
 
 - (void)selectActionAtIndex:(NSUInteger)index {
-
+    
     [self.actionSheetPopover dismissPopoverAnimated:YES];
-
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
 }
 

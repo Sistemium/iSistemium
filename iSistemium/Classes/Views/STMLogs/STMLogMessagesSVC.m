@@ -8,7 +8,9 @@
 
 #import "STMLogMessagesSVC.h"
 
+
 @interface STMLogMessagesSVC ()
+
 
 @end
 
@@ -49,21 +51,6 @@
     }
     
     return _masterTVC;
-    
-}
-
-
-#pragma mark - STMTabBarViewController protocol
-
-- (BOOL)shouldShowOwnActions {
-    return NO;
-}
-
-- (void)showActionPopoverFromTabBarItem {
-    
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
 }
 

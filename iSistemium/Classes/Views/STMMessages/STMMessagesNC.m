@@ -9,8 +9,6 @@
 #import "STMMessagesNC.h"
 #import "STMMessageVC.h"
 
-#import "STMFunctions.h"
-
 
 @interface STMMessagesNC () <UIActionSheetDelegate>
 
@@ -20,31 +18,6 @@
 
 
 @implementation STMMessagesNC
-
-
-#pragma mark - STMTabBarViewController
-
-- (BOOL)shouldShowOwnActions {
-    return NO;
-}
-
-- (void)showActionPopoverFromTabBarItem {
-    
-//    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
-//    
-//    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-//    
-//    [actionSheet showFromRect:rect inView:self.view animated:YES];
-    
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-//    if (buttonIndex != -1) {
-//
-//    }
-    
-}
 
 
 #pragma mark - view lifecycle

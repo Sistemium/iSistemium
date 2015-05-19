@@ -7,7 +7,6 @@
 //
 
 #import "STMProfileNC.h"
-#import "STMRootTBC.h"
 
 
 @interface STMProfileNC ()
@@ -16,42 +15,6 @@
 
 
 @implementation STMProfileNC
-
-#pragma mark - STMTabBarViewController protocol
-
-- (BOOL)shouldShowOwnActions {
-    return NO;
-}
-
-- (void)showActionPopoverFromTabBarItem {
-    
-    if ([STMRootTBC sharedRootVC].newAppVersionAvailable) {
-        
-        //        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
-        //
-        //        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-        //
-        //        [actionSheet showFromRect:rect inView:self.view animated:YES];
-        
-    }
-    
-}
-
-- (void)selectSiblingAtIndex:(NSUInteger)index {
-    
-}
-
-- (void)selectActionAtIndex:(NSUInteger)index {
-    
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    //    if (buttonIndex != -1) {
-    //
-    //    }
-    
-}
 
 
 #pragma mark - view lifecycle

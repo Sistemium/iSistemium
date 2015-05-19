@@ -14,6 +14,7 @@
 #include "STMBarButtonItem.h"
 
 #include "STMSplitViewController.h"
+#include "STMActionPopoverNC.h"
 
 #include "STMImagePickerController.h"
 
