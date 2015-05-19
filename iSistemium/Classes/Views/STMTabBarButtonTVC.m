@@ -84,13 +84,46 @@
 
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    if (self.hasSiblings && self.hasActions) {
+        
+        switch (section) {
+            case 0:
+                return NSLocalizedString(@"SHOW SIBLINGS", nil);
+                break;
+            case 1:
+                return NSLocalizedString(@"SHOW ACTIONS", nil);
+                break;
+                
+            default:
+                return nil;
+                break;
+        }
+        
+    } else if (self.hasSiblings) {
+        
+        return NSLocalizedString(@"SHOW SIBLINGS", nil);
+        
+    } else if (self.hasActions) {
+        
+        return NSLocalizedString(@"SHOW ACTIONS", nil);
+        
+    } else {
+        
+        return 0;
+        
+    }
+
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *reuseIdentifier = @"tabBarTVCell";
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     
-    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+//    cell.textLabel.textAlignment = NSTextAlignmentCenter;
     cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
     
     if (self.hasSiblings && self.hasActions) {
@@ -149,12 +182,16 @@
 
 - (void)customInit {
     
+    [self.tableView setNeedsLayout];
+    [self.tableView layoutIfNeeded];
+    
+    self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.contentSize.height);
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
     [self customInit];
     
 }

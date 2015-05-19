@@ -9,12 +9,13 @@
 #import "STMSettingsNC.h"
 #import "STMRootTBC.h"
 #import "STMFunctions.h"
+#import "STMTabBarButtonTVC.h"
 
 
-@interface STMSettingsNC () <UIActionSheetDelegate>
+@interface STMSettingsNC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
 
 @property (nonatomic, strong) NSArray *siblings;
-
+@property (nonatomic, strong) UIPopoverController *actionSheetPopover;
 
 @end
 
@@ -30,6 +31,27 @@
     
 }
 
+- (UIPopoverController *)actionSheetPopover {
+    
+    if (!_actionSheetPopover) {
+        
+        STMTabBarButtonTVC *vc = [[STMTabBarButtonTVC alloc] init];
+        
+        vc.siblings = self.siblings;
+        vc.parentVC = self;
+        
+        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:vc];
+        popover.delegate = self;
+        popover.popoverContentSize = CGSizeMake(vc.view.frame.size.width, vc.view.frame.size.height);
+        
+        _actionSheetPopover = popover;
+        
+    }
+    return _actionSheetPopover;
+    
+}
+
+
 #pragma mark - STMTabBarViewController protocol
 
 - (BOOL)shouldShowOwnActionSheet {
@@ -37,23 +59,30 @@
 }
 
 - (void)showActionSheetFromTabBarItem {
-    
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-    actionSheet.delegate = self;
-    
-    if (self.siblings.count > 1) {
-        
-        for (UIViewController *vc in self.siblings) {
-            
-            [actionSheet addButtonWithTitle:vc.title];
-            
-        }
-    
-        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-        
-        [actionSheet showFromRect:rect inView:self.view animated:YES];
 
-    }
+    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+
+    [self.actionSheetPopover presentPopoverFromRect:rect
+                                             inView:self.tabBarController.view
+                           permittedArrowDirections:UIPopoverArrowDirectionAny
+                                           animated:YES];
+    
+//    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+//    actionSheet.delegate = self;
+//    
+//    if (self.siblings.count > 1) {
+//        
+//        for (UIViewController *vc in self.siblings) {
+//            
+//            [actionSheet addButtonWithTitle:vc.title];
+//            
+//        }
+//    
+//        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+//        
+//        [actionSheet showFromRect:rect inView:self.view animated:YES];
+//
+//    }
     
 }
 
