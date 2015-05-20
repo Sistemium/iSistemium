@@ -36,6 +36,7 @@
 @property (nonatomic, strong) NSArray *availablePriceTypes;
 
 @property (nonatomic) BOOL showZeroStock;
+@property (nonatomic) BOOL showOnlyWithPictures;
 
 - (NSArray *)nestedArticleGroups;
 

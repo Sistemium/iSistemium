@@ -29,6 +29,15 @@
     
 }
 
++ (STMBarButtonItem *)fixedSpaceWithWidth:(CGFloat)width {
+
+    STMBarButtonItem *fixedSpace = [[STMBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixedSpace.width = width;
+    
+    return fixedSpace;
+
+}
+
 - (instancetype)init {
     
     self = [super init];

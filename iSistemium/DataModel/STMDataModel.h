@@ -18,6 +18,7 @@
 #include "STMCampaignPicture.h"
 #include "STMCashing+dayAsString.h"
 #include "STMClientData.h"
+#include "STMClientEntity.h"
 #include "STMComment.h"
 #include "STMDatum+init.h"
 #include "STMDebt+Cashing.h"

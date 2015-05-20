@@ -45,8 +45,12 @@
 }
 
 + (void)refillParents {
+    [self refillParentsWithPredicate:nil];
+}
+
++ (void)refillParentsWithPredicate:(NSPredicate *)predicate {
     
-//    NSLog(@"refillParents");
+    //    NSLog(@"refillParents");
     
     NSArray *articleGroups = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticleGroup class])];
     
@@ -57,13 +61,15 @@
         
     }
 
-    [self sharedInstance].articleGroupParentsDic = [NSMutableDictionary dictionary];
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"articleGroups.@count == 0"];
+    if (predicate) articleGroups = [articleGroups filteredArrayUsingPredicate:predicate];
+    
+    predicate = [NSPredicate predicateWithFormat:@"articleGroups.@count == 0"];
     NSArray *childlessArticleGroups = [articleGroups filteredArrayUsingPredicate:predicate];
     
+    [self sharedInstance].articleGroupParentsDic = [NSMutableDictionary dictionary];
+
     for (STMArticleGroup *articleGroup in childlessArticleGroups) [self parentsForArticleGroup:articleGroup];
-    
+
 }
 
 + (NSSet *)parentsForArticleGroup:(STMArticleGroup *)articleGroup {

@@ -11,6 +11,7 @@
 @interface STMArticleGroup (custom)
 
 @property (nonatomic) NSInteger articlesStockVolume;
+@property (nonatomic) NSInteger articlesPicturesCount;
 @property (nonatomic, strong) NSSet *articlesPriceTypes;
 
 @end

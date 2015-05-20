@@ -623,6 +623,7 @@
     
     NSArray *entityNamesForSyncing = @[
                                        NSStringFromClass([STMEntity class]),
+                                       NSStringFromClass([STMClientEntity class]),
                                        NSStringFromClass([STMPhotoReport class]),
                                        NSStringFromClass([STMCashing class]),
                                        NSStringFromClass([STMUncashing class]),
@@ -786,9 +787,9 @@
     NSLog(@"initObjectsCache tick");
     
     [self sharedController].objectsCache = nil;
-    
+
     NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
-    
+
     NSLog(@"fetch existing objects for initObjectsCache");
     TOCK;
     
@@ -796,7 +797,7 @@
     NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
     
     [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-    
+
     NSLog(@"finish initObjectsCache");
     TOCK;
     
@@ -804,40 +805,40 @@
         completionHandler(YES);
     }];
     
-    /*
-     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-     
-     __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
-     
-     [context performBlock:^{
-     
-     __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
-     
-     NSLog(@"fetch existing objectIDs for initObjectsCache");
-     TOCK;
-     
-     dispatch_async(dispatch_get_main_queue(), ^{
-     
-     NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
-     NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
-     NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-     
-     [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-     
-     NSLog(@"finish initObjectsCache");
-     TOCK;
-     
-     [[self document] saveDocument:^(BOOL success) {
-     completionHandler(YES);
-     }];
-     
-     });
-     
-     }];
-     
-     });
-     */
+/*
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
     
+        __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
+        
+        [context performBlock:^{
+            
+            __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
+            
+            NSLog(@"fetch existing objectIDs for initObjectsCache");
+            TOCK;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
+                NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
+                NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+
+                [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+                
+                NSLog(@"finish initObjectsCache");
+                TOCK;
+                
+                [[self document] saveDocument:^(BOOL success) {
+                    completionHandler(YES);
+                }];
+                
+            });
+            
+        }];
+        
+    });
+*/
+
 }
 
 
@@ -1164,6 +1165,7 @@
 
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
                              NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMArticlePicture class]),
                              NSStringFromClass([STMArticleGroup class]),
                              NSStringFromClass([STMBatteryStatus class]),
                              NSStringFromClass([STMCampaign class]),
@@ -1191,6 +1193,7 @@
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMClientEntity class]),
                              NSStringFromClass([STMEntity class])];
     
     NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];

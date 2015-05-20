@@ -10,6 +10,7 @@
 
 static NSString *defaultPriceTypeKey = @"priceTypeXid";
 static NSString *showZeroStockKey = @"showZeroStock";
+static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 
 
 @interface STMCatalogSVC () <NSFetchedResultsControllerDelegate>
@@ -24,6 +25,8 @@ static NSString *showZeroStockKey = @"showZeroStock";
 
 @synthesize selectedPriceType = _selectedPriceType;
 @synthesize showZeroStock = _showZeroStock;
+@synthesize showOnlyWithPictures = _showOnlyWithPictures;
+
 
 #pragma mark - subviews
 
@@ -108,7 +111,6 @@ static NSString *showZeroStockKey = @"showZeroStock";
         if (!showZeroStock) {
             
             showZeroStock = @(NO);
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setObject:showZeroStock forKey:showZeroStockKey];
             [defaults synchronize];
 
@@ -133,6 +135,45 @@ static NSString *showZeroStockKey = @"showZeroStock";
         [self.masterTVC refreshTable];
         [self.detailTVC refreshTable];
 
+    }
+    
+}
+
+- (BOOL)showOnlyWithPictures {
+ 
+    if (!_showOnlyWithPictures) {
+    
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        id showOnlyWithPictures = [defaults objectForKey:showOnlyWithPicturesKey];
+        
+        if (!showOnlyWithPictures) {
+            
+            showOnlyWithPictures = @NO;
+            [defaults setObject:showOnlyWithPictures forKey:showOnlyWithPicturesKey];
+            [defaults synchronize];
+            
+        }
+        
+        _showOnlyWithPictures = [showOnlyWithPictures boolValue];
+        
+    }
+    return _showOnlyWithPictures;
+    
+}
+
+- (void)setShowOnlyWithPictures:(BOOL)showOnlyWithPictures {
+    
+    if (showOnlyWithPictures != _showOnlyWithPictures) {
+        
+        _showOnlyWithPictures = showOnlyWithPictures;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:@(showOnlyWithPictures) forKey:showOnlyWithPicturesKey];
+        [defaults synchronize];
+        
+        [self.masterTVC refreshTable];
+        [self.detailTVC refreshTable];
+        
     }
     
 }
