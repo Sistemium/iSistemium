@@ -1071,11 +1071,13 @@
             self.syncing = NO;
             self.syncerState = STMSyncerIdle;
 
-        } else if (! -- self.entityCount) {
+//        } else if (! -- self.entityCount) {
+//            
+//            self.syncing = NO;
+//            self.syncerState = STMSyncerIdle;
             
-            self.syncing = NO;
-            self.syncerState = STMSyncerIdle;
-            
+        } else {
+            [self entityCountDecrease];
         }
     }
     
