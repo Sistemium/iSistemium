@@ -693,9 +693,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 
 - (void)appendString:(NSString *)appendString toAttributedDetailedString:(NSMutableAttributedString *)attributedDetailedString withAttributes:(NSDictionary *)attributes {
     
-    NSMutableAttributedString *attributedAppendString = [[NSMutableAttributedString alloc] initWithString:@"" attributes:attributes];
-
-    attributedAppendString = [[NSMutableAttributedString alloc] initWithString:appendString attributes:attributes];
+    NSMutableAttributedString *attributedAppendString = [[NSMutableAttributedString alloc] initWithString:appendString attributes:attributes];
     [attributedDetailedString appendAttributedString:attributedAppendString];
 
 }
