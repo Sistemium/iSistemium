@@ -220,7 +220,7 @@
     
     NSUInteger index = [self.currentTabsVCs indexOfObject:currentVC];
     
-    [self.currentTabsVCs replaceObjectAtIndex:index withObject:vc];
+    (self.currentTabsVCs)[index] = vc;
     
     [self showTabs];
     

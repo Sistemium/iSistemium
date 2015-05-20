@@ -1323,7 +1323,7 @@
                     
                 }
                 
-                [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
+                propertiesDictionary[key] = [NSString stringWithFormat:@"%@", value];
                 
             }
             
@@ -1347,7 +1347,7 @@
                     
                     NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
                     NSString *entityName = key;
-                    [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
+                    propertiesDictionary[key] = @{@"name": entityName, @"xid": xid};
                     
                 }
                 

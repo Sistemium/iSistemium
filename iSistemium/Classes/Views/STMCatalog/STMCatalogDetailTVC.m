@@ -596,7 +596,7 @@
     if (tableView == self.searchDisplayController.searchResultsTableView) {
 
 //        article = [self.searchResults objectAtIndex:indexPath.row];
-        price = [self.searchResults objectAtIndex:indexPath.row];
+        price = (self.searchResults)[indexPath.row];
 
     } else {
         
@@ -636,7 +636,7 @@
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         
 //        self.selectedArticle = [self.searchResults objectAtIndex:indexPath.row];
-        price = [self.searchResults objectAtIndex:indexPath.row];
+        price = (self.searchResults)[indexPath.row];
         
     } else {
         

@@ -282,7 +282,7 @@
     cell.detailTextLabel.textColor = blackColor;
     
 //    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
-    STMArticleGroup *articleGroup = [self.filteredFetchResults objectAtIndex:indexPath.row];
+    STMArticleGroup *articleGroup = (self.filteredFetchResults)[indexPath.row];
     
     cell.textLabel.text = articleGroup.name;
     cell.detailTextLabel.text = nil;
@@ -321,7 +321,7 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 //    STMArticleGroup *articleGroup = [self.resultsController objectAtIndexPath:indexPath];
-    STMArticleGroup *articleGroup = [self.filteredFetchResults objectAtIndex:indexPath.row];
+    STMArticleGroup *articleGroup = (self.filteredFetchResults)[indexPath.row];
     
     NSArray *selectedIndexPaths = [tableView indexPathsForSelectedRows];
     
