@@ -23,7 +23,7 @@
 #import <Security/Security.h>
 #import "KeychainItemWrapper.h"
 
-@interface STMPicturesController()
+@interface STMPicturesController() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSOperationQueue *downloadQueue;
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
@@ -35,6 +35,8 @@
 @property (nonatomic) BOOL s3Initialized;
 @property (nonatomic, strong) STMSession *session;
 @property (nonatomic, strong) NSMutableDictionary *settings;
+
+@property (nonatomic, strong) NSFetchedResultsController *unloadedPicturesResultsController;
 
 
 @end
@@ -68,7 +70,12 @@
     
     self = [super init];
     
-    if (self) [self addObservers];
+    if (self) {
+        
+        [self addObservers];
+        [self performFetch];
+        
+    }
     return self;
     
 }
@@ -98,6 +105,7 @@
         self.s3Initialized = NO;
         self.session = nil;
         self.settings = nil;
+        self.unloadedPicturesResultsController = nil;
         
     }
     
@@ -258,6 +266,51 @@
     }
     
     return self.s3Initialized;
+    
+}
+
+- (NSFetchedResultsController *)unloadedPicturesResultsController {
+    
+    if (!_unloadedPicturesResultsController) {
+        
+        STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
+        
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"href != %@ AND imageThumbnail == %@", nil, nil];
+        
+        request.sortDescriptors = @[sortDescriptor];
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
+        
+        _unloadedPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                 managedObjectContext:self.session.document.managedObjectContext
+                                                                                   sectionNameKeyPath:nil
+                                                                                            cacheName:nil];
+        _unloadedPicturesResultsController.delegate = self;
+        
+    }
+    return _unloadedPicturesResultsController;
+    
+}
+
+- (void)performFetch {
+    
+    NSError *error;
+    if (![self.unloadedPicturesResultsController performFetch:&error]) {
+        NSLog(@"unloadedPicturesResultsController fetch error: ", error.localizedDescription);
+    }
+
+}
+
+- (NSUInteger)unloadedPicturesCount {
+    return self.unloadedPicturesResultsController.fetchedObjects.count;
+}
+
+
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"unloadedPicturesCountDidChange" object:self];
     
 }
 

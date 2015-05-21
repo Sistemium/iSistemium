@@ -14,6 +14,7 @@
 #import "STMLocationTracker.h"
 #import "STMSyncer.h"
 #import "STMEntityController.h"
+#import "STMPicturesController.h"
 
 #import "STMAuthController.h"
 #import "STMRootTBC.h"
@@ -36,6 +37,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
+@property (weak, nonatomic) IBOutlet UIButton *unloadedPicturesButton;
 
 @property (weak, nonatomic) UIImageView *syncImageView;
 
@@ -315,6 +317,23 @@
     
 }
 
+- (void)updateUnloadedPicturesButton {
+    
+    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
+    
+    NSString *title = @"";
+    
+    if (unloadedPicturesCount > 0) {
+        title = [NSString stringWithFormat:@"%lu", (unsigned long)unloadedPicturesCount];
+    }
+    
+    [self.unloadedPicturesButton setTitle:title forState:UIControlStateNormal];
+    
+}
+
+- (void)unloadedPicturesCountDidChange {
+    [self updateUnloadedPicturesButton];
+}
 
 #pragma mark - UIAlertViewDelegate
 
@@ -584,6 +603,11 @@
                name:kReachabilityChangedNotification
              object:nil];
     
+    [nc addObserver:self
+           selector:@selector(unloadedPicturesCountDidChange)
+               name:@"unloadedPicturesCountDidChange"
+             object:[STMPicturesController sharedController]];
+    
 }
 
 - (void)removeObservers {
@@ -608,6 +632,8 @@
     
     [self updateCloudImages];
     [self updateSyncDatesLabels];
+    [self updateUnloadedPicturesButton];
+    
     [self addObservers];
     [self startReachability];
         

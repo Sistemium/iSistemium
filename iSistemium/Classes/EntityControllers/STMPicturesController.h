@@ -13,6 +13,8 @@
 
 + (STMPicturesController *)sharedController;
 
+- (NSUInteger)unloadedPicturesCount;
+
 + (CGFloat)jpgQuality;
 
 + (void)checkPhotos;
