@@ -210,5 +210,12 @@
 "NO" = "No";
 "DOCUMENT_ERROR" = "Document error";
 "RESPONSE IS NOT A DICTIONARY" = "Response is not a dictionary";
-
+"UNLOADED PICTURES" = "Unloaded pictures";
+"WAITING FOR DOWNLOAD" = "waiting for download";
+"DOWNLOAD NOW" = "Download now";
+"DOWNLOAD LATER" = "Download later";
+"0UPICTURES" = "no pictures";
+"1UPICTURES" = "picture";
+"2UPICTURES" = "pictures";
+"5UPICTURES" = "pictures";
 

@@ -210,4 +210,12 @@
 "NO" = "Нет";
 "DOCUMENT_ERROR" = "Ошибка инициализации базы данных. Обратитесь в техподдержку.";
 "RESPONSE IS NOT A DICTIONARY" = "Ответ сервера не является словарём.";
+"UNLOADED PICTURES" = "Незагруженные картинки";
+"WAITING FOR DOWNLOAD" = "в ожидании загрузки";
+"DOWNLOAD NOW" = "Скачать сейчас";
+"DOWNLOAD LATER" = "Скачаю потом";
+"0UPICTURES" = "нет картинок";
+"1UPICTURES" = "картинка";
+"2UPICTURES" = "картинки";
+"5UPICTURES" = "картинок";
 

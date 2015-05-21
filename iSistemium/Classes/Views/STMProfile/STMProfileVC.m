@@ -25,7 +25,7 @@
 #import <Reachability/Reachability.h>
 
 
-@interface STMProfileVC () <UIAlertViewDelegate>
+@interface STMProfileVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
@@ -324,7 +324,11 @@
     NSString *title = @"";
     
     if (unloadedPicturesCount > 0) {
-        title = [NSString stringWithFormat:@"%lu", (unsigned long)unloadedPicturesCount];
+        
+        NSString *pluralString = [STMFunctions pluralTypeForCount:unloadedPicturesCount];
+        NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
+        title = [NSString stringWithFormat:@"%lu %@ %@", (unsigned long)unloadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR DOWNLOAD", nil)];
+        
     }
     
     [self.unloadedPicturesButton setTitle:title forState:UIControlStateNormal];
@@ -333,6 +337,38 @@
 
 - (void)unloadedPicturesCountDidChange {
     [self updateUnloadedPicturesButton];
+}
+
+- (IBAction)unloadedPicturesButtonPressed:(id)sender {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
+    actionSheet.delegate = self;
+    actionSheet.tag = 1;
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
+    [actionSheet showInView:self.view];
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag == 1) {
+        
+        switch (buttonIndex) {
+            case 0:
+                [STMPicturesController checkPhotos];
+                break;
+                
+            default:
+                break;
+        }
+        
+    }
+    
 }
 
 #pragma mark - UIAlertViewDelegate
