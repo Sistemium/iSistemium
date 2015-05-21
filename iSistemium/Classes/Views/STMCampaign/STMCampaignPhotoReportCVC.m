@@ -35,6 +35,7 @@
 @property (nonatomic, strong) NSBlockOperation *changeOperation;
 @property (nonatomic, strong) STMCampaign *updatingCampaign;
 @property (nonatomic) BOOL isUpdating;
+@property (nonatomic) BOOL isPhotoLocationProcessing;
 @property (nonatomic, strong) NSMutableArray *waitingLocationPhotos;
 @property (nonatomic, strong) STMLocationTracker *locationTracker;
 
@@ -449,8 +450,8 @@
     [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
     self.selectedPhotoReport.campaign = self.campaign;
     
-    [self.locationTracker getLocation];
     [self.waitingLocationPhotos addObject:self.selectedPhotoReport];
+    [self.locationTracker getLocation];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
 
@@ -484,23 +485,38 @@
 
 - (void)currentLocationWasUpdated:(NSNotification *)notification {
     
-    if (self.waitingLocationPhotos.count > 0) {
+    if (self.waitingLocationPhotos.count > 0 && !self.isPhotoLocationProcessing) {
     
         CLLocation *currentLocation = (notification.userInfo)[@"currentLocation"];
         NSLog(@"currentLocation %@", currentLocation);
 
         STMLocation *location = [self.locationTracker locationObjectFromCLLocation:currentLocation];
-        
-        for (STMPhoto *photo in self.waitingLocationPhotos) {
-            
-            photo.location = location;
-            
-            [self.waitingLocationPhotos removeObject:photo];
-            
-        }
+
+        [self setLocationForWaitingLocationPhotos:location];
 
     }
     
+}
+
+- (void)setLocationForWaitingLocationPhotos:(STMLocation *)location {
+    
+    self.isPhotoLocationProcessing = YES;
+    NSArray *photos = self.waitingLocationPhotos.copy;
+    
+    for (STMPhoto *photo in photos) {
+        
+        photo.location = location;
+        
+        [self.waitingLocationPhotos removeObject:photo];
+        
+    }
+    
+    if (self.waitingLocationPhotos.count > 0) {
+        [self setLocationForWaitingLocationPhotos:location];
+    } else {
+        self.isPhotoLocationProcessing = NO;
+    }
+
 }
 
 - (void)photoReportWasDeleted:(STMPhotoReport *)photoReport {
