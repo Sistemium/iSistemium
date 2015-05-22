@@ -267,7 +267,7 @@
                 self.sendOnce = NO;
 
                 [STMObjectsController dataLoadingFinished];
-                [STMPicturesController checkUploadedPhotos];
+//                [STMPicturesController checkUploadedPhotos];
                 
                 if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
                 if (self.fetchCompletionHandler) self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
@@ -358,7 +358,7 @@
             if (success) {
         
                 [STMEntityController checkEntitiesForDuplicates];
-                [STMPicturesController checkPhotos];
+//                [STMPicturesController checkPhotos];
                 [STMClientDataController checkClientData];
                 [self.session.logger saveLogMessageDictionaryToDocument];
                 [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];

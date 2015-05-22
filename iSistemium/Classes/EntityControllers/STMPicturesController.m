@@ -90,6 +90,7 @@
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
         
         self.downloadQueue = nil;
+        [self.downloadSession invalidateAndCancel];
         self.downloadSession = nil;
         self.uploadQueue = nil;
         self.hrefDictionary = nil;
@@ -227,7 +228,7 @@
     if (!_downloadQueue) {
         
         _downloadQueue = [[NSOperationQueue alloc] init];
-        _downloadQueue.maxConcurrentOperationCount = 2;
+        _downloadQueue.maxConcurrentOperationCount = 1;
         
     }
     
@@ -240,6 +241,7 @@
     if (!_downloadSession) {
         
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        configuration.HTTPMaximumConnectionsPerHost = 1;
         _downloadSession = [NSURLSession sessionWithConfiguration:configuration];
         
     }
@@ -441,6 +443,10 @@
                 
             }
             
+        } else {
+            
+            [self hrefProcessingForObject:picture];
+            
         }
 
     }
@@ -580,7 +586,9 @@
     
     [self.downloadQueue addOperationWithBlock:^{
         
-        [[self.downloadSession dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSURL *url = [NSURL URLWithString:href];
+        
+        NSURLSessionDataTask *dataTask = [self.downloadSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             
             if (error) {
                 
@@ -617,16 +625,20 @@
 //                NSLog(@"%@ load successefully", href);
                 
                 [self.hrefDictionary removeObjectForKey:href];
-
+                
                 NSData *dataCopy = [data copy];
                 
                 [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
                 
                 [self.hrefDictionary removeObjectForKey:href];
-
+                
             }
             
-        }] resume];
+        }];
+        
+//        NSLog(@"create dataTask %@", href);
+        
+        [dataTask resume];
         
     }];
     

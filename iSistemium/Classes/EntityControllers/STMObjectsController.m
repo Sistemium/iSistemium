@@ -299,7 +299,7 @@
             
             [object setValue:value forKey:key];
             
-            if ([key isEqualToString:@"href"]) [STMPicturesController hrefProcessingForObject:object];
+//            if ([key isEqualToString:@"href"]) [STMPicturesController hrefProcessingForObject:object];
             
         } else {
             
@@ -1146,6 +1146,7 @@
     
 //    [self avgTimesCalc];
     
+    [STMPicturesController checkPhotos];
     [self checkObjectsForFlushing];
     
 #ifdef DEBUG
