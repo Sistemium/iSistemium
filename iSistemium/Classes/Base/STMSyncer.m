@@ -278,7 +278,7 @@
                 self.sendOnce = NO;
 
                 [STMObjectsController dataLoadingFinished];
-                [STMPicturesController checkUploadedPhotos];
+//                [STMPicturesController checkUploadedPhotos];
                 
                 self.entitySyncNames = nil;
                 if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
@@ -370,7 +370,7 @@
             if (success) {
         
                 [STMEntityController checkEntitiesForDuplicates];
-                [STMPicturesController checkPhotos];
+//                [STMPicturesController checkPhotos];
                 [STMClientDataController checkClientData];
                 [self.session.logger saveLogMessageDictionaryToDocument];
                 [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
