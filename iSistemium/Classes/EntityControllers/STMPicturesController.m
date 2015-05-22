@@ -26,6 +26,7 @@
 @interface STMPicturesController()
 
 @property (nonatomic, strong) NSOperationQueue *downloadQueue;
+@property (nonatomic, strong) NSURLSession *downloadSession;
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
 @property (nonatomic, strong) NSMutableArray *secondAttempt;
@@ -89,6 +90,7 @@
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
         
         self.downloadQueue = nil;
+        self.downloadSession = nil;
         self.uploadQueue = nil;
         self.hrefDictionary = nil;
         self.secondAttempt = nil;
@@ -230,6 +232,18 @@
     }
     
     return _downloadQueue;
+    
+}
+
+- (NSURLSession *)downloadSession {
+    
+    if (!_downloadSession) {
+        
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        _downloadSession = [NSURLSession sessionWithConfiguration:configuration];
+        
+    }
+    return _downloadSession;
     
 }
 
@@ -566,7 +580,7 @@
     
     [self.downloadQueue addOperationWithBlock:^{
         
-        [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        [[self.downloadSession dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             
             if (error) {
                 
