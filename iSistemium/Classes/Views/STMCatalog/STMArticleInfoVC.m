@@ -107,6 +107,9 @@
     NSSortDescriptor *priceDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"priceType.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
     NSArray *prices = [self.article.prices sortedArrayUsingDescriptors:@[priceDescriptor]];
     
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.parentVC.selectedPriceType];
+    prices = [prices filteredArrayUsingPredicate:predicate];
+    
     for (STMPrice *price in prices) {
         
         keyString = NSLocalizedString(@"PRICE", nil);
