@@ -208,6 +208,9 @@
     NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
     prices = [prices filteredArrayUsingPredicate:pricePredicate];
     
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.parentVC.selectedPriceType];
+    prices = [prices filteredArrayUsingPredicate:predicate];
+    
     for (STMPrice *price in prices) {
         
         keyString = NSLocalizedString(@"PRICE", nil);
