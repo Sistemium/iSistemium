@@ -292,7 +292,7 @@
         STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"href != %@ AND imageThumbnail == %@", nil, nil];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil, [self photoEntitiesNames]];
         
         request.sortDescriptors = @[sortDescriptor];
         request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
@@ -317,8 +317,22 @@
 
 }
 
+- (NSArray *)photoEntitiesNames {
+    
+    return @[NSStringFromClass([STMPhotoReport class]),
+             NSStringFromClass([STMUncashingPicture class])];
+
+}
+
+- (NSArray *)unloadedPictures {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (entity.name IN %@)", [self photoEntitiesNames]];
+    return [self.unloadedPicturesResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+    
+}
+
 - (NSUInteger)unloadedPicturesCount {
-    return self.unloadedPicturesResultsController.fetchedObjects.count;
+    return [self unloadedPictures].count;
 }
 
 
