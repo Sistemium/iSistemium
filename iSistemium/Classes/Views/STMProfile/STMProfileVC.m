@@ -115,6 +115,7 @@
     
     [self updateSyncDatesLabels];
     [self updateCloudImages];
+    [self updateUnloadedPicturesButton];
     
 }
 
@@ -317,7 +318,16 @@
     
 }
 
+- (void)setupUnloadedPicturesButton {
+    
+    [self.unloadedPicturesButton setTitleColor:ACTIVE_BLUE_COLOR forState:UIControlStateNormal];
+    [self.unloadedPicturesButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    
+}
+
 - (void)updateUnloadedPicturesButton {
+
+    self.unloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
     
     NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
     
@@ -668,6 +678,7 @@
     
     [self updateCloudImages];
     [self updateSyncDatesLabels];
+    [self setupUnloadedPicturesButton];
     [self updateUnloadedPicturesButton];
     
     [self addObservers];
