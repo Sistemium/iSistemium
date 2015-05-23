@@ -236,7 +236,7 @@
     if (!_downloadQueue) {
         
         _downloadQueue = [[NSOperationQueue alloc] init];
-        _downloadQueue.maxConcurrentOperationCount = 1;
+        _downloadQueue.maxConcurrentOperationCount = 2;
         
     }
     
@@ -631,67 +631,60 @@
     
     NSString *href = [object valueForKey:@"href"];
     
-//    if ([self.secondAttempt containsObject:href]) {
-        //        NSLog(@"second attempt for %@", href);
-//    }
-    
     __weak NSManagedObject *weakObject = object;
     
     [self.downloadQueue addOperationWithBlock:^{
         
         NSURL *url = [NSURL URLWithString:href];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSURLResponse *response = nil;
+        NSError *error = nil;
         
-        NSURLSessionDataTask *dataTask = [self.downloadSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        
+        if (error) {
             
-            if (error) {
+            if (error.code == -1001) {
                 
-                if (error.code == -1001) {
+                NSLog(@"error code -1001 timeout for %@", href);
+                
+                if ([self.secondAttempt containsObject:href]) {
                     
-                    NSLog(@"error code -1001 timeout for %@", href);
+                    NSLog(@"second load attempt fault for %@", href);
                     
-                    if ([self.secondAttempt containsObject:href]) {
-                        
-                        NSLog(@"second load attempt fault for %@", href);
-                        
-                        [self.secondAttempt removeObject:href];
-                        [self.hrefDictionary removeObjectForKey:href];
-                        
-                    } else {
-                        
-                        [self.secondAttempt addObject:href];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
-                        });
-                        
-                    }
+                    [self.secondAttempt removeObject:href];
+                    [self.hrefDictionary removeObjectForKey:href];
                     
                 } else {
                     
-                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                    [self.hrefDictionary removeObjectForKey:href];
+                    [self.secondAttempt addObject:href];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
+                    });
                     
                 }
                 
             } else {
                 
-//                NSLog(@"%@ load successefully", href);
-                
-                [self.hrefDictionary removeObjectForKey:href];
-                
-                NSData *dataCopy = [data copy];
-                
-                [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
-                
+                NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
                 [self.hrefDictionary removeObjectForKey:href];
                 
             }
             
-        }];
-        
-//        NSLog(@"create dataTask %@", href);
-        
-        [dataTask resume];
+        } else {
+            
+            //                NSLog(@"%@ load successefully", href);
+            
+            [self.hrefDictionary removeObjectForKey:href];
+            
+            NSData *dataCopy = [data copy];
+            
+            [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
+            
+            [self.hrefDictionary removeObjectForKey:href];
+            
+        }
         
     }];
     
