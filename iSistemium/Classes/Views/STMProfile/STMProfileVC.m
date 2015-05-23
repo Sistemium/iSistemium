@@ -46,6 +46,7 @@
 
 @property (nonatomic, strong) Reachability *internetReachability;
 
+@property (nonatomic) BOOL downloadAlertWasShown;
 
 @end
 
@@ -61,9 +62,12 @@
 
 - (void)backButtonPressed {
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil) message:NSLocalizedString(@"R U SURE TO LOGOUT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-    alertView.tag = 0;
-    alertView.delegate = self;
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil)
+                                                        message:NSLocalizedString(@"R U SURE TO LOGOUT", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+    alertView.tag = 1;
     [alertView show];
     
 }
@@ -88,6 +92,8 @@
                 });
                 
             });
+            
+            if (!self.downloadAlertWasShown) [self showDownloadAlert];
             
         } else {
             
@@ -376,6 +382,44 @@
 
 }
 
+- (void)startPicturesDownloading {
+    
+    [STMPicturesController checkPhotos];
+    [STMPicturesController sharedController].downloadQueue.suspended = NO;
+    [self updateUnloadedPicturesButton];
+
+}
+
+- (void)stopPicturesDownloading {
+    
+    [STMPicturesController sharedController].downloadQueue.suspended = YES;
+    [self updateUnloadedPicturesButton];
+
+}
+
+- (void)showDownloadAlert {
+    
+    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
+    
+    if (unloadedPicturesCount > 0) {
+        
+        NSString *pluralString = [STMFunctions pluralTypeForCount:unloadedPicturesCount];
+        NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
+        NSString *title = [NSString stringWithFormat:@"%lu %@ %@. %@", (unsigned long)unloadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR DOWNLOAD", nil), NSLocalizedString(@"DOWNLOAD IT NOW?", nil)];
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNLOADED PICTURES", nil)
+                                                        message:title
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        alert.tag = 2;
+        [alert show];
+        
+        self.downloadAlertWasShown = YES;
+
+    }
+    
+}
 
 #pragma mark - UIActionSheetDelegate
 
@@ -387,9 +431,7 @@
 
             switch (buttonIndex) {
                 case 0:
-                    [STMPicturesController checkPhotos];
-                    [STMPicturesController sharedController].downloadQueue.suspended = NO;
-                    [self updateUnloadedPicturesButton];
+                    [self startPicturesDownloading];
                     break;
                     
                 default:
@@ -402,8 +444,7 @@
 
             switch (buttonIndex) {
                 case 0:
-                    [STMPicturesController sharedController].downloadQueue.suspended = YES;
-                    [self updateUnloadedPicturesButton];
+                    [self stopPicturesDownloading];
                     break;
                     
                 default:
@@ -424,12 +465,18 @@
     
     switch (alertView.tag) {
             
-        case 0:
+        case 1:
             if (buttonIndex == 1) {
                 [[STMAuthController authController] logout];
             }
             break;
-            
+
+        case 2:
+            if (buttonIndex == 1) {
+                [self startPicturesDownloading];
+            }
+            break;
+
         default:
             break;
             
