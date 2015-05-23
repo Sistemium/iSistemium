@@ -220,4 +220,9 @@
 "1UPICTURES" = "picture";
 "2UPICTURES" = "pictures";
 "5UPICTURES" = "pictures";
+"NO WIFI MESSAGE" = "No Wi-Fi. Continue?";
+"ENABLE WWAN MESSAGE" = "Always download via WWAN?";
+"ENABLE WWAN ONCE" = "Only once";
+"ENABLE WWAN ALWAYS" = "Always";
+
 

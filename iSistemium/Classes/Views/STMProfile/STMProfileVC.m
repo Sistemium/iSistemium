@@ -374,11 +374,31 @@
 
         actionSheet.tag = 2;
         [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"CANCEL", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
 
     }
 
     [actionSheet showInView:self.view];
+
+}
+
+- (void)checkDownloadingConditions {
+    
+    STMSettingsController *settingsController = [[STMSessionManager sharedManager].currentSession settingsController];
+    BOOL enableDownloadViaWWAN = [[settingsController currentSettingsForGroup:@"appSettings"][@"enableDownloadViaWWAN"] boolValue];
+    
+    NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
+    
+#warning - don't forget to comment next line
+    networkStatus = ReachableViaWWAN;
+    
+    if (networkStatus == ReachableViaWWAN && !enableDownloadViaWWAN) {
+        
+        [self showWWANAlert];
+        
+    } else {
+        [self startPicturesDownloading];
+    }
 
 }
 
@@ -421,6 +441,39 @@
     
 }
 
+- (void)showWWANAlert {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNLOADED PICTURES", nil)
+                                                    message:NSLocalizedString(@"NO WIFI MESSAGE", nil)
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    alert.tag = 3;
+    [alert show];
+    
+}
+
+- (void)showEnableWWANActionSheet {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.delegate = self;
+    actionSheet.tag = 3;
+    actionSheet.title = NSLocalizedString(@"ENABLE WWAN MESSAGE", nil);
+    
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"ENABLE WWAN ALWAYS", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"ENABLE WWAN ONCE", nil)];
+    [actionSheet showInView:self.view];
+    
+}
+
+- (void)enableWWANDownloading {
+    
+    STMSettingsController *settingsController = [[STMSessionManager sharedManager].currentSession settingsController];
+
+    [settingsController setNewSettings:@{@"enableDownloadViaWWAN": @(YES)} forGroup:@"appSettings"];
+    
+}
+
 #pragma mark - UIActionSheetDelegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -428,29 +481,28 @@
     switch (actionSheet.tag) {
 
         case 1:
-
-            switch (buttonIndex) {
-                case 0:
-                    [self startPicturesDownloading];
-                    break;
-                    
-                default:
-                    break;
+            if (buttonIndex == 0) {
+                [self checkDownloadingConditions];
             }
-
             break;
             
         case 2:
-
-            switch (buttonIndex) {
-                case 0:
-                    [self stopPicturesDownloading];
-                    break;
-                    
-                default:
-                    break;
+            if (buttonIndex == 0) {
+                [self stopPicturesDownloading];
             }
-            
+            break;
+
+        case 3:
+            if (buttonIndex == 0) {
+                
+                [self enableWWANDownloading];
+                [self startPicturesDownloading];
+                
+            } else if (buttonIndex == 1) {
+
+                [self startPicturesDownloading];
+
+            }
             break;
 
         default:
@@ -473,7 +525,13 @@
 
         case 2:
             if (buttonIndex == 1) {
-                [self startPicturesDownloading];
+                [self checkDownloadingConditions];
+            }
+            break;
+
+        case 3:
+            if (buttonIndex == 1) {
+                [self showEnableWWANActionSheet];
             }
             break;
 
