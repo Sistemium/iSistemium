@@ -25,8 +25,6 @@
 
 @interface STMPicturesController() <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) NSOperationQueue *downloadQueue;
-@property (nonatomic, strong) NSURLSession *downloadSession;
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
 @property (nonatomic, strong) NSMutableArray *secondAttempt;
@@ -96,10 +94,14 @@
     
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
         
+        self.downloadQueue.suspended = YES;
+        [self.downloadQueue cancelAllOperations];
         self.downloadQueue = nil;
-        [self.downloadSession invalidateAndCancel];
-        self.downloadSession = nil;
+
+        self.uploadQueue.suspended = YES;
+        [self.uploadQueue cancelAllOperations];
         self.uploadQueue = nil;
+        
         self.hrefDictionary = nil;
         self.secondAttempt = nil;
         self.s3keychainItem = nil;
@@ -237,23 +239,11 @@
         
         _downloadQueue = [[NSOperationQueue alloc] init];
         _downloadQueue.maxConcurrentOperationCount = 2;
+        _downloadQueue.suspended = YES;
         
     }
     
     return _downloadQueue;
-    
-}
-
-- (NSURLSession *)downloadSession {
-    
-    if (!_downloadSession) {
-        
-        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        configuration.HTTPMaximumConnectionsPerHost = 1;
-        _downloadSession = [NSURLSession sessionWithConfiguration:configuration];
-        
-    }
-    return _downloadSession;
     
 }
 

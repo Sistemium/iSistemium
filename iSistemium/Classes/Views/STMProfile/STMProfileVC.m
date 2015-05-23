@@ -343,6 +343,9 @@
     
     [self.unloadedPicturesButton setTitle:title forState:UIControlStateNormal];
     
+    UIColor *titleColor = [STMPicturesController sharedController].downloadQueue.suspended ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
+    [self.unloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
+    
 }
 
 - (void)unloadedPicturesCountDidChange {
@@ -350,15 +353,27 @@
 }
 
 - (IBAction)unloadedPicturesButtonPressed:(id)sender {
-    
+
     UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
     actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
     actionSheet.delegate = self;
-    actionSheet.tag = 1;
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
-    [actionSheet showInView:self.view];
+
+    if ([STMPicturesController sharedController].downloadQueue.suspended) {
     
+        actionSheet.tag = 1;
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
+
+    } else {
+
+        actionSheet.tag = 2;
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CANCEL", nil)];
+
+    }
+
+    [actionSheet showInView:self.view];
+
 }
 
 
@@ -366,17 +381,39 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if (actionSheet.tag == 1) {
-        
-        switch (buttonIndex) {
-            case 0:
-                [STMPicturesController checkPhotos];
-                break;
-                
-            default:
-                break;
-        }
-        
+    switch (actionSheet.tag) {
+
+        case 1:
+
+            switch (buttonIndex) {
+                case 0:
+                    [STMPicturesController checkPhotos];
+                    [STMPicturesController sharedController].downloadQueue.suspended = NO;
+                    [self updateUnloadedPicturesButton];
+                    break;
+                    
+                default:
+                    break;
+            }
+
+            break;
+            
+        case 2:
+
+            switch (buttonIndex) {
+                case 0:
+                    [STMPicturesController sharedController].downloadQueue.suspended = YES;
+                    [self updateUnloadedPicturesButton];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+
+        default:
+            break;
     }
     
 }
