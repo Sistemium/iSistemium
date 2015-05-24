@@ -158,6 +158,14 @@
     
 }
 
+- (void)downloadPicture:(NSNotification *)notification {
+    
+    [self saveDocument: ^(BOOL success) {
+    //    NSLog(@"STMDocument save success on downloadPicture");
+    }];
+    
+}
+
 - (void)addObservers {
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -176,6 +184,11 @@
            selector:@selector(contextDidSavePrivateContext:)
                name:NSManagedObjectContextDidSaveNotification
              object:self.privateContext];
+    
+    [nc addObserver:self
+           selector: @selector(downloadPicture:)
+               name:@"downloadPicture"
+             object: nil];
     
 }
 

@@ -238,7 +238,7 @@
     if (!_downloadQueue) {
         
         _downloadQueue = [[NSOperationQueue alloc] init];
-        _downloadQueue.maxConcurrentOperationCount = 2;
+        _downloadQueue.maxConcurrentOperationCount = 1;
         _downloadQueue.suspended = YES;
         
     }
