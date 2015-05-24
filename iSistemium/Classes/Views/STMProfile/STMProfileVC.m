@@ -384,13 +384,17 @@
 
 - (void)checkDownloadingConditions {
     
+    [self startPicturesDownloading];
+    
+/*
+    
     STMSettingsController *settingsController = [[STMSessionManager sharedManager].currentSession settingsController];
     BOOL enableDownloadViaWWAN = [[settingsController currentSettingsForGroup:@"appSettings"][@"enableDownloadViaWWAN"] boolValue];
     
     NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
     
 #warning - don't forget to comment next line
-    networkStatus = ReachableViaWWAN;
+    networkStatus = ReachableViaWWAN; // just for testing
     
     if (networkStatus == ReachableViaWWAN && !enableDownloadViaWWAN) {
         
@@ -399,6 +403,8 @@
     } else {
         [self startPicturesDownloading];
     }
+ 
+*/
 
 }
 
