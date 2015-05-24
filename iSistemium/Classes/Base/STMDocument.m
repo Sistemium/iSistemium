@@ -9,10 +9,13 @@
 #import "STMDocument.h"
 #import "STMObjectsController.h"
 
+#define SAVING_QUEUE_THRESHOLD 15
+
 @interface STMDocument()
 
 @property (nonatomic, strong) NSString *dataModelName;
 @property (nonatomic) BOOL saving;
+@property (nonatomic) int savingQueue;
 
 @end
 
@@ -160,9 +163,12 @@
 
 - (void)downloadPicture:(NSNotification *)notification {
     
-    [self saveDocument: ^(BOOL success) {
-    //    NSLog(@"STMDocument save success on downloadPicture");
-    }];
+    if (++self.savingQueue > SAVING_QUEUE_THRESHOLD) {
+        self.savingQueue = 0;
+        [self saveDocument: ^(BOOL success) {
+            NSLog(@"STMDocument save success on downloadPicture");
+        }];
+    }
     
 }
 
