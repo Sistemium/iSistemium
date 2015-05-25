@@ -11,8 +11,10 @@
 
 @interface STMArticlePicturePVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
-@property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic, strong) NSMutableArray *articlesArray;
+
+@property (nonatomic) NSUInteger currentIndex;
+@property (nonatomic) NSUInteger nextIndex;
 
 
 @end
@@ -21,10 +23,12 @@
 
 - (NSMutableArray *)articlesArray {
     
-    if (!_articlesArray) {
-        _articlesArray = [[self.parentVC currentArticles] mutableCopy];
-    }
-    return _articlesArray;
+    return [self.parentVC currentArticles].mutableCopy;
+    
+//    if (!_articlesArray) {
+//        _articlesArray = [self.parentVC currentArticles].mutableCopy;
+//    }
+//    return _articlesArray;
     
 }
 
@@ -47,6 +51,64 @@
     }
     
 }
+
+- (void)dismissView {
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
+}
+
+
+#pragma mark - Page View Controller Data Source
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
+    
+    UIViewController *vc = [self viewControllerAtIndex:self.currentIndex-1 storyboard:self.storyboard];
+    return vc;
+    
+}
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
+    
+    UIViewController *vc = [self viewControllerAtIndex:self.currentIndex+1 storyboard:self.storyboard];
+    return vc;
+    
+}
+
+- (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
+    
+    return self.articlesArray.count;
+    
+}
+
+- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
+    
+    return self.currentIndex;
+    
+}
+
+
+#pragma mark - Page View Controller Delegate
+
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
+    
+    STMArticlePictureVC *pendingVC = pendingViewControllers[0];
+    self.nextIndex = pendingVC.index;
+    
+}
+
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+    
+    if (completed) {
+        self.currentIndex = self.nextIndex;
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 
