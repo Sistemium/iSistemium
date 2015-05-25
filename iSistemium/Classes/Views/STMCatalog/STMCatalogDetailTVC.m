@@ -1167,6 +1167,8 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (void)customInit {
     
+    self.clearsSelectionOnViewWillAppear = NO;
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom4TVCell" bundle:nil] forCellReuseIdentifier:Custom4CellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil] forCellReuseIdentifier:Custom5CellIdentifier];
     

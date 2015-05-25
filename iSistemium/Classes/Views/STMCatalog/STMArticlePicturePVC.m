@@ -95,7 +95,19 @@
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
     
     if (completed) {
+        
+        if (self.nextIndex > self.currentIndex) {
+            
+            [self.parentVC selectNextArticle];
+            
+        } else if (self.currentIndex > self.nextIndex) {
+            
+            [self.parentVC selectPreviousArticle];
+            
+        }
+        
         self.currentIndex = self.nextIndex;
+        
     }
     
 }
