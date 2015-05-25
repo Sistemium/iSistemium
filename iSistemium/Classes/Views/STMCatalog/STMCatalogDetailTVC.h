@@ -16,8 +16,12 @@
 @property (nonatomic, strong) STMPriceType *selectedPriceType;
 
 - (void)refreshTable;
+
 - (void)dismissArticleInfoPopover;
+- (void)showFullscreen;
+
 - (void)hideKeyboard;
+
 
 - (NSArray *)currentArticles;
 - (STMArticle *)selectPreviousArticle;

@@ -9,6 +9,7 @@
 #import "STMCatalogDetailTVC.h"
 #import "STMArticleInfoVC.h"
 #import "STMPicturesController.h"
+#import "STMArticlePicturePVC.h"
 
 
 static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
@@ -621,6 +622,26 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     [self.articleInfoPopover dismissPopoverAnimated:YES];
     self.articleInfoPopover = nil;
+    
+}
+
+- (void)showFullscreen {
+    
+    [self dismissArticleInfoPopover];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"STMArticlePicturePVC" bundle:nil];
+    UIViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"articlePicturePVC"];
+    
+    if ([vc isKindOfClass:[STMArticlePicturePVC class]]) {
+        
+        [(STMArticlePicturePVC *)vc setParentVC:self];
+        [(STMArticlePicturePVC *)vc setCurrentArticle:self.selectedArticle];
+        
+    }
+    
+    [self presentViewController:vc animated:NO completion:^{
+        
+    }];
     
 }
 

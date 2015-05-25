@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "STMCatalogSVC.h"
+#import "STMArticlePicturePVC.h"
 
 
 @interface STMArticlePictureVC : UIViewController
 
 @property (nonatomic, strong) STMArticle *article;
 @property (nonatomic) NSUInteger index;
+
+@property (nonatomic, weak) STMArticlePicturePVC *pageVC;
 
 
 @end

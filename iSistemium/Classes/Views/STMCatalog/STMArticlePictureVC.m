@@ -20,6 +20,13 @@
 
 @implementation STMArticlePictureVC
 
+- (void)closeButtonPressed {
+    
+    [self.pageVC dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
+}
 
 
 #pragma mark - view lifecycle
@@ -43,12 +50,27 @@
 
     }
     
+    self.closeButtonView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeButtonPressed)];
+    [self.closeButtonView addGestureRecognizer:tap];
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     [self customInit];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    
+//    [self.view setNeedsLayout];
+//    [self.view layoutIfNeeded];
+
+//    [self.view setNeedsDisplay];
     
 }
 

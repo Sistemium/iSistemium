@@ -45,20 +45,11 @@
         
         vc.index = index;
         vc.article = article;
+        vc.pageVC = self;
         
         return vc;
         
     }
-    
-}
-
-- (void)dismissView {
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-    }];
     
 }
 

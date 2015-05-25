@@ -67,24 +67,7 @@
 }
 
 - (void)showFullscreen {
-
-    [self.parentVC dismissArticleInfoPopover];
-    
-    UIViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"articlePicturePVC"];
-    
-    if ([vc isKindOfClass:[STMArticlePicturePVC class]]) {
-        
-        [(STMArticlePicturePVC *)vc setParentVC:self.parentVC];
-        [(STMArticlePicturePVC *)vc setCurrentArticle:self.article];
-        
-    }
-    
-    [self.parentVC presentViewController:vc animated:NO completion:^{
-        
-    }];
-    
-//    [self performSegueWithIdentifier:@"showFullscreen" sender:self];
-
+    [self.parentVC showFullscreen];
 }
 
 - (void)setArticle:(STMArticle *)article {
