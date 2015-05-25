@@ -504,11 +504,14 @@
             
             NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
-            if (photoData) {
+            if (photoData && photoData.length > 0) {
                 
                 [self setImagesFromData:photoData forPicture:picture];
                 
             } else {
+                
+                NSString *logMessage = [NSString stringWithFormat:@"attempt to set images for picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
                 
                 [self deletePicture:picture];
                 
@@ -539,8 +542,17 @@
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
         NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
-
-        [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+        
+        if (photoData && photoData.length > 0) {
+            
+            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+            
+        } else {
+            
+            NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            
+        }
         
     }
     
