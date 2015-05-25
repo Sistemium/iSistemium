@@ -322,7 +322,19 @@
 }
 
 - (NSUInteger)unloadedPicturesCount {
-    return [self unloadedPictures].count;
+    
+    NSUInteger unloadedPicturesCount = [self unloadedPictures].count;
+    
+    if (unloadedPicturesCount == 0) {
+
+        [self.session.document saveDocument:^(BOOL success) {
+            
+        }];
+    
+    }
+    
+    return unloadedPicturesCount;
+    
 }
 
 
@@ -579,7 +591,10 @@
     [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
     
     dispatch_async(dispatch_get_main_queue(), ^{
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"downloadPicture" object:weakPicture];
+        NSLog(@"images set for %@", weakPicture.href);
+        
     });
     
 }
@@ -644,6 +659,8 @@
         NSURLResponse *response = nil;
         NSError *error = nil;
         
+        NSLog(@"start loading %@", url.lastPathComponent);
+        
         NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         
         if (error) {
@@ -678,7 +695,7 @@
             
         } else {
             
-            //                NSLog(@"%@ load successefully", href);
+            NSLog(@"%@ load successefully", href);
             
             [self.hrefDictionary removeObjectForKey:href];
             
