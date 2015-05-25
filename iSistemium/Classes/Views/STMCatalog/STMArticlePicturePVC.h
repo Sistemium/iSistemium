@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMCatalogSVC.h"
+
 
 @interface STMArticlePicturePVC : UIPageViewController
+
+@property (nonatomic, weak) STMCatalogDetailTVC *parentVC;
+@property (nonatomic, strong) STMArticle *currentArticle;
+
 
 @end

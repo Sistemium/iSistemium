@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMCatalogSVC.h"
+
 
 @interface STMArticlePictureVC : UIViewController
+
+@property (nonatomic, strong) STMArticle *article;
+@property (nonatomic) NSUInteger index;
+
 
 @end

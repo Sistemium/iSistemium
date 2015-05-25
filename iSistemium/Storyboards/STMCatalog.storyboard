@@ -207,7 +207,7 @@
                     <connections>
                         <outlet property="imageView" destination="wiE-Ka-Ava" id="fny-pz-ULw"/>
                         <outlet property="tableView" destination="LlL-iI-hZL" id="vhu-FL-K8G"/>
-                        <segue destination="CAW-YN-XbG" kind="modal" identifier="showFullscreen" modalTransitionStyle="crossDissolve" id="Cng-Fh-EDP"/>
+                        <segue destination="CAW-YN-XbG" kind="modal" identifier="showFullscreen" id="Cng-Fh-EDP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="l0Y-Mc-eOn" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -217,7 +217,7 @@
         <!--Article PicturePVC-->
         <scene sceneID="VdP-iT-dv5">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="CAW-YN-XbG" customClass="STMArticlePicturePVC" sceneMemberID="viewController"/>
+                <pageViewController storyboardIdentifier="articlePicturePVC" autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="CAW-YN-XbG" customClass="STMArticlePicturePVC" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3DH-y9-010" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3566" y="636"/>
@@ -225,7 +225,7 @@
         <!--Article PictureVC-->
         <scene sceneID="0xh-hr-CCN">
             <objects>
-                <viewController id="7MI-WV-k7x" customClass="STMArticlePictureVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="articlePictureVC" id="7MI-WV-k7x" customClass="STMArticlePictureVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="OVd-wf-kbd"/>
                         <viewControllerLayoutGuide type="bottom" id="tGC-AE-fu8"/>
@@ -244,7 +244,6 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.7309747727" green="0.91304258410000005" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="centerX" secondItem="EeV-Uc-JaL" secondAttribute="centerX" constant="-4" id="12p-hX-Bz6"/>
                                     <constraint firstItem="EeV-Uc-JaL" firstAttribute="top" secondItem="BLw-GX-pH7" secondAttribute="top" constant="8" id="1QY-B7-MhG"/>
@@ -253,7 +252,7 @@
                                     <constraint firstAttribute="height" constant="64" id="fHd-co-lmQ"/>
                                 </constraints>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GvR-Ct-b0n">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GvR-Ct-b0n">
                                 <rect key="frame" x="20" y="92" width="728" height="840"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" alpha="0.19999999999999968" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="close-128.png" translatesAutoresizingMaskIntoConstraints="NO" id="UMk-kL-OO9">
@@ -277,6 +276,11 @@
                             <constraint firstItem="BLw-GX-pH7" firstAttribute="leading" secondItem="a1M-BM-Drf" secondAttribute="leadingMargin" id="gL1-od-I23"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="closeButtonView" destination="UMk-kL-OO9" id="ubo-0j-ea2"/>
+                        <outlet property="pictureView" destination="GvR-Ct-b0n" id="4kc-Pr-StY"/>
+                        <outlet property="titleLabel" destination="EeV-Uc-JaL" id="dYa-FU-4Ee"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vsl-14-AbG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

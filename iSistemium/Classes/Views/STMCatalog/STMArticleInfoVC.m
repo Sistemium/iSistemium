@@ -7,6 +7,8 @@
 //
 
 #import "STMArticleInfoVC.h"
+#import "STMArticlePicturePVC.h"
+
 
 @interface STMArticleInfoVC () <UITableViewDelegate, UITableViewDataSource>
 
@@ -64,6 +66,27 @@
     
 }
 
+- (void)showFullscreen {
+
+    [self.parentVC dismissArticleInfoPopover];
+    
+    UIViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"articlePicturePVC"];
+    
+    if ([vc isKindOfClass:[STMArticlePicturePVC class]]) {
+        
+        [(STMArticlePicturePVC *)vc setParentVC:self.parentVC];
+        [(STMArticlePicturePVC *)vc setCurrentArticle:self.article];
+        
+    }
+    
+    [self.parentVC presentViewController:vc animated:NO completion:^{
+        
+    }];
+    
+//    [self performSegueWithIdentifier:@"showFullscreen" sender:self];
+
+}
+
 - (void)setArticle:(STMArticle *)article {
     
     if (article != _article) {
@@ -80,7 +103,7 @@
 
 #pragma mark - setup views
 
-- (void)addSwipeGestures {
+- (void)addGestures {
     
     UISwipeGestureRecognizer *swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNextArticle)];
     swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
@@ -88,7 +111,12 @@
     UISwipeGestureRecognizer *swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPreviousArticle)];
     swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
     
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFullscreen)];
+    
     self.view.gestureRecognizers = @[swipeUpGesture, swipeDownGesture];
+    
+    self.imageView.userInteractionEnabled = YES;
+    self.imageView.gestureRecognizers = @[tapGesture];
     
 }
 
@@ -407,7 +435,7 @@
     
     if (self.article) {
         
-        [self addSwipeGestures];
+        [self addGestures];
         [self setupImage];
         [self prepareInfo];
         [self setupTableView];

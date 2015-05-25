@@ -7,16 +7,66 @@
 //
 
 #import "STMArticlePicturePVC.h"
+#import "STMArticlePictureVC.h"
 
-@interface STMArticlePicturePVC ()
+@interface STMArticlePicturePVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+
+@property (nonatomic) NSUInteger currentIndex;
+@property (nonatomic, strong) NSMutableArray *articlesArray;
+
 
 @end
 
 @implementation STMArticlePicturePVC
 
+- (NSMutableArray *)articlesArray {
+    
+    if (!_articlesArray) {
+        _articlesArray = [[self.parentVC currentArticles] mutableCopy];
+    }
+    return _articlesArray;
+    
+}
+
+- (STMArticlePictureVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
+    
+    if ((self.articlesArray.count == 0) || (index >= self.articlesArray.count)) {
+        
+        return nil;
+        
+    } else {
+        
+        STMArticlePictureVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"articlePictureVC"];
+        STMArticle *article = self.articlesArray[index];
+        
+        vc.index = index;
+        vc.article = article;
+        
+        return vc;
+        
+    }
+    
+}
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    self.dataSource = self;
+    self.delegate = self;
+    
+    self.currentIndex = [self.articlesArray indexOfObject:self.currentArticle];
+    
+    STMArticlePictureVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
+    [self setViewControllers:@[vc] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
+    
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning {
