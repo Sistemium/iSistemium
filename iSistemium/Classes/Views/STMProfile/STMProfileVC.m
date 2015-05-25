@@ -121,7 +121,7 @@
     
     [self updateSyncDatesLabels];
     [self updateCloudImages];
-    [self updateUnloadedPicturesButton];
+    [self updateUnloadedPicturesInfo];
     
 }
 
@@ -331,13 +331,14 @@
     
 }
 
-- (void)updateUnloadedPicturesButton {
+- (void)updateUnloadedPicturesInfo {
 
     self.unloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
     
     NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
     
     NSString *title = @"";
+    NSString *badgeValue = nil;
     
     if (unloadedPicturesCount > 0) {
         
@@ -345,9 +346,14 @@
         NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
         title = [NSString stringWithFormat:@"%lu %@ %@", (unsigned long)unloadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR DOWNLOAD", nil)];
         
+        badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)unloadedPicturesCount];
+        
+    } else {
+        self.downloadAlertWasShown = NO;
     }
     
     [self.unloadedPicturesButton setTitle:title forState:UIControlStateNormal];
+    self.navigationController.tabBarItem.badgeValue = badgeValue;
     
     UIColor *titleColor = [STMPicturesController sharedController].downloadQueue.suspended ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
     [self.unloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
@@ -355,7 +361,7 @@
 }
 
 - (void)unloadedPicturesCountDidChange {
-    [self updateUnloadedPicturesButton];
+    [self updateUnloadedPicturesInfo];
 }
 
 - (IBAction)unloadedPicturesButtonPressed:(id)sender {
@@ -412,14 +418,14 @@
     
     [STMPicturesController checkPhotos];
     [STMPicturesController sharedController].downloadQueue.suspended = NO;
-    [self updateUnloadedPicturesButton];
+    [self updateUnloadedPicturesInfo];
 
 }
 
 - (void)stopPicturesDownloading {
     
     [STMPicturesController sharedController].downloadQueue.suspended = YES;
-    [self updateUnloadedPicturesButton];
+    [self updateUnloadedPicturesInfo];
 
 }
 
@@ -827,7 +833,7 @@
     [self updateCloudImages];
     [self updateSyncDatesLabels];
     [self setupUnloadedPicturesButton];
-    [self updateUnloadedPicturesButton];
+    [self updateUnloadedPicturesInfo];
     
     [self addObservers];
     [self startReachability];
