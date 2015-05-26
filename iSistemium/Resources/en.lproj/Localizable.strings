@@ -224,5 +224,5 @@
 "ENABLE WWAN MESSAGE" = "Always download via WWAN?";
 "ENABLE WWAN ONCE" = "Only once";
 "ENABLE WWAN ALWAYS" = "Always";
-
+"SHOW INFO" = "Show:";
 

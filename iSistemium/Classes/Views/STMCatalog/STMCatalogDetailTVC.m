@@ -542,6 +542,10 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
             
         }
         
+    } else if ([actionSheet.title isEqualToString:NSLocalizedString(@"SHOW INFO", nil)]) {
+        
+        NSLog(@"buttonIndex %d", buttonIndex);
+        
     }
     
 }
@@ -649,7 +653,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
         
-        NSIndexPath *indexPath = [self indexPathForPictureView:[(UITapGestureRecognizer *)sender view]];
+        NSIndexPath *indexPath = [self indexPathForView:[(UITapGestureRecognizer *)sender view]];
 
         if (indexPath) {
             
@@ -674,9 +678,9 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
 }
 
-- (NSIndexPath *)indexPathForPictureView:(UIView *)pictureView {
+- (NSIndexPath *)indexPathForView:(UIView *)view {
     
-    UITableViewCell *cell = [self cellForView:pictureView];
+    UITableViewCell *cell = [self cellForView:view];
     
     UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
     NSIndexPath *indexPath = [currentTableView indexPathForCell:cell];
@@ -700,6 +704,41 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     }
     
 }
+
+- (void)infoLabelTapped:(id)sender {
+    
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        UIView *infoLabelView = [(UITapGestureRecognizer *)sender view];
+        
+        NSIndexPath *indexPath = [self indexPathForView:infoLabelView];
+        
+        if (indexPath) {
+
+            [[self infoSelectActionSheet] showFromRect:infoLabelView.frame inView:infoLabelView.superview animated:YES];
+            
+        }
+        
+    }
+    
+}
+
+- (UIActionSheet *)infoSelectActionSheet {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.delegate = self;
+    actionSheet.title = NSLocalizedString(@"SHOW INFO", nil);
+    
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"PRICE", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"VOLUME", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"STOCK", nil)];
+    
+    return actionSheet;
+    
+}
+
+
+#pragma mark - rotation
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
@@ -923,6 +962,11 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     cell.detailLabel.textColor = textColor;
     cell.infoLabel.textColor = textColor;
     
+    cell.infoLabel.userInteractionEnabled = YES;
+
+    UITapGestureRecognizer *infoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(infoLabelTapped:)];
+    cell.infoLabel.gestureRecognizers = @[infoTap];
+    
 }
 
 - (void)fillPictureCell:(STMCustom4TVCell *)cell withPrice:(STMPrice *)price {
@@ -956,9 +1000,14 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     }
     
     cell.pictureView.userInteractionEnabled = YES;
+    cell.infoLabel.userInteractionEnabled = YES;
 
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pictureViewTapped:)];
     cell.pictureView.gestureRecognizers = @[tap];
+    
+    UITapGestureRecognizer *infoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(infoLabelTapped:)];
+    cell.infoLabel.gestureRecognizers = @[infoTap];
+
     
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
