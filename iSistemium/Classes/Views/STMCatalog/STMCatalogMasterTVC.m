@@ -81,15 +81,21 @@
 - (NSCompoundPredicate *)requestPredicate {
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
-
-// filter empty articleGroups
+    
     NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"(articlesCount > 0) OR (ANY children.articlesCount > 0)"];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
-
+    
     if (!self.splitVC.showZeroStock) {
         
         NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"(articlesStockVolume > 0) OR (ANY children.articlesStockVolume > 0)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
+        
+    }
+    
+    if (self.splitVC.showOnlyWithPictures) {
+        
+        NSPredicate *showOnlyWithPicturesPredicate = [NSPredicate predicateWithFormat:@"(articlesPicturesCount > 0) OR (ANY children.articlesPicturesCount > 0)"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, showOnlyWithPicturesPredicate]];
         
     }
     
@@ -104,16 +110,41 @@
     
 }
 
+- (NSCompoundPredicate *)refillParentsPredicate {
+    
+    NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
+    
+    if (!self.splitVC.showZeroStock) {
+        
+        NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"articlesStockVolume > 0"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
+        
+    }
+    
+    if (self.splitVC.showOnlyWithPictures) {
+        
+        NSPredicate *showOnlyWithPicturesPredicate = [NSPredicate predicateWithFormat:@"articlesPicturesCount > 0"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, showOnlyWithPicturesPredicate]];
+        
+    }
+    
+    if (self.splitVC.selectedPriceType) {
+        
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY articlesPriceTypes == %@", self.splitVC.selectedPriceType];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
+        
+    }
+    
+    return predicate;
+
+}
+
 - (void)performFetch {
     
     self.resultsController = nil;
-    
-    
-//TODO:[STMArticleGroupController refillParentsFor:(NSArray *)fetchResults];
-    
-    
+
 //    TICK;
-    [STMArticleGroupController refillParents];
+    [STMArticleGroupController refillParentsWithPredicate:[self refillParentsPredicate]];
 //    TOCK;
     
     
@@ -144,9 +175,8 @@
 //    [self nsLogFetchResults:self.resultsController.fetchedObjects];
     
     self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
-
+    
 //    [self nsLogFetchResults:self.filteredFetchResults];
-
 //    NSLog(@"catalogMasterTVC %@", self);
 //    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
     

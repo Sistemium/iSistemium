@@ -14,6 +14,7 @@
 #import "STMLocationTracker.h"
 #import "STMSyncer.h"
 #import "STMEntityController.h"
+#import "STMPicturesController.h"
 
 #import "STMAuthController.h"
 #import "STMRootTBC.h"
@@ -24,7 +25,7 @@
 #import <Reachability/Reachability.h>
 
 
-@interface STMProfileVC () <UIAlertViewDelegate>
+@interface STMProfileVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
@@ -36,6 +37,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
+@property (weak, nonatomic) IBOutlet UIButton *unloadedPicturesButton;
 
 @property (weak, nonatomic) UIImageView *syncImageView;
 
@@ -44,6 +46,7 @@
 
 @property (nonatomic, strong) Reachability *internetReachability;
 
+@property (nonatomic) BOOL downloadAlertWasShown;
 
 @end
 
@@ -59,9 +62,12 @@
 
 - (void)backButtonPressed {
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil) message:NSLocalizedString(@"R U SURE TO LOGOUT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-    alertView.tag = 0;
-    alertView.delegate = self;
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil)
+                                                        message:NSLocalizedString(@"R U SURE TO LOGOUT", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+    alertView.tag = 1;
     [alertView show];
     
 }
@@ -86,6 +92,8 @@
                 });
                 
             });
+            
+            if (!self.downloadAlertWasShown) [self showDownloadAlert];
             
         } else {
             
@@ -113,6 +121,7 @@
     
     [self updateSyncDatesLabels];
     [self updateCloudImages];
+    [self updateUnloadedPicturesInfo];
     
 }
 
@@ -315,6 +324,204 @@
     
 }
 
+- (void)setupUnloadedPicturesButton {
+    
+    [self.unloadedPicturesButton setTitleColor:ACTIVE_BLUE_COLOR forState:UIControlStateNormal];
+    [self.unloadedPicturesButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    
+}
+
+- (void)updateUnloadedPicturesInfo {
+
+    self.unloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
+    
+    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
+    
+    NSString *title = @"";
+    NSString *badgeValue = nil;
+    
+    if (unloadedPicturesCount > 0) {
+        
+        NSString *pluralString = [STMFunctions pluralTypeForCount:unloadedPicturesCount];
+        NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
+        title = [NSString stringWithFormat:@"%lu %@ %@", (unsigned long)unloadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR DOWNLOAD", nil)];
+        
+        badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)unloadedPicturesCount];
+        
+    } else {
+        self.downloadAlertWasShown = NO;
+    }
+    
+    [self.unloadedPicturesButton setTitle:title forState:UIControlStateNormal];
+    self.navigationController.tabBarItem.badgeValue = badgeValue;
+    
+    UIColor *titleColor = [STMPicturesController sharedController].downloadQueue.suspended ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
+    [self.unloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
+    
+}
+
+- (void)unloadedPicturesCountDidChange {
+    [self updateUnloadedPicturesInfo];
+}
+
+- (IBAction)unloadedPicturesButtonPressed:(id)sender {
+
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
+    actionSheet.delegate = self;
+
+    if ([STMPicturesController sharedController].downloadQueue.suspended) {
+    
+        actionSheet.tag = 1;
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
+
+    } else {
+
+        actionSheet.tag = 2;
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
+
+    }
+
+    [actionSheet showInView:self.view];
+
+}
+
+- (void)checkDownloadingConditions {
+    
+    [self startPicturesDownloading];
+    
+/*
+    
+    STMSettingsController *settingsController = [[STMSessionManager sharedManager].currentSession settingsController];
+    BOOL enableDownloadViaWWAN = [[settingsController currentSettingsForGroup:@"appSettings"][@"enableDownloadViaWWAN"] boolValue];
+    
+    NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
+    
+#warning - don't forget to comment next line
+    networkStatus = ReachableViaWWAN; // just for testing
+    
+    if (networkStatus == ReachableViaWWAN && !enableDownloadViaWWAN) {
+        
+        [self showWWANAlert];
+        
+    } else {
+        [self startPicturesDownloading];
+    }
+ 
+*/
+
+}
+
+- (void)startPicturesDownloading {
+    
+    [STMPicturesController checkPhotos];
+    [STMPicturesController sharedController].downloadQueue.suspended = NO;
+    [self updateUnloadedPicturesInfo];
+
+}
+
+- (void)stopPicturesDownloading {
+    
+    [STMPicturesController sharedController].downloadQueue.suspended = YES;
+    [self updateUnloadedPicturesInfo];
+
+}
+
+- (void)showDownloadAlert {
+    
+    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
+    
+    if (unloadedPicturesCount > 0) {
+        
+        NSString *pluralString = [STMFunctions pluralTypeForCount:unloadedPicturesCount];
+        NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
+        NSString *title = [NSString stringWithFormat:@"%lu %@ %@. %@", (unsigned long)unloadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR DOWNLOAD", nil), NSLocalizedString(@"DOWNLOAD IT NOW?", nil)];
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNLOADED PICTURES", nil)
+                                                        message:title
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        alert.tag = 2;
+        [alert show];
+        
+        self.downloadAlertWasShown = YES;
+
+    }
+    
+}
+
+- (void)showWWANAlert {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNLOADED PICTURES", nil)
+                                                    message:NSLocalizedString(@"NO WIFI MESSAGE", nil)
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    alert.tag = 3;
+    [alert show];
+    
+}
+
+- (void)showEnableWWANActionSheet {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.delegate = self;
+    actionSheet.tag = 3;
+    actionSheet.title = NSLocalizedString(@"ENABLE WWAN MESSAGE", nil);
+    
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"ENABLE WWAN ALWAYS", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"ENABLE WWAN ONCE", nil)];
+    [actionSheet showInView:self.view];
+    
+}
+
+- (void)enableWWANDownloading {
+    
+    STMSettingsController *settingsController = [[STMSessionManager sharedManager].currentSession settingsController];
+
+    [settingsController setNewSettings:@{@"enableDownloadViaWWAN": @(YES)} forGroup:@"appSettings"];
+    
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (actionSheet.tag) {
+
+        case 1:
+            if (buttonIndex == 0) {
+                [self checkDownloadingConditions];
+            }
+            break;
+            
+        case 2:
+            if (buttonIndex == 0) {
+                [self stopPicturesDownloading];
+            }
+            break;
+
+        case 3:
+            if (buttonIndex == 0) {
+                
+                [self enableWWANDownloading];
+                [self startPicturesDownloading];
+                
+            } else if (buttonIndex == 1) {
+
+                [self startPicturesDownloading];
+
+            }
+            break;
+
+        default:
+            break;
+    }
+    
+}
 
 #pragma mark - UIAlertViewDelegate
 
@@ -322,12 +529,24 @@
     
     switch (alertView.tag) {
             
-        case 0:
+        case 1:
             if (buttonIndex == 1) {
                 [[STMAuthController authController] logout];
             }
             break;
-            
+
+        case 2:
+            if (buttonIndex == 1) {
+                [self checkDownloadingConditions];
+            }
+            break;
+
+        case 3:
+            if (buttonIndex == 1) {
+                [self showEnableWWANActionSheet];
+            }
+            break;
+
         default:
             break;
             
@@ -584,6 +803,11 @@
                name:kReachabilityChangedNotification
              object:nil];
     
+    [nc addObserver:self
+           selector:@selector(unloadedPicturesCountDidChange)
+               name:@"unloadedPicturesCountDidChange"
+             object:[STMPicturesController sharedController]];
+    
 }
 
 - (void)removeObservers {
@@ -608,6 +832,9 @@
     
     [self updateCloudImages];
     [self updateSyncDatesLabels];
+    [self setupUnloadedPicturesButton];
+    [self updateUnloadedPicturesInfo];
+    
     [self addObservers];
     [self startReachability];
         

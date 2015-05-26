@@ -72,7 +72,8 @@
     NSArray *boolValues = @[@"localAccessToSettings",
                             @"deviceMotionUpdate",
                             @"enableDebtsEditing",
-                            @"enablePartnersEditing"];
+                            @"enablePartnersEditing",
+                            @"enableDownloadViaWWAN"];
     
     NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
     
