@@ -11,6 +11,8 @@
 
 @interface STMPicturesController : STMController
 
+@property (nonatomic, strong) NSOperationQueue *downloadQueue;
+
 + (STMPicturesController *)sharedController;
 
 - (NSUInteger)unloadedPicturesCount;

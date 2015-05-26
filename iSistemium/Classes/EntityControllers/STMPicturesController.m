@@ -25,8 +25,6 @@
 
 @interface STMPicturesController() <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) NSOperationQueue *downloadQueue;
-@property (nonatomic, strong) NSURLSession *downloadSession;
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
 @property (nonatomic, strong) NSMutableArray *secondAttempt;
@@ -96,10 +94,14 @@
     
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
         
+        self.downloadQueue.suspended = YES;
+        [self.downloadQueue cancelAllOperations];
         self.downloadQueue = nil;
-        [self.downloadSession invalidateAndCancel];
-        self.downloadSession = nil;
+
+        self.uploadQueue.suspended = YES;
+        [self.uploadQueue cancelAllOperations];
         self.uploadQueue = nil;
+        
         self.hrefDictionary = nil;
         self.secondAttempt = nil;
         self.s3keychainItem = nil;
@@ -237,23 +239,11 @@
         
         _downloadQueue = [[NSOperationQueue alloc] init];
         _downloadQueue.maxConcurrentOperationCount = 1;
+        _downloadQueue.suspended = YES;
         
     }
     
     return _downloadQueue;
-    
-}
-
-- (NSURLSession *)downloadSession {
-    
-    if (!_downloadSession) {
-        
-        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        configuration.HTTPMaximumConnectionsPerHost = 1;
-        _downloadSession = [NSURLSession sessionWithConfiguration:configuration];
-        
-    }
-    return _downloadSession;
     
 }
 
@@ -292,7 +282,7 @@
         STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"href != %@ AND imageThumbnail == %@", nil, nil];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil, [self photoEntitiesNames]];
         
         request.sortDescriptors = @[sortDescriptor];
         request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
@@ -317,8 +307,36 @@
 
 }
 
+- (NSArray *)photoEntitiesNames {
+    
+    return @[NSStringFromClass([STMPhotoReport class]),
+             NSStringFromClass([STMUncashingPicture class])];
+
+}
+
+- (NSArray *)unloadedPictures {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (entity.name IN %@)", [self photoEntitiesNames]];
+    return [self.unloadedPicturesResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+    
+}
+
 - (NSUInteger)unloadedPicturesCount {
-    return self.unloadedPicturesResultsController.fetchedObjects.count;
+    
+    NSUInteger unloadedPicturesCount = [self unloadedPictures].count;
+    
+    if (unloadedPicturesCount == 0) {
+
+        [self.session.document saveDocument:^(BOOL success) {
+            
+        }];
+        
+        self.downloadQueue.suspended = YES;
+    
+    }
+    
+    return unloadedPicturesCount;
+    
 }
 
 
@@ -486,11 +504,14 @@
             
             NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
-            if (photoData) {
+            if (photoData && photoData.length > 0) {
                 
                 [self setImagesFromData:photoData forPicture:picture];
                 
             } else {
+                
+                NSString *logMessage = [NSString stringWithFormat:@"attempt to set images for picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
                 
                 [self deletePicture:picture];
                 
@@ -521,8 +542,17 @@
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
         NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
-
-        [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+        
+        if (photoData && photoData.length > 0) {
+            
+            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+            
+        } else {
+            
+            NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            
+        }
         
     }
     
@@ -575,7 +605,10 @@
     [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
     
     dispatch_async(dispatch_get_main_queue(), ^{
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"downloadPicture" object:weakPicture];
+//        NSLog(@"images set for %@", weakPicture.href);
+        
     });
     
 }
@@ -631,67 +664,62 @@
     
     NSString *href = [object valueForKey:@"href"];
     
-//    if ([self.secondAttempt containsObject:href]) {
-        //        NSLog(@"second attempt for %@", href);
-//    }
-    
     __weak NSManagedObject *weakObject = object;
     
     [self.downloadQueue addOperationWithBlock:^{
         
         NSURL *url = [NSURL URLWithString:href];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSURLResponse *response = nil;
+        NSError *error = nil;
         
-        NSURLSessionDataTask *dataTask = [self.downloadSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+//        NSLog(@"start loading %@", url.lastPathComponent);
+        
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        
+        if (error) {
             
-            if (error) {
+            if (error.code == -1001) {
                 
-                if (error.code == -1001) {
+                NSLog(@"error code -1001 timeout for %@", href);
+                
+                if ([self.secondAttempt containsObject:href]) {
                     
-                    NSLog(@"error code -1001 timeout for %@", href);
+                    NSLog(@"second load attempt fault for %@", href);
                     
-                    if ([self.secondAttempt containsObject:href]) {
-                        
-                        NSLog(@"second load attempt fault for %@", href);
-                        
-                        [self.secondAttempt removeObject:href];
-                        [self.hrefDictionary removeObjectForKey:href];
-                        
-                    } else {
-                        
-                        [self.secondAttempt addObject:href];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
-                        });
-                        
-                    }
+                    [self.secondAttempt removeObject:href];
+                    [self.hrefDictionary removeObjectForKey:href];
                     
                 } else {
                     
-                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                    [self.hrefDictionary removeObjectForKey:href];
+                    [self.secondAttempt addObject:href];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
+                    });
                     
                 }
                 
             } else {
                 
-//                NSLog(@"%@ load successefully", href);
-                
-                [self.hrefDictionary removeObjectForKey:href];
-                
-                NSData *dataCopy = [data copy];
-                
-                [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
-                
+                NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
                 [self.hrefDictionary removeObjectForKey:href];
                 
             }
             
-        }];
-        
-//        NSLog(@"create dataTask %@", href);
-        
-        [dataTask resume];
+        } else {
+            
+//            NSLog(@"%@ load successefully", href);
+            
+            [self.hrefDictionary removeObjectForKey:href];
+            
+            NSData *dataCopy = [data copy];
+            
+            [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
+            
+            [self.hrefDictionary removeObjectForKey:href];
+            
+        }
         
     }];
     

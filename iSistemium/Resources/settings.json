@@ -46,6 +46,11 @@
                     "name": "genericPriceType",
                     "value": "",
                     "control": "",
+                },
+                {
+                    "name": "enableDownloadViaWWAN",
+                    "value": false,
+                    "control": "switch",
                 }
             ]
        },
