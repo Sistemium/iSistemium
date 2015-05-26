@@ -645,6 +645,62 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
 }
 
+- (void)pictureViewTapped:(id)sender {
+    
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        NSIndexPath *indexPath = [self indexPathForPictureView:[(UITapGestureRecognizer *)sender view]];
+
+        if (indexPath) {
+            
+            UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
+            [currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+
+            STMPrice *price = nil;
+            if (self.searchDisplayController.active) {
+                price = [self.searchResults objectAtIndex:indexPath.row];
+            } else {
+                price = [self.resultsController objectAtIndexPath:indexPath];
+            }
+            self.selectedArticle = price.article;
+
+        }
+        
+    }
+    
+    if (self.selectedArticle) {
+        [self showFullscreen];
+    }
+    
+}
+
+- (NSIndexPath *)indexPathForPictureView:(UIView *)pictureView {
+    
+    UITableViewCell *cell = [self cellForView:pictureView];
+    
+    UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
+    NSIndexPath *indexPath = [currentTableView indexPathForCell:cell];
+    
+    return indexPath;
+    
+}
+
+- (UITableViewCell *)cellForView:(UIView *)view {
+    
+    UIView *parentView = view.superview;
+    
+    if ([parentView isKindOfClass:[UITableViewCell class]]) {
+        
+        return (UITableViewCell *)parentView;
+        
+    } else {
+        
+        return (parentView) ? [self cellForView:parentView] : nil;
+        
+    }
+    
+}
+
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
     if (self.articleInfoPopoverIsVisible) {
@@ -898,6 +954,11 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         cell.pictureView.image = [UIImage imageWithData:picture.imageThumbnail];
         
     }
+    
+    cell.pictureView.userInteractionEnabled = YES;
+
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pictureViewTapped:)];
+    cell.pictureView.gestureRecognizers = @[tap];
     
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
