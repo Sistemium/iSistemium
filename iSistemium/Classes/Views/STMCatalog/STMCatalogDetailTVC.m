@@ -42,6 +42,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 @property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 
 @property (nonatomic, strong) NSString *infoShowType;
+@property (nonatomic, strong) UITableView *currentTableView;
 
 
 @end
@@ -90,9 +91,14 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         
         [[[STMSessionManager sharedManager].currentSession settingsController] setNewSettings:@{@"catalogue.cell.right": infoShowType} forGroup:@"appSettings"];
         _infoShowType = nil;
+        [self.currentTableView reloadData];
         
     }
     
+}
+
+- (UITableView *)currentTableView {
+    return (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -236,9 +242,8 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         
         index--;
         
-        UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-        [currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        [self.currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
         
         self.selectedArticle = currentArticles[index];
         return self.selectedArticle;
@@ -258,9 +263,8 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         
         index++;
 
-        UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-        [currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        [self.currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
         
         self.selectedArticle = currentArticles[index];
         return self.selectedArticle;
@@ -571,8 +575,23 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         }
         
     } else if ([actionSheet.title isEqualToString:NSLocalizedString(@"SHOW INFO", nil)]) {
-        
-        NSLog(@"buttonIndex %d", buttonIndex);
+
+        switch (buttonIndex) {
+            case 0:
+                self.infoShowType = @"price";
+                break;
+
+            case 1:
+                self.infoShowType = @"pieceVolume";
+                break;
+
+            case 2:
+                self.infoShowType = @"stock";
+                break;
+
+            default:
+                break;
+        }
         
     }
     
@@ -685,8 +704,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
         if (indexPath) {
             
-            UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
-            [currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+            [self.currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
 
             STMPrice *price = nil;
             if (self.searchDisplayController.active) {
@@ -709,9 +727,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 - (NSIndexPath *)indexPathForView:(UIView *)view {
     
     UITableViewCell *cell = [self cellForView:view];
-    
-    UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
-    NSIndexPath *indexPath = [currentTableView indexPathForCell:cell];
+    NSIndexPath *indexPath = [self.currentTableView indexPathForCell:cell];
     
     return indexPath;
     
@@ -836,39 +852,84 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (NSString *)detailedTextForArticle:(STMArticle *)article {
     
-    NSString *detailedText = @"";
-    NSString *appendString = @"";
+    NSMutableArray *textsArray = [NSMutableArray array];
     
+    if ([self.infoShowType isEqualToString:@"price"]) {
+        
+        [textsArray addObject:[self pieceVolumeTextForArticle:article]];
+        [textsArray addObject:[self stockTextForArticle:article]];
+        
+    } else if ([self.infoShowType isEqualToString:@"pieceVolume"]) {
+        
+        [textsArray addObject:[self priceTextForArticle:article]];
+        [textsArray addObject:[self stockTextForArticle:article]];
+
+    } else if ([self.infoShowType isEqualToString:@"stock"]) {
+
+        [textsArray addObject:[self priceTextForArticle:article]];
+        [textsArray addObject:[self pieceVolumeTextForArticle:article]];
+
+    }
+    
+    if (article.extraLabel) [textsArray addObject:article.extraLabel];
+
+    NSString *detailedText = [textsArray componentsJoinedByString:@", "];
+    
+    return detailedText;
+    
+}
+
+- (NSString *)infoLabelTextForArticle:(STMArticle *)article {
+    
+    if ([self.infoShowType isEqualToString:@"price"]) {
+        
+        return [self priceTextForArticle:article];
+        
+    } else if ([self.infoShowType isEqualToString:@"pieceVolume"]) {
+
+        return [self pieceVolumeTextForArticle:article];
+
+    } else if ([self.infoShowType isEqualToString:@"stock"]) {
+        
+        return [self stockTextForArticle:article];
+
+    } else {
+        
+        return nil;
+        
+    }
+
+}
+
+- (NSString *)stockTextForArticle:(STMArticle *)article {
+    
+    NSString *stockDetailedText = (article.stock.volume.integerValue <= 0) ? NSLocalizedString(@"ZERO STOCK", nil) : article.stock.displayVolume;
+    
+    return stockDetailedText;
+
+}
+
+- (NSString *)priceTextForArticle:(STMArticle *)article {
+
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"priceType = %@", self.selectedPriceType];
     
     STMPrice *price = [article.prices filteredSetUsingPredicate:predicate].allObjects.lastObject;
     
-    appendString = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:price.price]];
-    detailedText = [detailedText stringByAppendingString:appendString];
-    
-    if (article.stock.volume.integerValue <= 0) {
-        
-        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"ZERO STOCK", nil)];
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
-    } else {
-        
-        appendString = [NSString stringWithFormat:@", %@", article.stock.displayVolume];
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
-    }
+    NSString *priceDetailedText = [numberFormatter stringFromNumber:price.price];
 
-    if (article.extraLabel) {
-        
-        appendString = [NSString stringWithFormat:@", %@", article.extraLabel];
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
-    }
+    return priceDetailedText;
     
-    return detailedText;
+}
+
+- (NSString *)pieceVolumeTextForArticle:(STMArticle *)article {
     
+    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    NSString *pieceVolumeDetailedText = [NSString stringWithFormat:@"%@ %@", article.pieceVolume, volumeUnitString];
+    
+    return pieceVolumeDetailedText;
+
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -980,9 +1041,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     cell.titleLabel.text = price.article.name;
     cell.detailLabel.text = [self detailedTextForArticle:price.article];
-    
-    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-    cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
+    cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
     
     UIColor *textColor = (price.article.stock.volume.integerValue <= 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
     
@@ -1001,9 +1060,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     cell.titleLabel.text = price.article.name;
     cell.detailLabel.text = [self detailedTextForArticle:price.article];
-    
-    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-    cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
+    cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
     
     UIColor *textColor = (price.article.stock.volume.integerValue <= 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
     
@@ -1268,8 +1325,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         for (STMPrice *price in prices) {
             
             NSIndexPath *indexPath = nil;
-            UITableView *currentTableView = (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
-            
+
             if (self.searchDisplayController.isActive) {
                 
                 NSUInteger index = [self.searchResults indexOfObject:price];
@@ -1281,7 +1337,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
                 
             }
             
-            if (indexPath) [currentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            if (indexPath) [self.currentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             
         }
         
