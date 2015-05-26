@@ -41,6 +41,8 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 @property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 
+@property (nonatomic, strong) NSString *infoShowType;
+
 
 @end
 
@@ -48,6 +50,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 @implementation STMCatalogDetailTVC
 
 @synthesize resultsController = _resultsController;
+@synthesize infoShowType = _infoShowType;
 
 
 - (STMCatalogSVC *)splitVC {
@@ -65,6 +68,31 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (STMPriceType *)selectedPriceType {
     return self.splitVC.selectedPriceType;
+}
+
+- (NSString *)infoShowType {
+    
+    if (!_infoShowType) {
+        
+        NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
+        NSString *infoShowType = appSettings[@"catalogue.cell.right"];
+        
+        _infoShowType = infoShowType;
+
+    }
+    return _infoShowType;
+    
+}
+
+- (void)setInfoShowType:(NSString *)infoShowType {
+    
+    if (![_infoShowType isEqualToString:infoShowType]) {
+        
+        [[[STMSessionManager sharedManager].currentSession settingsController] setNewSettings:@{@"catalogue.cell.right": infoShowType} forGroup:@"appSettings"];
+        _infoShowType = nil;
+        
+    }
+    
 }
 
 - (NSFetchedResultsController *)resultsController {
