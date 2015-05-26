@@ -42,7 +42,29 @@
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
             STMArticlePicture *picture = [self.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
             
-            self.pictureView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
+            if (picture.imagePath) {
+                
+                [[self.pictureView viewWithTag:555] removeFromSuperview];
+                self.pictureView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
+                
+            } else {
+                
+                UIView *view = [[UIView alloc] initWithFrame:self.pictureView.bounds];
+                view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+                view.backgroundColor = [UIColor whiteColor];
+                view.alpha = 0.75;
+                view.tag = 555;
+                
+                UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                spinner.center = view.center;
+                spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+                [spinner startAnimating];
+                
+                [view addSubview:spinner];
+                
+                [self.pictureView addSubview:view];
+                
+            }
             
         } else {
             self.pictureView.image = [UIImage imageNamed:@"wine_bottle-512.png"];

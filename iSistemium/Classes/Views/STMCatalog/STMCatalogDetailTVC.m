@@ -889,6 +889,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     if (!picture.imageThumbnail) {
         
         [STMPicturesController hrefProcessingForObject:picture];
+        cell.pictureView.image = nil;
         [self addSpinnerToCell:cell];
 
     } else {
