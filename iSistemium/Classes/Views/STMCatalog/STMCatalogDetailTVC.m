@@ -507,6 +507,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         }
         
         actionSheet.delegate = self;
+        actionSheet.tag = 1;
         
         _priceTypeSelectorActionSheet = actionSheet;
         
@@ -533,6 +534,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SHOW ARTICLES", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil), NSLocalizedString(@"SHOW ALL ARTICLES", nil), nil];
         
         actionSheet.delegate = self;
+        actionSheet.tag = 2;
 
         _stockVolumeFilterActionSheet = actionSheet;
         
@@ -556,43 +558,48 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if ([actionSheet.title isEqualToString:NSLocalizedString(@"PRICE_TYPE_LABEL", nil)]) {
-        
-        if (buttonIndex != -1) {
+    switch (actionSheet.tag) {
             
-            self.splitVC.selectedPriceType = self.splitVC.availablePriceTypes[buttonIndex];
-            [self priceTypeSelectorSetup];
+        case 1:
+            if (buttonIndex != -1) {
+                
+                self.splitVC.selectedPriceType = self.splitVC.availablePriceTypes[buttonIndex];
+                [self priceTypeSelectorSetup];
+                
+            }
+            break;
+
+        case 2:
+            if (buttonIndex != -1) {
+                
+                self.splitVC.showZeroStock = [@(buttonIndex) boolValue];
+                [self stockVolumeButtonSetup];
+                
+            }
+            break;
+
+        case 3:
+            switch (buttonIndex) {
+                case 0:
+                    self.infoShowType = @"price";
+                    break;
+                    
+                case 1:
+                    self.infoShowType = @"pieceVolume";
+                    break;
+                    
+                case 2:
+                    self.infoShowType = @"stock";
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+
+        default:
+            break;
             
-        }
-        
-    } else if ([actionSheet.title isEqualToString:NSLocalizedString(@"SHOW ARTICLES", nil)]) {
-        
-        if (buttonIndex != -1) {
-
-            self.splitVC.showZeroStock = [@(buttonIndex) boolValue];
-            [self stockVolumeButtonSetup];
-            
-        }
-        
-    } else if ([actionSheet.title isEqualToString:NSLocalizedString(@"SHOW INFO", nil)]) {
-
-        switch (buttonIndex) {
-            case 0:
-                self.infoShowType = @"price";
-                break;
-
-            case 1:
-                self.infoShowType = @"pieceVolume";
-                break;
-
-            case 2:
-                self.infoShowType = @"stock";
-                break;
-
-            default:
-                break;
-        }
-        
     }
     
 }
@@ -772,6 +779,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
     actionSheet.delegate = self;
     actionSheet.title = NSLocalizedString(@"SHOW INFO", nil);
+    actionSheet.tag = 3;
     
     [actionSheet addButtonWithTitle:NSLocalizedString(@"PRICE", nil)];
     [actionSheet addButtonWithTitle:NSLocalizedString(@"VOLUME", nil)];
