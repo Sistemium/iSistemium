@@ -131,12 +131,21 @@
             [view addSubview:spinner];
             
             [self.imageView addSubview:view];
+            
+            [picture addObserver:self forKeyPath:@"resizedImagePath" options:NSKeyValueObservingOptionNew context:nil];
 
         }
         
     } else {
         self.imageView.image = [UIImage imageNamed:@"wine_bottle-512.png"];
     }
+    
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    [self setupImage];
+    [object removeObserver:self forKeyPath:keyPath context:context];
     
 }
 
