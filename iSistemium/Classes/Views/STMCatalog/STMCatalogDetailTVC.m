@@ -10,6 +10,7 @@
 #import "STMArticleInfoVC.h"
 #import "STMPicturesController.h"
 #import "STMArticlePicturePVC.h"
+#import "STMCatalogSettingsNC.h"
 
 
 static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
@@ -26,6 +27,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeLabel;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeButton;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *picturesButton;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *settingsButton;
 
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
@@ -33,6 +35,8 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 @property (nonatomic, strong) UIPopoverController *articleInfoPopover;
 @property (nonatomic) BOOL articleInfoPopoverIsVisible;
+
+@property (nonatomic, strong) UIPopoverController *catalogSettingsPopover;
 
 @property (nonatomic, strong) UIActionSheet *priceTypeSelectorActionSheet;
 @property (nonatomic, strong) UIActionSheet *stockVolumeFilterActionSheet;
@@ -378,6 +382,13 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
  
 }
 
+- (IBAction)catalogSettingsButtonPressed:(id)sender {
+    
+    [self showCatalogSettingsPopover];
+    
+}
+
+
 
 #pragma mark
 
@@ -647,6 +658,42 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 }
 
+
+#pragma mark - catalogSettingsPopover
+
+- (UIPopoverController *)catalogSettingsPopover {
+    
+    if (!_catalogSettingsPopover) {
+    
+        STMCatalogSettingsNC *catalogSettingsNC = [[STMCatalogSettingsNC alloc] init];
+        _catalogSettingsPopover = [[UIPopoverController alloc] initWithContentViewController:catalogSettingsNC];
+        _catalogSettingsPopover.delegate = self;
+        _catalogSettingsPopover.popoverContentSize = CGSizeMake(catalogSettingsNC.view.frame.size.width, catalogSettingsNC.view.frame.size.height);
+        
+    }
+    return _catalogSettingsPopover;
+    
+}
+
+- (void)showCatalogSettingsPopover {
+    
+    if (!self.catalogSettingsPopover.isPopoverVisible) {
+        
+        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+        [self.catalogSettingsPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+        
+    }
+    
+}
+
+- (void)dismissCatalogSettingsPopover {
+    
+    [self.catalogSettingsPopover dismissPopoverAnimated:YES];
+    self.catalogSettingsPopover = nil;
+    
+}
+
+
 #pragma mark - articleInfo popover
 
 - (UIPopoverController *)articleInfoPopover {
@@ -824,7 +871,10 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    
     self.articleInfoPopover = nil;
+    self.catalogSettingsPopover = nil;
+    
 }
 
 
