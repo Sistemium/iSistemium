@@ -10,4 +10,8 @@
 
 @interface STMCatalogSettingsNC : UINavigationController
 
+@property (nonatomic, strong) NSDictionary *settings;
+
+- (instancetype)initWithSettings:(NSDictionary *)settings;
+
 @end

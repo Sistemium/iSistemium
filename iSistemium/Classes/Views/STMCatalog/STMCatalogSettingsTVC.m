@@ -39,6 +39,16 @@
 
 @implementation STMCatalogSettingsTVC
 
+- (instancetype)initWithSettings:(NSDictionary *)settings {
+    
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        self.settings = settings;
+    }
+    return self;
+    
+}
+
 - (NSString *)cellReuseIdentifier {
     
     if (!_cellReuseIdentifier) {
@@ -55,7 +65,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return self.settings.allKeys.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -66,8 +76,11 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
 
-    cell.textLabel.text = @"MAIN";
-    cell.detailTextLabel.text = @"DETAIL";
+    NSString *key = self.settings.allKeys[indexPath.row];
+    cell.textLabel.text = key;
+    cell.detailTextLabel.text = self.settings[key][@"current"];
+    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
     

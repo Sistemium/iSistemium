@@ -661,11 +661,38 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 #pragma mark - catalogSettingsPopover
 
+- (NSDictionary *)catalogSettings {
+    
+    NSArray *priceTypesArray = [self.splitVC.availablePriceTypes valueForKeyPath:@"name"];
+    NSDictionary *priceTypes = @{@"current": self.selectedPriceType.name, @"available": priceTypesArray};
+    
+    NSArray *stockTypesArray = @[NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil),
+                                 NSLocalizedString(@"SHOW ALL ARTICLES", nil)];
+    NSDictionary *stockTypes = @{@"current": stockTypesArray[self.splitVC.showZeroStock], @"available": stockTypesArray};
+    
+    NSArray *picturesTypesArray = @[NSLocalizedString(@"SHOW ALL ARTICLES", nil),
+                                    NSLocalizedString(@"SHOW ONLY WITH PICTURES", nil)];
+    NSDictionary *picturesTypes = @{@"current": picturesTypesArray[self.splitVC.showOnlyWithPictures], @"available": picturesTypesArray};
+    
+    NSArray *infoTypesArray = @[NSLocalizedString(@"PRICE", nil),
+                                NSLocalizedString(@"VOLUME", nil),
+                                NSLocalizedString(@"STOCK", nil)];
+    NSDictionary *infoTypes = @{@"current": self.infoShowType, @"available": infoTypesArray};
+
+    
+    return @{NSLocalizedString(@"PRICE_TYPE_LABEL", nil): priceTypes,
+             NSLocalizedString(@"SHOW ARTICLES", nil): stockTypes,
+             NSLocalizedString(@"SHOW PICTURES", nil): picturesTypes,
+             NSLocalizedString(@"SHOW INFO", nil): infoTypes};
+    
+}
+
 - (UIPopoverController *)catalogSettingsPopover {
     
     if (!_catalogSettingsPopover) {
     
-        STMCatalogSettingsNC *catalogSettingsNC = [[STMCatalogSettingsNC alloc] init];
+        STMCatalogSettingsNC *catalogSettingsNC = [[STMCatalogSettingsNC alloc] initWithSettings:[self catalogSettings]];
+        
         _catalogSettingsPopover = [[UIPopoverController alloc] initWithContentViewController:catalogSettingsNC];
         _catalogSettingsPopover.delegate = self;
         _catalogSettingsPopover.popoverContentSize = CGSizeMake(catalogSettingsNC.view.frame.size.width, catalogSettingsNC.view.frame.size.height);

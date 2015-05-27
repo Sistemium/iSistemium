@@ -15,9 +15,9 @@
 
 @implementation STMCatalogSettingsNC
 
-- (instancetype)init {
+- (instancetype)initWithSettings:(NSDictionary *)settings {
     
-    STMCatalogSettingsTVC *rootViewController = [[STMCatalogSettingsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    STMCatalogSettingsTVC *rootViewController = [[STMCatalogSettingsTVC alloc] initWithSettings:settings];
     
     self = [super initWithRootViewController:rootViewController];
     if (self) {
