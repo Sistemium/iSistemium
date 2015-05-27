@@ -692,6 +692,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     if (!_catalogSettingsPopover) {
     
         STMCatalogSettingsNC *catalogSettingsNC = [[STMCatalogSettingsNC alloc] initWithSettings:[self catalogSettings]];
+        catalogSettingsNC.catalogSVC = self.splitVC;
         
         _catalogSettingsPopover = [[UIPopoverController alloc] initWithContentViewController:catalogSettingsNC];
         _catalogSettingsPopover.delegate = self;
