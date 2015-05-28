@@ -76,7 +76,10 @@
     
     self.parameters[@"current"] = @(indexPath.row);
     [self.settingsTVC updateParameters:self.parameters];
-    [self.tableView reloadData];
+
+    [self.navigationController popViewControllerAnimated:YES];
+    
+//    [self.tableView reloadData];
     
 }
 
