@@ -44,7 +44,10 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.parameters.allKeys.count;
+    
+    NSArray *availableParameters = self.parameters[@"available"];
+    return availableParameters.count;
+    
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -56,10 +59,12 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
     
     NSArray *availableParameters = self.parameters[@"available"];
+    NSUInteger selectedParameterIndex = [self.parameters[@"current"] integerValue];
     
     cell.textLabel.text = availableParameters[indexPath.row];
     
-    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    cell.accessoryType = (selectedParameterIndex == indexPath.row) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+    
     cell.tintColor = ACTIVE_BLUE_COLOR;
     
     return cell;

@@ -79,11 +79,13 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
 
     NSDictionary *setting = self.settings[indexPath.row];
+    NSUInteger currentParameterIndex = [setting[@"current"] integerValue];
+    NSArray *availableParameters = setting[@"available"];
     
     cell.textLabel.text = setting[@"name"];
-    cell.detailTextLabel.text = setting[@"current"];
+    cell.detailTextLabel.text = availableParameters[currentParameterIndex];
     
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryType = (availableParameters.count > 1) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
     
     return cell;
     

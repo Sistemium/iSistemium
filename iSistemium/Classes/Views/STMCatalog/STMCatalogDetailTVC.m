@@ -17,16 +17,11 @@ static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 
-@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
+@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate>
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
 
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *infoLabel;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeLabel;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeSelector;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeLabel;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeButton;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *picturesButton;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *settingsButton;
 
 @property (nonatomic, strong) NSArray *searchResults;
@@ -38,14 +33,10 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 @property (nonatomic, strong) UIPopoverController *catalogSettingsPopover;
 
-@property (nonatomic, strong) UIActionSheet *priceTypeSelectorActionSheet;
-@property (nonatomic, strong) UIActionSheet *stockVolumeFilterActionSheet;
-
 @property (nonatomic, strong) STMArticle *selectedArticle;
 
 @property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 
-@property (nonatomic, strong) NSString *infoShowType;
 @property (nonatomic, strong) UITableView *currentTableView;
 
 
@@ -55,7 +46,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 @implementation STMCatalogDetailTVC
 
 @synthesize resultsController = _resultsController;
-@synthesize infoShowType = _infoShowType;
 
 
 - (STMCatalogSVC *)splitVC {
@@ -73,32 +63,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (STMPriceType *)selectedPriceType {
     return self.splitVC.selectedPriceType;
-}
-
-- (NSString *)infoShowType {
-    
-    if (!_infoShowType) {
-        
-        NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
-        NSString *infoShowType = appSettings[@"catalogue.cell.right"];
-        
-        _infoShowType = infoShowType;
-
-    }
-    return _infoShowType;
-    
-}
-
-- (void)setInfoShowType:(NSString *)infoShowType {
-    
-    if (![_infoShowType isEqualToString:infoShowType]) {
-        
-        [[[STMSessionManager sharedManager].currentSession settingsController] setNewSettings:@{@"catalogue.cell.right": infoShowType} forGroup:@"appSettings"];
-        _infoShowType = nil;
-        [self.currentTableView reloadData];
-        
-    }
-    
 }
 
 - (UITableView *)currentTableView {
@@ -292,60 +256,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 }
 
-- (void)priceTypeLabelSetup {
-    
-    UIInterfaceOrientation interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
-    NSString *title = UIInterfaceOrientationIsPortrait(interfaceOrientation) ? nil : NSLocalizedString(@"PRICE_TYPE_LABEL", nil);
-    
-    self.priceTypeLabel.title = title;
-    [self setupBarButton:self.priceTypeLabel asLabelWithColor:nil];
-    
-}
-
-- (void)priceTypeSelectorSetup {
-    
-    self.priceTypeSelector.title = self.selectedPriceType.name;
-    self.priceTypeSelector.target = self;
-    self.priceTypeSelector.action = @selector(showPriceTypeSelector);
-    
-}
-
-- (void)stockVolumeLabelSetup {
-
-    UIInterfaceOrientation interfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
-    NSString *title = UIInterfaceOrientationIsPortrait(interfaceOrientation) ? nil : NSLocalizedString(@"SHOW ARTICLES", nil);
-
-    self.stockVolumeLabel.title = title;
-    [self setupBarButton:self.stockVolumeLabel asLabelWithColor:nil];
-    
-}
-
-- (void)stockVolumeButtonSetup {
-    
-    NSString *title = (self.splitVC.showZeroStock) ? NSLocalizedString(@"SHOW ALL ARTICLES", nil) : NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil);
-    
-    self.stockVolumeButton.title = title;
-    self.stockVolumeButton.target = self;
-    self.stockVolumeButton.action = @selector(showStockVolumeFilter);
-    
-}
-
-- (void)picturesFilterButtonSetup {
-    
-    [self picturesButtonImageSetup];
-    self.picturesButton.target = self;
-    self.picturesButton.action = @selector(picturesButtonPressed);
-    
-}
-
-- (void)picturesButtonImageSetup {
-
-    NSString *imageName = (self.splitVC.showOnlyWithPictures) ? @"Picture Filled-25.png" : @"Picture-25.png";
-    UIImage *image = [UIImage imageNamed:imageName];
-    self.picturesButton.image = image;
-
-}
-
 - (void)infoLabelSetup {
     
     self.infoLabel.title = @"";
@@ -390,22 +300,15 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 
 
-#pragma mark
+#pragma mark - deviceOrientationDidChangeNotification
 
 - (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
     
-    [self toolbarLabelsSetup];
     self.cachedCellsHeights = nil;
     [self.tableView reloadData];
     
 }
 
-- (void)toolbarLabelsSetup {
-    
-    [self priceTypeLabelSetup];
-    [self stockVolumeLabelSetup];
-    
-}
 
 #pragma mark - NSLogs
 
@@ -493,128 +396,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 }
 
 
-#pragma mark - priceType selector
-
-- (void)showPriceTypeSelector {
-    
-    if (!self.priceTypeSelectorActionSheet.isVisible) {
-        [self.priceTypeSelectorActionSheet showFromBarButtonItem:self.priceTypeSelector animated:YES];
-    }
-    
-}
-
-- (UIActionSheet *)priceTypeSelectorActionSheet {
-
-    if (!_priceTypeSelectorActionSheet) {
-        
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"PRICE_TYPE_LABEL", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        
-        NSArray *priceTypes = self.splitVC.availablePriceTypes;
-        
-        for (STMPriceType *priceType in priceTypes) {
-            
-            [actionSheet addButtonWithTitle:priceType.name];
-            
-        }
-        
-        actionSheet.delegate = self;
-        actionSheet.tag = 1;
-        
-        _priceTypeSelectorActionSheet = actionSheet;
-        
-    }
-    return _priceTypeSelectorActionSheet;
-    
-}
-
-
-#pragma mark - stockVolume filter
-
-- (void)showStockVolumeFilter {
-    
-    if (!self.stockVolumeFilterActionSheet.isVisible) {
-        [[self stockVolumeFilterActionSheet] showFromBarButtonItem:self.stockVolumeButton animated:YES];
-    }
-    
-}
-
-- (UIActionSheet *)stockVolumeFilterActionSheet {
-    
-    if (!_stockVolumeFilterActionSheet) {
-        
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SHOW ARTICLES", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil), NSLocalizedString(@"SHOW ALL ARTICLES", nil), nil];
-        
-        actionSheet.delegate = self;
-        actionSheet.tag = 2;
-
-        _stockVolumeFilterActionSheet = actionSheet;
-        
-    }
-    return _stockVolumeFilterActionSheet;
-    
-}
-
-
-#pragma mark - pictures filter
-
-- (void)picturesButtonPressed {
-    
-    self.splitVC.showOnlyWithPictures = !self.splitVC.showOnlyWithPictures;
-    [self picturesButtonImageSetup];
-    
-}
-
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    switch (actionSheet.tag) {
-            
-        case 1:
-            if (buttonIndex != -1) {
-                
-                self.splitVC.selectedPriceType = self.splitVC.availablePriceTypes[buttonIndex];
-                [self priceTypeSelectorSetup];
-                
-            }
-            break;
-
-        case 2:
-            if (buttonIndex != -1) {
-                
-                self.splitVC.showZeroStock = [@(buttonIndex) boolValue];
-                [self stockVolumeButtonSetup];
-                
-            }
-            break;
-
-        case 3:
-            switch (buttonIndex) {
-                case 0:
-                    self.infoShowType = @"price";
-                    break;
-                    
-                case 1:
-                    self.infoShowType = @"pieceVolume";
-                    break;
-                    
-                case 2:
-                    self.infoShowType = @"stock";
-                    break;
-                    
-                default:
-                    break;
-            }
-            break;
-
-        default:
-            break;
-            
-    }
-    
-}
-
 #pragma mark - search
 
 - (void)searchButtonPressed {
@@ -679,7 +460,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     NSArray *infoTypesArray = @[NSLocalizedString(@"PRICE", nil),
                                 NSLocalizedString(@"VOLUME", nil),
                                 NSLocalizedString(@"STOCK", nil)];
-    NSDictionary *infoTypes = @{@"name": NSLocalizedString(@"SHOW INFO", nil), @"current": self.infoShowType, @"available": infoTypesArray};
+    NSDictionary *infoTypes = @{@"name": NSLocalizedString(@"SHOW INFO", nil), @"current": @(self.splitVC.selectedInfoShowType), @"available": infoTypesArray};
 
     
     return @[priceTypes,
@@ -830,39 +611,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         return (parentView) ? [self cellForView:parentView] : nil;
         
     }
-    
-}
-
-- (void)infoLabelTapped:(id)sender {
-    
-    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
-        
-        UIView *infoLabelView = [(UITapGestureRecognizer *)sender view];
-        
-        NSIndexPath *indexPath = [self indexPathForView:infoLabelView];
-        
-        if (indexPath) {
-
-            [[self infoSelectActionSheet] showFromRect:infoLabelView.frame inView:infoLabelView.superview animated:YES];
-            
-        }
-        
-    }
-    
-}
-
-- (UIActionSheet *)infoSelectActionSheet {
-    
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-    actionSheet.delegate = self;
-    actionSheet.title = NSLocalizedString(@"SHOW INFO", nil);
-    actionSheet.tag = 3;
-    
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"PRICE", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"VOLUME", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"STOCK", nil)];
-    
-    return actionSheet;
     
 }
 
@@ -1156,11 +904,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     cell.detailLabel.textColor = textColor;
     cell.infoLabel.textColor = textColor;
     
-    cell.infoLabel.userInteractionEnabled = YES;
-
-    UITapGestureRecognizer *infoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(infoLabelTapped:)];
-    cell.infoLabel.gestureRecognizers = @[infoTap];
-    
 }
 
 - (void)fillPictureCell:(STMCustom4TVCell *)cell withPrice:(STMPrice *)price {
@@ -1192,14 +935,9 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     }
     
     cell.pictureView.userInteractionEnabled = YES;
-    cell.infoLabel.userInteractionEnabled = YES;
 
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pictureViewTapped:)];
     cell.pictureView.gestureRecognizers = @[tap];
-    
-    UITapGestureRecognizer *infoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(infoLabelTapped:)];
-    cell.infoLabel.gestureRecognizers = @[infoTap];
-
     
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
@@ -1389,11 +1127,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (void)setupToolbar {
     
-    [self priceTypeLabelSetup];
-    [self priceTypeSelectorSetup];
-    [self stockVolumeLabelSetup];
-    [self stockVolumeButtonSetup];
-    [self picturesFilterButtonSetup];
     [self infoLabelSetup];
     
 }
