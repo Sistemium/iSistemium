@@ -67,6 +67,7 @@
     [newSettings replaceObjectAtIndex:self.selectedSettingIndex withObject:newParameters];
     
     [self.parentNC updateSettings:newSettings];
+    self.settings = newSettings;
     
     [self.tableView reloadData];
     
