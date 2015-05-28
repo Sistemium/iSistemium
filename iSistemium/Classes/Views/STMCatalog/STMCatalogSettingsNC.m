@@ -15,7 +15,7 @@
 
 @implementation STMCatalogSettingsNC
 
-- (instancetype)initWithSettings:(NSDictionary *)settings {
+- (instancetype)initWithSettings:(NSArray *)settings {
     
     STMCatalogSettingsTVC *rootViewController = [[STMCatalogSettingsTVC alloc] initWithSettings:settings];
     
@@ -37,7 +37,7 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
+        
 }
 
 - (void)viewDidLoad {

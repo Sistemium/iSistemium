@@ -225,4 +225,7 @@
 "ENABLE WWAN ONCE" = "Only once";
 "ENABLE WWAN ALWAYS" = "Always";
 "SHOW INFO" = "Show:";
-
+"SHOW ARTICLES STOCK" = "Show article's stock";
+"SHOW PICTURES" = "Show pictures";
+"SHOW ONLY WITH PICTURES" = "Show only with pictures";
+"CATALOG SETTINGS" = "Catalog settings";

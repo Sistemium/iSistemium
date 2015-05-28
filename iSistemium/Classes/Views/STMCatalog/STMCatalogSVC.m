@@ -66,6 +66,33 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
     
 }
 
+- (NSArray *)catalogSettings {
+    
+    NSArray *availablePriceTypes = self.availablePriceTypes;
+    NSArray *priceTypesArray = [availablePriceTypes valueForKeyPath:@"name"];
+    NSUInteger index = [availablePriceTypes indexOfObject:self.selectedPriceType];
+    NSDictionary *priceTypes = @{@"name": NSLocalizedString(@"PRICE_TYPE_LABEL", nil), @"current": @(index), @"available": priceTypesArray};
+    
+    NSArray *stockTypesArray = @[NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil),
+                                 NSLocalizedString(@"SHOW ALL ARTICLES", nil)];
+    NSDictionary *stockTypes = @{@"name": NSLocalizedString(@"SHOW ARTICLES STOCK", nil), @"current": @(self.showZeroStock), @"available": stockTypesArray};
+    
+    NSArray *picturesTypesArray = @[NSLocalizedString(@"SHOW ALL ARTICLES", nil),
+                                    NSLocalizedString(@"SHOW ONLY WITH PICTURES", nil)];
+    NSDictionary *picturesTypes = @{@"name": NSLocalizedString(@"SHOW PICTURES", nil), @"current": @(self.showOnlyWithPictures), @"available": picturesTypesArray};
+    
+    NSArray *infoTypesArray = @[NSLocalizedString(@"PRICE", nil),
+                                NSLocalizedString(@"VOLUME", nil),
+                                NSLocalizedString(@"STOCK", nil)];
+    NSDictionary *infoTypes = @{@"name": NSLocalizedString(@"SHOW INFO", nil), @"current": @(self.selectedInfoShowType), @"available": infoTypesArray};
+    
+    
+    return @[priceTypes,
+             stockTypes,
+             picturesTypes,
+             infoTypes];
+    
+}
 
 #pragma mark - fetched results controller
 

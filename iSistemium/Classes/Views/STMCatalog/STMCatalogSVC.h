@@ -48,5 +48,6 @@ typedef NS_ENUM(NSInteger, STMCatalogInfoShowType) {
 
 - (NSArray *)nestedArticleGroups;
 
+- (NSArray *)catalogSettings;
 
 @end

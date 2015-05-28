@@ -104,6 +104,8 @@
 
 - (void)customInit {
     
+    self.title = NSLocalizedString(@"CATALOG SETTINGS", nil);
+
     [self.tableView registerClass:[STMCatalogSettingsTVCell class] forCellReuseIdentifier:self.cellReuseIdentifier];
     
     [self.tableView setNeedsLayout];
