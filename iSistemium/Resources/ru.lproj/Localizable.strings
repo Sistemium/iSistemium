@@ -190,7 +190,7 @@
 "SHOW ALL ARTICLES" = "Все позиции";
 "SHOW NONZERO STOCK ARTICLES" = "Есть в наличии";
 "SECTION" = "Раздел";
-"STOCK" = "Количество";
+"STOCK" = "Остаток";
 "TIMEOUT ERROR" = "Соединение прервано. Повторить попытку?";
 "VERSION" = "версия";
 "LOCATIONS ON" = "Геолокация разрешена";
