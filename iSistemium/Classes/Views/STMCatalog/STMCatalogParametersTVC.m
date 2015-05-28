@@ -1,60 +1,37 @@
 //
-//  STMCatalogSettingsTVC.m
+//  STMCatalogParametersTVC.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 27/05/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMCatalogSettingsTVC.h"
 #import "STMCatalogParametersTVC.h"
+#import "STMConstants.h"
 
-
-#define VIEW_MAX_HEIGHT 512
-#define VIEW_WIDTH 512
-
-
-@interface STMCatalogSettingsTVCell : UITableViewCell
+@interface STMCatalogParametersTVCell : UITableViewCell
 
 @end
 
-@implementation STMCatalogSettingsTVCell
-
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    
-    self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier];
-    if (self) {
-        
-    }
-    return self;
-    
-}
+@implementation STMCatalogParametersTVCell
 
 @end
 
 
-@interface STMCatalogSettingsTVC ()
+@interface STMCatalogParametersTVC ()
 
 @property (nonatomic, strong) NSString *cellReuseIdentifier;
 
+
 @end
 
-@implementation STMCatalogSettingsTVC
+@implementation STMCatalogParametersTVC
 
-- (instancetype)initWithSettings:(NSArray *)settings {
-    
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    if (self) {
-        self.settings = settings;
-    }
-    return self;
-    
-}
 
 - (NSString *)cellReuseIdentifier {
     
     if (!_cellReuseIdentifier) {
-        _cellReuseIdentifier = @"catalogSettingsTVCell";
+        _cellReuseIdentifier = @"catalogParametersTVCell";
     }
     return _cellReuseIdentifier;
     
@@ -67,7 +44,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.settings.count;
+    return 3;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -77,13 +54,12 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
-
-    NSDictionary *setting = self.settings[indexPath.row];
     
-    cell.textLabel.text = setting[@"name"];
-    cell.detailTextLabel.text = setting[@"current"];
+    cell.textLabel.text = @"MAIN";
+    cell.detailTextLabel.text = @"DETAIL";
     
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    cell.tintColor = ACTIVE_BLUE_COLOR;
     
     return cell;
     
@@ -91,25 +67,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *setting = self.settings[indexPath.row];
-
-    STMCatalogParametersTVC *parametersTVC = [[STMCatalogParametersTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [self.navigationController pushViewController:parametersTVC animated:YES];
-    
 }
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    [self.tableView registerClass:[STMCatalogSettingsTVCell class] forCellReuseIdentifier:self.cellReuseIdentifier];
+    [self.tableView registerClass:[STMCatalogParametersTVCell class] forCellReuseIdentifier:self.cellReuseIdentifier];
     
-    [self.tableView setNeedsLayout];
-    [self.tableView layoutIfNeeded];
-    
-    CGFloat height = MIN(VIEW_MAX_HEIGHT, self.tableView.contentSize.height);
-    self.tableView.frame = CGRectMake(0, 0, VIEW_WIDTH, height);
-
 }
 
 - (void)viewDidLoad {

@@ -11,9 +11,8 @@
 
 @interface STMCatalogSettingsNC : UINavigationController
 
-@property (nonatomic, strong) NSDictionary *settings;
 @property (nonatomic, weak) STMCatalogSVC *catalogSVC;
 
-- (instancetype)initWithSettings:(NSDictionary *)settings;
+- (instancetype)initWithSettings:(NSArray *)settings;
 
 @end

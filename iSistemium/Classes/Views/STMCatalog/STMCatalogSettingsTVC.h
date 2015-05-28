@@ -10,8 +10,8 @@
 
 @interface STMCatalogSettingsTVC : STMFetchedResultsControllerTVC
 
-@property (nonatomic, strong) NSDictionary *settings;
+@property (nonatomic, strong) NSArray *settings;
 
-- (instancetype)initWithSettings:(NSDictionary *)settings;
+- (instancetype)initWithSettings:(NSArray *)settings;
 
 @end
