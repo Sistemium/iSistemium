@@ -36,6 +36,7 @@
 @interface STMCatalogSettingsTVC ()
 
 @property (nonatomic, strong) NSString *cellReuseIdentifier;
+@property (nonatomic) NSUInteger selectedSettingIndex;
 
 @end
 
@@ -59,6 +60,18 @@
     return _cellReuseIdentifier;
     
 }
+
+- (void)updateParameters:(NSDictionary *)newParameters {
+
+    NSMutableArray *newSettings = [self.settings mutableCopy];
+    [newSettings replaceObjectAtIndex:self.selectedSettingIndex withObject:newParameters];
+    
+    [self.parentNC updateSettings:newSettings];
+    
+    [self.tableView reloadData];
+    
+}
+
 
 #pragma mark - Table view data source
 
@@ -93,8 +106,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    self.selectedSettingIndex = indexPath.row;
+    
     STMCatalogParametersTVC *parametersTVC = [[STMCatalogParametersTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    parametersTVC.parameters =self.settings[indexPath.row];
+    parametersTVC.parameters = [self.settings[indexPath.row] mutableCopy];
+    parametersTVC.settingsTVC = self;
     
     [self.navigationController pushViewController:parametersTVC animated:YES];
     

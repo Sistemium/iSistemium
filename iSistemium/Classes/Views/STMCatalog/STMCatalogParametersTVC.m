@@ -9,6 +9,7 @@
 #import "STMCatalogParametersTVC.h"
 #import "STMConstants.h"
 
+
 @interface STMCatalogParametersTVCell : UITableViewCell
 
 @end
@@ -72,6 +73,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    self.parameters[@"current"] = @(indexPath.row);
+    [self.settingsTVC updateParameters:self.parameters];
+    [self.tableView reloadData];
     
 }
 

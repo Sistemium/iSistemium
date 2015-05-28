@@ -94,6 +94,47 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
     
 }
 
+- (void)updateSettings:(NSArray *)newSettings {
+
+    NSArray *oldSettings = [self catalogSettings];
+    
+    for (int index = 0; index < newSettings.count; index++) {
+    
+        NSUInteger oldValue = [oldSettings[index][@"current"] integerValue];
+        NSUInteger newValue = [newSettings[index][@"current"] integerValue];
+
+        if (oldValue != newValue) {
+            
+            switch (index) {
+                    
+                case 0:
+                    self.selectedPriceType = self.availablePriceTypes[newValue];
+                    break;
+                    
+                case 1:
+                    self.showZeroStock = [@(newValue) boolValue];
+                    break;
+                    
+                case 2:
+                    self.showOnlyWithPictures = [@(newValue) boolValue];
+                    break;
+                    
+                case 3:
+                    self.selectedInfoShowType = newValue;
+                    break;
+                    
+                default:
+                    break;
+                    
+            }
+
+        }
+        
+    }
+    
+}
+
+
 #pragma mark - fetched results controller
 
 - (NSFetchedResultsController *)resultsController {

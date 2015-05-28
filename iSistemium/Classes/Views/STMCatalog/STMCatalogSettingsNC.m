@@ -18,6 +18,7 @@
 - (instancetype)initWithSettings:(NSArray *)settings {
     
     STMCatalogSettingsTVC *rootViewController = [[STMCatalogSettingsTVC alloc] initWithSettings:settings];
+    rootViewController.parentNC = self;
     
     self = [super initWithRootViewController:rootViewController];
     if (self) {
@@ -33,6 +34,9 @@
     
 }
 
+- (void)updateSettings:(NSArray *)newSettings {
+    [self.catalogSVC updateSettings:newSettings];
+}
 
 #pragma mark - view lifecycle
 

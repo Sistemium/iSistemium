@@ -15,4 +15,6 @@
 
 - (instancetype)initWithSettings:(NSArray *)settings;
 
+- (void)updateSettings:(NSArray *)newSettings;
+
 @end

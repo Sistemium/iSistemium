@@ -50,4 +50,6 @@ typedef NS_ENUM(NSInteger, STMCatalogInfoShowType) {
 
 - (NSArray *)catalogSettings;
 
+- (void)updateSettings:(NSArray *)newSettings;
+
 @end

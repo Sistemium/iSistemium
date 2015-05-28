@@ -7,9 +7,12 @@
 //
 
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMCatalogSettingsTVC.h"
+
 
 @interface STMCatalogParametersTVC : STMFetchedResultsControllerTVC
 
-@property (nonatomic, strong) NSDictionary *parameters;
+@property (nonatomic, strong) NSMutableDictionary *parameters;
+@property (nonatomic, weak) STMCatalogSettingsTVC *settingsTVC;
 
 @end
