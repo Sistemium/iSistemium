@@ -94,26 +94,55 @@
 
     NSDictionary *setting = self.settings[indexPath.row];
     NSUInteger currentParameterIndex = [setting[@"current"] integerValue];
-    NSArray *availableParameters = setting[@"available"];
+    id availableParameters = setting[@"available"];
     
     cell.textLabel.text = setting[@"name"];
-    cell.detailTextLabel.text = availableParameters[currentParameterIndex];
     
-    cell.accessoryType = (availableParameters.count > 1) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+    if ([availableParameters isKindOfClass:[NSArray class]]) {
+        
+        NSArray *param = (NSArray *)availableParameters;
+        
+        cell.detailTextLabel.text = param[currentParameterIndex];
+        cell.accessoryType = (param.count > 1) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+
+    } else if ([availableParameters isKindOfClass:[NSString class]]) {
+        
+        NSString *param = (NSString *)availableParameters;
+        
+        if ([param isEqualToString:@"switch"]) {
+            [self addSwitchToCell:cell selected:currentParameterIndex];
+        }
+        
+    }
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
     
 }
 
+- (void)addSwitchToCell:(UITableViewCell *)cell selected:(BOOL)selected {
+    
+    UISwitch *cellSwitch = [[UISwitch alloc] init];
+    cellSwitch.on = selected;
+    
+    cell.accessoryView = cellSwitch;
+    
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    self.selectedSettingIndex = indexPath.row;
-    
-    STMCatalogParametersTVC *parametersTVC = [[STMCatalogParametersTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    parametersTVC.parameters = [self.settings[indexPath.row] mutableCopy];
-    parametersTVC.settingsTVC = self;
-    
-    [self.navigationController pushViewController:parametersTVC animated:YES];
+    if ([self.settings[indexPath.row][@"available"] isKindOfClass:[NSArray class]]) {
+        
+        self.selectedSettingIndex = indexPath.row;
+        
+        STMCatalogParametersTVC *parametersTVC = [[STMCatalogParametersTVC alloc] initWithStyle:UITableViewStyleGrouped];
+        parametersTVC.parameters = [self.settings[indexPath.row] mutableCopy];
+        parametersTVC.settingsTVC = self;
+        
+        [self.navigationController pushViewController:parametersTVC animated:YES];
+
+    }
     
 }
 
@@ -122,7 +151,7 @@
 - (void)customInit {
     
     self.title = NSLocalizedString(@"CATALOG SETTINGS", nil);
-
+    
     [self.tableView registerClass:[STMCatalogSettingsTVCell class] forCellReuseIdentifier:self.cellReuseIdentifier];
     
     [self.tableView setNeedsLayout];

@@ -73,13 +73,13 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
     NSUInteger index = [availablePriceTypes indexOfObject:self.selectedPriceType];
     NSDictionary *priceTypes = @{@"name": NSLocalizedString(@"PRICE_TYPE_LABEL", nil), @"current": @(index), @"available": priceTypesArray};
     
-    NSArray *stockTypesArray = @[NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil),
-                                 NSLocalizedString(@"SHOW ALL ARTICLES", nil)];
-    NSDictionary *stockTypes = @{@"name": NSLocalizedString(@"SHOW ARTICLES STOCK", nil), @"current": @(self.showZeroStock), @"available": stockTypesArray};
+//    NSArray *stockTypesArray = @[NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil),
+//                                 NSLocalizedString(@"SHOW ALL ARTICLES", nil)];
+    NSDictionary *stockTypes = @{@"name": NSLocalizedString(@"SHOW ARTICLES STOCK", nil), @"current": @(self.showZeroStock), @"available": @"switch"};
     
-    NSArray *picturesTypesArray = @[NSLocalizedString(@"SHOW ALL ARTICLES", nil),
-                                    NSLocalizedString(@"SHOW ONLY WITH PICTURES", nil)];
-    NSDictionary *picturesTypes = @{@"name": NSLocalizedString(@"SHOW PICTURES", nil), @"current": @(self.showOnlyWithPictures), @"available": picturesTypesArray};
+//    NSArray *picturesTypesArray = @[NSLocalizedString(@"SHOW ALL ARTICLES", nil),
+//                                    NSLocalizedString(@"SHOW ONLY WITH PICTURES", nil)];
+    NSDictionary *picturesTypes = @{@"name": NSLocalizedString(@"SHOW PICTURES", nil), @"current": @(self.showOnlyWithPictures), @"available": @"switch"};
     
     NSArray *infoTypesArray = @[NSLocalizedString(@"PRICE_", nil),
                                 NSLocalizedString(@"VOLUME", nil),
