@@ -29,7 +29,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
 
 @property (nonatomic, strong) UIPopoverController *articleInfoPopover;
-@property (nonatomic) BOOL articleInfoPopoverIsVisible;
+@property (nonatomic) BOOL articleInfoPopoverWasVisible;
 
 @property (nonatomic, strong) UIPopoverController *catalogSettingsPopover;
 
@@ -295,17 +295,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 - (IBAction)catalogSettingsButtonPressed:(id)sender {
     
     [self showCatalogSettingsPopover];
-    
-}
-
-
-
-#pragma mark - deviceOrientationDidChangeNotification
-
-- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
-    
-    self.cachedCellsHeights = nil;
-    [self.tableView reloadData];
     
 }
 
@@ -586,15 +575,24 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
 }
 
+#pragma mark - deviceOrientationDidChangeNotification
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+    self.cachedCellsHeights = nil;
+    [self.tableView reloadData];
+    
+}
+
 
 #pragma mark - rotation
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
-    if (self.articleInfoPopoverIsVisible) {
+    if (self.articleInfoPopoverWasVisible) {
         
         [self showArticleInfoPopover];
-        self.articleInfoPopoverIsVisible = NO;
+        self.articleInfoPopoverWasVisible = NO;
         
     }
     
@@ -604,12 +602,14 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     if (self.articleInfoPopover.popoverVisible) {
 
-        self.articleInfoPopoverIsVisible = YES;
+        self.articleInfoPopoverWasVisible = YES;
         [self dismissArticleInfoPopover];
         
     }
 
     [self hideKeyboard];
+    
+    [self dismissCatalogSettingsPopover];
     
 }
 
