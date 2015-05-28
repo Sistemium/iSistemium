@@ -81,7 +81,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
                                     NSLocalizedString(@"SHOW ONLY WITH PICTURES", nil)];
     NSDictionary *picturesTypes = @{@"name": NSLocalizedString(@"SHOW PICTURES", nil), @"current": @(self.showOnlyWithPictures), @"available": picturesTypesArray};
     
-    NSArray *infoTypesArray = @[NSLocalizedString(@"PRICE", nil),
+    NSArray *infoTypesArray = @[NSLocalizedString(@"PRICE_", nil),
                                 NSLocalizedString(@"VOLUME", nil),
                                 NSLocalizedString(@"STOCK", nil)];
     NSDictionary *infoTypes = @{@"name": NSLocalizedString(@"SHOW INFO", nil), @"current": @(self.selectedInfoShowType), @"available": infoTypesArray};

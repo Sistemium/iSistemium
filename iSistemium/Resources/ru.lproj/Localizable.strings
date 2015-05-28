@@ -225,9 +225,9 @@
 "ENABLE WWAN ONCE" = "Спросить меня потом ещё раз";
 "ENABLE WWAN ALWAYS" = "Разрешить";
 "SHOW INFO" = "Показывать справа:";
-"SHOW ARTICLES STOCK" = "Показывать остатки:";
-"SHOW PICTURES" = "Показывать картинки:";
+"SHOW ARTICLES STOCK" = "Только с остатками";
+"SHOW PICTURES" = "Только с картинками";
 "SHOW ONLY WITH PICTURES" = "Только с картинками";
 "CATALOG SETTINGS" = "Настройки каталога";
-
+"PRICE_" = "Цену";
 
