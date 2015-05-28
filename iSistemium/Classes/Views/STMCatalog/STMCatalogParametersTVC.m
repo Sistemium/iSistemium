@@ -44,19 +44,20 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return self.parameters.allKeys.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return NSLocalizedString(@"SETTINGS", nil);
+    return self.parameters[@"name"];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
     
-    cell.textLabel.text = @"MAIN";
-    cell.detailTextLabel.text = @"DETAIL";
+    NSArray *availableParameters = self.parameters[@"available"];
+    
+    cell.textLabel.text = availableParameters[indexPath.row];
     
     cell.accessoryType = UITableViewCellAccessoryCheckmark;
     cell.tintColor = ACTIVE_BLUE_COLOR;

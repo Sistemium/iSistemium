@@ -10,4 +10,6 @@
 
 @interface STMCatalogParametersTVC : STMFetchedResultsControllerTVC
 
+@property (nonatomic, strong) NSDictionary *parameters;
+
 @end

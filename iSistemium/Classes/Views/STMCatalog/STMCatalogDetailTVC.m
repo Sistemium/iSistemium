@@ -663,16 +663,18 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (NSArray *)catalogSettings {
     
-    NSArray *priceTypesArray = [self.splitVC.availablePriceTypes valueForKeyPath:@"name"];
-    NSDictionary *priceTypes = @{@"name": NSLocalizedString(@"PRICE_TYPE_LABEL", nil), @"current": self.selectedPriceType.name, @"available": priceTypesArray};
+    NSArray *availablePriceTypes = self.splitVC.availablePriceTypes;
+    NSArray *priceTypesArray = [availablePriceTypes valueForKeyPath:@"name"];
+    NSUInteger index = [availablePriceTypes indexOfObject:self.selectedPriceType];
+    NSDictionary *priceTypes = @{@"name": NSLocalizedString(@"PRICE_TYPE_LABEL", nil), @"current": @(index), @"available": priceTypesArray};
     
     NSArray *stockTypesArray = @[NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil),
                                  NSLocalizedString(@"SHOW ALL ARTICLES", nil)];
-    NSDictionary *stockTypes = @{@"name": NSLocalizedString(@"SHOW ARTICLES", nil), @"current": stockTypesArray[self.splitVC.showZeroStock], @"available": stockTypesArray};
+    NSDictionary *stockTypes = @{@"name": NSLocalizedString(@"SHOW ARTICLES", nil), @"current": @(self.splitVC.showZeroStock), @"available": stockTypesArray};
     
     NSArray *picturesTypesArray = @[NSLocalizedString(@"SHOW ALL ARTICLES", nil),
                                     NSLocalizedString(@"SHOW ONLY WITH PICTURES", nil)];
-    NSDictionary *picturesTypes = @{@"name": NSLocalizedString(@"SHOW PICTURES", nil), @"current": picturesTypesArray[self.splitVC.showOnlyWithPictures], @"available": picturesTypesArray};
+    NSDictionary *picturesTypes = @{@"name": NSLocalizedString(@"SHOW PICTURES", nil), @"current": @(self.splitVC.showOnlyWithPictures), @"available": picturesTypesArray};
     
     NSArray *infoTypesArray = @[NSLocalizedString(@"PRICE", nil),
                                 NSLocalizedString(@"VOLUME", nil),
@@ -940,23 +942,38 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     NSMutableArray *textsArray = [NSMutableArray array];
     
-    if ([self.infoShowType isEqualToString:@"price"]) {
-        
-        [textsArray addObject:[self pieceVolumeTextForArticle:article]];
-        [textsArray addObject:[self stockTextForArticle:article]];
-        
-    } else if ([self.infoShowType isEqualToString:@"pieceVolume"]) {
-        
-        [textsArray addObject:[self priceTextForArticle:article]];
-        [textsArray addObject:[self stockTextForArticle:article]];
+    switch (self.splitVC.selectedInfoShowType) {
 
-    } else if ([self.infoShowType isEqualToString:@"stock"]) {
+        case STMCatalogInfoShowPrice: {
+            
+            [textsArray addObject:[self pieceVolumeTextForArticle:article]];
+            [textsArray addObject:[self stockTextForArticle:article]];
+            break;
+            
+        }
+            
+        case STMCatalogInfoShowPieceVolume: {
+            
+            [textsArray addObject:[self priceTextForArticle:article]];
+            [textsArray addObject:[self stockTextForArticle:article]];
+            break;
+            
+        }
 
-        [textsArray addObject:[self priceTextForArticle:article]];
-        [textsArray addObject:[self pieceVolumeTextForArticle:article]];
-
+        case STMCatalogInfoShowStock: {
+            
+            [textsArray addObject:[self priceTextForArticle:article]];
+            [textsArray addObject:[self pieceVolumeTextForArticle:article]];
+            break;
+            
+        }
+            
+        default: {
+            break;
+        }
+            
     }
-    
+        
     if (article.extraLabel) [textsArray addObject:article.extraLabel];
 
     NSString *detailedText = [textsArray componentsJoinedByString:@", "];
@@ -967,24 +984,28 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (NSString *)infoLabelTextForArticle:(STMArticle *)article {
     
-    if ([self.infoShowType isEqualToString:@"price"]) {
-        
-        return [self priceTextForArticle:article];
-        
-    } else if ([self.infoShowType isEqualToString:@"pieceVolume"]) {
-
-        return [self pieceVolumeTextForArticle:article];
-
-    } else if ([self.infoShowType isEqualToString:@"stock"]) {
-        
-        return [self stockTextForArticle:article];
-
-    } else {
-        
-        return nil;
-        
+    NSString *infoLabelText = nil;
+    
+    switch (self.splitVC.selectedInfoShowType) {
+        case STMCatalogInfoShowPrice: {
+            infoLabelText = [self priceTextForArticle:article];
+            break;
+        }
+        case STMCatalogInfoShowPieceVolume: {
+            infoLabelText = [self pieceVolumeTextForArticle:article];
+            break;
+        }
+        case STMCatalogInfoShowStock: {
+            infoLabelText = [self stockTextForArticle:article];
+            break;
+        }
+        default: {
+            break;
+        }
     }
-
+    
+    return infoLabelText;
+    
 }
 
 - (NSString *)stockTextForArticle:(STMArticle *)article {

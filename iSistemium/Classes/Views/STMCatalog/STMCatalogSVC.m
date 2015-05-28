@@ -26,6 +26,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 @synthesize selectedPriceType = _selectedPriceType;
 @synthesize showZeroStock = _showZeroStock;
 @synthesize showOnlyWithPictures = _showOnlyWithPictures;
+@synthesize selectedInfoShowType = _selectedInfoShowType;
 
 
 #pragma mark - subviews
@@ -268,6 +269,65 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
         [self.masterTVC refreshTable];
         [self.detailTVC refreshTable];
         
+    }
+    
+}
+
+
+#pragma mark - infoShowType
+
+- (STMCatalogInfoShowType)selectedInfoShowType {
+    
+    if (!_selectedInfoShowType) {
+        
+        NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
+        NSString *infoShowType = appSettings[@"catalogue.cell.right"];
+        
+        if ([infoShowType isEqualToString:@"price"]) {
+            _selectedInfoShowType = STMCatalogInfoShowPrice;
+        } else if ([infoShowType isEqualToString:@"pieceVolume"]) {
+            _selectedInfoShowType = STMCatalogInfoShowPieceVolume;
+        } else if ([infoShowType isEqualToString:@"stock"]) {
+            _selectedInfoShowType = STMCatalogInfoShowStock;
+        } else {
+            _selectedInfoShowType = STMCatalogInfoShowPrice;
+        }
+        
+    }
+    return _selectedInfoShowType;
+
+}
+
+- (void)setSelectedInfoShowType:(STMCatalogInfoShowType)selectedInfoShowType {
+
+    if (selectedInfoShowType != _selectedInfoShowType) {
+    
+        NSString *infoShowType = @"";
+        
+        switch (selectedInfoShowType) {
+            case STMCatalogInfoShowPrice: {
+                infoShowType = @"price";
+                break;
+            }
+            case STMCatalogInfoShowPieceVolume: {
+                infoShowType = @"pieceVolume";
+                break;
+            }
+            case STMCatalogInfoShowStock: {
+                infoShowType = @"stock";
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        
+        [[[STMSessionManager sharedManager].currentSession settingsController] setNewSettings:@{@"catalogue.cell.right": infoShowType} forGroup:@"appSettings"];
+        
+        _selectedInfoShowType = selectedInfoShowType;
+        
+        [self.detailTVC refreshTable];
+
     }
     
 }

@@ -91,9 +91,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *setting = self.settings[indexPath.row];
-
     STMCatalogParametersTVC *parametersTVC = [[STMCatalogParametersTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    parametersTVC.parameters =self.settings[indexPath.row];
+    
     [self.navigationController pushViewController:parametersTVC animated:YES];
     
 }

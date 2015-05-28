@@ -25,6 +25,12 @@
 #import "STMNS.h"
 #import "STMConstants.h"
 
+typedef NS_ENUM(NSInteger, STMCatalogInfoShowType) {
+    STMCatalogInfoShowPrice,
+    STMCatalogInfoShowPieceVolume,
+    STMCatalogInfoShowStock
+};
+
 @interface STMCatalogSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMCatalogMasterTVC *masterTVC;
@@ -34,6 +40,8 @@
 
 @property (nonatomic, strong) STMPriceType *selectedPriceType;
 @property (nonatomic, strong) NSArray *availablePriceTypes;
+
+@property (nonatomic) STMCatalogInfoShowType selectedInfoShowType;
 
 @property (nonatomic) BOOL showZeroStock;
 @property (nonatomic) BOOL showOnlyWithPictures;
