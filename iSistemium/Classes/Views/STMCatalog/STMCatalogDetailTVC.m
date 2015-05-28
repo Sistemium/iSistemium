@@ -123,7 +123,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         
     }
     
-    if (!self.splitVC.showZeroStock) {
+    if (self.splitVC.showOnlyNonZeroStock) {
         
         NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.stock.volume.integerValue > 0"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
@@ -318,7 +318,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
             
             BOOL zeroStock = NO;
             
-            if (!self.splitVC.showZeroStock) {
+            if (self.splitVC.showOnlyNonZeroStock) {
                 if ([article.stock.volume integerValue] <= 0) zeroStock = YES;
             }
             

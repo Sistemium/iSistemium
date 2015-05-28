@@ -85,7 +85,7 @@
     NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"(articlesCount > 0) OR (ANY children.articlesCount > 0)"];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
     
-    if (!self.splitVC.showZeroStock) {
+    if (self.splitVC.showOnlyNonZeroStock) {
         
         NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"(articlesStockVolume > 0) OR (ANY children.articlesStockVolume > 0)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
@@ -114,7 +114,7 @@
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
     
-    if (!self.splitVC.showZeroStock) {
+    if (self.splitVC.showOnlyNonZeroStock) {
         
         NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"articlesStockVolume > 0"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
@@ -323,7 +323,7 @@
         cell.detailTextLabel.text = NSLocalizedString(@"NO ARTICLES", nil);
     }
     
-    if (self.splitVC.showZeroStock) {
+    if (!self.splitVC.showOnlyNonZeroStock) {
         
         NSInteger stockVolume = articleGroup.articlesStockVolume;
         for (STMArticleGroup *child in articleGroup.children) stockVolume += child.articlesStockVolume;

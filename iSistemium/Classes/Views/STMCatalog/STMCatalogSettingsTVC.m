@@ -110,7 +110,7 @@
         NSString *param = (NSString *)availableParameters;
         
         if ([param isEqualToString:@"switch"]) {
-            [self addSwitchToCell:cell selected:currentParameterIndex];
+            [self addSwitchToCell:cell atIndexPath:indexPath selected:currentParameterIndex];
         }
         
     }
@@ -121,10 +121,13 @@
     
 }
 
-- (void)addSwitchToCell:(UITableViewCell *)cell selected:(BOOL)selected {
+- (void)addSwitchToCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath selected:(BOOL)selected {
     
     UISwitch *cellSwitch = [[UISwitch alloc] init];
     cellSwitch.on = selected;
+    cellSwitch.tag = indexPath.row;
+    
+    [cellSwitch addTarget:self action:@selector(switchWasSwitched:) forControlEvents:UIControlEventValueChanged];
     
     cell.accessoryView = cellSwitch;
     
@@ -145,6 +148,26 @@
     }
     
 }
+
+
+- (void)switchWasSwitched:(id)sender {
+    
+    if ([sender isKindOfClass:[UISwitch class]]) {
+        
+        UISwitch *cellSwitch = (UISwitch *)sender;
+        
+        NSUInteger index = cellSwitch.tag;
+        self.selectedSettingIndex = index;
+        
+        NSMutableDictionary *setting = [self.settings[index] mutableCopy];
+        setting[@"current"] = @(cellSwitch.on);
+        
+        [self updateParameters:setting];
+        
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 

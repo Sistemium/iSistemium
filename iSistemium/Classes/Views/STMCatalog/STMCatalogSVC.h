@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, STMCatalogInfoShowType) {
 
 @property (nonatomic) STMCatalogInfoShowType selectedInfoShowType;
 
-@property (nonatomic) BOOL showZeroStock;
+@property (nonatomic) BOOL showOnlyNonZeroStock;
 @property (nonatomic) BOOL showOnlyWithPictures;
 
 - (NSArray *)nestedArticleGroups;

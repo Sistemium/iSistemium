@@ -9,7 +9,7 @@
 #import "STMCatalogSVC.h"
 
 static NSString *defaultPriceTypeKey = @"priceTypeXid";
-static NSString *showZeroStockKey = @"showZeroStock";
+static NSString *showOnlyNonZeroStockKey = @"showOnlyNonZeroStock";
 static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 
 
@@ -24,7 +24,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 @implementation STMCatalogSVC
 
 @synthesize selectedPriceType = _selectedPriceType;
-@synthesize showZeroStock = _showZeroStock;
+@synthesize showOnlyNonZeroStock = _showOnlyNonZeroStock;
 @synthesize showOnlyWithPictures = _showOnlyWithPictures;
 @synthesize selectedInfoShowType = _selectedInfoShowType;
 
@@ -75,7 +75,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
     
 //    NSArray *stockTypesArray = @[NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil),
 //                                 NSLocalizedString(@"SHOW ALL ARTICLES", nil)];
-    NSDictionary *stockTypes = @{@"name": NSLocalizedString(@"SHOW ARTICLES STOCK", nil), @"current": @(self.showZeroStock), @"available": @"switch"};
+    NSDictionary *stockTypes = @{@"name": NSLocalizedString(@"SHOW ARTICLES STOCK", nil), @"current": @(self.showOnlyNonZeroStock), @"available": @"switch"};
     
 //    NSArray *picturesTypesArray = @[NSLocalizedString(@"SHOW ALL ARTICLES", nil),
 //                                    NSLocalizedString(@"SHOW ONLY WITH PICTURES", nil)];
@@ -112,7 +112,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
                     break;
                     
                 case 1:
-                    self.showZeroStock = [@(newValue) boolValue];
+                    self.showOnlyNonZeroStock = [@(newValue) boolValue];
                     break;
                     
                 case 2:
@@ -170,35 +170,35 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 //    self.availablePriceTypes = nil;
 //}
 
-- (BOOL)showZeroStock {
+- (BOOL)showOnlyNonZeroStock {
 
-    if (!_showZeroStock) {
+    if (!_showOnlyNonZeroStock) {
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        id showZeroStock = [defaults objectForKey:showZeroStockKey];
+        id showOnlyNonZeroStock = [defaults objectForKey:showOnlyNonZeroStockKey];
 
-        if (!showZeroStock) {
+        if (!showOnlyNonZeroStock) {
             
-            showZeroStock = @(NO);
-            [defaults setObject:showZeroStock forKey:showZeroStockKey];
+            showOnlyNonZeroStock = @(NO);
+            [defaults setObject:showOnlyNonZeroStock forKey:showOnlyNonZeroStockKey];
             [defaults synchronize];
 
         }
-        _showZeroStock = [showZeroStock boolValue];
+        _showOnlyNonZeroStock = [showOnlyNonZeroStock boolValue];
         
     }
-    return _showZeroStock;
+    return _showOnlyNonZeroStock;
     
 }
 
-- (void)setShowZeroStock:(BOOL)showZeroStock {
+- (void)setShowOnlyNonZeroStock:(BOOL)showOnlyNonZeroStock {
     
-    if (showZeroStock != _showZeroStock) {
+    if (showOnlyNonZeroStock != _showOnlyNonZeroStock) {
         
-        _showZeroStock = showZeroStock;
+        _showOnlyNonZeroStock = showOnlyNonZeroStock;
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:@(showZeroStock) forKey:showZeroStockKey];
+        [defaults setObject:@(showOnlyNonZeroStock) forKey:showOnlyNonZeroStockKey];
         [defaults synchronize];
 
         [self.masterTVC refreshTable];
