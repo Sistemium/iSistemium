@@ -95,6 +95,14 @@
     
 }
 
+- (void)backButtonPressed {
+    
+    UINavigationController *nc = self.detailTVC.navigationController;
+    [nc popViewControllerAnimated:YES];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
