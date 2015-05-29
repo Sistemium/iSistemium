@@ -8,6 +8,7 @@
 
 #import "STMSplitViewController.h"
 #import "STMSaleOrderController.h"
+#import "STMOrdersMasterNC.h"
 #import "STMOrdersMasterPVC.h"
 #import "STMOrdersDetailTVC.h"
 
@@ -24,6 +25,7 @@
 
 @interface STMOrdersSVC : STMSplitViewController
 
+@property (nonatomic, strong) STMOrdersMasterNC *masterNC;
 @property (nonatomic, strong) STMOrdersMasterPVC *masterPVC;
 @property (nonatomic, strong) STMOrdersDetailTVC *detailTVC;
 
@@ -31,5 +33,6 @@
 @property (nonatomic, strong) STMOutlet *selectedOutlet;
 @property (nonatomic, strong) STMSalesman *selectedSalesman;
 
+- (void)orderWillSelected;
 
 @end

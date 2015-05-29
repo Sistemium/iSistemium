@@ -7,12 +7,25 @@
 //
 
 #import "STMOrdersSVC.h"
+#import "STMOrdersListTVC.h"
+
 
 @interface STMOrdersSVC ()
 
 @end
 
 @implementation STMOrdersSVC
+
+- (STMOrdersMasterNC *)masterNC {
+    
+    if (!_masterNC) {
+        if ([self.viewControllers[0] isKindOfClass:[STMOrdersMasterNC class]]) {
+            _masterNC = self.viewControllers[0];
+        }
+    }
+    return _masterNC;
+    
+}
 
 - (STMOrdersMasterPVC *)masterPVC {
     
@@ -71,6 +84,14 @@
     
     [self.masterPVC updateResetFilterButtonState];
     [self.detailTVC refreshTable];
+    
+}
+
+- (void)orderWillSelected {
+    
+    STMOrdersListTVC *ordersListTVC = [[STMOrdersListTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    
+    [self.masterNC pushViewController:ordersListTVC animated:YES];
     
 }
 

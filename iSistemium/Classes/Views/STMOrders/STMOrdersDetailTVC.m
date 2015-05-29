@@ -707,6 +707,8 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
     [self performSegueWithIdentifier:@"showOrderInfo" sender:self];
     
+    [self.splitVC orderWillSelected];
+    
     return indexPath;
     
 }
