@@ -417,31 +417,39 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 
-    if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
-        
-        if ([object isKindOfClass:[NSManagedObject class]]) {
-            
-            NSManagedObjectContext *context = [STMObjectsController document].managedObjectContext;
-            NSManagedObjectContext *parentContext = context.parentContext;
-            
-            CLS_LOG(@"context %@", context);
-            CLS_LOG(@"parentContext %@", parentContext);
-            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
-            CLS_LOG(@"object isDeleted %d", [(NSManagedObject *)object isDeleted]);
-            
-        }
-
-        CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
-        CLS_LOG(@"object %@", object);
-        CLS_LOG(@"change %@", change);
-        
-    }
+//    if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
+//        
+//        if ([object isKindOfClass:[NSManagedObject class]]) {
+//            
+//            NSManagedObjectContext *context = [STMObjectsController document].managedObjectContext;
+//            NSManagedObjectContext *parentContext = context.parentContext;
+//            
+//            CLS_LOG(@"context %@", context);
+//            CLS_LOG(@"parentContext %@", parentContext);
+//            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
+//            CLS_LOG(@"object isDeleted %d", [(NSManagedObject *)object isDeleted]);
+//            
+//        }
+//
+//        CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
+//        CLS_LOG(@"object %@", object);
+//        CLS_LOG(@"change %@", change);
+//        
+//    }
     
     [object removeObserver:self forKeyPath:keyPath];
     
     if ([object isKindOfClass:[NSManagedObject class]]) {
         
-        [(NSManagedObject *)object setValue:[change valueForKey:NSKeyValueChangeOldKey] forKey:keyPath];
+        id oldValue = [change valueForKey:NSKeyValueChangeOldKey];
+        
+        if ([oldValue isKindOfClass:[NSDate class]]) {
+            
+            [(NSManagedObject *)object setValue:oldValue forKey:keyPath];
+            
+        } else {
+            CLS_LOG(@"observeValueForKeyPath oldValue class %@ != NSDate / did crashed here earlier", [oldValue class]);
+        }
         
     }
 
