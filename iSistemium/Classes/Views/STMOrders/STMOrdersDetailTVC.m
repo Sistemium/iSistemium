@@ -1000,6 +1000,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         STMOrderInfoTVC *orderInfoTVC = (STMOrderInfoTVC *)segue.destinationViewController;
         orderInfoTVC.saleOrder = self.selectedOrder;
+        orderInfoTVC.navigationItem.title = self.navigationItem.title;
         
     }
     

@@ -830,6 +830,8 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [self.navigationItem setHidesBackButton:YES];
 
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:Custom2CellIdentifier];
     [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:positionCellIdentifier];
