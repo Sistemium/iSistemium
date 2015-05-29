@@ -146,6 +146,17 @@
     
 }
 
+- (void)highlightSelectedOrder {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedOrder];
+    
+    if (indexPath) {
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
+    }
+    
+}
+
+
 #pragma mark - cell's height caching
 
 - (NSMutableDictionary *)cachedCellsHeights {
@@ -322,6 +333,7 @@
 - (void)customInit {
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom6TVCell" bundle:nil] forCellReuseIdentifier:self.custom6CellIdentifier];
+    self.clearsSelectionOnViewWillAppear = NO;
     
     [self performFetch];
     
@@ -332,6 +344,13 @@
     [super viewDidLoad];
     [self customInit];
 
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    [self highlightSelectedOrder];
+    
 }
 
 - (void)didReceiveMemoryWarning {

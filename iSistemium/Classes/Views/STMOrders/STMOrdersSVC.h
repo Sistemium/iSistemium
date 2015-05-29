@@ -32,6 +32,7 @@
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) STMOutlet *selectedOutlet;
 @property (nonatomic, strong) STMSalesman *selectedSalesman;
+@property (nonatomic, strong) STMSaleOrder *selectedOrder;
 
 - (void)orderWillSelected;
 
