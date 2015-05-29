@@ -194,6 +194,8 @@
 		2C81AD591AD1154C00246666 /* STMMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C81AD581AD1154C00246666 /* STMMessageController.m */; };
 		2C81AD5B1AD1180F00246666 /* close-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C81AD5A1AD1180F00246666 /* close-128.png */; };
 		2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8369561986714300DA4316 /* STMDebts.storyboard */; };
+		2C88F1BE1B18947700E30418 /* STMCustom6TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */; };
+		2C88F1C11B1894B500E30418 /* STMCustom6TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -617,6 +619,9 @@
 		2C81AD581AD1154C00246666 /* STMMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessageController.m; sourceTree = "<group>"; };
 		2C81AD5A1AD1180F00246666 /* close-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close-128.png"; sourceTree = "<group>"; };
 		2C8369561986714300DA4316 /* STMDebts.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts.storyboard; sourceTree = "<group>"; };
+		2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom6TVCell.xib; sourceTree = "<group>"; };
+		2C88F1BF1B1894B400E30418 /* STMCustom6TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom6TVCell.h; sourceTree = "<group>"; };
+		2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom6TVCell.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -828,6 +833,8 @@
 				2C761BBD1B00CCD4001DA33E /* STMCustom4TVCell.m */,
 				2C761BC11B00E01B001DA33E /* STMCustom5TVCell.h */,
 				2C761BC21B00E01B001DA33E /* STMCustom5TVCell.m */,
+				2C88F1BF1B1894B400E30418 /* STMCustom6TVCell.h */,
+				2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */,
 				2C1D72E81AB9D48400C97599 /* STMLabel.h */,
 				2C1D72E91AB9D48400C97599 /* STMLabel.m */,
 				2C1D72E51AB9BCFE00C97599 /* STMInsetLabel.h */,
@@ -902,6 +909,7 @@
 				2C81AD4F1AD01FA300246666 /* STMCustom3TVCell.xib */,
 				2C761BBA1B00CA02001DA33E /* STMCustom4TVCell.xib */,
 				2C761BBF1B00DF21001DA33E /* STMCustom5TVCell.xib */,
+				2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */,
 			);
 			path = STMCustomCells;
 			sourceTree = "<group>";
@@ -1569,6 +1577,7 @@
 				2C761BB31B00824F001DA33E /* Picture-25.png in Resources */,
 				2C5763BC1AA472B700B9FD2C /* STMCatalog.storyboard in Resources */,
 				2C73A9241AF8F59F00FB7662 /* iphoneTabs.json in Resources */,
+				2C88F1BE1B18947700E30418 /* STMCustom6TVCell.xib in Resources */,
 				2C761BBB1B00CA02001DA33E /* STMCustom4TVCell.xib in Resources */,
 				2C81AD501AD01FA300246666 /* STMCustom3TVCell.xib in Resources */,
 				2C2968EE19A0BFD10038B122 /* STMUncashing.storyboard in Resources */,
@@ -1660,6 +1669,7 @@
 				2C65292219576895008605D9 /* STMTrack.m in Sources */,
 				2C1D72E41AB9A88700C97599 /* STMCustom1TVCell.m in Sources */,
 				2C7E7DA71ABCA94700A26185 /* STMCustom2TVCell.m in Sources */,
+				2C88F1C11B1894B500E30418 /* STMCustom6TVCell.m in Sources */,
 				2C57641E1AA5E1E500B9FD2C /* STMDebtsDetailsPVC.m in Sources */,
 				2C80C7E5198904170044ADE4 /* STMPhoto.m in Sources */,
 				2C53B8DA1940A1B8002298A5 /* STMTrack+dayAsString.m in Sources */,

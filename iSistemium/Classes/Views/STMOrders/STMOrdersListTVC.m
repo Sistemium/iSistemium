@@ -16,7 +16,7 @@
 
 @property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
 @property (nonatomic, strong) NSMutableDictionary *cachedCellsHeights;
-@property (nonatomic, strong) NSString *custom1CellIdentifier;
+@property (nonatomic, strong) NSString *custom6CellIdentifier;
 
 
 @end
@@ -137,12 +137,12 @@
     
 }
 
-- (NSString *)custom1CellIdentifier {
+- (NSString *)custom6CellIdentifier {
     
-    if (!_custom1CellIdentifier) {
-        _custom1CellIdentifier = @"STMCustom1TVCell";
+    if (!_custom6CellIdentifier) {
+        _custom6CellIdentifier = @"STMCustom6TVCell";
     }
-    return _custom1CellIdentifier;
+    return _custom6CellIdentifier;
     
 }
 
@@ -219,10 +219,10 @@
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
-    static STMCustom1TVCell *cell = nil;
+    static STMCustom6TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        cell = [self.tableView dequeueReusableCellWithIdentifier:self.custom1CellIdentifier];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:self.custom6CellIdentifier];
     });
     
     [self fillCell:cell atIndexPath:indexPath];
@@ -243,7 +243,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.custom1CellIdentifier forIndexPath:indexPath];
+    STMCustom6TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.custom6CellIdentifier forIndexPath:indexPath];
     
     [self fillCell:cell atIndexPath:indexPath];
     
@@ -251,7 +251,7 @@
     
 }
 
-- (void)fillCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillCell:(STMCustom6TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
@@ -283,36 +283,10 @@
     cell.messageLabel.text = saleOrder.processingMessage;
     cell.messageLabel.textColor = [STMSaleOrderController messageColorForProcessing:saleOrder.processing];
     
-    [self setupInfoLabelForCell:cell andSaleOrder:saleOrder];
-    
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
     
 }
-
-- (void)setupInfoLabelForCell:(STMCustom1TVCell *)cell andSaleOrder:(STMSaleOrder *)saleOrder {
-    
-    NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
-    
-    cell.infoLabel.text = processingLabel;
-    
-    for (UIGestureRecognizer *gestures in cell.infoLabel.gestureRecognizers) {
-        [cell.infoLabel removeGestureRecognizer:gestures];
-    }
-    
-    cell.infoLabel.userInteractionEnabled = YES;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(infoLabelTapped:)];
-    [cell.infoLabel addGestureRecognizer:tap];
-    
-    UIColor *processingColor = [STMSaleOrderController colorForProcessing:saleOrder.processing];
-    
-    cell.infoLabel.textColor = (processingColor) ? processingColor : [UIColor blackColor];
-    
-}
-
-//- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-//    cell = nil;
-//}
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -347,7 +321,7 @@
 
 - (void)customInit {
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:self.custom1CellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom6TVCell" bundle:nil] forCellReuseIdentifier:self.custom6CellIdentifier];
     
     [self performFetch];
     
