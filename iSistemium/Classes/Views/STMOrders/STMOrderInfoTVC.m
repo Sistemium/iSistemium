@@ -43,6 +43,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         
         _saleOrder = saleOrder;
         
+        self.saleOrderPositions = nil;
         [self performFetch];
         
     }
@@ -80,7 +81,9 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         NSLog(@"performFetch error %@", error);
         
     } else {
-                
+        
+        [self.tableView reloadData];
+        
     }
     
 }
@@ -563,9 +566,6 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
     cell.titleLabel.text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
     cell.detailLabel.text = self.saleOrder.processingMessage;
-    
-//    NSLog(@"processingMessage %@", [cell.detailLabel.text dataUsingEncoding:NSUTF8StringEncoding]);
-    
     cell.detailLabel.textColor = [STMSaleOrderController messageColorForProcessing:self.saleOrder.processing];
 
 }
@@ -577,9 +577,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     STMSaleOrderPosition *saleOrderPosition = self.saleOrderPositions[row];
     
     cell.textLabel.text = saleOrderPosition.article.name;
-//    cell.textLabel.font = [UIFont systemFontOfSize:16];
     
-//    cell.detailTextLabel.text = [self detailedTextForSaleOrderPosition:saleOrderPosition];
     cell.detailTextLabel.attributedText = [self attributedDetailedTextForSaleOrderPosition:saleOrderPosition
                                                                                   withFont:cell.detailTextLabel.font];
     

@@ -8,6 +8,7 @@
 
 #import "STMOrdersSVC.h"
 #import "STMOrdersListTVC.h"
+#import "STMOrderInfoTVC.h"
 
 
 @interface STMOrdersSVC ()
@@ -16,10 +17,10 @@
 
 @implementation STMOrdersSVC
 
-- (STMOrdersMasterNC *)masterNC {
+- (UINavigationController *)masterNC {
     
     if (!_masterNC) {
-        if ([self.viewControllers[0] isKindOfClass:[STMOrdersMasterNC class]]) {
+        if ([self.viewControllers[0] isKindOfClass:[UINavigationController class]]) {
             _masterNC = self.viewControllers[0];
         }
     }
@@ -31,8 +32,7 @@
     
     if (!_masterPVC) {
         
-        UINavigationController *nc = (UINavigationController *)self.viewControllers[0];
-        UIViewController *masterPVC = nc.viewControllers[0];
+        UIViewController *masterPVC = self.masterNC.viewControllers[0];
         
         if ([masterPVC isKindOfClass:[STMOrdersMasterPVC class]]) {
             _masterPVC = (STMOrdersMasterPVC *)masterPVC;
@@ -43,12 +43,22 @@
     
 }
 
+- (UINavigationController *)detailNC {
+    
+    if (!_detailNC) {
+        if ([self.viewControllers[1] isKindOfClass:[UINavigationController class]]) {
+            _detailNC = self.viewControllers[1];
+        }
+    }
+    return _detailNC;
+    
+}
+
 - (STMOrdersDetailTVC *)detailTVC {
     
     if (!_detailTVC) {
     
-        UINavigationController *nc = (UINavigationController *)self.viewControllers[1];
-        UIViewController *detailTVC = nc.viewControllers[0];
+        UIViewController *detailTVC = self.detailNC.viewControllers[0];
 
         if ([detailTVC isKindOfClass:[STMOrdersDetailTVC class]]) {
             _detailTVC = (STMOrdersDetailTVC *)detailTVC;
@@ -77,6 +87,22 @@
     
     _selectedSalesman = selectedSalesman;
     [self stateUpdate];
+    
+}
+
+- (void)setSelectedOrder:(STMSaleOrder *)selectedOrder {
+    
+    if (_selectedOrder != selectedOrder) {
+        
+        _selectedOrder = selectedOrder;
+        
+        if ([self.detailNC.topViewController isKindOfClass:[STMOrderInfoTVC class]]) {
+            
+            [(STMOrderInfoTVC *)self.detailNC.topViewController setSaleOrder:selectedOrder];
+            
+        }
+        
+    }
     
 }
 

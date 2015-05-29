@@ -8,7 +8,6 @@
 
 #import "STMSplitViewController.h"
 #import "STMSaleOrderController.h"
-#import "STMOrdersMasterNC.h"
 #import "STMOrdersMasterPVC.h"
 #import "STMOrdersDetailTVC.h"
 
@@ -25,14 +24,17 @@
 
 @interface STMOrdersSVC : STMSplitViewController
 
-@property (nonatomic, strong) STMOrdersMasterNC *masterNC;
+@property (nonatomic, strong) UINavigationController *masterNC;
 @property (nonatomic, strong) STMOrdersMasterPVC *masterPVC;
+@property (nonatomic, strong) UINavigationController *detailNC;
 @property (nonatomic, strong) STMOrdersDetailTVC *detailTVC;
 
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) STMOutlet *selectedOutlet;
 @property (nonatomic, strong) STMSalesman *selectedSalesman;
 @property (nonatomic, strong) STMSaleOrder *selectedOrder;
+@property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
+
 
 - (void)orderWillSelected;
 - (void)backButtonPressed;

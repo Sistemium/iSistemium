@@ -42,7 +42,7 @@
 - (NSMutableArray *)currentFilterProcessings {
     
     if (!_currentFilterProcessings) {
-        _currentFilterProcessings = [NSMutableArray array];
+        _currentFilterProcessings = self.splitVC.currentFilterProcessings;
     }
     return _currentFilterProcessings;
 }
@@ -301,11 +301,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    self.selectedOrder = [self.resultsController objectAtIndexPath:indexPath];
-//    
-//    [self performSegueWithIdentifier:@"showOrderInfo" sender:self];
-//    
-//    [self.splitVC orderWillSelected];
+    self.splitVC.selectedOrder = [self.resultsController objectAtIndexPath:indexPath];
     
     return indexPath;
     
