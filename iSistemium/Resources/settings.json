@@ -51,6 +51,11 @@
                     "name": "enableDownloadViaWWAN",
                     "value": false,
                     "control": "switch",
+                },
+                {
+                    "name": "catalogue.cell.right",
+                    "value": "",
+                    "control": "segmentedContol",
                 }
             ]
        },

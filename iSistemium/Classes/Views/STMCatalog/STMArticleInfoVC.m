@@ -7,6 +7,8 @@
 //
 
 #import "STMArticleInfoVC.h"
+#import "STMArticlePicturePVC.h"
+
 
 @interface STMArticleInfoVC () <UITableViewDelegate, UITableViewDataSource>
 
@@ -64,6 +66,10 @@
     
 }
 
+- (void)showFullscreen {
+    [self.parentVC showFullscreen];
+}
+
 - (void)setArticle:(STMArticle *)article {
     
     if (article != _article) {
@@ -80,7 +86,7 @@
 
 #pragma mark - setup views
 
-- (void)addSwipeGestures {
+- (void)addGestures {
     
     UISwipeGestureRecognizer *swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNextArticle)];
     swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
@@ -88,7 +94,12 @@
     UISwipeGestureRecognizer *swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPreviousArticle)];
     swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
     
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFullscreen)];
+    
     self.view.gestureRecognizers = @[swipeUpGesture, swipeDownGesture];
+    
+    self.imageView.userInteractionEnabled = YES;
+    self.imageView.gestureRecognizers = @[tapGesture];
     
 }
 
@@ -99,11 +110,42 @@
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
         STMArticlePicture *picture = [self.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
         
-        self.imageView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
-    
+        if (picture.resizedImagePath) {
+            
+            [[self.imageView viewWithTag:555] removeFromSuperview];
+            self.imageView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
+
+        } else {
+            
+            UIView *view = [[UIView alloc] initWithFrame:self.imageView.bounds];
+            view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            view.backgroundColor = [UIColor whiteColor];
+            view.alpha = 0.75;
+            view.tag = 555;
+            
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            spinner.center = view.center;
+            spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+            [spinner startAnimating];
+            
+            [view addSubview:spinner];
+            
+            [self.imageView addSubview:view];
+            
+            [picture addObserver:self forKeyPath:@"resizedImagePath" options:NSKeyValueObservingOptionNew context:nil];
+
+        }
+        
     } else {
         self.imageView.image = [UIImage imageNamed:@"wine_bottle-512.png"];
     }
+    
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    [self setupImage];
+    [object removeObserver:self forKeyPath:keyPath context:context];
     
 }
 
@@ -407,7 +449,7 @@
     
     if (self.article) {
         
-        [self addSwipeGestures];
+        [self addGestures];
         [self setupImage];
         [self prepareInfo];
         [self setupTableView];

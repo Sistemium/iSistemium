@@ -9,7 +9,7 @@
 #import "STMCatalogSVC.h"
 
 static NSString *defaultPriceTypeKey = @"priceTypeXid";
-static NSString *showZeroStockKey = @"showZeroStock";
+static NSString *showOnlyNonZeroStockKey = @"showOnlyNonZeroStock";
 static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 
 
@@ -24,8 +24,9 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 @implementation STMCatalogSVC
 
 @synthesize selectedPriceType = _selectedPriceType;
-@synthesize showZeroStock = _showZeroStock;
+@synthesize showOnlyNonZeroStock = _showOnlyNonZeroStock;
 @synthesize showOnlyWithPictures = _showOnlyWithPictures;
+@synthesize selectedInfoShowType = _selectedInfoShowType;
 
 
 #pragma mark - subviews
@@ -65,6 +66,74 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
     
 }
 
+- (NSArray *)catalogSettings {
+    
+    NSArray *availablePriceTypes = self.availablePriceTypes;
+    NSArray *priceTypesArray = [availablePriceTypes valueForKeyPath:@"name"];
+    NSUInteger index = [availablePriceTypes indexOfObject:self.selectedPriceType];
+    NSDictionary *priceTypes = @{@"name": NSLocalizedString(@"PRICE_TYPE_LABEL", nil), @"current": @(index), @"available": priceTypesArray};
+    
+//    NSArray *stockTypesArray = @[NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil),
+//                                 NSLocalizedString(@"SHOW ALL ARTICLES", nil)];
+    NSDictionary *stockTypes = @{@"name": NSLocalizedString(@"SHOW ARTICLES STOCK", nil), @"current": @(self.showOnlyNonZeroStock), @"available": @"switch"};
+    
+//    NSArray *picturesTypesArray = @[NSLocalizedString(@"SHOW ALL ARTICLES", nil),
+//                                    NSLocalizedString(@"SHOW ONLY WITH PICTURES", nil)];
+    NSDictionary *picturesTypes = @{@"name": NSLocalizedString(@"SHOW PICTURES", nil), @"current": @(self.showOnlyWithPictures), @"available": @"switch"};
+    
+    NSArray *infoTypesArray = @[NSLocalizedString(@"PRICE_", nil),
+                                NSLocalizedString(@"VOLUME", nil),
+                                NSLocalizedString(@"STOCK", nil)];
+    NSDictionary *infoTypes = @{@"name": NSLocalizedString(@"SHOW INFO", nil), @"current": @(self.selectedInfoShowType), @"available": infoTypesArray};
+    
+    
+    return @[priceTypes,
+             stockTypes,
+             picturesTypes,
+             infoTypes];
+    
+}
+
+- (void)updateSettings:(NSArray *)newSettings {
+
+    NSArray *oldSettings = [self catalogSettings];
+    
+    for (int index = 0; index < newSettings.count; index++) {
+    
+        NSUInteger oldValue = [oldSettings[index][@"current"] integerValue];
+        NSUInteger newValue = [newSettings[index][@"current"] integerValue];
+
+        if (oldValue != newValue) {
+            
+            switch (index) {
+                    
+                case 0:
+                    self.selectedPriceType = self.availablePriceTypes[newValue];
+                    break;
+                    
+                case 1:
+                    self.showOnlyNonZeroStock = [@(newValue) boolValue];
+                    break;
+                    
+                case 2:
+                    self.showOnlyWithPictures = [@(newValue) boolValue];
+                    break;
+                    
+                case 3:
+                    self.selectedInfoShowType = newValue;
+                    break;
+                    
+                default:
+                    break;
+                    
+            }
+
+        }
+        
+    }
+    
+}
+
 
 #pragma mark - fetched results controller
 
@@ -101,35 +170,35 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 //    self.availablePriceTypes = nil;
 //}
 
-- (BOOL)showZeroStock {
+- (BOOL)showOnlyNonZeroStock {
 
-    if (!_showZeroStock) {
+    if (!_showOnlyNonZeroStock) {
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        id showZeroStock = [defaults objectForKey:showZeroStockKey];
+        id showOnlyNonZeroStock = [defaults objectForKey:showOnlyNonZeroStockKey];
 
-        if (!showZeroStock) {
+        if (!showOnlyNonZeroStock) {
             
-            showZeroStock = @(NO);
-            [defaults setObject:showZeroStock forKey:showZeroStockKey];
+            showOnlyNonZeroStock = @(NO);
+            [defaults setObject:showOnlyNonZeroStock forKey:showOnlyNonZeroStockKey];
             [defaults synchronize];
 
         }
-        _showZeroStock = [showZeroStock boolValue];
+        _showOnlyNonZeroStock = [showOnlyNonZeroStock boolValue];
         
     }
-    return _showZeroStock;
+    return _showOnlyNonZeroStock;
     
 }
 
-- (void)setShowZeroStock:(BOOL)showZeroStock {
+- (void)setShowOnlyNonZeroStock:(BOOL)showOnlyNonZeroStock {
     
-    if (showZeroStock != _showZeroStock) {
+    if (showOnlyNonZeroStock != _showOnlyNonZeroStock) {
         
-        _showZeroStock = showZeroStock;
+        _showOnlyNonZeroStock = showOnlyNonZeroStock;
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:@(showZeroStock) forKey:showZeroStockKey];
+        [defaults setObject:@(showOnlyNonZeroStock) forKey:showOnlyNonZeroStockKey];
         [defaults synchronize];
 
         [self.masterTVC refreshTable];
@@ -268,6 +337,65 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
         [self.masterTVC refreshTable];
         [self.detailTVC refreshTable];
         
+    }
+    
+}
+
+
+#pragma mark - infoShowType
+
+- (STMCatalogInfoShowType)selectedInfoShowType {
+    
+    if (!_selectedInfoShowType) {
+        
+        NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
+        NSString *infoShowType = appSettings[@"catalogue.cell.right"];
+        
+        if ([infoShowType isEqualToString:@"price"]) {
+            _selectedInfoShowType = STMCatalogInfoShowPrice;
+        } else if ([infoShowType isEqualToString:@"pieceVolume"]) {
+            _selectedInfoShowType = STMCatalogInfoShowPieceVolume;
+        } else if ([infoShowType isEqualToString:@"stock"]) {
+            _selectedInfoShowType = STMCatalogInfoShowStock;
+        } else {
+            _selectedInfoShowType = STMCatalogInfoShowPrice;
+        }
+        
+    }
+    return _selectedInfoShowType;
+
+}
+
+- (void)setSelectedInfoShowType:(STMCatalogInfoShowType)selectedInfoShowType {
+
+    if (selectedInfoShowType != _selectedInfoShowType) {
+    
+        NSString *infoShowType = @"";
+        
+        switch (selectedInfoShowType) {
+            case STMCatalogInfoShowPrice: {
+                infoShowType = @"price";
+                break;
+            }
+            case STMCatalogInfoShowPieceVolume: {
+                infoShowType = @"pieceVolume";
+                break;
+            }
+            case STMCatalogInfoShowStock: {
+                infoShowType = @"stock";
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        
+        [[[STMSessionManager sharedManager].currentSession settingsController] setNewSettings:@{@"catalogue.cell.right": infoShowType} forGroup:@"appSettings"];
+        
+        _selectedInfoShowType = selectedInfoShowType;
+        
+        [self.detailTVC refreshTable];
+
     }
     
 }

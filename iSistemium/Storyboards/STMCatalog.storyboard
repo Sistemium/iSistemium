@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="0Be-V5-IZu">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="0Be-V5-IZu">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -145,24 +144,20 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <toolbarItems>
-                        <barButtonItem title="PriceType:" id="RQd-SG-xp1" customClass="STMBarButtonItem"/>
-                        <barButtonItem title="Selector" id="hhe-b7-E7X" customClass="STMBarButtonItem"/>
-                        <barButtonItem title="Stock:" id="t6n-H1-H8m" customClass="STMBarButtonItem"/>
-                        <barButtonItem title="Stock volumes" id="R9K-Ka-YVB" customClass="STMBarButtonItem"/>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="q8N-d4-wkH"/>
-                        <barButtonItem image="Picture-25.png" style="plain" id="xRq-H9-4Zd" customClass="STMBarButtonItem"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="WWc-hk-RlF"/>
                         <barButtonItem title="Info" id="tNC-PC-kOB" customClass="STMBarButtonItem"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="1mH-01-DS3"/>
+                        <barButtonItem image="Settings-25.png" id="e3z-Bq-NEq" customClass="STMBarButtonItem">
+                            <connections>
+                                <action selector="catalogSettingsButtonPressed:" destination="sOH-aR-tyO" id="pxi-1D-vXX"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="cHP-29-uPc"/>
                     <connections>
                         <outlet property="infoLabel" destination="tNC-PC-kOB" id="e3U-xd-TE6"/>
-                        <outlet property="picturesButton" destination="xRq-H9-4Zd" id="BUK-bl-AvU"/>
-                        <outlet property="priceTypeLabel" destination="RQd-SG-xp1" id="kW1-NW-3wd"/>
-                        <outlet property="priceTypeSelector" destination="hhe-b7-E7X" id="iPq-8E-zvB"/>
                         <outlet property="searchDisplayController" destination="GvI-JK-ddk" id="V1h-jL-6YN"/>
-                        <outlet property="stockVolumeButton" destination="R9K-Ka-YVB" id="AD8-xH-bQf"/>
-                        <outlet property="stockVolumeLabel" destination="t6n-H1-H8m" id="Hw6-LN-bXj"/>
+                        <outlet property="settingsButton" destination="e3z-Bq-NEq" id="kBd-h6-xgs"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W0p-oR-5IS" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -214,7 +209,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Picture-25.png" width="25" height="25"/>
+        <image name="Settings-25.png" width="25" height="25"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

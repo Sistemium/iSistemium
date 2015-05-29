@@ -136,6 +136,17 @@
         
     } else if ([stringValue containsObject:key]) {
         return value;
+        
+    } else if ([key isEqualToString:@"catalogue.cell.right"]) {
+        
+        NSArray *availableValues = @[@"price", @"pieceVolume", @"stock"];
+        
+        if ([availableValues containsObject:value]) {
+            return value;
+        } else {
+            return @"price";
+        }
+        
     }
     
     return nil;

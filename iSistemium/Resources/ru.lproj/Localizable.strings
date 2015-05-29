@@ -190,7 +190,7 @@
 "SHOW ALL ARTICLES" = "Все позиции";
 "SHOW NONZERO STOCK ARTICLES" = "Есть в наличии";
 "SECTION" = "Раздел";
-"STOCK" = "Количество";
+"STOCK" = "Остаток";
 "TIMEOUT ERROR" = "Соединение прервано. Повторить попытку?";
 "VERSION" = "версия";
 "LOCATIONS ON" = "Геолокация разрешена";
@@ -224,4 +224,10 @@
 "ENABLE WWAN MESSAGE" = "Вы выбрали загрузку картинок через сотовую сеть. Разрешить всегда загружать картинки через сотовую сеть?";
 "ENABLE WWAN ONCE" = "Спросить меня потом ещё раз";
 "ENABLE WWAN ALWAYS" = "Разрешить";
+"SHOW INFO" = "Показывать справа:";
+"SHOW ARTICLES STOCK" = "Только с остатками";
+"SHOW PICTURES" = "Только с картинками";
+"SHOW ONLY WITH PICTURES" = "Только с картинками";
+"CATALOG SETTINGS" = "Настройки каталога";
+"PRICE_" = "Цену";
 
