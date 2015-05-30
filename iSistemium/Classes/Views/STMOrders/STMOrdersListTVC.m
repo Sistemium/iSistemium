@@ -129,7 +129,10 @@
 }
 
 - (void)refreshTable {
+    
     [self performFetch];
+    [self highlightSelectedOrder];
+    
 }
 
 - (NSString *)custom6CellIdentifier {
@@ -146,7 +149,21 @@
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedOrder];
     
     if (indexPath) {
-        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
+        
+        NSIndexPath *lastIndexPath = [self.resultsController indexPathForObject:self.resultsController.fetchedObjects.lastObject];
+
+        [self.tableView selectRowAtIndexPath:lastIndexPath animated:NO scrollPosition:UITableViewScrollPositionBottom];
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+        
+    } else {
+        
+        if (self.resultsController.fetchedObjects.count > 0) {
+            
+            self.splitVC.selectedOrder = self.resultsController.fetchedObjects.firstObject;
+            [self highlightSelectedOrder];
+            
+        }
+        
     }
     
 }
@@ -325,6 +342,7 @@
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom6TVCell" bundle:nil] forCellReuseIdentifier:self.custom6CellIdentifier];
     self.clearsSelectionOnViewWillAppear = NO;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self performFetch];
     
