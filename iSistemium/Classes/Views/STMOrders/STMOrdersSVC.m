@@ -13,7 +13,11 @@
 
 @interface STMOrdersSVC ()
 
+@property (nonatomic, strong) STMOrdersListTVC *ordersListTVC;
+
+
 @end
+
 
 @implementation STMOrdersSVC
 
@@ -40,6 +44,16 @@
         
     }
     return _masterPVC;
+    
+}
+
+- (STMOrdersListTVC *)ordersListTVC {
+    
+    if ([self.masterNC.topViewController isKindOfClass:[STMOrdersListTVC class]]) {
+        return (STMOrdersListTVC *)self.masterNC.topViewController;
+    } else {
+        return nil;
+    }
     
 }
 
@@ -136,6 +150,22 @@
     
     UINavigationController *nc = self.detailTVC.navigationController;
     [nc popViewControllerAnimated:YES];
+    
+}
+
+- (void)addFilterProcessing:(NSString *)processing {
+    
+    [self.currentFilterProcessings addObject:processing];
+    [self.detailTVC refreshTable];
+    [self.ordersListTVC refreshTable];
+    
+}
+
+- (void)removeFilterProcessing:(NSString *)processing {
+    
+    [self.currentFilterProcessings removeObject:processing];
+    [self.detailTVC refreshTable];
+    [self.ordersListTVC refreshTable];
     
 }
 

@@ -128,6 +128,10 @@
     
 }
 
+- (void)refreshTable {
+    [self performFetch];
+}
+
 - (NSString *)custom6CellIdentifier {
     
     if (!_custom6CellIdentifier) {

@@ -39,5 +39,7 @@
 - (void)orderWillSelected;
 - (void)backButtonPressed;
 
+- (void)addFilterProcessing:(NSString *)processing;
+- (void)removeFilterProcessing:(NSString *)processing;
 
 @end

@@ -260,17 +260,15 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         if (segmentedControl.selectedSegmentIndex == 0) {
             
             segmentedControl.selectedSegmentIndex = -1;
-            [self.splitVC.currentFilterProcessings addObject:processing];
+            [self.splitVC addFilterProcessing:processing];
             
         } else {
             
             segmentedControl.selectedSegmentIndex = 0;
-            [self.splitVC.currentFilterProcessings removeObject:processing];
+            [self.splitVC removeFilterProcessing:processing];
             
         }
         
-        [self refreshTable];
-
     }
     
 }
@@ -298,8 +296,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
             for (NSString *key in remainingProcessings) isAlone &= ![self processingIsSelectedForButton:self.filterButtons[key]];
 
             [self setProcessings:remainingProcessings selected:isAlone];
-            
-            [self refreshTable];
             
         }
         
@@ -342,12 +338,12 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         if (selected) {
 
             control.selectedSegmentIndex = 0;
-            [self.splitVC.currentFilterProcessings removeObject:processing];
+            [self.splitVC removeFilterProcessing:processing];
 
         } else {
             
             control.selectedSegmentIndex = -1;
-            [self.splitVC.currentFilterProcessings addObject:processing];
+            [self.splitVC addFilterProcessing:processing];
 
         }
         
