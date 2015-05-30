@@ -311,6 +311,25 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
+    UIColor *processingColor = [STMSaleOrderController colorForProcessing:saleOrder.processing];
+
+    [[cell.contentView viewWithTag:1] removeFromSuperview];
+    
+    CGFloat fillWidth = 5;
+    
+    CGRect rect = CGRectMake(cell.frame.size.width - fillWidth, 1, fillWidth, cell.frame.size.height-2);
+    UIView *view = [[UIView alloc] initWithFrame:rect];
+    view.tag = 1;
+    view.backgroundColor = (processingColor) ? processingColor : [UIColor clearColor];
+    
+    [cell.contentView addSubview:view];
+    [cell.contentView sendSubviewToBack:view];
+    
+}
+
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     self.splitVC.selectedOrder = [self.resultsController objectAtIndexPath:indexPath];
