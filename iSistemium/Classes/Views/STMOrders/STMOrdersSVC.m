@@ -106,6 +106,17 @@
     
 }
 
+- (NSMutableArray *)currentFilterProcessings {
+    
+    if (!_currentFilterProcessings) {
+        _currentFilterProcessings = [NSMutableArray array];
+    }
+    return _currentFilterProcessings;
+}
+
+
+#pragma mark - methods
+
 - (void)stateUpdate {
     
     [self.masterPVC updateResetFilterButtonState];

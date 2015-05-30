@@ -14,7 +14,6 @@
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
 
-@property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
 @property (nonatomic, strong) NSMutableDictionary *cachedCellsHeights;
 @property (nonatomic, strong) NSString *custom6CellIdentifier;
 
@@ -37,14 +36,6 @@
     }
     return _splitVC;
     
-}
-
-- (NSMutableArray *)currentFilterProcessings {
-    
-    if (!_currentFilterProcessings) {
-        _currentFilterProcessings = self.splitVC.currentFilterProcessings;
-    }
-    return _currentFilterProcessings;
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -77,7 +68,7 @@
     
     NSCompoundPredicate *predicate = [self selectingPredicate];
     
-    for (NSString *processing in self.currentFilterProcessings) {
+    for (NSString *processing in self.splitVC.currentFilterProcessings) {
         
         NSPredicate *processedPredicate = [NSPredicate predicateWithFormat:@"processing != %@", processing];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, processedPredicate]];

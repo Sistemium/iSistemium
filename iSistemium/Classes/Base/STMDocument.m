@@ -181,6 +181,9 @@
                name:UIApplicationDidEnterBackgroundNotification
              object:nil];
     
+#warning - have to comment out NSManagedObjectContextDidSaveNotification?
+//https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/55688ca9f505b5ccf0fa0b11/sessions/5568725f03df0001057a643230626339
+    
     [nc addObserver:self
            selector:@selector(contextDidSaveMainContext:)
                name:NSManagedObjectContextDidSaveNotification
