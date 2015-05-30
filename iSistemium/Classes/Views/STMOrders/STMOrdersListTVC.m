@@ -323,7 +323,7 @@
     CGRect rect = CGRectMake(cell.frame.size.width - fillWidth, 1, fillWidth, cell.frame.size.height-2);
     UIView *view = [[UIView alloc] initWithFrame:rect];
     view.tag = 1;
-    view.backgroundColor = (processingColor) ? processingColor : [UIColor clearColor];
+    view.backgroundColor = (processingColor) ? processingColor : [UIColor blackColor];
     
     [cell.contentView addSubview:view];
     [cell.contentView sendSubviewToBack:view];
