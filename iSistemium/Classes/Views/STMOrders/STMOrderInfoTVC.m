@@ -627,7 +627,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     NSDecimalNumber *price = saleOrderPosition.price;
     NSDecimalNumber *priceDoc = saleOrderPosition.priceDoc;
     NSDecimalNumber *priceOrigin = saleOrderPosition.priceOrigin;
-
+    
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
     appendString = [NSString stringWithFormat:@"%@%@", saleOrderPosition.article.pieceVolume, volumeUnitString];
     [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
@@ -640,22 +640,9 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price]];
     [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
 
-    if ([price compare:priceDoc] != NSOrderedSame) {
-        
-        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE1", nil)];
-        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
-        
-        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceDoc]];
-        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
-        
-    }
-
     if ([price compare:priceOrigin] != NSOrderedSame) {
         
-        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE ORIGIN", nil)];
-        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
-        
-        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceOrigin]];
+        appendString = [NSString stringWithFormat:@" (%@ ", [numberFormatter stringFromNumber:priceOrigin]];
         [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
         
         NSDecimalNumber *result = [price decimalNumberBySubtracting:priceOrigin];
@@ -669,23 +656,32 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         
         NSString *discountString = [numberFormatter stringFromNumber:discount];
         
-        if ([discount compare:[NSDecimalNumber zero]] == NSOrderedAscending) {
-            
-            attributes = @{NSFontAttributeName: font,
-                           NSForegroundColorAttributeName: [UIColor redColor]};
-            
-        } else {
+        UIColor *discountColor = ([discount compare:[NSDecimalNumber zero]] == NSOrderedAscending) ? [UIColor redColor] : [UIColor purpleColor];
 
-            attributes = @{NSFontAttributeName: font,
-                           NSForegroundColorAttributeName: [UIColor purpleColor]};
-
-        }
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: discountColor};
         
-        appendString = [NSString stringWithFormat:@", %@", discountString];
+        appendString = [NSString stringWithFormat:@"%@", discountString];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: [UIColor blackColor]};
+        
+        [self appendString:@")" toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+
+    }
+
+    if ([price compare:priceDoc] != NSOrderedSame) {
+        
+        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE1", nil)];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+        
+        numberFormatter = [STMFunctions currencyFormatter];
+        
+        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceDoc]];
         [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
         
     }
-
     
     return attributedDetailedString;
     
