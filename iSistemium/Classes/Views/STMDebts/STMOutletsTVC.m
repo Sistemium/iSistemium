@@ -384,7 +384,7 @@
 - (NSString *)reusableCellIdentifier {
     
     if (!_reusableCellIdentifier) {
-        _reusableCellIdentifier = @"debtCell";
+        _reusableCellIdentifier = @"outletCell";
     }
     return _reusableCellIdentifier;
     
@@ -400,17 +400,17 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.reusableCellIdentifier forIndexPath:indexPath];
+    STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.reusableCellIdentifier forIndexPath:indexPath];
     
     STMOutlet *outlet = (tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
     
     UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
     
-    cell.textLabel.textColor = textColor;
-    cell.detailTextLabel.textColor = textColor;
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
     
-    cell.textLabel.text = outlet.shortName;
-    cell.detailTextLabel.text = [self detailedTextForOutlet:outlet];
+    cell.titleLabel.text = outlet.shortName;
+    cell.detailLabel.text = [self detailedTextForOutlet:outlet];
     
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
@@ -419,8 +419,8 @@
     
     UIColor *highlightedTextColor = [UIColor whiteColor];
     
-    cell.textLabel.highlightedTextColor = highlightedTextColor;
-    cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
+    cell.titleLabel.highlightedTextColor = highlightedTextColor;
+    cell.detailLabel.highlightedTextColor = highlightedTextColor;
     
     if ([outlet isEqual:self.splitVC.detailVC.outlet]) {
         [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
@@ -636,7 +636,8 @@
 
 - (void)customInit {
     
-//    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:self.reusableCellIdentifier];
+    [self.tableView registerClass:[STMCustom5TVCell class] forCellReuseIdentifier:self.reusableCellIdentifier];
+    [self.searchDisplayController.searchResultsTableView registerClass:[STMCustom5TVCell class] forCellReuseIdentifier:self.reusableCellIdentifier];
     
     BOOL toolbarHidden = ![self partnersEditingIsEnabled];
     
