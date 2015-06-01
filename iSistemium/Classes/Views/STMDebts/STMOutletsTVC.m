@@ -427,6 +427,11 @@
 //        NSLog(@"select indexPath %@", indexPath);
     }
     
+    cell.infoLabel.text = nil;
+    
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+
     return cell;
     
 }
@@ -636,8 +641,9 @@
 
 - (void)customInit {
     
-    [self.tableView registerClass:[STMCustom5TVCell class] forCellReuseIdentifier:self.reusableCellIdentifier];
-    [self.searchDisplayController.searchResultsTableView registerClass:[STMCustom5TVCell class] forCellReuseIdentifier:self.reusableCellIdentifier];
+    UINib *cellNib = [UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.reusableCellIdentifier];
+    [self.searchDisplayController.searchResultsTableView registerNib:cellNib forCellReuseIdentifier:self.reusableCellIdentifier];
     
     BOOL toolbarHidden = ![self partnersEditingIsEnabled];
     
