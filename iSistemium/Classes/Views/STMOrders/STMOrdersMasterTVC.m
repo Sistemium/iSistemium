@@ -40,6 +40,8 @@
         
         NSFetchRequest *request = [self fetchRequest];
         
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:request.predicate];
+        
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:self.sectionNameKeyPath cacheName:nil];
         
         _resultsController.delegate = self;

@@ -8,7 +8,7 @@
 
 #import "STMOrdersListTVC.h"
 #import "STMOrdersSVC.h"
-
+#import "STMNS.h"
 
 @interface STMOrdersListTVC ()
 
@@ -51,8 +51,7 @@
         
         request.sortDescriptors = @[dateDescriptor, salesmanDescriptor, outletDescriptor, costDescriptor];
         
-        NSCompoundPredicate *predicate = [self requestPredicate];
-        if (predicate.subpredicates.count > 0) request.predicate = predicate;
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[self requestPredicate]];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"date" cacheName:nil];
         

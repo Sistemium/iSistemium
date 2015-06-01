@@ -70,9 +70,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         request.sortDescriptors = @[dateDescriptor, salesmanDescriptor, outletDescriptor, costDescriptor];
         
-        NSCompoundPredicate *predicate = [self requestPredicate];
-        if (predicate.subpredicates.count > 0) request.predicate = predicate;
+//        NSCompoundPredicate *predicate = [self requestPredicate];
+//        if (predicate.subpredicates.count > 0) request.predicate = predicate;
         
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[self requestPredicate]];
+
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"date" cacheName:nil];
 
         _resultsController.delegate = self;
