@@ -34,6 +34,12 @@
 @property (nonatomic, strong) STMOutlet *outletToDelete;
 @property (nonatomic, strong) STMOutlet *nextSelectOutlet;
 
+@property (nonatomic, strong) NSString *reusableCellIdentifier;
+
+@property (nonatomic, strong) NSArray *searchResults;
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic) BOOL searchFieldIsScrolledAway;
+
 @end
 
 @implementation STMOutletsTVC
@@ -90,6 +96,8 @@
             request.predicate = [NSPredicate predicateWithFormat:@"((ANY debts.summ != 0) OR (ANY cashings.summ != 0)) AND partner.name != %@", nil];
 
         }
+        
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:request.predicate];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
@@ -284,6 +292,51 @@
     
 }
 
+
+#pragma mark - search
+
+- (void)searchButtonPressed {
+    
+    self.navigationItem.rightBarButtonItem = nil;
+    [self.searchDisplayController setActive:YES animated:YES];
+    
+}
+
+- (void)showSearchButton {
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+}
+
+- (UISearchBar *)searchBar {
+    return self.searchDisplayController.searchBar;
+}
+
+- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
+    
+    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
+        
+        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
+        
+        if (_searchFieldIsScrolledAway) {
+            [self showSearchButton];
+        } else {
+            self.navigationItem.rightBarButtonItem = nil;
+        }
+        
+    }
+    
+}
+
+
+- (void)hideKeyboard {
+    
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
+    
+}
+
+
 #pragma mark - UIPopoverControllerDelegate
 
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
@@ -328,11 +381,28 @@
 
 #pragma mark - Table view data source
 
+- (NSString *)reusableCellIdentifier {
+    
+    if (!_reusableCellIdentifier) {
+        _reusableCellIdentifier = @"debtCell";
+    }
+    return _reusableCellIdentifier;
+    
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    NSUInteger count = (tableView == self.searchDisplayController.searchResultsTableView) ? self.searchResults.count : [super tableView:tableView numberOfRowsInSection:section];
+    
+    return count;
+    
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.reusableCellIdentifier forIndexPath:indexPath];
     
-    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
+    STMOutlet *outlet = (tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
     
     UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
     
@@ -363,8 +433,8 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
-    
+    STMOutlet *outlet = (tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+
     self.splitVC.detailVC.outlet = outlet;
     
     self.selectedPartner = outlet.partner;
@@ -436,6 +506,55 @@
     NSString *debtSumString = [numberFormatter stringFromNumber:debtSum];
     
     return debtSumString;
+    
+}
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if (!self.searchDisplayController.active) {
+        self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchBar.frame.size.height);
+    }
+    
+}
+
+#pragma mark - UISearchDisplayDelegate / deprecated in >8.0
+
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    
+}
+
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+    
+    self.searchResults = nil;
+    
+    if (self.searchFieldIsScrolledAway) {
+        [self showSearchButton];
+    }
+    
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+    
+    [self filterContentForSearchText:searchString scope:self.searchBar.selectedScopeButtonIndex];
+    return YES;
+    
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
+    
+    [self filterContentForSearchText:self.searchBar.text scope:searchOption];
+    return YES;
+    
+}
+
+- (void)filterContentForSearchText:(NSString *)searchText scope:(NSInteger)searchScope {
+    
+    NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText];
+//    NSPredicate *extraLabelPredicate = [NSPredicate predicateWithFormat:@"article.extraLabel CONTAINS[cd] %@", searchText];
+//    NSCompoundPredicate *resultPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[namePredicate, extraLabelPredicate]];
+    
+    self.searchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:namePredicate];
     
 }
 
@@ -517,6 +636,8 @@
 
 - (void)customInit {
     
+//    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:self.reusableCellIdentifier];
+    
     BOOL toolbarHidden = ![self partnersEditingIsEnabled];
     
     self.navigationController.toolbarHidden = toolbarHidden;
@@ -529,11 +650,10 @@
     }
 
     self.title = NSLocalizedString(@"OUTLETS", nil);
-    
+        
     [self addObservers];
     
 }
-
 
 - (instancetype)initWithStyle:(UITableViewStyle)style
 {
