@@ -143,6 +143,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPriceType class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [STMPredicate predicateWithNoFantoms];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[[STMSessionManager sharedManager].currentSession document].managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         _resultsController.delegate = self;
