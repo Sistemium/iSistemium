@@ -167,10 +167,10 @@
 
 - (void)filterFetchResults {
     
-    NSFetchRequest *request = self.resultsController.fetchRequest.copy;
+//    NSFetchRequest *request = self.resultsController.fetchRequest.copy;
     
     NSCompoundPredicate *predicate = [self requestPredicate];
-    if (predicate.subpredicates.count > 0) request.predicate = predicate;
+//    if (predicate.subpredicates.count > 0) request.predicate = predicate;
 
 //    [self nsLogFetchResults:self.resultsController.fetchedObjects];
     
