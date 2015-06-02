@@ -102,9 +102,15 @@
         
         NSArray *param = (NSArray *)availableParameters;
         
-        cell.detailTextLabel.text = param[currentParameterIndex];
-        cell.accessoryType = (param.count > 1) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
-
+        if (param.count > 0) {
+            
+            cell.detailTextLabel.text = param[currentParameterIndex];
+            cell.accessoryType = (param.count > 1) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+            
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+        
     } else if ([availableParameters isKindOfClass:[NSString class]]) {
         
         NSString *param = (NSString *)availableParameters;
@@ -135,7 +141,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if ([self.settings[indexPath.row][@"available"] isKindOfClass:[NSArray class]]) {
+    id available = self.settings[indexPath.row][@"available"];
+    
+    if ([available isKindOfClass:[NSArray class]] && [(NSArray *)available count] > 0) {
         
         self.selectedSettingIndex = indexPath.row;
         
