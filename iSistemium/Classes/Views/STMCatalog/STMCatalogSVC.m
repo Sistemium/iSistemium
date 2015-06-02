@@ -167,9 +167,12 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
     
 }
 
-//- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-//    self.availablePriceTypes = nil;
-//}
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [self.masterTVC refreshTable];
+//    NSLog(@"self.availablePriceTypes %@", self.availablePriceTypes);
+    
+}
 
 - (BOOL)showOnlyNonZeroStock {
 
