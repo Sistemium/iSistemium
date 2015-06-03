@@ -72,6 +72,13 @@
     
 }
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    
+    [super searchBarCancelButtonClicked:searchBar];
+    self.splitVC.searchString = nil;
+    
+}
+
 #pragma mark - Table view data source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -15,5 +15,7 @@
 - (void)performFetch;
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText;
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar;
+
 
 @end

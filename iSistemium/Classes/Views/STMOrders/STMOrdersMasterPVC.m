@@ -95,6 +95,7 @@
     self.splitVC.selectedDate = nil;
     self.splitVC.selectedOutlet = nil;
     self.splitVC.selectedSalesman = nil;
+    self.splitVC.searchString = nil;
     
     STMOrdersMasterTVC *masterTVC = self.viewControllers[0];
     [masterTVC resetFilter];
@@ -103,7 +104,11 @@
 
 - (void)updateResetFilterButtonState {
     
-    self.resetFilterButton.enabled = (self.splitVC.selectedDate || self.splitVC.selectedOutlet || self.splitVC.selectedSalesman);
+    self.resetFilterButton.enabled = (self.splitVC.selectedDate ||
+                                      self.splitVC.selectedOutlet ||
+                                      self.splitVC.selectedSalesman ||
+                                      (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""])
+                                      );
     
 }
 
