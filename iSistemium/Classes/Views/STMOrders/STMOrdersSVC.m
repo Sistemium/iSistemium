@@ -128,6 +128,17 @@
     return _currentFilterProcessings;
 }
 
+- (void)setSearchString:(NSString *)searchString {
+    
+    if (![_searchString isEqualToString:searchString]) {
+        
+        _searchString = searchString;
+        [self stateUpdate];
+        
+    }
+    
+}
+
 
 #pragma mark - methods
 

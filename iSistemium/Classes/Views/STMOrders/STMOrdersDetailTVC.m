@@ -110,6 +110,13 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
     }
     
+    if (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""]) {
+        
+        NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"outlet.name CONTAINS[cd] %@", self.splitVC.searchString];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, searchPredicate]];
+        
+    }
+    
     NSPredicate *outletNamePredicate = [NSPredicate predicateWithFormat:@"outlet.name != %@", nil];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, outletNamePredicate]];
     

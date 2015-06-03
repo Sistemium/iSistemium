@@ -65,6 +65,12 @@
     
 }
 
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    [super searchBar:searchBar textDidChange:searchText];
+    self.splitVC.searchString = searchText;
+    
+}
 
 #pragma mark - Table view data source
 

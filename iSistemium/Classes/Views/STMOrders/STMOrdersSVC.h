@@ -34,6 +34,7 @@
 @property (nonatomic, strong) STMSalesman *selectedSalesman;
 @property (nonatomic, strong) STMSaleOrder *selectedOrder;
 @property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
+@property (nonatomic, strong) NSString *searchString;
 
 
 - (void)orderWillSelected;
