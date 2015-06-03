@@ -7,6 +7,7 @@
 //
 
 #import "STMOrdersMasterTVC.h"
+#import "STMOrdersOutletTVC.h"
 
 @interface STMOrdersMasterTVC ()
 
@@ -52,23 +53,6 @@
     
 }
 
-- (void)performFetch {
-    
-    self.resultsController = nil;
-    
-    NSError *error;
-    if (![self.resultsController performFetch:&error]) {
-        
-        NSLog(@"performFetch error %@", error);
-        
-    } else {
-        
-        //        [self.tableView reloadData];
-        
-    }
-    
-}
-
 - (void)resetFilter {
     
     NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
@@ -79,13 +63,18 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
     [self performFetch];
+    
+    if ([self isKindOfClass:[STMOrdersOutletTVC class]]) {
+        [super customInit];
+    }
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
 
 }
 

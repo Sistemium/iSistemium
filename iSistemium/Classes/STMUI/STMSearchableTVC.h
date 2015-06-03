@@ -12,5 +12,7 @@
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 
+- (void)performFetch;
+
 
 @end
