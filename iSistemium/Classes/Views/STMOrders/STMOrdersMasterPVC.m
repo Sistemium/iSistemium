@@ -17,6 +17,9 @@
 @interface STMOrdersMasterPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
+@property (nonatomic, strong) STMOrdersOutletTVC *outletTVC;
+@property (nonatomic, strong) STMOrdersDateTVC *dateTVC;
+@property (nonatomic, strong) STMOrdersSalesmanTVC *salesmanTVC;
 
 @property (nonatomic, strong) UISegmentedControl *segmentedControl;
 
@@ -139,15 +142,15 @@
     switch (index) {
             
         case 0:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            vc = self.outletTVC;
             break;
 
         case 1:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersDateTVC alloc] init];
+            vc = self.dateTVC;
             break;
 
         case 2:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersSalesmanTVC alloc] init];
+            vc = self.salesmanTVC;
             break;
             
         default:
@@ -158,6 +161,33 @@
     vc.index = index;
     
     return vc;
+    
+}
+
+- (STMOrdersOutletTVC *)outletTVC {
+    
+    if (!_outletTVC) {
+        _outletTVC = [[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    }
+    return _outletTVC;
+    
+}
+
+- (STMOrdersDateTVC *)dateTVC {
+    
+    if (!_dateTVC) {
+        _dateTVC = [[STMOrdersDateTVC alloc] init];
+    }
+    return _dateTVC;
+    
+}
+
+- (STMOrdersSalesmanTVC *)salesmanTVC {
+    
+    if (!_salesmanTVC) {
+        _salesmanTVC = [[STMOrdersSalesmanTVC alloc] init];
+    }
+    return _salesmanTVC;
     
 }
 
