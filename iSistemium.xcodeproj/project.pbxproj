@@ -199,6 +199,7 @@
 		2C88F1C61B1ECECC00E30418 /* STMCustom7TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C88F1C51B1ECECC00E30418 /* STMCustom7TVCell.xib */; };
 		2C88F1CB1B1ED00400E30418 /* STMCustom7TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */; };
 		2C88F1CE1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */; };
+		2C88F1D11B1EDCF900E30418 /* STMSearchableTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1D01B1EDCF900E30418 /* STMSearchableTVC.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -629,6 +630,8 @@
 		2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom7TVCell.m; sourceTree = "<group>"; };
 		2C88F1CC1B1ED0E000E30418 /* STMVariableCellsHeightTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMVariableCellsHeightTVC.h; sourceTree = "<group>"; };
 		2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMVariableCellsHeightTVC.m; sourceTree = "<group>"; };
+		2C88F1CF1B1EDCF900E30418 /* STMSearchableTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSearchableTVC.h; sourceTree = "<group>"; };
+		2C88F1D01B1EDCF900E30418 /* STMSearchableTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSearchableTVC.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -825,6 +828,8 @@
 				2C5764921AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.m */,
 				2C88F1CC1B1ED0E000E30418 /* STMVariableCellsHeightTVC.h */,
 				2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */,
+				2C88F1CF1B1EDCF900E30418 /* STMSearchableTVC.h */,
+				2C88F1D01B1EDCF900E30418 /* STMSearchableTVC.m */,
 				2C57642A1AA5E9C400B9FD2C /* STMTableViewCell.h */,
 				2C57642B1AA5E9C400B9FD2C /* STMTableViewCell.m */,
 				2C57642D1AA5EA6800B9FD2C /* STMInfoTableViewCell.h */,
@@ -1682,6 +1687,7 @@
 				2C7E7DB71ABEEA0600A26185 /* STMPrice.m in Sources */,
 				2C73A92B1AF9FB5E00FB7662 /* STMOutlet.m in Sources */,
 				2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */,
+				2C88F1D11B1EDCF900E30418 /* STMSearchableTVC.m in Sources */,
 				2C02F2C31A8A995700E0E890 /* STMSpinnerView.m in Sources */,
 				2C65292219576895008605D9 /* STMTrack.m in Sources */,
 				2C1D72E41AB9A88700C97599 /* STMCustom1TVCell.m in Sources */,

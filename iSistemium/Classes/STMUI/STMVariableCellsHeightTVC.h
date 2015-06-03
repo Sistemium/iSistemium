@@ -13,6 +13,6 @@
 @property (nonatomic, strong) NSString *cellIdentifier;
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-- (void)customInit;
+
 
 @end

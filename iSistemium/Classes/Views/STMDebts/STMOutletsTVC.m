@@ -24,7 +24,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate, UISearchBarDelegate>
+@interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMDebtsSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
@@ -33,9 +33,6 @@
 @property (nonatomic, strong) STMPartner *selectedPartner;
 @property (nonatomic, strong) STMOutlet *outletToDelete;
 @property (nonatomic, strong) STMOutlet *nextSelectOutlet;
-
-@property (weak, nonatomic) IBOutlet UISearchBar *searchField;
-@property (nonatomic) BOOL searchFieldIsScrolledAway;
 
 @end
 
@@ -119,8 +116,8 @@
     
     [subpredicates addObject:outletPredicate];
     
-    if ([self.searchField isFirstResponder]) {
-        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchField.text]];
+    if ([self.searchBar isFirstResponder] && ![self.searchBar.text isEqualToString:@""]) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
     }
     
     [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
@@ -326,74 +323,6 @@
 }
 
 
-#pragma mark - search & UISearchBarDelegate
-
-- (void)searchButtonPressed {
-    
-    [self.searchField becomeFirstResponder];
-    [self.tableView setContentOffset:CGPointZero animated:YES];
-
-    self.navigationItem.rightBarButtonItem = nil;
-    
-}
-
-- (void)showSearchButton {
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
-}
-
-- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
-    
-    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
-        
-        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
-        
-        if (_searchFieldIsScrolledAway) {
-            [self showSearchButton];
-        } else {
-            self.navigationItem.rightBarButtonItem = nil;
-        }
-        
-    }
-    
-}
-
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    
-    [self performFetch];
-    
-}
-
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    
-    searchBar.showsCancelButton = YES;
-    
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    
-    searchBar.showsCancelButton = NO;
-    searchBar.text = nil;
-    
-    [self hideKeyboard];
-    [self performFetch];
-
-    if (self.searchFieldIsScrolledAway) {
-        [self showSearchButton];
-    }
-    
-}
-
-
-- (void)hideKeyboard {
-    
-    if ([self.searchField isFirstResponder]) {
-        [self.searchField resignFirstResponder];
-    }
-    
-}
-
-
 #pragma mark - UIPopoverControllerDelegate
 
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
@@ -560,13 +489,6 @@
 }
 
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchField.frame.size.height);
-    
-}
-
-
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
@@ -646,9 +568,7 @@
     
     UINib *cellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
-    
-    self.searchField.delegate = self;
-    
+        
     BOOL toolbarHidden = ![self partnersEditingIsEnabled];
     
     self.navigationController.toolbarHidden = toolbarHidden;
@@ -678,7 +598,6 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
     
 }
 
