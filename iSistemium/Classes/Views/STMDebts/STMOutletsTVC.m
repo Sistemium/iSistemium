@@ -34,8 +34,6 @@
 @property (nonatomic, strong) STMOutlet *outletToDelete;
 @property (nonatomic, strong) STMOutlet *nextSelectOutlet;
 
-@property (nonatomic, strong) NSString *reusableCellIdentifier;
-
 @property (weak, nonatomic) IBOutlet UISearchBar *searchField;
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
 
@@ -44,6 +42,8 @@
 @implementation STMOutletsTVC
 
 @synthesize resultsController = _resultsController;
+@synthesize cellIdentifier = _cellIdentifier;
+
 
 - (IBAction)addButtonPressed:(id)sender {
     
@@ -438,28 +438,42 @@
 
 #pragma mark - Table view data source
 
-- (NSString *)reusableCellIdentifier {
+- (NSString *)cellIdentifier {
     
-    if (!_reusableCellIdentifier) {
-        _reusableCellIdentifier = @"outletCell";
+    if (!_cellIdentifier) {
+        _cellIdentifier = @"outletCell";
     }
-    return _reusableCellIdentifier;
+    return _cellIdentifier;
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.reusableCellIdentifier forIndexPath:indexPath];
+    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    
+    [self fillCell:cell atIndexPath:indexPath];
+    
+    return cell;
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    STMCustom7TVCell *customCell = nil;
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        customCell = (STMCustom7TVCell *)cell;
+    }
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
     UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
     
-    cell.titleLabel.textColor = textColor;
-    cell.detailLabel.textColor = textColor;
+    customCell.titleLabel.textColor = textColor;
+    customCell.detailLabel.textColor = textColor;
     
-    cell.titleLabel.text = outlet.shortName;
-    cell.detailLabel.text = [self detailedTextForOutlet:outlet];
+    customCell.titleLabel.text = outlet.shortName;
+    customCell.detailLabel.text = [self detailedTextForOutlet:outlet];
     
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
@@ -468,21 +482,16 @@
     
     UIColor *highlightedTextColor = [UIColor whiteColor];
     
-    cell.titleLabel.highlightedTextColor = highlightedTextColor;
-    cell.detailLabel.highlightedTextColor = highlightedTextColor;
+    customCell.titleLabel.highlightedTextColor = highlightedTextColor;
+    customCell.detailLabel.highlightedTextColor = highlightedTextColor;
     
     if ([outlet isEqual:self.splitVC.detailVC.outlet]) {
-        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-//        NSLog(@"select indexPath %@", indexPath);
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        //        NSLog(@"select indexPath %@", indexPath);
     }
     
-    cell.infoLabel.text = nil;
-    
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+    [super fillCell:cell atIndexPath:indexPath];
 
-    return cell;
-    
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -635,8 +644,8 @@
 
 - (void)customInit {
     
-    UINib *cellNib = [UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil];
-    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.reusableCellIdentifier];
+    UINib *cellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
     
     self.searchField.delegate = self;
     
@@ -652,15 +661,18 @@
         
     [self addObservers];
     
+    [super customInit];
+    
 }
 
-- (instancetype)initWithStyle:(UITableViewStyle)style
-{
+- (instancetype)initWithStyle:(UITableViewStyle)style {
+    
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
     }
     return self;
+    
 }
 
 - (void)viewDidLoad {
@@ -670,8 +682,8 @@
     
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+    
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }

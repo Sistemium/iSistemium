@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMVariableCellsHeightTVC.h"
 
-@interface STMOutletsTVC : STMFetchedResultsControllerTVC
+@interface STMOutletsTVC : STMVariableCellsHeightTVC
 
 - (void)dissmissPopover;
 

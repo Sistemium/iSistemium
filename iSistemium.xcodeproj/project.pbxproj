@@ -196,6 +196,9 @@
 		2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8369561986714300DA4316 /* STMDebts.storyboard */; };
 		2C88F1BE1B18947700E30418 /* STMCustom6TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */; };
 		2C88F1C11B1894B500E30418 /* STMCustom6TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */; };
+		2C88F1C61B1ECECC00E30418 /* STMCustom7TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C88F1C51B1ECECC00E30418 /* STMCustom7TVCell.xib */; };
+		2C88F1CB1B1ED00400E30418 /* STMCustom7TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */; };
+		2C88F1CE1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -621,6 +624,11 @@
 		2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom6TVCell.xib; sourceTree = "<group>"; };
 		2C88F1BF1B1894B400E30418 /* STMCustom6TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom6TVCell.h; sourceTree = "<group>"; };
 		2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom6TVCell.m; sourceTree = "<group>"; };
+		2C88F1C51B1ECECC00E30418 /* STMCustom7TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom7TVCell.xib; sourceTree = "<group>"; };
+		2C88F1C91B1ED00400E30418 /* STMCustom7TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom7TVCell.h; sourceTree = "<group>"; };
+		2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom7TVCell.m; sourceTree = "<group>"; };
+		2C88F1CC1B1ED0E000E30418 /* STMVariableCellsHeightTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMVariableCellsHeightTVC.h; sourceTree = "<group>"; };
+		2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMVariableCellsHeightTVC.m; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -801,6 +809,7 @@
 		2C140AB51A1896FF002C5C17 /* STMUI */ = {
 			isa = PBXGroup;
 			children = (
+				2C88F1C81B1ECF8700E30418 /* STMCustomTVCells */,
 				2C140AB91A18991B002C5C17 /* STMUI.h */,
 				2C73A9251AF9E0BC00FB7662 /* STMStoryboard.h */,
 				2C73A9261AF9E0BC00FB7662 /* STMStoryboard.m */,
@@ -814,24 +823,14 @@
 				2C02F2C21A8A995700E0E890 /* STMSpinnerView.m */,
 				2C5764911AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.h */,
 				2C5764921AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.m */,
+				2C88F1CC1B1ED0E000E30418 /* STMVariableCellsHeightTVC.h */,
+				2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */,
 				2C57642A1AA5E9C400B9FD2C /* STMTableViewCell.h */,
 				2C57642B1AA5E9C400B9FD2C /* STMTableViewCell.m */,
 				2C57642D1AA5EA6800B9FD2C /* STMInfoTableViewCell.h */,
 				2C57642E1AA5EA6800B9FD2C /* STMInfoTableViewCell.m */,
 				2C5764941AB3189E00B9FD2C /* STMSegmentedControl.h */,
 				2C5764951AB3189E00B9FD2C /* STMSegmentedControl.m */,
-				2C1D72E21AB9A88700C97599 /* STMCustom1TVCell.h */,
-				2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */,
-				2C7E7DA51ABCA94700A26185 /* STMCustom2TVCell.h */,
-				2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */,
-				2C81AD511AD0227D00246666 /* STMCustom3TVCell.h */,
-				2C81AD521AD0227D00246666 /* STMCustom3TVCell.m */,
-				2C761BBC1B00CCD4001DA33E /* STMCustom4TVCell.h */,
-				2C761BBD1B00CCD4001DA33E /* STMCustom4TVCell.m */,
-				2C761BC11B00E01B001DA33E /* STMCustom5TVCell.h */,
-				2C761BC21B00E01B001DA33E /* STMCustom5TVCell.m */,
-				2C88F1BF1B1894B400E30418 /* STMCustom6TVCell.h */,
-				2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */,
 				2C1D72E81AB9D48400C97599 /* STMLabel.h */,
 				2C1D72E91AB9D48400C97599 /* STMLabel.m */,
 				2C1D72E51AB9BCFE00C97599 /* STMInsetLabel.h */,
@@ -907,6 +906,7 @@
 				2C761BBA1B00CA02001DA33E /* STMCustom4TVCell.xib */,
 				2C761BBF1B00DF21001DA33E /* STMCustom5TVCell.xib */,
 				2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */,
+				2C88F1C51B1ECECC00E30418 /* STMCustom7TVCell.xib */,
 			);
 			path = STMCustomCells;
 			sourceTree = "<group>";
@@ -1257,6 +1257,27 @@
 			path = STMNS;
 			sourceTree = "<group>";
 		};
+		2C88F1C81B1ECF8700E30418 /* STMCustomTVCells */ = {
+			isa = PBXGroup;
+			children = (
+				2C1D72E21AB9A88700C97599 /* STMCustom1TVCell.h */,
+				2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */,
+				2C7E7DA51ABCA94700A26185 /* STMCustom2TVCell.h */,
+				2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */,
+				2C81AD511AD0227D00246666 /* STMCustom3TVCell.h */,
+				2C81AD521AD0227D00246666 /* STMCustom3TVCell.m */,
+				2C761BBC1B00CCD4001DA33E /* STMCustom4TVCell.h */,
+				2C761BBD1B00CCD4001DA33E /* STMCustom4TVCell.m */,
+				2C761BC11B00E01B001DA33E /* STMCustom5TVCell.h */,
+				2C761BC21B00E01B001DA33E /* STMCustom5TVCell.m */,
+				2C88F1BF1B1894B400E30418 /* STMCustom6TVCell.h */,
+				2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */,
+				2C88F1C91B1ED00400E30418 /* STMCustom7TVCell.h */,
+				2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */,
+			);
+			path = STMCustomTVCells;
+			sourceTree = "<group>";
+		};
 		2C8EF5921940859F0021D202 = {
 			isa = PBXGroup;
 			children = (
@@ -1535,6 +1556,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */,
+				2C88F1C61B1ECECC00E30418 /* STMCustom7TVCell.xib in Resources */,
 				2C16CC4C1AF7652A00A2EC2D /* STMProfile.storyboard in Resources */,
 				2C734B8219B4E6FD00EE33FA /* archive-128.png in Resources */,
 				2C1D72DF1AB99DEC00C97599 /* STMCustom1TVCell.xib in Resources */,
@@ -1728,6 +1750,7 @@
 				2C5764241AA5E1E500B9FD2C /* STMSelectPartnerTVC.m in Sources */,
 				2CFDD88A1A308B1C003515C5 /* STMCashingProcessController.m in Sources */,
 				2C57641D1AA5E1E500B9FD2C /* STMDebtsCombineVC.m in Sources */,
+				2C88F1CE1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m in Sources */,
 				2C2968F319A0C31B0038B122 /* STMUncashingSVC.m in Sources */,
 				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,
 				2C57646C1AAB270F00B9FD2C /* STMOrdersOutletTVC.m in Sources */,
@@ -1787,6 +1810,7 @@
 				2C5763EF1AA5E13600B9FD2C /* STMCampaignDescriptionVC.m in Sources */,
 				2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */,
 				2C5297F31ACFFCAC008496AE /* STMMessage.m in Sources */,
+				2C88F1CB1B1ED00400E30418 /* STMCustom7TVCell.m in Sources */,
 				2CC47BD11AE63D0C008F5250 /* UIToolbar+custom.m in Sources */,
 				2C57646F1AAB272400B9FD2C /* STMOrdersSalesmanTVC.m in Sources */,
 				2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */,

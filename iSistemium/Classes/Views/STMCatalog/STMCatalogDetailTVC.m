@@ -1168,7 +1168,10 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
                name:UIDeviceOrientationDidChangeNotification
              object:nil];
     
-    [nc addObserver:self selector:@selector(pictureWasDownloaded:) name:@"downloadPicture" object:nil];
+    [nc addObserver:self
+           selector:@selector(pictureWasDownloaded:)
+               name:@"downloadPicture"
+             object:nil];
     
 }
 

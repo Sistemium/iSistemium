@@ -29,6 +29,7 @@
 #include "STMCustom4TVCell.h"
 #include "STMCustom5TVCell.h"
 #include "STMCustom6TVCell.h"
+#include "STMCustom7TVCell.h"
 
 #include "STMSegmentedControl.h"
 
