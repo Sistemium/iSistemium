@@ -79,6 +79,14 @@
     
 }
 
+- (void)resetFilter {
+    
+    [super resetFilter];
+    [self searchBarCancelButtonClicked:self.searchBar];
+    
+}
+
+
 #pragma mark - Table view data source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
