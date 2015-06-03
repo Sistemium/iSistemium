@@ -24,7 +24,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>
+@interface STMOutletsTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate, UISearchBarDelegate>
 
 @property (nonatomic, weak) STMDebtsSVC *splitVC;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
@@ -36,8 +36,7 @@
 
 @property (nonatomic, strong) NSString *reusableCellIdentifier;
 
-@property (nonatomic, strong) NSArray *searchResults;
-@property (nonatomic, strong) UISearchBar *searchBar;
+@property (weak, nonatomic) IBOutlet UISearchBar *searchField;
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
 
 @end
@@ -87,17 +86,7 @@
                 
         request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
         
-        if ([self debtsEditingIsEnabled]) {
-            
-            request.predicate = [NSPredicate predicateWithFormat:@"partner.name != %@", nil];
-            
-        } else {
-            
-            request.predicate = [NSPredicate predicateWithFormat:@"((ANY debts.summ != 0) OR (ANY cashings.summ != 0)) AND partner.name != %@", nil];
-
-        }
-        
-        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:request.predicate];
+        request.predicate = [self predicate];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
@@ -110,6 +99,50 @@
     
     return _resultsController;
     
+}
+
+- (NSPredicate *)predicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    NSPredicate *outletPredicate = nil;
+    
+    if ([self debtsEditingIsEnabled]) {
+        
+        outletPredicate = [NSPredicate predicateWithFormat:@"partner.name != %@", nil];
+        
+    } else {
+        
+        outletPredicate = [NSPredicate predicateWithFormat:@"((ANY debts.summ != 0) OR (ANY cashings.summ != 0)) AND partner.name != %@", nil];
+        
+    }
+    
+    [subpredicates addObject:outletPredicate];
+    
+    if ([self.searchField isFirstResponder]) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchField.text]];
+    }
+    
+    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+
+    return predicate;
+    
+}
+
+- (void)performFetch {
+
+    self.resultsController = nil;
+    
+    NSError *error;
+    
+    if (![self.resultsController performFetch:&error]) {
+        NSLog(@"performFetch error %@", error);
+    } else {
+        [self.tableView reloadData];
+    }
+
 }
 
 - (UIPopoverController *)addPartnerPopover {
@@ -293,22 +326,20 @@
 }
 
 
-#pragma mark - search
+#pragma mark - search & UISearchBarDelegate
 
 - (void)searchButtonPressed {
     
+    [self.searchField becomeFirstResponder];
+    [self.tableView setContentOffset:CGPointZero animated:YES];
+
     self.navigationItem.rightBarButtonItem = nil;
-    [self.searchDisplayController setActive:YES animated:YES];
     
 }
 
 - (void)showSearchButton {
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
-}
-
-- (UISearchBar *)searchBar {
-    return self.searchDisplayController.searchBar;
 }
 
 - (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
@@ -327,11 +358,37 @@
     
 }
 
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    [self performFetch];
+    
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = YES;
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = NO;
+    searchBar.text = nil;
+    
+    [self hideKeyboard];
+    [self performFetch];
+
+    if (self.searchFieldIsScrolledAway) {
+        [self showSearchButton];
+    }
+    
+}
+
 
 - (void)hideKeyboard {
     
-    if ([self.searchBar isFirstResponder]) {
-        [self.searchBar resignFirstResponder];
+    if ([self.searchField isFirstResponder]) {
+        [self.searchField resignFirstResponder];
     }
     
 }
@@ -390,19 +447,11 @@
     
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    NSUInteger count = (tableView == self.searchDisplayController.searchResultsTableView) ? self.searchResults.count : [super tableView:tableView numberOfRowsInSection:section];
-    
-    return count;
-    
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.reusableCellIdentifier forIndexPath:indexPath];
     
-    STMOutlet *outlet = (tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
     UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
     
@@ -438,7 +487,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMOutlet *outlet = (tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
 
     self.splitVC.detailVC.outlet = outlet;
     
@@ -476,19 +525,6 @@
     
 }
 
-
-/*
- - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
- 
- if (self.selectedIndexPath && [indexPath compare:self.selectedIndexPath] == NSOrderedSame) {
- 
- [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
- 
- }
- 
- }
- */
-
 - (NSString *)detailedTextForOutlet:(STMOutlet *)outlet {
     
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
@@ -517,49 +553,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if (!self.searchDisplayController.active) {
-        self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchBar.frame.size.height);
-    }
-    
-}
-
-#pragma mark - UISearchDisplayDelegate / deprecated in >8.0
-
-- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
-    
-}
-
-- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
-    
-    self.searchResults = nil;
-    
-    if (self.searchFieldIsScrolledAway) {
-        [self showSearchButton];
-    }
-    
-}
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
-    
-    [self filterContentForSearchText:searchString scope:self.searchBar.selectedScopeButtonIndex];
-    return YES;
-    
-}
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
-    
-    [self filterContentForSearchText:self.searchBar.text scope:searchOption];
-    return YES;
-    
-}
-
-- (void)filterContentForSearchText:(NSString *)searchText scope:(NSInteger)searchScope {
-    
-    NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchText];
-//    NSPredicate *extraLabelPredicate = [NSPredicate predicateWithFormat:@"article.extraLabel CONTAINS[cd] %@", searchText];
-//    NSCompoundPredicate *resultPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[namePredicate, extraLabelPredicate]];
-    
-    self.searchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:namePredicate];
+    self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchField.frame.size.height);
     
 }
 
@@ -643,7 +637,8 @@
     
     UINib *cellNib = [UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.reusableCellIdentifier];
-    [self.searchDisplayController.searchResultsTableView registerNib:cellNib forCellReuseIdentifier:self.reusableCellIdentifier];
+    
+    self.searchField.delegate = self;
     
     BOOL toolbarHidden = ![self partnersEditingIsEnabled];
     
@@ -651,10 +646,7 @@
     
     self.clearsSelectionOnViewWillAppear = NO;
 
-    NSError *error;
-    if (![self.resultsController performFetch:&error]) {
-        NSLog(@"performFetch error %@", error);
-    }
+    [self performFetch];
 
     self.title = NSLocalizedString(@"OUTLETS", nil);
         
