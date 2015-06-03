@@ -94,6 +94,11 @@
     
 }
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    [self hideKeyboard];
+    
+}
 
 #pragma mark - view lifecycle
 
