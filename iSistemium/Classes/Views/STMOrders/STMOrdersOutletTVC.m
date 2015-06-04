@@ -79,17 +79,17 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     
-    [super searchBar:searchBar textDidChange:searchText];
-    
-    self.splitVC.selectedOutlet = nil;
+    if (self.splitVC.selectedOutlet) self.splitVC.selectedOutlet = nil;
     self.splitVC.searchString = searchText;
+
+    [super searchBar:searchBar textDidChange:searchText];
     
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     
-    [super searchBarCancelButtonClicked:searchBar];
     self.splitVC.searchString = nil;
+    [super searchBarCancelButtonClicked:searchBar];
     
 }
 

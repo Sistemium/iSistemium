@@ -172,7 +172,10 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
     self.saleOrdersDates = [self ordersDates];
+    [self.tableView reloadData];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -197,6 +200,7 @@
     
     [super viewWillAppear:animated];
 
+    [self performFetch];
     self.saleOrdersDates = nil;
     
     if (self.splitVC.selectedDate) {
