@@ -73,7 +73,7 @@
         
         NSSortDescriptor *partnerNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"partner.name"
                                                                                     ascending:YES
-                                                                                     selector:@selector(caseInsensitiveCompare:)];
+                                                                                     selector:@selector(compare:)];
         
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"shortName"
                                                                              ascending:YES
