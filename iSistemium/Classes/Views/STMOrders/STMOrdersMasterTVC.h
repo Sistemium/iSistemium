@@ -17,5 +17,6 @@
 
 - (NSFetchRequest *)fetchRequest;
 - (void)resetFilter;
+- (void)refreshTable;
 
 @end

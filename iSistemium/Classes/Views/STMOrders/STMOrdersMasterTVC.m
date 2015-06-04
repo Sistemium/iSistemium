@@ -60,6 +60,11 @@
     
 }
 
+- (void)refreshTable {
+    [self performFetch];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {

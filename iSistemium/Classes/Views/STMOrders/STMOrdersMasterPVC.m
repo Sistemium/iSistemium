@@ -196,6 +196,13 @@
     
 }
 
+- (void)refreshTables {
+    
+    [self.outletTVC refreshTable];
+    [self.dateTVC refreshTable];
+    [self.salesmanTVC refreshTable];
+    
+}
 
 #pragma mark - Page View Controller Data Source
 

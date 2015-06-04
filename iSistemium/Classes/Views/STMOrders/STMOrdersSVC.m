@@ -145,6 +145,7 @@
 - (void)stateUpdate {
     
     [self.masterPVC updateResetFilterButtonState];
+    [self.masterPVC refreshTables];
     [self.detailTVC refreshTable];
     
 }

@@ -49,6 +49,7 @@
     NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
     
     request.sortDescriptors = @[dateSortDescriptor];
+    request.predicate = [self predicate];
     
     return request;
 
@@ -68,6 +69,37 @@
     ordersDates = [[ordersDatesSet sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
     
     return ordersDates;
+    
+}
+
+- (NSPredicate *)predicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    if (self.splitVC.selectedOutlet) {
+        
+        NSPredicate *outletPredicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.splitVC.selectedOutlet];
+        [subpredicates addObject:outletPredicate];
+        
+    }
+
+    if (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""]) {
+        
+        NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"outlet.name CONTAINS[cd] %@", self.splitVC.searchString];
+        [subpredicates addObject:searchPredicate];
+        
+    }
+    
+    if (self.splitVC.selectedSalesman) {
+        
+        NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"salesman == %@", self.splitVC.selectedSalesman];
+        [subpredicates addObject:salesmanPredicate];
+        
+    }
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    return predicate;
     
 }
 
@@ -164,6 +196,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+
+    self.saleOrdersDates = nil;
     
     if (self.splitVC.selectedDate) {
         
@@ -171,7 +205,7 @@
         [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
         
     }
-    
+
 }
 
 - (void)viewDidLoad {

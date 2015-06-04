@@ -57,7 +57,19 @@
         [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
     }
     
-    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
+    if (self.splitVC.selectedDate) {
+        
+        NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"ANY saleOrders.date == %@", self.splitVC.selectedDate];
+        [subpredicates addObject:datePredicate];
+        
+    }
+    
+    if (self.splitVC.selectedSalesman) {
+        
+        NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"salesman == %@", self.splitVC.selectedSalesman];
+        [subpredicates addObject:salesmanPredicate];
+        
+    }
     
     NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
     
