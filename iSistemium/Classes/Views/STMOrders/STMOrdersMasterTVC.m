@@ -7,6 +7,7 @@
 //
 
 #import "STMOrdersMasterTVC.h"
+#import "STMOrdersOutletTVC.h"
 
 @interface STMOrdersMasterTVC ()
 
@@ -40,6 +41,8 @@
         
         NSFetchRequest *request = [self fetchRequest];
         
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:request.predicate];
+        
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:self.sectionNameKeyPath cacheName:nil];
         
         _resultsController.delegate = self;
@@ -50,23 +53,6 @@
     
 }
 
-- (void)performFetch {
-    
-    self.resultsController = nil;
-    
-    NSError *error;
-    if (![self.resultsController performFetch:&error]) {
-        
-        NSLog(@"performFetch error %@", error);
-        
-    } else {
-        
-        //        [self.tableView reloadData];
-        
-    }
-    
-}
-
 - (void)resetFilter {
     
     NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
@@ -74,16 +60,26 @@
     
 }
 
+- (void)refreshTable {
+    [self performFetch];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
     [self performFetch];
+    
+    if ([self isKindOfClass:[STMOrdersOutletTVC class]]) {
+        [super customInit];
+    }
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
 
 }
 

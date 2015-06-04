@@ -23,13 +23,49 @@
     NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
     
     request.sortDescriptors = @[nameSortDescriptor];
+    request.predicate = [self predicate];
     
     return request;
     
 }
 
+- (NSPredicate *)predicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    if (self.splitVC.selectedOutlet) {
+        
+        NSPredicate *outletPredicate = [NSPredicate predicateWithFormat:@"ANY saleOrders.outlet == %@", self.splitVC.selectedOutlet];
+        [subpredicates addObject:outletPredicate];
+        
+    }
+    
+    if (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""]) {
+        
+        NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"ANY saleOrders.outlet.name CONTAINS[cd] %@", self.splitVC.searchString];
+        [subpredicates addObject:searchPredicate];
+        
+    }
+    
+    if (self.splitVC.selectedDate) {
+        
+        NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"ANY saleOrders.date == %@", self.splitVC.selectedDate];
+        [subpredicates addObject:datePredicate];
+        
+    }
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    return predicate;
+    
+}
+
 
 #pragma mark - Table view data source
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [super tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     

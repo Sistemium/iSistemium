@@ -229,5 +229,6 @@
 "SHOW PICTURES" = "Только с картинками";
 "SHOW ONLY WITH PICTURES" = "Только с картинками";
 "CATALOG SETTINGS" = "Настройки каталога";
-"PRICE_" = "Цену";
+"PRICE_" = "Цены";
+"STOCK_" = "Остатки";
 

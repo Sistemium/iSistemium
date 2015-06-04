@@ -26,5 +26,7 @@
 @property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
 
 - (NSIndexPath *)tableView:(UITableView *)tableView nearestIndexPathFor:(NSIndexPath *)indexPath;
+- (void)customInit;
+
 
 @end

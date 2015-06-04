@@ -49,6 +49,7 @@
     NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
     
     request.sortDescriptors = @[dateSortDescriptor];
+    request.predicate = [self predicate];
     
     return request;
 
@@ -71,6 +72,37 @@
     
 }
 
+- (NSPredicate *)predicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    if (self.splitVC.selectedOutlet) {
+        
+        NSPredicate *outletPredicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.splitVC.selectedOutlet];
+        [subpredicates addObject:outletPredicate];
+        
+    }
+
+    if (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""]) {
+        
+        NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"outlet.name CONTAINS[cd] %@", self.splitVC.searchString];
+        [subpredicates addObject:searchPredicate];
+        
+    }
+    
+    if (self.splitVC.selectedSalesman) {
+        
+        NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"salesman == %@", self.splitVC.selectedSalesman];
+        [subpredicates addObject:salesmanPredicate];
+        
+    }
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    return predicate;
+    
+}
+
 
 #pragma mark - Table view data source
 
@@ -84,6 +116,10 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [super tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -136,7 +172,10 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
     self.saleOrdersDates = [self ordersDates];
+    [self.tableView reloadData];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -160,6 +199,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+
+    [self performFetch];
+    self.saleOrdersDates = nil;
     
     if (self.splitVC.selectedDate) {
         
@@ -167,7 +209,7 @@
         [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
         
     }
-    
+
 }
 
 - (void)viewDidLoad {

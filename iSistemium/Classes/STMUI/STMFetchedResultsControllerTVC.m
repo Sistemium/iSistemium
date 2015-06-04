@@ -346,6 +346,10 @@
 
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    
+}
+
 - (instancetype)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -360,6 +364,8 @@
     [super viewDidLoad];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authControllerStateChanged) name:@"authControllerStateChanged" object:[STMAuthController authController]];
+    
+    [self customInit];
     
 }
 

@@ -39,6 +39,8 @@
 @implementation STMOutletsTVC
 
 @synthesize resultsController = _resultsController;
+@synthesize cellIdentifier = _cellIdentifier;
+
 
 - (IBAction)addButtonPressed:(id)sender {
     
@@ -81,15 +83,7 @@
                 
         request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
         
-        if ([self debtsEditingIsEnabled]) {
-            
-            request.predicate = [NSPredicate predicateWithFormat:@"partner.name != %@", nil];
-            
-        } else {
-            
-            request.predicate = [NSPredicate predicateWithFormat:@"((ANY debts.summ != 0) OR (ANY cashings.summ != 0)) AND partner.name != %@", nil];
-
-        }
+        request.predicate = [self predicate];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
@@ -101,6 +95,36 @@
     }
     
     return _resultsController;
+    
+}
+
+- (NSPredicate *)predicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    NSPredicate *outletPredicate = nil;
+    
+    if ([self debtsEditingIsEnabled]) {
+        
+        outletPredicate = [NSPredicate predicateWithFormat:@"partner.name != %@", nil];
+        
+    } else {
+        
+        outletPredicate = [NSPredicate predicateWithFormat:@"((ANY debts.summ != 0) OR (ANY cashings.summ != 0)) AND partner.name != %@", nil];
+        
+    }
+    
+    [subpredicates addObject:outletPredicate];
+    
+    if ([self.searchBar isFirstResponder] && ![self.searchBar.text isEqualToString:@""]) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
+    }
+    
+    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+
+    return predicate;
     
 }
 
@@ -284,6 +308,7 @@
     
 }
 
+
 #pragma mark - UIPopoverControllerDelegate
 
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
@@ -328,19 +353,42 @@
 
 #pragma mark - Table view data source
 
+- (NSString *)cellIdentifier {
+    
+    if (!_cellIdentifier) {
+        _cellIdentifier = @"outletCell";
+    }
+    return _cellIdentifier;
+    
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"debtCell" forIndexPath:indexPath];
+    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    
+    [self fillCell:cell atIndexPath:indexPath];
+    
+    return cell;
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    STMCustom7TVCell *customCell = nil;
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        customCell = (STMCustom7TVCell *)cell;
+    }
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
     UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
     
-    cell.textLabel.textColor = textColor;
-    cell.detailTextLabel.textColor = textColor;
+    customCell.titleLabel.textColor = textColor;
+    customCell.detailLabel.textColor = textColor;
     
-    cell.textLabel.text = outlet.shortName;
-    cell.detailTextLabel.text = [self detailedTextForOutlet:outlet];
+    customCell.titleLabel.text = outlet.shortName;
+    customCell.detailLabel.text = [self detailedTextForOutlet:outlet];
     
     UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     selectedBackgroundView.backgroundColor = ACTIVE_BLUE_COLOR;
@@ -349,22 +397,22 @@
     
     UIColor *highlightedTextColor = [UIColor whiteColor];
     
-    cell.textLabel.highlightedTextColor = highlightedTextColor;
-    cell.detailTextLabel.highlightedTextColor = highlightedTextColor;
+    customCell.titleLabel.highlightedTextColor = highlightedTextColor;
+    customCell.detailLabel.highlightedTextColor = highlightedTextColor;
     
     if ([outlet isEqual:self.splitVC.detailVC.outlet]) {
-        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-//        NSLog(@"select indexPath %@", indexPath);
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        //        NSLog(@"select indexPath %@", indexPath);
     }
     
-    return cell;
-    
+    [super fillCell:cell atIndexPath:indexPath];
+
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
-    
+
     self.splitVC.detailVC.outlet = outlet;
     
     self.selectedPartner = outlet.partner;
@@ -400,19 +448,6 @@
     }
     
 }
-
-
-/*
- - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
- 
- if (self.selectedIndexPath && [indexPath compare:self.selectedIndexPath] == NSOrderedSame) {
- 
- [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
- 
- }
- 
- }
- */
 
 - (NSString *)detailedTextForOutlet:(STMOutlet *)outlet {
     
@@ -517,42 +552,43 @@
 
 - (void)customInit {
     
+    UINib *cellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
+        
     BOOL toolbarHidden = ![self partnersEditingIsEnabled];
     
     self.navigationController.toolbarHidden = toolbarHidden;
     
     self.clearsSelectionOnViewWillAppear = NO;
 
-    NSError *error;
-    if (![self.resultsController performFetch:&error]) {
-        NSLog(@"performFetch error %@", error);
-    }
+    [self performFetch];
 
     self.title = NSLocalizedString(@"OUTLETS", nil);
-    
+        
     [self addObservers];
+    
+    [super customInit];
     
 }
 
-
-- (instancetype)initWithStyle:(UITableViewStyle)style
-{
+- (instancetype)initWithStyle:(UITableViewStyle)style {
+    
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
     }
     return self;
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
     
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+    
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }

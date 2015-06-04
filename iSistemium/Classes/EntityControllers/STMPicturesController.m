@@ -279,19 +279,25 @@
     
     if (!_unloadedPicturesResultsController) {
         
-        STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
+        NSManagedObjectContext *context = self.session.document.managedObjectContext;
         
-        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil, [self photoEntitiesNames]];
-        
-        request.sortDescriptors = @[sortDescriptor];
-        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
-        
-        _unloadedPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                                 managedObjectContext:self.session.document.managedObjectContext
-                                                                                   sectionNameKeyPath:nil
-                                                                                            cacheName:nil];
-        _unloadedPicturesResultsController.delegate = self;
+        if (context) {
+            
+            STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
+            
+            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil, [self photoEntitiesNames]];
+            
+            request.sortDescriptors = @[sortDescriptor];
+            request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
+            
+            _unloadedPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                     managedObjectContext:context
+                                                                                       sectionNameKeyPath:nil
+                                                                                                cacheName:nil];
+            _unloadedPicturesResultsController.delegate = self;
+
+        }
         
     }
     return _unloadedPicturesResultsController;
