@@ -53,7 +53,7 @@
     
     [subpredicates addObject:outletPredicate];
     
-    if ([self.searchBar isFirstResponder] && ![self.searchBar.text isEqualToString:@""]) {
+    if (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""]) {
         [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
     }
     
@@ -80,6 +80,8 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     
     [super searchBar:searchBar textDidChange:searchText];
+    
+    self.splitVC.selectedOutlet = nil;
     self.splitVC.searchString = searchText;
     
 }

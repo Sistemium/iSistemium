@@ -130,12 +130,8 @@
 
 - (void)setSearchString:(NSString *)searchString {
     
-    if (![_searchString isEqualToString:searchString]) {
-        
-        _searchString = searchString;
-        [self stateUpdate];
-        
-    }
+    _searchString = searchString;
+    [self stateUpdate];
     
 }
 
