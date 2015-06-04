@@ -43,6 +43,8 @@
 @property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
 
 @property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic) CGFloat shiftDistance;
+@property (nonatomic) BOOL viewFrameWasChanged;
 
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
@@ -814,6 +816,65 @@
 }
 
 
+#pragma mark - keyboard show / hide
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
+    CGFloat toolbarHeight = self.navigationController.toolbar.frame.size.height;
+    
+    self.shiftDistance = keyboardHeight - tabBarHeight - toolbarHeight;
+    
+    if (!self.viewFrameWasChanged) {
+        
+        [self changeViewFrameByDistance:self.shiftDistance];
+        self.viewFrameWasChanged = YES;
+
+    }
+    
+}
+
+- (void)keyboardWillBeHidden:(NSNotification *)notification {
+    
+    if (self.viewFrameWasChanged) {
+        
+        [self changeViewFrameByDistance:-self.shiftDistance];
+        self.viewFrameWasChanged = NO;
+        
+    }
+    
+}
+
+- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
+    
+    CGRect keyboardRect = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
+    
+    return keyboardRect.size.height;
+    
+}
+
+- (void)changeViewFrameByDistance:(CGFloat)distance {
+    
+    const float movementDuration = 0.5f;
+    
+    [UIView beginAnimations:@"animation" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:movementDuration];
+    
+    CGFloat x = self.collectionView.frame.origin.x;
+    CGFloat y = self.collectionView.frame.origin.y;
+    CGFloat width = self.collectionView.frame.size.width;
+    CGFloat height = self.collectionView.frame.size.height;
+    
+    self.collectionView.frame = CGRectMake(x, y, width, height - distance);
+    
+    [UIView commitAnimations];
+
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addSpinner {
@@ -839,8 +900,27 @@
 
 - (void)addObservers {
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photosCountChanged) name:@"photosCountChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentLocationWasUpdated:) name:@"currentLocationWasUpdated" object:self.locationTracker];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(keyboardWillShow:)
+               name:UIKeyboardWillShowNotification
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(keyboardWillBeHidden:)
+               name:UIKeyboardWillHideNotification
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(photosCountChanged)
+               name:@"photosCountChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(currentLocationWasUpdated:)
+               name:@"currentLocationWasUpdated"
+             object:self.locationTracker];
     
 }
 
