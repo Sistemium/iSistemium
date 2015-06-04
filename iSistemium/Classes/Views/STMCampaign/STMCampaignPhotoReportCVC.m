@@ -28,7 +28,8 @@
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
 @property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
-@property (nonatomic) NSUInteger currentSection;
+@property (nonatomic, strong) STMOutlet *selectedOutlet;
+@property (nonatomic) NSInteger currentSection;
 @property (nonatomic, strong) NSArray *outlets;
 @property (nonatomic) BOOL isTakingPhoto;
 @property (nonatomic, strong) UIView *spinnerView;
@@ -216,21 +217,28 @@
     
 }
 
-- (void)setCurrentSection:(NSUInteger)currentSection {
+- (void)setCurrentSection:(NSInteger)currentSection {
     
     if (currentSection != _currentSection) {
         
-        NSUInteger previousSection = _currentSection;
+        NSInteger previousSection = _currentSection;
+        
+        if (previousSection >= 0) {
+            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:previousSection]];
+        }
         
         _currentSection = currentSection;
 
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:previousSection]];
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:currentSection]];
-        
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:currentSection];
-        
-        UICollectionViewLayoutAttributes *headerAttribute = [self.collectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
-        [self.collectionView scrollRectToVisible:headerAttribute.frame animated:YES];
+        if (currentSection >= 0) {
+            
+            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:currentSection]];
+            
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:currentSection];
+            
+            UICollectionViewLayoutAttributes *headerAttribute = [self.collectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
+            [self.collectionView scrollRectToVisible:headerAttribute.frame animated:YES];
+
+        }
         
     }
     
@@ -344,7 +352,7 @@
     self.photoReportPicturesResultsController = nil;
     self.outlets = nil;
     
-    STMOutlet *selectedOutlet = self.selectedPhotoReport.outlet;
+//    STMOutlet *selectedOutlet = self.selectedPhotoReport.outlet;
     
     NSError *error;
     if (![self.photoReportPicturesResultsController performFetch:&error]) {
@@ -363,10 +371,14 @@
                 [self.searchBar becomeFirstResponder];
             }
             
-            if (selectedOutlet) {
+            if ([self.outlets containsObject:self.selectedOutlet]) {
                 
-                self.currentSection = [self.outlets indexOfObject:selectedOutlet];
+                self.currentSection = [self.outlets indexOfObject:self.selectedOutlet];
                 
+            } else {
+                
+                self.currentSection = -1;
+
             }
             
         }
@@ -391,6 +403,8 @@
     STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
     photoReport.isFantom = @NO;
     photoReport.outlet = outlet;
+    
+    self.selectedOutlet = outlet;
 
 //    [self.document saveDocument:^(BOOL success) {
 //        if (success) {
@@ -582,7 +596,7 @@
     
     headerView.tag = indexPath.section;
     
-    if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
+    if (indexPath.section == self.currentSection && self.selectedOutlet) {
 
         headerView.backgroundColor = ACTIVE_BLUE_COLOR;
 
@@ -902,15 +916,15 @@
 
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [nc addObserver:self
-           selector:@selector(keyboardWillShow:)
-               name:UIKeyboardWillShowNotification
-             object:nil];
-    
-    [nc addObserver:self
-           selector:@selector(keyboardWillBeHidden:)
-               name:UIKeyboardWillHideNotification
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(keyboardWillShow:)
+//               name:UIKeyboardWillShowNotification
+//             object:nil];
+//    
+//    [nc addObserver:self
+//           selector:@selector(keyboardWillBeHidden:)
+//               name:UIKeyboardWillHideNotification
+//             object:nil];
 
     [nc addObserver:self
            selector:@selector(photosCountChanged)
