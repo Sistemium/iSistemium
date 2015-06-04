@@ -43,9 +43,7 @@
 @property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
 
 @property (nonatomic, strong) UISearchBar *searchBar;
-@property (nonatomic) BOOL searchFieldIsScrolledAway;
 
-//@property (nonatomic, strong) NSMutableArray *availableSourceTypes;
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
 @end
@@ -68,17 +66,6 @@
     return _document;
     
 }
-
-/*
-- (NSMutableArray *)availableSourceTypes {
-
-    if (!_availableSourceTypes) {
-        _availableSourceTypes = [NSMutableArray array];
-    }
-    return _availableSourceTypes;
-    
-}
-*/
 
 - (NSFetchedResultsController *)photoReportPicturesResultsController {
     
@@ -789,28 +776,6 @@
     
 }
 
-- (void)showSearchButton {
-    
-    self.parentViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
-    
-}
-
-- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
-    
-    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
-        
-        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
-        
-        if (_searchFieldIsScrolledAway) {
-            [self showSearchButton];
-        } else {
-            self.parentViewController.navigationItem.rightBarButtonItem = nil;
-        }
-        
-    }
-    
-}
-
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     
     [self fetchPhotoReport];
@@ -831,10 +796,6 @@
     [self hideKeyboard];
     [self fetchPhotoReport];
     
-    if (self.searchFieldIsScrolledAway) {
-        [self showSearchButton];
-    }
-    
 }
 
 
@@ -843,12 +804,6 @@
     if ([self.searchBar isFirstResponder]) {
         [self.searchBar resignFirstResponder];
     }
-    
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchBar.frame.size.height);
     
 }
 
@@ -901,8 +856,8 @@
     self.searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.searchBar.delegate = self;
 
-    [self.collectionView addSubview:self.searchBar];
-    [self.collectionView setContentOffset:CGPointMake(0, 44)];
+    [self.view addSubview:self.searchBar];
+    self.collectionView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
 
     [self addObservers];
     [self addSpinner];
