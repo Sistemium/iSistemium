@@ -66,7 +66,7 @@
     
     if (self.splitVC.selectedSalesman) {
         
-        NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"salesman == %@", self.splitVC.selectedSalesman];
+        NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"ANY saleOrders.salesman == %@", self.splitVC.selectedSalesman];
         [subpredicates addObject:salesmanPredicate];
         
     }
