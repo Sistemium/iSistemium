@@ -29,7 +29,7 @@
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
 @property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
 @property (nonatomic, strong) STMOutlet *selectedOutlet;
-@property (nonatomic) NSInteger currentSection;
+
 @property (nonatomic, strong) NSArray *outlets;
 @property (nonatomic) BOOL isTakingPhoto;
 @property (nonatomic, strong) UIView *spinnerView;
@@ -217,33 +217,6 @@
     
 }
 
-- (void)setCurrentSection:(NSInteger)currentSection {
-    
-    if (currentSection != _currentSection) {
-        
-        NSInteger previousSection = _currentSection;
-        
-        if (previousSection >= 0) {
-            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:previousSection]];
-        }
-        
-        _currentSection = currentSection;
-
-        if (currentSection >= 0) {
-            
-            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:currentSection]];
-            
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:currentSection];
-            
-            UICollectionViewLayoutAttributes *headerAttribute = [self.collectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
-            [self.collectionView scrollRectToVisible:headerAttribute.frame animated:YES];
-
-        }
-        
-    }
-    
-}
-
 - (STMImagePickerController *)imagePickerController {
     
     if (!_imagePickerController) {
@@ -334,7 +307,7 @@
     
     [self cancelButtonPressed:sender];
     
-    STMOutlet *outlet = self.outlets[self.currentSection];
+    STMOutlet *outlet = self.selectedOutlet;
     STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
     photoReport.isFantom = @NO;
     photoReport.outlet = outlet;
@@ -352,8 +325,6 @@
     self.photoReportPicturesResultsController = nil;
     self.outlets = nil;
     
-//    STMOutlet *selectedOutlet = self.selectedPhotoReport.outlet;
-    
     NSError *error;
     if (![self.photoReportPicturesResultsController performFetch:&error]) {
         
@@ -370,17 +341,7 @@
             if (searchBarWasActive) {
                 [self.searchBar becomeFirstResponder];
             }
-            
-            if ([self.outlets containsObject:self.selectedOutlet]) {
-                
-                self.currentSection = [self.outlets indexOfObject:self.selectedOutlet];
-                
-            } else {
-                
-                self.currentSection = -1;
 
-            }
-            
         }
         
     }
@@ -413,8 +374,6 @@
 //    }];
     
     self.selectedPhotoReport = photoReport;
-
-    self.currentSection = tag;
 
     [(UIView *)[sender view] setBackgroundColor:ACTIVE_BLUE_COLOR];
     
@@ -596,7 +555,9 @@
     
     headerView.tag = indexPath.section;
     
-    if (indexPath.section == self.currentSection && self.selectedOutlet) {
+    STMOutlet *outlet = self.outlets[indexPath.section];
+
+    if (outlet == self.selectedOutlet) {
 
         headerView.backgroundColor = ACTIVE_BLUE_COLOR;
 
@@ -605,8 +566,6 @@
         headerView.backgroundColor = [UIColor whiteColor];
 
     }
-    
-    STMOutlet *outlet = self.outlets[indexPath.section];
     
     UILabel *label;
     
@@ -663,7 +622,6 @@
     
     STMOutlet *outlet = self.outlets[indexPath.section];
     self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
-    self.currentSection = indexPath.section;
     
     [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
     
