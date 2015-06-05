@@ -560,8 +560,9 @@
             
         } else {
             
-            NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+            NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
             [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            [self deletePicture:picture];
             
         }
         
