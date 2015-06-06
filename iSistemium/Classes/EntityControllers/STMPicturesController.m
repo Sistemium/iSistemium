@@ -613,6 +613,7 @@
     }
     
 #warning should check filename is not nil
+//https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/5572b38ef505b5ccf00d93eb
     
     [self setThumbnailForPicture:weakPicture fromImageData:weakData];
     [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
