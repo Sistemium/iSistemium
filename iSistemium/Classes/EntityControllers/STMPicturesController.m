@@ -612,6 +612,8 @@
         
     }
     
+#warning should check filename is not nil
+    
     [self setThumbnailForPicture:weakPicture fromImageData:weakData];
     [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
     [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
