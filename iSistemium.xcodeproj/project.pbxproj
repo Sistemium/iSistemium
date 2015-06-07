@@ -200,6 +200,7 @@
 		2C88F1CB1B1ED00400E30418 /* STMCustom7TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */; };
 		2C88F1CE1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */; };
 		2C88F1D11B1EDCF900E30418 /* STMSearchableTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C88F1D01B1EDCF900E30418 /* STMSearchableTVC.m */; };
+		2C88F1D31B24664600E30418 /* Clear Filters-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C88F1D21B24664600E30418 /* Clear Filters-25.png */; };
 		2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF59E1940859F0021D202 /* Foundation.framework */; };
 		2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A01940859F0021D202 /* CoreGraphics.framework */; };
 		2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5A21940859F0021D202 /* UIKit.framework */; };
@@ -632,6 +633,7 @@
 		2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMVariableCellsHeightTVC.m; sourceTree = "<group>"; };
 		2C88F1CF1B1EDCF900E30418 /* STMSearchableTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSearchableTVC.h; sourceTree = "<group>"; };
 		2C88F1D01B1EDCF900E30418 /* STMSearchableTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSearchableTVC.m; sourceTree = "<group>"; };
+		2C88F1D21B24664600E30418 /* Clear Filters-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Clear Filters-25.png"; sourceTree = "<group>"; };
 		2C8EF59B1940859F0021D202 /* iSistemium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iSistemium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8EF59E1940859F0021D202 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2C8EF5A01940859F0021D202 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1417,6 +1419,7 @@
 				D94AC565198BC66700D8CD63 /* cash_receiving-128.png */,
 				2C5764971AB4713B00B9FD2C /* checked_user-128.png */,
 				D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */,
+				2C88F1D21B24664600E30418 /* Clear Filters-25.png */,
 				2C81AD5A1AD1180F00246666 /* close-128.png */,
 				2C5764361AA88ABA00B9FD2C /* Dossier Folder-100.png */,
 				2C16CC3F1AF3940200A2EC2D /* Download From Cloud-100.png */,
@@ -1595,6 +1598,7 @@
 				D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */,
 				2C42ECBC1B13893F00B5C91A /* STMArticlePicturePVC.storyboard in Resources */,
 				2C16CC411AF3940200A2EC2D /* Download From Cloud-100.png in Resources */,
+				2C88F1D31B24664600E30418 /* Clear Filters-25.png in Resources */,
 				2C761BB21B00824F001DA33E /* Picture-32.png in Resources */,
 				2C761BB31B00824F001DA33E /* Picture-25.png in Resources */,
 				2C5763BC1AA472B700B9FD2C /* STMCatalog.storyboard in Resources */,

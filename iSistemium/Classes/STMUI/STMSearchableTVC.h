@@ -11,11 +11,16 @@
 @interface STMSearchableTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic) BOOL searchFieldIsScrolledAway;
+
 
 - (void)performFetch;
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText;
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar;
+- (void)searchButtonPressed;
+- (void)showSearchButton;
+- (void)hideSearchButton;
 
 
 @end

@@ -10,10 +10,8 @@
 
 @interface STMSearchableTVC () <UISearchBarDelegate>
 
-@property (nonatomic) BOOL searchFieldIsScrolledAway;
-
-
 @end
+
 
 @implementation STMSearchableTVC
 
@@ -38,13 +36,17 @@
     [self.searchBar becomeFirstResponder];
     [self.tableView setContentOffset:CGPointZero animated:YES];
     
-    self.navigationItem.rightBarButtonItem = nil;
+    [self hideSearchButton];
     
 }
 
 - (void)showSearchButton {
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+}
+
+- (void)hideSearchButton {
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 - (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
@@ -56,7 +58,7 @@
         if (_searchFieldIsScrolledAway) {
             [self showSearchButton];
         } else {
-            self.navigationItem.rightBarButtonItem = nil;
+            [self hideSearchButton];
         }
         
     }
