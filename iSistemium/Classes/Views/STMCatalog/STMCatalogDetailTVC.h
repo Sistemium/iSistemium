@@ -20,6 +20,8 @@
 - (void)dismissArticleInfoPopover;
 - (void)showFullscreen;
 
+- (void)dismissCatalogSettingsPopover;
+
 - (void)hideKeyboard;
 
 

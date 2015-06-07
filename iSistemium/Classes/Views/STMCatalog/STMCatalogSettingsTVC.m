@@ -176,12 +176,17 @@
     
 }
 
+- (void)closeButtonPressed {
+    [self.parentNC dismissSelf];
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     self.title = NSLocalizedString(@"CATALOG SETTINGS", nil);
+    self.navigationItem.rightBarButtonItem = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
     
     [self.tableView registerClass:[STMCatalogSettingsTVCell class] forCellReuseIdentifier:self.cellReuseIdentifier];
     

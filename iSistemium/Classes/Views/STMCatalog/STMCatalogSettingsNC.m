@@ -38,6 +38,11 @@
     [self.catalogSVC updateSettings:newSettings];
 }
 
+- (void)dismissSelf {
+    [self.catalogSVC.detailTVC dismissCatalogSettingsPopover];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
