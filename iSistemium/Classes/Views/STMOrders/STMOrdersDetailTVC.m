@@ -27,7 +27,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 @property (nonatomic, strong) UIActionSheet *routesActionSheet;
 @property (nonatomic) BOOL routesActionSheetWasVisible;
 
-@property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
 @property (nonatomic, strong) NSMutableDictionary *filterButtons;
 
 @property (nonatomic, strong) NSString *nextProcessing;
@@ -58,14 +57,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (NSMutableArray *)currentFilterProcessings {
-    
-    if (!_currentFilterProcessings) {
-        _currentFilterProcessings = [NSMutableArray array];
-    }
-    return _currentFilterProcessings;
-}
-
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -79,9 +70,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         request.sortDescriptors = @[dateDescriptor, salesmanDescriptor, outletDescriptor, costDescriptor];
         
-        NSCompoundPredicate *predicate = [self requestPredicate];
-        if (predicate.subpredicates.count > 0) request.predicate = predicate;
+//        NSCompoundPredicate *predicate = [self requestPredicate];
+//        if (predicate.subpredicates.count > 0) request.predicate = predicate;
         
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[self requestPredicate]];
+
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"date" cacheName:nil];
 
         _resultsController.delegate = self;
@@ -117,6 +110,13 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
     }
     
+    if (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""]) {
+        
+        NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"outlet.name CONTAINS[cd] %@", self.splitVC.searchString];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, searchPredicate]];
+        
+    }
+    
     NSPredicate *outletNamePredicate = [NSPredicate predicateWithFormat:@"outlet.name != %@", nil];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, outletNamePredicate]];
     
@@ -128,7 +128,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     NSCompoundPredicate *predicate = [self selectingPredicate];
     
-    for (NSString *processing in self.currentFilterProcessings) {
+    for (NSString *processing in self.splitVC.currentFilterProcessings) {
         
         NSPredicate *processedPredicate = [NSPredicate predicateWithFormat:@"processing != %@", processing];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, processedPredicate]];
@@ -269,17 +269,15 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         if (segmentedControl.selectedSegmentIndex == 0) {
             
             segmentedControl.selectedSegmentIndex = -1;
-            [self.currentFilterProcessings addObject:processing];
+            [self.splitVC addFilterProcessing:processing];
             
         } else {
             
             segmentedControl.selectedSegmentIndex = 0;
-            [self.currentFilterProcessings removeObject:processing];
+            [self.splitVC removeFilterProcessing:processing];
             
         }
         
-        [self refreshTable];
-
     }
     
 }
@@ -292,7 +290,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         if (longPressGesture.state == UIGestureRecognizerStateBegan) {
      
-            self.currentFilterProcessings = nil;
+            self.splitVC.currentFilterProcessings = nil;
 
             STMSegmentedControl *pressedControl = (STMSegmentedControl *)[(UITapGestureRecognizer *)sender view];
             NSString *pressedProcessing = [self processingForSegmentedControl:pressedControl];
@@ -307,8 +305,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
             for (NSString *key in remainingProcessings) isAlone &= ![self processingIsSelectedForButton:self.filterButtons[key]];
 
             [self setProcessings:remainingProcessings selected:isAlone];
-            
-            [self refreshTable];
             
         }
         
@@ -351,12 +347,12 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         if (selected) {
 
             control.selectedSegmentIndex = 0;
-            [self.currentFilterProcessings removeObject:processing];
+            [self.splitVC removeFilterProcessing:processing];
 
         } else {
             
             control.selectedSegmentIndex = -1;
-            [self.currentFilterProcessings addObject:processing];
+            [self.splitVC addFilterProcessing:processing];
 
         }
         
@@ -697,15 +693,14 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-//- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-//    cell = nil;
-//}
-
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     self.selectedOrder = [self.resultsController objectAtIndexPath:indexPath];
 
     [self performSegueWithIdentifier:@"showOrderInfo" sender:self];
+    
+    self.splitVC.selectedOrder = self.selectedOrder;
+    [self.splitVC orderWillSelected];
     
     return indexPath;
     
@@ -750,30 +745,12 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         
-//        request.resultType = NSManagedObjectResultType;
-
         request.resultType = NSDictionaryResultType;
         request.returnsDistinctResults = YES;
         request.predicate = [self selectingPredicate];
         request.propertiesToFetch = @[property];
         
         NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
-        
-//        NSMutableArray *resultArray = [NSMutableArray array];
-//        
-//        for (STMSaleOrder *saleOrder in result) {
-//            
-//            NSString *propertyValue = [saleOrder valueForKey:property];
-//            
-//            NSDictionary *dic = @{property:propertyValue};
-//            
-//            if (![resultArray containsObject:dic]) {
-//                [resultArray addObject:dic];
-//            }
-//            
-//        }
-        
-//        NSLog(@"result %@", result);
         
         return result;
         
@@ -998,6 +975,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
         STMOrderInfoTVC *orderInfoTVC = (STMOrderInfoTVC *)segue.destinationViewController;
         orderInfoTVC.saleOrder = self.selectedOrder;
+        orderInfoTVC.navigationItem.title = self.navigationItem.title;
         
     }
     

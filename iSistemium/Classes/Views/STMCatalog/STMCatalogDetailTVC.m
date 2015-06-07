@@ -243,6 +243,50 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 }
 
+#pragma mark - search
+
+- (void)searchButtonPressed {
+    
+    self.navigationItem.rightBarButtonItem = nil;
+    [self.searchDisplayController setActive:YES animated:YES];
+    
+}
+
+- (void)showSearchButton {
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+}
+
+- (UISearchBar *)searchBar {
+    return self.searchDisplayController.searchBar;
+}
+
+- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
+    
+    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
+        
+        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
+        
+        if (_searchFieldIsScrolledAway) {
+            [self showSearchButton];
+        } else {
+            self.navigationItem.rightBarButtonItem = nil;
+        }
+        
+    }
+    
+}
+
+
+- (void)hideKeyboard {
+    
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
+    
+}
+
+
 #pragma mark - toolbar items
 
 - (void)setupBarButton:(UIBarButtonItem *)barButton asLabelWithColor:(UIColor *)color {
@@ -380,50 +424,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
             return [self articleGroup:articleGroup.articleGroup hasInParents:parentArticleGroup];
         }
 
-    }
-
-}
-
-
-#pragma mark - search
-
-- (void)searchButtonPressed {
-
-    self.navigationItem.rightBarButtonItem = nil;
-    [self.searchDisplayController setActive:YES animated:YES];
-    
-}
-
-- (void)showSearchButton {
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
-}
-
-- (UISearchBar *)searchBar {
-    return self.searchDisplayController.searchBar;
-}
-
-- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
-    
-    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
-        
-        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
-        
-        if (_searchFieldIsScrolledAway) {
-            [self showSearchButton];
-        } else {
-            self.navigationItem.rightBarButtonItem = nil;
-        }
-        
-    }
-    
-}
-
-
-- (void)hideKeyboard {
-    
-    if ([self.searchBar isFirstResponder]) {
-        [self.searchBar resignFirstResponder];
     }
 
 }
@@ -1168,7 +1168,10 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
                name:UIDeviceOrientationDidChangeNotification
              object:nil];
     
-    [nc addObserver:self selector:@selector(pictureWasDownloaded:) name:@"downloadPicture" object:nil];
+    [nc addObserver:self
+           selector:@selector(pictureWasDownloaded:)
+               name:@"downloadPicture"
+             object:nil];
     
 }
 

@@ -7,19 +7,36 @@
 //
 
 #import "STMOrdersSVC.h"
+#import "STMOrdersListTVC.h"
+#import "STMOrderInfoTVC.h"
+
 
 @interface STMOrdersSVC ()
 
+@property (nonatomic, strong) STMOrdersListTVC *ordersListTVC;
+
+
 @end
 
+
 @implementation STMOrdersSVC
+
+- (UINavigationController *)masterNC {
+    
+    if (!_masterNC) {
+        if ([self.viewControllers[0] isKindOfClass:[UINavigationController class]]) {
+            _masterNC = self.viewControllers[0];
+        }
+    }
+    return _masterNC;
+    
+}
 
 - (STMOrdersMasterPVC *)masterPVC {
     
     if (!_masterPVC) {
         
-        UINavigationController *nc = (UINavigationController *)self.viewControllers[0];
-        UIViewController *masterPVC = nc.viewControllers[0];
+        UIViewController *masterPVC = self.masterNC.viewControllers[0];
         
         if ([masterPVC isKindOfClass:[STMOrdersMasterPVC class]]) {
             _masterPVC = (STMOrdersMasterPVC *)masterPVC;
@@ -30,12 +47,32 @@
     
 }
 
+- (STMOrdersListTVC *)ordersListTVC {
+    
+    if ([self.masterNC.topViewController isKindOfClass:[STMOrdersListTVC class]]) {
+        return (STMOrdersListTVC *)self.masterNC.topViewController;
+    } else {
+        return nil;
+    }
+    
+}
+
+- (UINavigationController *)detailNC {
+    
+    if (!_detailNC) {
+        if ([self.viewControllers[1] isKindOfClass:[UINavigationController class]]) {
+            _detailNC = self.viewControllers[1];
+        }
+    }
+    return _detailNC;
+    
+}
+
 - (STMOrdersDetailTVC *)detailTVC {
     
     if (!_detailTVC) {
     
-        UINavigationController *nc = (UINavigationController *)self.viewControllers[1];
-        UIViewController *detailTVC = nc.viewControllers[0];
+        UIViewController *detailTVC = self.detailNC.viewControllers[0];
 
         if ([detailTVC isKindOfClass:[STMOrdersDetailTVC class]]) {
             _detailTVC = (STMOrdersDetailTVC *)detailTVC;
@@ -67,12 +104,79 @@
     
 }
 
+- (void)setSelectedOrder:(STMSaleOrder *)selectedOrder {
+    
+    if (_selectedOrder != selectedOrder) {
+        
+        _selectedOrder = selectedOrder;
+        
+        if ([self.detailNC.topViewController isKindOfClass:[STMOrderInfoTVC class]]) {
+            
+            [(STMOrderInfoTVC *)self.detailNC.topViewController setSaleOrder:selectedOrder];
+            
+        }
+        
+    }
+    
+}
+
+- (NSMutableArray *)currentFilterProcessings {
+    
+    if (!_currentFilterProcessings) {
+        _currentFilterProcessings = [NSMutableArray array];
+    }
+    return _currentFilterProcessings;
+}
+
+- (void)setSearchString:(NSString *)searchString {
+    
+    _searchString = searchString;
+    [self stateUpdate];
+    
+}
+
+
+#pragma mark - methods
+
 - (void)stateUpdate {
     
     [self.masterPVC updateResetFilterButtonState];
+    [self.masterPVC refreshTables];
     [self.detailTVC refreshTable];
     
 }
+
+- (void)orderWillSelected {
+    
+    STMOrdersListTVC *ordersListTVC = [[STMOrdersListTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    
+    [self.masterNC pushViewController:ordersListTVC animated:YES];
+    
+}
+
+- (void)backButtonPressed {
+    
+    UINavigationController *nc = self.detailTVC.navigationController;
+    [nc popViewControllerAnimated:YES];
+    
+}
+
+- (void)addFilterProcessing:(NSString *)processing {
+    
+    [self.currentFilterProcessings addObject:processing];
+    [self.detailTVC refreshTable];
+    [self.ordersListTVC refreshTable];
+    
+}
+
+- (void)removeFilterProcessing:(NSString *)processing {
+    
+    [self.currentFilterProcessings removeObject:processing];
+    [self.detailTVC refreshTable];
+    [self.ordersListTVC refreshTable];
+    
+}
+
 
 #pragma mark - view lifecycle
 

@@ -23,12 +23,13 @@
 #import "STMEntityDescription.h"
 #import "STMImagePickerController.h"
 
-@interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+@interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
 @property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
-@property (nonatomic) NSUInteger currentSection;
+@property (nonatomic, strong) STMOutlet *selectedOutlet;
+
 @property (nonatomic, strong) NSArray *outlets;
 @property (nonatomic) BOOL isTakingPhoto;
 @property (nonatomic, strong) UIView *spinnerView;
@@ -42,7 +43,10 @@
 @property (nonatomic, strong) STMImagePickerController *imagePickerController;
 @property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
 
-//@property (nonatomic, strong) NSMutableArray *availableSourceTypes;
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic) CGFloat shiftDistance;
+@property (nonatomic) BOOL viewFrameWasChanged;
+
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
 @end
@@ -66,17 +70,6 @@
     
 }
 
-/*
-- (NSMutableArray *)availableSourceTypes {
-
-    if (!_availableSourceTypes) {
-        _availableSourceTypes = [NSMutableArray array];
-    }
-    return _availableSourceTypes;
-    
-}
-*/
-
 - (NSFetchedResultsController *)photoReportPicturesResultsController {
     
     if (!_photoReportPicturesResultsController) {
@@ -85,7 +78,7 @@
         
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
+        request.predicate = [self campaignPredicate];
         
         _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 
@@ -95,6 +88,46 @@
     
     return _photoReportPicturesResultsController;
     
+}
+
+- (NSPredicate *)campaignPredicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    NSPredicate *campaignPredicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
+    
+    [subpredicates addObject:campaignPredicate];
+    
+//    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+//        [subpredicates addObject:[NSPredicate predicateWithFormat:@"outlet.name CONTAINS[cd] %@", self.searchBar.text]];
+//    }
+    
+    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    return predicate;
+    
+}
+
+- (NSPredicate *)outletPredicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    NSPredicate *outletPredicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
+    
+    [subpredicates addObject:outletPredicate];
+    
+    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
+    }
+    
+    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    return predicate;
+
 }
 
 - (void)setCampaign:(STMCampaign *)campaign {
@@ -118,7 +151,7 @@
         
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
+        request.predicate = [self outletPredicate];
         
         NSError *error;
         NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
@@ -181,26 +214,6 @@
     }
     
     return _spinnerView;
-    
-}
-
-- (void)setCurrentSection:(NSUInteger)currentSection {
-    
-    if (currentSection != _currentSection) {
-        
-        NSUInteger previousSection = _currentSection;
-        
-        _currentSection = currentSection;
-
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:previousSection]];
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:currentSection]];
-        
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:currentSection];
-        
-        UICollectionViewLayoutAttributes *headerAttribute = [self.collectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
-        [self.collectionView scrollRectToVisible:headerAttribute.frame animated:YES];
-        
-    }
     
 }
 
@@ -294,7 +307,7 @@
     
     [self cancelButtonPressed:sender];
     
-    STMOutlet *outlet = self.outlets[self.currentSection];
+    STMOutlet *outlet = self.selectedOutlet;
     STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
     photoReport.isFantom = @NO;
     photoReport.outlet = outlet;
@@ -312,8 +325,6 @@
     self.photoReportPicturesResultsController = nil;
     self.outlets = nil;
     
-    STMOutlet *selectedOutlet = self.selectedPhotoReport.outlet;
-    
     NSError *error;
     if (![self.photoReportPicturesResultsController performFetch:&error]) {
         
@@ -323,14 +334,14 @@
         
         if (!self.isUpdating) {
             
+            BOOL searchBarWasActive = [self.searchBar isFirstResponder];
+            
             [self.collectionView reloadData];
             
-            if (selectedOutlet) {
-                
-                self.currentSection = [self.outlets indexOfObject:selectedOutlet];
-                
+            if (searchBarWasActive) {
+                [self.searchBar becomeFirstResponder];
             }
-            
+
         }
         
     }
@@ -353,6 +364,8 @@
     STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
     photoReport.isFantom = @NO;
     photoReport.outlet = outlet;
+    
+    self.selectedOutlet = outlet;
 
 //    [self.document saveDocument:^(BOOL success) {
 //        if (success) {
@@ -361,8 +374,6 @@
 //    }];
     
     self.selectedPhotoReport = photoReport;
-
-    self.currentSection = tag;
 
     [(UIView *)[sender view] setBackgroundColor:ACTIVE_BLUE_COLOR];
     
@@ -386,44 +397,6 @@
     }
     
 }
-
-/*
-- (void)showImagePickerSelector {
-
-    self.availableSourceTypes = nil;
-    
-    BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
-    BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
-//    BOOL savedPhotosAlbum = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
-    
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMAGE SOURCE", nil) message:NSLocalizedString(@"CHOOSE TYPE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
-    alert.tag = 1;
-    
-    if (photoLibrary) {
-     
-        [alert addButtonWithTitle:NSLocalizedString(@"PHOTO LIBRARY", nil)];
-        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypePhotoLibrary]];
-        
-    }
-    
-    if (camera) {
-        
-        [alert addButtonWithTitle:NSLocalizedString(@"CAMERA", nil)];
-        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeCamera]];
-
-    }
-    
-//    if (savedPhotosAlbum) {
-//        
-//        [alert addButtonWithTitle:NSLocalizedString(@"SAVED PHOTOS ALBUM", nil)];
-//        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeSavedPhotosAlbum]];
-//
-//    }
-    
-    [alert show];
-    
-}
-*/
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
     
@@ -527,18 +500,6 @@
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-
-/*
-    if (alertView.tag == 1) {
-        
-        if (buttonIndex > 0) {
-            
-            [self showImagePickerForSourceType:[self.availableSourceTypes[buttonIndex-1] intValue]];
-            
-        }
-        
-    }
-*/
     
 }
 
@@ -594,7 +555,9 @@
     
     headerView.tag = indexPath.section;
     
-    if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
+    STMOutlet *outlet = self.outlets[indexPath.section];
+
+    if (outlet == self.selectedOutlet) {
 
         headerView.backgroundColor = ACTIVE_BLUE_COLOR;
 
@@ -603,8 +566,6 @@
         headerView.backgroundColor = [UIColor whiteColor];
 
     }
-    
-    STMOutlet *outlet = self.outlets[indexPath.section];
     
     UILabel *label;
     
@@ -661,7 +622,6 @@
     
     STMOutlet *outlet = self.outlets[indexPath.section];
     self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
-    self.currentSection = indexPath.section;
     
     [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
     
@@ -778,6 +738,115 @@
  
 }
 
+
+#pragma mark - search & UISearchBarDelegate
+
+- (void)searchButtonPressed {
+    
+    [self.searchBar becomeFirstResponder];
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
+    
+    self.parentViewController.navigationItem.rightBarButtonItem = nil;
+    
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    [self fetchPhotoReport];
+    
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = YES;
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = NO;
+    searchBar.text = nil;
+    
+    [self hideKeyboard];
+    [self fetchPhotoReport];
+    
+}
+
+
+- (void)hideKeyboard {
+    
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
+    
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    [self hideKeyboard];
+    
+}
+
+
+#pragma mark - keyboard show / hide
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
+    CGFloat toolbarHeight = self.navigationController.toolbar.frame.size.height;
+    
+    self.shiftDistance = keyboardHeight - tabBarHeight - toolbarHeight;
+    
+    if (!self.viewFrameWasChanged) {
+        
+        [self changeViewFrameByDistance:self.shiftDistance];
+        self.viewFrameWasChanged = YES;
+
+    }
+    
+}
+
+- (void)keyboardWillBeHidden:(NSNotification *)notification {
+    
+    if (self.viewFrameWasChanged) {
+        
+        [self changeViewFrameByDistance:-self.shiftDistance];
+        self.viewFrameWasChanged = NO;
+        
+    }
+    
+}
+
+- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
+    
+    CGRect keyboardRect = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
+    
+    return keyboardRect.size.height;
+    
+}
+
+- (void)changeViewFrameByDistance:(CGFloat)distance {
+    
+    const float movementDuration = 0.5f;
+    
+    [UIView beginAnimations:@"animation" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:movementDuration];
+    
+    CGFloat x = self.collectionView.frame.origin.x;
+    CGFloat y = self.collectionView.frame.origin.y;
+    CGFloat width = self.collectionView.frame.size.width;
+    CGFloat height = self.collectionView.frame.size.height;
+    
+    self.collectionView.frame = CGRectMake(x, y, width, height - distance);
+    
+    [UIView commitAnimations];
+
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addSpinner {
@@ -803,8 +872,27 @@
 
 - (void)addObservers {
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photosCountChanged) name:@"photosCountChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentLocationWasUpdated:) name:@"currentLocationWasUpdated" object:self.locationTracker];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+//    [nc addObserver:self
+//           selector:@selector(keyboardWillShow:)
+//               name:UIKeyboardWillShowNotification
+//             object:nil];
+//    
+//    [nc addObserver:self
+//           selector:@selector(keyboardWillBeHidden:)
+//               name:UIKeyboardWillHideNotification
+//             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(photosCountChanged)
+               name:@"photosCountChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(currentLocationWasUpdated:)
+               name:@"currentLocationWasUpdated"
+             object:self.locationTracker];
     
 }
 
@@ -815,6 +903,13 @@
 }
 
 - (void)customInit {
+
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.collectionView.frame.size.width, 44)];
+    self.searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.searchBar.delegate = self;
+
+    [self.view addSubview:self.searchBar];
+    self.collectionView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
 
     [self addObservers];
     [self addSpinner];

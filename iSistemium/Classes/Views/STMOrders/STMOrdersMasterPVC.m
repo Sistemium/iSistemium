@@ -17,6 +17,9 @@
 @interface STMOrdersMasterPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
+@property (nonatomic, strong) STMOrdersOutletTVC *outletTVC;
+@property (nonatomic, strong) STMOrdersDateTVC *dateTVC;
+@property (nonatomic, strong) STMOrdersSalesmanTVC *salesmanTVC;
 
 @property (nonatomic, strong) UISegmentedControl *segmentedControl;
 
@@ -92,6 +95,7 @@
     self.splitVC.selectedDate = nil;
     self.splitVC.selectedOutlet = nil;
     self.splitVC.selectedSalesman = nil;
+    self.splitVC.searchString = nil;
     
     STMOrdersMasterTVC *masterTVC = self.viewControllers[0];
     [masterTVC resetFilter];
@@ -100,7 +104,11 @@
 
 - (void)updateResetFilterButtonState {
     
-    self.resetFilterButton.enabled = (self.splitVC.selectedDate || self.splitVC.selectedOutlet || self.splitVC.selectedSalesman);
+    self.resetFilterButton.enabled = (self.splitVC.selectedDate ||
+                                      self.splitVC.selectedOutlet ||
+                                      self.splitVC.selectedSalesman ||
+                                      (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""])
+                                      );
     
 }
 
@@ -139,15 +147,15 @@
     switch (index) {
             
         case 0:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            vc = self.outletTVC;
             break;
 
         case 1:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersDateTVC alloc] init];
+            vc = self.dateTVC;
             break;
 
         case 2:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersSalesmanTVC alloc] init];
+            vc = self.salesmanTVC;
             break;
             
         default:
@@ -161,6 +169,40 @@
     
 }
 
+- (STMOrdersOutletTVC *)outletTVC {
+    
+    if (!_outletTVC) {
+        _outletTVC = [[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    }
+    return _outletTVC;
+    
+}
+
+- (STMOrdersDateTVC *)dateTVC {
+    
+    if (!_dateTVC) {
+        _dateTVC = [[STMOrdersDateTVC alloc] init];
+    }
+    return _dateTVC;
+    
+}
+
+- (STMOrdersSalesmanTVC *)salesmanTVC {
+    
+    if (!_salesmanTVC) {
+        _salesmanTVC = [[STMOrdersSalesmanTVC alloc] init];
+    }
+    return _salesmanTVC;
+    
+}
+
+- (void)refreshTables {
+    
+    [self.outletTVC refreshTable];
+    [self.dateTVC refreshTable];
+    [self.salesmanTVC refreshTable];
+    
+}
 
 #pragma mark - Page View Controller Data Source
 

@@ -279,19 +279,25 @@
     
     if (!_unloadedPicturesResultsController) {
         
-        STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
+        NSManagedObjectContext *context = self.session.document.managedObjectContext;
         
-        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil, [self photoEntitiesNames]];
-        
-        request.sortDescriptors = @[sortDescriptor];
-        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
-        
-        _unloadedPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                                 managedObjectContext:self.session.document.managedObjectContext
-                                                                                   sectionNameKeyPath:nil
-                                                                                            cacheName:nil];
-        _unloadedPicturesResultsController.delegate = self;
+        if (context) {
+            
+            STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
+            
+            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil, [self photoEntitiesNames]];
+            
+            request.sortDescriptors = @[sortDescriptor];
+            request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
+            
+            _unloadedPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                     managedObjectContext:context
+                                                                                       sectionNameKeyPath:nil
+                                                                                                cacheName:nil];
+            _unloadedPicturesResultsController.delegate = self;
+
+        }
         
     }
     return _unloadedPicturesResultsController;
@@ -554,8 +560,9 @@
             
         } else {
             
-            NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+            NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
             [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            [self deletePicture:picture];
             
         }
         
@@ -604,6 +611,9 @@
         fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
         
     }
+    
+#warning should check filename is not nil
+//https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/5572b38ef505b5ccf00d93eb
     
     [self setThumbnailForPicture:weakPicture fromImageData:weakData];
     [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
