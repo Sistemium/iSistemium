@@ -9,6 +9,8 @@
 #import "STMController.h"
 #import <CoreData/CoreData.h>
 #import "STMRecordStatus.h"
+#import <Crashlytics/Crashlytics.h>
+
 
 @interface STMObjectsController : STMController
 

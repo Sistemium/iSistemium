@@ -21,7 +21,6 @@
 
 #import "STMNS.h"
 
-#import <Crashlytics/Crashlytics.h>
 
 @interface STMObjectsController()
 

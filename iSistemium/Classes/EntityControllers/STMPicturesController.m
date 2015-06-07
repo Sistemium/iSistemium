@@ -612,19 +612,27 @@
         
     }
     
-#warning should check filename is not nil
-//https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/5572b38ef505b5ccf00d93eb
+//#warning should check filename is not nil
+////https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/5572b38ef505b5ccf00d93eb
     
-    [self setThumbnailForPicture:weakPicture fromImageData:weakData];
-    [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
-    [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
+    if (fileName) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"downloadPicture" object:weakPicture];
-//        NSLog(@"images set for %@", weakPicture.href);
+        [self setThumbnailForPicture:weakPicture fromImageData:weakData];
+        [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
+        [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
         
-    });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"downloadPicture" object:weakPicture];
+            //        NSLog(@"images set for %@", weakPicture.href);
+            
+        });
+
+    } else {
+        
+        CLS_LOG(@"nil filename for picture %@", picture);
+        
+    }
     
 }
 
