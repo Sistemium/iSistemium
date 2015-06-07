@@ -426,7 +426,6 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
 
 }
 
