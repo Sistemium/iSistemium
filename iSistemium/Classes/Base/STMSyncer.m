@@ -650,6 +650,7 @@
 }
 
 #pragma mark - syncing
+#pragma mark - send
 
 - (void)sendData {
         
@@ -842,6 +843,9 @@
     
 }
 
+
+#pragma mark - receive
+
 - (void)checkNews {
     
     self.errorOccured = NO;
@@ -852,9 +856,6 @@
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         if (!connectionError) {
-            
-            NSLog(@"response %@", response);
-            NSLog(@"data %@", data);
             
             NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
             
@@ -892,9 +893,21 @@
         if (!error) {
             
             NSLog(@"responseJSON %@", responseJSON);
-            NSLog(@"error %@", error.localizedDescription);
+
+            NSArray *entitiesNames = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties.name"];
+            NSLog(@"entitiesNames %@", entitiesNames);
             
-            [self receiveData];
+            NSMutableArray *tempArray = [NSMutableArray array];
+            
+            for (NSString *entityName in entitiesNames) {
+                [tempArray addObject:[@"STM" stringByAppendingString:entityName]];
+            }
+            
+            self.entitySyncNames = tempArray;
+            self.entityCount = tempArray.count;
+            
+//            [self receiveData];
+            [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
 
         } else {
             
@@ -916,21 +929,27 @@
     
     if (self.syncerState == STMSyncerReceiveData) {
         
-        if (!self.receivingEntitiesNames || [self.receivingEntitiesNames containsObject:@"STMEntity"]) {
-        
-            self.entityCount = 1;
-            self.errorOccured = NO;
+        if (self.entitySyncNames.count > 1) {
             
-            [self checkConditionForReceivingEntityWithName:@"STMEntity"];
-
         } else {
-
-            self.entityCount = self.receivingEntitiesNames.count;
             
-            for (NSString *name in self.receivingEntitiesNames) {
-                [self checkConditionForReceivingEntityWithName:name];
+            if (!self.receivingEntitiesNames || [self.receivingEntitiesNames containsObject:@"STMEntity"]) {
+                
+                self.entityCount = 1;
+                self.errorOccured = NO;
+                
+                [self checkConditionForReceivingEntityWithName:@"STMEntity"];
+                
+            } else {
+                
+                self.entityCount = self.receivingEntitiesNames.count;
+                
+                for (NSString *name in self.receivingEntitiesNames) {
+                    [self checkConditionForReceivingEntityWithName:name];
+                }
+                
             }
-            
+
         }
         
     }
