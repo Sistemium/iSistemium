@@ -53,6 +53,7 @@
 @property (nonatomic) BOOL checkSending;
 @property (nonatomic) BOOL sendOnce;
 @property (nonatomic) BOOL errorOccured;
+@property (nonatomic) BOOL fullSuncWasDone;
 
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
@@ -848,38 +849,53 @@
 
 - (void)checkNews {
     
-    self.errorOccured = NO;
-    
-    NSURL *newsURL = [[NSURL URLWithString:self.apiUrlString] URLByAppendingPathComponent:@"stc.news"];
-    NSURLRequest *request = [[STMAuthController authController] authenticateRequest:[NSURLRequest requestWithURL:newsURL]];
-    
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    if (self.fullSuncWasDone) {
         
-        if (!connectionError) {
+        self.errorOccured = NO;
+        
+        NSURL *newsURL = [[NSURL URLWithString:self.apiUrlString] URLByAppendingPathComponent:@"stc.news"];
+        NSURLRequest *request = [[STMAuthController authController] authenticateRequest:[NSURLRequest requestWithURL:newsURL]];
+        
+        [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
             
-            NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
-            
-            switch (statusCode) {
-                    
-                case 200:
-                    [self parseNewsData:data];
-                    break;
-                    
-                default:
-                    [self receivingDidFinish];
-                    break;
-                    
+            if (!connectionError) {
+                
+                NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+                
+                switch (statusCode) {
+                        
+                    case 200:
+                        [self parseNewsData:data];
+                        break;
+                        
+                    case 204:
+                        NSLog(@"    news: 204 No Content");
+                        [self receivingDidFinish];
+                        break;
+                        
+                    default:
+                        NSLog(@"    news statusCode: %d", statusCode);
+                        [self receivingDidFinish];
+                        break;
+                        
+                }
+                
+            } else {
+                
+                NSLog(@"connectionError %@", connectionError.localizedDescription);
+                self.errorOccured = YES;
+                [self receivingDidFinish];
+                
             }
             
-        } else {
-            
-            NSLog(@"connectionError %@", connectionError.localizedDescription);
-            self.errorOccured = YES;
-            [self receivingDidFinish];
-            
-        }
+        }];
         
-    }];
+    } else {
+        
+        [self receiveData];
+        
+    }
+    
     
 }
 
@@ -892,10 +908,17 @@
         
         if (!error) {
             
-            NSLog(@"responseJSON %@", responseJSON);
+//            NSLog(@"responseJSON %@", responseJSON);
 
             NSArray *entitiesNames = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties.name"];
-            NSLog(@"entitiesNames %@", entitiesNames);
+//            NSLog(@"entitiesNames %@", entitiesNames);
+            NSArray *objectsCount = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties.cnt"];
+            
+            NSDictionary *news = [NSDictionary dictionaryWithObjects:objectsCount forKeys:entitiesNames];
+
+            for (NSString *key in news.allKeys) {
+                NSLog(@"%@ — %@", key, news[key]);
+            }
             
             NSMutableArray *tempArray = [NSMutableArray array];
             
@@ -929,29 +952,26 @@
     
     if (self.syncerState == STMSyncerReceiveData) {
         
-        if (self.entitySyncNames.count > 1) {
+        if (!self.receivingEntitiesNames || [self.receivingEntitiesNames containsObject:@"STMEntity"]) {
+            
+            self.entityCount = 1;
+            self.errorOccured = NO;
+            
+            [self checkConditionForReceivingEntityWithName:@"STMEntity"];
             
         } else {
             
-            if (!self.receivingEntitiesNames || [self.receivingEntitiesNames containsObject:@"STMEntity"]) {
-                
-                self.entityCount = 1;
-                self.errorOccured = NO;
-                
-                [self checkConditionForReceivingEntityWithName:@"STMEntity"];
-                
-            } else {
-                
-                self.entityCount = self.receivingEntitiesNames.count;
-                
-                for (NSString *name in self.receivingEntitiesNames) {
-                    [self checkConditionForReceivingEntityWithName:name];
-                }
-                
-            }
+            self.entitySyncNames = self.receivingEntitiesNames.mutableCopy;
+            self.entityCount = self.entitySyncNames.count;
 
+            [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+            
+//            for (NSString *name in self.receivingEntitiesNames) {
+//                [self checkConditionForReceivingEntityWithName:name];
+//            }
+            
         }
-        
+
     }
     
 }
@@ -1085,6 +1105,8 @@
 - (void)receivingDidFinish {
     
     [self saveReceiveDate];
+    
+    self.fullSuncWasDone = YES;
     
     [self.document saveDocument:^(BOOL success) {
         
