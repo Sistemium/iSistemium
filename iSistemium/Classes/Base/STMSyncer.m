@@ -917,7 +917,7 @@
             NSDictionary *news = [NSDictionary dictionaryWithObjects:objectsCount forKeys:entitiesNames];
 
             for (NSString *key in news.allKeys) {
-                NSLog(@"%@ — %@", key, news[key]);
+                NSLog(@"    news:STM%@ — %@ objects", key, news[key]);
             }
             
             NSMutableArray *tempArray = [NSMutableArray array];
