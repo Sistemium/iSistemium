@@ -47,6 +47,7 @@
 @property (nonatomic, strong) Reachability *internetReachability;
 
 @property (nonatomic) BOOL downloadAlertWasShown;
+@property (nonatomic) BOOL newsReceiving;
 
 @end
 
@@ -227,13 +228,23 @@
 
 #pragma mark -
 
+- (void)syncerNewsHaveObjects:(NSNotification *)notification {
+    
+    self.newsReceiving = YES;
+    self.totalEntityCount = [(notification.userInfo)[@"totalNumberOfObjects"] floatValue];
+    
+}
+
 - (void)entitiesReceivingDidFinish {
+
+    self.newsReceiving = NO;
     self.totalEntityCount = (float)[STMEntityController stcEntities].allKeys.count;
+    
 }
 
 - (void)entityCountdownChange:(NSNotification *)notification {
     
-    if ([notification.object isKindOfClass:[STMSyncer class]]) {
+    if ([notification.object isKindOfClass:[STMSyncer class]] && !self.newsReceiving) {
         
         float countdownValue = [(notification.userInfo)[@"countdownValue"] floatValue];
         self.progressBar.progress = (self.totalEntityCount - countdownValue) / self.totalEntityCount;
@@ -258,6 +269,12 @@
         self.numberOfObjectLabel.text = [NSString stringWithFormat:@"%@ %@ %@", receiveString, numberOfObjects, NSLocalizedString(numberOfObjectsString, nil)];
         
         self.previousNumberOfObjects = numberOfObjects.intValue;
+        
+        if (self.newsReceiving) {
+            
+            self.progressBar.progress = numberOfObjects.floatValue / self.totalEntityCount;
+            
+        }
         
     }
     
@@ -746,6 +763,11 @@
     [nc addObserver:self
            selector:@selector(entityCountdownChange:)
                name:@"entityCountdownChange"
+             object:syncer];
+
+    [nc addObserver:self
+           selector:@selector(syncerNewsHaveObjects:)
+               name:@"syncerNewsHaveObjects"
              object:syncer];
     
     [nc addObserver:self

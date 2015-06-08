@@ -929,6 +929,8 @@
             self.entitySyncNames = tempArray;
             self.entityCount = tempArray.count;
             
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerNewsHaveObjects" object:self userInfo:@{@"totalNumberOfObjects": [objectsCount valueForKeyPath:@"@sum.integerValue"]}];
+            
 //            [self receiveData];
             [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
 
@@ -1299,8 +1301,6 @@
             
             self.syncing = NO;
 
-//TODO: Check if STMEntity was changed — receive data againg
-            
             [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMEntity class])]];
             
             BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
