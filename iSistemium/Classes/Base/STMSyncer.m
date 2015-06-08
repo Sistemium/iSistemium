@@ -266,7 +266,7 @@
                 
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 self.syncing = YES;
-                [self receiveData];
+                [self checkNews];
                 
                 break;
                 
@@ -842,6 +842,76 @@
     
 }
 
+- (void)checkNews {
+    
+    self.errorOccured = NO;
+    
+    NSURL *newsURL = [[NSURL URLWithString:self.apiUrlString] URLByAppendingPathComponent:@"stc.news"];
+    NSURLRequest *request = [[STMAuthController authController] authenticateRequest:[NSURLRequest requestWithURL:newsURL]];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        
+        if (!connectionError) {
+            
+            NSLog(@"response %@", response);
+            NSLog(@"data %@", data);
+            
+            NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+            
+            switch (statusCode) {
+                    
+                case 200:
+                    [self parseNewsData:data];
+                    break;
+                    
+                default:
+                    [self receivingDidFinish];
+                    break;
+                    
+            }
+            
+        } else {
+            
+            NSLog(@"connectionError %@", connectionError.localizedDescription);
+            self.errorOccured = YES;
+            [self receivingDidFinish];
+            
+        }
+        
+    }];
+    
+}
+
+- (void)parseNewsData:(NSData *)newsData {
+    
+    if (newsData) {
+        
+        NSError *error;
+        NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:newsData options:NSJSONReadingMutableContainers error:&error];
+        
+        if (!error) {
+            
+            NSLog(@"responseJSON %@", responseJSON);
+            NSLog(@"error %@", error.localizedDescription);
+            
+            [self receiveData];
+
+        } else {
+            
+            NSLog(@"parse news json error: %@", error.localizedDescription);
+            [self receivingDidFinish];
+            
+        }
+        
+    } else {
+        
+        NSLog(@"empty news data received");
+        [self receivingDidFinish];
+        
+    }
+    
+}
+
 - (void)receiveData {
     
     if (self.syncerState == STMSyncerReceiveData) {
@@ -980,17 +1050,8 @@
     self.entityCount -= 1;
     
     if (self.entityCount == 0) {
-        
-        [self saveReceiveDate];
-        
-        [self.document saveDocument:^(BOOL success) {
-        
-            if (success) {
-                self.syncing = NO;
-                self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
-            }
-            
-        }];
+
+        [self receivingDidFinish];
         
     } else {
         
@@ -1000,6 +1061,21 @@
         
     }
     
+}
+
+- (void)receivingDidFinish {
+    
+    [self saveReceiveDate];
+    
+    [self.document saveDocument:^(BOOL success) {
+        
+        if (success) {
+            self.syncing = NO;
+            self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
+        }
+        
+    }];
+
 }
 
 
