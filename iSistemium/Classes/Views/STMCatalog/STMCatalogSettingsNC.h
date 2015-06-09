@@ -17,4 +17,6 @@
 
 - (void)updateSettings:(NSArray *)newSettings;
 
+- (void)dismissSelf;
+
 @end

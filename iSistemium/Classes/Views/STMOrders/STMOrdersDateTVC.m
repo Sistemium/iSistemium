@@ -55,6 +55,14 @@
 
 }
 
+- (void)performFetch {
+    
+    self.saleOrdersDates = nil;
+
+    [super performFetch];
+    
+}
+
 - (NSArray *)ordersDates {
     
     NSMutableArray *ordersDates = [NSMutableArray array];
@@ -201,7 +209,6 @@
     [super viewWillAppear:animated];
 
     [self performFetch];
-    self.saleOrdersDates = nil;
     
     if (self.splitVC.selectedDate) {
         

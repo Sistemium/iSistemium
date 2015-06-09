@@ -681,6 +681,13 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         
     }
     
+    if (saleOrderPosition.article.extraLabel) {
+     
+        appendString = [NSString stringWithFormat:@", %@", saleOrderPosition.article.extraLabel];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+
+    }
+    
     return attributedDetailedString;
     
 }

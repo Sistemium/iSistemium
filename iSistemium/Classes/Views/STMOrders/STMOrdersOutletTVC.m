@@ -9,6 +9,7 @@
 #import "STMOrdersOutletTVC.h"
 #import "STMOrdersSVC.h"
 
+
 @interface STMOrdersOutletTVC ()
 
 @end
@@ -95,6 +96,25 @@
     
     self.splitVC.searchString = nil;
     [super searchBarCancelButtonClicked:searchBar];
+    
+}
+
+- (void)showSearchButton {
+    
+    NSMutableArray *toolbarItems = self.parentViewController.toolbarItems.mutableCopy;
+    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+    [toolbarItems addObject:searchButton];
+    [self.parentViewController setToolbarItems:toolbarItems];
+    
+}
+
+- (void)hideSearchButton {
+
+    if ([self.parentViewController isKindOfClass:[STMOrdersMasterPVC class]]) {
+        
+        [self.parentViewController setToolbarItems:[(STMOrdersMasterPVC *)self.parentViewController defaultToolbarItemsArray]];
+                
+    }
     
 }
 
@@ -197,6 +217,17 @@
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
     }
+    
+    if (self.searchFieldIsScrolledAway) {
+        [self showSearchButton];
+    }
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    [self hideSearchButton];
     
 }
 

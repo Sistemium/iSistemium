@@ -83,7 +83,8 @@
     
     if (!_resetFilterButton) {
 
-        _resetFilterButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"RESET FILTER", nil) style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
+//        _resetFilterButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"RESET FILTER", nil) style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
+        _resetFilterButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Clear Filters-25"] style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
 
     }
     return _resetFilterButton;
@@ -204,6 +205,14 @@
     
 }
 
+- (NSArray *)defaultToolbarItemsArray {
+    
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    return @[self.resetFilterButton, flexibleSpace];
+
+}
+
+
 #pragma mark - Page View Controller Data Source
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
@@ -217,6 +226,7 @@
     return [self viewControllerAtIndex:self.currentIndex+1 storyboard:self.storyboard];
     
 }
+
 
 #pragma mark - Page View Controller Delegate
 
@@ -251,9 +261,8 @@
     STMOrdersMasterTVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
-    
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self setToolbarItems:@[flexibleSpace, self.resetFilterButton, flexibleSpace]];
+
+    [self setToolbarItems:[self defaultToolbarItemsArray]];
     
     [self updateResetFilterButtonState];
     

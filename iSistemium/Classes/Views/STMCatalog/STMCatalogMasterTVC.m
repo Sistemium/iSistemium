@@ -421,12 +421,13 @@
     
     self.navigationItem.title = (self.splitVC.currentArticleGroup) ? self.splitVC.currentArticleGroup.name : NSLocalizedString(@"CATALOG", nil);
     
+    [super customInit];
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
 
 }
 
