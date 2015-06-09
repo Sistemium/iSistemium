@@ -995,8 +995,25 @@
     } else {
         
         [self.entitySyncNames removeObject:self.entitySyncNames.firstObject];
-        
-        [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+
+        if (self.entitySyncNames.firstObject) {
+            
+            [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+            
+        } else {
+            
+            [self saveReceiveDate];
+            
+            [self.document saveDocument:^(BOOL success) {
+                
+                if (success) {
+                    self.syncing = NO;
+                    self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
+                }
+                
+            }];
+
+        }
         
     }
     
