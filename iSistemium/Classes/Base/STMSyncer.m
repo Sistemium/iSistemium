@@ -277,6 +277,7 @@
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 self.syncing = NO;
                 self.sendOnce = NO;
+                self.checkSending = NO;
 
                 [STMObjectsController dataLoadingFinished];
 //                [STMPicturesController checkUploadedPhotos];
