@@ -1118,16 +1118,7 @@
             
         } else {
             
-            [self saveReceiveDate];
-            
-            [self.document saveDocument:^(BOOL success) {
-                
-                if (success) {
-                    self.syncing = NO;
-                    self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
-                }
-                
-            }];
+            [self receivingDidFinish];
 
         }
         
