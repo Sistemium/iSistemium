@@ -852,7 +852,7 @@
 
 - (void)checkNews {
     
-    if (self.fullSuncWasDone) {
+    if (self.fullSuncWasDone && !self.receivingEntitiesNames) {
         
         self.errorOccured = NO;
         
@@ -976,6 +976,7 @@
         } else {
             
             self.entitySyncNames = self.receivingEntitiesNames.mutableCopy;
+            self.receivingEntitiesNames = nil;
             self.entityCount = self.entitySyncNames.count;
 
             [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
