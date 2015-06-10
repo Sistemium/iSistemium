@@ -1301,7 +1301,7 @@
                 
                 if ([entity.propertiesByName.allKeys containsObject:orderBy]) {
                     
-                    BOOL ascending = (order && [order caseInsensitiveCompare:@"acs"] == NSOrderedSame);
+                    BOOL ascending = (order && [order caseInsensitiveCompare:@"asс"] == NSOrderedSame);
                     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending];
                     
                     objects = [objects sortedArrayUsingDescriptors:@[sortDescriptor]];
