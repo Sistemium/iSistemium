@@ -1278,6 +1278,84 @@
 
 #pragma mark - create dictionary from object
 
++ (NSDictionary *)jsonForObjectsWithParameters:(NSDictionary *)parameters error:(NSError *__autoreleasing *)error {
+    
+    NSDictionary *jsonDic = nil;
+    NSString *errorMessage = nil;
+    
+    if ([parameters isKindOfClass:[NSDictionary class]]) {
+        
+        NSString *entityName = [@"STM" stringByAppendingString:parameters[@"entityName"]];
+        NSString *size = parameters[@"size"];
+        NSString *orderBy = parameters[@"orderBy"];
+        NSString *order = parameters[@"order"];
+        
+        if ([[STMObjectsController localDataModelEntityNames] containsObject:entityName]) {
+            
+            BOOL sessionIsRunning = [[self.session status] isEqualToString:@"running"];
+            if (sessionIsRunning && self.document) {
+                
+                NSArray *objects = [STMObjectsController objectsForEntityName:entityName];
+                
+                STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
+                
+                if ([entity.propertiesByName.allKeys containsObject:orderBy]) {
+                    
+                    BOOL ascending = (order && [order caseInsensitiveCompare:@"asс"] == NSOrderedSame);
+                    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending];
+                    
+                    objects = [objects sortedArrayUsingDescriptors:@[sortDescriptor]];
+                    
+                    NSInteger requestedNumberOfObjects = MIN([size integerValue], objects.count);
+                    NSRange range;
+                    range.location = 0;
+                    range.length = requestedNumberOfObjects;
+                    
+                    objects = [objects subarrayWithRange:range];
+                    
+                    NSMutableArray *jsonObjectsArray = [NSMutableArray array];
+                    
+                    for (NSManagedObject *object in objects) [jsonObjectsArray addObject:[STMObjectsController dictionaryForObject:object]];
+                    
+                    jsonDic = @{@"objects": jsonObjectsArray,
+                                @"requestParameters": parameters};
+                    
+                } else {
+                    
+                    errorMessage = [NSString stringWithFormat:@"%@ property %@ not found", entityName, orderBy];
+                    
+                }
+                
+            } else {
+                
+                errorMessage = [NSString stringWithFormat:@"session is not running, please try later"];
+                
+            }
+            
+        } else {
+            
+            errorMessage = [NSString stringWithFormat:@"%@ not found in data model", entityName];
+            
+        }
+        
+    } else {
+        
+        errorMessage = [NSString stringWithFormat:@"requestObjects: parameters is not NSDictionary"];
+        
+    }
+
+    if (errorMessage) {
+        
+        *error = [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier]
+                                     code:0
+                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+        
+    }
+    
+    return jsonDic;
+    
+}
+
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object {
     
     if (object) {

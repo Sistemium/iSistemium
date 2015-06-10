@@ -412,7 +412,7 @@
                       @"maxSpeedThreshold"        : @"60",
                       @"locationTrackerAutoStart" : @YES,
                       @"locationTrackerStartTime": @"8.0",
-                      @"locationTrackerFinishTime": @"22.0",
+                      @"locationTrackerFinishTime": @"23.5",
                       @"batteryTrackerAutoStart" : @YES,
                       @"batteryTrackerStartTime": @"8.0",
                       @"batteryTrackerFinishTime": @"22.0",

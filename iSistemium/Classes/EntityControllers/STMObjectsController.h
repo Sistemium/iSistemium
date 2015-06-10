@@ -31,6 +31,8 @@
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName;
 
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object;
++ (NSDictionary *)jsonForObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error;
+
 + (void)syncObject:(NSDictionary *)objectDictionary;
 
 + (void)removeObject:(NSManagedObject *)object;

@@ -449,6 +449,30 @@
     
 }
 
+- (void)sendObjects:(NSDictionary *)parameters {
+    
+    NSError *error;
+    NSDictionary *jsonDic = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
+    
+    jsonDic = @{@"data": jsonDic[@"objects"]};
+    
+    if (error) {
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:error.localizedDescription type:@"error"];
+        
+    } else {
+        
+        if (jsonDic) {
+
+            NSData *JSONData = [NSJSONSerialization dataWithJSONObject:jsonDic options:0 error:nil];
+            [self startConnectionForSendData:JSONData];
+            
+        }
+        
+    }
+    
+}
+
 - (void)didReceiveRemoteNotification {
     [self upload];
 }
@@ -748,8 +772,9 @@
         NSDictionary *dataDictionary = @{@"data": syncDataArray};
         
         NSError *error;
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
+        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:0 error:&error];
         
+//        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
 //        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
 //        NSLog(@"send JSONString %@", JSONString);
         
@@ -1171,6 +1196,8 @@
     
     NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
     NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
+    
+//    NSLog(@"response %@", response);
     
     NSString *entityName = [self entityNameForConnection:connection];
     
