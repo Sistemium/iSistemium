@@ -452,6 +452,8 @@
     NSError *error;
     NSDictionary *jsonDic = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
     
+    jsonDic = @{@"data": jsonDic[@"objects"]};
+    
     if (error) {
         
         [[STMLogger sharedLogger] saveLogMessageWithText:error.localizedDescription type:@"error"];
@@ -461,38 +463,7 @@
         if (jsonDic) {
 
             NSData *JSONData = [NSJSONSerialization dataWithJSONObject:jsonDic options:0 error:nil];
-
-            NSURL *requestURL = [NSURL URLWithString:self.apiUrlString];
-            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
-            
-            request = [[self.authDelegate authenticateRequest:request] mutableCopy];
-            
-            if ([request valueForHTTPHeaderField:@"Authorization"]) {
-                
-                request.timeoutInterval = [self timeout];
-                request.HTTPShouldHandleCookies = NO;
-                [request setHTTPMethod:@"POST"];
-                [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-                [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
-                
-                request.HTTPBody = JSONData;
-                
-                NSLog(@"send %@", jsonDic);
-                
-                [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                    
-                    if (connectionError) {
-                        
-                        NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error.localizedDescription];
-                        [self.session.logger saveLogMessageWithText:errorMessage type:@"warning"];
-
-                    } else {
-                        NSLog(@"objects did send successfully");
-                    }
-                    
-                }];
-                
-            }
+            [self startConnectionForSendData:JSONData];
             
         }
         
@@ -1100,6 +1071,8 @@
     
     NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
     NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
+    
+//    NSLog(@"response %@", response);
     
     NSString *entityName = [self entityNameForConnection:connection];
     
