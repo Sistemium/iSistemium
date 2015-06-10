@@ -477,6 +477,8 @@
                 
                 request.HTTPBody = JSONData;
                 
+                NSLog(@"send %@", jsonDic);
+                
                 [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                     
                     if (connectionError) {
@@ -484,6 +486,8 @@
                         NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error.localizedDescription];
                         [self.session.logger saveLogMessageWithText:errorMessage type:@"warning"];
 
+                    } else {
+                        NSLog(@"objects did send successfully");
                     }
                     
                 }];

@@ -1285,7 +1285,7 @@
     
     if ([parameters isKindOfClass:[NSDictionary class]]) {
         
-        NSString *entityName = parameters[@"entityName"];
+        NSString *entityName = [@"STM" stringByAppendingString:parameters[@"entityName"]];
         NSString *size = parameters[@"size"];
         NSString *orderBy = parameters[@"orderBy"];
         NSString *order = parameters[@"order"];
