@@ -1303,7 +1303,21 @@
                     
                     NSLog(@"    %@: get %d objects", connectionEntityName, dataArray.count);
                     
-                    [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+                    NSUInteger pageRowCount = [responseJSON[@"page-row-count"] integerValue];
+                    NSUInteger pageSize = [responseJSON[@"page-size"] integerValue];
+                    
+                    if (pageRowCount < pageSize) {
+                        
+                        NSLog(@"    %@: pageRowCount < pageSize / No more content", connectionEntityName);
+                        
+                        [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+                        [self receiveNoContentStatusForEntityWithName:connectionEntityName];
+                        
+                    } else {
+                    
+                        [self nextReceiveEntityWithName:connectionEntityName];
+
+                    }
                     
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"getBunchOfObjects" object:self userInfo:@{@"count":@(dataArray.count)}];
                     
@@ -1368,6 +1382,11 @@
     
     clientEntity.eTag = eTag;
     
+}
+
+- (void)nextReceiveEntityWithName:(NSString *)entityName {
+    
+    [self fillETagWithTemporaryValueForEntityName:entityName];
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }
