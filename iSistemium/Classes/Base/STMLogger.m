@@ -108,8 +108,10 @@
     
     NSError *error;
     
-    NSDictionary *jsonDic = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
-    
+    NSArray *jsonArray = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
+    NSDictionary *jsonDic = @{@"objects": jsonArray,
+                              @"requestParameters": parameters};
+
     if (!error) {
 
         NSString *JSONString = [STMFunctions jsonStringFromDictionary:jsonDic];

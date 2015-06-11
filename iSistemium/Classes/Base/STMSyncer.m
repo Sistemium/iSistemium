@@ -452,9 +452,7 @@
 - (void)sendObjects:(NSDictionary *)parameters {
     
     NSError *error;
-    NSDictionary *jsonDic = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
-    
-    jsonDic = @{@"data": jsonDic[@"objects"]};
+    NSArray *jsonArray = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
     
     if (error) {
         
@@ -462,9 +460,11 @@
         
     } else {
         
-        if (jsonDic) {
+        if (jsonArray) {
 
-            NSData *JSONData = [NSJSONSerialization dataWithJSONObject:jsonDic options:0 error:nil];
+            NSData *JSONData = [NSJSONSerialization dataWithJSONObject:@{@"data": jsonArray}
+                                                               options:0
+                                                                 error:nil];
             [self startConnectionForSendData:JSONData];
             
         }
