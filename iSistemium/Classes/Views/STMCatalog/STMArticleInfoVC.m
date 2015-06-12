@@ -9,6 +9,7 @@
 #import "STMArticleInfoVC.h"
 #import "STMArticlePicturePVC.h"
 
+#define RESIZED_IMAGE_PATH_KEY @"resizedImagePath"
 
 @interface STMArticleInfoVC () <UITableViewDelegate, UITableViewDataSource>
 
@@ -21,7 +22,7 @@
 @property (nonatomic, strong) UIImageView *downImageView;
 
 @property (nonatomic, strong) NSMutableArray *articleInfo;
-
+@property (nonatomic, strong) NSMutableArray *picturesUnderObserving;
 
 @end
 
@@ -34,6 +35,15 @@
         _articleInfo = [NSMutableArray array];
     }
     return _articleInfo;
+    
+}
+
+- (NSMutableArray *)picturesUnderObserving {
+    
+    if (!_picturesUnderObserving) {
+        _picturesUnderObserving = [NSMutableArray array];
+    }
+    return _picturesUnderObserving;
     
 }
 
@@ -132,7 +142,8 @@
             
             [self.imageView addSubview:view];
             
-            [picture addObserver:self forKeyPath:@"resizedImagePath" options:NSKeyValueObservingOptionNew context:nil];
+            [picture addObserver:self forKeyPath:RESIZED_IMAGE_PATH_KEY options:NSKeyValueObservingOptionNew context:nil];
+            [self.picturesUnderObserving addObject:picture];
 
         }
         
@@ -145,6 +156,7 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     
     [self setupImage];
+    [self.picturesUnderObserving removeObject:object];
     [object removeObserver:self forKeyPath:keyPath context:context];
     
 }
@@ -445,6 +457,14 @@
 
 #pragma mark - view lifecycle
 
+- (void)removeObservers {
+    
+    for (NSManagedObject *object in self.picturesUnderObserving) {
+        [object removeObserver:self forKeyPath:RESIZED_IMAGE_PATH_KEY context:nil];
+    }
+    
+}
+
 - (void)customInit {
     
     if (self.article) {
@@ -474,6 +494,14 @@
     [super viewDidAppear:animated];
     [self setupToolbar];
 
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [self removeObservers];
+    
+    [super viewWillDisappear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {
