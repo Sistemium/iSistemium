@@ -53,7 +53,7 @@
 @property (nonatomic) BOOL checkSending;
 @property (nonatomic) BOOL sendOnce;
 @property (nonatomic) BOOL errorOccured;
-@property (nonatomic) BOOL fullSuncWasDone;
+@property (nonatomic) BOOL fullSyncWasDone;
 
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
@@ -711,18 +711,28 @@
 
     self.syncing = NO;
     
-    if (self.checkSending || self.syncerState == STMSyncerSendDataOnce) {
-        
-        self.checkSending = NO;
-        self.syncerState = STMSyncerIdle;
-        
-    } else {
-        
-        self.checkSending = YES;
-        self.syncerState = STMSyncerReceiveData;
-        
-    }
+    [self afterSendFurcation];
 
+}
+
+- (void)afterSendFurcation {
+    
+    if (!self.syncing) {
+
+        if (self.checkSending || self.syncerState == STMSyncerSendDataOnce) {
+            
+            self.checkSending = NO;
+            self.syncerState = STMSyncerIdle;
+            
+        } else {
+            
+            self.checkSending = YES;
+            self.syncerState = STMSyncerReceiveData;
+            
+        }
+
+    }
+    
 }
 
 - (NSData *)JSONFrom:(NSArray *)dataForSyncing {
@@ -877,7 +887,7 @@
 
 - (void)checkNews {
     
-    if (self.fullSuncWasDone && !self.receivingEntitiesNames) {
+    if (self.fullSyncWasDone && !self.receivingEntitiesNames) {
         
         self.errorOccured = NO;
         
@@ -1156,7 +1166,7 @@
     
     [self saveReceiveDate];
     
-    self.fullSuncWasDone = YES;
+    self.fullSyncWasDone = YES;
     
     [self.document saveDocument:^(BOOL success) {
         

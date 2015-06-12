@@ -222,7 +222,10 @@
 }
 
 - (void)downloadCloudTapped {
-    [self syncer].syncerState = STMSyncerReceiveData;
+    
+    [[self syncer] afterSendFurcation];
+//    [self syncer].syncerState = STMSyncerReceiveData;
+    
 }
 
 
