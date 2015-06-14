@@ -281,7 +281,7 @@
         
         NSManagedObjectContext *context = self.session.document.managedObjectContext;
         
-        if (context) {
+        if (context && [self.session.status isEqualToString:@"running"]) {
             
             STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
             
@@ -297,6 +297,10 @@
                                                                                                 cacheName:nil];
             _unloadedPicturesResultsController.delegate = self;
 
+        } else {
+            
+            _unloadedPicturesResultsController = nil;
+            
         }
         
     }
