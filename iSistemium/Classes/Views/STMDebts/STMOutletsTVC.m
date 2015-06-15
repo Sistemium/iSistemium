@@ -401,8 +401,14 @@
     customCell.detailLabel.highlightedTextColor = highlightedTextColor;
     
     if ([outlet isEqual:self.splitVC.detailVC.outlet]) {
-        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        //        NSLog(@"select indexPath %@", indexPath);
+        
+        if (![[self.tableView indexPathsForSelectedRows] containsObject:indexPath]) {
+            
+            [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            //        NSLog(@"select indexPath %@", indexPath);
+
+        }
+        
     }
     
     [super fillCell:cell atIndexPath:indexPath];
