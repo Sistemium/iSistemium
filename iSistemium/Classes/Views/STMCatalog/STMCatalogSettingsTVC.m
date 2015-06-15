@@ -196,12 +196,14 @@
     CGFloat height = MIN(VIEW_MAX_HEIGHT, self.tableView.contentSize.height);
     self.tableView.frame = CGRectMake(0, 0, VIEW_WIDTH, height);
 
+    [super customInit];
+
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
 
 }
 
