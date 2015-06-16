@@ -364,7 +364,7 @@
         [defaults setObject:deviceToken forKey:@"deviceToken"];
         [defaults synchronize];
         
-        [Crashlytics setObjectValue:deviceToken forKey:@"deviceToken"];
+        [[Crashlytics sharedInstance] setObjectValue:deviceToken forKey:@"deviceToken"];
 
     }
     
@@ -402,14 +402,17 @@
 
 - (void)startCrashlytics {
     
+//    [[Crashlytics sharedInstance] setDebugMode:YES];
+    
     [Crashlytics startWithAPIKey:@"035bda92bd5b13402aaf2c6cb5f66b8ff23f2166"];
     
-    [Crashlytics setObjectValue:[[UIDevice currentDevice] name] forKey:@"deviceName"];
-    [Crashlytics setObjectValue:[STMFunctions devicePlatform] forKey:@"devicePlatform"];
-    [Crashlytics setObjectValue:[ASIdentifierManager sharedManager].advertisingIdentifier forKey:@"advertisingIdentifier"];
-    [Crashlytics setObjectValue:[STMAuthController authController].userID forKey:@"userID"];
-    [Crashlytics setObjectValue:[STMAuthController authController].userName forKey:@"userName"];
-    [Crashlytics setObjectValue:[STMAuthController authController].phoneNumber forKey:@"phoneNumber"];
+    [[Crashlytics sharedInstance] setObjectValue:[[UIDevice currentDevice] name] forKey:@"deviceName"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMFunctions devicePlatform] forKey:@"devicePlatform"];
+    [[Crashlytics sharedInstance] setObjectValue:[ASIdentifierManager sharedManager].advertisingIdentifier forKey:@"advertisingIdentifier"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userID forKey:@"userID"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userName forKey:@"userName"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].phoneNumber forKey:@"phoneNumber"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].phoneNumber forKey:@"phoneNumber"];
     
 }
 
