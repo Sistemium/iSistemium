@@ -60,7 +60,7 @@
 - (STMSpinnerView *)spinnerView {
     
     if (!_spinnerView) {
-        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame];
+        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
     }
     return _spinnerView;
     
@@ -560,7 +560,9 @@
 }
 
 - (void)syncerInitSuccessfully {
+    
     [self.spinnerView removeFromSuperview];
+    
 }
 
 - (void)syncerTimeoutError {
