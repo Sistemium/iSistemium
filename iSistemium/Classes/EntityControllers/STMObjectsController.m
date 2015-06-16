@@ -1227,21 +1227,55 @@
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
 
+    return [self objectsForEntityName:entityName
+                              orderBy:@"id"
+                            ascending:YES
+                           fetchLimit:0
+               inManagedObjectContext:[self document].managedObjectContext
+                                error:nil];
+    
+}
+
++ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
+    
+    NSString *errorMessage = nil;
+    
+    context = (context) ? context : [self document].managedObjectContext;
+    
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
-
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-        NSError *error;
-        NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
-        return result;
+        STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
+        
+        if ([entity.propertiesByName.allKeys containsObject:orderBy]) {
 
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending selector:@selector(compare:)]];
+            request.fetchLimit = fetchLimit;
+            NSError *error;
+            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+            
+            return result;
+            
+        } else {
+            
+            errorMessage = [NSString stringWithFormat:@"%@: property %@ not found", entityName, orderBy];
+            
+        }
+        
     } else {
         
-        return nil;
-        
+        errorMessage = [NSString stringWithFormat:@"%@: not found in data model", entityName];
+
     }
     
+    if (errorMessage) {
+        *error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier
+                                     code:1
+                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+    }
+    
+    return nil;
+
 }
 
 + (NSUInteger)numberOfObjectsForEntityName:(NSString *)entityName {
@@ -1278,63 +1312,46 @@
 
 #pragma mark - create dictionary from object
 
-+ (NSDictionary *)jsonForObjectsWithParameters:(NSDictionary *)parameters error:(NSError *__autoreleasing *)error {
++ (NSArray *)jsonForObjectsWithParameters:(NSDictionary *)parameters error:(NSError *__autoreleasing *)error {
     
-    NSDictionary *jsonDic = nil;
     NSString *errorMessage = nil;
     
     if ([parameters isKindOfClass:[NSDictionary class]]) {
         
         NSString *entityName = [@"STM" stringByAppendingString:parameters[@"entityName"]];
-        NSString *size = parameters[@"size"];
+        NSUInteger size = [parameters[@"size"] integerValue];
         NSString *orderBy = parameters[@"orderBy"];
-        NSString *order = parameters[@"order"];
+        BOOL ascending = [[parameters[@"order"] lowercaseString] isEqualToString:@"asc"];
         
-        if ([[STMObjectsController localDataModelEntityNames] containsObject:entityName]) {
+        BOOL sessionIsRunning = [[self.session status] isEqualToString:@"running"];
+        if (sessionIsRunning && self.document) {
             
-            BOOL sessionIsRunning = [[self.session status] isEqualToString:@"running"];
-            if (sessionIsRunning && self.document) {
-                
-                NSArray *objects = [STMObjectsController objectsForEntityName:entityName];
-                
-                STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
-                
-                if ([entity.propertiesByName.allKeys containsObject:orderBy]) {
-                    
-                    BOOL ascending = (order && [order caseInsensitiveCompare:@"asс"] == NSOrderedSame);
-                    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending];
-                    
-                    objects = [objects sortedArrayUsingDescriptors:@[sortDescriptor]];
-                    
-                    NSInteger requestedNumberOfObjects = MIN([size integerValue], objects.count);
-                    NSRange range;
-                    range.location = 0;
-                    range.length = requestedNumberOfObjects;
-                    
-                    objects = [objects subarrayWithRange:range];
-                    
-                    NSMutableArray *jsonObjectsArray = [NSMutableArray array];
-                    
-                    for (NSManagedObject *object in objects) [jsonObjectsArray addObject:[STMObjectsController dictionaryForObject:object]];
-                    
-                    jsonDic = @{@"objects": jsonObjectsArray,
-                                @"requestParameters": parameters};
-                    
-                } else {
-                    
-                    errorMessage = [NSString stringWithFormat:@"%@ property %@ not found", entityName, orderBy];
-                    
-                }
+            NSError *fetchError;
+            NSArray *objects = [self objectsForEntityName:entityName
+                                                  orderBy:orderBy
+                                                ascending:ascending
+                                               fetchLimit:size
+                                   inManagedObjectContext:[self document].managedObjectContext
+                                                    error:&fetchError];
+            
+            if (fetchError) {
+
+                errorMessage = fetchError.localizedDescription;
                 
             } else {
                 
-                errorMessage = [NSString stringWithFormat:@"session is not running, please try later"];
+                NSMutableArray *jsonObjectsArray = [NSMutableArray array];
                 
+                for (NSManagedObject *object in objects)
+                    [jsonObjectsArray addObject:[STMObjectsController dictionaryForObject:object]];
+                
+                return jsonObjectsArray;
+
             }
             
         } else {
             
-            errorMessage = [NSString stringWithFormat:@"%@ not found in data model", entityName];
+            errorMessage = [NSString stringWithFormat:@"session is not running, please try later"];
             
         }
         
@@ -1352,7 +1369,7 @@
         
     }
     
-    return jsonDic;
+    return nil;
     
 }
 

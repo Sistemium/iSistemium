@@ -53,6 +53,7 @@
 @property (nonatomic) BOOL checkSending;
 @property (nonatomic) BOOL sendOnce;
 @property (nonatomic) BOOL errorOccured;
+@property (nonatomic) BOOL fullSyncWasDone;
 
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
@@ -266,7 +267,7 @@
                 
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 self.syncing = YES;
-                [self receiveData];
+                [self checkNews];
                 
                 break;
                 
@@ -276,6 +277,7 @@
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 self.syncing = NO;
                 self.sendOnce = NO;
+                self.checkSending = NO;
 
                 [STMObjectsController dataLoadingFinished];
 //                [STMPicturesController checkUploadedPhotos];
@@ -450,9 +452,7 @@
 - (void)sendObjects:(NSDictionary *)parameters {
     
     NSError *error;
-    NSDictionary *jsonDic = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
-    
-    jsonDic = @{@"data": jsonDic[@"objects"]};
+    NSArray *jsonArray = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
     
     if (error) {
         
@@ -460,9 +460,11 @@
         
     } else {
         
-        if (jsonDic) {
+        if (jsonArray) {
 
-            NSData *JSONData = [NSJSONSerialization dataWithJSONObject:jsonDic options:0 error:nil];
+            NSData *JSONData = [NSJSONSerialization dataWithJSONObject:@{@"data": jsonArray}
+                                                               options:0
+                                                                 error:nil];
             [self startConnectionForSendData:JSONData];
             
         }
@@ -674,6 +676,7 @@
 }
 
 #pragma mark - syncing
+#pragma mark - send
 
 - (void)sendData {
         
@@ -708,18 +711,28 @@
 
     self.syncing = NO;
     
-    if (self.checkSending || self.syncerState == STMSyncerSendDataOnce) {
-        
-        self.checkSending = NO;
-        self.syncerState = STMSyncerIdle;
-        
-    } else {
-        
-        self.checkSending = YES;
-        self.syncerState = STMSyncerReceiveData;
-        
-    }
+    [self afterSendFurcation];
 
+}
+
+- (void)afterSendFurcation {
+    
+    if (!self.syncing) {
+
+        if (self.checkSending || self.syncerState == STMSyncerSendDataOnce) {
+            
+            self.checkSending = NO;
+            self.syncerState = STMSyncerIdle;
+            
+        } else {
+            
+            self.checkSending = YES;
+            self.syncerState = STMSyncerReceiveData;
+            
+        }
+
+    }
+    
 }
 
 - (NSData *)JSONFrom:(NSArray *)dataForSyncing {
@@ -832,8 +845,10 @@
             request.HTTPShouldHandleCookies = NO;
             [request setHTTPMethod:@"POST"];
             [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-            [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+//            [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
             
+//            NSLog(@"request %@", request.allHTTPHeaderFields);
+
             request.HTTPBody = sendData;
             
             NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
@@ -867,27 +882,146 @@
     
 }
 
+
+#pragma mark - receive
+
+- (void)checkNews {
+    
+    if (self.fullSyncWasDone && !self.receivingEntitiesNames) {
+        
+        self.errorOccured = NO;
+        
+        NSURL *newsURL = [[NSURL URLWithString:self.apiUrlString] URLByAppendingPathComponent:@"stc.news"];
+        NSMutableURLRequest *request = [[[STMAuthController authController] authenticateRequest:[NSURLRequest requestWithURL:newsURL]] mutableCopy];
+        
+        request.timeoutInterval = [self timeout];
+        request.HTTPShouldHandleCookies = NO;
+        [request setHTTPMethod:@"GET"];
+        
+        [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
+//        [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+
+//        NSLog(@"request %@", request.allHTTPHeaderFields);
+
+        [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+            
+            if (!connectionError) {
+                
+                NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+                
+                switch (statusCode) {
+                        
+                    case 200:
+                        [self parseNewsData:data];
+                        break;
+                        
+                    case 204:
+                        NSLog(@"    news: 204 No Content");
+                        [self receivingDidFinish];
+                        break;
+                        
+                    default:
+                        NSLog(@"    news statusCode: %d", statusCode);
+                        [self receivingDidFinish];
+                        break;
+                        
+                }
+                
+            } else {
+                
+                NSLog(@"connectionError %@", connectionError.localizedDescription);
+                self.errorOccured = YES;
+                [self receivingDidFinish];
+                
+            }
+            
+        }];
+        
+    } else {
+        
+        [self receiveData];
+        
+    }
+    
+    
+}
+
+- (void)parseNewsData:(NSData *)newsData {
+    
+    if (newsData) {
+        
+        NSError *error;
+        NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:newsData options:NSJSONReadingMutableContainers error:&error];
+        
+        if (!error) {
+            
+//            NSLog(@"responseJSON %@", responseJSON);
+
+            NSArray *entitiesNames = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties.name"];
+//            NSLog(@"entitiesNames %@", entitiesNames);
+            NSArray *objectsCount = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties.cnt"];
+            
+            NSDictionary *news = [NSDictionary dictionaryWithObjects:objectsCount forKeys:entitiesNames];
+
+            for (NSString *entityName in entitiesNames) {
+                NSLog(@"    news: STM%@ — %@ objects", entityName, news[entityName]);
+            }
+            
+            NSMutableArray *tempArray = [NSMutableArray array];
+            
+            for (NSString *entityName in entitiesNames) {
+                [tempArray addObject:[@"STM" stringByAppendingString:entityName]];
+            }
+            
+            self.entitySyncNames = tempArray;
+            self.entityCount = tempArray.count;
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerNewsHaveObjects" object:self userInfo:@{@"totalNumberOfObjects": [objectsCount valueForKeyPath:@"@sum.integerValue"]}];
+            
+//            [self receiveData];
+            [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+
+        } else {
+            
+            NSLog(@"parse news json error: %@", error.localizedDescription);
+            [self receivingDidFinish];
+            
+        }
+        
+    } else {
+        
+        NSLog(@"empty news data received");
+        [self receivingDidFinish];
+        
+    }
+    
+}
+
 - (void)receiveData {
     
     if (self.syncerState == STMSyncerReceiveData) {
         
         if (!self.receivingEntitiesNames || [self.receivingEntitiesNames containsObject:@"STMEntity"]) {
-        
+            
             self.entityCount = 1;
             self.errorOccured = NO;
             
             [self checkConditionForReceivingEntityWithName:@"STMEntity"];
-
-        } else {
-
-            self.entityCount = self.receivingEntitiesNames.count;
             
-            for (NSString *name in self.receivingEntitiesNames) {
-                [self checkConditionForReceivingEntityWithName:name];
-            }
+        } else {
+            
+            self.entitySyncNames = self.receivingEntitiesNames.mutableCopy;
+            self.receivingEntitiesNames = nil;
+            self.entityCount = self.entitySyncNames.count;
+
+            [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+            
+//            for (NSString *name in self.receivingEntitiesNames) {
+//                [self checkConditionForReceivingEntityWithName:name];
+//            }
             
         }
-        
+
     }
     
 }
@@ -938,7 +1072,9 @@
         
         [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
         [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
-        [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+//        [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+        
+//        NSLog(@"request %@", request.allHTTPHeaderFields);
 
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         
@@ -1005,17 +1141,8 @@
     self.entityCount -= 1;
     
     if (self.entityCount == 0) {
-        
-        [self saveReceiveDate];
-        
-        [self.document saveDocument:^(BOOL success) {
-        
-            if (success) {
-                self.syncing = NO;
-                self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
-            }
-            
-        }];
+
+        [self receivingDidFinish];
         
     } else {
         
@@ -1027,21 +1154,29 @@
             
         } else {
             
-            [self saveReceiveDate];
-            
-            [self.document saveDocument:^(BOOL success) {
-                
-                if (success) {
-                    self.syncing = NO;
-                    self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
-                }
-                
-            }];
+            [self receivingDidFinish];
 
         }
         
     }
     
+}
+
+- (void)receivingDidFinish {
+    
+    [self saveReceiveDate];
+    
+    self.fullSyncWasDone = YES;
+    
+    [self.document saveDocument:^(BOOL success) {
+        
+        if (success) {
+            self.syncing = NO;
+            self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
+        }
+        
+    }];
+
 }
 
 
@@ -1205,7 +1340,21 @@
                     
                     NSLog(@"    %@: get %d objects", connectionEntityName, dataArray.count);
                     
-                    [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+                    NSUInteger pageRowCount = [responseJSON[@"page-row-count"] integerValue];
+                    NSUInteger pageSize = [responseJSON[@"page-size"] integerValue];
+                    
+                    if (pageRowCount < pageSize) {
+                        
+                        NSLog(@"    %@: pageRowCount < pageSize / No more content", connectionEntityName);
+                        
+                        [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
+                        [self receiveNoContentStatusForEntityWithName:connectionEntityName];
+                        
+                    } else {
+                    
+                        [self nextReceiveEntityWithName:connectionEntityName];
+
+                    }
                     
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"getBunchOfObjects" object:self userInfo:@{@"count":@(dataArray.count)}];
                     
@@ -1226,9 +1375,7 @@
             
             self.syncing = NO;
 
-//TODO: Check if STMEntity was changed — receive data againg
-            
-            [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMEntity class])]];
+            [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMClientEntity class]), NSStringFromClass([STMEntity class])]];
             
             BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
             
@@ -1272,6 +1419,11 @@
     
     clientEntity.eTag = eTag;
     
+}
+
+- (void)nextReceiveEntityWithName:(NSString *)entityName {
+    
+    [self fillETagWithTemporaryValueForEntityName:entityName];
     [self checkConditionForReceivingEntityWithName:entityName];
     
 }

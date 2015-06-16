@@ -296,6 +296,8 @@ static NSString *cellIdentifier = @"messageCell";
     [self showUnreadCount];
     [self addObservers];
     
+    [super customInit];
+    
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -310,7 +312,7 @@ static NSString *cellIdentifier = @"messageCell";
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
 
 }
 

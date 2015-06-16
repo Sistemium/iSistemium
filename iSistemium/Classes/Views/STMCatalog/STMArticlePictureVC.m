@@ -8,17 +8,31 @@
 
 #import "STMArticlePictureVC.h"
 
+#define IMAGE_PATH_KEY @"imagePath"
+
+
 @interface STMArticlePictureVC ()
 
 @property (weak, nonatomic) IBOutlet UIImageView *closeButtonView;
 @property (weak, nonatomic) IBOutlet UIImageView *pictureView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
+@property (nonatomic, strong) NSMutableArray *picturesUnderObserving;
 
 
 @end
 
 @implementation STMArticlePictureVC
+
+- (NSMutableArray *)picturesUnderObserving {
+    
+    if (!_picturesUnderObserving) {
+        _picturesUnderObserving = [NSMutableArray array];
+    }
+    return _picturesUnderObserving;
+    
+}
+
 
 - (void)closeButtonPressed {
     
@@ -57,8 +71,9 @@
             
             [self.pictureView addSubview:view];
             
-            [picture addObserver:self forKeyPath:@"imagePath" options:NSKeyValueObservingOptionNew context:nil];
-            
+            [picture addObserver:self forKeyPath:IMAGE_PATH_KEY options:NSKeyValueObservingOptionNew context:nil];
+            [self.picturesUnderObserving addObject:picture];
+
         }
         
     } else {
@@ -67,7 +82,24 @@
 
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    [self setupImage];
+    [self.picturesUnderObserving removeObject:object];
+    [object removeObserver:self forKeyPath:keyPath context:context];
+    
+}
+
+
 #pragma mark - view lifecycle
+
+- (void)removeObservers {
+    
+    for (NSManagedObject *object in self.picturesUnderObserving) {
+        [object removeObserver:self forKeyPath:IMAGE_PATH_KEY context:nil];
+    }
+    
+}
 
 - (void)customInit {
     
@@ -85,13 +117,6 @@
     
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    
-    [self setupImage];
-    [object removeObserver:self forKeyPath:keyPath context:context];
-    
-}
-
 - (void)viewDidLoad {
     
     [super viewDidLoad];
@@ -103,10 +128,13 @@
 
     [super viewWillAppear:animated];
     
-//    [self.view setNeedsLayout];
-//    [self.view layoutIfNeeded];
+}
 
-//    [self.view setNeedsDisplay];
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [self removeObservers];
+    
+    [super viewWillDisappear:animated];
     
 }
 

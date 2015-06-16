@@ -1188,13 +1188,14 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     [self performFetch];
     [self setupSearchBar];
     
+    [super customInit];
     
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
 
 }
 

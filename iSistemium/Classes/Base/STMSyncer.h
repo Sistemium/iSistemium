@@ -27,6 +27,8 @@
 - (void)receiveEntities:(NSArray *)entitiesNames;
 - (void)sendObjects:(NSDictionary *)parameters;
 
+- (void)afterSendFurcation;
+
 - (NSUInteger)numbersOfUnsyncedObjects;
 
 @end

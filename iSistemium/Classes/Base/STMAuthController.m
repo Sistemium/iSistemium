@@ -7,11 +7,15 @@
 //
 
 #import "STMAuthController.h"
+
+#import <AdSupport/AdSupport.h>
+
 #import "STMFunctions.h"
 #import <Security/Security.h>
 #import "KeychainItemWrapper.h"
 #import "STMSessionManager.h"
 #import "STMLogger.h"
+
 
 //#define AUTH_URL @"https://sistemium.com/auth.php"
 #define AUTH_URL @"https://api.sistemium.com/pha/auth"
@@ -458,6 +462,8 @@
         
         resultingRequest = [request mutableCopy];
         [resultingRequest addValue:self.accessToken forHTTPHeaderField:@"Authorization"];
+        [resultingRequest setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+
 
     }
     

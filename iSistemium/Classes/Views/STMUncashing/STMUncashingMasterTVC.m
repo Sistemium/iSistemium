@@ -471,7 +471,9 @@
     } else {
         
     }
-    
+ 
+    [super customInit];
+
 }
 
 
@@ -487,7 +489,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
 
 }
 

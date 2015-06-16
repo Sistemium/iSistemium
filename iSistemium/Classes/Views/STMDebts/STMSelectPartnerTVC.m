@@ -129,12 +129,14 @@
     
     [self.navigationItem setTitle:NSLocalizedString(@"PARTNERS", nil)];
 
+    [super customInit];
+
 }
 
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
     [self performFetch];
     
     if (self.partner) {

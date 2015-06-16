@@ -60,7 +60,7 @@
 - (STMSpinnerView *)spinnerView {
     
     if (!_spinnerView) {
-        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame];
+        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
     }
     return _spinnerView;
     
@@ -560,7 +560,9 @@
 }
 
 - (void)syncerInitSuccessfully {
-    [self.spinnerView removeFromSuperview];
+    
+    [self removeSpinner];
+    
 }
 
 - (void)syncerTimeoutError {
@@ -640,8 +642,8 @@
 }
 
 - (void)documentNotReady {
-    
-    [self.spinnerView removeFromSuperview];
+
+    [self removeSpinner];
 
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
                                                         message:NSLocalizedString(@"DOCUMENT_ERROR", nil)
@@ -651,6 +653,14 @@
     [alertView show];
     
 }
+
+- (void)removeSpinner {
+    
+    [self.spinnerView removeFromSuperview];
+    self.spinnerView = nil;
+
+}
+
 
 #pragma mark - notifications
 

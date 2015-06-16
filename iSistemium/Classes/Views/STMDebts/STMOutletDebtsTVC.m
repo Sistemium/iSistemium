@@ -585,6 +585,8 @@
     self.tableView.allowsMultipleSelection = YES;
     self.clearsSelectionOnViewWillAppear = NO;
     
+    [super customInit];
+
 }
 
 - (instancetype)initWithStyle:(UITableViewStyle)style
@@ -600,7 +602,7 @@
     
     [super viewDidLoad];
     
-    [self customInit];
+//    [self customInit];
     
 }
 

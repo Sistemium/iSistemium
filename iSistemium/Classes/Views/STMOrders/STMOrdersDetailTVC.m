@@ -941,12 +941,14 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
     [self performFetch];
     
+    [super customInit];
+
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
 
 }
 
