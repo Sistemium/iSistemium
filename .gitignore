@@ -8,3 +8,5 @@ xcuserdata
 *.xcuserstate
 
 /Crashlytics.framework/*
+/Fabric.framework/*
+
