@@ -561,7 +561,7 @@
 
 - (void)syncerInitSuccessfully {
     
-    [self.spinnerView removeFromSuperview];
+    [self removeSpinner];
     
 }
 
@@ -642,8 +642,8 @@
 }
 
 - (void)documentNotReady {
-    
-    [self.spinnerView removeFromSuperview];
+
+    [self removeSpinner];
 
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
                                                         message:NSLocalizedString(@"DOCUMENT_ERROR", nil)
@@ -653,6 +653,14 @@
     [alertView show];
     
 }
+
+- (void)removeSpinner {
+    
+    [self.spinnerView removeFromSuperview];
+    self.spinnerView = nil;
+
+}
+
 
 #pragma mark - notifications
 
