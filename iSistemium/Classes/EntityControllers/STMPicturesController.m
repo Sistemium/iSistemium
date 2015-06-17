@@ -689,67 +689,79 @@
 
 - (void)addOperationForObject:(NSManagedObject *)object {
     
+    if ([object isKindOfClass:[STMMessagePicture class]]) {
+        
+        [self downloadConnectionForObject:object];
+        
+    } else {
+    
+        __weak NSManagedObject *weakObject = object;
+
+        [self.downloadQueue addOperationWithBlock:^{
+            [self downloadConnectionForObject:weakObject];
+        }];
+
+    }
+    
+}
+
+- (void)downloadConnectionForObject:(NSManagedObject *)object {
+    
     NSString *href = [object valueForKey:@"href"];
     
-    __weak NSManagedObject *weakObject = object;
+    NSURL *url = [NSURL URLWithString:href];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLResponse *response = nil;
+    NSError *error = nil;
     
-    [self.downloadQueue addOperationWithBlock:^{
+    //        NSLog(@"start loading %@", url.lastPathComponent);
+    
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    
+    if (error) {
         
-        NSURL *url = [NSURL URLWithString:href];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
-        NSURLResponse *response = nil;
-        NSError *error = nil;
-        
-//        NSLog(@"start loading %@", url.lastPathComponent);
-        
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-        
-        if (error) {
+        if (error.code == -1001) {
             
-            if (error.code == -1001) {
+            NSLog(@"error code -1001 timeout for %@", href);
+            
+            if ([self.secondAttempt containsObject:href]) {
                 
-                NSLog(@"error code -1001 timeout for %@", href);
+                NSLog(@"second load attempt fault for %@", href);
                 
-                if ([self.secondAttempt containsObject:href]) {
-                    
-                    NSLog(@"second load attempt fault for %@", href);
-                    
-                    [self.secondAttempt removeObject:href];
-                    [self.hrefDictionary removeObjectForKey:href];
-                    
-                } else {
-                    
-                    [self.secondAttempt addObject:href];
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
-                    });
-                    
-                }
+                [self.secondAttempt removeObject:href];
+                [self.hrefDictionary removeObjectForKey:href];
                 
             } else {
                 
-                NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                [self.hrefDictionary removeObjectForKey:href];
+                [self.secondAttempt addObject:href];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
+                });
                 
             }
             
         } else {
             
-//            NSLog(@"%@ load successefully", href);
-            
-            [self.hrefDictionary removeObjectForKey:href];
-            
-            NSData *dataCopy = [data copy];
-            
-            [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
-            
+            NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
             [self.hrefDictionary removeObjectForKey:href];
             
         }
         
-    }];
-    
+    } else {
+        
+        //            NSLog(@"%@ load successefully", href);
+        
+        [self.hrefDictionary removeObjectForKey:href];
+        
+        NSData *dataCopy = [data copy];
+        
+        if ([object isKindOfClass:[STMPicture class]]) {
+            [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object];
+        }
+        
+    }
+
 }
 
 - (void)repeatUploadOperationForObject:(NSManagedObject *)object {
