@@ -159,7 +159,7 @@ static NSString *cellIdentifier = @"messageCell";
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
     
-    cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
+    cell.titleLabel.text = [dateFormatter stringFromDate:message.deviceCts];
     
     cell.detailLabel.text = message.body;
 //    cell.detailLabel.text = MESSAGE_BODY;
