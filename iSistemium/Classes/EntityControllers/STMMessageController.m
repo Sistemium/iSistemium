@@ -16,6 +16,7 @@
 @interface STMMessageController()
 
 @property (nonatomic, strong) NSMutableDictionary *shownPictures;
+@property (nonatomic, strong) NSMutableArray *fullscreenPictures;
 
 
 @end
@@ -97,11 +98,17 @@
     NSArray *picturesArray = [self sortedPicturesArrayForMessage:message];
     
     for (STMMessagePicture *picture in picturesArray) {
-    
-        UIViewController *presenter = [[STMRootTBC sharedRootVC] topmostVC];
+        
+        if (![[self sharedInstance].fullscreenPictures containsObject:picture]) {
+            
+            [[self sharedInstance].fullscreenPictures addObject:picture];
+            
+            UIViewController *presenter = [[STMRootTBC sharedRootVC] topmostVC];
+            
+            STMMessageVC *messageVC = [self messageVCWithPicture:picture andText:message.body];
+            [presenter presentViewController:messageVC animated:NO completion:nil];
 
-        STMMessageVC *messageVC = [self messageVCWithPicture:picture andText:message.body];
-        [presenter presentViewController:messageVC animated:NO completion:nil];
+        }
         
     }
     
@@ -171,10 +178,19 @@
 
 #pragma mark - singletone properties & methods
 
+- (NSMutableArray *)fullscreenPictures {
+    
+    if (!_fullscreenPictures) {
+        _fullscreenPictures = @[].mutableCopy;
+    }
+    return _fullscreenPictures;
+    
+}
+
 - (NSMutableDictionary *)shownPictures {
     
     if (!_shownPictures) {
-        _shownPictures = [@{} mutableCopy];
+        _shownPictures = @{}.mutableCopy;
     }
     return _shownPictures;
     
@@ -182,6 +198,8 @@
 
 - (void)pictureDidShown:(STMMessagePicture *)picture {
 
+    [self.fullscreenPictures removeObject:picture];
+    
     STMMessage *message = picture.message;
     
     if (![STMMessageController messageIsRead:message]) {
