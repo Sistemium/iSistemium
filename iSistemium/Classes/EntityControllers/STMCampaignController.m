@@ -21,7 +21,7 @@
         
         STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:picture.xid];
         
-        if (!recordStatus.isRead) {
+        if (![recordStatus.isRead boolValue]) {
             
             result = YES;
             break;
