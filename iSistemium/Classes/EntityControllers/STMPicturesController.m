@@ -35,7 +35,7 @@
 @property (nonatomic, strong) STMSession *session;
 @property (nonatomic, strong) NSMutableDictionary *settings;
 
-@property (nonatomic, strong) NSFetchedResultsController *unloadedPicturesResultsController;
+@property (nonatomic, strong) NSFetchedResultsController *nonloadedPicturesResultsController;
 
 
 @end
@@ -110,7 +110,7 @@
         self.s3Initialized = NO;
         self.session = nil;
         self.settings = nil;
-        self.unloadedPicturesResultsController = nil;
+        self.nonloadedPicturesResultsController = nil;
         
     }
     
@@ -275,9 +275,9 @@
     
 }
 
-- (NSFetchedResultsController *)unloadedPicturesResultsController {
+- (NSFetchedResultsController *)nonloadedPicturesResultsController {
     
-    if (!_unloadedPicturesResultsController) {
+    if (!_nonloadedPicturesResultsController) {
         
         NSManagedObjectContext *context = self.session.document.managedObjectContext;
         
@@ -286,32 +286,32 @@
             STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
             
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil, [self photoEntitiesNames]];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil];
             
             request.sortDescriptors = @[sortDescriptor];
             request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
             
-            _unloadedPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+            _nonloadedPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                                      managedObjectContext:context
                                                                                        sectionNameKeyPath:nil
                                                                                                 cacheName:nil];
-            _unloadedPicturesResultsController.delegate = self;
+            _nonloadedPicturesResultsController.delegate = self;
 
         } else {
             
-            _unloadedPicturesResultsController = nil;
+            _nonloadedPicturesResultsController = nil;
             
         }
         
     }
-    return _unloadedPicturesResultsController;
+    return _nonloadedPicturesResultsController;
     
 }
 
 - (void)performFetch {
     
     NSError *error;
-    if (![self.unloadedPicturesResultsController performFetch:&error]) {
+    if (![self.nonloadedPicturesResultsController performFetch:&error]) {
         NSLog(@"unloadedPicturesResultsController fetch error: ", error.localizedDescription);
     }
 
@@ -324,18 +324,18 @@
 
 }
 
-- (NSArray *)unloadedPictures {
+- (NSArray *)nonloadedPictures {
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (entity.name IN %@)", [self photoEntitiesNames]];
-    return [self.unloadedPicturesResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+    return [self.nonloadedPicturesResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
     
 }
 
-- (NSUInteger)unloadedPicturesCount {
+- (NSUInteger)nonloadedPicturesCount {
     
-    NSUInteger unloadedPicturesCount = [self unloadedPictures].count;
+    NSUInteger nonloadedPicturesCount = [self nonloadedPictures].count;
     
-    if (unloadedPicturesCount == 0) {
+    if (nonloadedPicturesCount == 0) {
 
         [self.session.document saveDocument:^(BOOL success) {
             
@@ -345,7 +345,7 @@
     
     }
     
-    return unloadedPicturesCount;
+    return nonloadedPicturesCount;
     
 }
 
@@ -354,7 +354,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"unloadedPicturesCountDidChange" object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"nonloadedPicturesCountDidChange" object:self];
     
 }
 

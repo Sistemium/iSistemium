@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="a5o-QA-C65">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="a5o-QA-C65">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--ProfileVC-->
@@ -87,7 +86,7 @@
                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="unloadedPicturesButtonPressed:" destination="Dwf-nW-GhQ" eventType="touchUpInside" id="ezM-tS-Kk8"/>
+                                    <action selector="nonloadedPicturesButtonPressed:" destination="Dwf-nW-GhQ" eventType="touchUpInside" id="L2D-xM-fxH"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -101,12 +100,12 @@
                         <outlet property="locationSystemStatusLabel" destination="cWu-YW-ZV1" id="n0f-aO-rwE"/>
                         <outlet property="locationWarningLabel" destination="aZw-Cl-8Ji" id="F8g-DQ-YSx"/>
                         <outlet property="nameLabel" destination="JNm-TY-eMv" id="ag8-lx-bVB"/>
+                        <outlet property="nonloadedPicturesButton" destination="bPd-Ru-joi" id="0h5-kf-okp"/>
                         <outlet property="numberOfObjectLabel" destination="08f-cb-ivA" id="W1e-ZT-90Y"/>
                         <outlet property="phoneNumberLabel" destination="ua8-Yp-ngl" id="I9r-AF-puP"/>
                         <outlet property="progressBar" destination="Q2p-En-FcA" id="O5m-NB-2iw"/>
                         <outlet property="receiveDateLabel" destination="Y3v-Bd-Maw" id="hei-k5-YSV"/>
                         <outlet property="sendDateLabel" destination="9gB-Hw-Ag7" id="0QD-rk-5Dd"/>
-                        <outlet property="unloadedPicturesButton" destination="bPd-Ru-joi" id="137-xN-HgC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hff-6L-lF0" userLabel="First Responder" sceneMemberID="firstResponder"/>

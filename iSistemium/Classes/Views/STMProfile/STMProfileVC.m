@@ -37,7 +37,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
-@property (weak, nonatomic) IBOutlet UIButton *unloadedPicturesButton;
+@property (weak, nonatomic) IBOutlet UIButton *nonloadedPicturesButton;
 
 @property (weak, nonatomic) UIImageView *syncImageView;
 
@@ -122,7 +122,7 @@
     
     [self updateSyncDatesLabels];
     [self updateCloudImages];
-    [self updateUnloadedPicturesInfo];
+    [self updateNonloadedPicturesInfo];
     
 }
 
@@ -344,18 +344,18 @@
     
 }
 
-- (void)setupUnloadedPicturesButton {
+- (void)setupNonloadedPicturesButton {
     
-    [self.unloadedPicturesButton setTitleColor:ACTIVE_BLUE_COLOR forState:UIControlStateNormal];
-    [self.unloadedPicturesButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    [self.nonloadedPicturesButton setTitleColor:ACTIVE_BLUE_COLOR forState:UIControlStateNormal];
+    [self.nonloadedPicturesButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     
 }
 
-- (void)updateUnloadedPicturesInfo {
+- (void)updateNonloadedPicturesInfo {
 
-    self.unloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
+    self.nonloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
     
-    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
+    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] nonloadedPicturesCount];
     
     NSString *title = @"";
     NSString *badgeValue = nil;
@@ -372,19 +372,19 @@
         self.downloadAlertWasShown = NO;
     }
     
-    [self.unloadedPicturesButton setTitle:title forState:UIControlStateNormal];
+    [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
     self.navigationController.tabBarItem.badgeValue = badgeValue;
     
     UIColor *titleColor = [STMPicturesController sharedController].downloadQueue.suspended ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
-    [self.unloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
+    [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
     
 }
 
-- (void)unloadedPicturesCountDidChange {
-    [self updateUnloadedPicturesInfo];
+- (void)nonloadedPicturesCountDidChange {
+    [self updateNonloadedPicturesInfo];
 }
 
-- (IBAction)unloadedPicturesButtonPressed:(id)sender {
+- (IBAction)nonloadedPicturesButtonPressed:(id)sender {
 
     UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
     actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
@@ -438,20 +438,20 @@
     
     [STMPicturesController checkPhotos];
     [STMPicturesController sharedController].downloadQueue.suspended = NO;
-    [self updateUnloadedPicturesInfo];
+    [self updateNonloadedPicturesInfo];
 
 }
 
 - (void)stopPicturesDownloading {
     
     [STMPicturesController sharedController].downloadQueue.suspended = YES;
-    [self updateUnloadedPicturesInfo];
+    [self updateNonloadedPicturesInfo];
 
 }
 
 - (void)showDownloadAlert {
     
-    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
+    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] nonloadedPicturesCount];
     
     if (unloadedPicturesCount > 0) {
         
@@ -829,8 +829,8 @@
              object:nil];
     
     [nc addObserver:self
-           selector:@selector(unloadedPicturesCountDidChange)
-               name:@"unloadedPicturesCountDidChange"
+           selector:@selector(nonloadedPicturesCountDidChange)
+               name:@"nonloadedPicturesCountDidChange"
              object:[STMPicturesController sharedController]];
     
 }
@@ -857,8 +857,8 @@
     
     [self updateCloudImages];
     [self updateSyncDatesLabels];
-    [self setupUnloadedPicturesButton];
-    [self updateUnloadedPicturesInfo];
+    [self setupNonloadedPicturesButton];
+    [self updateNonloadedPicturesInfo];
     
     [self addObservers];
     [self startReachability];
