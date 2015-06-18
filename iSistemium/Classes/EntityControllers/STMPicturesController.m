@@ -320,7 +320,8 @@
 - (NSArray *)photoEntitiesNames {
     
     return @[NSStringFromClass([STMPhotoReport class]),
-             NSStringFromClass([STMUncashingPicture class])];
+             NSStringFromClass([STMUncashingPicture class]),
+             NSStringFromClass([STMMessagePicture class])];
 
 }
 
