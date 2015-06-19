@@ -150,7 +150,7 @@
 
 + (BOOL)messageIsRead:(STMMessage *)message {
 
-    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
+    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
 
     return [recordStatus.isRead boolValue];
     

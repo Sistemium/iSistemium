@@ -148,6 +148,12 @@ static NSString *cellIdentifier = @"messageCell";
 
     [self fillCell:cell atIndexPath:indexPath withMessage:message];
     
+    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
+    
+    UIColor *textColor = ([recordStatus.isRead boolValue]) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
+    
+    cell.titleLabel.textColor = textColor;
+
     return cell;
     
 }
@@ -166,12 +172,6 @@ static NSString *cellIdentifier = @"messageCell";
     
     cell.detailLabel.text = message.body;
 //    cell.detailLabel.text = MESSAGE_BODY;
-    
-    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
-    
-    UIColor *textColor = ([recordStatus.isRead boolValue]) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
-    
-    cell.titleLabel.textColor = textColor;
     
     if (message.pictures.count > 0) [self addImageFromMessage:message toCell:cell];
 
