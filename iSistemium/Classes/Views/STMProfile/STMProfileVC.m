@@ -195,6 +195,13 @@
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:cloudTapSelector];
             [self.syncImageView addGestureRecognizer:tap];
             
+            if (hasObjectsToUpload) {
+                
+                UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(uploadCloudLongPressed:)];
+                [self.syncImageView addGestureRecognizer:longPress];
+                
+            }
+            
         } else {
             
             [self.syncImageView setTintColor:[UIColor lightGrayColor]];
@@ -215,6 +222,22 @@
         [view removeGestureRecognizer:gesture];
     }
     
+}
+
+- (void)uploadCloudLongPressed:(id)sender {
+    
+    if ([sender isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        
+        UILongPressGestureRecognizer *longPressGesture = (UILongPressGestureRecognizer *)sender;
+        
+        if (longPressGesture.state == UIGestureRecognizerStateBegan) {
+            
+            [self syncer].syncerState = STMSyncerSendData;
+            
+        }
+        
+    }
+
 }
 
 - (void)uploadCloudTapped {
