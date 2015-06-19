@@ -73,6 +73,7 @@
                             @"deviceMotionUpdate",
                             @"enableDebtsEditing",
                             @"enablePartnersEditing",
+                            @"timeAndDistanceLogic",
                             @"enableDownloadViaWWAN"];
     
     NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];

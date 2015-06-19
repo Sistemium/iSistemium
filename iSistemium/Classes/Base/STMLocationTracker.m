@@ -25,6 +25,7 @@
 @property (nonatomic) CLLocationSpeed maxSpeedThreshold;
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
+@property (nonatomic) BOOL timeAndDistanceLogic;
 
 
 @end
@@ -117,6 +118,13 @@
         _getLocationsWithNegativeSpeed = [[self.settings valueForKey:@"getLocationsWithNegativeSpeed"] boolValue];
     }
     return _getLocationsWithNegativeSpeed;
+}
+
+- (BOOL)timeAndDistanceLogic {
+    if (!_timeAndDistanceLogic) {
+        _timeAndDistanceLogic = [[self.settings valueForKey:@"timeAndDistanceLogic"] boolValue];
+    }
+    return _timeAndDistanceLogic;
 }
 
 - (STMTrack *)currentTrack {
