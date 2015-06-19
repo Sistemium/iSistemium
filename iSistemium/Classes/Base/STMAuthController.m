@@ -20,8 +20,8 @@
 //#define AUTH_URL @"https://sistemium.com/auth.php"
 #define AUTH_URL @"https://api.sistemium.com/pha/auth"
 
-//#define ROLES_URL @"https://api.sistemium.com/pha/roles"
-#define ROLES_URL @"https://api.sistemium.com/pha/v2/roles" // for crash testing
+#define ROLES_URL @"https://api.sistemium.com/pha/roles"
+//#define ROLES_URL @"https://api.sistemium.com/pha/v2/roles" // for crash testing
 
 #define TIMEOUT 15.0
 
