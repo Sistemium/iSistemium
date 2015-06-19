@@ -153,26 +153,43 @@
 
 + (NSUInteger)unreadMessagesCount {
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
+    return [self unreadMessagesCountInContext:nil];
+    
+}
+
++ (NSUInteger)unreadMessagesCountInContext:(NSManagedObjectContext *)context {
+    
+    if (!context) context = [self document].managedObjectContext;
+    
+    NSString *entityName = NSStringFromClass([STMMessage class]);
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     
     NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     NSArray *messageXids = [result valueForKeyPath:@"xid"];
     
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    entityName = NSStringFromClass([STMRecordStatus class]);
+    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
+
+    request.entity = entity;
     request.predicate = [NSPredicate predicateWithFormat:@"(objectXid IN %@) && (isRead == YES)", messageXids];
+    request.resultType = NSDictionaryResultType;
+    request.returnsDistinctResults = YES;
+    request.propertiesToFetch = @[entity.propertiesByName[@"objectXid"]];
     
-    NSUInteger resultCount = [[self document].managedObjectContext countForFetchRequest:request error:&error];
+    result = [context executeFetchRequest:request error:&error];
     
-    NSInteger unreadMessageCount = messageXids.count - resultCount;
+    NSUInteger recordStatusesCount = result.count;
+    
+    NSInteger unreadMessageCount = messageXids.count - recordStatusesCount;
     
     if (unreadMessageCount <= 0) unreadMessageCount = 0;
     
     return (NSUInteger)unreadMessageCount;
-    
+
 }
 
 
