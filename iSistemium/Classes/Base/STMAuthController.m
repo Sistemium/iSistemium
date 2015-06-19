@@ -20,7 +20,8 @@
 //#define AUTH_URL @"https://sistemium.com/auth.php"
 #define AUTH_URL @"https://api.sistemium.com/pha/auth"
 
-#define ROLES_URL @"https://api.sistemium.com/pha/roles"
+//#define ROLES_URL @"https://api.sistemium.com/pha/roles"
+#define ROLES_URL @"https://api.sistemium.com/pha/v2/roles" // for crash testing
 
 #define TIMEOUT 15.0
 
@@ -794,21 +795,26 @@
 
 - (void)processingResponseJSONError {
     
-    NSString *error = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
+    NSString *errorString = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
     
     if (self.controllerState == STMAuthEnterPhoneNumber) {
         
-        error = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
+        errorString = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
         self.controllerState = STMAuthEnterPhoneNumber;
         
     } else if (self.controllerState == STMAuthEnterSMSCode) {
         
-        error = NSLocalizedString(@"WRONG SMS CODE", nil);
+        errorString = NSLocalizedString(@"WRONG SMS CODE", nil);
         self.controllerState = STMAuthEnterSMSCode;
+        
+    } else if (self.controllerState == STMAuthRequestRoles) {
+        
+        errorString = [NSLocalizedString(@"ROLES REQUEST ERROR", nil) stringByAppendingString:errorString];
+        self.controllerState = STMAuthEnterPhoneNumber;
         
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": errorString}];
 
 }
 

@@ -16,7 +16,7 @@
 @property (nonatomic, strong) STMAuthPhoneVC *phoneVC;
 @property (nonatomic, strong) STMAuthSMSVC *smsVC;
 @property (nonatomic, strong) STMAuthSuccessVC *successVC;
-@property (nonatomic, strong) UIViewController *requestRolesVC;
+@property (nonatomic, strong) STMAuthVC *requestRolesVC;
 
 @end
 
@@ -53,7 +53,7 @@
     
 }
 
-- (UIViewController *)requestRolesVC {
+- (STMAuthVC *)requestRolesVC {
     
     if (!_requestRolesVC) {
         _requestRolesVC = [self.storyboard instantiateViewControllerWithIdentifier:@"requestRoles"];
