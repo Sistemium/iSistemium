@@ -135,10 +135,15 @@
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
     recordStatus.isRead = @YES;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-
     [self.document saveDocument:^(BOOL success) {
-        if (success) self.syncer.syncerState = STMSyncerSendDataOnce;
+        
+        if (success) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+             self.syncer.syncerState = STMSyncerSendDataOnce;
+
+        }
+        
     }];
     
 }
