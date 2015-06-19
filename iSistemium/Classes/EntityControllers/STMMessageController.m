@@ -16,6 +16,7 @@
 @interface STMMessageController()
 
 @property (nonatomic, strong) NSMutableDictionary *shownPictures;
+@property (nonatomic, strong) NSMutableArray *fullscreenPictures;
 
 
 @end
@@ -41,6 +42,9 @@
     NSSortDescriptor *ordSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
     NSSortDescriptor *idSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
     NSArray *picturesArray = [message.pictures sortedArrayUsingDescriptors:@[ordSortDescriptor, idSortDescriptor]];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"imageThumbnail != %@", nil];
+    picturesArray = [picturesArray filteredArrayUsingPredicate:predicate];
 
     return picturesArray;
     
@@ -94,11 +98,17 @@
     NSArray *picturesArray = [self sortedPicturesArrayForMessage:message];
     
     for (STMMessagePicture *picture in picturesArray) {
-    
-        UIViewController *presenter = [[STMRootTBC sharedRootVC] topmostVC];
+        
+        if (![[self sharedInstance].fullscreenPictures containsObject:picture]) {
+            
+            [[self sharedInstance].fullscreenPictures addObject:picture];
+            
+            UIViewController *presenter = [[STMRootTBC sharedRootVC] topmostVC];
+            
+            STMMessageVC *messageVC = [self messageVCWithPicture:picture andText:message.body];
+            [presenter presentViewController:messageVC animated:NO completion:nil];
 
-        STMMessageVC *messageVC = [self messageVCWithPicture:picture andText:message.body];
-        [presenter presentViewController:messageVC animated:NO completion:nil];
+        }
         
     }
     
@@ -125,10 +135,15 @@
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
     recordStatus.isRead = @YES;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-
     [self.document saveDocument:^(BOOL success) {
-        if (success) self.syncer.syncerState = STMSyncerSendDataOnce;
+        
+        if (success) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+             self.syncer.syncerState = STMSyncerSendDataOnce;
+
+        }
+        
     }];
     
 }
@@ -143,35 +158,61 @@
 
 + (NSUInteger)unreadMessagesCount {
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
+    return [self unreadMessagesCountInContext:nil];
+    
+}
+
++ (NSUInteger)unreadMessagesCountInContext:(NSManagedObjectContext *)context {
+    
+    if (!context) context = [self document].managedObjectContext;
+    
+    NSString *entityName = NSStringFromClass([STMMessage class]);
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     
     NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *result = [context executeFetchRequest:request error:&error];
     
     NSArray *messageXids = [result valueForKeyPath:@"xid"];
     
-    request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMRecordStatus class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    entityName = NSStringFromClass([STMRecordStatus class]);
+    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
+
+    request.entity = entity;
     request.predicate = [NSPredicate predicateWithFormat:@"(objectXid IN %@) && (isRead == YES)", messageXids];
+    request.resultType = NSDictionaryResultType;
+    request.returnsDistinctResults = YES;
+    request.propertiesToFetch = @[entity.propertiesByName[@"objectXid"]];
     
-    NSUInteger resultCount = [[self document].managedObjectContext countForFetchRequest:request error:&error];
+    result = [context executeFetchRequest:request error:&error];
     
-    NSInteger unreadMessageCount = messageXids.count - resultCount;
+    NSUInteger recordStatusesCount = result.count;
+    
+    NSInteger unreadMessageCount = messageXids.count - recordStatusesCount;
     
     if (unreadMessageCount <= 0) unreadMessageCount = 0;
     
     return (NSUInteger)unreadMessageCount;
-    
+
 }
 
 
 #pragma mark - singletone properties & methods
 
+- (NSMutableArray *)fullscreenPictures {
+    
+    if (!_fullscreenPictures) {
+        _fullscreenPictures = @[].mutableCopy;
+    }
+    return _fullscreenPictures;
+    
+}
+
 - (NSMutableDictionary *)shownPictures {
     
     if (!_shownPictures) {
-        _shownPictures = [@{} mutableCopy];
+        _shownPictures = @{}.mutableCopy;
     }
     return _shownPictures;
     
@@ -179,6 +220,8 @@
 
 - (void)pictureDidShown:(STMMessagePicture *)picture {
 
+    [self.fullscreenPictures removeObject:picture];
+    
     STMMessage *message = picture.message;
     
     if (![STMMessageController messageIsRead:message]) {

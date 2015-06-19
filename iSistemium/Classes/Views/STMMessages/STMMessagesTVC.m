@@ -157,32 +157,21 @@ static NSString *cellIdentifier = @"messageCell";
     cell.titleLabel.numberOfLines = 0;
     cell.detailLabel.numberOfLines = 0;
     
+    [[cell.pictureView viewWithTag:555] removeFromSuperview];
+    cell.pictureView.image = nil;
+    
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
     
-    cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
+    cell.titleLabel.text = [dateFormatter stringFromDate:message.deviceCts];
     
     cell.detailLabel.text = message.body;
 //    cell.detailLabel.text = MESSAGE_BODY;
     
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
     
-    if ([recordStatus.isRead boolValue]) {
-        
-        cell.titleLabel.textColor = [UIColor blackColor];
-        
-    } else {
-        
-        cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-        
-        if (indexPath && message.pictures.count == 0) {
-            
-            [self performSelector:@selector(markMessageAsRead:)
-                       withObject:@{@"message": message, @"indexPath": indexPath}
-                       afterDelay:2];
-
-        }
-        
-    }
+    UIColor *textColor = ([recordStatus.isRead boolValue]) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
+    
+    cell.titleLabel.textColor = textColor;
     
     if (message.pictures.count > 0) [self addImageFromMessage:message toCell:cell];
 
@@ -237,6 +226,14 @@ static NSString *cellIdentifier = @"messageCell";
     
     if (message.pictures.count > 0) [STMMessageController showMessageVCsForMessage:message];
     
+    if (indexPath && message.pictures.count == 0) {
+        
+        [self performSelector:@selector(markMessageAsRead:)
+                   withObject:@{@"message": message, @"indexPath": indexPath}
+                   afterDelay:0];
+        
+    }
+
     return indexPath;
     
 }
