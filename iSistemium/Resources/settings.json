@@ -138,9 +138,9 @@
            "control": "switch"
         },
         {
-           "name": "timeAndDistanceLogic",
-           "value": true,
-           "control": "switch"
+           "name": "timeDistanceLogic",
+           "value": "OR",
+           "control": ""
         },
         {
            "name": "maxSpeedThreshold",

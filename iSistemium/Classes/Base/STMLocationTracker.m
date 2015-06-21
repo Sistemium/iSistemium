@@ -25,7 +25,7 @@
 @property (nonatomic) CLLocationSpeed maxSpeedThreshold;
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
-@property (nonatomic) BOOL timeAndDistanceLogic;
+@property (nonatomic, strong) NSString *timeDistanceLogic;
 
 
 @end
@@ -120,11 +120,11 @@
     return _getLocationsWithNegativeSpeed;
 }
 
-- (BOOL)timeAndDistanceLogic {
-    if (!_timeAndDistanceLogic) {
-        _timeAndDistanceLogic = [[self.settings valueForKey:@"timeAndDistanceLogic"] boolValue];
+- (NSString *)timeDistanceLogic {
+    if (!_timeDistanceLogic) {
+        _timeDistanceLogic = self.settings[@"timeDistanceLogic"];
     }
-    return _timeAndDistanceLogic;
+    return _timeDistanceLogic;
 }
 
 - (STMTrack *)currentTrack {

@@ -73,7 +73,6 @@
                             @"deviceMotionUpdate",
                             @"enableDebtsEditing",
                             @"enablePartnersEditing",
-                            @"timeAndDistanceLogic",
                             @"enableDownloadViaWWAN"];
     
     NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
@@ -90,6 +89,8 @@
     
     NSArray *stringValue = @[@"uploadLog.type",
                              @"genericPriceType"];
+    
+    NSArray *logicValue = @[@"timeDistanceLogic"];
     
     if ([positiveDoubleValues containsObject:key]) {
         if ([self isPositiveDouble:value]) {
@@ -146,6 +147,19 @@
             return value;
         } else {
             return @"price";
+        }
+        
+    } else if ([logicValue containsObject:key]) {
+
+        NSString *orValue = @"OR";
+        NSString *andValue = @"AND";
+        
+        NSArray *availableValues = @[orValue, andValue];
+        
+        if ([availableValues containsObject:value.uppercaseString]) {
+            return value.uppercaseString;
+        } else {
+            return orValue;
         }
         
     }
@@ -334,7 +348,9 @@
 
             } else {
                 
-                [settingToCheck addObserver:self forKeyPath:@"value" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
+                settingToCheck.value = [self normalizeValue:settingToCheck.value forKey:settingName];
+                
+//                [settingToCheck addObserver:self forKeyPath:@"value" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
                 
                 if ([[self.startSettings allKeys] containsObject:settingName]) {
                     if (![settingToCheck.value isEqualToString:settingValue]) {
