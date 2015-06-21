@@ -1375,7 +1375,13 @@
             
             self.syncing = NO;
 
-            [self.sendedEntities removeObjectsInArray:@[NSStringFromClass([STMClientEntity class]), NSStringFromClass([STMEntity class])]];
+            [self.sendedEntities removeObjectsInArray:@[
+                                                        NSStringFromClass([STMClientEntity class]),
+                                                        NSStringFromClass([STMEntity class]),
+                                                        NSStringFromClass([STMLogMessage class]),
+                                                        NSStringFromClass([STMLocation class]),
+                                                        NSStringFromClass([STMBatteryStatus class])
+                                                        ]];
             
             BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
             
