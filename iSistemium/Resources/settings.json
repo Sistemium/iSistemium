@@ -138,6 +138,11 @@
            "control": "switch"
         },
         {
+           "name": "timeDistanceLogic",
+           "value": "AND",
+           "control": ""
+        },
+        {
            "name": "maxSpeedThreshold",
            "value": 60,
            "control": "slider",

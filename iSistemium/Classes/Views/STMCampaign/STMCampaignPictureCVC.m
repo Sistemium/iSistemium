@@ -170,7 +170,7 @@
     
     STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:picture.xid];
     
-    if (recordStatus.isRead) {
+    if ([recordStatus.isRead boolValue]) {
         
         label.textColor = [UIColor blackColor];
         

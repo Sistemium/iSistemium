@@ -158,13 +158,29 @@
 
 - (void)showActionSheetFromTabBarItem {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"IORDERS", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"RELOAD", nil), nil];
-    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.delegate = self;
     actionSheet.tag = 1;
-
-    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+    actionSheet.title = self.title;
     
-    [actionSheet showFromRect:rect inView:self.view animated:YES];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"RELOAD", nil)];
+    
+    if (IPAD) {
+    
+        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+        
+        [actionSheet showFromRect:rect inView:self.view animated:YES];
+
+    } else if (IPHONE) {
+
+        NSUInteger numberOfButtons = actionSheet.numberOfButtons;
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CANCEL", nil)];
+        actionSheet.cancelButtonIndex = numberOfButtons;
+        
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        
+    }
     
 }
 

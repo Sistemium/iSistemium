@@ -231,3 +231,6 @@
 "CATALOG SETTINGS" = "Catalog settings";
 "PRICE_" = "Price";
 "STOCK_" = "Stock";
+"ROLES REQUEST ERROR" = "Roles request error: ";
+
+

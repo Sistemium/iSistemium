@@ -37,7 +37,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
-@property (weak, nonatomic) IBOutlet UIButton *unloadedPicturesButton;
+@property (weak, nonatomic) IBOutlet UIButton *nonloadedPicturesButton;
 
 @property (weak, nonatomic) UIImageView *syncImageView;
 
@@ -47,6 +47,7 @@
 @property (nonatomic, strong) Reachability *internetReachability;
 
 @property (nonatomic) BOOL downloadAlertWasShown;
+@property (nonatomic) BOOL newsReceiving;
 
 @end
 
@@ -121,7 +122,7 @@
     
     [self updateSyncDatesLabels];
     [self updateCloudImages];
-    [self updateUnloadedPicturesInfo];
+    [self updateNonloadedPicturesInfo];
     
 }
 
@@ -194,6 +195,13 @@
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:cloudTapSelector];
             [self.syncImageView addGestureRecognizer:tap];
             
+            if (hasObjectsToUpload) {
+                
+                UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(uploadCloudLongPressed:)];
+                [self.syncImageView addGestureRecognizer:longPress];
+                
+            }
+            
         } else {
             
             [self.syncImageView setTintColor:[UIColor lightGrayColor]];
@@ -216,24 +224,53 @@
     
 }
 
+- (void)uploadCloudLongPressed:(id)sender {
+    
+    if ([sender isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        
+        UILongPressGestureRecognizer *longPressGesture = (UILongPressGestureRecognizer *)sender;
+        
+        if (longPressGesture.state == UIGestureRecognizerStateBegan) {
+            
+            [self syncer].syncerState = STMSyncerSendData;
+            
+        }
+        
+    }
+
+}
+
 - (void)uploadCloudTapped {
     [self syncer].syncerState = STMSyncerSendDataOnce;
 }
 
 - (void)downloadCloudTapped {
-    [self syncer].syncerState = STMSyncerReceiveData;
+    
+    [[self syncer] afterSendFurcation];
+//    [self syncer].syncerState = STMSyncerReceiveData;
+    
 }
 
 
 #pragma mark -
 
+- (void)syncerNewsHaveObjects:(NSNotification *)notification {
+    
+    self.newsReceiving = YES;
+    self.totalEntityCount = [(notification.userInfo)[@"totalNumberOfObjects"] floatValue];
+    
+}
+
 - (void)entitiesReceivingDidFinish {
+
+    self.newsReceiving = NO;
     self.totalEntityCount = (float)[STMEntityController stcEntities].allKeys.count;
+    
 }
 
 - (void)entityCountdownChange:(NSNotification *)notification {
     
-    if ([notification.object isKindOfClass:[STMSyncer class]]) {
+    if ([notification.object isKindOfClass:[STMSyncer class]] && !self.newsReceiving) {
         
         float countdownValue = [(notification.userInfo)[@"countdownValue"] floatValue];
         self.progressBar.progress = (self.totalEntityCount - countdownValue) / self.totalEntityCount;
@@ -258,6 +295,12 @@
         self.numberOfObjectLabel.text = [NSString stringWithFormat:@"%@ %@ %@", receiveString, numberOfObjects, NSLocalizedString(numberOfObjectsString, nil)];
         
         self.previousNumberOfObjects = numberOfObjects.intValue;
+        
+        if (self.newsReceiving) {
+            
+            self.progressBar.progress = numberOfObjects.floatValue / self.totalEntityCount;
+            
+        }
         
     }
     
@@ -324,18 +367,18 @@
     
 }
 
-- (void)setupUnloadedPicturesButton {
+- (void)setupNonloadedPicturesButton {
     
-    [self.unloadedPicturesButton setTitleColor:ACTIVE_BLUE_COLOR forState:UIControlStateNormal];
-    [self.unloadedPicturesButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    [self.nonloadedPicturesButton setTitleColor:ACTIVE_BLUE_COLOR forState:UIControlStateNormal];
+    [self.nonloadedPicturesButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     
 }
 
-- (void)updateUnloadedPicturesInfo {
+- (void)updateNonloadedPicturesInfo {
 
-    self.unloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
+    self.nonloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
     
-    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
+    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] nonloadedPicturesCount];
     
     NSString *title = @"";
     NSString *badgeValue = nil;
@@ -352,19 +395,19 @@
         self.downloadAlertWasShown = NO;
     }
     
-    [self.unloadedPicturesButton setTitle:title forState:UIControlStateNormal];
+    [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
     self.navigationController.tabBarItem.badgeValue = badgeValue;
     
     UIColor *titleColor = [STMPicturesController sharedController].downloadQueue.suspended ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
-    [self.unloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
+    [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
     
 }
 
-- (void)unloadedPicturesCountDidChange {
-    [self updateUnloadedPicturesInfo];
+- (void)nonloadedPicturesCountDidChange {
+    [self updateNonloadedPicturesInfo];
 }
 
-- (IBAction)unloadedPicturesButtonPressed:(id)sender {
+- (IBAction)nonloadedPicturesButtonPressed:(id)sender {
 
     UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
     actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
@@ -418,20 +461,20 @@
     
     [STMPicturesController checkPhotos];
     [STMPicturesController sharedController].downloadQueue.suspended = NO;
-    [self updateUnloadedPicturesInfo];
+    [self updateNonloadedPicturesInfo];
 
 }
 
 - (void)stopPicturesDownloading {
     
     [STMPicturesController sharedController].downloadQueue.suspended = YES;
-    [self updateUnloadedPicturesInfo];
+    [self updateNonloadedPicturesInfo];
 
 }
 
 - (void)showDownloadAlert {
     
-    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] unloadedPicturesCount];
+    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] nonloadedPicturesCount];
     
     if (unloadedPicturesCount > 0) {
         
@@ -747,6 +790,11 @@
            selector:@selector(entityCountdownChange:)
                name:@"entityCountdownChange"
              object:syncer];
+
+    [nc addObserver:self
+           selector:@selector(syncerNewsHaveObjects:)
+               name:@"syncerNewsHaveObjects"
+             object:syncer];
     
     [nc addObserver:self
            selector:@selector(entitiesReceivingDidFinish)
@@ -804,8 +852,8 @@
              object:nil];
     
     [nc addObserver:self
-           selector:@selector(unloadedPicturesCountDidChange)
-               name:@"unloadedPicturesCountDidChange"
+           selector:@selector(nonloadedPicturesCountDidChange)
+               name:@"nonloadedPicturesCountDidChange"
              object:[STMPicturesController sharedController]];
     
 }
@@ -832,8 +880,8 @@
     
     [self updateCloudImages];
     [self updateSyncDatesLabels];
-    [self setupUnloadedPicturesButton];
-    [self updateUnloadedPicturesInfo];
+    [self setupNonloadedPicturesButton];
+    [self updateNonloadedPicturesInfo];
     
     [self addObservers];
     [self startReachability];

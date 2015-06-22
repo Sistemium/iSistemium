@@ -7,16 +7,21 @@
 //
 
 #import "STMAuthController.h"
+
+#import <AdSupport/AdSupport.h>
+
 #import "STMFunctions.h"
 #import <Security/Security.h>
 #import "KeychainItemWrapper.h"
 #import "STMSessionManager.h"
 #import "STMLogger.h"
 
+
 //#define AUTH_URL @"https://sistemium.com/auth.php"
 #define AUTH_URL @"https://api.sistemium.com/pha/auth"
 
 #define ROLES_URL @"https://api.sistemium.com/pha/roles"
+//#define ROLES_URL @"https://api.sistemium.com/pha/v2/roles" // for crash testing
 
 #define TIMEOUT 15.0
 
@@ -458,6 +463,8 @@
         
         resultingRequest = [request mutableCopy];
         [resultingRequest addValue:self.accessToken forHTTPHeaderField:@"Authorization"];
+        [resultingRequest setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+
 
     }
     
@@ -788,22 +795,35 @@
 
 - (void)processingResponseJSONError {
     
-    NSString *error = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
+    if (self.controllerState == STMAuthRequestRoles) {
+
+        [self connectionErrorWhileRequestingRoles];
+        
+    } else {
     
-    if (self.controllerState == STMAuthEnterPhoneNumber) {
+        NSString *errorString = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
         
-        error = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
-        self.controllerState = STMAuthEnterPhoneNumber;
+        if (self.controllerState == STMAuthEnterPhoneNumber) {
+            
+            errorString = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
+            self.controllerState = STMAuthEnterPhoneNumber;
+            
+        } else if (self.controllerState == STMAuthEnterSMSCode) {
+            
+            errorString = NSLocalizedString(@"WRONG SMS CODE", nil);
+            self.controllerState = STMAuthEnterSMSCode;
+            
+//        } else if (self.controllerState == STMAuthRequestRoles) {
+//            
+//            errorString = [NSLocalizedString(@"ROLES REQUEST ERROR", nil) stringByAppendingString:errorString];
+//            self.controllerState = STMAuthEnterPhoneNumber;
+            
+        }
         
-    } else if (self.controllerState == STMAuthEnterSMSCode) {
-        
-        error = NSLocalizedString(@"WRONG SMS CODE", nil);
-        self.controllerState = STMAuthEnterSMSCode;
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": errorString}];
+
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error}];
-
 }
 
 

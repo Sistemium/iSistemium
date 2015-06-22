@@ -368,6 +368,12 @@
     
     [self fillCell:cell atIndexPath:indexPath];
     
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
+
+    if ([outlet isEqual:self.splitVC.detailVC.outlet]) {        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    }
+
     return cell;
     
 }
@@ -399,11 +405,6 @@
     
     customCell.titleLabel.highlightedTextColor = highlightedTextColor;
     customCell.detailLabel.highlightedTextColor = highlightedTextColor;
-    
-    if ([outlet isEqual:self.splitVC.detailVC.outlet]) {
-        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-        //        NSLog(@"select indexPath %@", indexPath);
-    }
     
     [super fillCell:cell atIndexPath:indexPath];
 

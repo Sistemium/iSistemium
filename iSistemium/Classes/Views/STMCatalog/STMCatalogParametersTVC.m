@@ -90,12 +90,14 @@
     
     [self.tableView registerClass:[STMCatalogParametersTVCell class] forCellReuseIdentifier:self.cellReuseIdentifier];
     
+    [super customInit];
+
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
 
 }
 

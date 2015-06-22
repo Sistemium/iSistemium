@@ -160,6 +160,8 @@
     
     self.title = NSLocalizedString(@"AD CAMPAIGNS", nil);
     
+    [super customInit];
+    
 }
 
 - (instancetype)initWithStyle:(UITableViewStyle)style {
@@ -174,7 +176,9 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+    
+//    customInit will called in super
+//    [self customInit];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
