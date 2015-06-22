@@ -516,10 +516,10 @@
                name:@"syncerSettingsChanged"
              object:self.session];
     
-    [nc addObserver:self
-           selector:@selector(didReceiveRemoteNotification)
-               name:@"applicationDidReceiveRemoteNotification"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(didReceiveRemoteNotification)
+//               name:@"applicationDidReceiveRemoteNotification"
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(appDidBecomeActive)
@@ -536,10 +536,10 @@
                name:UIApplicationDidEnterBackgroundNotification
              object:nil];
     
-    [nc addObserver:self
-           selector:@selector(syncerDidReceiveRemoteNotification:)
-               name:@"syncerDidReceiveRemoteNotification"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(syncerDidReceiveRemoteNotification:)
+//               name:@"syncerDidReceiveRemoteNotification"
+//             object:nil];
     
 }
 
