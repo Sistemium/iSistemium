@@ -65,6 +65,8 @@
 
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
 
+@property (nonatomic) UIBackgroundFetchResult fetchResult;
+
 - (void)didReceiveRemoteNotification;
 - (void)didEnterBackground;
 
@@ -218,6 +220,7 @@
 - (void)setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
     
     self.fetchCompletionHandler = handler;
+    self.fetchResult = UIBackgroundFetchResultNewData;
     self.syncerState = syncerState;
     
 }
@@ -284,7 +287,7 @@
                 
                 self.entitySyncNames = nil;
                 if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
-                if (self.fetchCompletionHandler) self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
+                if (self.fetchCompletionHandler) self.fetchCompletionHandler(self.fetchResult);
                 
                 break;
                 
@@ -523,10 +526,10 @@
                name:UIApplicationDidBecomeActiveNotification
              object:nil];
     
-    [nc addObserver:self
-           selector:@selector(didReceiveRemoteNotification)
-               name:@"applicationPerformFetchWithCompletionHandler"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(didReceiveRemoteNotification)
+//               name:@"applicationPerformFetchWithCompletionHandler"
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(didEnterBackground)
@@ -857,6 +860,8 @@
                 
                 [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
                 self.syncing = NO;
+                self.fetchResult = UIBackgroundFetchResultFailed;
+
                 self.syncerState = STMSyncerIdle;
                 
             } else {
@@ -912,16 +917,19 @@
                 switch (statusCode) {
                         
                     case 200:
+                        self.fetchResult = UIBackgroundFetchResultNewData;
                         [self parseNewsData:data];
                         break;
                         
                     case 204:
                         NSLog(@"    news: 204 No Content");
+                        self.fetchResult = UIBackgroundFetchResultNoData;
                         [self receivingDidFinish];
                         break;
                         
                     default:
                         NSLog(@"    news statusCode: %d", statusCode);
+                        self.fetchResult = UIBackgroundFetchResultFailed;
                         [self receivingDidFinish];
                         break;
                         
@@ -931,6 +939,8 @@
                 
                 NSLog(@"connectionError %@", connectionError.localizedDescription);
                 self.errorOccured = YES;
+                self.fetchResult = UIBackgroundFetchResultFailed;
+
                 [self receivingDidFinish];
                 
             }
@@ -1082,6 +1092,8 @@
             
             [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
             self.syncing = NO;
+            self.fetchResult = UIBackgroundFetchResultFailed;
+
             self.syncerState = STMSyncerIdle;
             
         } else {
@@ -1099,6 +1111,7 @@
 
 - (void)notAuthorized {
     
+    self.fetchResult = UIBackgroundFetchResultFailed;
     [self stopSyncer];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"notAuthorized" object:self];
     
@@ -1198,6 +1211,8 @@
     }
     
     self.syncing = NO;
+    self.fetchResult = UIBackgroundFetchResultFailed;
+    
     self.syncerState = STMSyncerIdle;
     
 }
