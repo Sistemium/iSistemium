@@ -103,7 +103,8 @@
         
         [self.view addSubview:self.spinnerView];
         [self addObservers];
-        [STMPicturesController hrefProcessingForObject:self.picture];
+//        [STMPicturesController hrefProcessingForObject:self.picture];
+        [STMPicturesController downloadConnectionForObject:self.picture];
 
     }
 

@@ -723,59 +723,63 @@
         [self.hrefDictionary removeObjectForKey:href];
 
     } else {
-    
-        NSURL *url = [NSURL URLWithString:href];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
-        NSURLResponse *response = nil;
-        NSError *error = nil;
         
-        //        NSLog(@"start loading %@", url.lastPathComponent);
-        
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-        
-        if (error) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+            NSURL *url = [NSURL URLWithString:href];
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+            NSURLResponse *response = nil;
+            NSError *error = nil;
             
-            if (error.code == -1001) {
+            //        NSLog(@"start loading %@", url.lastPathComponent);
+
+            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            
+            if (error) {
                 
-                NSLog(@"error code -1001 timeout for %@", href);
-                
-                if ([self.secondAttempt containsObject:href]) {
+                if (error.code == -1001) {
                     
-                    NSLog(@"second load attempt fault for %@", href);
+                    NSLog(@"error code -1001 timeout for %@", href);
                     
-                    [self.secondAttempt removeObject:href];
-                    [self.hrefDictionary removeObjectForKey:href];
+                    if ([self.secondAttempt containsObject:href]) {
+                        
+                        NSLog(@"second load attempt fault for %@", href);
+                        
+                        [self.secondAttempt removeObject:href];
+                        [self.hrefDictionary removeObjectForKey:href];
+                        
+                    } else {
+                        
+                        [self.secondAttempt addObject:href];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
+                        });
+                        
+                    }
                     
                 } else {
                     
-                    [self.secondAttempt addObject:href];
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
-                    });
+                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                    [self.hrefDictionary removeObjectForKey:href];
                     
                 }
                 
             } else {
                 
-                NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                //            NSLog(@"%@ load successefully", href);
+                
                 [self.hrefDictionary removeObjectForKey:href];
+                
+                NSData *dataCopy = [data copy];
+                
+                if ([object isKindOfClass:[STMPicture class]]) {
+                    [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object];
+                }
                 
             }
             
-        } else {
-            
-            //            NSLog(@"%@ load successefully", href);
-            
-            [self.hrefDictionary removeObjectForKey:href];
-            
-            NSData *dataCopy = [data copy];
-            
-            if ([object isKindOfClass:[STMPicture class]]) {
-                [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object];
-            }
-            
-        }
+        });
 
     }
     
