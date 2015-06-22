@@ -795,27 +795,35 @@
 
 - (void)processingResponseJSONError {
     
-    NSString *errorString = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
+    if (self.controllerState == STMAuthRequestRoles) {
+
+        [self connectionErrorWhileRequestingRoles];
+        
+    } else {
     
-    if (self.controllerState == STMAuthEnterPhoneNumber) {
+        NSString *errorString = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
         
-        errorString = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
-        self.controllerState = STMAuthEnterPhoneNumber;
+        if (self.controllerState == STMAuthEnterPhoneNumber) {
+            
+            errorString = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
+            self.controllerState = STMAuthEnterPhoneNumber;
+            
+        } else if (self.controllerState == STMAuthEnterSMSCode) {
+            
+            errorString = NSLocalizedString(@"WRONG SMS CODE", nil);
+            self.controllerState = STMAuthEnterSMSCode;
+            
+//        } else if (self.controllerState == STMAuthRequestRoles) {
+//            
+//            errorString = [NSLocalizedString(@"ROLES REQUEST ERROR", nil) stringByAppendingString:errorString];
+//            self.controllerState = STMAuthEnterPhoneNumber;
+            
+        }
         
-    } else if (self.controllerState == STMAuthEnterSMSCode) {
-        
-        errorString = NSLocalizedString(@"WRONG SMS CODE", nil);
-        self.controllerState = STMAuthEnterSMSCode;
-        
-    } else if (self.controllerState == STMAuthRequestRoles) {
-        
-        errorString = [NSLocalizedString(@"ROLES REQUEST ERROR", nil) stringByAppendingString:errorString];
-        self.controllerState = STMAuthEnterPhoneNumber;
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": errorString}];
+
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": errorString}];
-
 }
 
 
