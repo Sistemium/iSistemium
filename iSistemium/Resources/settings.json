@@ -139,7 +139,7 @@
         },
         {
            "name": "timeDistanceLogic",
-           "value": "OR",
+           "value": "AND",
            "control": ""
         },
         {
