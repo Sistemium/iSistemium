@@ -7,6 +7,7 @@
 //
 
 #import "STMArticlePictureVC.h"
+#import "STMPicturesController.h"
 
 #define IMAGE_PATH_KEY @"imagePath"
 
@@ -71,8 +72,12 @@
             
             [self.pictureView addSubview:view];
             
+#warning — should replace observers with the one used in STMCampaignPictureVC
+            
             [picture addObserver:self forKeyPath:IMAGE_PATH_KEY options:NSKeyValueObservingOptionNew context:nil];
             [self.picturesUnderObserving addObject:picture];
+            
+            [STMPicturesController downloadConnectionForObject:picture];
 
         }
         
@@ -84,9 +89,9 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     
-    [self setupImage];
     [self.picturesUnderObserving removeObject:object];
     [object removeObserver:self forKeyPath:keyPath context:context];
+    [self setupImage];
     
 }
 
