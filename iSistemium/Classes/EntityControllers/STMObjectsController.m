@@ -1155,7 +1155,7 @@
 //    [self avgTimesCalc];
     
     [STMPicturesController checkPhotos];
-    [self checkObjectsForFlushing];
+//    [self checkObjectsForFlushing];
     
 #ifdef DEBUG
     [self totalNumberOfObjects];
