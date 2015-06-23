@@ -77,7 +77,9 @@
             [picture addObserver:self forKeyPath:IMAGE_PATH_KEY options:NSKeyValueObservingOptionNew context:nil];
             [self.picturesUnderObserving addObject:picture];
             
-            [STMPicturesController downloadConnectionForObject:picture];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                [STMPicturesController downloadConnectionForObject:picture];
+            });
 
         }
         
