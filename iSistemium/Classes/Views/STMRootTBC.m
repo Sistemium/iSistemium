@@ -394,6 +394,8 @@
 
 }
 
+/*  *** animation transition for tab switching ***
+
 - (id <UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
     
     return self;
@@ -422,6 +424,7 @@
                     }];
 
 }
+*/
 
 
 #pragma mark - alertView & delegate
