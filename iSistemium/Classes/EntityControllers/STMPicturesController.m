@@ -626,9 +626,9 @@
     
     if (fileName) {
         
-        [self setThumbnailForPicture:weakPicture fromImageData:weakData];
         [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
         [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
+        [self setThumbnailForPicture:weakPicture fromImageData:weakData];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -643,17 +643,6 @@
         
     }
     
-}
-
-+ (void)setThumbnailForPicture:(STMPicture *)picture fromImageData:(NSData *)data {
-    
-    UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
-    NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, [self jpgQuality]);
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        picture.imageThumbnail = thumbnail;
-    });
-
 }
 
 + (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
@@ -690,6 +679,17 @@
         picture.resizedImagePath = resizedFileName;
     });
 
+}
+
++ (void)setThumbnailForPicture:(STMPicture *)picture fromImageData:(NSData *)data {
+    
+    UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
+    NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, [self jpgQuality]);
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        picture.imageThumbnail = thumbnail;
+    });
+    
 }
 
 - (void)addOperationForObject:(NSManagedObject *)object {
