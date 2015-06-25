@@ -6,11 +6,10 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMFetchedResultsControllerTVC.h"
 #import "STMDataModel.h"
 
 
-@interface STMShipmentsTVC : STMFetchedResultsControllerTVC
+@interface STMShipmentsTVC : UITableViewController
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
 

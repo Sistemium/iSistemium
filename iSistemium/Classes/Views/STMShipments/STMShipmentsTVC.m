@@ -16,6 +16,8 @@
 @interface STMShipmentsTVC ()
 
 @property (nonatomic, strong) NSString *cellIdentifier;
+@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+@property (nonatomic, strong) STMDocument *document;
 
 
 @end
@@ -23,8 +25,14 @@
 
 @implementation STMShipmentsTVC
 
-@synthesize resultsController = _resultsController;
-
+- (STMDocument *)document {
+    
+    if (!_document) {
+        _document = (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
+    }
+    return _document;
+    
+}
 
 - (NSString *)cellIdentifier {
     return @"shipmentCell";
@@ -49,7 +57,7 @@
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
-        _resultsController.delegate = self;
+//        _resultsController.delegate = self;
         
     }
     return _resultsController;
@@ -73,15 +81,92 @@
 
 #pragma mark - table view data
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 3;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return 1;
+            break;
+            
+        case 1:
+            return 1;
+
+        case 2:
+            return self.resultsController.fetchedObjects.count;
+
+        default:
+            return 0;
+            break;
+    }
+    
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return NSLocalizedString(@"SHIPMENTS", nil);
+    
+    switch (section) {
+        case 0:
+            return NSLocalizedString(@"SHIPMENT ROUTE", nil);
+            break;
+            
+        case 1:
+            return NSLocalizedString(@"SHIPMENT ROUTE POINT", nil);
+            break;
+            
+        case 2:
+            return NSLocalizedString(@"SHIPMENTS", nil);
+            break;
+            
+        default:
+            return nil;
+            break;
+    }
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
 
-    STMShipment *shipment = [self.resultsController objectAtIndexPath:indexPath];
+    switch (indexPath.section) {
+        case 0:
+            [self fillCell:cell withRoute:self.point.shipmentRoute];
+            break;
+
+        case 1:
+            [self fillCell:cell withRoutePoint:self.point];
+            break;
+
+        case 2:
+            [self fillCell:cell withShipment:self.resultsController.fetchedObjects[indexPath.row]];
+            break;
+
+        default:
+            break;
+    }
+
+    return cell;
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route {
+    
+    cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
+    cell.detailTextLabel.text = @"";
+
+}
+
+- (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
+
+    cell.textLabel.text = point.name;
+    cell.detailTextLabel.text = @"";
+
+}
+
+- (void)fillCell:(UITableViewCell *)cell withShipment:(STMShipment *)shipment {
     
     cell.textLabel.text = shipment.ndoc;
     
@@ -105,16 +190,18 @@
     
     cell.detailTextLabel.text = detailText;
 
-    return cell;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMShipment *shipment = [self.resultsController objectAtIndexPath:indexPath];
-    
-    if (shipment.shipmentPositions.count > 0) {
-        [self performSegueWithIdentifier:@"showShipmentPositions" sender:indexPath];
+    if (indexPath.section == 2) {
+        
+        STMShipment *shipment = self.resultsController.fetchedObjects[indexPath.row];
+        
+        if (shipment.shipmentPositions.count > 0) {
+            [self performSegueWithIdentifier:@"showShipmentPositions" sender:indexPath];
+        }
+
     }
     
 }
@@ -128,7 +215,7 @@
         [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentPositionsTVC class]]) {
         
-        STMShipment *shipment = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+        STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
         [(STMShipmentPositionsTVC *)segue.destinationViewController setShipment:shipment];
         
     }
@@ -142,13 +229,13 @@
 
     [self performFetch];
     
-    [super customInit];
-    
 }
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+    
 }
 
 - (void)didReceiveMemoryWarning {

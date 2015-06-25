@@ -139,7 +139,7 @@
     
     [super customInit];
     [self performFetch];
-    self.navigationItem.title = self.navigationController.title;
+    self.navigationItem.title = NSLocalizedString(@"SHIPMENT ROUTES", nil);
     
 }
 

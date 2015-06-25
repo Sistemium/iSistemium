@@ -248,4 +248,5 @@
 "QVOLUME" = "Количество";
 "PIECES" = "шт.";
 "SHIPMENT ROUTE" = "Маршрут";
+"SHIPMENT ROUTE POINT" = "Точка маршрута";
 
