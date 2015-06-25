@@ -239,6 +239,8 @@
 		2CEAC1541B3BEBB500AD068E /* STMShipmentPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1531B3BEBB500AD068E /* STMShipmentPosition.m */; };
 		2CEAC1571B3BEBB500AD068E /* STMShippingLocationPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1561B3BEBB500AD068E /* STMShippingLocationPicture.m */; };
 		2CEAC15A1B3BEBB600AD068E /* STMShipmentRoutePoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1591B3BEBB600AD068E /* STMShipmentRoutePoint.m */; };
+		2CEAC15C1B3BF64C00AD068E /* STMShipments.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15B1B3BF64C00AD068E /* STMShipments.storyboard */; };
+		2CEAC15E1B3BF78200AD068E /* truck_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15D1B3BF78200AD068E /* truck_filled.png */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -731,6 +733,8 @@
 		2CEAC1561B3BEBB500AD068E /* STMShippingLocationPicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationPicture.m; sourceTree = "<group>"; };
 		2CEAC1581B3BEBB600AD068E /* STMShipmentRoutePoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRoutePoint.h; sourceTree = "<group>"; };
 		2CEAC1591B3BEBB600AD068E /* STMShipmentRoutePoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoutePoint.m; sourceTree = "<group>"; };
+		2CEAC15B1B3BF64C00AD068E /* STMShipments.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMShipments.storyboard; sourceTree = "<group>"; };
+		2CEAC15D1B3BF78200AD068E /* truck_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = truck_filled.png; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -976,6 +980,8 @@
 		2C53B8AF1940A0A3002298A5 /* DataModel */ = {
 			isa = PBXGroup;
 			children = (
+				2C9051881A276E9200EFE40D /* STMDataModel.xcdatamodeld */,
+				2C5297FD1AD000F8008496AE /* STMDataModel.h */,
 				2CEAC14F1B3BEBB500AD068E /* STMArticle.h */,
 				2CEAC1501B3BEBB500AD068E /* STMArticle.m */,
 				2C559F661AC040BB00E25831 /* STMArticleGroup.h */,
@@ -1004,8 +1010,6 @@
 				2C761BA91AFCE3B7001DA33E /* STMClientEntity.m */,
 				2C65290B19576895008605D9 /* STMComment.h */,
 				2C65290C19576895008605D9 /* STMComment.m */,
-				2C5297FD1AD000F8008496AE /* STMDataModel.h */,
-				2C9051881A276E9200EFE40D /* STMDataModel.xcdatamodeld */,
 				2C5764A11AB8718700B9FD2C /* STMDatum.h */,
 				2C5764A21AB8718700B9FD2C /* STMDatum.m */,
 				2C53B8D21940A1B8002298A5 /* STMDatum+Init.h */,
@@ -1472,6 +1476,7 @@
 				2C761BB51B00833F001DA33E /* Picture Filled-32.png */,
 				2C761BB61B00833F001DA33E /* Picture Filled-100.png */,
 				2C5797F11A43608300EEFBA7 /* purchase_order-128.png */,
+				2CEAC15D1B3BF78200AD068E /* truck_filled.png */,
 				2C42ECBE1B15996100B5C91A /* Settings-25.png */,
 				2CF365AD19EE8C0100F078BD /* settings3-128.png */,
 				2C5764381AA8962600B9FD2C /* wine_bottle-512.png */,
@@ -1497,6 +1502,7 @@
 				2CF365AB19EE884D00F078BD /* STMSettings.storyboard */,
 				2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */,
 				2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */,
+				2CEAC15B1B3BF64C00AD068E /* STMShipments.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -1622,6 +1628,7 @@
 				2C02F2C71A8B95F600E0E890 /* exit-128.png in Resources */,
 				2C761BC61B01F2D0001DA33E /* Down4-25.png in Resources */,
 				2C5764981AB4713B00B9FD2C /* checked_user-128.png in Resources */,
+				2CEAC15E1B3BF78200AD068E /* truck_filled.png in Resources */,
 				D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */,
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
 				2C761BAF1B008185001DA33E /* Picture-100.png in Resources */,
@@ -1634,6 +1641,7 @@
 				D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */,
 				2C42ECBC1B13893F00B5C91A /* STMArticlePicturePVC.storyboard in Resources */,
 				2C16CC411AF3940200A2EC2D /* Download From Cloud-100.png in Resources */,
+				2CEAC15C1B3BF64C00AD068E /* STMShipments.storyboard in Resources */,
 				2C88F1D31B24664600E30418 /* Clear Filters-25.png in Resources */,
 				2C761BB21B00824F001DA33E /* Picture-32.png in Resources */,
 				2C761BB31B00824F001DA33E /* Picture-25.png in Resources */,
