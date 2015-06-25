@@ -11,6 +11,8 @@
 #import "STMNS.h"
 #import "STMFunctions.h"
 
+#import "STMShipmentRoutePointsTVC.h"
+
 
 @interface STMShipmentRoutesTVC ()
 
@@ -75,7 +77,24 @@
     STMShipmentRoute *route = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
-//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", route.xid];
+    
+    NSUInteger pointsCount = route.shipmentRoutePoints.count;
+    NSString *pluralType = [STMFunctions pluralTypeForCount:pointsCount];
+    NSString *localizedString = [NSString stringWithFormat:@"%@SRPOINTS", pluralType];
+
+    NSString *detailText;
+    
+    if (pointsCount > 0) {
+        
+        detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)pointsCount, NSLocalizedString(localizedString, nil)];
+        
+    } else {
+        
+        detailText = NSLocalizedString(localizedString, nil);
+        
+    }
+
+    cell.detailTextLabel.text = detailText;
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
@@ -94,9 +113,12 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"showRoutePoints"] && [sender isKindOfClass:[NSIndexPath class]]) {
+    if ([segue.identifier isEqualToString:@"showRoutePoints"] &&
+        [sender isKindOfClass:[NSIndexPath class]] &&
+        [segue.destinationViewController isKindOfClass:[STMShipmentRoutePointsTVC class]]) {
         
         STMShipmentRoute *route = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+        [(STMShipmentRoutePointsTVC *)segue.destinationViewController setRoute:route];
         
     }
 

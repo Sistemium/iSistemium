@@ -233,4 +233,14 @@
 "STOCK_" = "Stock";
 "ROLES REQUEST ERROR" = "Roles request error: ";
 "SHIPMENT ROUTES" = "Shipment routes";
+"SHIPMENT ROUTE POINTS" = "Shipment route points";
+"0SRPOINTS" = "no points";
+"1SRPOINTS" = "point";
+"2SRPOINTS" = "points";
+"5SRPOINTS" = "points";
+"0SHIPMENTS" = "no shipments";
+"1SHIPMENTS" = "shipment";
+"2SHIPMENTS" = "shipments";
+"5SHIPMENTS" = "shipments";
+
 

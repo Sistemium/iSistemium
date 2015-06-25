@@ -1030,6 +1030,11 @@
     
     if (self.syncerState != STMSyncerIdle) {
 
+        if ([entityName isEqualToString:@"STMShipmentRoutePointShipment"]) {
+            
+        }
+        
+        
         STMEntity *entity = (self.stcEntities)[entityName];
         NSString *url = entity.url;
         

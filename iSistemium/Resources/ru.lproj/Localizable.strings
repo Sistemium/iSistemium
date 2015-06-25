@@ -233,4 +233,14 @@
 "STOCK_" = "Остатки";
 "ROLES REQUEST ERROR" = "Ошибка проверки ролей: ";
 "SHIPMENT ROUTES" = "Маршруты";
+"SHIPMENT ROUTE POINTS" = "Точки маршрута";
+"0SRPOINTS" = "нет точек";
+"1SRPOINTS" = "точка";
+"2SRPOINTS" = "точки";
+"5SRPOINTS" = "точек";
+"0SHIPMENTS" = "нет накладных";
+"1SHIPMENTS" = "накладная";
+"2SHIPMENTS" = "накладные";
+"5SHIPMENTS" = "накладных";
+
 

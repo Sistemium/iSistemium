@@ -37,7 +37,9 @@
         
         request.sortDescriptors = @[ordDescriptor, nameDescriptor];
         
-        request.predicate = [STMPredicate predicateWithNoFantoms];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipmentRoute == %@", self.route];
+        
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
@@ -45,6 +47,20 @@
 
     }
     return _resultsController;
+    
+}
+
+- (void)performFetch {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    
+    if (![self.resultsController performFetch:&error]) {
+        NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
+    } else {
+        
+    }
     
 }
 
@@ -63,6 +79,34 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        
+        STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
+        
+        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
+        
+        customCell.titleLabel.text = point.name;
+
+        NSUInteger shipmentsCount = point.shipments.count;
+        NSString *pluralType = [STMFunctions pluralTypeForCount:shipmentsCount];
+        NSString *localizedString = [NSString stringWithFormat:@"%@SHIPMENTS", pluralType];
+        
+        NSString *detailText;
+        
+        if (shipmentsCount > 0) {
+            
+            detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)shipmentsCount, NSLocalizedString(localizedString, nil)];
+
+        } else {
+
+            detailText = NSLocalizedString(localizedString, nil);
+
+        }
+        
+        customCell.detailLabel.text = detailText;
+        
+    }
+    
     [super fillCell:cell atIndexPath:indexPath];
     
 }
@@ -71,8 +115,11 @@
 
 - (void)customInit {
     
+    self.navigationItem.title = NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
-
+    [self performFetch];
+    
     [super customInit];
     
 }
