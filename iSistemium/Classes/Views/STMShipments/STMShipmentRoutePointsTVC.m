@@ -140,7 +140,6 @@
         [(STMShipmentsTVC *)segue.destinationViewController setPoint:point];
         
     }
-
     
 }
 
