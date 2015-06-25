@@ -31,8 +31,9 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentRoute class])];
         
         NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
+        NSSortDescriptor *idDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:NO selector:@selector(compare:)];
         
-        request.sortDescriptors = @[dateDescriptor];
+        request.sortDescriptors = @[dateDescriptor, idDescriptor];
         
         request.predicate = [STMPredicate predicateWithNoFantoms];
         
@@ -41,7 +42,6 @@
         _resultsController.delegate = self;
         
     }
-    
     return _resultsController;
     
 }
@@ -75,11 +75,31 @@
     STMShipmentRoute *route = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
+//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", route.xid];
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
     
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self performSegueWithIdentifier:@"showRoutePoints" sender:indexPath];
+    
+}
+
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showRoutePoints"] && [sender isKindOfClass:[NSIndexPath class]]) {
+        
+        STMShipmentRoute *route = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+        
+    }
+
 }
 
 
@@ -103,14 +123,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
