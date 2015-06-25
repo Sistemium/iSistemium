@@ -392,7 +392,10 @@
         badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)unloadedPicturesCount];
         
     } else {
+        
         self.downloadAlertWasShown = NO;
+        self.nonloadedPicturesButton.enabled = NO;
+        
     }
     
     [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
