@@ -119,8 +119,10 @@
 
         customCell.infoLabel.text = infoText;
         
-        volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-        customCell.detailLabel.text = [NSString stringWithFormat:@"%@%@", position.article.pieceVolume, volumeUnitString];
+//        volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+//        customCell.detailLabel.text = [NSString stringWithFormat:@"%@%@", position.article.pieceVolume, volumeUnitString];
+     
+        customCell.detailLabel.text = @"";
         
     }
     
