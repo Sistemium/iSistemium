@@ -15,8 +15,9 @@
 @implementation STMShipmentRoutePoint
 
 @dynamic name;
+@dynamic ord;
 @dynamic shipmentRoute;
-@dynamic shippingLocation;
 @dynamic shipments;
+@dynamic shippingLocation;
 
 @end

@@ -238,11 +238,11 @@
 		2CEAC1511B3BEBB500AD068E /* STMArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1501B3BEBB500AD068E /* STMArticle.m */; };
 		2CEAC1541B3BEBB500AD068E /* STMShipmentPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1531B3BEBB500AD068E /* STMShipmentPosition.m */; };
 		2CEAC1571B3BEBB500AD068E /* STMShippingLocationPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1561B3BEBB500AD068E /* STMShippingLocationPicture.m */; };
-		2CEAC15A1B3BEBB600AD068E /* STMShipmentRoutePoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1591B3BEBB600AD068E /* STMShipmentRoutePoint.m */; };
 		2CEAC15C1B3BF64C00AD068E /* STMShipments.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15B1B3BF64C00AD068E /* STMShipments.storyboard */; };
 		2CEAC15E1B3BF78200AD068E /* truck_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15D1B3BF78200AD068E /* truck_filled.png */; };
 		2CEAC1621B3BF9AA00AD068E /* STMShipmentRoutesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1611B3BF9AA00AD068E /* STMShipmentRoutesTVC.m */; };
 		2CEAC1651B3C031F00AD068E /* STMShipmentRoutePointsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1641B3C031F00AD068E /* STMShipmentRoutePointsTVC.m */; };
+		2CEAC1691B3C214400AD068E /* STMShipmentRoutePoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1681B3C214400AD068E /* STMShipmentRoutePoint.m */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -733,14 +733,15 @@
 		2CEAC1531B3BEBB500AD068E /* STMShipmentPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentPosition.m; sourceTree = "<group>"; };
 		2CEAC1551B3BEBB500AD068E /* STMShippingLocationPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingLocationPicture.h; sourceTree = "<group>"; };
 		2CEAC1561B3BEBB500AD068E /* STMShippingLocationPicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationPicture.m; sourceTree = "<group>"; };
-		2CEAC1581B3BEBB600AD068E /* STMShipmentRoutePoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRoutePoint.h; sourceTree = "<group>"; };
-		2CEAC1591B3BEBB600AD068E /* STMShipmentRoutePoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoutePoint.m; sourceTree = "<group>"; };
 		2CEAC15B1B3BF64C00AD068E /* STMShipments.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMShipments.storyboard; sourceTree = "<group>"; };
 		2CEAC15D1B3BF78200AD068E /* truck_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = truck_filled.png; sourceTree = "<group>"; };
 		2CEAC1601B3BF9AA00AD068E /* STMShipmentRoutesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRoutesTVC.h; sourceTree = "<group>"; };
 		2CEAC1611B3BF9AA00AD068E /* STMShipmentRoutesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoutesTVC.m; sourceTree = "<group>"; };
 		2CEAC1631B3C031F00AD068E /* STMShipmentRoutePointsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRoutePointsTVC.h; sourceTree = "<group>"; };
 		2CEAC1641B3C031F00AD068E /* STMShipmentRoutePointsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoutePointsTVC.m; sourceTree = "<group>"; };
+		2CEAC1661B3C20BE00AD068E /* STMDataModel 50.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 50.xcdatamodel"; sourceTree = "<group>"; };
+		2CEAC1671B3C214400AD068E /* STMShipmentRoutePoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRoutePoint.h; sourceTree = "<group>"; };
+		2CEAC1681B3C214400AD068E /* STMShipmentRoutePoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoutePoint.m; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -1075,8 +1076,8 @@
 				2CEAC1531B3BEBB500AD068E /* STMShipmentPosition.m */,
 				2CEAC1431B3BEBB500AD068E /* STMShipmentRoute.h */,
 				2CEAC1441B3BEBB500AD068E /* STMShipmentRoute.m */,
-				2CEAC1581B3BEBB600AD068E /* STMShipmentRoutePoint.h */,
-				2CEAC1591B3BEBB600AD068E /* STMShipmentRoutePoint.m */,
+				2CEAC1671B3C214400AD068E /* STMShipmentRoutePoint.h */,
+				2CEAC1681B3C214400AD068E /* STMShipmentRoutePoint.m */,
 				2CEAC13D1B3BEBB400AD068E /* STMShippingLocation.h */,
 				2CEAC13E1B3BEBB400AD068E /* STMShippingLocation.m */,
 				2CEAC1551B3BEBB500AD068E /* STMShippingLocationPicture.h */,
@@ -1759,6 +1760,7 @@
 				2C7E7DA71ABCA94700A26185 /* STMCustom2TVCell.m in Sources */,
 				2CEAC1571B3BEBB500AD068E /* STMShippingLocationPicture.m in Sources */,
 				2C88F1C11B1894B500E30418 /* STMCustom6TVCell.m in Sources */,
+				2CEAC1691B3C214400AD068E /* STMShipmentRoutePoint.m in Sources */,
 				2CEAC1481B3BEBB500AD068E /* STMSalesman.m in Sources */,
 				2C57641E1AA5E1E500B9FD2C /* STMDebtsDetailsPVC.m in Sources */,
 				2C80C7E5198904170044ADE4 /* STMPhoto.m in Sources */,
@@ -1813,7 +1815,6 @@
 				2C140ACA1A19F5B3002C5C17 /* STMUncashingPlaceController.m in Sources */,
 				D9527F6D1A3A504D0098885D /* STMSplitViewController.m in Sources */,
 				2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */,
-				2CEAC15A1B3BEBB600AD068E /* STMShipmentRoutePoint.m in Sources */,
 				2C4E44421A8209E6006E6AF1 /* STMCampaign.m in Sources */,
 				2C9D04B61ADBC01800D0421D /* STMRemoteController.m in Sources */,
 				2CEAC14B1B3BEBB500AD068E /* STMDriver.m in Sources */,
@@ -2180,6 +2181,7 @@
 		2C9051881A276E9200EFE40D /* STMDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2CEAC1661B3C20BE00AD068E /* STMDataModel 50.xcdatamodel */,
 				2CEAC1181B3BE22100AD068E /* STMDataModel 49.xcdatamodel */,
 				2C761BA71AFCE351001DA33E /* STMDataModel 48.xcdatamodel */,
 				2C761BA31AFA0650001DA33E /* STMDataModel 47.xcdatamodel */,
@@ -2230,7 +2232,7 @@
 				2C9051A01A276E9200EFE40D /* STMDataModel 9.xcdatamodel */,
 				2C9051A11A276E9200EFE40D /* STMDataModel.xcdatamodel */,
 			);
-			currentVersion = 2CEAC1181B3BE22100AD068E /* STMDataModel 49.xcdatamodel */;
+			currentVersion = 2CEAC1661B3C20BE00AD068E /* STMDataModel 50.xcdatamodel */;
 			path = STMDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

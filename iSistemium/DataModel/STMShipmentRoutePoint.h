@@ -15,9 +15,10 @@
 @interface STMShipmentRoutePoint : STMComment
 
 @property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSNumber * ord;
 @property (nonatomic, retain) STMShipmentRoute *shipmentRoute;
-@property (nonatomic, retain) STMShippingLocation *shippingLocation;
 @property (nonatomic, retain) NSSet *shipments;
+@property (nonatomic, retain) STMShippingLocation *shippingLocation;
 @end
 
 @interface STMShipmentRoutePoint (CoreDataGeneratedAccessors)
