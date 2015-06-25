@@ -70,6 +70,10 @@
 
 #pragma mark - table view data
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return NSLocalizedString(@"SHIPMENT ROUTES", nil);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
@@ -135,7 +139,7 @@
     
     [super customInit];
     [self performFetch];
-    self.navigationItem.title = NSLocalizedString(@"SHIPMENT ROUTES", nil);
+    self.navigationItem.title = self.navigationController.title;
     
 }
 
@@ -143,6 +147,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

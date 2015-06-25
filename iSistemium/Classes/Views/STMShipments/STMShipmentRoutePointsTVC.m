@@ -69,6 +69,10 @@
 
 #pragma mark - table view data
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
@@ -147,8 +151,6 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
-    self.navigationItem.title = NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];

@@ -73,6 +73,10 @@
 
 #pragma mark - table view data
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return NSLocalizedString(@"SHIPMENTS", nil);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
@@ -135,9 +139,7 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
-    self.navigationItem.title = NSLocalizedString(@"SHIPMENTS", nil);
-    
+
     [self performFetch];
     
     [super customInit];

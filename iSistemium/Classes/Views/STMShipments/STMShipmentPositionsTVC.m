@@ -64,6 +64,10 @@
 
 #pragma mark - table view data
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"SHIPMENT", nil), self.shipment.ndoc];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
@@ -163,8 +167,6 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
-    self.navigationItem.title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"SHIPMENT", nil), self.shipment.ndoc];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
