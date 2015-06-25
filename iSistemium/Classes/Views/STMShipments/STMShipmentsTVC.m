@@ -82,20 +82,17 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     switch (section) {
         case 0:
-            return 1;
+            return 2;
             break;
             
         case 1:
-            return 1;
-
-        case 2:
             return self.resultsController.fetchedObjects.count;
 
         default:
@@ -109,14 +106,10 @@
     
     switch (section) {
         case 0:
-            return NSLocalizedString(@"SHIPMENT ROUTE", nil);
-            break;
-            
-        case 1:
             return NSLocalizedString(@"SHIPMENT ROUTE POINT", nil);
             break;
             
-        case 2:
+        case 1:
             return NSLocalizedString(@"SHIPMENTS", nil);
             break;
             
@@ -133,14 +126,21 @@
 
     switch (indexPath.section) {
         case 0:
-            [self fillCell:cell withRoute:self.point.shipmentRoute];
+            switch (indexPath.row) {
+                case 0:
+                    [self fillCell:cell withRoute:self.point.shipmentRoute];
+                    break;
+                    
+                case 1:
+                    [self fillCell:cell withRoutePoint:self.point];
+                    break;
+                    
+                default:
+                    break;
+            }
             break;
 
         case 1:
-            [self fillCell:cell withRoutePoint:self.point];
-            break;
-
-        case 2:
             [self fillCell:cell withShipment:self.resultsController.fetchedObjects[indexPath.row]];
             break;
 
