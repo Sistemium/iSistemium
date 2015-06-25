@@ -2,7 +2,7 @@
 //  STMArticle.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/03/15.
+//  Created by Maxim Grigoriev on 25/06/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMArticleGroup, STMArticlePicture, STMCampaign, STMPrice, STMSaleOrderPosition, STMStock;
+@class STMArticleGroup, STMArticlePicture, STMCampaign, STMPrice, STMSaleOrderPosition, STMShipmentPosition, STMStock;
 
 @interface STMArticle : STMComment
 
@@ -23,10 +23,11 @@
 @property (nonatomic, retain) NSDecimalNumber * price;
 @property (nonatomic, retain) STMArticleGroup *articleGroup;
 @property (nonatomic, retain) NSSet *campaigns;
-@property (nonatomic, retain) NSSet *prices;
 @property (nonatomic, retain) NSSet *pictures;
+@property (nonatomic, retain) NSSet *prices;
 @property (nonatomic, retain) NSSet *saleOrderPositions;
 @property (nonatomic, retain) STMStock *stock;
+@property (nonatomic, retain) NSSet *shipmentPositions;
 @end
 
 @interface STMArticle (CoreDataGeneratedAccessors)
@@ -36,19 +37,24 @@
 - (void)addCampaigns:(NSSet *)values;
 - (void)removeCampaigns:(NSSet *)values;
 
-- (void)addPricesObject:(STMPrice *)value;
-- (void)removePricesObject:(STMPrice *)value;
-- (void)addPrices:(NSSet *)values;
-- (void)removePrices:(NSSet *)values;
-
 - (void)addPicturesObject:(STMArticlePicture *)value;
 - (void)removePicturesObject:(STMArticlePicture *)value;
 - (void)addPictures:(NSSet *)values;
 - (void)removePictures:(NSSet *)values;
 
+- (void)addPricesObject:(STMPrice *)value;
+- (void)removePricesObject:(STMPrice *)value;
+- (void)addPrices:(NSSet *)values;
+- (void)removePrices:(NSSet *)values;
+
 - (void)addSaleOrderPositionsObject:(STMSaleOrderPosition *)value;
 - (void)removeSaleOrderPositionsObject:(STMSaleOrderPosition *)value;
 - (void)addSaleOrderPositions:(NSSet *)values;
 - (void)removeSaleOrderPositions:(NSSet *)values;
+
+- (void)addShipmentPositionsObject:(STMShipmentPosition *)value;
+- (void)removeShipmentPositionsObject:(STMShipmentPosition *)value;
+- (void)addShipmentPositions:(NSSet *)values;
+- (void)removeShipmentPositions:(NSSet *)values;
 
 @end

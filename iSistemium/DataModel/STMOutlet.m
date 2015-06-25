@@ -2,7 +2,7 @@
 //  STMOutlet.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/05/15.
+//  Created by Maxim Grigoriev on 25/06/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -14,14 +14,15 @@
 #import "STMPhotoReport.h"
 #import "STMSaleOrder.h"
 #import "STMSalesman.h"
+#import "STMShipment.h"
 
 
 @implementation STMOutlet
 
 @dynamic address;
+@dynamic isActive;
 @dynamic name;
 @dynamic shortName;
-@dynamic isActive;
 @dynamic campaigns;
 @dynamic cashings;
 @dynamic debts;
@@ -29,5 +30,6 @@
 @dynamic photoReports;
 @dynamic saleOrders;
 @dynamic salesman;
+@dynamic shipments;
 
 @end
