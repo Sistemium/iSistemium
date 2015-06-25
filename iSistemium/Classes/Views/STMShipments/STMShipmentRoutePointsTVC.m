@@ -11,6 +11,8 @@
 #import "STMUI.h"
 #import "STMFunctions.h"
 
+#import "STMShipmentsTVC.h"
+
 
 @interface STMShipmentRoutePointsTVC ()
 
@@ -96,10 +98,12 @@
         if (shipmentsCount > 0) {
             
             detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)shipmentsCount, NSLocalizedString(localizedString, nil)];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
         } else {
 
             detailText = NSLocalizedString(localizedString, nil);
+            cell.accessoryType = UITableViewCellAccessoryNone;
 
         }
         
@@ -110,6 +114,36 @@
     [super fillCell:cell atIndexPath:indexPath];
     
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
+
+    if (point.shipments.count > 0) {
+        
+        [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
+        
+    }
+    
+}
+
+
+#pragma mark - Navigation
+ 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showShipments"] &&
+        [sender isKindOfClass:[NSIndexPath class]] &&
+        [segue.destinationViewController isKindOfClass:[STMShipmentsTVC class]]) {
+        
+        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+        [(STMShipmentsTVC *)segue.destinationViewController setPoint:point];
+        
+    }
+
+    
+}
+
 
 #pragma mark - view lifecycle
 
@@ -134,14 +168,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

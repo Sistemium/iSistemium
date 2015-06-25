@@ -87,16 +87,16 @@
     if (pointsCount > 0) {
         
         detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)pointsCount, NSLocalizedString(localizedString, nil)];
-        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
     } else {
         
         detailText = NSLocalizedString(localizedString, nil);
+        cell.accessoryType = UITableViewCellAccessoryNone;
         
     }
 
     cell.detailTextLabel.text = detailText;
-    
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
     
@@ -104,7 +104,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self performSegueWithIdentifier:@"showRoutePoints" sender:indexPath];
+    STMShipmentRoute *route = [self.resultsController objectAtIndexPath:indexPath];
+
+    if (route.shipmentRoutePoints.count > 0) {
+        [self performSegueWithIdentifier:@"showRoutePoints" sender:indexPath];
+    }
     
 }
 
