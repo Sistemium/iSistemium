@@ -69,9 +69,45 @@
 
 #pragma mark - table view data
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
 }
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return 1;
+            break;
+            
+        case 1:
+            return self.resultsController.fetchedObjects.count;
+            
+        default:
+            return 0;
+            break;
+    }
+    
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return NSLocalizedString(@"SHIPMENT ROUTE", nil);
+            break;
+            
+        case 1:
+            return NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
+            break;
+            
+        default:
+            return nil;
+            break;
+    }
+    
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -89,29 +125,18 @@
         
         STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
         
-        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
-        
-        customCell.titleLabel.text = point.name;
-
-        NSUInteger shipmentsCount = point.shipments.count;
-        NSString *pluralType = [STMFunctions pluralTypeForCount:shipmentsCount];
-        NSString *localizedString = [NSString stringWithFormat:@"%@SHIPMENTS", pluralType];
-        
-        NSString *detailText;
-        
-        if (shipmentsCount > 0) {
-            
-            detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)shipmentsCount, NSLocalizedString(localizedString, nil)];
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
-        } else {
-
-            detailText = NSLocalizedString(localizedString, nil);
-            cell.accessoryType = UITableViewCellAccessoryNone;
-
+        switch (indexPath.section) {
+            case 0:
+                [self fillRouteCell:customCell atIndex:indexPath.row];
+                break;
+                
+            case 1:
+                [self fillRoutePointCell:customCell atIndex:indexPath.row];
+                break;
+                
+            default:
+                break;
         }
-        
-        customCell.detailLabel.text = detailText;
         
     }
     
@@ -119,13 +144,94 @@
     
 }
 
+- (void)fillRouteCell:(STMCustom7TVCell *)cell atIndex:(NSUInteger)index {
+    
+    switch (index) {
+        case 0:
+            cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
+            cell.detailLabel.text = @"";
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+- (void)fillRoutePointCell:(STMCustom7TVCell *)cell atIndex:(NSUInteger)index {
+    
+    STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+
+    cell.titleLabel.text = point.name;
+    
+    NSUInteger shipmentsCount = point.shipments.count;
+    NSString *pluralType = [STMFunctions pluralTypeForCount:shipmentsCount];
+    NSString *localizedString = [NSString stringWithFormat:@"%@SHIPMENTS", pluralType];
+    
+    NSString *detailText;
+    
+    if (shipmentsCount > 0) {
+        
+        detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)shipmentsCount, NSLocalizedString(localizedString, nil)];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+    } else {
+        
+        detailText = NSLocalizedString(localizedString, nil);
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
+    }
+    
+    cell.detailLabel.text = detailText;
+
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
-
-    if (point.shipments.count > 0) {
+    if (indexPath.section == 1) {
         
-        [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
+        
+        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
+        
+        if (point.shipments.count > 0) {
+            
+            [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
+            
+        }
+
+    }
+    
+}
+
+
+#pragma mark - height's cache
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        self.cachedCellsHeights[indexPath] = @(height);
+        
+    } else {
+        
+        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1]] objectID];
+        self.cachedCellsHeights[objectID] = @(height);
+        
+    }
+    
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        return self.cachedCellsHeights[indexPath];
+        
+    } else {
+        
+        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1]] objectID];;
+        return self.cachedCellsHeights[objectID];
         
     }
     

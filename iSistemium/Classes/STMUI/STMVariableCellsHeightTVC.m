@@ -12,8 +12,6 @@
 
 @interface STMVariableCellsHeightTVC ()
 
-@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
-
 
 @end
 
@@ -104,6 +102,10 @@
     
     CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
     CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+    
+    if (height < [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath]) {
+        height = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+    }
     
     [self putCachedHeight:height forIndexPath:indexPath];
     

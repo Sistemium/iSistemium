@@ -11,6 +11,7 @@
 @interface STMVariableCellsHeightTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, strong) NSString *cellIdentifier;
+@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
