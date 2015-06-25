@@ -232,4 +232,5 @@
 "PRICE_" = "Цены";
 "STOCK_" = "Остатки";
 "ROLES REQUEST ERROR" = "Ошибка проверки ролей: ";
+"SHIPMENT ROUTES" = "Маршруты";
 

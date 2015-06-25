@@ -241,6 +241,7 @@
 		2CEAC15A1B3BEBB600AD068E /* STMShipmentRoutePoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1591B3BEBB600AD068E /* STMShipmentRoutePoint.m */; };
 		2CEAC15C1B3BF64C00AD068E /* STMShipments.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15B1B3BF64C00AD068E /* STMShipments.storyboard */; };
 		2CEAC15E1B3BF78200AD068E /* truck_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15D1B3BF78200AD068E /* truck_filled.png */; };
+		2CEAC1621B3BF9AA00AD068E /* STMShipmentRoutesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1611B3BF9AA00AD068E /* STMShipmentRoutesTVC.m */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -735,6 +736,8 @@
 		2CEAC1591B3BEBB600AD068E /* STMShipmentRoutePoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoutePoint.m; sourceTree = "<group>"; };
 		2CEAC15B1B3BF64C00AD068E /* STMShipments.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMShipments.storyboard; sourceTree = "<group>"; };
 		2CEAC15D1B3BF78200AD068E /* truck_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = truck_filled.png; sourceTree = "<group>"; };
+		2CEAC1601B3BF9AA00AD068E /* STMShipmentRoutesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRoutesTVC.h; sourceTree = "<group>"; };
+		2CEAC1611B3BF9AA00AD068E /* STMShipmentRoutesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoutesTVC.m; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -952,16 +955,17 @@
 				2C2968FA19A208FB0038B122 /* STMDatePickerVC.h */,
 				2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */,
 				2C5763D51AA5DF7500B9FD2C /* STMAuth */,
+				2C5763D81AA5E0B300B9FD2C /* STMCampaign */,
+				2C5764291AA5E2EE00B9FD2C /* STMCatalog */,
+				2C5763FA1AA5E16200B9FD2C /* STMDebts */,
+				2C5764271AA5E29B00B9FD2C /* STMLogs */,
+				2C5764261AA5E27100B9FD2C /* STMMessages */,
+				2C5764571AAB107B00B9FD2C /* STMOrders */,
 				2C16CC4D1AF7661B00A2EC2D /* STMProfile */,
 				2C5763D71AA5E03000B9FD2C /* STMSettings */,
-				2C5763D81AA5E0B300B9FD2C /* STMCampaign */,
-				2C5763FA1AA5E16200B9FD2C /* STMDebts */,
+				2CEAC15F1B3BF94800AD068E /* STMShipments */,
 				2C5764251AA5E21300B9FD2C /* STMUncashing */,
-				2C5764261AA5E27100B9FD2C /* STMMessages */,
-				2C5764271AA5E29B00B9FD2C /* STMLogs */,
 				2C5764281AA5E2C900B9FD2C /* STMWebView */,
-				2C5764291AA5E2EE00B9FD2C /* STMCatalog */,
-				2C5764571AAB107B00B9FD2C /* STMOrders */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1507,6 +1511,15 @@
 			path = Storyboards;
 			sourceTree = "<group>";
 		};
+		2CEAC15F1B3BF94800AD068E /* STMShipments */ = {
+			isa = PBXGroup;
+			children = (
+				2CEAC1601B3BF9AA00AD068E /* STMShipmentRoutesTVC.h */,
+				2CEAC1611B3BF9AA00AD068E /* STMShipmentRoutesTVC.m */,
+			);
+			path = STMShipments;
+			sourceTree = "<group>";
+		};
 		C2F565BFB1515E69445A0A71 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1755,6 +1768,7 @@
 				2C42ECC51B15A39400B5C91A /* STMCatalogSettingsNC.m in Sources */,
 				2C81AD561AD113EE00246666 /* STMMessageVC.m in Sources */,
 				2C7E7DBD1ABEEA0600A26185 /* STMPriceType.m in Sources */,
+				2CEAC1621B3BF9AA00AD068E /* STMShipmentRoutesTVC.m in Sources */,
 				2CFDD88E1A308B4C003515C5 /* STMSingleton.m in Sources */,
 				2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */,
 				2CEAC14E1B3BEBB500AD068E /* STMShipment.m in Sources */,
