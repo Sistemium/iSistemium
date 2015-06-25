@@ -7,6 +7,8 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import <Crashlytics/Crashlytics.h>
+
 
 @interface STMVariableCellsHeightTVC ()
 
@@ -42,9 +44,14 @@
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
     
-    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    NSManagedObject *object = [self.resultsController objectAtIndexPath:indexPath];
+    NSManagedObjectID *objectID = object.objectID;
     
-    self.cachedCellsHeights[objectID] = @(height);
+    if (objectID) {
+        self.cachedCellsHeights[objectID] = @(height);
+    } else {
+        CLS_LOG(@"objectID is nil for %@", objectID);
+    }
     
 }
 
