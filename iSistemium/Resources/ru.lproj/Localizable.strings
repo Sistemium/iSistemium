@@ -245,5 +245,5 @@
 "SHIPMENTS" = "Накладные";
 "SHIPMENT" = "Накладная";
 "SHIPMENT POSITIONS" = "Позиции";
-
-
+"QVOLUME" = "Количество";
+"PIECES" = "шт.";

@@ -245,4 +245,7 @@
 "SHIPMENTS" = "Shipments";
 "SHIPMENT" = "Shipment";
 "SHIPMENT POSITIONS" = "Shipment positions";
+"QVOLUME" = "Volume";
+"PIECES" = "Pieces";
+
 

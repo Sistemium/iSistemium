@@ -66,7 +66,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     [self fillCell:cell atIndexPath:indexPath];
     
@@ -76,14 +76,51 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+    if ([cell isKindOfClass:[STMCustom5TVCell class]]) {
         
-        STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
+        STMCustom5TVCell *customCell = (STMCustom5TVCell *)cell;
         
         STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
         
         customCell.titleLabel.text = position.article.name;
-        customCell.detailLabel.text = @"";
+        
+        NSString *volumeUnitString = nil;
+        NSString *infoText = nil;
+        
+        int volume = [position.volume intValue];
+        int packageRel = [position.article.packageRel intValue];
+        
+        if (packageRel != 0 && volume >= packageRel) {
+            
+            int package = floor(volume / packageRel);
+            
+            volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
+            NSString *packageString = [NSString stringWithFormat:@"%d %@", package, volumeUnitString];
+            
+            int bottle = volume % packageRel;
+            
+            if (bottle > 0) {
+                
+                volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+                NSString *bottleString = [NSString stringWithFormat:@" %d %@", bottle, volumeUnitString];
+                
+                packageString = [packageString stringByAppendingString:bottleString];
+                
+            }
+            
+            infoText = packageString;
+            
+        } else {
+            
+            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+            infoText = [NSString stringWithFormat:@"%@ %@", position.volume, volumeUnitString];
+            
+        }
+
+        customCell.infoLabel.text = infoText;
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+        customCell.detailLabel.text = [NSString stringWithFormat:@"%@%@", position.article.pieceVolume, volumeUnitString];
         
     }
     
@@ -127,7 +164,7 @@
     
     self.navigationItem.title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"SHIPMENT", nil), self.shipment.ndoc];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
     
     [super customInit];
