@@ -7,6 +7,8 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import "STMConstants.h"
+
 #import <Crashlytics/Crashlytics.h>
 
 
@@ -95,7 +97,7 @@
     
     [self fillCell:cell atIndexPath:indexPath];
     
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds)-50, CGRectGetHeight(cell.bounds));
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
     
     [cell setNeedsLayout];
     [cell layoutIfNeeded];

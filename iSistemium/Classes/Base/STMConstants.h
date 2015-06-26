@@ -32,5 +32,6 @@
 #define BUILD_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]
 #define APP_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
 
+#define MAGIC_NUMBER_FOR_CELL_WIDTH 16
 
 #endif
