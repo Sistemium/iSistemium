@@ -194,7 +194,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 2) {
+    if (indexPath.section == 1) {
         
         STMShipment *shipment = self.resultsController.fetchedObjects[indexPath.row];
         

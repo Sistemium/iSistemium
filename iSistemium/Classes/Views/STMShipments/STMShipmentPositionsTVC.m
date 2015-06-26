@@ -80,9 +80,9 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    if ([cell isKindOfClass:[STMCustom5TVCell class]]) {
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
         
-        STMCustom5TVCell *customCell = (STMCustom5TVCell *)cell;
+        STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
         
         STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
         
@@ -121,12 +121,19 @@
             
         }
 
-        customCell.infoLabel.text = infoText;
+//        customCell.infoLabel.text = infoText;
         
 //        volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
 //        customCell.detailLabel.text = [NSString stringWithFormat:@"%@%@", position.article.pieceVolume, volumeUnitString];
      
         customCell.detailLabel.text = @"";
+        
+        STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
+        infoLabel.text = infoText;
+        infoLabel.textAlignment = NSTextAlignmentRight;
+        infoLabel.adjustsFontSizeToFitWidth = YES;
+        
+        customCell.accessoryView = infoLabel;
         
     }
     
@@ -168,7 +175,7 @@
 
 - (void)customInit {
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
     
     [super customInit];
