@@ -623,6 +623,7 @@
 		2C81AD581AD1154C00246666 /* STMMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessageController.m; sourceTree = "<group>"; };
 		2C81AD5A1AD1180F00246666 /* close-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close-128.png"; sourceTree = "<group>"; };
 		2C8369561986714300DA4316 /* STMDebts.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts.storyboard; sourceTree = "<group>"; };
+		2C84727D1B395CD90027F144 /* STMCustomCells.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMCustomCells.h; sourceTree = "<group>"; };
 		2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom6TVCell.xib; sourceTree = "<group>"; };
 		2C88F1BF1B1894B400E30418 /* STMCustom6TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom6TVCell.h; sourceTree = "<group>"; };
 		2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom6TVCell.m; sourceTree = "<group>"; };
@@ -1267,6 +1268,7 @@
 		2C88F1C81B1ECF8700E30418 /* STMCustomTVCells */ = {
 			isa = PBXGroup;
 			children = (
+				2C84727D1B395CD90027F144 /* STMCustomCells.h */,
 				2C1D72E21AB9A88700C97599 /* STMCustom1TVCell.h */,
 				2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */,
 				2C7E7DA51ABCA94700A26185 /* STMCustom2TVCell.h */,

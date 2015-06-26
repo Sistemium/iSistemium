@@ -846,73 +846,70 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     STMPrice *price = (tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
     
+    STMTableViewCell <STMTDICell> *cell = nil;
+    
     if (price.article.pictures.count > 0) {
         
-        STMCustom4TVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier forIndexPath:indexPath];
-        [self fillPictureCell:cell withPrice:price];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier forIndexPath:indexPath];
+        [self fillPictureCell:(STMCustom4TVCell *)cell withPrice:price];
         
-        return cell;
+        [(STMCustom4TVCell *)cell pictureView].userInteractionEnabled = YES;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pictureViewTapped:)];
+        [(STMCustom4TVCell *)cell pictureView].gestureRecognizers = @[tap];
         
     } else {
      
-        STMCustom5TVCell *cell = [self.tableView dequeueReusableCellWithIdentifier:Custom5CellIdentifier forIndexPath:indexPath];
-        [self fillCell:cell withPrice:price];
-        
-        return cell;
-        
+        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom5CellIdentifier forIndexPath:indexPath];
+        [self fillCell:(STMCustom5TVCell *)cell withPrice:price];
+                
     }
     
+    UIColor *textColor = (price.article.stock.volume.integerValue <= 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    [self setTextColor:textColor forCell:cell];
+
+    return cell;
+
 }
 
-- (void)fillCell:(STMCustom5TVCell *)cell withPrice:(STMPrice *)price {
-    
-    cell.titleLabel.text = price.article.name;
-    cell.detailLabel.text = [self detailedTextForArticle:price.article];
-    cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
-    
-    UIColor *textColor = (price.article.stock.volume.integerValue <= 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+- (void)setTextColor:(UIColor *)textColor forCell:(STMTableViewCell <STMTDICell> *)cell {
     
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
     cell.infoLabel.textColor = textColor;
+
+}
+
+- (void)fillCell:(STMTableViewCell <STMTDICell> *)cell withPrice:(STMPrice *)price {
+
+    cell.titleLabel.text = price.article.name;
+    cell.detailLabel.text = [self detailedTextForArticle:price.article];
+    cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
     
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+
 }
 
 - (void)fillPictureCell:(STMCustom4TVCell *)cell withPrice:(STMPrice *)price {
     
-    cell.titleLabel.text = price.article.name;
-    cell.detailLabel.text = [self detailedTextForArticle:price.article];
-    cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
-    
-    UIColor *textColor = (price.article.stock.volume.integerValue <= 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
-    
-    cell.titleLabel.textColor = textColor;
-    cell.detailLabel.textColor = textColor;
-    cell.infoLabel.textColor = textColor;
-    
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
     STMArticlePicture *picture = [price.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
 
+    [[cell.pictureView viewWithTag:555] removeFromSuperview];
+
     if (!picture.imageThumbnail) {
         
-        [STMPicturesController hrefProcessingForObject:picture];
         cell.pictureView.image = nil;
         [self addSpinnerToCell:cell];
 
     } else {
 
-        [[cell.pictureView viewWithTag:555] removeFromSuperview];
         cell.pictureView.image = [UIImage imageWithData:picture.imageThumbnail];
         
     }
     
-    cell.pictureView.userInteractionEnabled = YES;
-
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pictureViewTapped:)];
-    cell.pictureView.gestureRecognizers = @[tap];
-    
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+    [self fillCell:cell withPrice:price];
     
 }
 

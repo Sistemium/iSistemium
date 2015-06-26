@@ -23,6 +23,8 @@
 + (void)checkUploadedPhotos;
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
++ (void)downloadConnectionForObject:(NSManagedObject *)object;
+
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 + (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data;
 
