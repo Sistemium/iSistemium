@@ -120,6 +120,79 @@
     
 }
 
+- (CGFloat)estimatedHeightForRow {
+    
+    static CGFloat standardCellHeight;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+    });
+    
+    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+
+}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [self estimatedHeightForRow];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 1:
+                    return [self heightForRoutePointCell];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+    return [self tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
+    
+}
+
+- (CGFloat)heightForRoutePointCell {
+    
+    CGFloat diff = [self heightDiffForText:self.point.name];
+    
+    CGFloat height = [self estimatedHeightForRow] + diff;
+    
+    return height;
+
+}
+
+- (CGFloat)heightDiffForText:(NSString *)text {
+    
+    static UITableViewCell *standardCell;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        standardCell = [[UITableViewCell alloc] init];
+    });
+    
+    UIFont *font = standardCell.textLabel.font;
+    
+    NSDictionary *attributes = @{NSFontAttributeName:font};
+    
+    CGSize lineSize = [text sizeWithAttributes:attributes];
+    CGSize boundSize = CGSizeMake(CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGFLOAT_MAX);
+    CGRect multilineRect = [text boundingRectWithSize:boundSize
+                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                           attributes:attributes
+                                              context:nil];
+    
+    CGFloat diff = ceil(multilineRect.size.height) - ceil(lineSize.height);
+
+    return diff;
+    
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
@@ -162,6 +235,7 @@
 - (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
 
     cell.textLabel.text = point.name;
+    cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.text = @"";
 
 }
