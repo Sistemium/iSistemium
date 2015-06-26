@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMLabel.h"
+#import "STMInsetLabel.h"
 
 @interface STMTableViewCell : UITableViewCell
 
