@@ -6,20 +6,20 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMShipmentRoutePointsTVC.h"
+#import "STMShipmentRouteTVC.h"
 #import "STMNS.h"
 #import "STMUI.h"
 #import "STMFunctions.h"
 
-#import "STMShipmentsTVC.h"
+#import "STMShipmentRoutePointTVC.h"
 
 
-@interface STMShipmentRoutePointsTVC ()
+@interface STMShipmentRouteTVC ()
 
 @end
 
 
-@implementation STMShipmentRoutePointsTVC
+@implementation STMShipmentRouteTVC
 
 @synthesize resultsController = _resultsController;
 
@@ -263,10 +263,10 @@
     
     if ([segue.identifier isEqualToString:@"showShipments"] &&
         [sender isKindOfClass:[NSIndexPath class]] &&
-        [segue.destinationViewController isKindOfClass:[STMShipmentsTVC class]]) {
+        [segue.destinationViewController isKindOfClass:[STMShipmentRoutePointTVC class]]) {
         
         STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
-        [(STMShipmentsTVC *)segue.destinationViewController setPoint:point];
+        [(STMShipmentRoutePointTVC *)segue.destinationViewController setPoint:point];
         
     }
     

@@ -6,15 +6,14 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMShipmentRoutesTVC.h"
-#import "STMDataModel.h"
+#import "STMDriverTVC.h"
 #import "STMNS.h"
 #import "STMFunctions.h"
 
-#import "STMShipmentRoutePointsTVC.h"
+#import "STMShipmentRouteTVC.h"
 
 
-@interface STMShipmentRoutesTVC ()
+@interface STMDriverTVC ()
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 
@@ -22,7 +21,7 @@
 @end
 
 
-@implementation STMShipmentRoutesTVC
+@implementation STMDriverTVC
 
 @synthesize resultsController = _resultsController;
 
@@ -80,30 +79,36 @@
     
     STMShipmentRoute *route = [self.resultsController objectAtIndexPath:indexPath];
     
+    [self fillCell:cell withRoute:route];
+    
+    return cell;
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route {
+    
     cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
     
     NSUInteger pointsCount = route.shipmentRoutePoints.count;
     NSString *pluralType = [STMFunctions pluralTypeForCount:pointsCount];
     NSString *localizedString = [NSString stringWithFormat:@"%@SRPOINTS", pluralType];
-
+    
     NSString *detailText;
     
     if (pointsCount > 0) {
         
         detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)pointsCount, NSLocalizedString(localizedString, nil)];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
+        
     } else {
         
         detailText = NSLocalizedString(localizedString, nil);
         cell.accessoryType = UITableViewCellAccessoryNone;
         
     }
-
+    
     cell.detailTextLabel.text = detailText;
-    
-    return cell;
-    
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -123,10 +128,10 @@
     
     if ([segue.identifier isEqualToString:@"showRoutePoints"] &&
         [sender isKindOfClass:[NSIndexPath class]] &&
-        [segue.destinationViewController isKindOfClass:[STMShipmentRoutePointsTVC class]]) {
+        [segue.destinationViewController isKindOfClass:[STMShipmentRouteTVC class]]) {
         
         STMShipmentRoute *route = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
-        [(STMShipmentRoutePointsTVC *)segue.destinationViewController setRoute:route];
+        [(STMShipmentRouteTVC *)segue.destinationViewController setRoute:route];
         
     }
 

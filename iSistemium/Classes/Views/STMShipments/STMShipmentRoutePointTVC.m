@@ -6,17 +6,17 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMShipmentsTVC.h"
+#import "STMShipmentRoutePointTVC.h"
 #import "STMNS.h"
 #import "STMUI.h"
 #import "STMFunctions.h"
 #import "STMSession.h"
 
-#import "STMShipmentPositionsTVC.h"
+#import "STMShipmentTVC.h"
 #import "STMLocationMapVC.h"
 
 
-@interface STMShipmentsTVC ()
+@interface STMShipmentRoutePointTVC ()
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
@@ -30,7 +30,7 @@
 @end
 
 
-@implementation STMShipmentsTVC
+@implementation STMShipmentRoutePointTVC
 
 - (STMSession *)session {
     
@@ -398,10 +398,10 @@
     
     if ([segue.identifier isEqualToString:@"showShipmentPositions"] &&
         [sender isKindOfClass:[NSIndexPath class]] &&
-        [segue.destinationViewController isKindOfClass:[STMShipmentPositionsTVC class]]) {
+        [segue.destinationViewController isKindOfClass:[STMShipmentTVC class]]) {
         
         STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
-        [(STMShipmentPositionsTVC *)segue.destinationViewController setShipment:shipment];
+        [(STMShipmentTVC *)segue.destinationViewController setShipment:shipment];
         
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
                [segue.destinationViewController isKindOfClass:[STMLocationMapVC class]]) {

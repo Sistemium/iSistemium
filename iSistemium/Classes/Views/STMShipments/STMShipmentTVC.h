@@ -1,5 +1,5 @@
 //
-//  STMShipmentRoutePointsTVC.h
+//  STMShipmentPositionsTVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 25/06/15.
@@ -9,9 +9,10 @@
 #import "STMVariableCellsHeightTVC.h"
 #import "STMDataModel.h"
 
-@interface STMShipmentRoutePointsTVC : STMVariableCellsHeightTVC
 
-@property (nonatomic, strong) STMShipmentRoute *route;
+@interface STMShipmentTVC : STMVariableCellsHeightTVC
+
+@property (nonatomic, strong) STMShipment *shipment;
 
 
 @end

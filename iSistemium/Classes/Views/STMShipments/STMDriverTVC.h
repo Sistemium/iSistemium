@@ -7,7 +7,12 @@
 //
 
 #import "STMFetchedResultsControllerTVC.h"
+#import "STMDataModel.h"
 
-@interface STMShipmentRoutesTVC : STMFetchedResultsControllerTVC
+
+@interface STMDriverTVC : STMFetchedResultsControllerTVC
+
+- (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route;
+
 
 @end

@@ -6,17 +6,17 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMShipmentPositionsTVC.h"
+#import "STMShipmentTVC.h"
 #import "STMNS.h"
 #import "STMUI.h"
 
 
-@interface STMShipmentPositionsTVC ()
+@interface STMShipmentTVC ()
 
 @end
 
 
-@implementation STMShipmentPositionsTVC
+@implementation STMShipmentTVC
 
 @synthesize resultsController = _resultsController;
 

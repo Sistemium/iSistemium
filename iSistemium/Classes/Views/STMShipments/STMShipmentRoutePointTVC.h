@@ -9,7 +9,7 @@
 #import "STMDataModel.h"
 
 
-@interface STMShipmentsTVC : UITableViewController
+@interface STMShipmentRoutePointTVC : UITableViewController
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
 
