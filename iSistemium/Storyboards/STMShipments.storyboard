@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Shipment RoutesTVC-->
@@ -90,11 +91,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="1Cd-0d-Kgb">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="1Cd-0d-Kgb">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="1Cd-0d-Kgb" secondAttribute="trailing" constant="-16" id="2z2-6y-JlI"/>
+                            <constraint firstItem="lYO-9m-6EM" firstAttribute="top" secondItem="1Cd-0d-Kgb" secondAttribute="bottom" id="7iA-gk-fkF"/>
+                            <constraint firstItem="1Cd-0d-Kgb" firstAttribute="top" secondItem="l1B-rR-8aJ" secondAttribute="bottom" id="eMp-RE-uaN"/>
+                            <constraint firstItem="1Cd-0d-Kgb" firstAttribute="leading" secondItem="H8G-Ex-hNu" secondAttribute="leadingMargin" constant="-16" id="gP2-eV-JFp"/>
+                        </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>

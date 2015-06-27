@@ -21,14 +21,34 @@
 
 @implementation STMLocationMapVC
 
+- (void)centeringMap {
+
+    self.mapView.showsUserLocation = YES;
+    [self.mapView addAnnotation:[STMMapAnnotation createAnnotationForLocation:self.location]];
+
+    CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
+//    CLLocation *location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+    
+//    CLLocationCoordinate2D userCoordinate = CLLocationCoordinate2DMake(self.mapView.userLocation.coordinate.latitude, self.mapView.userLocation.coordinate.longitude);
+//    CLLocation *userLocation = [[CLLocation alloc] initWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
+//    
+//    CLLocationDistance distance = [location distanceFromLocation:userLocation];
+    
+    CLLocationDistance distance = 10000;
+    
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(locationCoordinate, distance, distance);
+    
+    [self.mapView setRegion:region animated:YES];
+    [self.mapView regionThatFits:region];
+    
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    self.mapView.centerCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
-    self.mapView.showsUserLocation = YES;
-    [self.mapView addAnnotation:[STMMapAnnotation createAnnotationForLocation:self.location]];
+    [self centeringMap];
     
 }
 
@@ -37,6 +57,18 @@
     [super viewDidLoad];
     [self customInit];
 
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {
