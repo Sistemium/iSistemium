@@ -2,7 +2,7 @@
 //  STMShipment.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
+//  Created by Maxim Grigoriev on 27/06/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -19,6 +19,7 @@
 
 @dynamic date;
 @dynamic ndoc;
+@dynamic needCashing;
 @dynamic driver;
 @dynamic outlet;
 @dynamic saleOrder;

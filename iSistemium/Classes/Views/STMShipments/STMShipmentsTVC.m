@@ -335,6 +335,14 @@
     
     cell.detailTextLabel.text = detailText;
 
+    if ([shipment.needCashing boolValue]) {
+        
+        cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];
+        
+    } else {
+        cell.imageView.image = nil;
+    }
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
