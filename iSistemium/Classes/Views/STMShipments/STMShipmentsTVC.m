@@ -283,33 +283,47 @@
         STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
     
         customCell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+        customCell.titleLabel.text = @"";
         customCell.titleLabel.textColor = [UIColor blackColor];
         customCell.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         customCell.detailLabel.text = @"";
         customCell.detailLabel.textAlignment = NSTextAlignmentCenter;
         
-        if (!location) {
+        [[customCell viewWithTag:666] removeFromSuperview];
+        
+        if (self.isWaitingLocation) {
             
-            customCell.titleLabel.text = NSLocalizedString(@"GET LOCATION", nil);
+            STMSpinnerView *spinner = [STMSpinnerView spinnerViewWithFrame:customCell.contentView.bounds];
+            spinner.tag = 666;
             
-            if (self.session.locationTracker.isAccuracySufficient) {
+            [customCell.contentView addSubview:spinner];
+            
+        } else {
+        
+            if (!location) {
                 
-                customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+                customCell.titleLabel.text = NSLocalizedString(@"GET LOCATION", nil);
+                
+                if (self.session.locationTracker.isAccuracySufficient) {
+                    
+                    customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+                    
+                } else {
+                    
+                    customCell.titleLabel.textColor = [UIColor lightGrayColor];
+                    customCell.detailLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+                    
+                }
                 
             } else {
                 
-                customCell.titleLabel.textColor = [UIColor lightGrayColor];
-                customCell.detailLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+                customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
                 
             }
-            
-        } else {
-            
-            customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
-            
-        }
 
+        }
+        
     }
     
 }
@@ -463,6 +477,16 @@
     [self customInit];
     
 }
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+        [self removeObservers];
+    }
+    [super viewWillDisappear:animated];
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
