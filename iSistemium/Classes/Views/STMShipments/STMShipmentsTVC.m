@@ -8,6 +8,7 @@
 
 #import "STMShipmentsTVC.h"
 #import "STMNS.h"
+#import "STMUI.h"
 #import "STMFunctions.h"
 #import "STMSession.h"
 
@@ -17,32 +18,10 @@
 @interface STMShipmentsTVC ()
 
 @property (nonatomic, strong) NSString *cellIdentifier;
+@property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMSession *session;
-
-@end
-
-
-@interface STMShippingLocationTVCell : UITableViewCell
-
-@end
-
-@implementation STMShippingLocationTVCell
-
-- (void)layoutSubviews {
-    
-    [super layoutSubviews];
-    
-// center alignment
-    self.textLabel.frame = CGRectMake(0, self.textLabel.frame.origin.y, self.frame.size.width, self.textLabel.frame.size.height);
-    self.detailTextLabel.frame = CGRectMake(0, self.detailTextLabel.frame.origin.y, self.frame.size.width, self.detailTextLabel.frame.size.height);
-    
-    self.textLabel.textAlignment = NSTextAlignmentCenter;
-    self.detailTextLabel.textAlignment = NSTextAlignmentCenter;
-    
-}
-
 
 @end
 
@@ -71,6 +50,10 @@
 
 - (NSString *)cellIdentifier {
     return @"shipmentCell";
+}
+
+- (NSString *)shippingLocationCellIdentifier {
+    return @"shippingLocationCell";
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -117,17 +100,21 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     switch (section) {
         case 0:
-            return 3;
+            return 2;
             break;
             
         case 1:
+            return 1;
+            break;
+            
+        case 2:
             return self.resultsController.fetchedObjects.count;
 
         default:
@@ -144,7 +131,7 @@
             return NSLocalizedString(@"SHIPMENT ROUTE POINT", nil);
             break;
             
-        case 1:
+        case 2:
             return NSLocalizedString(@"SHIPMENTS", nil);
             break;
             
@@ -230,29 +217,33 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell;
 
     switch (indexPath.section) {
         case 0:
             switch (indexPath.row) {
                 case 0:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
                     [self fillCell:cell withRoute:self.point.shipmentRoute];
                     break;
                     
                 case 1:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
                     [self fillCell:cell withRoutePoint:self.point];
-                    break;
-                    
-                case 2:
-                    [self fillCell:cell withShippingLocation:self.point.shippingLocation];
                     break;
                     
                 default:
                     break;
             }
             break;
-
+            
         case 1:
+            cell = [tableView dequeueReusableCellWithIdentifier:self.shippingLocationCellIdentifier forIndexPath:indexPath];
+            [self fillCell:cell withShippingLocation:self.point.shippingLocation];
+            break;
+
+        case 2:
+            cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
             [self fillCell:cell withShipment:self.resultsController.fetchedObjects[indexPath.row]];
             break;
 
@@ -260,6 +251,8 @@
             break;
     }
 
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     return cell;
     
 }
@@ -281,32 +274,38 @@
 
 - (void)fillCell:(UITableViewCell *)cell withShippingLocation:(STMShippingLocation *)location {
 
-    cell = [[STMShippingLocationTVCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"shippingLocationCell"];
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        
+        STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
     
-    cell.textLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
-    cell.textLabel.textColor = [UIColor blackColor];
-
-    cell.detailTextLabel.text = @"";
-
-    if (!location) {
+        customCell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+        customCell.titleLabel.textColor = [UIColor blackColor];
+        customCell.titleLabel.textAlignment = NSTextAlignmentCenter;
         
-        cell.textLabel.text = NSLocalizedString(@"GET LOCATION", nil);
+        customCell.detailLabel.text = @"";
+        customCell.detailLabel.textAlignment = NSTextAlignmentCenter;
         
-        if (self.session.locationTracker.isAccuracySufficient) {
+        if (!location) {
             
-            cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
+            customCell.titleLabel.text = NSLocalizedString(@"GET LOCATION", nil);
+            
+            if (self.session.locationTracker.isAccuracySufficient) {
+                
+                customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+                
+            } else {
+                
+                customCell.titleLabel.textColor = [UIColor lightGrayColor];
+                customCell.detailLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+                
+            }
             
         } else {
-
-            cell.textLabel.textColor = [UIColor lightGrayColor];
-            cell.detailTextLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
-
+            
+            customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
+            
         }
-        
-    } else {
-        
-        cell.textLabel.text = NSLocalizedString(@"SHOW MAP", nil);
-        
+
     }
     
 }
@@ -347,7 +346,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 1) {
+    if (indexPath.section == 2) {
         
         STMShipment *shipment = self.resultsController.fetchedObjects[indexPath.row];
         
@@ -399,7 +398,10 @@
 }
 
 - (void)customInit {
-
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.shippingLocationCellIdentifier];
+//    [self.tableView registerClass:[STMCustom7TVCell class] forCellReuseIdentifier:self.shippingLocationCellIdentifier];
+    
     [self addObservers];
     [self performFetch];
     
