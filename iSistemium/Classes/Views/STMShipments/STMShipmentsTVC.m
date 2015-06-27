@@ -23,6 +23,9 @@
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMSession *session;
 
+@property (nonatomic) BOOL isWaitingLocation;
+
+
 @end
 
 
@@ -346,6 +349,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    if (indexPath.section == 1 && !self.isWaitingLocation) {
+        
+        self.isWaitingLocation = YES;
+        [self.session.locationTracker getLocation];
+        
+    }
+    
     if (indexPath.section == 2) {
         
         STMShipment *shipment = self.resultsController.fetchedObjects[indexPath.row];
@@ -381,6 +391,29 @@
     
 }
 
+- (void)currentLocationWasUpdated:(NSNotification *)notification {
+    
+    if (self.isWaitingLocation) {
+        
+        CLLocation *currentLocation = notification.userInfo[@"currentLocation"];
+        
+        STMShippingLocation *location = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMShippingLocation class]) inManagedObjectContext:self.document.managedObjectContext];
+        
+        location.latitude = @(currentLocation.coordinate.latitude);
+        location.longitude = @(currentLocation.coordinate.longitude);
+        
+        self.point.shippingLocation = location;
+        
+        [self.document saveDocument:^(BOOL success) {
+            [self.tableView reloadData];
+        }];
+        
+        self.isWaitingLocation = NO;
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -388,7 +421,9 @@
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
     [nc addObserver:self selector:@selector(currentAccuracyUpdated:) name:@"currentAccuracyUpdated" object:self.session.locationTracker];
-    
+    [nc addObserver:self selector:@selector(currentLocationWasUpdated:) name:@"currentLocationWasUpdated" object:self.session.locationTracker];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":self.lastLocation}];
+
 }
 
 - (void)removeObservers {
