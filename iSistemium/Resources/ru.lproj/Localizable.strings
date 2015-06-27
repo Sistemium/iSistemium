@@ -249,4 +249,6 @@
 "PIECES" = "шт.";
 "SHIPMENT ROUTE" = "Маршрут";
 "SHIPMENT ROUTE POINT" = "Точка маршрута";
+"GET LOCATION" = "Поставить геометку";
+
 
