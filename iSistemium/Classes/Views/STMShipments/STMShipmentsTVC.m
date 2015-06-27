@@ -9,6 +9,7 @@
 #import "STMShipmentsTVC.h"
 #import "STMNS.h"
 #import "STMFunctions.h"
+#import "STMSession.h"
 
 #import "STMShipmentPositionsTVC.h"
 
@@ -18,6 +19,29 @@
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
+@property (nonatomic, strong) STMSession *session;
+
+@end
+
+
+@interface STMShippingLocationTVCell : UITableViewCell
+
+@end
+
+@implementation STMShippingLocationTVCell
+
+- (void)layoutSubviews {
+    
+    [super layoutSubviews];
+    
+// center alignment
+    self.textLabel.frame = CGRectMake(0, self.textLabel.frame.origin.y, self.frame.size.width, self.textLabel.frame.size.height);
+    self.detailTextLabel.frame = CGRectMake(0, self.detailTextLabel.frame.origin.y, self.frame.size.width, self.detailTextLabel.frame.size.height);
+    
+    self.textLabel.textAlignment = NSTextAlignmentCenter;
+    self.detailTextLabel.textAlignment = NSTextAlignmentCenter;
+    
+}
 
 
 @end
@@ -25,14 +49,25 @@
 
 @implementation STMShipmentsTVC
 
+- (STMSession *)session {
+    
+    if (!_session) {
+        _session = [STMSessionManager sharedManager].currentSession;
+    }
+    return _session;
+    
+}
+
 - (STMDocument *)document {
     
     if (!_document) {
-        _document = (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
+        _document = self.session.document;
     }
     return _document;
     
 }
+
+
 
 - (NSString *)cellIdentifier {
     return @"shipmentCell";
@@ -89,7 +124,7 @@
     
     switch (section) {
         case 0:
-            return 2;
+            return 3;
             break;
             
         case 1:
@@ -208,6 +243,10 @@
                     [self fillCell:cell withRoutePoint:self.point];
                     break;
                     
+                case 2:
+                    [self fillCell:cell withShippingLocation:self.point.shippingLocation];
+                    break;
+                    
                 default:
                     break;
             }
@@ -238,6 +277,38 @@
     cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.text = @"";
 
+}
+
+- (void)fillCell:(UITableViewCell *)cell withShippingLocation:(STMShippingLocation *)location {
+
+    cell = [[STMShippingLocationTVCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"shippingLocationCell"];
+    
+    cell.textLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+    cell.textLabel.textColor = [UIColor blackColor];
+
+    cell.detailTextLabel.text = @"";
+
+    if (!location) {
+        
+        cell.textLabel.text = NSLocalizedString(@"GET LOCATION", nil);
+        
+        if (self.session.locationTracker.isAccuracySufficient) {
+            
+            cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
+            
+        } else {
+
+            cell.textLabel.textColor = [UIColor lightGrayColor];
+            cell.detailTextLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+
+        }
+        
+    } else {
+        
+        cell.textLabel.text = NSLocalizedString(@"SHOW MAP", nil);
+        
+    }
+    
 }
 
 - (void)fillCell:(UITableViewCell *)cell withShipment:(STMShipment *)shipment {
@@ -297,10 +368,31 @@
 }
 
 
+#pragma mark - notifications
+
+- (void)currentAccuracyUpdated:(NSNotification *)notification {
+    
+}
+
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self selector:@selector(currentAccuracyUpdated:) name:@"currentAccuracyUpdated" object:self.session.locationTracker];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
 
 - (void)customInit {
 
+    [self addObservers];
     [self performFetch];
     
 }

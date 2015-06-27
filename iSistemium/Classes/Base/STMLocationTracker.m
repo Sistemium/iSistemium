@@ -182,10 +182,16 @@
         
         _currentAccuracy = currentAccuracy;
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentAccuracyUpdated" object:self userInfo:@{@"isAccuracySufficient":@(currentAccuracy <= self.requiredAccuracy)}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentAccuracyUpdated"
+                                                            object:self 
+                                                          userInfo:@{@"isAccuracySufficient":@(self.isAccuracySufficient)}];
 
     }
     
+}
+
+- (BOOL)isAccuracySufficient {
+    return (self.currentAccuracy <= self.requiredAccuracy);
 }
 
 - (NSString *)locationServiceStatus {
