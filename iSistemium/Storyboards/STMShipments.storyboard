@@ -78,6 +78,33 @@
             </objects>
             <point key="canvasLocation" x="2482" y="350"/>
         </scene>
+        <!--Location MapVC-->
+        <scene sceneID="bZy-KE-pUT">
+            <objects>
+                <viewController id="64u-7v-NYy" customClass="STMLocationMapVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="l1B-rR-8aJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="lYO-9m-6EM"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="H8G-Ex-hNu">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="1Cd-0d-Kgb">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <connections>
+                        <outlet property="mapView" destination="1Cd-0d-Kgb" id="vWt-gb-EXf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mkz-hB-f04" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3395" y="-432"/>
+        </scene>
         <!--ShipmentsTVC-->
         <scene sceneID="qop-uJ-JJQ">
             <objects>
@@ -115,6 +142,7 @@
                     </tableView>
                     <connections>
                         <segue destination="UcJ-cZ-FU5" kind="show" identifier="showShipmentPositions" id="LaE-NC-55L"/>
+                        <segue destination="64u-7v-NYy" kind="show" identifier="showShippingLocationMap" id="DoY-zm-5lH"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ARf-FV-bPw" userLabel="First Responder" sceneMemberID="firstResponder"/>

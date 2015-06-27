@@ -245,6 +245,9 @@
 		2CEAC16C1B3C313000AD068E /* STMShipmentsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16B1B3C313000AD068E /* STMShipmentsTVC.m */; };
 		2CEAC16F1B3C3E4200AD068E /* STMShipmentPositionsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16E1B3C3E4100AD068E /* STMShipmentPositionsTVC.m */; };
 		2CEAC1731B3EB4C300AD068E /* STMShipment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1721B3EB4C300AD068E /* STMShipment.m */; };
+		2CEAC1751B3ECC3A00AD068E /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEAC1741B3ECC3A00AD068E /* MapKit.framework */; };
+		2CEAC17B1B3ECF2900AD068E /* STMLocationMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC17A1B3ECF2900AD068E /* STMLocationMapVC.m */; };
+		2CEAC17E1B3ECF6100AD068E /* STMMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC17D1B3ECF6100AD068E /* STMMapAnnotation.m */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -749,6 +752,11 @@
 		2CEAC1701B3EB3CD00AD068E /* STMDataModel 51.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 51.xcdatamodel"; sourceTree = "<group>"; };
 		2CEAC1711B3EB4C300AD068E /* STMShipment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipment.h; sourceTree = "<group>"; };
 		2CEAC1721B3EB4C300AD068E /* STMShipment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipment.m; sourceTree = "<group>"; };
+		2CEAC1741B3ECC3A00AD068E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		2CEAC1791B3ECF2900AD068E /* STMLocationMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLocationMapVC.h; sourceTree = "<group>"; };
+		2CEAC17A1B3ECF2900AD068E /* STMLocationMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLocationMapVC.m; sourceTree = "<group>"; };
+		2CEAC17C1B3ECF6100AD068E /* STMMapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMapAnnotation.h; sourceTree = "<group>"; };
+		2CEAC17D1B3ECF6100AD068E /* STMMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMapAnnotation.m; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -791,6 +799,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CEAC1751B3ECC3A00AD068E /* MapKit.framework in Frameworks */,
 				2C8EF5F7194089E10021D202 /* Security.framework in Frameworks */,
 				2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */,
 				2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */,
@@ -965,6 +974,10 @@
 				2CE8B514195475F400C84A6D /* STMRootTBC.m */,
 				2C2968FA19A208FB0038B122 /* STMDatePickerVC.h */,
 				2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */,
+				2CEAC1791B3ECF2900AD068E /* STMLocationMapVC.h */,
+				2CEAC17A1B3ECF2900AD068E /* STMLocationMapVC.m */,
+				2CEAC17C1B3ECF6100AD068E /* STMMapAnnotation.h */,
+				2CEAC17D1B3ECF6100AD068E /* STMMapAnnotation.m */,
 				2C5763D51AA5DF7500B9FD2C /* STMAuth */,
 				2C5763D81AA5E0B300B9FD2C /* STMCampaign */,
 				2C5764291AA5E2EE00B9FD2C /* STMCatalog */,
@@ -1363,6 +1376,7 @@
 		2C8EF59D1940859F0021D202 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CEAC1741B3ECC3A00AD068E /* MapKit.framework */,
 				2C9D04B81ADE549400D0421D /* Crashlytics.framework */,
 				2C53B8DB1940A515002298A5 /* SystemConfiguration.framework */,
 				2C8EF5F6194089E10021D202 /* Security.framework */,
@@ -1915,6 +1929,7 @@
 				2C4BA3C91A41AE8B007F1D0A /* STMOutletController.m in Sources */,
 				2CF365BC19FA511C00F078BD /* STMDebt.m in Sources */,
 				2C5764321AA5F86500B9FD2C /* STMArticleGroupController.m in Sources */,
+				2CEAC17B1B3ECF2900AD068E /* STMLocationMapVC.m in Sources */,
 				2C65290119576895008605D9 /* STMBatteryStatus.m in Sources */,
 				2C140ADC1A1D3016002C5C17 /* STMUncashingController.m in Sources */,
 				2C761BBE1B00CCD4001DA33E /* STMCustom4TVCell.m in Sources */,
@@ -1943,6 +1958,7 @@
 				2CD657A91AC328EE00EAB4FF /* STMPredicate.m in Sources */,
 				2C53B8AC19409E83002298A5 /* STMSettingsTVC.m in Sources */,
 				2C761BC31B00E01B001DA33E /* STMCustom5TVCell.m in Sources */,
+				2CEAC17E1B3ECF6100AD068E /* STMMapAnnotation.m in Sources */,
 				2CEAC1541B3BEBB500AD068E /* STMShipmentPosition.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

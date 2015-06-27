@@ -13,6 +13,7 @@
 #import "STMSession.h"
 
 #import "STMShipmentPositionsTVC.h"
+#import "STMLocationMapVC.h"
 
 
 @interface STMShipmentsTVC ()
@@ -349,10 +350,18 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 1 && !self.isWaitingLocation) {
+    if (indexPath.section == 1) {
         
-        self.isWaitingLocation = YES;
-        [self.session.locationTracker getLocation];
+        if (self.point.shippingLocation) {
+            
+            [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
+            
+        } else if (!self.isWaitingLocation) {
+        
+            self.isWaitingLocation = YES;
+            [self.session.locationTracker getLocation];
+
+        }
         
     }
     
@@ -380,6 +389,11 @@
         STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
         [(STMShipmentPositionsTVC *)segue.destinationViewController setShipment:shipment];
         
+    } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
+               [segue.destinationViewController isKindOfClass:[STMLocationMapVC class]]) {
+        
+        [(STMLocationMapVC *)segue.destinationViewController setLocation:self.point.shippingLocation];
+        
     }
     
 }
@@ -388,6 +402,8 @@
 #pragma mark - notifications
 
 - (void)currentAccuracyUpdated:(NSNotification *)notification {
+    
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];
     
 }
 
@@ -422,7 +438,6 @@
     
     [nc addObserver:self selector:@selector(currentAccuracyUpdated:) name:@"currentAccuracyUpdated" object:self.session.locationTracker];
     [nc addObserver:self selector:@selector(currentLocationWasUpdated:) name:@"currentLocationWasUpdated" object:self.session.locationTracker];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":self.lastLocation}];
 
 }
 
