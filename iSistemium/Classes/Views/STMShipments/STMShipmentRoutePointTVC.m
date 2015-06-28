@@ -16,10 +16,10 @@
 #import "STMShipmentTVC.h"
 #import "STMLocationMapVC.h"
 
-#define CELL_IMAGES_SIZE 30
+#define CELL_IMAGES_SIZE 54
 #define THUMB_SIZE CGSizeMake(CELL_IMAGES_SIZE, CELL_IMAGES_SIZE)
 #define IMAGE_PADDING 6
-
+#define LIMIT_COUNT 4
 
 @interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -376,6 +376,16 @@
             }
             break;
             
+        case 1:
+            switch (indexPath.row) {
+                case 1:
+                    return CELL_IMAGES_SIZE + IMAGE_PADDING * 2;
+                    break;
+                    
+                default:
+                    break;
+            }
+            
         default:
             break;
     }
@@ -572,8 +582,7 @@
 
     } else {
         
-        NSUInteger limitCount = 3;
-        NSUInteger showCount = (photos.count > limitCount) ? limitCount : photos.count;
+        NSUInteger showCount = (photos.count > LIMIT_COUNT) ? LIMIT_COUNT : photos.count;
 
         NSSortDescriptor *sortDesriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)];
         NSRange range = NSMakeRange(0, showCount);
