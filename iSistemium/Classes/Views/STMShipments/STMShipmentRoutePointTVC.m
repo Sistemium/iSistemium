@@ -120,6 +120,7 @@
             
         case 2:
             return self.resultsController.fetchedObjects.count;
+            break;
 
         default:
             return 0;
@@ -402,6 +403,7 @@
         
         STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
         [(STMShipmentTVC *)segue.destinationViewController setShipment:shipment];
+        [(STMShipmentTVC *)segue.destinationViewController setPoint:self.point];
         
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
                [segue.destinationViewController isKindOfClass:[STMLocationMapVC class]]) {

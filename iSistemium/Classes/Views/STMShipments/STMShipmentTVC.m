@@ -9,6 +9,7 @@
 #import "STMShipmentTVC.h"
 #import "STMNS.h"
 #import "STMUI.h"
+#import "STMFunctions.h"
 
 
 @interface STMShipmentTVC ()
@@ -64,8 +65,44 @@
 
 #pragma mark - table view data
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return 3;
+            break;
+            
+        case 1:
+            return self.resultsController.fetchedObjects.count;
+            break;
+            
+        default:
+            return 0;
+            break;
+    }
+    
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"SHIPMENT", nil), self.shipment.ndoc];
+    
+    switch (section) {
+        case 0:
+            return NSLocalizedString(@"SHIPMENT", nil);
+            break;
+            
+        case 1:
+            return NSLocalizedString(@"SHIPMENT POSITIONS", nil);
+            break;
+            
+        default:
+            return nil;
+            break;
+    }
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -82,63 +119,145 @@
     
     if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
         
-        STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
-        
-        STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
-        
-        customCell.titleLabel.text = position.article.name;
-        
-        NSString *volumeUnitString = nil;
-        NSString *infoText = nil;
-        
-        int volume = [position.volume intValue];
-        int packageRel = [position.article.packageRel intValue];
-        
-        if (packageRel != 0 && volume >= packageRel) {
-            
-            int package = floor(volume / packageRel);
-            
-            volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
-            NSString *packageString = [NSString stringWithFormat:@"%d %@", package, volumeUnitString];
-            
-            int bottle = volume % packageRel;
-            
-            if (bottle > 0) {
-                
-                volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
-                NSString *bottleString = [NSString stringWithFormat:@" %d %@", bottle, volumeUnitString];
-                
-                packageString = [packageString stringByAppendingString:bottleString];
-                
-            }
-            
-            infoText = packageString;
-            
-        } else {
-            
-            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
-            infoText = [NSString stringWithFormat:@"%@ %@", position.volume, volumeUnitString];
-            
-        }
+        switch (indexPath.section) {
+            case 0:
+                switch (indexPath.row) {
+                    case 0:
+                        [self fillCell:(STMCustom7TVCell *)cell withRoute:self.point.shipmentRoute];
+                        break;
 
-//        customCell.infoLabel.text = infoText;
-        
-//        volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-//        customCell.detailLabel.text = [NSString stringWithFormat:@"%@%@", position.article.pieceVolume, volumeUnitString];
-     
-        customCell.detailLabel.text = @"";
-        
-        STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
-        infoLabel.text = infoText;
-        infoLabel.textAlignment = NSTextAlignmentRight;
-        infoLabel.adjustsFontSizeToFitWidth = YES;
-        
-        customCell.accessoryView = infoLabel;
+                    case 1:
+                        [self fillCell:(STMCustom7TVCell *)cell withRoutePoint:self.point];
+                        break;
+
+                    case 2:
+                        [self fillCell:(STMCustom7TVCell *)cell withShipment:self.shipment];
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+                
+            case 1:
+                [self fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
+                break;
+                
+            default:
+                break;
+        }
         
     }
     
     [super fillCell:cell atIndexPath:indexPath];
     
+}
+
+- (void)fillCell:(STMCustom7TVCell *)cell withRoute:(STMShipmentRoute *)route {
+    
+    cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
+    cell.detailLabel.text = @"";
+    
+}
+
+- (void)fillCell:(STMCustom7TVCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
+    
+    cell.titleLabel.text = point.name;
+    cell.titleLabel.numberOfLines = 0;
+    cell.detailLabel.text = @"";
+    
+}
+
+- (void)fillCell:(STMCustom7TVCell *)cell withShipment:(STMShipment *)shipment {
+    
+    cell.titleLabel.text = shipment.ndoc;
+    
+    NSUInteger positionsCount = shipment.shipmentPositions.count;
+    NSString *pluralType = [STMFunctions pluralTypeForCount:positionsCount];
+    NSString *localizedString = [NSString stringWithFormat:@"%@POSITIONS", pluralType];
+    
+    NSString *detailText;
+    
+    if (positionsCount > 0) {
+        
+        detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(localizedString, nil)];
+        
+    } else {
+        
+        detailText = NSLocalizedString(localizedString, nil);
+        
+    }
+    
+    cell.detailLabel.text = detailText;
+    
+    if ([shipment.needCashing boolValue]) {
+        
+        cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];
+        
+    } else {
+        cell.imageView.image = nil;
+    }
+
+}
+
+- (void)fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    STMShipmentPosition *position = self.resultsController.fetchedObjects[indexPath.row];
+    [self fillCell:cell withShipmentPosition:position];
+    
+}
+
+- (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
+    
+    cell.titleLabel.text = position.article.name;
+    
+    NSString *volumeUnitString = nil;
+    NSString *infoText = nil;
+    
+    int volume = [position.volume intValue];
+    int packageRel = [position.article.packageRel intValue];
+    
+    if (packageRel != 0 && volume >= packageRel) {
+        
+        int package = floor(volume / packageRel);
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
+        NSString *packageString = [NSString stringWithFormat:@"%d %@", package, volumeUnitString];
+        
+        int bottle = volume % packageRel;
+        
+        if (bottle > 0) {
+            
+            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+            NSString *bottleString = [NSString stringWithFormat:@" %d %@", bottle, volumeUnitString];
+            
+            packageString = [packageString stringByAppendingString:bottleString];
+            
+        }
+        
+        infoText = packageString;
+        
+    } else {
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+        infoText = [NSString stringWithFormat:@"%@ %@", position.volume, volumeUnitString];
+        
+    }
+    
+    //        customCell.infoLabel.text = infoText;
+    
+    //        volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    //        customCell.detailLabel.text = [NSString stringWithFormat:@"%@%@", position.article.pieceVolume, volumeUnitString];
+    
+    cell.detailLabel.text = @"";
+    
+    STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
+    infoLabel.text = infoText;
+    infoLabel.textAlignment = NSTextAlignmentRight;
+    infoLabel.adjustsFontSizeToFitWidth = YES;
+    
+    cell.accessoryView = infoLabel;
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -150,6 +269,59 @@
 //        [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
 //        
 //    }
+    
+}
+
+
+#pragma mark - height's cache
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        self.cachedCellsHeights[indexPath] = @(height);
+        
+    } else {
+        
+        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1]] objectID];
+        self.cachedCellsHeights[objectID] = @(height);
+        
+    }
+    
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        return self.cachedCellsHeights[indexPath];
+        
+    } else {
+        
+        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1]] objectID];;
+        return self.cachedCellsHeights[objectID];
+        
+    }
+    
+}
+
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView reloadData];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
 }
 

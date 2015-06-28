@@ -13,6 +13,6 @@
 @interface STMShipmentTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMShipment *shipment;
-
+@property (nonatomic, strong) STMShipmentRoutePoint *point;
 
 @end
