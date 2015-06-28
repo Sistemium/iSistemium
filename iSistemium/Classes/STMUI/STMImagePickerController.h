@@ -10,4 +10,6 @@
 
 @interface STMImagePickerController : UIImagePickerController
 
++ (STMImagePickerController *)pickerControllerWithCameraOverlayView:(UIView *)cameraOverlayView delegate:(id <UIImagePickerControllerDelegate>)delegate sourceType:(UIImagePickerControllerSourceType)sourceType;
+
 @end

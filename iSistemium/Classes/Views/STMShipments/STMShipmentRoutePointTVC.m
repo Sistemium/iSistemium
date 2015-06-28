@@ -19,7 +19,7 @@
 #define THUMB_SIZE CGSizeMake(CELL_IMAGES_SIZE, CELL_IMAGES_SIZE)
 
 
-@interface STMShipmentRoutePointTVC ()
+@interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
@@ -29,6 +29,9 @@
 
 @property (nonatomic) BOOL isWaitingLocation;
 
+@property (nonatomic, strong) UIView *cameraOverlayView;
+@property (nonatomic, strong) STMImagePickerController *imagePickerController;
+@property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
 @end
 
@@ -132,9 +135,40 @@
 }
 
 - (void)addPhotoButtonPressed {
+
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     
 }
 
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
+        
+        self.selectedSourceType = imageSourceType;
+        
+        [self presentViewController:self.imagePickerController animated:YES completion:^{
+            
+//            [self.splitViewController.view addSubview:self.spinnerView];
+                        NSLog(@"presentViewController:UIImagePickerController");
+            
+        }];
+        
+    }
+    
+}
+
+- (STMImagePickerController *)imagePickerController {
+    
+    if (!_imagePickerController) {
+        
+        _imagePickerController = [STMImagePickerController pickerControllerWithCameraOverlayView:self.cameraOverlayView
+                                                                                        delegate:self
+                                                                                      sourceType:self.selectedSourceType];
+
+    }
+    return _imagePickerController;
+    
+}
 
 #pragma mark - table view data
 

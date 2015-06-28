@@ -14,6 +14,39 @@
 
 @implementation STMImagePickerController
 
++ (STMImagePickerController *)pickerControllerWithCameraOverlayView:(UIView *)cameraOverlayView delegate:(id<UINavigationControllerDelegate, UIImagePickerControllerDelegate>)delegate sourceType:(UIImagePickerControllerSourceType)sourceType {
+    
+    STMImagePickerController *imagePickerController = [[STMImagePickerController alloc] init];
+    imagePickerController.delegate = delegate;
+    
+    imagePickerController.sourceType = sourceType;
+    
+    if (imagePickerController.sourceType == UIImagePickerControllerSourceTypeCamera) {
+        
+        imagePickerController.showsCameraControls = NO;
+        
+        [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
+        cameraOverlayView.backgroundColor = [UIColor clearColor];
+        cameraOverlayView.autoresizesSubviews = YES;
+        cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+        
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+            
+            UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+            CGRect originalFrame = [[UIScreen mainScreen] bounds];
+            CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
+            cameraOverlayView.frame = screenFrame;
+            
+        }
+        
+        imagePickerController.cameraOverlayView = cameraOverlayView;
+        
+    }
+    return imagePickerController;
+    
+}
+
+
 #pragma mark - orientation fix
 
 - (NSUInteger)supportedInterfaceOrientations{
