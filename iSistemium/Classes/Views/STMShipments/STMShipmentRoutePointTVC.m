@@ -303,7 +303,7 @@
         
             if (!location) {
                 
-                customCell.titleLabel.text = NSLocalizedString(@"GET LOCATION", nil);
+                customCell.titleLabel.text = NSLocalizedString(@"SET LOCATION", nil);
                 
                 if (self.session.locationTracker.isAccuracySufficient) {
                     

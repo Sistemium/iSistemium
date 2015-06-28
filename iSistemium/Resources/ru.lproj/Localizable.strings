@@ -249,7 +249,7 @@
 "PIECES" = "шт.";
 "SHIPMENT ROUTE" = "Маршрут";
 "SHIPMENT ROUTE POINT" = "Точка маршрута";
-"GET LOCATION" = "Поставить геометку";
+"SET LOCATION" = "Поставить геометку";
 "SHOW MAP" = "Показать на карте";
 
 
