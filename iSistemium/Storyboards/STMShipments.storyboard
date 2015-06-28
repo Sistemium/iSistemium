@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Sc9-6E-xTM">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -149,11 +150,71 @@
                     <connections>
                         <segue destination="UcJ-cZ-FU5" kind="show" identifier="showShipmentPositions" id="LaE-NC-55L"/>
                         <segue destination="64u-7v-NYy" kind="show" identifier="showShippingLocationMap" id="DoY-zm-5lH"/>
+                        <segue destination="ulO-gf-N6h" kind="presentation" identifier="showPhotos" id="Y1F-Vo-4I5"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ARf-FV-bPw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3159" y="350"/>
+        </scene>
+        <!--Shipping Location PicturesPVC-->
+        <scene sceneID="iDr-AX-qzY">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="ulO-gf-N6h" customClass="STMShippingLocationPicturesPVC" sceneMemberID="viewController">
+                    <nil key="simulatedTopBarMetrics"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Q39-Ex-94E" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3344" y="1140"/>
+        </scene>
+        <!--Shipping Location PictureVC-->
+        <scene sceneID="VNr-jo-ayA">
+            <objects>
+                <viewController storyboardIdentifier="photoVC" id="yUx-AX-Tot" customClass="STMShippingLocationPictureVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DaT-P8-xGc"/>
+                        <viewControllerLayoutGuide type="bottom" id="ZKg-lg-TFc"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fwH-3r-VqR">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dSh-3n-CmQ">
+                                <rect key="frame" x="16" y="64" width="568" height="516"/>
+                            </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sd6-0B-50b">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="J0T-85-WbY"/>
+                                    <barButtonItem systemItem="trash" id="xZg-4f-q1a">
+                                        <connections>
+                                            <action selector="deleteButtonPressed:" destination="yUx-AX-Tot" id="tZv-Oz-RhX"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="sd6-0B-50b" firstAttribute="top" secondItem="DaT-P8-xGc" secondAttribute="bottom" id="2Ud-il-iov"/>
+                            <constraint firstItem="dSh-3n-CmQ" firstAttribute="leading" secondItem="fwH-3r-VqR" secondAttribute="leadingMargin" id="73g-sg-UQL"/>
+                            <constraint firstItem="sd6-0B-50b" firstAttribute="leading" secondItem="fwH-3r-VqR" secondAttribute="leadingMargin" constant="-16" id="9Fk-OJ-0x0"/>
+                            <constraint firstItem="dSh-3n-CmQ" firstAttribute="top" secondItem="sd6-0B-50b" secondAttribute="bottom" id="BaC-B2-CCM"/>
+                            <constraint firstItem="dSh-3n-CmQ" firstAttribute="trailing" secondItem="fwH-3r-VqR" secondAttribute="trailingMargin" id="Kmw-G6-g3k"/>
+                            <constraint firstItem="ZKg-lg-TFc" firstAttribute="top" secondItem="dSh-3n-CmQ" secondAttribute="bottom" constant="20" id="MXb-TZ-7SX"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="sd6-0B-50b" secondAttribute="trailing" constant="-16" id="ewH-oN-I17"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <connections>
+                        <outlet property="deletePhotoButton" destination="xZg-4f-q1a" id="yP7-PX-JBf"/>
+                        <outlet property="photoView" destination="dSh-3n-CmQ" id="yfK-sE-4D7"/>
+                        <outlet property="toolbar" destination="sd6-0B-50b" id="MIg-JX-qyt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GlP-cf-p3e" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4039" y="1140"/>
         </scene>
         <!--ShipmentTVC-->
         <scene sceneID="Wpu-Tc-PM6">

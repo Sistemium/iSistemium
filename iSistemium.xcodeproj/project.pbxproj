@@ -42,6 +42,8 @@
 		2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */; };
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
 		2C2957991B400FD600A2D163 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2957981B400FD600A2D163 /* plus.png */; };
+		2C29579C1B40333600A2D163 /* STMShippingLocationPicturesPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */; };
+		2C29579F1B40335C00A2D163 /* STMShippingLocationPictureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579E1B40335C00A2D163 /* STMShippingLocationPictureVC.m */; };
 		2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */; };
 		2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968DC199F8F220038B122 /* STMCashing+dayAsString.m */; };
 		2C2968EE19A0BFD10038B122 /* STMUncashing.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */; };
@@ -344,6 +346,10 @@
 		2C27B5AA196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMOutlet+photoReportsArePresent.h"; sourceTree = "<group>"; };
 		2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMOutlet+photoReportsArePresent.m"; sourceTree = "<group>"; };
 		2C2957981B400FD600A2D163 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
+		2C29579A1B40333600A2D163 /* STMShippingLocationPicturesPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingLocationPicturesPVC.h; sourceTree = "<group>"; };
+		2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationPicturesPVC.m; sourceTree = "<group>"; };
+		2C29579D1B40335C00A2D163 /* STMShippingLocationPictureVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingLocationPictureVC.h; sourceTree = "<group>"; };
+		2C29579E1B40335C00A2D163 /* STMShippingLocationPictureVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationPictureVC.m; sourceTree = "<group>"; };
 		2C2968D1199B3AC30038B122 /* STMDebt+Cashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMDebt+Cashing.h"; sourceTree = "<group>"; };
 		2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMDebt+Cashing.m"; sourceTree = "<group>"; };
 		2C2968DB199F8F220038B122 /* STMCashing+dayAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMCashing+dayAsString.h"; sourceTree = "<group>"; };
@@ -1550,6 +1556,10 @@
 				2CEAC16B1B3C313000AD068E /* STMShipmentRoutePointTVC.m */,
 				2CEAC16D1B3C3E4100AD068E /* STMShipmentTVC.h */,
 				2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */,
+				2C29579A1B40333600A2D163 /* STMShippingLocationPicturesPVC.h */,
+				2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */,
+				2C29579D1B40335C00A2D163 /* STMShippingLocationPictureVC.h */,
+				2C29579E1B40335C00A2D163 /* STMShippingLocationPictureVC.m */,
 			);
 			path = STMShipments;
 			sourceTree = "<group>";
@@ -1817,6 +1827,7 @@
 				2CFDD7291A29AF42003515C5 /* STMPicturesController.m in Sources */,
 				2C02F2BA1A8A45EC00E0E890 /* STMAuthNC.m in Sources */,
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
+				2C29579C1B40333600A2D163 /* STMShippingLocationPicturesPVC.m in Sources */,
 				2C5764931AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.m in Sources */,
 				2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */,
 				2C5763F41AA5E13600B9FD2C /* STMCampaignPicturePVC.m in Sources */,
@@ -1936,6 +1947,7 @@
 				2CEAC17B1B3ECF2900AD068E /* STMLocationMapVC.m in Sources */,
 				2C65290119576895008605D9 /* STMBatteryStatus.m in Sources */,
 				2C140ADC1A1D3016002C5C17 /* STMUncashingController.m in Sources */,
+				2C29579F1B40335C00A2D163 /* STMShippingLocationPictureVC.m in Sources */,
 				2C761BBE1B00CCD4001DA33E /* STMCustom4TVCell.m in Sources */,
 				2CEAC13F1B3BEBB400AD068E /* STMShippingLocation.m in Sources */,
 				2C16CC3A1AF1FE9100A2EC2D /* STMCampaignGroup+custom.m in Sources */,

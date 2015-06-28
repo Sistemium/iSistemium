@@ -13,5 +13,6 @@
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
 
+- (void)photoWasDeleted:(STMShippingLocationPicture *)photo;
 
 @end

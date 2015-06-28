@@ -15,6 +15,8 @@
 
 #import "STMShipmentTVC.h"
 #import "STMLocationMapVC.h"
+#import "STMShippingLocationPicturesPVC.h"
+
 
 #define CELL_IMAGES_SIZE 54
 #define THUMB_SIZE CGSizeMake(CELL_IMAGES_SIZE, CELL_IMAGES_SIZE)
@@ -36,6 +38,8 @@
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
 @property (nonatomic ,strong) STMSpinnerView *spinner;
+
+@property (nonatomic, strong) UIView *picturesView;
 
 
 @end
@@ -142,12 +146,29 @@
 - (UIView *)pictureButtonWithPicture:(STMPicture *)picture {
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:picture.imageThumbnail]];
+
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
+    imageView.gestureRecognizers = @[tap];
+    imageView.userInteractionEnabled = YES;
+
     return imageView;
+    
 }
 
 - (void)addPhotoButtonPressed {
 
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+    
+}
+
+- (void)photoButtonPressed:(id)sender {
+    
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        UIView *tappedView = [(UITapGestureRecognizer *)sender view];
+        [self performSegueWithIdentifier:@"showPhotos" sender:tappedView];
+
+    }
     
 }
 
@@ -562,6 +583,7 @@
     cell.detailTextLabel.text = @"";
     [[cell.contentView viewWithTag:555] removeFromSuperview];
     [[cell.contentView viewWithTag:666] removeFromSuperview];
+    [self.picturesView removeFromSuperview];
 
     if (photos.count == 0) {
         
@@ -592,31 +614,30 @@
         CGFloat x = ceil((cell.contentView.frame.size.width - picturesWidth) / 2);
         CGFloat y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
         
-        UIView *picturesView = [[UIView alloc] initWithFrame:CGRectMake(x, y, picturesWidth, CELL_IMAGES_SIZE)];
-        picturesView.tag = 555;
+        self.picturesView = [[UIView alloc] initWithFrame:CGRectMake(x, y, picturesWidth, CELL_IMAGES_SIZE)];
         
         for (STMPicture *picture in photoArray) {
             
             UIView *pictureButton = [self pictureButtonWithPicture:picture];
             
-            NSUInteger count = picturesView.subviews.count;
+            NSUInteger count = self.picturesView.subviews.count;
             x = (count > 0) ? count * (CELL_IMAGES_SIZE + IMAGE_PADDING) : 0;
             
             pictureButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
             
-            [picturesView addSubview:pictureButton];
+            [self.picturesView addSubview:pictureButton];
             
         }
         
         UIView *addButton = [self addPhotoButton];
         
-        x = picturesView.subviews.count * (CELL_IMAGES_SIZE + IMAGE_PADDING);
+        x = self.picturesView.subviews.count * (CELL_IMAGES_SIZE + IMAGE_PADDING);
 
         addButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
         
-        [picturesView addSubview:addButton];
+        [self.picturesView addSubview:addButton];
         
-        [cell.contentView addSubview:picturesView];
+        [cell.contentView addSubview:self.picturesView];
         
     }
     
@@ -713,6 +734,17 @@
                [segue.destinationViewController isKindOfClass:[STMLocationMapVC class]]) {
         
         [(STMLocationMapVC *)segue.destinationViewController setLocation:self.point.shippingLocation];
+        
+    } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
+               [sender isKindOfClass:[UIView class]] &&
+               [segue.destinationViewController isKindOfClass:[STMShippingLocationPicturesPVC class]]) {
+        
+        NSSortDescriptor *sortDesriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)];
+        NSArray *photoArray = [self.point.shippingLocation.shippingLocationPictures sortedArrayUsingDescriptors:@[sortDesriptor]];
+        
+        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setPhotoArray:[photoArray mutableCopy]];
+        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setCurrentIndex:[self.picturesView.subviews indexOfObject:sender]];
+        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setParentVC:self];
         
     }
     
