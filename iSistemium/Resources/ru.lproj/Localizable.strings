@@ -251,5 +251,9 @@
 "SHIPMENT ROUTE POINT" = "Точка маршрута";
 "SET LOCATION" = "Поставить геометку";
 "SHOW MAP" = "Показать на карте";
+"0NEED CASHING" = "нет инкассаций";
+"1NEED CASHING" = "инкассация";
+"2NEED CASHING" = "инкассации";
+"5NEED CASHING" = "инкассаций";
 
 

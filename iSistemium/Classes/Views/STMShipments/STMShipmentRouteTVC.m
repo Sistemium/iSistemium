@@ -181,6 +181,18 @@
         
     }
     
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"needCashing == YES"];
+    NSUInteger needCashingCount = [point.shipments filteredSetUsingPredicate:predicate].count;
+    
+    if (needCashingCount > 0) {
+        
+        pluralType = [STMFunctions pluralTypeForCount:needCashingCount];
+        localizedString = [NSString stringWithFormat:@"%@NEED CASHING", pluralType];
+
+        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@", %lu %@", (unsigned long)needCashingCount, NSLocalizedString(localizedString, nil)]];
+        
+    }
+    
     cell.detailLabel.text = detailText;
 
 }

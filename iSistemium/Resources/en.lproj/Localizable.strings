@@ -251,5 +251,9 @@
 "SHIPMENT ROUTE POINT" = "Shipment route point";
 "SET LOCATION" = "Set location";
 "SHOW MAP" = "Show map";
+"0NEED CASHING" = "no need cashing";
+"1NEED CASHING" = "need cashing";
+"2NEED CASHING" = "need cashings";
+"5NEED CASHING" = "need cashings";
 
 
