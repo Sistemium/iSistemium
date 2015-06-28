@@ -32,9 +32,10 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentRoute class])];
         
         NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
+        NSSortDescriptor *driverDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"driver.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSSortDescriptor *idDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:NO selector:@selector(compare:)];
         
-        request.sortDescriptors = @[dateDescriptor, idDescriptor];
+        request.sortDescriptors = @[dateDescriptor, driverDescriptor, idDescriptor];
         
         request.predicate = [STMPredicate predicateWithNoFantoms];
         
@@ -105,6 +106,10 @@
         detailText = NSLocalizedString(localizedString, nil);
         cell.accessoryType = UITableViewCellAccessoryNone;
         
+    }
+    
+    if (!self.driver && route.driver.name) {
+        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@", %@", route.driver.name]];
     }
     
     cell.detailTextLabel.text = detailText;

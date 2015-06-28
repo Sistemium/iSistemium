@@ -12,6 +12,8 @@
 
 @interface STMDriverTVC : STMFetchedResultsControllerTVC
 
+@property (nonatomic, strong) STMDriver *driver;
+
 - (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route;
 
 
