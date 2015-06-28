@@ -8,12 +8,15 @@
 
 #import "STMLocationMapVC.h"
 #import "STMFunctions.h"
+#import "STMSessionManager.h"
+#import "STMSession.h"
 #import "STMMapAnnotation.h"
 
 
-@interface STMLocationMapVC ()
+@interface STMLocationMapVC () <MKMapViewDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
+@property (nonatomic, weak) STMSession *session;
 
 
 @end
@@ -21,20 +24,41 @@
 
 @implementation STMLocationMapVC
 
+- (STMSession *)session {
+    
+    if (!_session) {
+        _session = [STMSessionManager sharedManager].currentSession;
+    }
+    return _session;
+    
+}
+
 - (void)centeringMap {
 
-    self.mapView.showsUserLocation = YES;
     [self.mapView addAnnotation:[STMMapAnnotation createAnnotationForLocation:self.location]];
-
+    
     CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
-//    CLLocation *location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
-    
-//    CLLocationCoordinate2D userCoordinate = CLLocationCoordinate2DMake(self.mapView.userLocation.coordinate.latitude, self.mapView.userLocation.coordinate.longitude);
-//    CLLocation *userLocation = [[CLLocation alloc] initWithLatitude:userCoordinate.latitude longitude:userCoordinate.longitude];
-//    
-//    CLLocationDistance distance = [location distanceFromLocation:userLocation];
-    
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+
     CLLocationDistance distance = 10000;
+
+    CLLocation *userLocation = self.mapView.userLocation.location;
+    
+    if (userLocation) {
+        
+        distance = [location distanceFromLocation:userLocation] * 2;
+
+    } else {
+    
+        CLLocation *lastLocation = self.session.locationTracker.lastLocation;
+        
+        if (lastLocation) {
+            
+            distance = [location distanceFromLocation:lastLocation] * 2;
+            
+        }
+
+    }
     
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(locationCoordinate, distance, distance);
     
@@ -44,10 +68,22 @@
 }
 
 
+#pragma mark - MKMapViewDelegate
+
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+    
+    [self centeringMap];
+    self.mapView.delegate = nil;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    self.mapView.delegate = self;
+    self.mapView.showsUserLocation = YES;
     [self centeringMap];
     
 }
@@ -68,7 +104,8 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    
+    [self centeringMap];
+
 }
 
 - (void)didReceiveMemoryWarning {
