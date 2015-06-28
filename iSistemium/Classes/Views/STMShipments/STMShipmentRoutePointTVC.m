@@ -11,12 +11,14 @@
 #import "STMUI.h"
 #import "STMFunctions.h"
 #import "STMSession.h"
+#import "STMPicturesController.h"
 
 #import "STMShipmentTVC.h"
 #import "STMLocationMapVC.h"
 
 #define CELL_IMAGES_SIZE 30
 #define THUMB_SIZE CGSizeMake(CELL_IMAGES_SIZE, CELL_IMAGES_SIZE)
+#define IMAGE_PADDING 6
 
 
 @interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
@@ -134,6 +136,12 @@
     
 }
 
+- (UIView *)pictureButtonWithPicture:(STMPicture *)picture {
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:picture.imageThumbnail]];
+    return imageView;
+}
+
 - (void)addPhotoButtonPressed {
 
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
@@ -149,7 +157,7 @@
         [self presentViewController:self.imagePickerController animated:YES completion:^{
             
 //            [self.splitViewController.view addSubview:self.spinnerView];
-                        NSLog(@"presentViewController:UIImagePickerController");
+//                        NSLog(@"presentViewController:UIImagePickerController");
             
         }];
         
@@ -169,6 +177,59 @@
     return _imagePickerController;
     
 }
+
+- (void)saveImage:(UIImage *)image {
+    
+    STMShippingLocationPicture *shippingLocationPicture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMShippingLocationPicture class]) inManagedObjectContext:self.document.managedObjectContext];
+    
+    CGFloat jpgQuality = [STMPicturesController jpgQuality];
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:shippingLocationPicture];
+
+    shippingLocationPicture.shippingLocation = self.point.shippingLocation;
+    
+//    [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+//    self.selectedPhotoReport.campaign = self.campaign;
+    
+//    [self.waitingLocationPhotos addObject:self.selectedPhotoReport];
+//    [self.locationTracker getLocation];
+    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
+    
+    [[self document] saveDocument:^(BOOL success) {
+        if (success) {
+            [self.tableView reloadData];
+        }
+    }];
+    
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    //    NSLog(@"picker didFinishPickingMediaWithInfo");
+    
+    [picker dismissViewControllerAnimated:NO completion:^{
+        
+        [self saveImage:info[UIImagePickerControllerOriginalImage]];
+        self.imagePickerController = nil;
+        //        NSLog(@"dismiss UIImagePickerController");
+        
+    }];
+    
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:NO completion:^{
+        
+    }];
+    
+//    [self.spinnerView removeFromSuperview];
+    self.imagePickerController = nil;
+    
+}
+
 
 #pragma mark - table view data
 
@@ -411,27 +472,69 @@
 }
 
 - (void)fillCell:(UITableViewCell *)cell withPhotos:(NSSet *)photos {
-    
+
     cell.textLabel.text = @"";
     cell.detailTextLabel.text = @"";
     [[cell.contentView viewWithTag:555] removeFromSuperview];
     [[cell.contentView viewWithTag:666] removeFromSuperview];
 
-    UIView *blankPicture = [self blankPicture];
-    UIView *addPhotoButton = [self addPhotoButton];
-    
-    CGFloat x = ceil((cell.contentView.frame.size.width - CELL_IMAGES_SIZE) / 2);
-    CGFloat y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
-    CGFloat padding = 6;
+    if (photos.count == 0) {
+        
+        UIView *blankPicture = [self blankPicture];
+        UIView *addPhotoButton = [self addPhotoButton];
+        
+        CGFloat x = ceil((cell.contentView.frame.size.width - CELL_IMAGES_SIZE) / 2);
+        CGFloat y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
+        
+        blankPicture.frame = CGRectMake(x - IMAGE_PADDING - CELL_IMAGES_SIZE, y, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+        blankPicture.tag = 666;
+        
+        addPhotoButton.frame = CGRectMake(x, y, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+        addPhotoButton.tag = 555;
+        
+        [cell.contentView addSubview:blankPicture];
+        [cell.contentView addSubview:addPhotoButton];
 
-    blankPicture.frame = CGRectMake(x - padding - CELL_IMAGES_SIZE, y, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
-    blankPicture.tag = 666;
-    
-    addPhotoButton.frame = CGRectMake(x, y, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
-    addPhotoButton.tag = 555;
-    
-    [cell.contentView addSubview:blankPicture];
-    [cell.contentView addSubview:addPhotoButton];
+    } else {
+        
+        NSUInteger limitCount = 3;
+        NSUInteger showCount = (photos.count > limitCount) ? limitCount : photos.count;
+
+        NSSortDescriptor *sortDesriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)];
+        NSRange range = NSMakeRange(0, showCount);
+        NSArray *photoArray = [[photos sortedArrayUsingDescriptors:@[sortDesriptor]] subarrayWithRange:range];
+        
+        CGFloat picturesWidth = CELL_IMAGES_SIZE * (showCount + 1) + IMAGE_PADDING * showCount;
+        CGFloat x = ceil((cell.contentView.frame.size.width - picturesWidth) / 2);
+        CGFloat y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
+        
+        UIView *picturesView = [[UIView alloc] initWithFrame:CGRectMake(x, y, picturesWidth, CELL_IMAGES_SIZE)];
+        picturesView.tag = 555;
+        
+        for (STMPicture *picture in photoArray) {
+            
+            UIView *pictureButton = [self pictureButtonWithPicture:picture];
+            
+            NSUInteger count = picturesView.subviews.count;
+            x = (count > 0) ? count * (CELL_IMAGES_SIZE + IMAGE_PADDING) : 0;
+            
+            pictureButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+            
+            [picturesView addSubview:pictureButton];
+            
+        }
+        
+        UIView *addButton = [self addPhotoButton];
+        
+        x = picturesView.subviews.count * (CELL_IMAGES_SIZE + IMAGE_PADDING);
+
+        addButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+        
+        [picturesView addSubview:addButton];
+        
+        [cell.contentView addSubview:picturesView];
+        
+    }
     
 }
 
