@@ -585,26 +585,17 @@
 
     cell.textLabel.text = @"";
     cell.detailTextLabel.text = @"";
-    [[cell.contentView viewWithTag:555] removeFromSuperview];
-    [[cell.contentView viewWithTag:666] removeFromSuperview];
     [self.picturesView removeFromSuperview];
+
+    self.picturesView = [[UIView alloc] init];
 
     if (photos.count == 0) {
         
         UIView *blankPicture = [self blankPicture];
-        UIView *addPhotoButton = [self addPhotoButton];
         
-        CGFloat x = ceil((cell.contentView.frame.size.width - CELL_IMAGES_SIZE) / 2);
-        CGFloat y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
+        blankPicture.frame = CGRectMake(0, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
         
-        blankPicture.frame = CGRectMake(x - IMAGE_PADDING - CELL_IMAGES_SIZE, y, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
-        blankPicture.tag = 666;
-        
-        addPhotoButton.frame = CGRectMake(x, y, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
-        addPhotoButton.tag = 555;
-        
-        [cell.contentView addSubview:blankPicture];
-        [cell.contentView addSubview:addPhotoButton];
+        [self.picturesView addSubview:blankPicture];
 
     } else {
         
@@ -614,18 +605,12 @@
         NSRange range = NSMakeRange(0, showCount);
         NSArray *photoArray = [[photos sortedArrayUsingDescriptors:@[sortDesriptor]] subarrayWithRange:range];
         
-        CGFloat picturesWidth = CELL_IMAGES_SIZE * (showCount + 1) + IMAGE_PADDING * showCount;
-        CGFloat x = ceil((cell.contentView.frame.size.width - picturesWidth) / 2);
-        CGFloat y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
-        
-        self.picturesView = [[UIView alloc] initWithFrame:CGRectMake(x, y, picturesWidth, CELL_IMAGES_SIZE)];
-        
         for (STMPicture *picture in photoArray) {
             
             UIView *pictureButton = [self pictureButtonWithPicture:picture];
             
             NSUInteger count = self.picturesView.subviews.count;
-            x = (count > 0) ? count * (CELL_IMAGES_SIZE + IMAGE_PADDING) : 0;
+            CGFloat x = (count > 0) ? count * (CELL_IMAGES_SIZE + IMAGE_PADDING) : 0;
             
             pictureButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
             
@@ -633,17 +618,24 @@
             
         }
         
-        UIView *addButton = [self addPhotoButton];
-        
-        x = self.picturesView.subviews.count * (CELL_IMAGES_SIZE + IMAGE_PADDING);
-
-        addButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
-        
-        [self.picturesView addSubview:addButton];
-        
-        [cell.contentView addSubview:self.picturesView];
-        
     }
+    
+    
+    UIView *addButton = [self addPhotoButton];
+    
+    CGFloat x = self.picturesView.subviews.count * (CELL_IMAGES_SIZE + IMAGE_PADDING);
+    
+    addButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+    
+    [self.picturesView addSubview:addButton];
+    
+    CGFloat picturesWidth = CELL_IMAGES_SIZE * self.picturesView.subviews.count + IMAGE_PADDING * (self.picturesView.subviews.count - 1);
+    x = ceil((cell.contentView.frame.size.width - picturesWidth) / 2);
+    CGFloat y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
+
+    self.picturesView.frame = CGRectMake(x, y, picturesWidth, CELL_IMAGES_SIZE);
+
+    [cell.contentView addSubview:self.picturesView];
     
     cell.accessoryType = UITableViewCellAccessoryNone;
     
