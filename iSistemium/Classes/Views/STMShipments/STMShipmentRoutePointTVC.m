@@ -35,6 +35,9 @@
 @property (nonatomic, strong) STMImagePickerController *imagePickerController;
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
+@property (nonatomic ,strong) STMSpinnerView *spinner;
+
+
 @end
 
 
@@ -144,7 +147,7 @@
 
 - (void)addPhotoButtonPressed {
 
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
     
 }
 
@@ -169,10 +172,39 @@
     
     if (!_imagePickerController) {
         
-        _imagePickerController = [STMImagePickerController pickerControllerWithCameraOverlayView:self.cameraOverlayView
-                                                                                        delegate:self
-                                                                                      sourceType:self.selectedSourceType];
+//        _imagePickerController = [STMImagePickerController pickerControllerWithCameraOverlayView:self.cameraOverlayView
+//                                                                                        delegate:self
+//                                                                                      sourceType:self.selectedSourceType];
 
+        STMImagePickerController *imagePickerController = [[STMImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        
+        imagePickerController.sourceType = self.selectedSourceType;
+        
+        if (imagePickerController.sourceType == UIImagePickerControllerSourceTypeCamera) {
+            
+            imagePickerController.showsCameraControls = NO;
+            
+            [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil];
+            self.cameraOverlayView.backgroundColor = [UIColor clearColor];
+            self.cameraOverlayView.autoresizesSubviews = YES;
+            self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+            
+            if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+                
+                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
+                CGRect originalFrame = [[UIScreen mainScreen] bounds];
+                CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
+                self.cameraOverlayView.frame = screenFrame;
+                
+            }
+            
+            imagePickerController.cameraOverlayView = self.cameraOverlayView;
+            
+        }
+        
+        _imagePickerController = imagePickerController;
+        
     }
     return _imagePickerController;
     
@@ -196,12 +228,18 @@
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
     
     [[self document] saveDocument:^(BOOL success) {
+        
         if (success) {
+        
+            [self.spinner removeFromSuperview];
             [self.tableView reloadData];
+            
         }
+        
     }];
     
 }
+
 
 #pragma mark - UIImagePickerControllerDelegate
 
@@ -227,6 +265,37 @@
     
 //    [self.spinnerView removeFromSuperview];
     self.imagePickerController = nil;
+    
+}
+
+
+#pragma mark - camera buttons
+
+- (IBAction)cameraButtonPressed:(id)sender {
+    
+    //    NSLog(@"cameraButtonPressed");
+    
+    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
+    [self.view addSubview:self.spinner];
+
+    [self.imagePickerController.cameraOverlayView addSubview:[STMSpinnerView spinnerViewWithFrame:self.imagePickerController.cameraOverlayView.bounds]];
+
+    [self.imagePickerController takePicture];
+    
+}
+
+- (IBAction)cancelButtonPressed:(id)sender {
+    
+    //    NSLog(@"cancelButtonPressed");
+    
+    [self imagePickerControllerDidCancel:self.imagePickerController];
+    
+}
+
+- (IBAction)photoLibraryButtonPressed:(id)sender {
+    
+    [self cancelButtonPressed:sender];
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     
 }
 
@@ -409,6 +478,8 @@
     cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
     cell.detailTextLabel.text = @"";
 
+    cell.accessoryType = UITableViewCellAccessoryNone;
+
 }
 
 - (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
@@ -416,6 +487,8 @@
     cell.textLabel.text = point.name;
     cell.textLabel.numberOfLines = 0;
     cell.detailTextLabel.text = @"";
+
+    cell.accessoryType = UITableViewCellAccessoryNone;
 
 }
 
@@ -468,7 +541,9 @@
         }
         
     }
-    
+
+    cell.accessoryType = UITableViewCellAccessoryNone;
+
 }
 
 - (void)fillCell:(UITableViewCell *)cell withPhotos:(NSSet *)photos {
@@ -536,6 +611,8 @@
         
     }
     
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
 }
 
 - (void)fillCell:(UITableViewCell *)cell withShipment:(STMShipment *)shipment {
@@ -578,6 +655,7 @@
         
         switch (indexPath.row) {
             case 0:
+                
                 if (self.point.shippingLocation) {
                     
                     [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
