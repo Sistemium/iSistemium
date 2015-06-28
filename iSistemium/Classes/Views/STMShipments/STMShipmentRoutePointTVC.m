@@ -15,6 +15,9 @@
 #import "STMShipmentTVC.h"
 #import "STMLocationMapVC.h"
 
+#define CELL_IMAGES_SIZE 30
+#define THUMB_SIZE CGSizeMake(CELL_IMAGES_SIZE, CELL_IMAGES_SIZE)
+
 
 @interface STMShipmentRoutePointTVC ()
 
@@ -60,6 +63,9 @@
     return @"shippingLocationCell";
 }
 
+
+#pragma mark - resultsController
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -101,6 +107,35 @@
 }
 
 
+#pragma mark - photos
+
+- (UIView *)blankPicture {
+    
+    UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Picture-32"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.tintColor = [UIColor lightGrayColor];
+    
+    return imageView;
+    
+}
+
+- (UIView *)addPhotoButton {
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[STMFunctions resizeImage:[UIImage imageNamed:@"plus"] toSize:THUMB_SIZE]];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addPhotoButtonPressed)];
+    imageView.gestureRecognizers = @[tap];
+    imageView.userInteractionEnabled = YES;
+    
+    return imageView;
+    
+}
+
+- (void)addPhotoButtonPressed {
+    
+}
+
+
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -115,7 +150,7 @@
             break;
             
         case 1:
-            return 1;
+            return (self.point.shippingLocation) ? 2 : 1;
             break;
             
         case 2:
@@ -243,8 +278,20 @@
             break;
             
         case 1:
-            cell = [tableView dequeueReusableCellWithIdentifier:self.shippingLocationCellIdentifier forIndexPath:indexPath];
-            [self fillCell:cell withShippingLocation:self.point.shippingLocation];
+            switch (indexPath.row) {
+                case 0:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.shippingLocationCellIdentifier forIndexPath:indexPath];
+                    [self fillCell:cell withShippingLocation:self.point.shippingLocation];
+                    break;
+                    
+                case 1:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+                    [self fillCell:cell withPhotos:self.point.shippingLocation.shippingLocationPictures];
+                    break;
+                    
+                default:
+                    break;
+            }
             break;
 
         case 2:
@@ -329,6 +376,31 @@
     
 }
 
+- (void)fillCell:(UITableViewCell *)cell withPhotos:(NSSet *)photos {
+    
+    cell.textLabel.text = @"";
+    cell.detailTextLabel.text = @"";
+    [[cell.contentView viewWithTag:555] removeFromSuperview];
+    [[cell.contentView viewWithTag:666] removeFromSuperview];
+
+    UIView *blankPicture = [self blankPicture];
+    UIView *addPhotoButton = [self addPhotoButton];
+    
+    CGFloat x = ceil((cell.contentView.frame.size.width - CELL_IMAGES_SIZE) / 2);
+    CGFloat y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
+    CGFloat padding = 6;
+
+    blankPicture.frame = CGRectMake(x - padding - CELL_IMAGES_SIZE, y, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+    blankPicture.tag = 666;
+    
+    addPhotoButton.frame = CGRectMake(x, y, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+    addPhotoButton.tag = 555;
+    
+    [cell.contentView addSubview:blankPicture];
+    [cell.contentView addSubview:addPhotoButton];
+    
+}
+
 - (void)fillCell:(UITableViewCell *)cell withShipment:(STMShipment *)shipment {
     
     cell.textLabel.text = shipment.ndoc;
@@ -367,15 +439,23 @@
     
     if (indexPath.section == 1) {
         
-        if (self.point.shippingLocation) {
-            
-            [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
-            
-        } else if (!self.isWaitingLocation) {
-        
-            self.isWaitingLocation = YES;
-            [self.session.locationTracker getLocation];
+        switch (indexPath.row) {
+            case 0:
+                if (self.point.shippingLocation) {
+                    
+                    [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
+                    
+                } else if (!self.isWaitingLocation) {
+                    
+                    self.isWaitingLocation = YES;
+                    [self.session.locationTracker getLocation];
+                    
+                }
 
+                break;
+                
+            default:
+                break;
         }
         
     }

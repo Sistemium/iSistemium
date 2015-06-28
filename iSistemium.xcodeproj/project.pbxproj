@@ -41,6 +41,7 @@
 		2C1D72EA1AB9D48400C97599 /* STMLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1D72E91AB9D48400C97599 /* STMLabel.m */; };
 		2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */; };
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
+		2C2957991B400FD600A2D163 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2957981B400FD600A2D163 /* plus.png */; };
 		2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */; };
 		2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2968DC199F8F220038B122 /* STMCashing+dayAsString.m */; };
 		2C2968EE19A0BFD10038B122 /* STMUncashing.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */; };
@@ -342,6 +343,7 @@
 		2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReport.m; sourceTree = "<group>"; };
 		2C27B5AA196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMOutlet+photoReportsArePresent.h"; sourceTree = "<group>"; };
 		2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMOutlet+photoReportsArePresent.m"; sourceTree = "<group>"; };
+		2C2957981B400FD600A2D163 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
 		2C2968D1199B3AC30038B122 /* STMDebt+Cashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMDebt+Cashing.h"; sourceTree = "<group>"; };
 		2C2968D2199B3AC30038B122 /* STMDebt+Cashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMDebt+Cashing.m"; sourceTree = "<group>"; };
 		2C2968DB199F8F220038B122 /* STMCashing+dayAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMCashing+dayAsString.h"; sourceTree = "<group>"; };
@@ -1479,6 +1481,7 @@
 		2CD443EF195AD741004ADE58 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2C2957981B400FD600A2D163 /* plus.png */,
 				2C761BC41B01F2D0001DA33E /* Down4-25.png */,
 				2C761BC51B01F2D0001DA33E /* Up4-25.png */,
 				2C734B8119B4E6FD00EE33FA /* archive-128.png */,
@@ -1679,6 +1682,7 @@
 				2C734B7E19B4E5C400EE33FA /* STMLogs.storyboard in Resources */,
 				2C761BB91B00833F001DA33E /* Picture Filled-100.png in Resources */,
 				2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */,
+				2C2957991B400FD600A2D163 /* plus.png in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
 				2C2968F019A0C22F0038B122 /* banknotes-128.png in Resources */,
 				2C29690419B1B2B50038B122 /* STMMessages.storyboard in Resources */,
