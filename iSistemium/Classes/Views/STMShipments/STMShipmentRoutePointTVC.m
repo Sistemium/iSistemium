@@ -261,6 +261,10 @@
     
 }
 
+- (void)photoWasDeleted:(STMShippingLocationPicture *)photo {
+    [self.tableView reloadData];
+}
+
 
 #pragma mark - UIImagePickerControllerDelegate
 
