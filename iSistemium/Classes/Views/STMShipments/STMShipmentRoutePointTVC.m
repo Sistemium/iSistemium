@@ -123,7 +123,7 @@
 
 - (UIView *)blankPicture {
     
-    UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Picture-32"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Picture-100"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.tintColor = [UIColor lightGrayColor];
     
