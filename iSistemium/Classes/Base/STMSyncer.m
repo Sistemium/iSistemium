@@ -1438,7 +1438,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSString *key = [@"sendDate" stringByAppendingString:self.session.uid];
-    NSString *sendDateString = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:[NSDate date]];
+    NSString *sendDateString = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:[NSDate date]];
     
     [defaults setObject:sendDateString forKey:key];
     [defaults synchronize];
@@ -1451,7 +1451,7 @@
     
     NSString *key = [@"receiveDate" stringByAppendingString:self.session.uid];
 
-    NSString *receiveDateString = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:[NSDate date]];
+    NSString *receiveDateString = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:[NSDate date]];
     
     [defaults setObject:receiveDateString forKey:key];
     [defaults synchronize];

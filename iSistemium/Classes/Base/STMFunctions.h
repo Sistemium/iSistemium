@@ -34,6 +34,7 @@
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateNumbersFormatter;
 + (NSDateFormatter *)dateShortNoTimeFormatter;
++ (NSDateFormatter *)dateShortTimeShortFormatter;
 + (NSDateFormatter *)dateMediumNoTimeFormatter;
 + (NSDateFormatter *)dateLongNoTimeFormatter;
 + (NSDateFormatter *)dateMediumTimeMediumFormatter;

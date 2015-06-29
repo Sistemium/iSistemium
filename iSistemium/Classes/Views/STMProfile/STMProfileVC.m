@@ -642,7 +642,7 @@
     
     if (self.locationTracker.lastLocation) {
         
-        lastLocationTime = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
+        lastLocationTime = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
         lastLocationLabelText = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
         
     } else {
