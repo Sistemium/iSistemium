@@ -38,6 +38,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
 @property (weak, nonatomic) IBOutlet UIButton *nonloadedPicturesButton;
+@property (weak, nonatomic) IBOutlet UIImageView *uploadImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *downloadImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *lastLocationImageView;
 
 @property (weak, nonatomic) UIImageView *syncImageView;
 
@@ -48,6 +51,9 @@
 
 @property (nonatomic) BOOL downloadAlertWasShown;
 @property (nonatomic) BOOL newsReceiving;
+
+@property (nonatomic, strong) STMSpinnerView *spinner;
+
 
 @end
 
@@ -140,6 +146,8 @@
     
     STMSyncer *syncer = [self syncer];
     BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
+
+    [self.spinner removeFromSuperview];
     
     NSString *imageName;
     
@@ -148,16 +156,17 @@
             imageName = (hasObjectsToUpload) ? @"Upload To Cloud-100" : @"Download From Cloud-100";
             break;
         }
-        case STMSyncerSendData: {
-            imageName = @"Upload To Cloud-100";
-            break;
-        }
+        case STMSyncerSendData:
         case STMSyncerSendDataOnce: {
             imageName = @"Upload To Cloud-100";
+            self.spinner = [STMSpinnerView spinnerViewWithFrame:self.uploadImageView.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
+            [self.uploadImageView addSubview:self.spinner];
             break;
         }
         case STMSyncerReceiveData: {
             imageName = @"Download From Cloud-100";
+            self.spinner = [STMSpinnerView spinnerViewWithFrame:self.downloadImageView.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
+            [self.downloadImageView addSubview:self.spinner];
             break;
         }
         default: {
