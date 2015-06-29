@@ -31,7 +31,7 @@
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMSession *session;
 
-@property (nonatomic) BOOL isWaitingLocation;
+//@property (nonatomic) BOOL isWaitingLocation;
 
 @property (nonatomic, strong) UIView *cameraOverlayView;
 @property (nonatomic, strong) STMImagePickerController *imagePickerController;
@@ -543,29 +543,30 @@
         
         [[customCell viewWithTag:666] removeFromSuperview];
         
-        if (self.isWaitingLocation) {
-            
-            STMSpinnerView *spinner = [STMSpinnerView spinnerViewWithFrame:customCell.contentView.bounds];
-            spinner.tag = 666;
-            
-            [customCell.contentView addSubview:spinner];
-            
-        } else {
+//        if (self.isWaitingLocation) {
+//            
+//            STMSpinnerView *spinner = [STMSpinnerView spinnerViewWithFrame:customCell.contentView.bounds];
+//            spinner.tag = 666;
+//            
+//            [customCell.contentView addSubview:spinner];
+//            
+//        } else {
         
             if (!location) {
                 
                 customCell.titleLabel.text = NSLocalizedString(@"SET LOCATION", nil);
+                customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
                 
-                if (self.session.locationTracker.isAccuracySufficient) {
-                    
-                    customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-                    
-                } else {
-                    
-                    customCell.titleLabel.textColor = [UIColor lightGrayColor];
-                    customCell.detailLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
-                    
-                }
+//                if (self.session.locationTracker.isAccuracySufficient) {
+//                    
+//                    customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+//                    
+//                } else {
+//                    
+//                    customCell.titleLabel.textColor = [UIColor lightGrayColor];
+//                    customCell.detailLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+//                    
+//                }
                 
             } else {
                 
@@ -573,7 +574,7 @@
                 
             }
 
-        }
+//        }
         
     }
 
@@ -682,16 +683,16 @@
         switch (indexPath.row) {
             case 0:
                 
-                if (self.point.shippingLocation) {
-                    
+//                if (self.point.shippingLocation) {
+//                    
                     [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
                     
-                } else if (!self.isWaitingLocation) {
-                    
-                    self.isWaitingLocation = YES;
-                    [self.session.locationTracker getLocation];
-                    
-                }
+//                } else if (!self.isWaitingLocation) {
+//                    
+//                    self.isWaitingLocation = YES;
+//                    [self.session.locationTracker getLocation];
+//                    
+//                }
 
                 break;
                 
@@ -751,30 +752,30 @@
 
 - (void)currentAccuracyUpdated:(NSNotification *)notification {
     
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];
+//    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];
     
 }
 
 - (void)currentLocationWasUpdated:(NSNotification *)notification {
     
-    if (self.isWaitingLocation) {
-        
-        CLLocation *currentLocation = notification.userInfo[@"currentLocation"];
-        
-        STMShippingLocation *location = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMShippingLocation class]) inManagedObjectContext:self.document.managedObjectContext];
-        
-        location.latitude = @(currentLocation.coordinate.latitude);
-        location.longitude = @(currentLocation.coordinate.longitude);
-        
-        self.point.shippingLocation = location;
-        
-        [self.document saveDocument:^(BOOL success) {
-            [self.tableView reloadData];
-        }];
-        
-        self.isWaitingLocation = NO;
-        
-    }
+//    if (self.isWaitingLocation) {
+//        
+//        CLLocation *currentLocation = notification.userInfo[@"currentLocation"];
+//        
+//        STMShippingLocation *location = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMShippingLocation class]) inManagedObjectContext:self.document.managedObjectContext];
+//        
+//        location.latitude = @(currentLocation.coordinate.latitude);
+//        location.longitude = @(currentLocation.coordinate.longitude);
+//        
+//        self.point.shippingLocation = location;
+//        
+//        [self.document saveDocument:^(BOOL success) {
+//            [self.tableView reloadData];
+//        }];
+//        
+//        self.isWaitingLocation = NO;
+//        
+//    }
     
 }
 
