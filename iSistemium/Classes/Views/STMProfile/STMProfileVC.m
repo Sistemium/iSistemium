@@ -353,17 +353,20 @@
     key = [@"receiveDate" stringByAppendingString:[STMAuthController authController].userID];
     NSString *receiveDateString = [defaults objectForKey:key];
     
-    if (sendDateString) {
-        self.sendDateLabel.text = [NSLocalizedString(@"SEND DATE", nil) stringByAppendingString:sendDateString];
-    } else {
-        self.sendDateLabel.text = nil;
-    }
-    
-    if (receiveDateString) {
-        self.receiveDateLabel.text = [NSLocalizedString(@"RECEIVE DATE", nil) stringByAppendingString:receiveDateString];
-    } else {
-        self.receiveDateLabel.text = nil;
-    }
+    self.sendDateLabel.text = (sendDateString) ? sendDateString : nil;
+    self.receiveDateLabel.text = (receiveDateString) ? receiveDateString : nil;
+
+//    if (sendDateString) {
+//        self.sendDateLabel.text = [NSLocalizedString(@"SEND DATE", nil) stringByAppendingString:sendDateString];
+//    } else {
+//        self.sendDateLabel.text = nil;
+//    }
+//    
+//    if (receiveDateString) {
+//        self.receiveDateLabel.text = [NSLocalizedString(@"RECEIVE DATE", nil) stringByAppendingString:receiveDateString];
+//    } else {
+//        self.receiveDateLabel.text = nil;
+//    }
     
 }
 
@@ -643,7 +646,8 @@
     if (self.locationTracker.lastLocation) {
         
         lastLocationTime = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
-        lastLocationLabelText = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
+//        lastLocationLabelText = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
+        lastLocationLabelText = lastLocationTime;
         
     } else {
         
