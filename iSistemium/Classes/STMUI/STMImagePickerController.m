@@ -7,12 +7,21 @@
 //
 
 #import "STMImagePickerController.h"
+#import "STMConstants.h"
+
 
 @interface STMImagePickerController ()
 
 @end
 
+
 @implementation STMImagePickerController
+
+- (BOOL)shouldAutorotate {
+    
+    return (IPHONE && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) ? NO : [super shouldAutorotate];
+        
+}
 
 
 #pragma mark - orientation fix
