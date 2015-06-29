@@ -73,6 +73,9 @@
         if (userLocation) {
             
             [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
+            
+            MKCircle *accuracyCircle = [MKCircle circleWithCenterCoordinate:userLocation.coordinate radius:100];
+            [self.mapView addOverlay:accuracyCircle];
 
         } else {
             
@@ -107,6 +110,20 @@
     
 }
 
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
+    
+    if ([overlay isKindOfClass:[MKCircle class]]) {
+        
+        MKCircleRenderer *circleView = [[MKCircleRenderer alloc] initWithOverlay:overlay];
+        circleView.fillColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1];
+        
+        return circleView;
+
+    } else {
+        return nil;
+    }
+    
+}
 
 #pragma mark - view lifecycle
 
