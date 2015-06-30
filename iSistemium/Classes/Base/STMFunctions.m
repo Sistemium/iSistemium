@@ -141,6 +141,7 @@
     NSDate *localDate = [NSDate date];
     
     NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
+    hourFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
     hourFormatter.dateFormat = @"HH";
     double hour = [[hourFormatter stringFromDate:localDate] doubleValue];
     
