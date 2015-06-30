@@ -73,7 +73,8 @@
                             @"deviceMotionUpdate",
                             @"enableDebtsEditing",
                             @"enablePartnersEditing",
-                            @"enableDownloadViaWWAN"];
+                            @"enableDownloadViaWWAN",
+                            @"getLocationsWithNegativeSpeed"];
     
     NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
     
@@ -159,7 +160,7 @@
         if ([availableValues containsObject:value.uppercaseString]) {
             return value.uppercaseString;
         } else {
-            return orValue;
+            return andValue;
         }
         
     }
