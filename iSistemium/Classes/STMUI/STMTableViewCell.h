@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+<<<<<<< HEAD
 #import "STMInsetLabel.h"
+=======
+#import "STMLabel.h"
+#import "STMCustomCells.h"
+
+>>>>>>> beta
 
 @interface STMTableViewCell : UITableViewCell
 

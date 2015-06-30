@@ -7,6 +7,10 @@
 //
 
 #import "STMEntityDescription.h"
+#import "STMSessionManager.h"
+
+#import <Crashlytics/Crashlytics.h>
+
 
 @implementation STMEntityDescription
 
@@ -19,6 +23,18 @@
 }
 
 + (STMEntityDescription *)entityForName:(NSString *)entityName inManagedObjectContext:(NSManagedObjectContext *)context {
+    
+    if (!context) {
+        
+        STMDocument *document = [[[STMSessionManager sharedManager] currentSession] document];
+        
+        CLS_LOG(@"entityForName method — context is nil");
+        CLS_LOG(@"document %@", document);
+        CLS_LOG(@"documentState %lu", (unsigned long)document.documentState);
+        CLS_LOG(@"managedObjectContext %@", document.managedObjectContext);
+        CLS_LOG(@"parentContext %@", document.managedObjectContext.parentContext);
+        
+    }
     
     NSString *eName = [NSString stringWithFormat:@"%@", entityName];
     

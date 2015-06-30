@@ -21,6 +21,7 @@
 
 #include "STMFetchedResultsControllerTVC.h"
 
+#include "STMCustomCells.h"
 #include "STMTableViewCell.h"
 #include "STMInfoTableViewCell.h"
 #include "STMCustom1TVCell.h"

@@ -25,6 +25,8 @@
 @property (nonatomic) CLLocationSpeed maxSpeedThreshold;
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
+@property (nonatomic, strong) NSString *timeDistanceLogic;
+@property (nonatomic, strong) NSTimer *timeFilterTimer;
 
 
 @end
@@ -32,7 +34,6 @@
 @implementation STMLocationTracker
 
 @synthesize lastLocation = _lastLocation;
-
 
 - (void)customInit {
     
@@ -64,59 +65,42 @@
 #pragma mark - locationTracker settings
 
 - (CLLocationAccuracy) desiredAccuracy {
-    if (!_desiredAccuracy) {
-        _desiredAccuracy = [[self.settings valueForKey:@"desiredAccuracy"] doubleValue];
-    }
-    return _desiredAccuracy;
+    return [self.settings[@"desiredAccuracy"] doubleValue];
 }
 
 - (double)requiredAccuracy {
-    if (!_requiredAccuracy) {
-        _requiredAccuracy = [[self.settings valueForKey:@"requiredAccuracy"] doubleValue];
-    }
-    return _requiredAccuracy;
+    return [self.settings[@"requiredAccuracy"] doubleValue];
 }
 
 - (CLLocationDistance)distanceFilter {
-    if (!_distanceFilter) {
-        _distanceFilter = [[self.settings valueForKey:@"distanceFilter"] doubleValue];
-    }
-    return _desiredAccuracy;
+    return [self.settings[@"distanceFilter"] doubleValue];
 }
 
 - (NSTimeInterval)timeFilter {
-    if (!_timeFilter) {
-        _timeFilter = [[self.settings valueForKey:@"timeFilter"] doubleValue];
-    }
-    return _timeFilter;
+    return [self.settings[@"timeFilter"] doubleValue];
 }
 
 - (NSTimeInterval)trackDetectionTime {
-    if (!_trackDetectionTime) {
-        _trackDetectionTime = [[self.settings valueForKey:@"trackDetectionTime"] doubleValue];
-    }
-    return _trackDetectionTime;
+    return [self.settings[@"trackDetectionTime"] doubleValue];
 }
 
 - (CLLocationDistance)trackSeparationDistance {
-    if (!_trackSeparationDistance) {
-        _trackSeparationDistance = [[self.settings valueForKey:@"trackSeparationDistance"] doubleValue];
-    }
-    return _trackSeparationDistance;
+    return [self.settings[@"trackSeparationDistance"] doubleValue];
 }
 
 - (CLLocationSpeed)maxSpeedThreshold {
-    if (!_maxSpeedThreshold) {
-        _maxSpeedThreshold = [[self.settings valueForKey:@"maxSpeedThreshold"] doubleValue];
-    }
-    return _maxSpeedThreshold;
+    return [self.settings[@"maxSpeedThreshold"] doubleValue];
 }
 
 - (BOOL)getLocationsWithNegativeSpeed {
-    if (!_getLocationsWithNegativeSpeed) {
-        _getLocationsWithNegativeSpeed = [[self.settings valueForKey:@"getLocationsWithNegativeSpeed"] boolValue];
+    return [self.settings[@"getLocationsWithNegativeSpeed"] boolValue];
+}
+
+- (NSString *)timeDistanceLogic {
+    if (!_timeDistanceLogic) {
+        _timeDistanceLogic = self.settings[@"timeDistanceLogic"];
     }
-    return _getLocationsWithNegativeSpeed;
+    return _timeDistanceLogic;
 }
 
 - (STMTrack *)currentTrack {
@@ -283,6 +267,7 @@
 
 - (void)stopTracking {
     
+    [self resetTimeFilterTimer];
     [[self locationManager] stopUpdatingLocation];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidPauseLocationUpdates" object:self];
     self.locationManager.delegate = nil;
@@ -347,44 +332,32 @@
             [self.session.logger saveLogMessageWithText:@"location w/negative speed recieved" type:@""];
             
         } else {
-            
-//            CLLocationDistance distance = [self.lastLocation distanceFromLocation:newLocation];
+
             NSTimeInterval time = [newLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp];
-//            CLLocationSpeed speed = 3.6 * distance / time; // km/h
-//            CLLocationSpeed speed = distance / time; // m/s
-//
-//            if (speed > self.maxSpeedThreshold) {
-//                
-//                self.lastLocation = newLocation;
-//                [self.session.logger saveLogMessageWithText:@"maxSpeedThreshold exceeded" type:@""];
-//                
-//            } else {
 
-                if (!self.lastLocation || time > self.timeFilter) {
+            if (!self.lastLocation || [self.timeDistanceLogic isEqualToString:@"OR"] || time > self.timeFilter) {
+                
+                if (self.tracking) {
                     
-                    if (self.tracking) {
-                        
-                        [self addLocation:newLocation];
-                        
-                    }
-                    
-                    if (self.singlePointMode) {
-                        
-                        if (!self.tracking) {
-                            [self stopTracking];
-                        }
-                        
-                        self.singlePointMode = NO;
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated"
-                                                                            object:self
-                                                                          userInfo:@{@"currentLocation":newLocation}];
-                        self.lastLocation = newLocation;
-
-                    }
+                    [self addLocation:newLocation];
                     
                 }
-//
-//            }
+                
+                if (self.singlePointMode) {
+                    
+                    if (!self.tracking) {
+                        [self stopTracking];
+                    }
+                    
+                    self.singlePointMode = NO;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated"
+                                                                        object:self
+                                                                      userInfo:@{@"currentLocation":newLocation}];
+                    self.lastLocation = newLocation;
+
+                }
+                
+            }
             
         }
             
@@ -420,35 +393,70 @@
     
 }
 
+
+#pragma mark - timeFilterTimer
+
+- (NSTimer *)timeFilterTimer {
+    
+    if (!_timeFilterTimer) {
+        
+        NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:self.timeFilter];
+//        NSLog(@"fireDate %@", fireDate);
+        
+        _timeFilterTimer = [[NSTimer alloc] initWithFireDate:fireDate
+                                                    interval:0
+                                                      target:self
+                                                    selector:@selector(timerTick)
+                                                    userInfo:nil
+                                                     repeats:NO];
+        
+//        NSLog(@"timer %@ fireDate %@", _timeFilterTimer, _timeFilterTimer.fireDate);
+        
+    }
+    
+    //    NSLog(@"_startTimer %@", _startTimer);
+    return _timeFilterTimer;
+    
+}
+
+- (void)startTimeFilterTimer {
+    [[NSRunLoop currentRunLoop] addTimer:self.timeFilterTimer forMode:NSRunLoopCommonModes];
+}
+
+- (void)timerTick {
+    [self duplicateLastLocation];
+}
+
+- (void)resetTimeFilterTimer {
+    
+    [[NSRunLoop currentRunLoop] performSelector:@selector(invalidate)
+                                         target:self.timeFilterTimer
+                                       argument:nil
+                                          order:0
+                                          modes:@[NSRunLoopCommonModes]];
+//    [self.timeFilterTimer invalidate];
+    self.timeFilterTimer = nil;
+    
+}
+
+
 #pragma mark - track management
 
 - (void)addLocation:(CLLocation *)currentLocation {
-    
-//    if (!self.currentTrack) {
-//        [self startNewTrack];
-//    }
-//    
-//    NSDate *timestamp = currentLocation.timestamp;
-//    
-//    if ([currentLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp] > self.trackDetectionTime && self.currentTrack.locations.count != 0) {
-//        
-//        [self startNewTrack];
-//        
-//    }
-//    
-//    //    NSLog(@"addLocation %@", [NSDate date]);
-//    
-//    if (self.currentTrack.locations.count == 0) {
-//        self.currentTrack.startTime = timestamp;
-//    }
-//    
-//    [self.currentTrack addLocationsObject:[self locationObjectFromCLLocation:currentLocation]];
-//    self.currentTrack.finishTime = timestamp;
+
+//    [self tracksManagementWithLocation:currentLocation];
+
+    if ([self.timeDistanceLogic isEqualToString:@"OR"]) {
+        
+        [self resetTimeFilterTimer];
+        [self startTimeFilterTimer];
+
+    }
     
     [self locationObjectFromCLLocation:currentLocation];
     
     self.lastLocation = currentLocation;
-    
+
     NSLog(@"location %@", self.lastLocation);
 
     [self.document saveDocument:^(BOOL success) {
@@ -459,6 +467,52 @@
         
     }];
     
+}
+
+- (void)duplicateLastLocation {
+    
+    if (self.lastLocation) {
+        
+        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(self.lastLocation.coordinate.latitude, self.lastLocation.coordinate.longitude);
+        CLLocation *location = [[CLLocation alloc] initWithCoordinate:coordinate
+                                                             altitude:self.lastLocation.altitude
+                                                   horizontalAccuracy:self.lastLocation.horizontalAccuracy
+                                                     verticalAccuracy:self.lastLocation.verticalAccuracy
+                                                               course:self.lastLocation.course
+                                                                speed:self.lastLocation.speed
+                                                            timestamp:[NSDate date]];
+
+        
+        NSLog(@"DUPLICATE LOCATION:");
+        [self addLocation:location];
+        
+    }
+    
+}
+
+- (void)tracksManagementWithLocation:(CLLocation *)currentLocation {
+    
+//    if (!self.currentTrack) {
+//        [self startNewTrack];
+//    }
+//
+//    NSDate *timestamp = currentLocation.timestamp;
+//
+//    if ([currentLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp] > self.trackDetectionTime && self.currentTrack.locations.count != 0) {
+//
+//        [self startNewTrack];
+//
+//    }
+//
+//    //    NSLog(@"addLocation %@", [NSDate date]);
+//
+//    if (self.currentTrack.locations.count == 0) {
+//        self.currentTrack.startTime = timestamp;
+//    }
+//
+//    [self.currentTrack addLocationsObject:[self locationObjectFromCLLocation:currentLocation]];
+//    self.currentTrack.finishTime = timestamp;
+
 }
 
 - (void)startNewTrack {

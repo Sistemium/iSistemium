@@ -8,7 +8,7 @@
 
 #import "STMTableViewCell.h"
 
-@interface STMCustom4TVCell : STMTableViewCell
+@interface STMCustom4TVCell : STMTableViewCell <STMTDICell, STMTDPCell>
 
 @property (weak, nonatomic) IBOutlet STMLabel *titleLabel;
 @property (weak, nonatomic) IBOutlet STMLabel *detailLabel;

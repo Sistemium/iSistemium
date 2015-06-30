@@ -7,8 +7,7 @@
 //
 
 #import "STMArticlePictureVC.h"
-
-#define IMAGE_PATH_KEY @"imagePath"
+#import "STMPicturesController.h"
 
 
 @interface STMArticlePictureVC ()
@@ -17,21 +16,12 @@
 @property (weak, nonatomic) IBOutlet UIImageView *pictureView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
-@property (nonatomic, strong) NSMutableArray *picturesUnderObserving;
+@property (nonatomic, strong) STMArticlePicture *picture;
 
 
 @end
 
 @implementation STMArticlePictureVC
-
-- (NSMutableArray *)picturesUnderObserving {
-    
-    if (!_picturesUnderObserving) {
-        _picturesUnderObserving = [NSMutableArray array];
-    }
-    return _picturesUnderObserving;
-    
-}
 
 
 - (void)closeButtonPressed {
@@ -48,11 +38,14 @@
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
         STMArticlePicture *picture = [self.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
+        self.picture = picture;
         
         if (picture.imagePath) {
             
             [[self.pictureView viewWithTag:555] removeFromSuperview];
             self.pictureView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
+            
+            [self removeObservers];
             
         } else {
             
@@ -71,8 +64,11 @@
             
             [self.pictureView addSubview:view];
             
-            [picture addObserver:self forKeyPath:IMAGE_PATH_KEY options:NSKeyValueObservingOptionNew context:nil];
-            [self.picturesUnderObserving addObject:picture];
+            [self addObservers];
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                [STMPicturesController downloadConnectionForObject:picture];
+            });
 
         }
         
@@ -82,23 +78,24 @@
 
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    
-    [self setupImage];
-    [self.picturesUnderObserving removeObject:object];
-    [object removeObserver:self forKeyPath:keyPath context:context];
-    
-}
-
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(setupImage)
+               name:@"downloadPicture"
+             object:self.picture];
+    
+}
+
 - (void)removeObservers {
     
-    for (NSManagedObject *object in self.picturesUnderObserving) {
-        [object removeObserver:self forKeyPath:IMAGE_PATH_KEY context:nil];
-    }
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+        
 }
 
 - (void)customInit {
@@ -125,7 +122,9 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-
+    
+    [self addObservers];
+    
     [super viewWillAppear:animated];
     
 }
