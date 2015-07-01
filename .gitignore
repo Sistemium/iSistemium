@@ -9,3 +9,5 @@ xcuserdata
 
 /Crashlytics.framework/*
 /Fabric.framework/*
+
+iSistemium/Classes/Base/STMDevDef.h
