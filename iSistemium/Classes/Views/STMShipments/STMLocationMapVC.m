@@ -16,6 +16,8 @@
 @interface STMLocationMapVC () <MKMapViewDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
+@property (weak, nonatomic) IBOutlet UIButton *locationButton;
+
 @property (nonatomic, weak) STMSession *session;
 @property (nonatomic, strong) MKCircle *accuracyCircle;
 
@@ -114,6 +116,35 @@
 
 }
 
+- (void)setupLocationButton {
+    
+    self.locationButton.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
+    self.locationButton.layer.cornerRadius = 5;
+    self.locationButton.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    self.locationButton.layer.borderWidth = 1;
+    
+    NSString *title = (self.location) ? NSLocalizedString(@"RESET LOCATION", nil) : NSLocalizedString(@"SET LOCATION", nil);
+    
+    if (!self.session.locationTracker.isAccuracySufficient) {
+        
+        title = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+        self.locationButton.enabled = NO;
+        
+    } else {
+        
+        self.locationButton.enabled = YES;
+        
+    }
+    
+    [self.locationButton setTitle:title forState:UIControlStateNormal];
+    
+}
+
+- (void)updateLocationButton {
+    
+}
+
+
 #pragma mark - MKMapViewDelegate
 
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
@@ -128,6 +159,8 @@
         [self drawAccuracyCircle];
         
     }
+    
+    [self updateLocationButton];
     
 }
 
@@ -146,10 +179,12 @@
     
 }
 
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    [self setupLocationButton];
     self.mapView.delegate = self;
     self.mapView.showsUserLocation = YES;
     [self centeringMap];
