@@ -1405,7 +1405,7 @@
             
             BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
             
-            if (self.syncerState == STMSyncerSendData && !onlyStcEntitiesWasSend) {
+            if (self.syncerState == STMSyncerSendData && (!onlyStcEntitiesWasSend || !self.fullSyncWasDone)) {
                 self.syncerState = STMSyncerReceiveData;
             } else /*if (self.syncerState == STMSyncerSendDataOnce)*/ {
                 self.syncerState = STMSyncerIdle;
