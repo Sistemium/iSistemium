@@ -618,6 +618,7 @@
 		2C7678351B4193E10085C514 /* STMMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMapAnnotation.m; sourceTree = "<group>"; };
 		2C7678381B419CB40085C514 /* STMMapCircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMapCircle.h; sourceTree = "<group>"; };
 		2C7678391B419CB40085C514 /* STMMapCircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMapCircle.m; sourceTree = "<group>"; };
+		2C76783C1B43C1D90085C514 /* STMDevDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDevDef.h; sourceTree = "<group>"; };
 		2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom2TVCell.xib; sourceTree = "<group>"; };
 		2C7E7DA51ABCA94700A26185 /* STMCustom2TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom2TVCell.h; sourceTree = "<group>"; };
 		2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom2TVCell.m; sourceTree = "<group>"; };
@@ -839,6 +840,7 @@
 		2C0A9E1B1A78F32A00C892EA /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				2C76783C1B43C1D90085C514 /* STMDevDef.h */,
 				2C80C829198FB03C0044ADE4 /* STMConstants.h */,
 				2CFDD88C1A308B4C003515C5 /* STMSingleton.h */,
 				2CFDD88D1A308B4C003515C5 /* STMSingleton.m */,
@@ -2130,6 +2132,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
