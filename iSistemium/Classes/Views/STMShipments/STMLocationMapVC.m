@@ -23,6 +23,9 @@
 
 @property (nonatomic) BOOL mapWasCentered;
 
+@property (nonatomic) CGFloat permanentLocationRequiredAccuracy;
+@property (nonatomic) CGFloat currentAccuracy;
+@property (nonatomic) BOOL isAccuracySufficient;
 
 @end
 
@@ -36,6 +39,33 @@
     }
     return _session;
     
+}
+
+- (CGFloat)permanentLocationRequiredAccuracy {
+    
+    if (!_permanentLocationRequiredAccuracy) {
+        
+        NSDictionary *settings = [self.session.settingsController currentSettingsForGroup:@"location"];
+        _permanentLocationRequiredAccuracy = [settings[@"permanentLocationRequiredAccuracy"] doubleValue];
+        
+    }
+    return _permanentLocationRequiredAccuracy;
+    
+}
+
+- (void)setCurrentAccuracy:(CGFloat)currentAccuracy {
+    
+    if (_currentAccuracy != currentAccuracy) {
+        
+        _currentAccuracy = currentAccuracy;
+        [self updateLocationButton];
+        
+    }
+    
+}
+
+- (BOOL)isAccuracySufficient {
+    return (self.currentAccuracy != 0) ? (self.currentAccuracy <= self.permanentLocationRequiredAccuracy) : NO;
 }
 
 - (void)centeringMap {
@@ -78,7 +108,7 @@
         if (userLocation) {
             
             [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
-            [self drawAccuracyCircle];
+//            [self drawAccuracyCircle];
 
         } else {
             
@@ -103,18 +133,18 @@
     
 }
 
-- (void)drawAccuracyCircle {
-    
+//- (void)drawAccuracyCircle {
+//
 // MKMapView draw accuracy circle around user location at least if MKUserTrackingModeFollow in on, other modes was not checked
-    
+//    
 //    [self.mapView removeOverlay:self.accuracyCircle];
 //    
 //    CLLocation *userLocation = self.mapView.userLocation.location;
 //    self.accuracyCircle = [MKCircle circleWithCenterCoordinate:userLocation.coordinate radius:userLocation.horizontalAccuracy];
 //    
 //    [self.mapView addOverlay:self.accuracyCircle];
-
-}
+//
+//}
 
 - (void)setupLocationButton {
     
@@ -123,9 +153,15 @@
     self.locationButton.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     self.locationButton.layer.borderWidth = 1;
     
+    [self updateLocationButton];
+    
+}
+
+- (void)updateLocationButton {
+    
     NSString *title = (self.location) ? NSLocalizedString(@"RESET LOCATION", nil) : NSLocalizedString(@"SET LOCATION", nil);
     
-    if (!self.session.locationTracker.isAccuracySufficient) {
+    if (!self.isAccuracySufficient) {
         
         title = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
         self.locationButton.enabled = NO;
@@ -137,11 +173,7 @@
     }
     
     [self.locationButton setTitle:title forState:UIControlStateNormal];
-    
-}
 
-- (void)updateLocationButton {
-    
 }
 
 
@@ -156,7 +188,8 @@
 
     } else {
         
-        [self drawAccuracyCircle];
+//        [self drawAccuracyCircle];
+        self.currentAccuracy = userLocation.location.horizontalAccuracy;
         
     }
     

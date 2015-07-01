@@ -69,6 +69,10 @@
                                       @"http.timeout.background",
                                       @"objectsLifeTime"];
     
+    NSArray *zeroPositiveValues = @[@"timeFilter",
+                                    @"requiredAccuracy",
+                                    @"permanentLocationRequiredAccuracy"];
+    
     NSArray *boolValues = @[@"localAccessToSettings",
                             @"deviceMotionUpdate",
                             @"enableDebtsEditing",
@@ -125,7 +129,7 @@
             return [NSString stringWithFormat:@"%f", dValue];
         }
         
-    } else if ([key isEqualToString:@"timeFilter"] || [key isEqualToString:@"requiredAccuracy"]) {
+    } else if ([zeroPositiveValues containsObject:key]) {
         double dValue = [value doubleValue];
         if (dValue >= 0) {
             return [NSString stringWithFormat:@"%f", dValue];
