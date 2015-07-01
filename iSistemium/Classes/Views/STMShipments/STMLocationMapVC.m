@@ -17,6 +17,9 @@
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic, weak) STMSession *session;
+@property (nonatomic, strong) MKCircle *accuracyCircle;
+
+@property (nonatomic) BOOL mapWasCentered;
 
 
 @end
@@ -73,9 +76,7 @@
         if (userLocation) {
             
             [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
-            
-            MKCircle *accuracyCircle = [MKCircle circleWithCenterCoordinate:userLocation.coordinate radius:100];
-            [self.mapView addOverlay:accuracyCircle];
+            [self drawAccuracyCircle];
 
         } else {
             
@@ -100,22 +101,42 @@
     
 }
 
+- (void)drawAccuracyCircle {
+    
+// MKMapView draw accuracy circle around user location at least if MKUserTrackingModeFollow in on, other modes was not checked
+    
+//    [self.mapView removeOverlay:self.accuracyCircle];
+//    
+//    CLLocation *userLocation = self.mapView.userLocation.location;
+//    self.accuracyCircle = [MKCircle circleWithCenterCoordinate:userLocation.coordinate radius:userLocation.horizontalAccuracy];
+//    
+//    [self.mapView addOverlay:self.accuracyCircle];
+
+}
 
 #pragma mark - MKMapViewDelegate
 
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
     
-    [self centeringMap];
-    self.mapView.delegate = nil;
+    if (!self.mapWasCentered) {
+        
+        [self centeringMap];
+        self.mapWasCentered = YES;
+
+    } else {
+        
+        [self drawAccuracyCircle];
+        
+    }
     
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
     
-    if ([overlay isKindOfClass:[MKCircle class]]) {
+    if (overlay == self.accuracyCircle) {
         
-        MKCircleRenderer *circleView = [[MKCircleRenderer alloc] initWithOverlay:overlay];
-        circleView.fillColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1];
+        MKCircleRenderer *circleView = [[MKCircleRenderer alloc] initWithOverlay:self.accuracyCircle];
+        circleView.fillColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.1];
         
         return circleView;
 
