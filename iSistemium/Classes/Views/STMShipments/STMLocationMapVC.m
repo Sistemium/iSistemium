@@ -11,6 +11,8 @@
 #import "STMSessionManager.h"
 #import "STMSession.h"
 #import "STMMapAnnotation.h"
+#import "STMUI.h"
+
 
 typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     STMShippingLocationHaveLocation,
@@ -19,24 +21,27 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     STMShippingLocationSet
 };
 
+
 @interface STMLocationMapVC () <MKMapViewDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *locationButton;
 
 @property (nonatomic, weak) STMSession *session;
-@property (nonatomic, strong) MKCircle *accuracyCircle;
-
-@property (nonatomic) BOOL mapWasCentered;
-
-@property (nonatomic) CGFloat permanentLocationRequiredAccuracy;
-@property (nonatomic) CGFloat currentAccuracy;
-@property (nonatomic) BOOL isAccuracySufficient;
 
 @property (nonatomic) STMShippingLocationState state;
 
 @property (nonatomic, strong) STMMapAnnotation *locationPin;
 @property (nonatomic, strong) STMMapAnnotation *confirmingPin;
+@property (nonatomic, strong) MKCircle *accuracyCircle;
+
+@property (nonatomic) BOOL mapWasCentered;
+@property (nonatomic) BOOL isAccuracySufficient;
+
+@property (nonatomic) CGFloat permanentLocationRequiredAccuracy;
+@property (nonatomic) CGFloat currentAccuracy;
+
+@property (nonatomic, strong) STMSpinnerView *spinner;
 
 @end
 
@@ -238,6 +243,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
     NSString *title = nil;
 
+    [self.spinner removeFromSuperview];
     self.locationButton.enabled = YES;
         
     switch (self.state) {
@@ -306,6 +312,9 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 - (void)setShippingLocation {
+    
+    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.locationButton.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
+    [self.locationButton addSubview:self.spinner];
     
 }
 
@@ -381,7 +390,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
                 break;
             }
         }
-                
+        
         return annotationView;
 
     } else {
