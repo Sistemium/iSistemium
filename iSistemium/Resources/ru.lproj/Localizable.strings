@@ -255,6 +255,7 @@
 "1NEED CASHING" = "инкассация";
 "2NEED CASHING" = "инкассации";
 "5NEED CASHING" = "инкассаций";
-"RESET LOCATION" = "Уточнить местоположение";
+"RESET LOCATION" = "Уточнить геометку";
+"CONFIRM SET LOCATION" = "Подтвердить";
 
 

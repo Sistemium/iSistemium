@@ -12,6 +12,12 @@
 #import "STMSession.h"
 #import "STMMapAnnotation.h"
 
+typedef NS_ENUM(NSInteger, STMShippingLocationState) {
+    STMShippingLocationHaveLocation,
+    STMShippingLocationNoLocation,
+    STMShippingLocationConfirm,
+    STMShippingLocationSet
+};
 
 @interface STMLocationMapVC () <MKMapViewDelegate>
 
@@ -27,10 +33,15 @@
 @property (nonatomic) CGFloat currentAccuracy;
 @property (nonatomic) BOOL isAccuracySufficient;
 
+@property (nonatomic) STMShippingLocationState state;
+
+
 @end
 
 
 @implementation STMLocationMapVC
+
+#pragma mark - setters & getters
 
 - (STMSession *)session {
     
@@ -67,6 +78,17 @@
 - (BOOL)isAccuracySufficient {
     return (self.currentAccuracy != 0) ? (self.currentAccuracy <= self.permanentLocationRequiredAccuracy) : NO;
 }
+
+- (void)setState:(STMShippingLocationState)state {
+    
+    _state = (state != _state) ? state : _state;
+
+    [self updateLocationButton];
+    
+}
+
+
+#pragma mark - instance's methods
 
 - (void)centeringMap {
 
@@ -159,7 +181,7 @@
 
 - (void)updateLocationButton {
     
-    NSString *title = (self.location) ? NSLocalizedString(@"RESET LOCATION", nil) : NSLocalizedString(@"SET LOCATION", nil);
+    NSString *title = nil;
     
     if (!self.isAccuracySufficient) {
         
@@ -170,12 +192,63 @@
         
         self.locationButton.enabled = YES;
         
+        switch (self.state) {
+            case STMShippingLocationHaveLocation: {
+                title = NSLocalizedString(@"RESET LOCATION", nil);
+                break;
+            }
+            case STMShippingLocationNoLocation: {
+                title = NSLocalizedString(@"SET LOCATION", nil);
+                break;
+            }
+            case STMShippingLocationConfirm: {
+                title = NSLocalizedString(@"CONFIRM SET LOCATION", nil);
+                break;
+            }
+            case STMShippingLocationSet: {
+                [self setShippingLocation];
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        
     }
     
     [self.locationButton setTitle:title forState:UIControlStateNormal];
 
 }
 
+- (IBAction)locationButtonPressed:(id)sender {
+    
+    switch (self.state) {
+        case STMShippingLocationHaveLocation: {
+            self.state = STMShippingLocationNoLocation;
+            break;
+        }
+        case STMShippingLocationNoLocation: {
+            self.state = STMShippingLocationConfirm;
+            break;
+        }
+        case STMShippingLocationConfirm: {
+            self.state = STMShippingLocationSet;
+            break;
+        }
+        case STMShippingLocationSet: {
+            
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
+}
+
+- (void)setShippingLocation {
+    
+}
 
 #pragma mark - MKMapViewDelegate
 
@@ -215,8 +288,15 @@
 
 #pragma mark - view lifecycle
 
+- (void)initState {
+    
+    self.state = (self.location) ? STMShippingLocationHaveLocation : STMShippingLocationNoLocation;
+    
+}
+
 - (void)customInit {
     
+    [self initState];
     [self setupLocationButton];
     self.mapView.delegate = self;
     self.mapView.showsUserLocation = YES;
