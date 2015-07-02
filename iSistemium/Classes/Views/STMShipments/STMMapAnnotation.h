@@ -15,6 +15,7 @@
 @interface STMMapAnnotation : NSObject <MKAnnotation>
 
 + (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location;
++ (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation;
 
 
 @end

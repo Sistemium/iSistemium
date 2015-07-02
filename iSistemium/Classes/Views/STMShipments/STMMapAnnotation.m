@@ -7,11 +7,12 @@
 //
 
 #import "STMMapAnnotation.h"
+#import "STMLocationController.h"
 
 @interface STMMapAnnotation()
 
 @property (nonatomic, strong) STMLocation *location;
-
+@property (nonatomic, strong) CLLocation *clLocation;
 
 @end
 
@@ -23,6 +24,15 @@
     STMMapAnnotation *annotation = [[STMMapAnnotation alloc] init];
     annotation.location = location;
 
+    return annotation;
+    
+}
+
++ (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation {
+    
+    STMMapAnnotation *annotation = [[STMMapAnnotation alloc] init];
+    annotation.clLocation = clLocation;
+    
     return annotation;
     
 }
@@ -53,6 +63,8 @@
     
     if (self.location) {
         return CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
+    } else if (self.clLocation) {
+        return CLLocationCoordinate2DMake(self.clLocation.coordinate.latitude, self.clLocation.coordinate.longitude);
     }
     return coordinate;
     

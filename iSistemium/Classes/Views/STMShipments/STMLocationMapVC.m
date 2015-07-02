@@ -35,6 +35,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 @property (nonatomic) STMShippingLocationState state;
 
+@property (nonatomic, strong) STMMapAnnotation *locationPin;
+@property (nonatomic, strong) STMMapAnnotation *confirmingPin;
 
 @end
 
@@ -92,6 +94,9 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 #pragma mark - instance's methods
 
 - (void)centeringMap {
+    
+    [self.mapView removeAnnotation:self.locationPin];
+    [self.mapView removeAnnotation:self.confirmingPin];
 
     switch (self.state) {
         case STMShippingLocationHaveLocation: {
@@ -127,7 +132,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)centeringMapOnSettedLocation {
     
-    [self.mapView addAnnotation:[STMMapAnnotation createAnnotationForLocation:self.location]];
+    self.locationPin = [STMMapAnnotation createAnnotationForLocation:self.location];
+    [self.mapView addAnnotation:self.locationPin];
     
     CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
     CLLocation *location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
@@ -189,6 +195,9 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 - (void)centeringMapOnConfirm {
+    
+    STMMapAnnotation *confirmingPin = [STMMapAnnotation createAnnotationForCLLocation:self.mapView.userLocation.location];
+    [self.mapView addAnnotation:confirmingPin];
     
     [self.mapView setUserTrackingMode:MKUserTrackingModeNone animated:NO];
 
