@@ -11,9 +11,9 @@
 #import "STMDataModel.h"
 
 
-@interface STMLocationMapVC : UIViewController
+@interface STMShippingLocationMapVC : UIViewController
 
-@property (nonatomic, strong) STMShippingLocation *shippingLocation;
+@property (nonatomic, strong) STMShipmentRoutePoint *point;
 
 
 @end

@@ -181,7 +181,7 @@
 		2C761BC61B01F2D0001DA33E /* Down4-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C761BC41B01F2D0001DA33E /* Down4-25.png */; };
 		2C761BC71B01F2D0001DA33E /* Up4-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C761BC51B01F2D0001DA33E /* Up4-25.png */; };
 		2C7678311B4125100085C514 /* location.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C7678301B4125100085C514 /* location.png */; };
-		2C7678361B4193E10085C514 /* STMLocationMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7678331B4193E10085C514 /* STMLocationMapVC.m */; };
+		2C7678361B4193E10085C514 /* STMShippingLocationMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7678331B4193E10085C514 /* STMShippingLocationMapVC.m */; };
 		2C7678371B4193E10085C514 /* STMMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7678351B4193E10085C514 /* STMMapAnnotation.m */; };
 		2C76783A1B419CB40085C514 /* STMMapCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7678391B419CB40085C514 /* STMMapCircle.m */; };
 		2C7E7DA41ABCA77800A26185 /* STMCustom2TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */; };
@@ -620,8 +620,8 @@
 		2C761BC41B01F2D0001DA33E /* Down4-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Down4-25.png"; sourceTree = "<group>"; };
 		2C761BC51B01F2D0001DA33E /* Up4-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Up4-25.png"; sourceTree = "<group>"; };
 		2C7678301B4125100085C514 /* location.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = location.png; sourceTree = "<group>"; };
-		2C7678321B4193E10085C514 /* STMLocationMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMLocationMapVC.h; sourceTree = "<group>"; };
-		2C7678331B4193E10085C514 /* STMLocationMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMLocationMapVC.m; sourceTree = "<group>"; };
+		2C7678321B4193E10085C514 /* STMShippingLocationMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingLocationMapVC.h; sourceTree = "<group>"; };
+		2C7678331B4193E10085C514 /* STMShippingLocationMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationMapVC.m; sourceTree = "<group>"; };
 		2C7678341B4193E10085C514 /* STMMapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMapAnnotation.h; sourceTree = "<group>"; };
 		2C7678351B4193E10085C514 /* STMMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMapAnnotation.m; sourceTree = "<group>"; };
 		2C7678381B419CB40085C514 /* STMMapCircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMapCircle.h; sourceTree = "<group>"; };
@@ -1560,8 +1560,8 @@
 		2CEAC15F1B3BF94800AD068E /* STMShipments */ = {
 			isa = PBXGroup;
 			children = (
-				2C7678321B4193E10085C514 /* STMLocationMapVC.h */,
-				2C7678331B4193E10085C514 /* STMLocationMapVC.m */,
+				2C7678321B4193E10085C514 /* STMShippingLocationMapVC.h */,
+				2C7678331B4193E10085C514 /* STMShippingLocationMapVC.m */,
 				2C7678341B4193E10085C514 /* STMMapAnnotation.h */,
 				2C7678351B4193E10085C514 /* STMMapAnnotation.m */,
 				2C7678381B419CB40085C514 /* STMMapCircle.h */,
@@ -1933,7 +1933,7 @@
 				2C5764761AAC421E00B9FD2C /* STMSaleOrderController.m in Sources */,
 				2C5763C71AA4769200B9FD2C /* STMCatalogDetailTVC.m in Sources */,
 				2C140AB81A189772002C5C17 /* STMBarButtonItem.m in Sources */,
-				2C7678361B4193E10085C514 /* STMLocationMapVC.m in Sources */,
+				2C7678361B4193E10085C514 /* STMShippingLocationMapVC.m in Sources */,
 				2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */,
 				2CEAC1731B3EB4C300AD068E /* STMShipment.m in Sources */,
 				2C5763F81AA5E13600B9FD2C /* STMPhotoReportPVC.m in Sources */,

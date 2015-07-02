@@ -6,11 +6,17 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMLocationMapVC.h"
-#import "STMFunctions.h"
+#import "STMShippingLocationMapVC.h"
+
 #import "STMSessionManager.h"
 #import "STMSession.h"
+
+#import "STMObjectsController.h"
+#import "STMLocationController.h"
+
+#import "STMFunctions.h"
 #import "STMMapAnnotation.h"
+
 #import "STMUI.h"
 
 
@@ -22,11 +28,12 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 };
 
 
-@interface STMLocationMapVC () <MKMapViewDelegate>
+@interface STMShippingLocationMapVC () <MKMapViewDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *locationButton;
 
+@property (nonatomic, strong) STMShippingLocation *shippingLocation;
 @property (nonatomic, strong) STMLocation *location;
 
 @property (nonatomic, weak) STMSession *session;
@@ -35,6 +42,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 @property (nonatomic, strong) STMMapAnnotation *locationPin;
 @property (nonatomic, strong) STMMapAnnotation *confirmingPin;
+@property (nonatomic, strong) CLLocation *confirmingLocation;
 @property (nonatomic, strong) MKCircle *accuracyCircle;
 
 @property (nonatomic) BOOL mapWasCentered;
@@ -48,9 +56,13 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 @end
 
 
-@implementation STMLocationMapVC
+@implementation STMShippingLocationMapVC
 
 #pragma mark - setters & getters
+
+- (STMShippingLocation *)shippingLocation {
+    return self.point.shippingLocation;
+}
 
 - (STMLocation *)location {
     return self.shippingLocation.location;
@@ -207,8 +219,9 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)centeringMapOnConfirm {
     
-    STMMapAnnotation *confirmingPin = [STMMapAnnotation createAnnotationForCLLocation:self.mapView.userLocation.location];
-    [self.mapView addAnnotation:confirmingPin];
+    self.confirmingLocation = self.mapView.userLocation.location;
+    self.confirmingPin = [STMMapAnnotation createAnnotationForCLLocation:self.confirmingLocation];
+    [self.mapView addAnnotation:self.confirmingPin];
     
     [self.mapView setUserTrackingMode:MKUserTrackingModeNone animated:NO];
 
@@ -277,7 +290,6 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         }
             
         case STMShippingLocationSet: {
-            [self setShippingLocation];
             break;
         }
             
@@ -304,6 +316,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         }
         case STMShippingLocationConfirm: {
             self.state = STMShippingLocationSet;
+            [self setShippingLocation];
             break;
         }
         case STMShippingLocationSet: {
@@ -321,6 +334,21 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
     self.spinner = [STMSpinnerView spinnerViewWithFrame:self.locationButton.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
     [self.locationButton addSubview:self.spinner];
+    
+    if (!self.shippingLocation) {
+        
+        STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class])];
+        shippingLocation.isFantom = @NO;
+        self.point.shippingLocation = shippingLocation;
+        
+    }
+    
+    self.shippingLocation.location = [STMLocationController locationObjectFromCLLocation:self.confirmingLocation];
+    self.confirmingLocation = nil;
+    
+    [self.session.document saveDocument:^(BOOL success) {
+        self.state = STMShippingLocationHaveLocation;
+    }];
     
 }
 
@@ -418,11 +446,15 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)customInit {
     
-    [self initState];
-    [self setupLocationButton];
-    self.mapView.delegate = self;
-    self.mapView.showsUserLocation = YES;
-    [self centeringMap];
+    if (self.point) {
+        
+        [self initState];
+        [self setupLocationButton];
+        self.mapView.delegate = self;
+        self.mapView.showsUserLocation = YES;
+        [self centeringMap];
+
+    }
     
 }
 

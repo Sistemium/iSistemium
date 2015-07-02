@@ -14,7 +14,7 @@
 #import "STMPicturesController.h"
 
 #import "STMShipmentTVC.h"
-#import "STMLocationMapVC.h"
+#import "STMShippingLocationMapVC.h"
 #import "STMShippingLocationPicturesPVC.h"
 
 
@@ -728,9 +728,9 @@
         [(STMShipmentTVC *)segue.destinationViewController setPoint:self.point];
         
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
-               [segue.destinationViewController isKindOfClass:[STMLocationMapVC class]]) {
+               [segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
         
-        [(STMLocationMapVC *)segue.destinationViewController setShippingLocation:self.point.shippingLocation];
+        [(STMShippingLocationMapVC *)segue.destinationViewController setPoint:self.point];
         
     } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
                [sender isKindOfClass:[UIView class]] &&
