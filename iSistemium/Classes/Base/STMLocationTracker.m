@@ -11,6 +11,8 @@
 
 #import "STMClientDataController.h"
 #import "STMObjectsController.h"
+#import "STMLocationController.h"
+
 
 @interface STMLocationTracker() <CLLocationManagerDelegate>
 
@@ -142,7 +144,7 @@
         STMLocation *lastLocation = [result lastObject];
         if (lastLocation) {
             
-            _lastLocation = [self locationFromLocationObject:lastLocation];
+            _lastLocation = [STMLocationController locationFromLocationObject:lastLocation];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"lastLocationUpdated" object:self];
 
         }
@@ -453,7 +455,7 @@
 
     }
     
-    [self locationObjectFromCLLocation:currentLocation];
+    [STMLocationController locationObjectFromCLLocation:currentLocation];
     
     self.lastLocation = currentLocation;
 
@@ -549,12 +551,13 @@
     
     self.currentTrack.finishTime = self.lastLocation.timestamp;
     [self startNewTrack];
-    STMLocation *location = [self locationObjectFromCLLocation:self.lastLocation];
+    STMLocation *location = [STMLocationController locationObjectFromCLLocation:self.lastLocation];
     [self.currentTrack addLocationsObject:location];
-    self.lastLocation = [self locationFromLocationObject:location];
+    self.lastLocation = [STMLocationController locationFromLocationObject:location];
     
 }
 
+/*
 - (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location {
     
     STMLocation *locationObject = (STMLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLocation class])];
@@ -584,5 +587,7 @@
     return location;
     
 }
+*/
+
 
 @end

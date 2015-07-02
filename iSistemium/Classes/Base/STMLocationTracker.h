@@ -18,7 +18,7 @@
 @property (nonatomic, strong) STMTrack *currentTrack;
 
 - (void)getLocation;
-- (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location;
+//- (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location;
 - (NSString *)locationServiceStatus;
 
 @end

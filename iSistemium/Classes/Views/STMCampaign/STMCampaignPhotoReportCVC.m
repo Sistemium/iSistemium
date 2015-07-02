@@ -22,6 +22,8 @@
 #import "STMConstants.h"
 #import "STMEntityDescription.h"
 #import "STMImagePickerController.h"
+#import "STMLocationController.h"
+
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate, UISearchBarDelegate>
 
@@ -463,7 +465,7 @@
         CLLocation *currentLocation = (notification.userInfo)[@"currentLocation"];
         NSLog(@"currentLocation %@", currentLocation);
 
-        STMLocation *location = [self.locationTracker locationObjectFromCLLocation:currentLocation];
+        STMLocation *location = [STMLocationController locationObjectFromCLLocation:currentLocation];
 
         [self setLocationForWaitingLocationPhotos:location];
 
