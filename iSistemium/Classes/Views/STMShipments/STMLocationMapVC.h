@@ -13,7 +13,7 @@
 
 @interface STMLocationMapVC : UIViewController
 
-@property (nonatomic, strong) STMLocation *location;
+@property (nonatomic, strong) STMShippingLocation *shippingLocation;
 
 
 @end

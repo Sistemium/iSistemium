@@ -339,7 +339,7 @@
             break;
             
         case 1:
-            return (self.point.shippingLocation) ? 2 : 1;
+            return (self.point.shippingLocation.location) ? 2 : 1;
             break;
             
         case 2:
@@ -527,7 +527,7 @@
 
 }
 
-- (void)fillCell:(UITableViewCell *)cell withShippingLocation:(STMShippingLocation *)location {
+- (void)fillCell:(UITableViewCell *)cell withShippingLocation:(STMShippingLocation *)shippingLocation {
 
     if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
         
@@ -552,7 +552,7 @@
 //            
 //        } else {
         
-            if (!location) {
+            if (!shippingLocation.location) {
                 
                 customCell.titleLabel.text = NSLocalizedString(@"SET LOCATION", nil);
                 customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
@@ -730,7 +730,7 @@
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
                [segue.destinationViewController isKindOfClass:[STMLocationMapVC class]]) {
         
-        [(STMLocationMapVC *)segue.destinationViewController setLocation:self.point.shippingLocation];
+        [(STMLocationMapVC *)segue.destinationViewController setShippingLocation:self.point.shippingLocation];
         
     } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
                [sender isKindOfClass:[UIView class]] &&

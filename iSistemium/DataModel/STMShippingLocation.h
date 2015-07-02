@@ -2,34 +2,35 @@
 //  STMShippingLocation.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
+//  Created by Maxim Grigoriev on 02/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "STMLocation.h"
+#import "STMComment.h"
 
-@class STMShipmentRoutePoint, STMShippingLocationPicture;
+@class STMLocation, STMShipmentRoutePoint, STMShippingLocationPicture;
 
-@interface STMShippingLocation : STMLocation
+@interface STMShippingLocation : STMComment
 
-@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * address;
-@property (nonatomic, retain) NSSet *shippingLocationPictures;
+@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSSet *shipmentRoutePoints;
+@property (nonatomic, retain) NSSet *shippingLocationPictures;
+@property (nonatomic, retain) STMLocation *location;
 @end
 
 @interface STMShippingLocation (CoreDataGeneratedAccessors)
-
-- (void)addShippingLocationPicturesObject:(STMShippingLocationPicture *)value;
-- (void)removeShippingLocationPicturesObject:(STMShippingLocationPicture *)value;
-- (void)addShippingLocationPictures:(NSSet *)values;
-- (void)removeShippingLocationPictures:(NSSet *)values;
 
 - (void)addShipmentRoutePointsObject:(STMShipmentRoutePoint *)value;
 - (void)removeShipmentRoutePointsObject:(STMShipmentRoutePoint *)value;
 - (void)addShipmentRoutePoints:(NSSet *)values;
 - (void)removeShipmentRoutePoints:(NSSet *)values;
+
+- (void)addShippingLocationPicturesObject:(STMShippingLocationPicture *)value;
+- (void)removeShippingLocationPicturesObject:(STMShippingLocationPicture *)value;
+- (void)addShippingLocationPictures:(NSSet *)values;
+- (void)removeShippingLocationPictures:(NSSet *)values;
 
 @end

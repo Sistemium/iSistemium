@@ -27,6 +27,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *locationButton;
 
+@property (nonatomic, strong) STMLocation *location;
+
 @property (nonatomic, weak) STMSession *session;
 
 @property (nonatomic) STMShippingLocationState state;
@@ -49,6 +51,10 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 @implementation STMLocationMapVC
 
 #pragma mark - setters & getters
+
+- (STMLocation *)location {
+    return self.shippingLocation.location;
+}
 
 - (STMSession *)session {
     

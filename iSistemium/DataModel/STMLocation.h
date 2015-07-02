@@ -2,15 +2,15 @@
 //  STMLocation.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 30/07/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 02/07/15.
+//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMPhoto, STMTrack;
+@class STMPhoto, STMShippingLocation, STMTrack;
 
 @interface STMLocation : STMComment
 
@@ -22,8 +22,9 @@
 @property (nonatomic, retain) NSNumber * speed;
 @property (nonatomic, retain) NSDate * timestamp;
 @property (nonatomic, retain) NSNumber * verticalAccuracy;
-@property (nonatomic, retain) STMTrack *track;
 @property (nonatomic, retain) NSSet *photos;
+@property (nonatomic, retain) STMTrack *track;
+@property (nonatomic, retain) NSSet *shippings;
 @end
 
 @interface STMLocation (CoreDataGeneratedAccessors)
@@ -32,5 +33,10 @@
 - (void)removePhotosObject:(STMPhoto *)value;
 - (void)addPhotos:(NSSet *)values;
 - (void)removePhotos:(NSSet *)values;
+
+- (void)addShippingsObject:(STMShippingLocation *)value;
+- (void)removeShippingsObject:(STMShippingLocation *)value;
+- (void)addShippings:(NSSet *)values;
+- (void)removeShippings:(NSSet *)values;
 
 @end
