@@ -237,40 +237,44 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 - (void)updateLocationButton {
     
     NSString *title = nil;
-    
-    if (!self.isAccuracySufficient) {
+
+    self.locationButton.enabled = YES;
         
-        title = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
-        self.locationButton.enabled = NO;
-        
-    } else {
-        
-        self.locationButton.enabled = YES;
-        
-        switch (self.state) {
-            case STMShippingLocationHaveLocation: {
-                title = NSLocalizedString(@"RESET LOCATION", nil);
-                break;
-            }
-            case STMShippingLocationNoLocation: {
-                title = NSLocalizedString(@"SET LOCATION", nil);
-                break;
-            }
-            case STMShippingLocationConfirm: {
-                title = NSLocalizedString(@"CONFIRM SET LOCATION", nil);
-                break;
-            }
-            case STMShippingLocationSet: {
-                [self setShippingLocation];
-                break;
-            }
-            default: {
-                break;
-            }
+    switch (self.state) {
+            
+        case STMShippingLocationHaveLocation: {
+            title = NSLocalizedString(@"RESET LOCATION", nil);
+            break;
         }
-        
+            
+        case STMShippingLocationNoLocation: {
+            title = NSLocalizedString(@"SET LOCATION", nil);
+            
+            if (!self.isAccuracySufficient) {
+
+                title = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+                self.locationButton.enabled = NO;
+
+            }
+            break;
+        }
+            
+        case STMShippingLocationConfirm: {
+            title = NSLocalizedString(@"CONFIRM SET LOCATION", nil);
+            break;
+        }
+            
+        case STMShippingLocationSet: {
+            [self setShippingLocation];
+            break;
+        }
+            
+        default: {
+            break;
+        }
+            
     }
-    
+        
     [self.locationButton setTitle:title forState:UIControlStateNormal];
 
 }
@@ -336,6 +340,54 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
     } else {
         return nil;
+    }
+    
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+    
+    if ([annotation isKindOfClass:[STMMapAnnotation class]]) {
+        
+        static NSString *identifier = @"STMMapAnnotation";
+        MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+        
+        STMMapAnnotation *myAnnotation = (STMMapAnnotation *)annotation;
+        
+        if (annotationView == nil) {
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:myAnnotation reuseIdentifier:identifier];
+        } else {
+            annotationView.annotation = annotation;
+        }
+        
+        switch (self.state) {
+            case STMShippingLocationHaveLocation: {
+                annotationView.pinColor = MKPinAnnotationColorRed;
+                break;
+            }
+            case STMShippingLocationNoLocation: {
+                
+                break;
+            }
+            case STMShippingLocationConfirm: {
+                annotationView.pinColor = MKPinAnnotationColorPurple;
+                break;
+            }
+            case STMShippingLocationSet: {
+                
+                break;
+            }
+            default: {
+                annotationView.pinColor = MKPinAnnotationColorGreen;
+                break;
+            }
+        }
+                
+        return annotationView;
+
+    } else {
+
+        return nil;
+
     }
     
 }
