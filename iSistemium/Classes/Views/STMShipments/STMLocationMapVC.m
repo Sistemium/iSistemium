@@ -84,6 +84,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     _state = (state != _state) ? state : _state;
 
     [self updateLocationButton];
+    [self centeringMap];
     
 }
 
@@ -92,67 +93,112 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)centeringMap {
 
+    switch (self.state) {
+        case STMShippingLocationHaveLocation: {
+            [self centeringMapOnSettedLocation];
+            break;
+        }
+        case STMShippingLocationNoLocation: {
+            [self centeringMapOnUserLocation];
+            break;
+        }
+        case STMShippingLocationConfirm: {
+            [self centeringMapOnConfirm];
+            break;
+        }
+        case STMShippingLocationSet: {
+            
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
     if (self.location) {
+
         
-        [self.mapView addAnnotation:[STMMapAnnotation createAnnotationForLocation:self.location]];
+    } else {
+
         
-        CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
-        CLLocation *location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+    }
+    
+}
+
+- (void)centeringMapOnSettedLocation {
+    
+    [self.mapView addAnnotation:[STMMapAnnotation createAnnotationForLocation:self.location]];
+    
+    CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+    
+    CLLocationDistance distance = 10000;
+    
+    CLLocation *userLocation = self.mapView.userLocation.location;
+    
+    if (userLocation) {
         
-        CLLocationDistance distance = 10000;
+        distance = [location distanceFromLocation:userLocation] * 2;
         
-        CLLocation *userLocation = self.mapView.userLocation.location;
+    } else {
         
-        if (userLocation) {
+        CLLocation *lastLocation = self.session.locationTracker.lastLocation;
+        
+        if (lastLocation) {
             
-            distance = [location distanceFromLocation:userLocation] * 2;
+            distance = [location distanceFromLocation:lastLocation] * 2;
             
-        } else {
+        }
+        
+    }
+    
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(locationCoordinate, distance, distance);
+    
+    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+
+}
+
+- (void)centeringMapOnUserLocation {
+    
+    CLLocation *userLocation = self.mapView.userLocation.location;
+    
+    if (userLocation) {
+        
+        [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
+        //            [self drawAccuracyCircle];
+        
+    } else {
+        
+        CLLocationDistance distance = 1000;
+        CLLocationCoordinate2D locationCoordinate;
+        
+        CLLocation *lastLocation = self.session.locationTracker.lastLocation;
+        
+        if (lastLocation) {
             
-            CLLocation *lastLocation = self.session.locationTracker.lastLocation;
-            
-            if (lastLocation) {
-                
-                distance = [location distanceFromLocation:lastLocation] * 2;
-                
-            }
+            locationCoordinate = lastLocation.coordinate;
             
         }
         
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(locationCoordinate, distance, distance);
         
-        [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
-        
-    } else {
-        
-        CLLocation *userLocation = self.mapView.userLocation.location;
-        
-        if (userLocation) {
-            
-            [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
-//            [self drawAccuracyCircle];
-
-        } else {
-            
-            CLLocationDistance distance = 1000;
-            CLLocationCoordinate2D locationCoordinate;
-
-            CLLocation *lastLocation = self.session.locationTracker.lastLocation;
-            
-            if (lastLocation) {
-                
-                locationCoordinate = lastLocation.coordinate;
-                
-            }
-
-            MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(locationCoordinate, distance, distance);
-            
-            [self.mapView setRegion:[self.mapView regionThatFits:region] animated:NO];
-
-        }
+        [self.mapView setRegion:[self.mapView regionThatFits:region] animated:NO];
         
     }
+
+}
+
+- (void)centeringMapOnConfirm {
     
+    [self.mapView setUserTrackingMode:MKUserTrackingModeNone animated:NO];
+
+    CLLocationDistance distance = 100;
+    CLLocationCoordinate2D locationCoordinate = self.mapView.userLocation.location.coordinate;
+    
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(locationCoordinate, distance, distance);
+    
+    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+
 }
 
 //- (void)drawAccuracyCircle {
