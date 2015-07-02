@@ -428,6 +428,11 @@
 
     }
     
+    startSettings = @{
+                      @"restServerURI"            : self.serviceUri,
+                      @"dataModelName"            : @"STMDataModel",
+                      };
+
 #else
 
     startSettings = @{
