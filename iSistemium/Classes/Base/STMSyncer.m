@@ -1312,6 +1312,8 @@
     
     if ([entityName isEqualToString:@"STMEntity"]) {
         
+        [STMEntityController flushSelf];
+        
         self.stcEntities = nil;
         NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
         [entityNames removeObject:entityName];

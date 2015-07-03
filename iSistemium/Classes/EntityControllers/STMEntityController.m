@@ -11,6 +11,10 @@
 
 @interface STMEntityController()
 
+@property (nonatomic, strong) NSArray *entitiesArray;
+@property (nonatomic, strong) NSArray *uploadableEntitiesNames;
+@property (nonatomic, strong) NSDictionary *stcEntities;
+
 @end
 
 
@@ -29,52 +33,126 @@
     
 }
 
-+ (NSDictionary *)stcEntities {
+- (instancetype)init {
     
-    NSMutableDictionary *stcEntities = [NSMutableDictionary dictionary];
+    self = [super init];
     
-    NSArray *stcEntitiesArray = [self stcEntitiesArray];
+    if (self) [self addObservers];
+    return self;
     
-    for (STMEntity *entity in stcEntitiesArray) {
-        
-        NSString *capFirstLetter = (entity.name) ? [[entity.name substringToIndex:1] capitalizedString] : nil;
-        
-        NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
-        
-        if (capEntityName) {
-            stcEntities[[@"STM" stringByAppendingString:capEntityName]] = entity;
-        }
-        
+}
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(authStateChanged)
+               name:@"authControllerStateChanged"
+             object:[STMAuthController authController]];
+
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
+- (void)authStateChanged {
+    
+    if ([STMAuthController authController].controllerState != STMAuthSuccess) {
+        [self flushSelf];
     }
     
-    return (stcEntities.count > 0) ? stcEntities : nil;
+}
+
+- (void)flushSelf {
     
+    self.entitiesArray = nil;
+    self.uploadableEntitiesNames = nil;
+    self.stcEntities = nil;
+    
+}
+
+- (NSArray *)entitiesArray {
+    
+    if (!_entitiesArray) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMEntity class])];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
+        
+        NSError *error;
+        NSArray *result = [[STMEntityController document].managedObjectContext executeFetchRequest:request error:&error];
+
+        _entitiesArray = result;
+
+    }
+    return _entitiesArray;
+    
+}
+
+- (NSDictionary *)stcEntities {
+    
+    if (!_stcEntities) {
+        
+        NSMutableDictionary *stcEntities = [NSMutableDictionary dictionary];
+        
+        NSArray *stcEntitiesArray = self.entitiesArray.copy;
+        
+        for (STMEntity *entity in stcEntitiesArray) {
+            
+            NSString *capFirstLetter = (entity.name) ? [[entity.name substringToIndex:1] capitalizedString] : nil;
+            
+            NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
+            
+            if (capEntityName) {
+                stcEntities[[@"STM" stringByAppendingString:capEntityName]] = entity;
+            }
+            
+        }
+        
+        _stcEntities = (stcEntities.count > 0) ? stcEntities : nil;
+
+    }
+    return _stcEntities;
+    
+}
+
+- (NSArray *)uploadableEntitiesNames {
+    
+    if (!_uploadableEntitiesNames) {
+        
+        NSMutableDictionary *stcEntities = [self.stcEntities mutableCopy];
+        
+        NSSet *filteredKeys = [stcEntities keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
+            return ([[obj valueForKey:@"isUploadable"] boolValue] == YES);
+        }];
+        
+        _uploadableEntitiesNames = filteredKeys.allObjects;
+
+    }
+    return _uploadableEntitiesNames;
+    
+}
+
+
+#pragma mark - class methods
+
++ (void)flushSelf {
+    [[self sharedInstance] flushSelf];
+}
+
++ (NSDictionary *)stcEntities {
+    return [self sharedInstance].stcEntities;
 }
 
 + (NSArray *)stcEntitiesArray {
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMEntity class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
-    
-    NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
-    NSMutableArray *returnValue = result.mutableCopy;
-        
-    return returnValue;
-    
+    return [self sharedInstance].entitiesArray;
 }
 
 + (NSArray *)uploadableEntitiesNames {
-
-    NSMutableDictionary *stcEntities = [[self stcEntities] mutableCopy];
-    
-    NSSet *filteredKeys = [stcEntities keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
-        return ([[obj valueForKey:@"isUploadable"] boolValue] == YES);
-    }];
-        
-    return filteredKeys.allObjects;
-
+    return [self sharedInstance].uploadableEntitiesNames;
 }
 
 + (NSSet *)entityNamesWithLifeTime {

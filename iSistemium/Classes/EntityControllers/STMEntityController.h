@@ -11,6 +11,8 @@
 
 @interface STMEntityController : STMController
 
++ (void)flushSelf;
+
 + (NSDictionary *)stcEntities;
 
 + (void)checkEntitiesForDuplicates;
