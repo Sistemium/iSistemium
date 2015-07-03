@@ -54,6 +54,7 @@
 @property (nonatomic) BOOL sendOnce;
 @property (nonatomic) BOOL errorOccured;
 @property (nonatomic) BOOL fullSyncWasDone;
+@property (nonatomic) BOOL isFirstSyncCycleIteration;
 
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
@@ -244,6 +245,8 @@
         NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
         NSLog(logMessage);
         
+        self.isFirstSyncCycleIteration = (previousState == STMSyncerIdle);
+        
         switch (syncerState) {
                 
             case STMSyncerSendData:
@@ -394,7 +397,7 @@
                     STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:stcEntityName];
                     clientEntity.eTag = nil;
                     
-                    [self receiveEntities:@[stcEntityName]];
+//                    [self receiveEntities:@[stcEntityName]];
                     
                 }
                 
@@ -1205,6 +1208,7 @@
     [self saveReceiveDate];
     
     self.fullSyncWasDone = YES;
+    self.isFirstSyncCycleIteration = NO;
     
     [self.document saveDocument:^(BOOL success) {
         
@@ -1415,22 +1419,24 @@
             
             self.syncing = NO;
 
-            [self.sendedEntities removeObjectsInArray:@[
-                                                        NSStringFromClass([STMClientEntity class]),
-                                                        NSStringFromClass([STMEntity class]),
-                                                        NSStringFromClass([STMLogMessage class]),
-                                                        NSStringFromClass([STMLocation class]),
-                                                        NSStringFromClass([STMBatteryStatus class])
-                                                        ]];
-            
-            BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
-            
-            if (self.syncerState == STMSyncerSendData && (!onlyStcEntitiesWasSend || !self.fullSyncWasDone)) {
-                self.syncerState = STMSyncerReceiveData;
-            } else /*if (self.syncerState == STMSyncerSendDataOnce)*/ {
-                self.syncerState = STMSyncerIdle;
-            }
-            
+//            [self.sendedEntities removeObjectsInArray:@[
+//                                                        NSStringFromClass([STMClientEntity class]),
+//                                                        NSStringFromClass([STMEntity class]),
+//                                                        NSStringFromClass([STMLogMessage class]),
+//                                                        NSStringFromClass([STMLocation class]),
+//                                                        NSStringFromClass([STMBatteryStatus class])
+//                                                        ]];
+//            
+//            BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
+//            
+//            if (self.syncerState == STMSyncerSendData && (!onlyStcEntitiesWasSend || !self.fullSyncWasDone)) {
+//                self.syncerState = STMSyncerReceiveData;
+//            } else /*if (self.syncerState == STMSyncerSendDataOnce)*/ {
+//                self.syncerState = STMSyncerIdle;
+//            }
+
+            self.syncerState = (self.isFirstSyncCycleIteration) ? STMSyncerReceiveData : STMSyncerIdle;
+
         }
         
     } else {
