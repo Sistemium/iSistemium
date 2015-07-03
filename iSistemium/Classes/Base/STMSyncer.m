@@ -380,7 +380,7 @@
                 [self.session.logger saveLogMessageDictionaryToDocument];
                 [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
                 
-                NSArray *syncingEntitiesNames = [STMEntityController entityNamesForSyncing];
+                NSArray *syncingEntitiesNames = [STMEntityController uploadableEntitiesNames];
                 NSLog(@"syncingEntitiesNames %@", syncingEntitiesNames);
                 
                 if (syncingEntitiesNames.count == 0) {
@@ -766,7 +766,7 @@
     
     for (NSManagedObject *object in dataForSyncing) {
         
-        NSArray *entityNamesForSending = [STMEntityController entityNamesForSyncing];
+        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
         NSString *entityName = object.entity.name;
         BOOL isInSyncList = [entityNamesForSending containsObject:entityName];
         BOOL isFantom = [[object valueForKey:@"isFantom"] boolValue];
@@ -835,7 +835,7 @@
     if (self.document.managedObjectContext) {
         
         NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
-        NSArray *entityNamesForSending = [STMEntityController entityNamesForSyncing];
+        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
         
         NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
         unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];

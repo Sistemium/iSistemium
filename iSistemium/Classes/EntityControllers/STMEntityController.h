@@ -18,7 +18,7 @@
 + (NSSet *)entityNamesWithLifeTime;
 + (NSArray *)entitiesWithLifeTime;
 
-+ (NSArray *)entityNamesForSyncing;
++ (NSArray *)uploadableEntitiesNames;
 
 + (STMEntity *)entityWithName:(NSString *)name;
 

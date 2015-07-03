@@ -63,7 +63,7 @@
     
 }
 
-+ (NSArray *)entityNamesForSyncing {
++ (NSArray *)uploadableEntitiesNames {
 
     NSMutableDictionary *stcEntities = [[self stcEntities] mutableCopy];
     

@@ -617,7 +617,7 @@
 
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
-    BOOL isInSyncList = [[STMEntityController entityNamesForSyncing] containsObject:object.entity.name];
+    BOOL isInSyncList = [[STMEntityController uploadableEntitiesNames] containsObject:object.entity.name];
 
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
