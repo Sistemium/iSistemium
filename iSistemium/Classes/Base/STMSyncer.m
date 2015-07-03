@@ -1437,7 +1437,7 @@
 //                self.syncerState = STMSyncerIdle;
 //            }
 
-            self.syncerState = (self.isFirstSyncCycleIteration) ? STMSyncerReceiveData : STMSyncerIdle;
+            self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
 
         }
         
