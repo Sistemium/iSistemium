@@ -41,7 +41,9 @@
         
         NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
         
-        stcEntities[[@"STM" stringByAppendingString:capEntityName]] = entity;
+        if (capEntityName) {
+            stcEntities[[@"STM" stringByAppendingString:capEntityName]] = entity;
+        }
         
     }
     
