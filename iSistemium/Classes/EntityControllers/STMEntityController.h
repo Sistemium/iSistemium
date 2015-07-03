@@ -18,6 +18,8 @@
 + (NSSet *)entityNamesWithLifeTime;
 + (NSArray *)entitiesWithLifeTime;
 
++ (NSArray *)entityNamesForSyncing;
+
 + (STMEntity *)entityWithName:(NSString *)name;
 
 + (void)deleteEntityWithName:(NSString *)name;

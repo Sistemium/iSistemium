@@ -63,6 +63,18 @@
     
 }
 
++ (NSArray *)entityNamesForSyncing {
+
+    NSMutableDictionary *stcEntities = [[self stcEntities] mutableCopy];
+    
+    NSSet *filteredKeys = [stcEntities keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
+        return ([[obj valueForKey:@"isUploadable"] boolValue] == YES);
+    }];
+        
+    return filteredKeys.allObjects;
+
+}
+
 + (NSSet *)entityNamesWithLifeTime {
     
     NSMutableDictionary *stcEntities = [[self stcEntities] mutableCopy];

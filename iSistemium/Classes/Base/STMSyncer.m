@@ -379,6 +379,25 @@
                 [STMClientDataController checkClientData];
                 [self.session.logger saveLogMessageDictionaryToDocument];
                 [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
+                
+                NSArray *syncingEntitiesNames = [STMEntityController entityNamesForSyncing];
+                NSLog(@"syncingEntitiesNames %@", syncingEntitiesNames);
+                
+                if (syncingEntitiesNames.count == 0) {
+                    
+                    NSString *stcEntityName = NSStringFromClass([STMEntity class]);
+                    
+                    if ([stcEntityName hasPrefix:ISISTEMIUM_PREFIX]) {
+                        stcEntityName = [stcEntityName substringFromIndex:[ISISTEMIUM_PREFIX length]];
+                    }
+                    
+                    STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:stcEntityName];
+                    clientEntity.eTag = nil;
+                    
+                    [self receiveEntities:@[stcEntityName]];
+                    
+                }
+                
                 [self initTimer];
                 [self addObservers];
                 
@@ -429,7 +448,8 @@
         
         for (NSString *entityName in entitiesNames) {
             
-            NSString *name = [@"STM" stringByAppendingString:entityName];
+            NSString *name = ([entityName hasPrefix:ISISTEMIUM_PREFIX]) ? entityName : [ISISTEMIUM_PREFIX stringByAppendingString:entityName];
+            
             if ([localDataModelEntityNames containsObject:name]) {
                 [existingNames addObject:name];
             }
@@ -746,7 +766,7 @@
     
     for (NSManagedObject *object in dataForSyncing) {
         
-        NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
+        NSArray *entityNamesForSending = [STMEntityController entityNamesForSyncing];
         NSString *entityName = object.entity.name;
         BOOL isInSyncList = [entityNamesForSending containsObject:entityName];
         BOOL isFantom = [[object valueForKey:@"isFantom"] boolValue];
@@ -815,7 +835,7 @@
     if (self.document.managedObjectContext) {
         
         NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
-        NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
+        NSArray *entityNamesForSending = [STMEntityController entityNamesForSyncing];
         
         NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
         unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];

@@ -617,37 +617,13 @@
 
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
-    BOOL isInSyncList = [[self entityNamesForSyncing] containsObject:object.entity.name];
+    BOOL isInSyncList = [[STMEntityController entityNamesForSyncing] containsObject:object.entity.name];
 
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
     
     return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
     
-}
-
-+ (NSArray *)entityNamesForSyncing {
-    
-    NSArray *entityNamesForSyncing = @[
-                                       NSStringFromClass([STMEntity class]),
-                                       NSStringFromClass([STMClientEntity class]),
-                                       NSStringFromClass([STMPhotoReport class]),
-                                       NSStringFromClass([STMCashing class]),
-                                       NSStringFromClass([STMUncashing class]),
-                                       NSStringFromClass([STMClientData class]),
-                                       NSStringFromClass([STMRecordStatus class]),
-                                       NSStringFromClass([STMUncashingPicture class]),
-                                       NSStringFromClass([STMDebt class]),
-                                       NSStringFromClass([STMBatteryStatus class]),
-                                       NSStringFromClass([STMOutlet class]),
-                                       NSStringFromClass([STMPartner class]),
-                                       NSStringFromClass([STMLocation class]),
-                                       NSStringFromClass([STMSaleOrder class]),
-                                       NSStringFromClass([STMLogMessage class])
-                                       ];
-    
-    return entityNamesForSyncing;
-
 }
 
 
