@@ -107,7 +107,7 @@
             NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
             
             if (capEntityName) {
-                stcEntities[[@"STM" stringByAppendingString:capEntityName]] = entity;
+                stcEntities[[ISISTEMIUM_PREFIX stringByAppendingString:capEntityName]] = entity;
             }
             
         }

@@ -1003,7 +1003,7 @@
             NSMutableArray *tempArray = [NSMutableArray array];
             
             for (NSString *entityName in entitiesNames) {
-                [tempArray addObject:[@"STM" stringByAppendingString:entityName]];
+                [tempArray addObject:[ISISTEMIUM_PREFIX stringByAppendingString:entityName]];
             }
             
             self.entitySyncNames = tempArray;

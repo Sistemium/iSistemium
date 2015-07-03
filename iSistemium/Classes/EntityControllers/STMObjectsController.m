@@ -210,7 +210,7 @@
     NSString *nameTail = (nameExplode.count > 1) ? nameExplode[1] : name;
     NSString *capEntityName = [nameTail stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[nameTail substringToIndex:1] capitalizedString]];
 
-    NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
+    NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
     
     NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
@@ -526,7 +526,7 @@
     
     NSString *name = dictionary[@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-    NSString *entityName = [@"STM" stringByAppendingString:nameExplode[1]];
+    NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:nameExplode[1]];
 
     NSDictionary *serverDataModel = [[STMEntityController stcEntities] copy];
 
@@ -534,11 +534,11 @@
         
         STMEntity *entityModel = serverDataModel[entityName];
         NSString *roleOwner = entityModel.roleOwner;
-        NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
+        NSString *roleOwnerEntityName = [ISISTEMIUM_PREFIX stringByAppendingString:roleOwner];
         NSString *roleName = entityModel.roleName;
         NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
         NSString *destinationEntityName = ownerRelationships[roleName];
-        NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
+        NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
         NSDictionary *properties = dictionary[@"properties"];
         NSDictionary *ownerData = properties[roleOwner];
         NSDictionary *destinationData = properties[destination];
@@ -1003,7 +1003,7 @@
             
             NSString *capFirstLetter = (name) ? [[name substringToIndex:1] capitalizedString] : nil;
             NSString *capEntityName = [name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
-            NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
+            NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
             
             NSError *error;
             
@@ -1301,7 +1301,7 @@
     
     if ([parameters isKindOfClass:[NSDictionary class]]) {
         
-        NSString *entityName = [@"STM" stringByAppendingString:parameters[@"entityName"]];
+        NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:parameters[@"entityName"]];
         NSUInteger size = [parameters[@"size"] integerValue];
         NSString *orderBy = parameters[@"orderBy"];
         BOOL ascending = [[parameters[@"order"] lowercaseString] isEqualToString:@"asc"];
@@ -1361,7 +1361,7 @@
     if (object) {
         
         NSString *entityName = object.entity.name;
-        NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
+        NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""]];
         NSData *xidData = [object valueForKey:@"xid"];
         NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
         
