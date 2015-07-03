@@ -81,6 +81,7 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMEntity class])];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
+        request.predicate = [STMPredicate predicateWithNoFantoms];
         
         NSError *error;
         NSArray *result = [[STMEntityController document].managedObjectContext executeFetchRequest:request error:&error];

@@ -383,10 +383,10 @@
                 [self.session.logger saveLogMessageDictionaryToDocument];
                 [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
                 
-                NSArray *syncingEntitiesNames = [STMEntityController uploadableEntitiesNames];
-                NSLog(@"syncingEntitiesNames %@", syncingEntitiesNames);
+                NSArray *uploadableEntitiesNames = [STMEntityController uploadableEntitiesNames];
+                NSLog(@"uploadableEntitiesNames %@", uploadableEntitiesNames);
                 
-                if (syncingEntitiesNames.count == 0) {
+                if (uploadableEntitiesNames.count == 0) {
                     
                     NSString *stcEntityName = NSStringFromClass([STMEntity class]);
                     

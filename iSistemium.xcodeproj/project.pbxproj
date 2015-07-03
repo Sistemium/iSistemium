@@ -11,7 +11,6 @@
 		2C02F2B11A8A319B00E0E890 /* STMAuthPhoneVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2B01A8A319B00E0E890 /* STMAuthPhoneVC.m */; };
 		2C02F2B41A8A342200E0E890 /* STMAuthSMSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2B31A8A342200E0E890 /* STMAuthSMSVC.m */; };
 		2C02F2BA1A8A45EC00E0E890 /* STMAuthNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2B91A8A45EC00E0E890 /* STMAuthNC.m */; };
-		2C02F2BD1A8A881900E0E890 /* STMAuthSuccessVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2BC1A8A881900E0E890 /* STMAuthSuccessVC.m */; };
 		2C02F2C01A8A989000E0E890 /* STMAuthVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2BF1A8A989000E0E890 /* STMAuthVC.m */; };
 		2C02F2C31A8A995700E0E890 /* STMSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C02F2C21A8A995700E0E890 /* STMSpinnerView.m */; };
 		2C02F2C51A8B503A00E0E890 /* full_moon-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C02F2C41A8B503A00E0E890 /* full_moon-128.png */; };
@@ -292,8 +291,6 @@
 		2C02F2B31A8A342200E0E890 /* STMAuthSMSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthSMSVC.m; sourceTree = "<group>"; };
 		2C02F2B81A8A45EC00E0E890 /* STMAuthNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthNC.h; sourceTree = "<group>"; };
 		2C02F2B91A8A45EC00E0E890 /* STMAuthNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthNC.m; sourceTree = "<group>"; };
-		2C02F2BB1A8A881900E0E890 /* STMAuthSuccessVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthSuccessVC.h; sourceTree = "<group>"; };
-		2C02F2BC1A8A881900E0E890 /* STMAuthSuccessVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthSuccessVC.m; sourceTree = "<group>"; };
 		2C02F2BE1A8A989000E0E890 /* STMAuthVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAuthVC.h; sourceTree = "<group>"; };
 		2C02F2BF1A8A989000E0E890 /* STMAuthVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAuthVC.m; sourceTree = "<group>"; };
 		2C02F2C11A8A995700E0E890 /* STMSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSpinnerView.h; sourceTree = "<group>"; };
@@ -1148,8 +1145,6 @@
 				2C02F2B01A8A319B00E0E890 /* STMAuthPhoneVC.m */,
 				2C02F2B21A8A342200E0E890 /* STMAuthSMSVC.h */,
 				2C02F2B31A8A342200E0E890 /* STMAuthSMSVC.m */,
-				2C02F2BB1A8A881900E0E890 /* STMAuthSuccessVC.h */,
-				2C02F2BC1A8A881900E0E890 /* STMAuthSuccessVC.m */,
 			);
 			path = STMAuth;
 			sourceTree = "<group>";
@@ -1991,7 +1986,6 @@
 				2C5763F11AA5E13600B9FD2C /* STMCampaignPageCVC.m in Sources */,
 				2C0CDDB41B4516CC000CA183 /* STMLocationController.m in Sources */,
 				2C02F2CD1A8DF1EB00E0E890 /* STMAddEtceteraVC.m in Sources */,
-				2C02F2BD1A8A881900E0E890 /* STMAuthSuccessVC.m in Sources */,
 				2C2968FC19A208FB0038B122 /* STMDatePickerVC.m in Sources */,
 				2C57641A1AA5E1E500B9FD2C /* STMAddPopoverNC.m in Sources */,
 				2CD657A91AC328EE00EAB4FF /* STMPredicate.m in Sources */,
