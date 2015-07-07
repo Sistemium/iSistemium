@@ -421,7 +421,7 @@
                       @"enablePartnersEditing"    : @YES,
                       @"http.timeout.foreground"  : @"60",
                       @"jpgQuality"               : @"0.0",
-                      @"blockIfNoLocationPermission"    : @"1"
+                      @"blockIfNoLocationPermission"    : @YES
                       };
 
 #else

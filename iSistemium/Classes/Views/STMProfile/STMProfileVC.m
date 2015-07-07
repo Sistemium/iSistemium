@@ -722,7 +722,10 @@
 - (BOOL)blockIfNoLocationPermission {
     
     NSDictionary *settings = [[self settingsController] currentSettingsForGroup:@"appSettings"];
-    return [settings[@"blockIfNoLocationPermission"] boolValue];
+    BOOL blockIfNoLocationPermission = [settings[@"blockIfNoLocationPermission"] boolValue];
+    BOOL locationTrackerAutoStart = [self locationTracker].trackerAutoStart;
+    
+    return (blockIfNoLocationPermission && locationTrackerAutoStart);
     
 }
 
@@ -899,6 +902,16 @@
                name:@"nonloadedPicturesCountDidChange"
              object:[STMPicturesController sharedController]];
     
+    [nc addObserver:self
+           selector:@selector(setupLabels)
+               name:@"appSettingsSettingsChange"
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(setupLabels)
+               name:@"locationSettingsChange"
+             object:nil];
+
 }
 
 - (void)removeObservers {
