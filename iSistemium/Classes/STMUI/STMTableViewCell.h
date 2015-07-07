@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "STMLabel.h"
+#import "STMCustomCells.h"
+
 
 @interface STMTableViewCell : UITableViewCell
 
