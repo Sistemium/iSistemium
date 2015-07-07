@@ -9,13 +9,11 @@
 #import "STMAuthNC.h"
 #import "STMAuthPhoneVC.h"
 #import "STMAuthSMSVC.h"
-#import "STMAuthSuccessVC.h"
 
 @interface STMAuthNC () <UINavigationControllerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMAuthPhoneVC *phoneVC;
 @property (nonatomic, strong) STMAuthSMSVC *smsVC;
-@property (nonatomic, strong) STMAuthSuccessVC *successVC;
 @property (nonatomic, strong) STMAuthVC *requestRolesVC;
 
 @end
@@ -63,15 +61,6 @@
     
 }
 
-- (STMAuthSuccessVC *)successVC {
-    
-    if (!_successVC) {
-        _successVC = [self.storyboard instantiateViewControllerWithIdentifier:@"authSuccessVC"];
-    }
-    return _successVC;
-    
-}
-
 - (void)authControllerStateChanged {
     
     switch ([STMAuthController authController].controllerState) {
@@ -92,7 +81,6 @@
             break;
             
         case STMAuthSuccess:
-            [self setViewControllers:@[self.successVC] animated:YES];
             
             break;
             
