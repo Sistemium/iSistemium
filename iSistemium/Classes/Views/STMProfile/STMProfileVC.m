@@ -612,7 +612,10 @@
 - (void)settingsChanged:(NSNotification *)notification {
     
     if ([@[@"locationTrackerAutoStart", @"blockIfNoLocationPermission"] containsObject:notification.userInfo.allKeys.firstObject]) {
+        
         [self setupLabels];
+        [self checkLocationDisabled];
+        
     }
     
 }
@@ -678,19 +681,16 @@
             case kCLAuthorizationStatusAuthorizedAlways:
                 self.locationSystemStatusLabel.textColor = [UIColor greenColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
-                [self hideLocationDisabledAlert];
                 break;
                 
             case kCLAuthorizationStatusAuthorizedWhenInUse:
                 self.locationSystemStatusLabel.textColor = [UIColor brownColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
-                [self showLocationDisabledAlert];
                 break;
                 
             default:
                 self.locationSystemStatusLabel.textColor = [UIColor redColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
-                [self showLocationDisabledAlert];
                 break;
         }
         
@@ -698,10 +698,31 @@
         
         self.locationSystemStatusLabel.textColor = [UIColor redColor];
         self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
-        [self showLocationDisabledAlert];
         
     }
+
+    [self checkLocationDisabled];
     
+}
+
+- (void)checkLocationDisabled {
+    
+    if ([CLLocationManager locationServicesEnabled]) {
+        
+        switch ([CLLocationManager authorizationStatus]) {
+            case kCLAuthorizationStatusAuthorizedAlways:
+                [self hideLocationDisabledAlert];
+                break;
+                
+            default:
+                [self showLocationDisabledAlert];
+                break;
+        }
+        
+    } else {
+        [self showLocationDisabledAlert];
+    }
+
 }
 
 - (void)showLocationDisabledAlert {
