@@ -700,7 +700,12 @@
     
     if ([self blockIfNoLocationPermission] && !self.locationDisabledAlertIsShown) {
         
-        self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:@"AAAAAAA" message:@"AAAAAAAA!" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+        self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK TITLE", nil)
+                                                                message:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK MESSAGE", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:nil];
+        
         [self.locationDisabledAlert show];
         self.locationDisabledAlertIsShown = YES;
 
