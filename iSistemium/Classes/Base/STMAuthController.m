@@ -427,13 +427,15 @@
                           @"blockIfNoLocationPermission"    : @YES
                           };
         
+    } else {
+    
+        startSettings = @{
+                          @"restServerURI"            : self.serviceUri,
+                          @"dataModelName"            : @"STMDataModel",
+                          };
+
     }
     
-    startSettings = @{
-                      @"restServerURI"            : self.serviceUri,
-                      @"dataModelName"            : @"STMDataModel",
-                      };
-
 #else
 
     startSettings = @{
