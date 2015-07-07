@@ -49,7 +49,12 @@
 @property (nonatomic) BOOL downloadAlertWasShown;
 @property (nonatomic) BOOL newsReceiving;
 
+@property (nonatomic, strong) UIAlertView *locationDisabledAlert;
+@property (nonatomic) BOOL locationDisabledAlertIsShown;
+
+
 @end
+
 
 @implementation STMProfileVC
 
@@ -661,16 +666,19 @@
             case kCLAuthorizationStatusAuthorizedAlways:
                 self.locationSystemStatusLabel.textColor = [UIColor greenColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
+                [self hideLocationDisabledAlert];
                 break;
                 
             case kCLAuthorizationStatusAuthorizedWhenInUse:
                 self.locationSystemStatusLabel.textColor = [UIColor brownColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
+                [self showLocationDisabledAlert];
                 break;
                 
             default:
                 self.locationSystemStatusLabel.textColor = [UIColor redColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+                [self showLocationDisabledAlert];
                 break;
         }
         
@@ -678,6 +686,30 @@
         
         self.locationSystemStatusLabel.textColor = [UIColor redColor];
         self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+        [self showLocationDisabledAlert];
+        
+    }
+    
+}
+
+- (void)showLocationDisabledAlert {
+    
+    if (!self.locationDisabledAlertIsShown) {
+        
+        self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:@"AAAAAAA" message:@"AAAAAAAA!" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+        [self.locationDisabledAlert show];
+        self.locationDisabledAlertIsShown = YES;
+
+    }
+        
+}
+
+- (void)hideLocationDisabledAlert {
+    
+    if (self.locationDisabledAlertIsShown) {
+        
+        [self.locationDisabledAlert dismissWithClickedButtonIndex:0 animated:NO];
+        self.locationDisabledAlertIsShown = NO;
         
     }
     
