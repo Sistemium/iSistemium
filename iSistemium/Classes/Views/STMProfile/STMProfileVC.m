@@ -66,6 +66,10 @@
     return [[STMSessionManager sharedManager].currentSession syncer];
 }
 
+- (STMSettingsController *)settingsController {
+    return [[STMSessionManager sharedManager].currentSession settingsController];
+}
+
 - (void)backButtonPressed {
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil)
@@ -694,7 +698,7 @@
 
 - (void)showLocationDisabledAlert {
     
-    if (!self.locationDisabledAlertIsShown) {
+    if ([self blockIfNoLocationPermission] && !self.locationDisabledAlertIsShown) {
         
         self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:@"AAAAAAA" message:@"AAAAAAAA!" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
         [self.locationDisabledAlert show];
@@ -706,12 +710,19 @@
 
 - (void)hideLocationDisabledAlert {
     
-    if (self.locationDisabledAlertIsShown) {
+    if ([self blockIfNoLocationPermission] && self.locationDisabledAlertIsShown) {
         
         [self.locationDisabledAlert dismissWithClickedButtonIndex:0 animated:NO];
         self.locationDisabledAlertIsShown = NO;
         
     }
+    
+}
+
+- (BOOL)blockIfNoLocationPermission {
+    
+    NSDictionary *settings = [[self settingsController] currentSettingsForGroup:@"appSettings"];
+    return [settings[@"blockIfNoLocationPermission"] boolValue];
     
 }
 
