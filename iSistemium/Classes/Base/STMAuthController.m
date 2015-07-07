@@ -10,6 +10,7 @@
 
 #import <AdSupport/AdSupport.h>
 
+#import "STMDevDef.h"
 #import "STMFunctions.h"
 #import <Security/Security.h>
 #import "KeychainItemWrapper.h"
@@ -401,27 +402,36 @@
     
 #ifdef DEBUG
 
+    if (GRIMAX) {
+        
+        startSettings = @{
+                          @"restServerURI"            : self.serviceUri,
+                          @"dataModelName"            : @"STMDataModel",
+                          //                      @"fetchLimit"               : @"50",
+                          //                      @"syncInterval"             : @"600",
+                          //                      @"uploadLog.type"           : @"",
+                          @"requiredAccuracy"         : @"100",
+                          @"desiredAccuracy"          : @"10",
+                          @"timeFilter"               : @"60",
+                          @"maxSpeedThreshold"        : @"60",
+                          @"locationTrackerAutoStart" : @YES,
+                          @"locationTrackerStartTime": @"8.0",
+                          @"locationTrackerFinishTime": @"23.5",
+                          @"batteryTrackerAutoStart" : @YES,
+                          @"batteryTrackerStartTime": @"8.0",
+                          @"batteryTrackerFinishTime": @"22.0",
+                          @"enableDebtsEditing"       : @YES,
+                          @"enablePartnersEditing"    : @YES,
+                          @"http.timeout.foreground"  : @"60",
+                          @"jpgQuality"               : @"0.0",
+                          @"blockIfNoLocationPermission"    : @YES
+                          };
+        
+    }
+    
     startSettings = @{
                       @"restServerURI"            : self.serviceUri,
                       @"dataModelName"            : @"STMDataModel",
-//                      @"fetchLimit"               : @"50",
-//                      @"syncInterval"             : @"600",
-//                      @"uploadLog.type"           : @"",
-                      @"requiredAccuracy"         : @"100",
-                      @"desiredAccuracy"          : @"10",
-                      @"timeFilter"               : @"60",
-                      @"maxSpeedThreshold"        : @"60",
-                      @"locationTrackerAutoStart" : @YES,
-                      @"locationTrackerStartTime": @"8.0",
-                      @"locationTrackerFinishTime": @"23.5",
-                      @"batteryTrackerAutoStart" : @YES,
-                      @"batteryTrackerStartTime": @"8.0",
-                      @"batteryTrackerFinishTime": @"22.0",
-                      @"enableDebtsEditing"       : @YES,
-                      @"enablePartnersEditing"    : @YES,
-                      @"http.timeout.foreground"  : @"60",
-                      @"jpgQuality"               : @"0.0",
-                      @"blockIfNoLocationPermission"    : @YES
                       };
 
 #else
