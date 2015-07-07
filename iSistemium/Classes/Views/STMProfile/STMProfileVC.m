@@ -609,6 +609,14 @@
 
 #pragma mark - labels setup
 
+- (void)settingsChanged:(NSNotification *)notification {
+    
+    if ([@[@"locationTrackerAutoStart", @"blockIfNoLocationPermission"] containsObject:notification.userInfo.allKeys.firstObject]) {
+        [self setupLabels];
+    }
+    
+}
+
 - (void)setupLabels {
     
     self.nameLabel.text = [STMAuthController authController].userName;
@@ -908,13 +916,13 @@
              object:[STMPicturesController sharedController]];
     
     [nc addObserver:self
-           selector:@selector(setupLabels)
-               name:@"appSettingsSettingsChange"
+           selector:@selector(settingsChanged:)
+               name:@"appSettingsSettingsChanged"
              object:nil];
 
     [nc addObserver:self
-           selector:@selector(setupLabels)
-               name:@"locationSettingsChange"
+           selector:@selector(settingsChanged:)
+               name:@"locationSettingsChanged"
              object:nil];
 
 }
