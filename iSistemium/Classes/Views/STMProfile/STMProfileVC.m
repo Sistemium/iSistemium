@@ -738,13 +738,15 @@
         [self.locationDisabledAlert show];
         self.locationDisabledAlertIsShown = YES;
 
+    } else if (![self blockIfNoLocationPermission] && self.locationDisabledAlertIsShown) {
+        [self hideLocationDisabledAlert];
     }
         
 }
 
 - (void)hideLocationDisabledAlert {
     
-    if ([self blockIfNoLocationPermission] && self.locationDisabledAlertIsShown) {
+    if (self.locationDisabledAlertIsShown) {
         
         [self.locationDisabledAlert dismissWithClickedButtonIndex:0 animated:NO];
         self.locationDisabledAlertIsShown = NO;
