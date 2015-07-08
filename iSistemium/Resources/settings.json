@@ -56,6 +56,11 @@
                     "name": "catalogue.cell.right",
                     "value": "",
                     "control": "segmentedContol",
+                },
+                {
+                    "name": "blockIfNoLocationPermission",
+                    "value": false,
+                    "control": "switch",
                 }
             ]
        },

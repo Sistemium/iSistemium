@@ -49,7 +49,12 @@
 @property (nonatomic) BOOL downloadAlertWasShown;
 @property (nonatomic) BOOL newsReceiving;
 
+@property (nonatomic, strong) UIAlertView *locationDisabledAlert;
+@property (nonatomic) BOOL locationDisabledAlertIsShown;
+
+
 @end
+
 
 @implementation STMProfileVC
 
@@ -59,6 +64,10 @@
 
 - (STMSyncer *)syncer {
     return [[STMSessionManager sharedManager].currentSession syncer];
+}
+
+- (STMSettingsController *)settingsController {
+    return [[STMSessionManager sharedManager].currentSession settingsController];
 }
 
 - (void)backButtonPressed {
@@ -600,6 +609,17 @@
 
 #pragma mark - labels setup
 
+- (void)settingsChanged:(NSNotification *)notification {
+    
+    if ([@[@"locationTrackerAutoStart", @"blockIfNoLocationPermission"] containsObject:notification.userInfo.allKeys.firstObject]) {
+        
+        [self setupLabels];
+        [self checkLocationDisabled];
+        
+    }
+    
+}
+
 - (void)setupLabels {
     
     self.nameLabel.text = [STMAuthController authController].userName;
@@ -680,6 +700,68 @@
         self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
         
     }
+
+    [self checkLocationDisabled];
+    
+}
+
+- (void)checkLocationDisabled {
+    
+    if ([CLLocationManager locationServicesEnabled]) {
+        
+        switch ([CLLocationManager authorizationStatus]) {
+            case kCLAuthorizationStatusAuthorizedAlways:
+                [self hideLocationDisabledAlert];
+                break;
+                
+            default:
+                [self showLocationDisabledAlert];
+                break;
+        }
+        
+    } else {
+        [self showLocationDisabledAlert];
+    }
+
+}
+
+- (void)showLocationDisabledAlert {
+    
+    if ([self blockIfNoLocationPermission] && !self.locationDisabledAlertIsShown) {
+        
+        self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK TITLE", nil)
+                                                                message:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK MESSAGE", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:nil];
+        
+        [self.locationDisabledAlert show];
+        self.locationDisabledAlertIsShown = YES;
+
+    } else if (![self blockIfNoLocationPermission] && self.locationDisabledAlertIsShown) {
+        [self hideLocationDisabledAlert];
+    }
+        
+}
+
+- (void)hideLocationDisabledAlert {
+    
+    if (self.locationDisabledAlertIsShown) {
+        
+        [self.locationDisabledAlert dismissWithClickedButtonIndex:0 animated:NO];
+        self.locationDisabledAlertIsShown = NO;
+        
+    }
+    
+}
+
+- (BOOL)blockIfNoLocationPermission {
+    
+    NSDictionary *settings = [[self settingsController] currentSettingsForGroup:@"appSettings"];
+    BOOL blockIfNoLocationPermission = [settings[@"blockIfNoLocationPermission"] boolValue];
+    BOOL locationTrackerAutoStart = [self locationTracker].trackerAutoStart;
+    
+    return (blockIfNoLocationPermission && locationTrackerAutoStart);
     
 }
 
@@ -856,6 +938,16 @@
                name:@"nonloadedPicturesCountDidChange"
              object:[STMPicturesController sharedController]];
     
+    [nc addObserver:self
+           selector:@selector(settingsChanged:)
+               name:@"appSettingsSettingsChanged"
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(settingsChanged:)
+               name:@"locationSettingsChanged"
+             object:nil];
+
 }
 
 - (void)removeObservers {

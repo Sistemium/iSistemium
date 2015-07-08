@@ -232,4 +232,6 @@
 "PRICE_" = "Цены";
 "STOCK_" = "Остатки";
 "ROLES REQUEST ERROR" = "Ошибка проверки ролей: ";
+"NO LOCATION PERMISSION BLOCK TITLE" = "Геолокация запрещена";
+"NO LOCATION PERMISSION BLOCK MESSAGE" = "Необходимо разрешить геолокацию для продолжения работы";
 
