@@ -109,6 +109,7 @@
     
     STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
+    cell.accessoryView = nil;
     [self fillCell:cell atIndexPath:indexPath];
     
     return cell;
