@@ -805,6 +805,8 @@
     self.isWaitingLocation = YES;
     [self.session.locationTracker getLocation];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"routePointIsReached" object:self];
+    
 }
 
 

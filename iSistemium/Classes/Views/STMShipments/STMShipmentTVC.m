@@ -14,6 +14,9 @@
 
 @interface STMShipmentTVC ()
 
+@property (nonatomic, strong) NSIndexPath *processedButtonCellIndexPath;
+
+
 @end
 
 
@@ -160,7 +163,7 @@
                 break;
                 
             case 1:
-                [self fillProcessedButtonCell:(STMCustom7TVCell *)cell];
+                [self fillProcessedButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
                 break;
                 
             case 2:
@@ -172,6 +175,8 @@
         }
         
     }
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     [super fillCell:cell atIndexPath:indexPath];
     
@@ -224,7 +229,7 @@
 
 }
 
-- (void)fillProcessedButtonCell:(STMCustom7TVCell *)cell {
+- (void)fillProcessedButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
     cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
@@ -236,6 +241,8 @@
     
     cell.detailLabel.textColor = [UIColor lightGrayColor];
     cell.detailLabel.textAlignment = NSTextAlignmentCenter;
+    
+    self.processedButtonCellIndexPath = indexPath;
     
 }
 
@@ -300,14 +307,40 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if ([indexPath isEqual:self.processedButtonCellIndexPath]) {
+        
+        if (!self.point.isReached.boolValue) {
+            
+            [self.parentVC showArriveConfirmationAlert];
+            
+        } else {
+            
+            [self showShippingStartAlert];
+            
+        }
+        
+    }
     
-//    STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
-//    
-//    if (point.shipments.count > 0) {
-//        
-//        [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
-//        
-//    }
+}
+
+- (void)routePointIsReached {
+    
+    if (self.processedButtonCellIndexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[self.processedButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
+    [self showShippingStartAlert];
+    
+}
+
+- (void)showShippingStartAlert {
+    [self startShipping];
+}
+
+- (void)startShipping {
+    
+    NSLogMethodName;
     
 }
 
@@ -382,11 +415,26 @@
 //}
 
 
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self selector:@selector(routePointIsReached) name:@"routePointIsReached" object:self.parentVC];
+    
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    
+    [self addObservers];
     [self performFetch];
     
     [super customInit];
@@ -396,6 +444,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+        [self removeObservers];
+    }
+    [super viewWillDisappear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {
