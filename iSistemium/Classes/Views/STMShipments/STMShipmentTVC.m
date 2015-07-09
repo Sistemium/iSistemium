@@ -360,6 +360,7 @@
 
 - (void)startShipping {
 
+    self.navigationItem.hidesBackButton = YES;
     [STMShippingProcessController sharedInstance].state = STMShippingProcessRunning;
     [self reloadProcessedButtonCell];
     
@@ -374,6 +375,7 @@
 
 - (void)stopShipping {
 
+    self.navigationItem.hidesBackButton = NO;
     [STMShippingProcessController sharedInstance].state = STMShippingProcessIdle;
     [self reloadProcessedButtonCell];
 
