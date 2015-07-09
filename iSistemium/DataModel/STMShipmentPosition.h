@@ -2,7 +2,7 @@
 //  STMShipmentPosition.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
+//  Created by Maxim Grigoriev on 09/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -14,10 +14,15 @@
 
 @interface STMShipmentPosition : STMComment
 
-@property (nonatomic, retain) NSNumber * volume;
 @property (nonatomic, retain) NSDecimalNumber * price;
 @property (nonatomic, retain) NSDecimalNumber * priceDoc;
-@property (nonatomic, retain) STMShipment *shipment;
+@property (nonatomic, retain) NSNumber * volume;
+@property (nonatomic, retain) NSNumber * isProcessed;
+@property (nonatomic, retain) NSNumber * doneVolume;
+@property (nonatomic, retain) NSNumber * shortageVolume;
+@property (nonatomic, retain) NSNumber * excessVolume;
+@property (nonatomic, retain) NSNumber * badVolume;
 @property (nonatomic, retain) STMArticle *article;
+@property (nonatomic, retain) STMShipment *shipment;
 
 @end

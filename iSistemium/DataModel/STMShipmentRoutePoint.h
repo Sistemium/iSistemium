@@ -2,7 +2,7 @@
 //  STMShipmentRoutePoint.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
+//  Created by Maxim Grigoriev on 09/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -10,15 +10,17 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMShipment, STMShipmentRoute, STMShippingLocation;
+@class STMLocation, STMShipment, STMShipmentRoute, STMShippingLocation;
 
 @interface STMShipmentRoutePoint : STMComment
 
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * ord;
+@property (nonatomic, retain) NSNumber * isReached;
 @property (nonatomic, retain) STMShipmentRoute *shipmentRoute;
 @property (nonatomic, retain) NSSet *shipments;
 @property (nonatomic, retain) STMShippingLocation *shippingLocation;
+@property (nonatomic, retain) STMLocation *reachedAtLocation;
 @end
 
 @interface STMShipmentRoutePoint (CoreDataGeneratedAccessors)
