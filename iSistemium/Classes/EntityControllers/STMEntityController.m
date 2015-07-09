@@ -86,7 +86,7 @@
         NSError *error;
         NSArray *result = [[STMEntityController document].managedObjectContext executeFetchRequest:request error:&error];
 
-        _entitiesArray = result;
+        _entitiesArray = (result.count > 0) ? result : nil;
 
     }
     return _entitiesArray;

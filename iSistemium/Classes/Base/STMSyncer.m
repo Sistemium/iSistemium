@@ -329,24 +329,6 @@
         
         NSDictionary *stcEntities = [STMEntityController stcEntities];
         
-        if (!stcEntities[@"STMEntity"]) {
-            
-            NSDictionary *coreEntityDic = @{
-                                            @"name": @"stc.entity",
-                                            @"properties": @{
-                                                    @"name": @"Entity",
-                                                    @"url": self.restServerURI
-                                                    }
-                                            };
-            
-            [STMObjectsController insertObjectFromDictionary:coreEntityDic withCompletionHandler:^(BOOL success) {
-
-            }];
-            
-            stcEntities = [STMEntityController stcEntities];
-            
-        }
-        
         _stcEntities = [stcEntities mutableCopy];
         
     }
@@ -376,51 +358,101 @@
         [STMObjectsController initObjectsCacheWithCompletionHandler:^(BOOL success) {
            
             if (success) {
-        
-                [STMEntityController checkEntitiesForDuplicates];
-//                [STMPicturesController checkPhotos];
-                [STMClientDataController checkClientData];
-                [self.session.logger saveLogMessageDictionaryToDocument];
-                [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
                 
-                NSArray *uploadableEntitiesNames = [STMEntityController uploadableEntitiesNames];
-                NSLog(@"uploadableEntitiesNames %@", uploadableEntitiesNames);
+                [self checkStcEntitiesWithCompletionHandler:^(BOOL success) {
+                    
+                    if (success) {
                 
-                if (uploadableEntitiesNames.count == 0) {
-                    
-                    NSString *stcEntityName = NSStringFromClass([STMEntity class]);
-                    
-                    if ([stcEntityName hasPrefix:ISISTEMIUM_PREFIX]) {
-                        stcEntityName = [stcEntityName substringFromIndex:[ISISTEMIUM_PREFIX length]];
-                    }
-                    
-                    STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:stcEntityName];
-                    clientEntity.eTag = nil;
-                    
-//                    [self receiveEntities:@[stcEntityName]];
-                    
-                }
-                
-                [self initTimer];
-                [self addObservers];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
-                
-                NSError *error;
-                if (![self.resultsController performFetch:&error]) {
-                    
-                    NSLog(@"fetch error %@", error);
-                    
-                } else {
-                    
-                }
+                        [STMEntityController checkEntitiesForDuplicates];
+                        //                [STMPicturesController checkPhotos];
+                        [STMClientDataController checkClientData];
+                        [self.session.logger saveLogMessageDictionaryToDocument];
+                        [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
+                        
+                        [self checkUploadableEntities];
+                        
+                        [self initTimer];
+                        [self addObservers];
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
+                        
+                        [self performFetch];
 
+                    } else {
+                        NSLog(@"checkStcEntities fail");
+                    }
+                
+                }];
+                
+            } else {
+                NSLog(@"init object's cache fail");
             }
             
         }];
         
     }
     
+}
+
+- (void)checkStcEntitiesWithCompletionHandler:(void (^)(BOOL success))completionHandler {
+    
+    NSDictionary *stcEntities = [STMEntityController stcEntities];
+    
+    NSString *stcEntityName = NSStringFromClass([STMEntity class]);
+    
+    if (!stcEntities[stcEntityName]) {
+        
+        STMEntity *entity = (STMEntity *)[STMObjectsController newObjectForEntityName:stcEntityName];
+        
+        if ([stcEntityName hasPrefix:ISISTEMIUM_PREFIX]) {
+            stcEntityName = [stcEntityName substringFromIndex:[ISISTEMIUM_PREFIX length]];
+        }
+        
+        entity.name = stcEntityName;
+        entity.url = self.restServerURI;
+        entity.isFantom = @NO;
+        
+        [self.document saveDocument:^(BOOL success) {
+            completionHandler(success);
+        }];
+        
+    } else {
+        completionHandler(YES);
+    }
+
+}
+
+- (void)checkUploadableEntities {
+    
+    NSArray *uploadableEntitiesNames = [STMEntityController uploadableEntitiesNames];
+    NSLog(@"uploadableEntitiesNames %@", uploadableEntitiesNames);
+    
+    if (uploadableEntitiesNames.count == 0) {
+        
+        NSString *stcEntityName = NSStringFromClass([STMEntity class]);
+        
+        if ([stcEntityName hasPrefix:ISISTEMIUM_PREFIX]) {
+            stcEntityName = [stcEntityName substringFromIndex:[ISISTEMIUM_PREFIX length]];
+        }
+        
+        STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:stcEntityName];
+        clientEntity.eTag = nil;
+        
+    }
+
+}
+
+- (void)performFetch {
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+        
+        NSLog(@"fetch error %@", error);
+        
+    } else {
+        
+    }
+
 }
 
 - (void)stopSyncer {
