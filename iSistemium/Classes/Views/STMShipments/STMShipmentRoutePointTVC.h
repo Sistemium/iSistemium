@@ -13,6 +13,9 @@
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
 
+- (void)showArriveConfirmationAlert;
+
 - (void)photoWasDeleted:(STMShippingLocationPicture *)photo;
+
 
 @end

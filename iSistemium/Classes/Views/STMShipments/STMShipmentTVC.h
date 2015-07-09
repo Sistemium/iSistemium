@@ -8,11 +8,15 @@
 
 #import "STMVariableCellsHeightTVC.h"
 #import "STMDataModel.h"
+#import "STMShipmentRoutePointTVC.h"
 
 
 @interface STMShipmentTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMShipment *shipment;
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
+
+@property (nonatomic, weak) STMShipmentRoutePointTVC *parentVC;
+
 
 @end

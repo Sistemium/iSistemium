@@ -66,7 +66,7 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -77,6 +77,10 @@
             break;
             
         case 1:
+            return 1;
+            break;
+            
+        case 2:
             return self.resultsController.fetchedObjects.count;
             break;
             
@@ -94,7 +98,7 @@
             return NSLocalizedString(@"SHIPMENT", nil);
             break;
             
-        case 1:
+        case 2:
             return NSLocalizedString(@"SHIPMENT POSITIONS", nil);
             break;
             
@@ -107,13 +111,28 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    cell.accessoryView = nil;
+    [self flushCellBeforeUse:(STMCustom7TVCell *)cell];
     [self fillCell:cell atIndexPath:indexPath];
     
     return cell;
     
+}
+
+- (void)flushCellBeforeUse:(STMCustom7TVCell *)cell {
+    
+    cell.accessoryView = nil;
+
+    cell.titleLabel.font = [UIFont systemFontOfSize:cell.textLabel.font.pointSize];
+    cell.titleLabel.text = @"";
+    cell.titleLabel.textColor = [UIColor blackColor];
+    cell.titleLabel.textAlignment = NSTextAlignmentLeft;
+    
+    cell.detailLabel.text = @"";
+    cell.detailLabel.textColor = [UIColor blackColor];
+    cell.detailLabel.textAlignment = NSTextAlignmentLeft;
+
 }
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -141,6 +160,10 @@
                 break;
                 
             case 1:
+                [self fillProcessedButtonCell:(STMCustom7TVCell *)cell];
+                break;
+                
+            case 2:
                 [self fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
                 break;
                 
@@ -199,6 +222,21 @@
 //        cell.imageView.image = nil;
 //    }
 
+}
+
+- (void)fillProcessedButtonCell:(STMCustom7TVCell *)cell {
+    
+    cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+    cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
+    
+    cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+    cell.titleLabel.textAlignment = NSTextAlignmentCenter;
+
+    cell.detailLabel.text = (self.point.isReached.boolValue) ? @"" : NSLocalizedString(@"SHOULD CONFIRM ARRIVAL FIRST", nil);
+    
+    cell.detailLabel.textColor = [UIColor lightGrayColor];
+    cell.detailLabel.textAlignment = NSTextAlignmentCenter;
+    
 }
 
 - (void)fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -278,14 +316,14 @@
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 0) {
+    if (indexPath.section == 2) {
         
-        self.cachedCellsHeights[indexPath] = @(height);
+        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-2]] objectID];
+        self.cachedCellsHeights[objectID] = @(height);
         
     } else {
         
-        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1]] objectID];
-        self.cachedCellsHeights[objectID] = @(height);
+        self.cachedCellsHeights[indexPath] = @(height);
         
     }
     
@@ -293,14 +331,14 @@
 
 - (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 0) {
+    if (indexPath.section == 2) {
         
-        return self.cachedCellsHeights[indexPath];
+        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-2]] objectID];;
+        return self.cachedCellsHeights[objectID];
         
     } else {
-        
-        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1]] objectID];;
-        return self.cachedCellsHeights[objectID];
+
+        return self.cachedCellsHeights[indexPath];
         
     }
     

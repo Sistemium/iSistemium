@@ -259,4 +259,6 @@
 "CONFIRM SET LOCATION" = "Confirm set location";
 "ARRIVAL BUTTON TITLE" = "Arrive";
 "CONFIRM ARRIVAL?" = "Confirm arrival?";
+"SHIPMENT PROCESSED BUTTON START TITLE" = "Start shipping";
+"SHOULD CONFIRM ARRIVAL FIRST" = "Should confirm arrival first";
 

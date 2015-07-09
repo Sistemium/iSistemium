@@ -819,6 +819,7 @@
         STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
         [(STMShipmentTVC *)segue.destinationViewController setShipment:shipment];
         [(STMShipmentTVC *)segue.destinationViewController setPoint:self.point];
+        [(STMShipmentTVC *)segue.destinationViewController setParentVC:self];
         
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
