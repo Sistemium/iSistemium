@@ -263,4 +263,6 @@
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Stop shipping";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Should confirm arrival first";
 "START SHIPPING?" = "Start shipping?";
+"SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Shipment process was interrupted";
+"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Shipment process was interrupted";
 

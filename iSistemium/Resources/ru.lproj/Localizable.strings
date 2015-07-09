@@ -263,5 +263,7 @@
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Завершить отгрузку";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Необходимо отметить прибытие";
 "START SHIPPING?" = "Начать отгрузку?";
+"SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Процесс отгрузки был прерван";
+"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Все данные по накладной возвращены в исходное состояние.";
 
 

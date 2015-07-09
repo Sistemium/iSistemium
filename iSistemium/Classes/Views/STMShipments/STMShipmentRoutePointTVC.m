@@ -774,6 +774,17 @@
     
 }
 
+- (void)shippingProcessWasInterrupted {
+
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED TITLE", nil)
+                                                    message:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE", nil)
+                                                   delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                          otherButtonTitles:nil];
+    
+    [alert show];
+
+}
 
 #pragma mark - UIAlertViewDelegate
 

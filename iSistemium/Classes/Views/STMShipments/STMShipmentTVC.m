@@ -25,6 +25,7 @@
 
 @synthesize resultsController = _resultsController;
 
+
 - (NSString *)cellIdentifier {
     return @"shipmentPositionCell";
 }
@@ -513,10 +514,32 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    }
+
     if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+        
+        if ([STMShippingProcessController sharedInstance].state == STMShippingProcessRunning) {
+            
+            [STMShippingProcessController sharedInstance].state = STMShippingProcessIdle;
+            [self.parentVC shippingProcessWasInterrupted];
+            
+        }
         [self removeObservers];
+        
     }
     [super viewWillDisappear:animated];
     
