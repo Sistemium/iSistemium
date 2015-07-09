@@ -279,6 +279,8 @@
 }
 
 - (void)getLocation {
+    
+#warning - have to rewrite getting location, should give actual location, not previously received one
 
     if ([[NSDate date] timeIntervalSinceDate:self.lastLocation.timestamp] < self.timeFilter) {
         

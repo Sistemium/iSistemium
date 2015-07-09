@@ -12,6 +12,7 @@
 #import "STMFunctions.h"
 #import "STMSession.h"
 #import "STMPicturesController.h"
+#import "STMLocationController.h"
 
 #import "STMShipmentTVC.h"
 #import "STMShippingLocationMapVC.h"
@@ -23,17 +24,19 @@
 #define IMAGE_PADDING 6
 #define LIMIT_COUNT 4
 
-@interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
 @property (nonatomic, strong) NSString *arrivalButtonCellIdentifier;
 
+@property (nonatomic, strong) NSIndexPath *arrivalButtonCellIndexPath;
+
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMSession *session;
 
-//@property (nonatomic) BOOL isWaitingLocation;
+@property (nonatomic) BOOL isWaitingLocation;
 
 @property (nonatomic, strong) UIView *cameraOverlayView;
 @property (nonatomic, strong) STMImagePickerController *imagePickerController;
@@ -487,7 +490,7 @@
             
         case 1:
             cell = [tableView dequeueReusableCellWithIdentifier:self.arrivalButtonCellIdentifier forIndexPath:indexPath];
-            [self fillArrivalButtonCell:cell];
+            [self fillArrivalButtonCell:cell atIndexPath:indexPath];
             break;
 
         case 2:
@@ -541,7 +544,7 @@
 
 }
 
-- (void)fillArrivalButtonCell:(UITableViewCell *)cell {
+- (void)fillArrivalButtonCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
         
@@ -549,12 +552,20 @@
 
         buttonCell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
         buttonCell.titleLabel.text = NSLocalizedString(@"ARRIVAL BUTTON TITLE", nil);
-        buttonCell.titleLabel.textColor = (self.point.isReached.boolValue) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
+        buttonCell.titleLabel.textColor = (self.point.isReached.boolValue) ? [UIColor lightGrayColor] : ACTIVE_BLUE_COLOR;
         buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
         
-        buttonCell.detailLabel.text = @"";
+        if (self.point.reachedAtLocation) {
+            buttonCell.detailLabel.text = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:self.point.reachedAtLocation.timestamp];
+        } else {
+            buttonCell.detailLabel.text = @"";
+        }
+        
+        buttonCell.detailLabel.textColor = [UIColor lightGrayColor];
         buttonCell.detailLabel.textAlignment = NSTextAlignmentCenter;
 
+        self.arrivalButtonCellIndexPath = indexPath;
+        
     }
     
 }
@@ -710,6 +721,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    if (indexPath.section == 1) {
+        if (!self.point.isReached.boolValue) [self showArriveConfirmationAlert];
+    }
+    
     if (indexPath.section == 2) {
         
         switch (indexPath.row) {
@@ -743,6 +758,52 @@
         }
 
     }
+    
+}
+
+- (void)showArriveConfirmationAlert {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CONFIRM ARRIVAL?", nil) message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"NO", nil) otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    alert.tag = 333;
+    [alert show];
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+    switch (alertView.tag) {
+        case 333:
+
+            switch (buttonIndex) {
+                case 1:
+                    [self arrivalWasConfirmed];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+- (void)arrivalWasConfirmed {
+    
+    self.point.isReached = @YES;
+    
+    if (self.arrivalButtonCellIndexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[self.arrivalButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
+    self.isWaitingLocation = YES;
+    [self.session.locationTracker getLocation];
     
 }
 
@@ -782,32 +843,33 @@
 
 #pragma mark - notifications
 
-- (void)currentAccuracyUpdated:(NSNotification *)notification {
-    
+//- (void)currentAccuracyUpdated:(NSNotification *)notification {
+//    
 //    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];
-    
-}
+//    
+//}
 
 - (void)currentLocationWasUpdated:(NSNotification *)notification {
     
-//    if (self.isWaitingLocation) {
-//        
-//        CLLocation *currentLocation = notification.userInfo[@"currentLocation"];
-//        
-//        STMShippingLocation *location = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMShippingLocation class]) inManagedObjectContext:self.document.managedObjectContext];
-//        
-//        location.latitude = @(currentLocation.coordinate.latitude);
-//        location.longitude = @(currentLocation.coordinate.longitude);
-//        
-//        self.point.shippingLocation = location;
-//        
-//        [self.document saveDocument:^(BOOL success) {
-//            [self.tableView reloadData];
-//        }];
-//        
-//        self.isWaitingLocation = NO;
-//        
-//    }
+    if (self.isWaitingLocation) {
+        
+        CLLocation *currentLocation = notification.userInfo[@"currentLocation"];
+
+        STMLocation *location = [STMLocationController locationObjectFromCLLocation:currentLocation];
+
+        self.point.reachedAtLocation = location;
+        
+        [self.session.document saveDocument:^(BOOL success) {
+            
+        }];
+        
+        self.isWaitingLocation = NO;
+        
+        if (self.arrivalButtonCellIndexPath) {
+            [self.tableView reloadRowsAtIndexPaths:@[self.arrivalButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        
+    }
     
 }
 
@@ -826,7 +888,7 @@
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [nc addObserver:self selector:@selector(currentAccuracyUpdated:) name:@"currentAccuracyUpdated" object:self.session.locationTracker];
+//    [nc addObserver:self selector:@selector(currentAccuracyUpdated:) name:@"currentAccuracyUpdated" object:self.session.locationTracker];
     [nc addObserver:self selector:@selector(currentLocationWasUpdated:) name:@"currentLocationWasUpdated" object:self.session.locationTracker];
 
     [self.point addObserver:self forKeyPath:@"shippingLocation.location" options:NSKeyValueObservingOptionNew context:nil];
