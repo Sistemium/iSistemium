@@ -2,12 +2,13 @@
 //  STMLocation.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 02/07/15.
+//  Created by Maxim Grigoriev on 09/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
 #import "STMLocation.h"
 #import "STMPhoto.h"
+#import "STMShipmentRoutePoint.h"
 #import "STMShippingLocation.h"
 #import "STMTrack.h"
 
@@ -23,7 +24,8 @@
 @dynamic timestamp;
 @dynamic verticalAccuracy;
 @dynamic photos;
-@dynamic track;
 @dynamic shippings;
+@dynamic track;
+@dynamic shipmentRoutePoint;
 
 @end
