@@ -27,6 +27,8 @@
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
+@property (nonatomic, strong) NSString *arrivalButtonCellIdentifier;
+
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMSession *session;
@@ -75,6 +77,9 @@
     return @"shippingLocationCell";
 }
 
+- (NSString *)arrivalButtonCellIdentifier {
+    return @"arrivalButtonCell";
+}
 
 #pragma mark - resultsController
 
@@ -328,7 +333,7 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -339,10 +344,14 @@
             break;
             
         case 1:
-            return (self.point.shippingLocation.location) ? 2 : 1;
+            return 1;
             break;
             
         case 2:
+            return (self.point.shippingLocation.location) ? 2 : 1;
+            break;
+            
+        case 3:
             return self.resultsController.fetchedObjects.count;
             break;
 
@@ -360,7 +369,7 @@
             return NSLocalizedString(@"SHIPMENT ROUTE POINT", nil);
             break;
             
-        case 2:
+        case 3:
             return NSLocalizedString(@"SHIPMENTS", nil);
             break;
             
@@ -401,7 +410,7 @@
             }
             break;
             
-        case 1:
+        case 2:
             switch (indexPath.row) {
                 case 1:
                     return CELL_IMAGES_SIZE + IMAGE_PADDING * 2;
@@ -477,6 +486,11 @@
             break;
             
         case 1:
+            cell = [tableView dequeueReusableCellWithIdentifier:self.arrivalButtonCellIdentifier forIndexPath:indexPath];
+            [self fillArrivalButtonCell:cell];
+            break;
+
+        case 2:
             switch (indexPath.row) {
                 case 0:
                     cell = [tableView dequeueReusableCellWithIdentifier:self.shippingLocationCellIdentifier forIndexPath:indexPath];
@@ -492,8 +506,8 @@
                     break;
             }
             break;
-
-        case 2:
+            
+        case 3:
             cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
             [self fillCell:cell withShipment:self.resultsController.fetchedObjects[indexPath.row]];
             break;
@@ -525,6 +539,24 @@
 
     cell.accessoryType = UITableViewCellAccessoryNone;
 
+}
+
+- (void)fillArrivalButtonCell:(UITableViewCell *)cell {
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        
+        STMCustom7TVCell *buttonCell = (STMCustom7TVCell *)cell;
+
+        buttonCell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+        buttonCell.titleLabel.text = NSLocalizedString(@"ARRIVAL BUTTON TITLE", nil);
+        buttonCell.titleLabel.textColor = (self.point.isReached.boolValue) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
+        buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
+        
+        buttonCell.detailLabel.text = @"";
+        buttonCell.detailLabel.textAlignment = NSTextAlignmentCenter;
+
+    }
+    
 }
 
 - (void)fillCell:(UITableViewCell *)cell withShippingLocation:(STMShippingLocation *)shippingLocation {
@@ -678,7 +710,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 1) {
+    if (indexPath.section == 2) {
         
         switch (indexPath.row) {
             case 0:
@@ -702,7 +734,7 @@
         
     }
     
-    if (indexPath.section == 2) {
+    if (indexPath.section == 3) {
         
         STMShipment *shipment = self.resultsController.fetchedObjects[indexPath.row];
         
@@ -810,8 +842,9 @@
 
 - (void)customInit {
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.shippingLocationCellIdentifier];
-//    [self.tableView registerClass:[STMCustom7TVCell class] forCellReuseIdentifier:self.shippingLocationCellIdentifier];
+    UINib *custom7TVCellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
+    [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];
+    [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.arrivalButtonCellIdentifier];
     
     [self addObservers];
     [self performFetch];
