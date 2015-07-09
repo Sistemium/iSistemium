@@ -426,13 +426,15 @@
                           @"jpgQuality"               : @"0.0"
                           };
 
+    } else {
+    
+        startSettings = @{
+                          @"restServerURI"            : self.serviceUri,
+                          @"dataModelName"            : @"STMDataModel",
+                          };
+
     }
     
-    startSettings = @{
-                      @"restServerURI"            : self.serviceUri,
-                      @"dataModelName"            : @"STMDataModel",
-                      };
-
 #else
 
     startSettings = @{
