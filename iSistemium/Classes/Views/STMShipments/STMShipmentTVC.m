@@ -12,7 +12,7 @@
 #import "STMFunctions.h"
 
 
-@interface STMShipmentTVC ()
+@interface STMShipmentTVC () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSIndexPath *processedButtonCellIndexPath;
 
@@ -326,21 +326,62 @@
 
 - (void)routePointIsReached {
     
-    if (self.processedButtonCellIndexPath) {
-        [self.tableView reloadRowsAtIndexPaths:@[self.processedButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-    
+    [self reloadProcessedButtonCell];
     [self showShippingStartAlert];
     
 }
 
 - (void)showShippingStartAlert {
-    [self startShipping];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"START SHIPPING?", nil)
+                                                    message:@""
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    
+    alert.tag = 222;
+    [alert show];
+    
 }
 
 - (void)startShipping {
-    
+
+    [self reloadProcessedButtonCell];
+
     NSLogMethodName;
+    
+}
+
+- (void)reloadProcessedButtonCell {
+    
+    if (self.processedButtonCellIndexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[self.processedButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 222:
+            
+            switch (buttonIndex) {
+                case 1:
+                    [self startShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
     
 }
 
