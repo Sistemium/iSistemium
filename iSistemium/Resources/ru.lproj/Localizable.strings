@@ -260,6 +260,7 @@
 "ARRIVAL BUTTON TITLE" = "Прибыл";
 "CONFIRM ARRIVAL?" = "Отметить прибытие?";
 "SHIPMENT PROCESSED BUTTON START TITLE" = "Начать отгрузку";
+"SHIPMENT PROCESSED BUTTON STOP TITLE" = "Завершить отгрузку";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Необходимо отметить прибытие";
 "START SHIPPING?" = "Начать отгрузку?";
 

@@ -10,6 +10,7 @@
 #import "STMNS.h"
 #import "STMUI.h"
 #import "STMFunctions.h"
+#import "STMShippingProcessController.h"
 
 
 @interface STMShipmentTVC () <UIAlertViewDelegate>
@@ -232,7 +233,12 @@
 - (void)fillProcessedButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
-    cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
+    
+    if ([STMShippingProcessController sharedInstance].state == STMShippingProcessRunning) {
+        cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON STOP TITLE", nil);
+    } else {
+        cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
+    }
     
     cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
     cell.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -316,13 +322,20 @@
             
         } else {
             
-            [self showShippingStartAlert];
+            if ([STMShippingProcessController sharedInstance].state == STMShippingProcessRunning) {
+                [self showShippingStopAlert];
+            } else {
+                [self showShippingStartAlert];
+            }
             
         }
         
     }
     
 }
+
+
+#pragma mark - processed button
 
 - (void)routePointIsReached {
     
@@ -346,10 +359,23 @@
 
 - (void)startShipping {
 
+    [STMShippingProcessController sharedInstance].state = STMShippingProcessRunning;
+    [self reloadProcessedButtonCell];
+    
+}
+
+- (void)showShippingStopAlert {
+    
+    NSLogMethodName;
+    [self stopShipping];
+    
+}
+
+- (void)stopShipping {
+
+    [STMShippingProcessController sharedInstance].state = STMShippingProcessIdle;
     [self reloadProcessedButtonCell];
 
-    NSLogMethodName;
-    
 }
 
 - (void)reloadProcessedButtonCell {
