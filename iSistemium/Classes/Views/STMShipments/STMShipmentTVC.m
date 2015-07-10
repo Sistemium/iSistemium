@@ -12,8 +12,10 @@
 #import "STMFunctions.h"
 #import "STMShippingProcessController.h"
 
+#define POSITION_SECTION_NUMBER 2
 
-@interface STMShipmentTVC () <UIAlertViewDelegate>
+
+@interface STMShipmentTVC () <UIAlertViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) NSIndexPath *processedButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
@@ -99,7 +101,7 @@
             
         case 2:
         case 3:
-            return [self numberOfRowsInResultsControllerSection:section-2];
+            return [self numberOfRowsInResultsControllerSection:section - POSITION_SECTION_NUMBER];
             break;
             
         default:
@@ -322,13 +324,22 @@
 
 - (void)fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    STMShipmentPosition *position = self.resultsController.fetchedObjects[indexPath.row];
+    STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
     [self fillCell:cell withShipmentPosition:position];
     
-    UISwipeGestureRecognizer *swipeToRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToRight:)];
-    swipeToRight.direction = UISwipeGestureRecognizerDirectionRight;
+    if ([self shippingProcessIsRunning]) {
+        [self addSwipeGestureToCell:cell withPosition:position];
+    }
     
-    [cell addGestureRecognizer:swipeToRight];
+}
+
+- (STMShipmentPosition *)shipmentPositionForTableIndexPath:(NSIndexPath *)indexPath {
+
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - POSITION_SECTION_NUMBER];
+    
+    STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
+
+    return position;
     
 }
 
@@ -412,6 +423,35 @@
 
 #pragma mark - cell's swipe
 
+- (void)addSwipeGestureToCell:(UITableViewCell *)cell withPosition:(STMShipmentPosition *)position {
+    
+    UISwipeGestureRecognizer *swipe = nil;
+    
+    if (position.isProcessed.boolValue) {
+
+        swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToLeft:)];
+        swipe.direction = UISwipeGestureRecognizerDirectionLeft;
+
+    } else {
+    
+        swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToRight:)];
+        swipe.direction = UISwipeGestureRecognizerDirectionRight;
+
+    }
+    
+//    swipe.delegate = self;
+    
+    if (swipe) [cell addGestureRecognizer:swipe];
+
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    
+    NSLogMethodName;
+    return YES;
+    
+}
+
 - (void)removeSwipeGesturesFromCell:(UITableViewCell *)cell {
     
     for (UIGestureRecognizer *gesture in cell.gestureRecognizers) {
@@ -423,7 +463,35 @@
 }
 
 - (void)swipeToRight:(id)sender {
+
     NSLogMethodName;
+    
+    if ([sender isKindOfClass:[UISwipeGestureRecognizer class]]) {
+        
+        UITableViewCell *cell = (UITableViewCell *)[(UISwipeGestureRecognizer *)sender view];
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+
+        STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
+        position.isProcessed = @YES;
+        
+    }
+    
+}
+
+- (void)swipeToLeft:(id)sender {
+    
+    NSLogMethodName;
+    
+    if ([sender isKindOfClass:[UISwipeGestureRecognizer class]]) {
+        
+        UITableViewCell *cell = (UITableViewCell *)[(UISwipeGestureRecognizer *)sender view];
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        
+        STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
+        position.isProcessed = @NO;
+        
+    }
+    
 }
 
 
