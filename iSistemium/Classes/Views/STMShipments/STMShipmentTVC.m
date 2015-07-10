@@ -45,7 +45,7 @@
         
         request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"isProcessed.boolValue" cacheName:nil];
         
         _resultsController.delegate = self;
         
@@ -83,7 +83,7 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return ([self haveProcessedPositions]) ? 4 : 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -98,12 +98,26 @@
             break;
             
         case 2:
-            return self.resultsController.fetchedObjects.count;
+        case 3:
+            return [self numberOfRowsInResultsControllerSection:section-2];
             break;
             
         default:
             return 0;
             break;
+    }
+    
+}
+
+- (NSInteger)numberOfRowsInResultsControllerSection:(NSInteger)section {
+    
+    if (section < self.resultsController.sections.count) {
+        
+        id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
+        return [sectionInfo numberOfObjects];
+
+    } else {
+        return 0;
     }
     
 }
@@ -118,7 +132,11 @@
         case 2:
             return NSLocalizedString(@"SHIPMENT POSITIONS", nil);
             break;
-            
+
+        case 3:
+            return NSLocalizedString(@"PROCESSED SHIPMENT POSITIONS", nil);
+            break;
+
         default:
             return nil;
             break;
@@ -192,6 +210,7 @@
                 break;
                 
             case 2:
+            case 3:
                 [self fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
                 break;
                 

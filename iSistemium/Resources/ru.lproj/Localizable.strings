@@ -270,5 +270,6 @@
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Процесс отгрузки был прерван";
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Накладная осталась необработанной.";
 "UNPROCESSED SHIPMENTS ALERT TITLE" = "Остались необработанные накладные";
+"PROCESSED SHIPMENT POSITIONS" = "Обработанные позиции";
 
 
