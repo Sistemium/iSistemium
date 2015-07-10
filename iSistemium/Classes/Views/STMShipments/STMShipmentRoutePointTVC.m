@@ -689,6 +689,19 @@
     
     cell.textLabel.text = shipment.ndoc;
     
+    UIColor *titleColor = [UIColor blackColor];
+    
+    if (self.point.isReached.boolValue) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed != YES"];
+        NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
+        
+        titleColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
+        
+    }
+    
+    cell.textLabel.textColor = titleColor;
+    
     NSUInteger positionsCount = shipment.shipmentPositions.count;
     NSString *pluralType = [STMFunctions pluralTypeForCount:positionsCount];
     NSString *localizedString = [NSString stringWithFormat:@"%@POSITIONS", pluralType];
