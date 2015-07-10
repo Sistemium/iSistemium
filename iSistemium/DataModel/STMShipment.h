@@ -2,7 +2,7 @@
 //  STMShipment.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 27/06/15.
+//  Created by Maxim Grigoriev on 10/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSDate * date;
 @property (nonatomic, retain) NSString * ndoc;
 @property (nonatomic, retain) NSNumber * needCashing;
+@property (nonatomic, retain) NSNumber * isProcessed;
 @property (nonatomic, retain) STMDriver *driver;
 @property (nonatomic, retain) STMOutlet *outlet;
 @property (nonatomic, retain) STMSaleOrder *saleOrder;
