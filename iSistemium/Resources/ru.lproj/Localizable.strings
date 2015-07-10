@@ -265,5 +265,6 @@
 "START SHIPPING?" = "Начать отгрузку?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Процесс отгрузки был прерван";
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Все данные по накладной возвращены в исходное состояние.";
+"UNPROCESSED SHIPMENTS ALERT TITLE" = "Остались необработанные накладные";
 
 

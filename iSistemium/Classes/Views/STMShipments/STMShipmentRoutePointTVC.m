@@ -761,6 +761,9 @@
     
 }
 
+
+#pragma mark - alerts
+
 - (void)showArriveConfirmationAlert {
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CONFIRM ARRIVAL?", nil)
@@ -785,6 +788,34 @@
     [alert show];
 
 }
+
+- (void)checkShipments {
+    
+    if (self.point.isReached.boolValue) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed != YES"];
+        NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
+        
+        if (unprocessedShipmentsCount > 0) {
+            [self showUnprocessedShipmentsAlert];
+        }
+        
+    }
+    
+}
+
+- (void)showUnprocessedShipmentsAlert {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNPROCESSED SHIPMENTS ALERT TITLE", nil)
+                                                    message:nil
+                                                   delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                          otherButtonTitles:nil];
+    
+    [alert show];
+    
+}
+
 
 #pragma mark - UIAlertViewDelegate
 
@@ -942,7 +973,10 @@
 - (void)viewWillDisappear:(BOOL)animated {
     
     if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+        
+        [self checkShipments];
         [self removeObservers];
+        
     }
     [super viewWillDisappear:animated];
     
