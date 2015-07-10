@@ -39,9 +39,10 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentPosition class])];
         
+        NSSortDescriptor *processedDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"isProcessed.boolValue" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         
-        request.sortDescriptors = @[nameDescriptor];
+        request.sortDescriptors = @[processedDescriptor, nameDescriptor];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipment == %@", self.shipment];
         
