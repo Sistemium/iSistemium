@@ -45,7 +45,7 @@
         
         request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"isProcessed.boolValue" cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"wasProcessed" cacheName:nil];
         
         _resultsController.delegate = self;
         
