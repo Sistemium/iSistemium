@@ -271,5 +271,6 @@
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Накладная осталась необработанной.";
 "UNPROCESSED SHIPMENTS ALERT TITLE" = "Остались необработанные накладные";
 "PROCESSED SHIPMENT POSITIONS" = "Обработанные позиции";
-
+"NO LOCATION PERMISSION BLOCK TITLE" = "Геолокация запрещена";
+"NO LOCATION PERMISSION BLOCK MESSAGE" = "Необходимо разрешить геолокацию для продолжения работы";
 
