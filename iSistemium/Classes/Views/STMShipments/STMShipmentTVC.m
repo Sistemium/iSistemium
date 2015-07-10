@@ -377,6 +377,8 @@
             
         }
         
+    } else if ([indexPath isEqual:self.cancelButtonCellIndexPath]) {
+        [self showCancelShippingAlert];
     }
     
 }
@@ -411,15 +413,39 @@
     
 }
 
+- (void)showCancelShippingAlert {
+
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CANCEL SHIPPING?", nil)
+                                                    message:@""
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    
+    alert.tag = 333;
+    [alert show];
+
+}
+
+- (void)cancelShipping {
+    [self stopShipping];
+}
+
 - (void)showShippingStopAlert {
     
-    NSLogMethodName;
-    [self stopShipping];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
+                                                    message:@""
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    
+    alert.tag = 444;
+    [alert show];
     
 }
 
 - (void)stopShipping {
 
+    [[STMShippingProcessController sharedInstance].shipments removeObject:self.shipment];
     [self reloadButtonsSections];
 
 }
@@ -447,7 +473,6 @@
     
     switch (alertView.tag) {
         case 222:
-            
             switch (buttonIndex) {
                 case 1:
                     [self startShipping];
@@ -456,9 +481,30 @@
                 default:
                     break;
             }
-            
             break;
             
+        case 333:
+            switch (buttonIndex) {
+                case 1:
+                    [self cancelShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+
+        case 444:
+            switch (buttonIndex) {
+                case 1:
+                    [self stopShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+
         default:
             break;
     }

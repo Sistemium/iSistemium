@@ -265,6 +265,8 @@
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Cancel shipping";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Should confirm arrival first";
 "START SHIPPING?" = "Start shipping?";
+"CANCEL SHIPPING?" = "Cancel shipping?";
+"STOP SHIPPING?" = "Stop shipping?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Shipment process was interrupted";
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Shipment process was interrupted";
 "UNPROCESSED SHIPMENTS ALERT TITLE" = "You have unprocessed shipments";

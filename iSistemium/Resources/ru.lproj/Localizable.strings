@@ -265,6 +265,8 @@
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Отменить отгрузку";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Необходимо отметить прибытие";
 "START SHIPPING?" = "Начать отгрузку?";
+"CANCEL SHIPPING?" = "Отменить отгрузку?";
+"STOP SHIPPING?" = "Завершить отгрузку?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Процесс отгрузки был прерван";
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Накладная осталась необработанной.";
 "UNPROCESSED SHIPMENTS ALERT TITLE" = "Остались необработанные накладные";
