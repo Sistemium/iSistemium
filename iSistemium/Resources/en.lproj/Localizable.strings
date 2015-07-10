@@ -260,7 +260,9 @@
 "ARRIVAL BUTTON TITLE" = "Arrive";
 "CONFIRM ARRIVAL?" = "Confirm arrival?";
 "SHIPMENT PROCESSED BUTTON START TITLE" = "Start shipping";
+"SHIPMENT PROCESSED BUTTON CONTINUE TITLE" = "Continue shipping";
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Stop shipping";
+"SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Cancel shipping";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Should confirm arrival first";
 "START SHIPPING?" = "Start shipping?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Shipment process was interrupted";

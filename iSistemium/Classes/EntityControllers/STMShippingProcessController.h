@@ -18,6 +18,8 @@ typedef NS_ENUM(NSInteger, STMShippingProcessState) {
 
 @property (nonatomic) STMShippingProcessState state;
 
+@property (nonatomic, strong) NSMutableArray *shipments;
+
 
 + (STMShippingProcessController *)sharedInstance;
 

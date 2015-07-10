@@ -16,6 +16,7 @@
 @interface STMShipmentTVC () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSIndexPath *processedButtonCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
 
 
 @end
@@ -67,6 +68,17 @@
     
 }
 
+- (BOOL)haveProcessedPositions {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed == YES"];
+    return ([self.shipment.shipmentPositions filteredSetUsingPredicate:predicate].count > 0);
+    
+}
+
+- (BOOL)shippingProcessIsRunning {
+    return [[STMShippingProcessController sharedInstance].shipments containsObject:self.shipment];
+}
+
 
 #pragma mark - table view data
 
@@ -82,7 +94,7 @@
             break;
             
         case 1:
-            return 1;
+            return ([self shippingProcessIsRunning]) ? 2 : 1;
             break;
             
         case 2:
@@ -165,7 +177,18 @@
                 break;
                 
             case 1:
-                [self fillProcessedButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
+                switch (indexPath.row) {
+                    case 0:
+                        [self fillProcessedButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
+                        break;
+                        
+                    case 1:
+                        [self fillCancelButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
+                        break;
+                        
+                    default:
+                        break;
+                }
                 break;
                 
             case 2:
@@ -235,10 +258,18 @@
     
     cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
     
-    if ([STMShippingProcessController sharedInstance].state == STMShippingProcessRunning) {
+    if ([self shippingProcessIsRunning]) {
+        
         cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON STOP TITLE", nil);
+        
     } else {
-        cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
+        
+        if ([self haveProcessedPositions]) {
+            cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON CONTINUE TITLE", nil);
+        } else {
+            cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
+        }
+        
     }
     
     cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
@@ -251,6 +282,21 @@
     
     self.processedButtonCellIndexPath = indexPath;
     
+}
+
+- (void)fillCancelButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+    
+    cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON CANCEL TITLE", nil);
+    
+    cell.titleLabel.textColor = [UIColor redColor];
+    cell.titleLabel.textAlignment = NSTextAlignmentCenter;
+    
+    cell.detailLabel.text = @"";
+    
+    self.cancelButtonCellIndexPath = indexPath;
+
 }
 
 - (void)fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -323,7 +369,7 @@
             
         } else {
             
-            if ([STMShippingProcessController sharedInstance].state == STMShippingProcessRunning) {
+            if ([[STMShippingProcessController sharedInstance].shipments containsObject:self.shipment]) {
                 [self showShippingStopAlert];
             } else {
                 [self showShippingStartAlert];
@@ -360,9 +406,8 @@
 
 - (void)startShipping {
 
-    self.navigationItem.hidesBackButton = YES;
-    [STMShippingProcessController sharedInstance].state = STMShippingProcessRunning;
-    [self reloadProcessedButtonCell];
+    [[STMShippingProcessController sharedInstance].shipments addObject:self.shipment];
+    [self reloadButtonsSections];
     
 }
 
@@ -375,9 +420,7 @@
 
 - (void)stopShipping {
 
-    self.navigationItem.hidesBackButton = NO;
-    [STMShippingProcessController sharedInstance].state = STMShippingProcessIdle;
-    [self reloadProcessedButtonCell];
+    [self reloadButtonsSections];
 
 }
 
@@ -387,6 +430,14 @@
         [self.tableView reloadRowsAtIndexPaths:@[self.processedButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 
+}
+
+- (void)reloadButtonsSections {
+    
+    if (self.processedButtonCellIndexPath) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.processedButtonCellIndexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
 }
 
 
@@ -534,11 +585,8 @@
 
     if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
         
-        if ([STMShippingProcessController sharedInstance].state == STMShippingProcessRunning) {
-            
-            [STMShippingProcessController sharedInstance].state = STMShippingProcessIdle;
+        if (self.point.isReached.boolValue && !self.shipment.isProcessed.boolValue) {
             [self.parentVC shippingProcessWasInterrupted];
-            
         }
         [self removeObservers];
         

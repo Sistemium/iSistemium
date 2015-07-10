@@ -67,8 +67,19 @@
     
 }
 
+- (NSMutableArray *)shipments {
+    
+    if (!_shipments) {
+        _shipments = [NSMutableArray array];
+    }
+    return _shipments;
+    
+}
+
 - (void)flushSelf {
-    NSLogMethodName;
+
+    self.shipments = nil;
+
 }
 
 @end

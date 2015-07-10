@@ -260,11 +260,13 @@
 "ARRIVAL BUTTON TITLE" = "Прибыл";
 "CONFIRM ARRIVAL?" = "Отметить прибытие?";
 "SHIPMENT PROCESSED BUTTON START TITLE" = "Начать отгрузку";
+"SHIPMENT PROCESSED BUTTON CONTINUE TITLE" = "Продолжить отгрузку";
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Завершить отгрузку";
+"SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Отменить отгрузку";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Необходимо отметить прибытие";
 "START SHIPPING?" = "Начать отгрузку?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Процесс отгрузки был прерван";
-"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Все данные по накладной возвращены в исходное состояние.";
+"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Накладная осталась необработанной.";
 "UNPROCESSED SHIPMENTS ALERT TITLE" = "Остались необработанные накладные";
 
 
