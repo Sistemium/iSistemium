@@ -168,6 +168,8 @@
     cell.detailLabel.textColor = [UIColor blackColor];
     cell.detailLabel.textAlignment = NSTextAlignmentLeft;
 
+    [self removeSwipeGesturesFromCell:cell];
+    
 }
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -323,6 +325,11 @@
     STMShipmentPosition *position = self.resultsController.fetchedObjects[indexPath.row];
     [self fillCell:cell withShipmentPosition:position];
     
+    UISwipeGestureRecognizer *swipeToRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToRight:)];
+    swipeToRight.direction = UISwipeGestureRecognizerDirectionRight;
+    
+    [cell addGestureRecognizer:swipeToRight];
+    
 }
 
 - (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
@@ -400,6 +407,23 @@
         [self showCancelShippingAlert];
     }
     
+}
+
+
+#pragma mark - cell's swipe
+
+- (void)removeSwipeGesturesFromCell:(UITableViewCell *)cell {
+    
+    for (UIGestureRecognizer *gesture in cell.gestureRecognizers) {
+        if ([gesture isKindOfClass:[UISwipeGestureRecognizer class]]) {
+            [cell removeGestureRecognizer:gesture];
+        }
+    }
+    
+}
+
+- (void)swipeToRight:(id)sender {
+    NSLogMethodName;
 }
 
 
