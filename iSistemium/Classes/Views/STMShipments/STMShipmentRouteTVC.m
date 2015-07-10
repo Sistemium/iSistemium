@@ -162,6 +162,19 @@
     STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 
     cell.titleLabel.text = point.name;
+
+    UIColor *titleColor = [UIColor blackColor];
+    
+    if (point.isReached.boolValue) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed != YES"];
+        NSUInteger unprocessedShipmentsCount = [point.shipments filteredSetUsingPredicate:predicate].count;
+        
+        titleColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
+
+    }
+    
+    cell.titleLabel.textColor = titleColor;
     
     NSUInteger shipmentsCount = point.shipments.count;
     NSString *pluralType = [STMFunctions pluralTypeForCount:shipmentsCount];
@@ -194,7 +207,7 @@
     }
     
     cell.detailLabel.text = detailText;
-
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
