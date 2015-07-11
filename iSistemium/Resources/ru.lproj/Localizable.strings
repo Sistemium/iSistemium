@@ -267,6 +267,7 @@
 "START SHIPPING?" = "Начать отгрузку?";
 "CONTINUE SHIPPING?" = "Продолжить отгрузку?";
 "CANCEL SHIPPING?" = "Отменить отгрузку?";
+"CANCEL SHIPPING MESSAGE" = "Все позиции вернутся в исходное состояние.";
 "STOP SHIPPING?" = "Завершить отгрузку?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Процесс отгрузки был прерван";
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Накладная осталась необработанной.";

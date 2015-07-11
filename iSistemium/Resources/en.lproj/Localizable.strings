@@ -267,6 +267,7 @@
 "START SHIPPING?" = "Start shipping?";
 "CONTINUE SHIPPING?" = "Continue shipping?";
 "CANCEL SHIPPING?" = "Cancel shipping?";
+"CANCEL SHIPPING MESSAGE" = "Shipment position will be reseted";
 "STOP SHIPPING?" = "Stop shipping?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Shipment process was interrupted";
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Shipment process was interrupted";

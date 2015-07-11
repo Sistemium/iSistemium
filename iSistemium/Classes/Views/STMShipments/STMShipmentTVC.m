@@ -543,14 +543,20 @@
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         
         STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
-        position.doneVolume = @0;
-        position.badVolume = @0;
-        position.excessVolume = @0;
-        position.shortageVolume = @0;
-        position.isProcessed = @NO;
+        [self resetPosition:position];
         
     }
     
+}
+
+- (void)resetPosition:(STMShipmentPosition *)position {
+
+    position.doneVolume = nil;
+    position.badVolume = nil;
+    position.excessVolume = nil;
+    position.shortageVolume = nil;
+    position.isProcessed = nil;
+
 }
 
 
@@ -588,7 +594,7 @@
 - (void)showCancelShippingAlert {
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CANCEL SHIPPING?", nil)
-                                                    message:@""
+                                                    message:NSLocalizedString(@"CANCEL SHIPPING MESSAGE", nil)
                                                    delegate:self
                                           cancelButtonTitle:NSLocalizedString(@"NO", nil)
                                           otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
@@ -599,7 +605,13 @@
 }
 
 - (void)cancelShipping {
+    
+    for (STMShipmentPosition *position in self.shipment.shipmentPositions) {
+        [self resetPosition:position];
+    }
+    
     [self stopShipping];
+    
 }
 
 - (void)showStopShippingAlert {
