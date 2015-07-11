@@ -74,7 +74,14 @@
 
 - (BOOL)haveProcessedPositions {
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed == YES"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue == YES"];
+    return ([self.shipment.shipmentPositions filteredSetUsingPredicate:predicate].count > 0);
+    
+}
+
+- (BOOL)haveUnprocessedPositions {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
     return ([self.shipment.shipmentPositions filteredSetUsingPredicate:predicate].count > 0);
     
 }
@@ -423,7 +430,7 @@
         } else {
             
             if ([[STMShippingProcessController sharedInstance].shipments containsObject:self.shipment]) {
-                [self showShippingStopAlert];
+                [self showStopShippingAlert];
             } else {
                 [self showShippingStartAlert];
             }
@@ -595,17 +602,32 @@
     [self stopShipping];
 }
 
-- (void)showShippingStopAlert {
+- (void)showStopShippingAlert {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
-                                                    message:@""
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    UIAlertView *alert = nil;
     
-    alert.tag = 444;
-    [alert show];
+    if ([self haveUnprocessedPositions]) {
+        
+        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS", nil)
+                                           message:@""
+                                          delegate:self
+                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                 otherButtonTitles:nil];
+
+    } else {
     
+        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
+                                           message:@""
+                                          delegate:self
+                                 cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                 otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        
+        alert.tag = 444;
+
+    }
+
+    if (alert) [alert show];
+
 }
 
 - (void)stopShipping {
