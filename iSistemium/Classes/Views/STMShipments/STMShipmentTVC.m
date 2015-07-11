@@ -82,6 +82,14 @@
     return [[STMShippingProcessController sharedInstance].shipments containsObject:self.shipment];
 }
 
+- (NSIndexPath *)resultsControllerIndexPathFromTableIndexPath:(NSIndexPath *)indexPath {
+    return [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - POSITION_SECTION_NUMBER];
+}
+
+- (NSIndexPath *)tableIndexPathFromResultsControllerIndexPath:(NSIndexPath *)indexPath {
+    return [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section + POSITION_SECTION_NUMBER];
+}
+
 
 #pragma mark - table view data
 
@@ -394,7 +402,13 @@
     infoLabel.adjustsFontSizeToFitWidth = YES;
     
     cell.accessoryView = infoLabel;
+    
+    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : [UIColor blackColor];
 
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
+    infoLabel.textColor = textColor;
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -507,7 +521,9 @@
 
 - (void)showShippingStartAlert {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"START SHIPPING?", nil)
+    NSString *title = ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
                                                     message:@""
                                                    delegate:self
                                           cancelButtonTitle:NSLocalizedString(@"NO", nil)
@@ -664,18 +680,78 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView reloadData];
+    
+    if (![self shippingProcessIsRunning]) {
+        
+        self.cachedCellsHeights = nil;
+        [self.tableView reloadData];
+        
+    }
+
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     
+    sectionIndex = sectionIndex + POSITION_SECTION_NUMBER;
+    [super controller:controller didChangeSection:sectionInfo atIndex:sectionIndex forChangeType:type];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
+    if ([self shippingProcessIsRunning]) {
+        
+        self.cachedCellsHeights = nil;
+
+        switch (type) {
+                
+            case NSFetchedResultsChangeMove: {
+                NSLog(@"NSFetchedResultsChangeMove");
+                [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
+                break;
+            }
+                
+            default: {
+                [self.tableView reloadData];
+                break;
+            }
+                
+        }
+        
+    }
+    
 }
 
+- (void)moveObject:(id)anObject atIndexPath:indexPath toIndexPath:newIndexPath {
+    
+    if ([anObject isKindOfClass:[STMShipmentPosition class]]) {
+        
+        STMShipmentPosition *position = (STMShipmentPosition *)anObject;
+        
+        UITableViewRowAnimation rowAnimation = (position.isProcessed.boolValue) ? UITableViewRowAnimationRight : UITableViewRowAnimationLeft;
+    
+        indexPath = [self tableIndexPathFromResultsControllerIndexPath:indexPath];
+        newIndexPath = [self tableIndexPathFromResultsControllerIndexPath:newIndexPath];
+        
+        [self.tableView beginUpdates];
+        
+        [self.tableView deleteSections:self.deletedSectionIndexes withRowAnimation:rowAnimation];
+        [self.tableView insertSections:self.insertedSectionIndexes withRowAnimation:rowAnimation];
+        
+        self.insertedSectionIndexes = nil;
+        self.deletedSectionIndexes = nil;
+        
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:rowAnimation];
+        [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:rowAnimation];
+        
+        [self.tableView endUpdates];
+
+    } else {
+        [self.tableView reloadData];
+    }
+    
+}
 
 //#pragma mark - Navigation
 //
