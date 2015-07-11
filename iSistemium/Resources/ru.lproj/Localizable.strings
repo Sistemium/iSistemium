@@ -274,4 +274,8 @@
 "PROCESSED SHIPMENT POSITIONS" = "Обработанные позиции";
 "NO LOCATION PERMISSION BLOCK TITLE" = "Геолокация запрещена";
 "NO LOCATION PERMISSION BLOCK MESSAGE" = "Необходимо разрешить геолокацию для продолжения работы";
+"DONE VOLUME BUTTON" = "Отгрузить всё";
+"SHORTAGE VOLUME BUTTON" = "Недостаток";
+"EXCESS VOLUME BUTTON" = "Превышение";
+"BAD VOLUME BUTTON" = "Брак";
 

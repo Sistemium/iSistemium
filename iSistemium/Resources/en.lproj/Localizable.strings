@@ -274,3 +274,8 @@
 "PROCESSED SHIPMENT POSITIONS" = "Processed shipment positions";
 "NO LOCATION PERMISSION BLOCK TITLE" = "No location tracking allowed";
 "NO LOCATION PERMISSION BLOCK MESSAGE" = "You should allow location tracking to use app";
+"DONE VOLUME BUTTON" = "Done";
+"SHORTAGE VOLUME BUTTON" = "Shortage";
+"EXCESS VOLUME BUTTON" = "Excess";
+"BAD VOLUME BUTTON" = "Bad";
+

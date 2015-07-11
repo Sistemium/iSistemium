@@ -356,6 +356,24 @@
 - (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
     
     cell.titleLabel.text = position.article.name;
+    cell.detailLabel.text = @"";
+    
+    STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
+    infoLabel.text = [self infoTextForPosition:position];
+    infoLabel.textAlignment = NSTextAlignmentRight;
+    infoLabel.adjustsFontSizeToFitWidth = YES;
+    
+    cell.accessoryView = infoLabel;
+    
+    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : [UIColor blackColor];
+
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
+    infoLabel.textColor = textColor;
+    
+}
+
+- (NSString *)infoTextForPosition:(STMShipmentPosition *)position {
     
     NSString *volumeUnitString = nil;
     NSString *infoText = nil;
@@ -390,26 +408,8 @@
         
     }
     
-    //        customCell.infoLabel.text = infoText;
-    
-    //        volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-    //        customCell.detailLabel.text = [NSString stringWithFormat:@"%@%@", position.article.pieceVolume, volumeUnitString];
-    
-    cell.detailLabel.text = @"";
-    
-    STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
-    infoLabel.text = infoText;
-    infoLabel.textAlignment = NSTextAlignmentRight;
-    infoLabel.adjustsFontSizeToFitWidth = YES;
-    
-    cell.accessoryView = infoLabel;
-    
-    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    return infoText;
 
-    cell.titleLabel.textColor = textColor;
-    cell.detailLabel.textColor = textColor;
-    infoLabel.textColor = textColor;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -436,8 +436,12 @@
         
     } else if (indexPath.section >= POSITION_SECTION_INDEX) {
         
-        self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
-        [self showShippingActionSheet];
+        if ([self shippingProcessIsRunning]) {
+            
+            self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
+            [self showShippingActionSheet];
+            
+        }
         
     }
     
@@ -448,7 +452,9 @@
 
 - (void)showShippingActionSheet {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@""
+    NSString *title = [NSString stringWithFormat:@"%@ — %@", self.selectedPosition.article.name, [self infoTextForPosition:self.selectedPosition]];
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
                                                              delegate:self
                                                     cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
                                                destructiveButtonTitle:nil
@@ -456,19 +462,17 @@
     
     actionSheet.tag = 666;
     
-    [actionSheet addButtonWithTitle:@""];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"DONE VOLUME BUTTON", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"SHORTAGE VOLUME BUTTON", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"EXCESS VOLUME BUTTON", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"BAD VOLUME BUTTON", nil)];
     
-//    doneVolume
-//    shortageVolume
-//    excessVolume
-//    badVolume
-
-    
+    [actionSheet showInView:self.view];
     
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
+    NSLog(@"buttonIndex %d", buttonIndex);
 }
 
 #pragma mark - cell's swipe
