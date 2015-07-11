@@ -693,7 +693,7 @@
     
     if (self.point.isReached.boolValue) {
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed != YES"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
         NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
         
         titleColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
@@ -806,7 +806,7 @@
     
     if (self.point.isReached.boolValue) {
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed != YES"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
         NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
         
         if (unprocessedShipmentsCount > 0) {
