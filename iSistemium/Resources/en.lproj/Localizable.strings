@@ -271,4 +271,5 @@
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Shipment process was interrupted";
 "UNPROCESSED SHIPMENTS ALERT TITLE" = "You have unprocessed shipments";
 "PROCESSED SHIPMENT POSITIONS" = "Processed shipment positions";
-
+"NO LOCATION PERMISSION BLOCK TITLE" = "No location tracking allowed";
+"NO LOCATION PERMISSION BLOCK MESSAGE" = "You should allow location tracking to use app";
