@@ -12,14 +12,15 @@
 #import "STMFunctions.h"
 #import "STMShippingProcessController.h"
 
-#define POSITION_SECTION_NUMBER 2
+#define POSITION_SECTION_INDEX 2
 
 
-@interface STMShipmentTVC () <UIAlertViewDelegate, UIGestureRecognizerDelegate>
+@interface STMShipmentTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) NSIndexPath *processedButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
 
+@property (nonatomic, strong) STMShipmentPosition *selectedPosition;
 
 @end
 
@@ -83,11 +84,11 @@
 }
 
 - (NSIndexPath *)resultsControllerIndexPathFromTableIndexPath:(NSIndexPath *)indexPath {
-    return [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - POSITION_SECTION_NUMBER];
+    return [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - POSITION_SECTION_INDEX];
 }
 
 - (NSIndexPath *)tableIndexPathFromResultsControllerIndexPath:(NSIndexPath *)indexPath {
-    return [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section + POSITION_SECTION_NUMBER];
+    return [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section + POSITION_SECTION_INDEX];
 }
 
 
@@ -110,7 +111,7 @@
             
         case 2:
         case 3:
-            return [self numberOfRowsInResultsControllerSection:section - POSITION_SECTION_NUMBER];
+            return [self numberOfRowsInResultsControllerSection:section - POSITION_SECTION_INDEX];
             break;
             
         default:
@@ -344,7 +345,7 @@
 
 - (STMShipmentPosition *)shipmentPositionForTableIndexPath:(NSIndexPath *)indexPath {
 
-    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - POSITION_SECTION_NUMBER];
+    indexPath = [self resultsControllerIndexPathFromTableIndexPath:indexPath];
     
     STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
 
@@ -430,11 +431,45 @@
         }
         
     } else if ([indexPath isEqual:self.cancelButtonCellIndexPath]) {
+        
         [self showCancelShippingAlert];
+        
+    } else if (indexPath.section >= POSITION_SECTION_INDEX) {
+        
+        self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
+        [self showShippingActionSheet];
+        
     }
     
 }
 
+
+#pragma mark - action sheet
+
+- (void)showShippingActionSheet {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@""
+                                                             delegate:self
+                                                    cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:nil];
+    
+    actionSheet.tag = 666;
+    
+    [actionSheet addButtonWithTitle:@""];
+    
+//    doneVolume
+//    shortageVolume
+//    excessVolume
+//    badVolume
+
+    
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+}
 
 #pragma mark - cell's swipe
 
@@ -460,13 +495,6 @@
 
 }
 
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    
-    NSLogMethodName;
-    return YES;
-    
-}
-
 - (void)removeSwipeGesturesFromCell:(UITableViewCell *)cell {
     
     for (UIGestureRecognizer *gesture in cell.gestureRecognizers) {
@@ -479,7 +507,7 @@
 
 - (void)swipeToRight:(id)sender {
 
-    NSLogMethodName;
+//    NSLogMethodName;
     
     if ([sender isKindOfClass:[UISwipeGestureRecognizer class]]) {
         
@@ -487,6 +515,7 @@
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
 
         STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
+        position.doneVolume = position.volume;
         position.isProcessed = @YES;
         
     }
@@ -495,7 +524,7 @@
 
 - (void)swipeToLeft:(id)sender {
     
-    NSLogMethodName;
+//    NSLogMethodName;
     
     if ([sender isKindOfClass:[UISwipeGestureRecognizer class]]) {
         
@@ -503,6 +532,10 @@
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         
         STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
+        position.doneVolume = @0;
+        position.badVolume = @0;
+        position.excessVolume = @0;
+        position.shortageVolume = @0;
         position.isProcessed = @NO;
         
     }
@@ -693,7 +726,7 @@
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     
-    sectionIndex = sectionIndex + POSITION_SECTION_NUMBER;
+    sectionIndex = sectionIndex + POSITION_SECTION_INDEX;
     [super controller:controller didChangeSection:sectionInfo atIndex:sectionIndex forChangeType:type];
     
 }
@@ -707,7 +740,7 @@
         switch (type) {
                 
             case NSFetchedResultsChangeMove: {
-                NSLog(@"NSFetchedResultsChangeMove");
+//                NSLog(@"NSFetchedResultsChangeMove");
                 [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
                 break;
             }
