@@ -102,7 +102,7 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return ([self haveProcessedPositions]) ? 4 : 3;
+    return ([self haveProcessedPositions] && [self haveUnprocessedPositions]) ? 4 : 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
