@@ -432,7 +432,7 @@
             if ([[STMShippingProcessController sharedInstance].shipments containsObject:self.shipment]) {
                 [self showStopShippingAlert];
             } else {
-                [self showShippingStartAlert];
+                [self showStartShippingAlert];
             }
             
         }
@@ -565,22 +565,26 @@
 - (void)routePointIsReached {
     
     [self reloadProcessedButtonCell];
-    [self showShippingStartAlert];
+    [self showStartShippingAlert];
     
 }
 
-- (void)showShippingStartAlert {
+- (void)showStartShippingAlert {
     
-    NSString *title = ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                    message:@""
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        NSString *title = ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                        message:@""
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        
+        alert.tag = 222;
+        [alert show];
     
-    alert.tag = 222;
-    [alert show];
+    }];
     
 }
 
@@ -593,14 +597,18 @@
 
 - (void)showCancelShippingAlert {
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CANCEL SHIPPING?", nil)
-                                                    message:NSLocalizedString(@"CANCEL SHIPPING MESSAGE", nil)
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-    
-    alert.tag = 333;
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CANCEL SHIPPING?", nil)
+                                                        message:NSLocalizedString(@"CANCEL SHIPPING MESSAGE", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        
+        alert.tag = 333;
+        [alert show];
+
+    }];
 
 }
 
@@ -616,29 +624,33 @@
 
 - (void)showStopShippingAlert {
     
-    UIAlertView *alert = nil;
-    
-    if ([self haveUnprocessedPositions]) {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = nil;
         
-        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS", nil)
-                                           message:@""
-                                          delegate:self
-                                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                 otherButtonTitles:nil];
-
-    } else {
-    
-        alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
-                                           message:@""
-                                          delegate:self
-                                 cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                 otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        if ([self haveUnprocessedPositions]) {
+            
+            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS", nil)
+                                               message:@""
+                                              delegate:self
+                                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                     otherButtonTitles:nil];
+            
+        } else {
+            
+            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
+                                               message:@""
+                                              delegate:self
+                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            
+            alert.tag = 444;
+            
+        }
         
-        alert.tag = 444;
+        if (alert) [alert show];
 
-    }
-
-    if (alert) [alert show];
+    }];
 
 }
 
@@ -707,6 +719,14 @@
         default:
             break;
     }
+    
+}
+
+- (void)willPresentAlertView:(UIAlertView *)alertView {
+    
+}
+
+- (void)didPresentAlertView:(UIAlertView *)alertView {
     
 }
 
