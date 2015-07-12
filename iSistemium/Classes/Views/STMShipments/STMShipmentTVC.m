@@ -149,7 +149,7 @@
             break;
             
         case 2:
-            return NSLocalizedString(@"SHIPMENT POSITIONS", nil);
+            return ([self haveUnprocessedPositions]) ? NSLocalizedString(@"SHIPMENT POSITIONS", nil) : NSLocalizedString(@"PROCESSED SHIPMENT POSITIONS", nil);
             break;
 
         case 3:
