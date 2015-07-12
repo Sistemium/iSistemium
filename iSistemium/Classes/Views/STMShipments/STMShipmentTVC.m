@@ -591,7 +591,8 @@
 - (void)startShipping {
 
     [[STMShippingProcessController sharedInstance].shipments addObject:self.shipment];
-    [self reloadButtonsSections];
+//    [self reloadButtonsSections];
+    [self.tableView reloadData];
     
 }
 
@@ -657,7 +658,8 @@
 - (void)stopShipping {
 
     [[STMShippingProcessController sharedInstance].shipments removeObject:self.shipment];
-    [self reloadButtonsSections];
+//    [self reloadButtonsSections];
+    [self.tableView reloadData];
 
 }
 
