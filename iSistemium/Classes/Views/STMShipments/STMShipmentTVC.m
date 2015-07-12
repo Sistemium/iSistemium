@@ -22,6 +22,9 @@
 
 @property (nonatomic, strong) STMShipmentPosition *selectedPosition;
 
+@property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
+
+
 @end
 
 
@@ -29,6 +32,9 @@
 
 @synthesize resultsController = _resultsController;
 
+- (STMShippingProcessController *)shippingProcessController {
+    return [STMShippingProcessController sharedInstance];
+}
 
 - (NSString *)cellIdentifier {
     return @"shipmentPositionCell";
@@ -73,21 +79,15 @@
 }
 
 - (BOOL)haveProcessedPositions {
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue == YES"];
-    return ([self.shipment.shipmentPositions filteredSetUsingPredicate:predicate].count > 0);
-    
+    return [self.shippingProcessController haveProcessedPositionsAtShipment:self.shipment];
 }
 
 - (BOOL)haveUnprocessedPositions {
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
-    return ([self.shipment.shipmentPositions filteredSetUsingPredicate:predicate].count > 0);
-    
+    return [self.shippingProcessController haveUnprocessedPositionsAtShipment:self.shipment];
 }
 
 - (BOOL)shippingProcessIsRunning {
-    return [[STMShippingProcessController sharedInstance].shipments containsObject:self.shipment];
+    return [self.shippingProcessController shippingProcessIsRunningWithShipment:self.shipment];
 }
 
 - (NSIndexPath *)resultsControllerIndexPathFromTableIndexPath:(NSIndexPath *)indexPath {
@@ -429,7 +429,7 @@
             
         } else {
             
-            if ([[STMShippingProcessController sharedInstance].shipments containsObject:self.shipment]) {
+            if ([self.shippingProcessController.shipments containsObject:self.shipment]) {
                 [self showStopShippingAlert];
             } else {
                 [self showStartShippingAlert];
@@ -543,20 +543,10 @@
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         
         STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
-        [self resetPosition:position];
+        [self.shippingProcessController resetPosition:position];
         
     }
     
-}
-
-- (void)resetPosition:(STMShipmentPosition *)position {
-
-    position.doneVolume = nil;
-    position.badVolume = nil;
-    position.excessVolume = nil;
-    position.shortageVolume = nil;
-    position.isProcessed = nil;
-
 }
 
 
@@ -590,8 +580,7 @@
 
 - (void)startShipping {
 
-    [[STMShippingProcessController sharedInstance].shipments addObject:self.shipment];
-//    [self reloadButtonsSections];
+    [self.shippingProcessController startShippingWithShipment:self.shipment];
     [self.tableView reloadData];
     
 }
@@ -614,10 +603,8 @@
 }
 
 - (void)cancelShipping {
-    
-    for (STMShipmentPosition *position in self.shipment.shipmentPositions) {
-        [self resetPosition:position];
-    }
+
+    [self.shippingProcessController cancelShippingWithShipment:self.shipment];
     
     [self stopShipping];
     
@@ -656,10 +643,32 @@
 }
 
 - (void)stopShipping {
+    
+    [self.shippingProcessController stopShippingWithShipment:self.shipment withCompletionHandler:^(BOOL success) {
+        
+        if (!success) {
+            [self showStopShippingErrorAlert];
+        }
+        
+        [self.tableView reloadData];
+        
+    }];
 
-    [[STMShippingProcessController sharedInstance].shipments removeObject:self.shipment];
-//    [self reloadButtonsSections];
-    [self.tableView reloadData];
+}
+
+- (void)showStopShippingErrorAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS", nil)
+                                                        message:@""
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+
+        [alert show];
+        
+    }];
 
 }
 
