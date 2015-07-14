@@ -11,6 +11,8 @@
 #import "STMUI.h"
 #import "STMFunctions.h"
 #import "STMShippingProcessController.h"
+#import "STMShipmentVolumesVC.h"
+
 
 #define POSITION_SECTION_INDEX 2
 
@@ -366,7 +368,7 @@
     cell.detailLabel.text = @"";
     
     STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
-    infoLabel.text = [self infoTextForPosition:position];
+    infoLabel.text = [position infoText];
     infoLabel.textAlignment = NSTextAlignmentRight;
     infoLabel.adjustsFontSizeToFitWidth = YES;
     
@@ -380,44 +382,44 @@
     
 }
 
-- (NSString *)infoTextForPosition:(STMShipmentPosition *)position {
-    
-    NSString *volumeUnitString = nil;
-    NSString *infoText = nil;
-    
-    int volume = [position.volume intValue];
-    int packageRel = [position.article.packageRel intValue];
-    
-    if (packageRel != 0 && volume >= packageRel) {
-        
-        int package = floor(volume / packageRel);
-        
-        volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
-        NSString *packageString = [NSString stringWithFormat:@"%d %@", package, volumeUnitString];
-        
-        int bottle = volume % packageRel;
-        
-        if (bottle > 0) {
-            
-            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
-            NSString *bottleString = [NSString stringWithFormat:@" %d %@", bottle, volumeUnitString];
-            
-            packageString = [packageString stringByAppendingString:bottleString];
-            
-        }
-        
-        infoText = packageString;
-        
-    } else {
-        
-        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
-        infoText = [NSString stringWithFormat:@"%@ %@", position.volume, volumeUnitString];
-        
-    }
-    
-    return infoText;
-
-}
+//- (NSString *)infoTextForPosition:(STMShipmentPosition *)position {
+//    
+//    NSString *volumeUnitString = nil;
+//    NSString *infoText = nil;
+//    
+//    int volume = [position.volume intValue];
+//    int packageRel = [position.article.packageRel intValue];
+//    
+//    if (packageRel != 0 && volume >= packageRel) {
+//        
+//        int package = floor(volume / packageRel);
+//        
+//        volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
+//        NSString *packageString = [NSString stringWithFormat:@"%d %@", package, volumeUnitString];
+//        
+//        int bottle = volume % packageRel;
+//        
+//        if (bottle > 0) {
+//            
+//            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+//            NSString *bottleString = [NSString stringWithFormat:@" %d %@", bottle, volumeUnitString];
+//            
+//            packageString = [packageString stringByAppendingString:bottleString];
+//            
+//        }
+//        
+//        infoText = packageString;
+//        
+//    } else {
+//        
+//        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+//        infoText = [NSString stringWithFormat:@"%@ %@", position.volume, volumeUnitString];
+//        
+//    }
+//    
+//    return infoText;
+//
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -446,7 +448,8 @@
         if ([self shippingProcessIsRunning]) {
             
             self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
-            [self showShippingActionSheet];
+//            [self showShippingActionSheet];
+            [self performSegueWithIdentifier:@"showVolumes" sender:self];
             
         }
         
@@ -459,7 +462,7 @@
 
 - (void)showShippingActionSheet {
     
-    NSString *title = [NSString stringWithFormat:@"%@ — %@", self.selectedPosition.article.name, [self infoTextForPosition:self.selectedPosition]];
+    NSString *title = [NSString stringWithFormat:@"%@ — %@", self.selectedPosition.article.name, [self.selectedPosition infoText]];
     
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
                                                              delegate:self
@@ -859,22 +862,25 @@
     
 }
 
-//#pragma mark - Navigation
-//
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-//    
-//    if ([segue.identifier isEqualToString:@"showShipments"] &&
-//        [sender isKindOfClass:[NSIndexPath class]] &&
-//        [segue.destinationViewController isKindOfClass:[STMShipmentsTVC class]]) {
-//        
-//        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
-//        [(STMShipmentsTVC *)segue.destinationViewController setPoint:point];
-//        
-//    }
-//    
-//    
-//}
 
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showVolumes"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMShipmentVolumesVC class]]) {
+            
+            [(STMShipmentVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
+            
+        }
+        
+    }
+
+}
+
+
+#pragma mark - observers
 
 - (void)addObservers {
     

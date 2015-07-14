@@ -8,6 +8,7 @@
 
 #import "STMShipmentVolumesVC.h"
 #import "STMShipmentVolumeView.h"
+#import "STMConstants.h"
 
 
 @interface STMShipmentVolumesVC ()
@@ -38,11 +39,24 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)setupTitleTextView {
+    
+    self.titleTextView.text = [NSString stringWithFormat:@"%@ — %@", self.position.article.name, [self.position infoText]];
+
+//    self.titleTextView.layer.borderWidth = 1.0;
+//    self.titleTextView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    self.titleTextView.layer.cornerRadius = 5.0;
+    self.titleTextView.layer.backgroundColor = [STM_LIGHT_LIGHT_GREY_COLOR CGColor];
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     self.navigationController.navigationBarHidden = YES;
+
+    [self setupTitleTextView];
     
 }
 

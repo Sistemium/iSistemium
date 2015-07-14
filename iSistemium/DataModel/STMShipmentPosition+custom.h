@@ -12,4 +12,7 @@
 
 - (BOOL)wasProcessed;
 
+- (NSString *)infoText;
+
+
 @end

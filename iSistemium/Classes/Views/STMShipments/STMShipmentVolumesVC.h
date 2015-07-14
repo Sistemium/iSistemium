@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMDataModel.h"
+
 
 @interface STMShipmentVolumesVC : UIViewController
+
+@property (nonatomic, strong) STMShipmentPosition *position;
+
 
 @end
