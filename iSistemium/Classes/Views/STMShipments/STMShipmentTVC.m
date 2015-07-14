@@ -479,7 +479,11 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+
     NSLog(@"buttonIndex %d", buttonIndex);
+    
+    [self performSegueWithIdentifier:@"showVolumes" sender:self];
+    
 }
 
 #pragma mark - cell's swipe

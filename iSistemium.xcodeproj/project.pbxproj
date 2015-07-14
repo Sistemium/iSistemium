@@ -235,6 +235,8 @@
 		2CCD06D31B4EC1CE002591C4 /* STMShippingProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D21B4EC1CE002591C4 /* STMShippingProcessController.m */; };
 		2CCD06D71B4FACAF002591C4 /* STMShipment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D61B4FACAF002591C4 /* STMShipment.m */; };
 		2CCD06DA1B500AED002591C4 /* STMShipmentPosition+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D91B500AED002591C4 /* STMShipmentPosition+custom.m */; };
+		2CCD06DD1B54F2C1002591C4 /* STMShipmentVolumesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06DC1B54F2C1002591C4 /* STMShipmentVolumesVC.m */; };
+		2CCD06E01B54F2E9002591C4 /* STMShipmentVolumeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06DF1B54F2E9002591C4 /* STMShipmentVolumeView.m */; };
 		2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */; };
 		2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CD443F0195AD76E004ADE58 /* photo-icon.png */; };
 		2CD657A61AC17E3D00EAB4FF /* STMArticleGroup+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD657A51AC17E3D00EAB4FF /* STMArticleGroup+custom.m */; };
@@ -744,6 +746,10 @@
 		2CCD06D61B4FACAF002591C4 /* STMShipment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipment.m; sourceTree = "<group>"; };
 		2CCD06D81B500AED002591C4 /* STMShipmentPosition+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMShipmentPosition+custom.h"; sourceTree = "<group>"; };
 		2CCD06D91B500AED002591C4 /* STMShipmentPosition+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMShipmentPosition+custom.m"; sourceTree = "<group>"; };
+		2CCD06DB1B54F2C1002591C4 /* STMShipmentVolumesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentVolumesVC.h; sourceTree = "<group>"; };
+		2CCD06DC1B54F2C1002591C4 /* STMShipmentVolumesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentVolumesVC.m; sourceTree = "<group>"; };
+		2CCD06DE1B54F2E9002591C4 /* STMShipmentVolumeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentVolumeView.h; sourceTree = "<group>"; };
+		2CCD06DF1B54F2E9002591C4 /* STMShipmentVolumeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentVolumeView.m; sourceTree = "<group>"; };
 		2CD4311B1A850A4F00AFB5DE /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		2CD443F0195AD76E004ADE58 /* photo-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo-icon.png"; sourceTree = "<group>"; };
@@ -1586,6 +1592,10 @@
 				2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */,
 				2C29579D1B40335C00A2D163 /* STMShippingLocationPictureVC.h */,
 				2C29579E1B40335C00A2D163 /* STMShippingLocationPictureVC.m */,
+				2CCD06DB1B54F2C1002591C4 /* STMShipmentVolumesVC.h */,
+				2CCD06DC1B54F2C1002591C4 /* STMShipmentVolumesVC.m */,
+				2CCD06DE1B54F2E9002591C4 /* STMShipmentVolumeView.h */,
+				2CCD06DF1B54F2E9002591C4 /* STMShipmentVolumeView.m */,
 			);
 			path = STMShipments;
 			sourceTree = "<group>";
@@ -1821,6 +1831,7 @@
 				2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */,
 				2C88F1D11B1EDCF900E30418 /* STMSearchableTVC.m in Sources */,
 				2C02F2C31A8A995700E0E890 /* STMSpinnerView.m in Sources */,
+				2CCD06E01B54F2E9002591C4 /* STMShipmentVolumeView.m in Sources */,
 				2C65292219576895008605D9 /* STMTrack.m in Sources */,
 				2C1D72E41AB9A88700C97599 /* STMCustom1TVCell.m in Sources */,
 				2CCD06D31B4EC1CE002591C4 /* STMShippingProcessController.m in Sources */,
@@ -1928,6 +1939,7 @@
 				2C02F2C01A8A989000E0E890 /* STMAuthVC.m in Sources */,
 				2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */,
 				2CCD06D71B4FACAF002591C4 /* STMShipment.m in Sources */,
+				2CCD06DD1B54F2C1002591C4 /* STMShipmentVolumesVC.m in Sources */,
 				2C53B8A319409E71002298A5 /* STMBatteryTracker.m in Sources */,
 				2C7E7DBA1ABEEA0600A26185 /* STMStock.m in Sources */,
 				2C5797F51A436A4300EEFBA7 /* STMEntityController.m in Sources */,
