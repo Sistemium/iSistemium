@@ -24,13 +24,17 @@
 #define IMAGE_PADDING 6
 #define LIMIT_COUNT 4
 
-@interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+@interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate,
+                                        UIImagePickerControllerDelegate,
+                                        UIAlertViewDelegate,
+                                        NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
 @property (nonatomic, strong) NSString *arrivalButtonCellIdentifier;
 
 @property (nonatomic, strong) NSIndexPath *arrivalButtonCellIndexPath;
+//@property (nonatomic, strong) NSIndexSet *shipmentsIndexSet;
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
@@ -105,7 +109,7 @@
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         
-//        _resultsController.delegate = self;
+        _resultsController.delegate = self;
         
     }
     return _resultsController;
@@ -373,6 +377,7 @@
             break;
             
         case 3:
+//            self.shipmentsIndexSet = [NSIndexSet indexSetWithIndex:section];
             return NSLocalizedString(@"SHIPMENTS", nil);
             break;
             
@@ -689,18 +694,18 @@
     
     cell.textLabel.text = shipment.ndoc;
     
-    UIColor *titleColor = [UIColor blackColor];
+    UIColor *textColor = [UIColor blackColor];
     
     if (self.point.isReached.boolValue) {
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
         NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
         
-        titleColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
+        textColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
         
     }
     
-    cell.textLabel.textColor = titleColor;
+    cell.textLabel.textColor = textColor;
     
     NSUInteger positionsCount = shipment.shipmentPositions.count;
     NSString *pluralType = [STMFunctions pluralTypeForCount:positionsCount];
@@ -721,6 +726,7 @@
     }
     
     cell.detailTextLabel.text = detailText;
+    cell.detailTextLabel.textColor = textColor;
 
     if ([shipment.needCashing boolValue]) {
         
@@ -771,6 +777,26 @@
         }
 
     }
+    
+}
+
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView reloadData];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
 }
 
@@ -980,6 +1006,16 @@
     
     [super viewDidLoad];
     [self customInit];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+//    if (self.shipmentsIndexSet) {
+//        [self.tableView reloadSections:self.shipmentsIndexSet withRowAnimation:UITableViewRowAnimationNone];
+//    }
+    
+    [super viewWillAppear:animated];
     
 }
 

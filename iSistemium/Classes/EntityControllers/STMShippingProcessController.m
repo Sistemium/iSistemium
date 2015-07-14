@@ -99,6 +99,8 @@
         [self resetPosition:position];
     }
     
+    shipment.isProcessed = @NO;
+    
 }
 
 - (void)stopShippingWithShipment:(STMShipment *)shipment  withCompletionHandler:(void (^)(BOOL success))completionHandler {

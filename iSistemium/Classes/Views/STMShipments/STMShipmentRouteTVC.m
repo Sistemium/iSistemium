@@ -16,6 +16,9 @@
 
 @interface STMShipmentRouteTVC ()
 
+@property (nonatomic, strong) NSIndexSet *routePointsIndexSet;
+
+
 @end
 
 
@@ -98,6 +101,7 @@
             break;
             
         case 1:
+            self.routePointsIndexSet = [NSIndexSet indexSetWithIndex:section];
             return NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
             break;
             
@@ -312,6 +316,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    if (self.routePointsIndexSet) {
+        [self.tableView reloadSections:self.routePointsIndexSet withRowAnimation:UITableViewRowAnimationNone];
+    }
+    
+    [super viewWillAppear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {
