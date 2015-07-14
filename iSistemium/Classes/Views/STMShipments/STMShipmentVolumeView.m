@@ -117,6 +117,8 @@
     NSString *boxCountString = [NSString stringWithFormat:@"%d", (int)self.boxCountStepper.value];
     self.boxCountLabel.text = boxCountString;
     
+    [self bottleCountStepperWraps];
+    
 }
 
 - (void)bottleCountChange {
@@ -144,6 +146,16 @@
         
         self.bottleCountPreviousValue = self.bottleCountStepper.value;
 
+        [self bottleCountStepperWraps];
+        
+    }
+    
+}
+
+- (void)bottleCountStepperWraps {
+    
+    if (self.volumeLimit) {
+        
         if (self.volume + 1 > self.volumeLimit) {
             
             self.bottleCountStepper.maximumValue = self.bottleCountStepper.value;
@@ -156,16 +168,18 @@
             
         }
         
+    } else {
+        self.bottleCountStepper.wraps = (self.volume - 1 >= 0);
     }
-    
+
 }
 
 - (BOOL)isBottleCountWrapUp {
-    return ((self.bottleCountPreviousValue == self.bottleCountStepper.maximumValue) && (self.bottleCountStepper.value == self.bottleCountStepper.minimumValue));
+    return ((self.bottleCountPreviousValue == self.packageRel - 1) && (self.bottleCountStepper.value == 0));
 }
 
 - (BOOL)isBottleCountWrapDown {
-    return ((self.bottleCountPreviousValue == self.bottleCountStepper.minimumValue) && (self.bottleCountStepper.value == self.bottleCountStepper.maximumValue));
+    return ((self.bottleCountPreviousValue == 0) && (self.bottleCountStepper.value == self.packageRel - 1));
 }
 
 
@@ -209,6 +223,9 @@
     
     self.boxCountLabel.text = [[NSNumber numberWithInteger:0] stringValue];
     self.bottleCountLabel.text = [[NSNumber numberWithInteger:0] stringValue];
+    
+    [self boxCountStepper];
+    [self bottleCountStepper];
     
 }
 
