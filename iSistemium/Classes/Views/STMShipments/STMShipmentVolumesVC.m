@@ -67,11 +67,22 @@
         
         [volumeView nullifyView];
         volumeView.packageRel = self.position.article.packageRel.integerValue;
-        
+
+        [volumeView.allCountButton setTitle:NSLocalizedString(@"ALL VOLUME BUTTON", nil) forState:UIControlStateNormal];
+        [volumeView.allCountButton setTitle:@"" forState:UIControlStateDisabled];
+
     }
 
     self.doneVolumeView.volumeLimit = self.position.volume.integerValue;
     self.shortageVolumeView.volumeLimit = self.position.volume.integerValue;
+    self.badVolumeView.volumeLimit = self.position.volume.integerValue;
+
+    self.doneVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"DONE VOLUME BUTTON", nil)];
+    self.excessVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"EXCESS VOLUME BUTTON", nil)];
+    self.shortageVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"SHORTAGE VOLUME BUTTON", nil)];
+    self.badVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"BAD VOLUME BUTTON", nil)];
+    
+    self.excessVolumeView.allCountButton.enabled = NO;
     
 }
 

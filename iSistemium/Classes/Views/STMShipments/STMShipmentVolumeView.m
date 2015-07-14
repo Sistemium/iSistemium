@@ -102,6 +102,14 @@
     
 }
 
+- (NSInteger)bottleCountPreviousValue {
+    
+    if (!_bottleCountPreviousValue) {
+        _bottleCountPreviousValue = 0;
+    }
+    return _bottleCountPreviousValue;
+    
+}
 
 #pragma mark - actions
 
@@ -114,22 +122,30 @@
 
 - (void)bottleCountChange {
     
-    NSString *bottleCountString = [NSString stringWithFormat:@"%d", (int)self.bottleCountStepper.value];
-    self.bottleCountLabel.text = bottleCountString;
+    if ((self.volumeLimit && (self.volume > self.volumeLimit)) || self.volume < 0) {
+        
+        self.bottleCountStepper.value = self.bottleCountPreviousValue;
+        
+    } else {
     
-    if ([self isBottleCountWrapUp]) {
+        if ([self isBottleCountWrapUp]) {
+            
+            self.boxCountStepper.value += 1;
+            [self boxCountChange];
+            
+        } else if ([self isBottleCountWrapDown]) {
+            
+            self.boxCountStepper.value -= 1;
+            [self boxCountChange];
+            
+        }
         
-        self.boxCountStepper.value += 1;
-        [self boxCountChange];
+        NSString *bottleCountString = [NSString stringWithFormat:@"%d", (int)self.bottleCountStepper.value];
+        self.bottleCountLabel.text = bottleCountString;
         
-    } else if ([self isBottleCountWrapDown]) {
-        
-        self.boxCountStepper.value -= 1;
-        [self boxCountChange];
-        
+        self.bottleCountPreviousValue = self.bottleCountStepper.value;
+
     }
-    
-    self.bottleCountPreviousValue = self.bottleCountStepper.value;
     
 }
 
