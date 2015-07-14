@@ -85,7 +85,6 @@
     if (!_bottleCountStepper) {
         
         _bottleCountStepper = [self stepperWithTag:6];
-        _bottleCountStepper.wraps = YES;
         [_bottleCountStepper addTarget:self
                                 action:@selector(bottleCountChange)
                       forControlEvents:UIControlEventValueChanged];
@@ -145,6 +144,18 @@
         
         self.bottleCountPreviousValue = self.bottleCountStepper.value;
 
+        if (self.volume + 1 > self.volumeLimit) {
+            
+            self.bottleCountStepper.maximumValue = self.bottleCountStepper.value;
+            self.bottleCountStepper.wraps = NO;
+            
+        } else {
+            
+            self.bottleCountStepper.maximumValue = self.packageRel - 1;
+            self.bottleCountStepper.wraps = (self.volume - 1 >= 0);
+            
+        }
+        
     }
     
 }
@@ -186,12 +197,6 @@
         
         NSInteger boxCountMax = floor(volumeLimit/self.packageRel);
         self.boxCountStepper.maximumValue = boxCountMax;
-        
-        if (boxCountMax == 0) {
-            
-            self.bottleCountStepper.maximumValue = volumeLimit;
-            
-        }
         
     }
     
