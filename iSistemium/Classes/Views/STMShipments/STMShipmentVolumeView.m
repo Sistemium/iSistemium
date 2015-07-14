@@ -123,6 +123,17 @@
 
 - (void)bottleCountChange {
     
+    if (self.bottleCountStepper.value == -1 && self.bottleCountStepper.minimumValue == -1) {
+
+        self.bottleCountStepper.maximumValue = self.packageRel - 1;
+        self.bottleCountStepper.minimumValue = 0;
+        self.bottleCountStepper.value = self.bottleCountStepper.maximumValue;
+
+        self.boxCountStepper.value -= 1;
+        [self boxCountChange];
+
+    }
+    
     if ((self.volumeLimit && (self.volume > self.volumeLimit)) || self.volume < 0) {
         
         self.bottleCountStepper.value = self.bottleCountPreviousValue;
@@ -159,11 +170,13 @@
         if (self.volume + 1 > self.volumeLimit) {
             
             self.bottleCountStepper.maximumValue = self.bottleCountStepper.value;
+            self.bottleCountStepper.minimumValue = (self.bottleCountStepper.value == 0) ? -1 : 0;
             self.bottleCountStepper.wraps = NO;
             
         } else {
             
             self.bottleCountStepper.maximumValue = self.packageRel - 1;
+            self.bottleCountStepper.minimumValue = 0;
             self.bottleCountStepper.wraps = (self.volume - 1 >= 0);
             
         }
