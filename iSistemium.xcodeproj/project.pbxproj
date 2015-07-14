@@ -181,7 +181,6 @@
 		2C7678311B4125100085C514 /* location.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C7678301B4125100085C514 /* location.png */; };
 		2C7678361B4193E10085C514 /* STMShippingLocationMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7678331B4193E10085C514 /* STMShippingLocationMapVC.m */; };
 		2C7678371B4193E10085C514 /* STMMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7678351B4193E10085C514 /* STMMapAnnotation.m */; };
-		2C76783A1B419CB40085C514 /* STMMapCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7678391B419CB40085C514 /* STMMapCircle.m */; };
 		2C7E7DA41ABCA77800A26185 /* STMCustom2TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */; };
 		2C7E7DA71ABCA94700A26185 /* STMCustom2TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */; };
 		2C7E7DB71ABEEA0600A26185 /* STMPrice.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DB61ABEEA0600A26185 /* STMPrice.m */; };
@@ -624,8 +623,6 @@
 		2C7678331B4193E10085C514 /* STMShippingLocationMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationMapVC.m; sourceTree = "<group>"; };
 		2C7678341B4193E10085C514 /* STMMapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMapAnnotation.h; sourceTree = "<group>"; };
 		2C7678351B4193E10085C514 /* STMMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMapAnnotation.m; sourceTree = "<group>"; };
-		2C7678381B419CB40085C514 /* STMMapCircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMapCircle.h; sourceTree = "<group>"; };
-		2C7678391B419CB40085C514 /* STMMapCircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMapCircle.m; sourceTree = "<group>"; };
 		2C76783C1B43C1D90085C514 /* STMDevDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDevDef.h; sourceTree = "<group>"; };
 		2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom2TVCell.xib; sourceTree = "<group>"; };
 		2C7E7DA51ABCA94700A26185 /* STMCustom2TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom2TVCell.h; sourceTree = "<group>"; };
@@ -1586,8 +1583,6 @@
 				2C7678331B4193E10085C514 /* STMShippingLocationMapVC.m */,
 				2C7678341B4193E10085C514 /* STMMapAnnotation.h */,
 				2C7678351B4193E10085C514 /* STMMapAnnotation.m */,
-				2C7678381B419CB40085C514 /* STMMapCircle.h */,
-				2C7678391B419CB40085C514 /* STMMapCircle.m */,
 				2C29579A1B40333600A2D163 /* STMShippingLocationPicturesPVC.h */,
 				2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */,
 				2C29579D1B40335C00A2D163 /* STMShippingLocationPictureVC.h */,
@@ -1901,7 +1896,6 @@
 				2CEAC14B1B3BEBB500AD068E /* STMDriver.m in Sources */,
 				2C5764191AA5E1E500B9FD2C /* STMAddPartnerVC.m in Sources */,
 				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,
-				2C76783A1B419CB40085C514 /* STMMapCircle.m in Sources */,
 				2C57645D1AAB138600B9FD2C /* STMOrdersMasterPVC.m in Sources */,
 				2C8047231A12352F00FEFEFF /* STMUncashingPhotoVC.m in Sources */,
 				2C559F681AC040BB00E25831 /* STMArticleGroup.m in Sources */,
