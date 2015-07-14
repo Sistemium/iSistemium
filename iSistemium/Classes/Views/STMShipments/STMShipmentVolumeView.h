@@ -17,5 +17,12 @@
 @property (nonatomic, strong) UIStepper *boxCountStepper;
 @property (nonatomic, strong) UIStepper *bottleCountStepper;
 
+@property (nonatomic) NSInteger packageRel;
+@property (nonatomic) NSInteger volume;
+@property (nonatomic) NSInteger volumeLimit;
+
+
+- (void)nullifyView;
+
 
 @end

@@ -21,11 +21,22 @@
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 
+@property (nonatomic, strong) NSArray *volumeViews;
 
 @end
 
 
 @implementation STMShipmentVolumesVC
+
+- (NSArray *)volumeViews {
+    
+    if (!_volumeViews) {
+        _volumeViews = @[self.doneVolumeView, self.excessVolumeView, self.shortageVolumeView, self.badVolumeView];
+    }
+    return _volumeViews;
+    
+}
+
 
 - (IBAction)cancelButtonPressed:(id)sender {
     [self dismissSelf];
@@ -50,6 +61,20 @@
     
 }
 
+- (void)initVolumeViews {
+    
+    for (STMShipmentVolumeView *volumeView in self.volumeViews) {
+        
+        [volumeView nullifyView];
+        volumeView.packageRel = self.position.article.packageRel.integerValue;
+        
+    }
+
+    self.doneVolumeView.volumeLimit = self.position.volume.integerValue;
+    self.shortageVolumeView.volumeLimit = self.position.volume.integerValue;
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -57,6 +82,7 @@
     self.navigationController.navigationBarHidden = YES;
 
     [self setupTitleTextView];
+    [self initVolumeViews];
     
 }
 
