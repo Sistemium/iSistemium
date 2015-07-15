@@ -101,6 +101,8 @@
     
     shipment.isProcessed = @NO;
     
+    [self.shipments removeObject:shipment];
+    
 }
 
 - (void)stopShippingWithShipment:(STMShipment *)shipment  withCompletionHandler:(void (^)(BOOL success))completionHandler {

@@ -635,8 +635,10 @@
 - (void)cancelShipping {
 
     [self.shippingProcessController cancelShippingWithShipment:self.shipment];
-    
-    [self stopShipping];
+
+    [self.tableView reloadData];
+
+//    [self stopShipping];
     
 }
 
