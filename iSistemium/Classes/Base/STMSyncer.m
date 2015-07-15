@@ -822,6 +822,13 @@
             
         }
         
+        if (syncDataArray.count >= 100) {
+            
+            NSLog(@"Syncer JSONFrom break");
+            break;
+            
+        }
+        
     }
     
     self.sendedEntities = [[[NSSet setWithArray:self.sendedEntities] allObjects] mutableCopy];
