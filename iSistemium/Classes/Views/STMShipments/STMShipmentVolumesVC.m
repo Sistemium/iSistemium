@@ -11,6 +11,8 @@
 #import "STMConstants.h"
 #import "STMShippingProcessController.h"
 
+#define MAX_VOLUME_LIMIT 10000
+
 
 @interface STMShipmentVolumesVC () <UIAlertViewDelegate>
 
@@ -141,23 +143,27 @@
     for (STMShipmentVolumeView *volumeView in self.volumeViews) {
         
         [volumeView nullifyView];
+        
         volumeView.packageRel = self.position.article.packageRel.integerValue;
+        volumeView.volumeLimit = self.position.volume.integerValue;
 
         [volumeView.allCountButton setTitle:NSLocalizedString(@"ALL VOLUME BUTTON", nil) forState:UIControlStateNormal];
         [volumeView.allCountButton setTitle:@"" forState:UIControlStateDisabled];
 
     }
 
-    self.doneVolumeView.volumeLimit = self.position.volume.integerValue;
-    self.shortageVolumeView.volumeLimit = self.position.volume.integerValue;
-    self.badVolumeView.volumeLimit = self.position.volume.integerValue;
+    self.excessVolumeView.volumeLimit = MAX_VOLUME_LIMIT;
+    self.excessVolumeView.allCountButton.enabled = NO;
+    
+    self.doneVolumeView.volume = self.position.doneVolume.integerValue;
+    self.excessVolumeView.volume = self.position.excessVolume.integerValue;
+    self.shortageVolumeView.volume = self.position.shortageVolume.integerValue;
+    self.badVolumeView.volume = self.position.badVolume.integerValue;
 
     self.doneVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"DONE VOLUME LABEL", nil)];
     self.excessVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
     self.shortageVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
     self.badVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"BAD VOLUME LABEL", nil)];
-    
-    self.excessVolumeView.allCountButton.enabled = NO;
     
 }
 

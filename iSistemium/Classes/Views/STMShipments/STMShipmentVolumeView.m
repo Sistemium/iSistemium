@@ -247,6 +247,23 @@
     
 }
 
+- (void)setVolume:(NSInteger)volume {
+    
+    if (self.packageRel && self.packageRel != 0) {
+        
+        NSInteger boxCount = floor(volume / self.packageRel);
+        self.boxCountStepper.value = boxCount;
+        
+        NSInteger bottleCount = volume % self.packageRel;
+        self.bottleCountStepper.value = bottleCount;
+        
+        [self updateBoxCountLabel];
+        [self updateBottleCountLabel];
+        
+    }
+    
+}
+
 - (void)setPackageRel:(NSInteger)packageRel {
     
     _packageRel = packageRel;
