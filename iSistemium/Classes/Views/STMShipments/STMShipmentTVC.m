@@ -944,7 +944,7 @@
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }
 
-    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+    if (![self.navigationController.viewControllers containsObject:self]) {
         
         if (self.point.isReached.boolValue && !self.shipment.isProcessed.boolValue) {
             [self.parentVC shippingProcessWasInterrupted];

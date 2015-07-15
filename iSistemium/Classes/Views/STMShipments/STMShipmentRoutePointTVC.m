@@ -698,11 +698,13 @@
     
     if (self.point.isReached.boolValue) {
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
-        NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
-        
-        textColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
-        
+//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
+//        NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
+//        
+//        textColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
+
+        textColor = (shipment.isProcessed.boolValue) ? [UIColor lightGrayColor] : [UIColor redColor];
+
     }
     
     cell.textLabel.textColor = textColor;
@@ -1021,7 +1023,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+    if (![self.navigationController.viewControllers containsObject:self]) {
         
         [self checkShipments];
         [self removeObservers];

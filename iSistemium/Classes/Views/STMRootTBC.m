@@ -370,27 +370,29 @@
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
 
     if ([viewController isEqual:self.selectedViewController]) {
+        
         self.currentTappedVC = viewController;
-    }
-    
-//    NSString *logMessage = [NSString stringWithFormat:@"shouldSelect tab %@", viewController.tabBarItem.title];
-//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+        [self currentTabBarItemDidTapped];
+        self.currentTappedVC = nil;
 
-    return YES;
+        return NO;
+        
+    } else {
+    
+        return YES;
+
+    }
     
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
-    if (self.currentTappedVC) {
-        
-        [self currentTabBarItemDidTapped];
-        self.currentTappedVC = nil;
-        
-    }
-    
-//    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
-//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+//    if (self.currentTappedVC) {
+//        
+//        [self currentTabBarItemDidTapped];
+//        self.currentTappedVC = nil;
+//        
+//    }
 
 }
 
