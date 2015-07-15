@@ -137,13 +137,29 @@
     
     NSInteger packageRel = position.article.packageRel.integerValue;
     
+    NSString *parametersString = [self volumesStringWithDoneVolume:doneVolume
+                                                    shortageVolume:shortageVolume
+                                                      excessVolume:excessVolume
+                                                         badVolume:badVolume
+                                                        packageRel:packageRel];
+
+    NSString *endString = @"?";
+
+    NSString *checkingInfo = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@\n\n%@", beginningString, positionTitle, middleString, parametersString, endString];
+    
+    return checkingInfo;
+    
+}
+
+- (NSString *)volumesStringWithDoneVolume:(NSInteger)doneVolume shortageVolume:(NSInteger)shortageVolume excessVolume:(NSInteger)excessVolume badVolume:(NSInteger)badVolume packageRel:(NSInteger)packageRel {
+    
     NSString *parametersString = nil;
     
     if (doneVolume > 0) {
         
         NSString *doneVolumeString = [STMFunctions volumeStringWithVolume:doneVolume andPackageRel:packageRel];
         NSString *doneString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DONE VOLUME LABEL", nil), doneVolumeString];
-
+        
         parametersString = [NSString stringWithFormat:@"%@%@\n", (parametersString) ? parametersString : @"", doneString];
         
     }
@@ -152,34 +168,30 @@
         
         NSString *excessVolumeString = [STMFunctions volumeStringWithVolume:excessVolume andPackageRel:packageRel];
         NSString *excessString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"EXCESS VOLUME LABEL", nil), excessVolumeString];
-
+        
         parametersString = [NSString stringWithFormat:@"%@%@\n", (parametersString) ? parametersString : @"", excessString];
-
+        
     }
-
+    
     if (shortageVolume > 0) {
         
         NSString *shortageVolumeString = [STMFunctions volumeStringWithVolume:shortageVolume andPackageRel:packageRel];
         NSString *shortageString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil), shortageVolumeString];
-
+        
         parametersString = [NSString stringWithFormat:@"%@%@\n", (parametersString) ? parametersString : @"", shortageString];
-
+        
     }
-
+    
     if (badVolume > 0) {
         
         NSString *badVolumeString = [STMFunctions volumeStringWithVolume:badVolume andPackageRel:packageRel];
         NSString *badString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BAD VOLUME LABEL", nil), badVolumeString];
-
+        
         parametersString = [NSString stringWithFormat:@"%@%@\n", (parametersString) ? parametersString : @"", badString];
         
     }
 
-    NSString *endString = @"?";
-
-    NSString *checkingInfo = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@\n\n%@", beginningString, positionTitle, middleString, parametersString, endString];
-    
-    return checkingInfo;
+    return parametersString;
     
 }
 

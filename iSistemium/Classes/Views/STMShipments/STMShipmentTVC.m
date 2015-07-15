@@ -365,7 +365,22 @@
 - (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
     
     cell.titleLabel.text = position.article.name;
-    cell.detailLabel.text = @"";
+    
+    if (position.isProcessed.boolValue) {
+        
+        NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:position.doneVolume.integerValue
+                                                                                              shortageVolume:position.shortageVolume.integerValue
+                                                                                                excessVolume:position.excessVolume.integerValue
+                                                                                                   badVolume:position.badVolume.integerValue
+                                                                                                  packageRel:position.article.packageRel.integerValue];
+        
+        cell.detailLabel.text = [@"\n" stringByAppendingString:volumesString];
+        
+    } else {
+    
+        cell.detailLabel.text = @"";
+
+    }
     
     STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
     infoLabel.text = [position volumeText];
