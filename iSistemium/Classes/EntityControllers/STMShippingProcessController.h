@@ -32,6 +32,18 @@ typedef NS_ENUM(NSInteger, STMShippingProcessState) {
 
 - (void)resetPosition:(STMShipmentPosition *)position;
 
+- (NSString *)checkingInfoForPosition:(STMShipmentPosition *)position
+                       withDoneVolume:(NSInteger)doneVolume
+                       shortageVolume:(NSInteger)shortageVolume
+                         excessVolume:(NSInteger)excessVolume
+                            badVolume:(NSInteger)badVolume;
+
+- (void)shippingPosition:(STMShipmentPosition *)position
+          withDoneVolume:(NSInteger)doneVolume
+          shortageVolume:(NSInteger)shortageVolume
+            excessVolume:(NSInteger)excessVolume
+               badVolume:(NSInteger)badVolume;
+
 
 - (BOOL)haveProcessedPositionsAtShipment:(STMShipment *)shipment;
 - (BOOL)haveUnprocessedPositionsAtShipment:(STMShipment *)shipment;

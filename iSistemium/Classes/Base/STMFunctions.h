@@ -68,5 +68,6 @@
 
 + (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic;
 
++ (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel;
 
 @end

@@ -275,10 +275,14 @@
 "PROCESSED SHIPMENT POSITIONS" = "Processed shipment positions";
 "NO LOCATION PERMISSION BLOCK TITLE" = "No location tracking allowed";
 "NO LOCATION PERMISSION BLOCK MESSAGE" = "You should allow location tracking to use app";
-"DONE VOLUME BUTTON" = "Done";
-"SHORTAGE VOLUME BUTTON" = "Shortage";
-"EXCESS VOLUME BUTTON" = "Excess";
-"BAD VOLUME BUTTON" = "Bad";
+"DONE VOLUME LABEL" = "Done";
+"SHORTAGE VOLUME LABEL" = "Shortage";
+"EXCESS VOLUME LABEL" = "Excess";
+"BAD VOLUME LABEL" = "Bad";
 "ALL VOLUME BUTTON" = "All";
 "HAVE UNPROCESSED POSITIONS" = "Have unprocessed positions";
+"SHIPPING POSITION ALERT BEGINNING STRING" = "Shipping position:";
+"SHIPPING POSITION ALERT MIDDLE STRING" = "with parameters:";
+"EMPTY POSITION VOLUMES TITLE" = "One does not simply";
+"EMPTY POSITION VOLUMES MESSAGE" = "make shipping";
 

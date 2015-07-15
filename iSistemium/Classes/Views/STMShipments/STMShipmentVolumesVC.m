@@ -9,9 +9,10 @@
 #import "STMShipmentVolumesVC.h"
 #import "STMShipmentVolumeView.h"
 #import "STMConstants.h"
+#import "STMShippingProcessController.h"
 
 
-@interface STMShipmentVolumesVC ()
+@interface STMShipmentVolumesVC () <UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextView *titleTextView;
 @property (weak, nonatomic) IBOutlet STMShipmentVolumeView *doneVolumeView;
@@ -22,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 
 @property (nonatomic, strong) NSArray *volumeViews;
+
 
 @end
 
@@ -43,16 +45,89 @@
 }
 
 - (IBAction)doneButtonPressed:(id)sender {
+    
+    if (self.doneVolumeView.volume + self.shortageVolumeView.volume + self.excessVolumeView.volume + self.badVolumeView.volume > 0) {
+        
+        NSString *checkingInfo = [[STMShippingProcessController sharedInstance] checkingInfoForPosition:self.position
+                                                                                         withDoneVolume:self.doneVolumeView.volume
+                                                                                         shortageVolume:self.shortageVolumeView.volume
+                                                                                           excessVolume:self.excessVolumeView.volume
+                                                                                              badVolume:self.badVolumeView.volume];
+        
+        if (!checkingInfo) {
+            
+            [self shippingPositionAndDismiss];
+            
+        } else {
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                            message:checkingInfo
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+            alert.tag = 111;
+            [alert show];
+            
+        }
+        
+    } else {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"EMPTY POSITION VOLUMES TITLE", nil)
+                                                        message:NSLocalizedString(@"EMPTY POSITION VOLUMES MESSAGE", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+
+    }
+    
+}
+
+- (void)shippingPositionAndDismiss {
+
+    [[STMShippingProcessController sharedInstance] shippingPosition:self.position
+                                                     withDoneVolume:self.doneVolumeView.volume
+                                                     shortageVolume:self.shortageVolumeView.volume
+                                                       excessVolume:self.excessVolumeView.volume
+                                                          badVolume:self.badVolumeView.volume];
     [self dismissSelf];
+
 }
 
 - (void)dismissSelf {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 111:
+            
+            switch (buttonIndex) {
+                case 1:
+                    [self shippingPositionAndDismiss];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+#pragma mark - views
+
 - (void)setupTitleTextView {
     
-    self.titleTextView.text = [NSString stringWithFormat:@"%@ — %@", self.position.article.name, [self.position infoText]];
+    self.titleTextView.text = [NSString stringWithFormat:@"%@ — %@", self.position.article.name, [self.position volumeText]];
 
 //    self.titleTextView.layer.borderWidth = 1.0;
 //    self.titleTextView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
@@ -77,10 +152,10 @@
     self.shortageVolumeView.volumeLimit = self.position.volume.integerValue;
     self.badVolumeView.volumeLimit = self.position.volume.integerValue;
 
-    self.doneVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"DONE VOLUME BUTTON", nil)];
-    self.excessVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"EXCESS VOLUME BUTTON", nil)];
-    self.shortageVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"SHORTAGE VOLUME BUTTON", nil)];
-    self.badVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"BAD VOLUME BUTTON", nil)];
+    self.doneVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"DONE VOLUME LABEL", nil)];
+    self.excessVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
+    self.shortageVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
+    self.badVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"BAD VOLUME LABEL", nil)];
     
     self.excessVolumeView.allCountButton.enabled = NO;
     

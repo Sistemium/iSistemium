@@ -275,10 +275,14 @@
 "PROCESSED SHIPMENT POSITIONS" = "Обработанные позиции";
 "NO LOCATION PERMISSION BLOCK TITLE" = "Геолокация запрещена";
 "NO LOCATION PERMISSION BLOCK MESSAGE" = "Необходимо разрешить геолокацию для продолжения работы";
-"DONE VOLUME BUTTON" = "Отгружено";
-"SHORTAGE VOLUME BUTTON" = "Недостача";
-"EXCESS VOLUME BUTTON" = "Превышение";
-"BAD VOLUME BUTTON" = "Брак";
+"DONE VOLUME LABEL" = "Отгружено";
+"SHORTAGE VOLUME LABEL" = "Недостача";
+"EXCESS VOLUME LABEL" = "Превышение";
+"BAD VOLUME LABEL" = "Брак";
 "ALL VOLUME BUTTON" = "Целиком";
 "HAVE UNPROCESSED POSITIONS" = "Остались необработанные позиции";
+"SHIPPING POSITION ALERT BEGINNING STRING" = "Отгрузить позицию:";
+"SHIPPING POSITION ALERT MIDDLE STRING" = "с параметрами:";
+"EMPTY POSITION VOLUMES TITLE" = "Нельзя так просто взять";
+"EMPTY POSITION VOLUMES MESSAGE" = "и отгрузить пустую позицию";
 

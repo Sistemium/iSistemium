@@ -368,7 +368,7 @@
     cell.detailLabel.text = @"";
     
     STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
-    infoLabel.text = [position infoText];
+    infoLabel.text = [position volumeText];
     infoLabel.textAlignment = NSTextAlignmentRight;
     infoLabel.adjustsFontSizeToFitWidth = YES;
     
@@ -462,7 +462,7 @@
 
 - (void)showShippingActionSheet {
     
-    NSString *title = [NSString stringWithFormat:@"%@ — %@", self.selectedPosition.article.name, [self.selectedPosition infoText]];
+    NSString *title = [NSString stringWithFormat:@"%@ — %@", self.selectedPosition.article.name, [self.selectedPosition volumeText]];
     
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
                                                              delegate:self

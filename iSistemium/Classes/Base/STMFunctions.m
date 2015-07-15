@@ -672,5 +672,41 @@
 }
 
 
++ (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel {
+    
+    NSString *volumeUnitString = nil;
+    NSString *infoText = nil;
+    
+    if (packageRel != 0 && volume >= packageRel) {
+        
+        NSInteger package = floor(volume / packageRel);
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
+        NSString *packageString = [NSString stringWithFormat:@"%ld %@", (long)package, volumeUnitString];
+        
+        NSInteger bottle = volume % packageRel;
+        
+        if (bottle > 0) {
+            
+            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+            NSString *bottleString = [NSString stringWithFormat:@" %ld %@", (long)bottle, volumeUnitString];
+            
+            packageString = [packageString stringByAppendingString:bottleString];
+            
+        }
+        
+        infoText = packageString;
+        
+    } else {
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+        infoText = [NSString stringWithFormat:@"%ld %@", (long)volume, volumeUnitString];
+        
+    }
+
+    return infoText;
+    
+}
+
 
 @end
