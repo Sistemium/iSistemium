@@ -263,10 +263,12 @@
 "SHIPMENT PROCESSED BUTTON CONTINUE TITLE" = "Продолжить отгрузку";
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Завершить отгрузку";
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Отменить отгрузку";
+"SHIPMENT PROCESSED BUTTON EDIT TITLE" = "Редактировать отгрузку";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Необходимо отметить прибытие";
 "START SHIPPING?" = "Начать отгрузку?";
 "CONTINUE SHIPPING?" = "Продолжить отгрузку?";
 "CANCEL SHIPPING?" = "Отменить отгрузку?";
+"EDIT SHIPPING?" = "Редактировать отгрузку?";
 "CANCEL SHIPPING MESSAGE" = "Все позиции вернутся в исходное состояние.";
 "STOP SHIPPING?" = "Завершить отгрузку?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Процесс отгрузки был прерван";

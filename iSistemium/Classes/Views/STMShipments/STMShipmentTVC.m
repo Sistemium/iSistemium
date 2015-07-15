@@ -306,10 +306,18 @@
         
     } else {
         
-        if ([self haveProcessedPositions]) {
-            cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON CONTINUE TITLE", nil);
+        if (self.shipment.isProcessed.boolValue) {
+            
+            cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON EDIT TITLE", nil);
+            
         } else {
-            cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
+        
+            if ([self haveProcessedPositions]) {
+                cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON CONTINUE TITLE", nil);
+            } else {
+                cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
+            }
+
         }
         
     }
@@ -585,7 +593,7 @@
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     
-        NSString *title = ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
+        NSString *title = (self.shipment.isProcessed.boolValue) ? NSLocalizedString(@"EDIT SHIPPING?", nil) : ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
                                                         message:@""

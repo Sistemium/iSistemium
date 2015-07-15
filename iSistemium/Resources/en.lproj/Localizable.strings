@@ -263,10 +263,12 @@
 "SHIPMENT PROCESSED BUTTON CONTINUE TITLE" = "Continue shipping";
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Stop shipping";
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Cancel shipping";
+"SHIPMENT PROCESSED BUTTON EDIT TITLE" = "Edit shipping";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Should confirm arrival first";
 "START SHIPPING?" = "Start shipping?";
 "CONTINUE SHIPPING?" = "Continue shipping?";
 "CANCEL SHIPPING?" = "Cancel shipping?";
+"EDIT SHIPPING?" = "Edit shipping?";
 "CANCEL SHIPPING MESSAGE" = "Shipment position will be reseted";
 "STOP SHIPPING?" = "Stop shipping?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Shipment process was interrupted";
