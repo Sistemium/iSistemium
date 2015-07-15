@@ -60,6 +60,9 @@
         
         UIView *view = [self viewWithTag:4];
         _allCountButton = ([view isKindOfClass:[UIButton class]]) ? (UIButton *)view : nil;
+        [_allCountButton addTarget:self
+                            action:@selector(allCountButtonPressed)
+                  forControlEvents:UIControlEventTouchUpInside];
         
     }
     return _allCountButton;
@@ -110,15 +113,22 @@
     
 }
 
+
 #pragma mark - actions
 
 - (void)boxCountChange {
     
+    [self updateBoxCountLabel];
+    
+}
+
+- (void)updateBoxCountLabel {
+    
     NSString *boxCountString = [NSString stringWithFormat:@"%d", (int)self.boxCountStepper.value];
     self.boxCountLabel.text = boxCountString;
-    
+
     [self bottleCountStepperWraps];
-    
+
 }
 
 - (void)bottleCountChange {
@@ -152,15 +162,22 @@
             
         }
         
-        NSString *bottleCountString = [NSString stringWithFormat:@"%d", (int)self.bottleCountStepper.value];
-        self.bottleCountLabel.text = bottleCountString;
         
         self.bottleCountPreviousValue = self.bottleCountStepper.value;
 
-        [self bottleCountStepperWraps];
+        [self updateBottleCountLabel];
         
     }
     
+}
+
+- (void)updateBottleCountLabel {
+
+    NSString *bottleCountString = [NSString stringWithFormat:@"%d", (int)self.bottleCountStepper.value];
+    self.bottleCountLabel.text = bottleCountString;
+
+    [self bottleCountStepperWraps];
+
 }
 
 - (void)bottleCountStepperWraps {
@@ -193,6 +210,27 @@
 
 - (BOOL)isBottleCountWrapDown {
     return ((self.bottleCountPreviousValue == 0) && (self.bottleCountStepper.value == self.packageRel - 1));
+}
+
+- (void)allCountButtonPressed {
+    
+    if (self.volumeLimit) {
+        
+        if (self.packageRel && self.packageRel != 0) {
+            
+            NSInteger boxCount = floor(self.volumeLimit / self.packageRel);
+            self.boxCountStepper.value = boxCount;
+            
+            NSInteger bottleCount = self.volumeLimit % self.packageRel;
+            self.bottleCountStepper.value = bottleCount;
+            
+            [self updateBoxCountLabel];
+            [self updateBottleCountLabel];
+            
+        }
+        
+    }
+    
 }
 
 
