@@ -279,7 +279,7 @@
 "NO LOCATION PERMISSION BLOCK MESSAGE" = "Необходимо разрешить геолокацию для продолжения работы";
 "DONE VOLUME LABEL" = "Отгружено";
 "SHORTAGE VOLUME LABEL" = "Недостача";
-"EXCESS VOLUME LABEL" = "Превышение";
+"EXCESS VOLUME LABEL" = "Излишек";
 "BAD VOLUME LABEL" = "Брак";
 "ALL VOLUME BUTTON" = "Целиком";
 "HAVE UNPROCESSED POSITIONS TITLE" = "Остались необработанные позиции";
