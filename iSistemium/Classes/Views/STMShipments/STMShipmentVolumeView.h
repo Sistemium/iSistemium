@@ -20,7 +20,7 @@
 @property (nonatomic) NSInteger packageRel;
 @property (nonatomic) NSInteger volume;
 @property (nonatomic) NSInteger volumeLimit;
-
+@property (nonatomic) NSInteger shipmentVolumeLimit;
 
 - (void)nullifyView;
 

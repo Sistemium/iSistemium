@@ -214,14 +214,14 @@
 
 - (void)allCountButtonPressed {
     
-    if (self.volumeLimit) {
+    if (self.shipmentVolumeLimit) {
         
         if (self.packageRel && self.packageRel != 0) {
             
-            NSInteger boxCount = floor(self.volumeLimit / self.packageRel);
+            NSInteger boxCount = floor(self.shipmentVolumeLimit / self.packageRel);
             self.boxCountStepper.value = boxCount;
             
-            NSInteger bottleCount = self.volumeLimit % self.packageRel;
+            NSInteger bottleCount = self.shipmentVolumeLimit % self.packageRel;
             self.bottleCountStepper.value = bottleCount;
             
             [self updateBoxCountLabel];
