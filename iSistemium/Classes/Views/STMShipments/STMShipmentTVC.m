@@ -21,6 +21,7 @@
 
 @property (nonatomic, strong) NSIndexPath *processedButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
+@property (nonatomic) CGFloat standardCellHeight;
 
 @property (nonatomic, strong) STMShipmentPosition *selectedPosition;
 
@@ -100,6 +101,23 @@
     return [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section + POSITION_SECTION_INDEX];
 }
 
+- (CGFloat)standardCellHeight {
+    
+    if (!_standardCellHeight) {
+        
+        static CGFloat standardCellHeight;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+        });
+        
+        _standardCellHeight = standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+
+    }
+    return _standardCellHeight;
+    
+}
+
 
 #pragma mark - table view data
 
@@ -161,6 +179,57 @@
         default:
             return nil;
             break;
+    }
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return [self heightForCellAtIndexPath:indexPath];
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+    
+    return height;
+    
+}
+
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+
+    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+    
+    if (cachedHeight) {
+        
+        return cachedHeight.floatValue;
+        
+    } else {
+    
+        static UITableViewCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+        });
+        
+        [self fillCell:cell atIndexPath:indexPath];
+        
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+        
+        [cell setNeedsLayout];
+        [cell layoutIfNeeded];
+        
+        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+        
+        height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
+        
+        [self putCachedHeight:height forIndexPath:indexPath];
+        
+        return height;
+
     }
     
 }
