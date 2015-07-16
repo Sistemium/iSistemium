@@ -456,45 +456,6 @@
     
 }
 
-//- (NSString *)infoTextForPosition:(STMShipmentPosition *)position {
-//    
-//    NSString *volumeUnitString = nil;
-//    NSString *infoText = nil;
-//    
-//    int volume = [position.volume intValue];
-//    int packageRel = [position.article.packageRel intValue];
-//    
-//    if (packageRel != 0 && volume >= packageRel) {
-//        
-//        int package = floor(volume / packageRel);
-//        
-//        volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
-//        NSString *packageString = [NSString stringWithFormat:@"%d %@", package, volumeUnitString];
-//        
-//        int bottle = volume % packageRel;
-//        
-//        if (bottle > 0) {
-//            
-//            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
-//            NSString *bottleString = [NSString stringWithFormat:@" %d %@", bottle, volumeUnitString];
-//            
-//            packageString = [packageString stringByAppendingString:bottleString];
-//            
-//        }
-//        
-//        infoText = packageString;
-//        
-//    } else {
-//        
-//        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
-//        infoText = [NSString stringWithFormat:@"%@ %@", position.volume, volumeUnitString];
-//        
-//    }
-//    
-//    return infoText;
-//
-//}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if ([indexPath isEqual:self.processedButtonCellIndexPath]) {
@@ -517,16 +478,25 @@
         
         [self showCancelShippingAlert];
         
-    } else if (indexPath.section >= POSITION_SECTION_INDEX) {
+    }
+    
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return ((indexPath.section >= POSITION_SECTION_INDEX) && [self shippingProcessIsRunning]);
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NSLocalizedString(@"SHIPPING", nil);
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        if ([self shippingProcessIsRunning]) {
-            
-            self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
-//            [self showShippingActionSheet];
-            [self performSegueWithIdentifier:@"showVolumes" sender:self];
-            
-        }
-        
+        self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
+        [self performSegueWithIdentifier:@"showVolumes" sender:self];
+
     }
     
 }
@@ -567,21 +537,8 @@
 
 - (void)addSwipeGestureToCell:(UITableViewCell *)cell withPosition:(STMShipmentPosition *)position {
     
-    UISwipeGestureRecognizer *swipe = nil;
-    
-    if (position.isProcessed.boolValue) {
-
-        swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToLeft:)];
-        swipe.direction = UISwipeGestureRecognizerDirectionLeft;
-
-    } else {
-    
-        swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToRight:)];
-        swipe.direction = UISwipeGestureRecognizerDirectionRight;
-
-    }
-    
-//    swipe.delegate = self;
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToRight:)];
+    swipe.direction = UISwipeGestureRecognizerDirectionRight;
     
     if (swipe) [cell addGestureRecognizer:swipe];
 
@@ -607,23 +564,12 @@
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
 
         STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
-        [self.shippingProcessController shippingPosition:position withDoneVolume:position.volume.integerValue];
         
-    }
-    
-}
-
-- (void)swipeToLeft:(id)sender {
-    
-//    NSLogMethodName;
-    
-    if ([sender isKindOfClass:[UISwipeGestureRecognizer class]]) {
-        
-        UITableViewCell *cell = (UITableViewCell *)[(UISwipeGestureRecognizer *)sender view];
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-        
-        STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
-        [self.shippingProcessController resetPosition:position];
+        if (position.isProcessed.boolValue) {
+            [self.shippingProcessController resetPosition:position];
+        } else {
+            [self.shippingProcessController shippingPosition:position withDoneVolume:position.volume.integerValue];
+        }
         
     }
     
@@ -923,9 +869,7 @@
     
     if ([anObject isKindOfClass:[STMShipmentPosition class]]) {
         
-        STMShipmentPosition *position = (STMShipmentPosition *)anObject;
-        
-        UITableViewRowAnimation rowAnimation = (position.isProcessed.boolValue) ? UITableViewRowAnimationRight : UITableViewRowAnimationLeft;
+        UITableViewRowAnimation rowAnimation = UITableViewRowAnimationRight;
     
         indexPath = [self tableIndexPathFromResultsControllerIndexPath:indexPath];
         newIndexPath = [self tableIndexPathFromResultsControllerIndexPath:newIndexPath];
