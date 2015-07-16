@@ -151,8 +151,11 @@
     
     switch (index) {
         case 0:
+
             cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
             cell.detailLabel.text = @"";
+            cell.accessoryType = UITableViewCellAccessoryNone;
+
             break;
             
         default:
