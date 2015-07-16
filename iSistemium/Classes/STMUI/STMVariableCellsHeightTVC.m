@@ -66,16 +66,25 @@
 
 #pragma mark - table view dataSource & delegate
 
+- (CGFloat)standardCellHeight {
+    
+    if (!_standardCellHeight) {
+        
+        static CGFloat standardCellHeight;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+        });
+        
+        _standardCellHeight = standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+        
+    }
+    return _standardCellHeight;
+    
+}
+
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static CGFloat standardCellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-    });
-    
-    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
-    
+    return self.standardCellHeight;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -21,7 +21,6 @@
 
 @property (nonatomic, strong) NSIndexPath *processedButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
-@property (nonatomic) CGFloat standardCellHeight;
 
 @property (nonatomic, strong) STMShipmentPosition *selectedPosition;
 
@@ -99,23 +98,6 @@
 
 - (NSIndexPath *)tableIndexPathFromResultsControllerIndexPath:(NSIndexPath *)indexPath {
     return [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section + POSITION_SECTION_INDEX];
-}
-
-- (CGFloat)standardCellHeight {
-    
-    if (!_standardCellHeight) {
-        
-        static CGFloat standardCellHeight;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-        });
-        
-        _standardCellHeight = standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
-
-    }
-    return _standardCellHeight;
-    
 }
 
 

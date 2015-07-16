@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
+@property (nonatomic) CGFloat standardCellHeight;
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
