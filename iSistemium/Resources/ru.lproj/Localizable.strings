@@ -282,7 +282,8 @@
 "EXCESS VOLUME LABEL" = "Превышение";
 "BAD VOLUME LABEL" = "Брак";
 "ALL VOLUME BUTTON" = "Целиком";
-"HAVE UNPROCESSED POSITIONS" = "Остались необработанные позиции";
+"HAVE UNPROCESSED POSITIONS TITLE" = "Остались необработанные позиции";
+"HAVE UNPROCESSED POSITIONS MESSAGE" = "Отметить их как отгруженные?";
 "SHIPPING POSITION ALERT BEGINNING STRING" = "Отгрузить позицию:";
 "SHIPPING POSITION ALERT MIDDLE STRING" = "с параметрами:";
 "EMPTY POSITION VOLUMES TITLE" = "Нельзя так просто взять";

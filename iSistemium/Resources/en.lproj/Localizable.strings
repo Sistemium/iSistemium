@@ -282,7 +282,8 @@
 "EXCESS VOLUME LABEL" = "Excess";
 "BAD VOLUME LABEL" = "Bad";
 "ALL VOLUME BUTTON" = "All";
-"HAVE UNPROCESSED POSITIONS" = "Have unprocessed positions";
+"HAVE UNPROCESSED POSITIONS TITLE" = "Have unprocessed positions";
+"HAVE UNPROCESSED POSITIONS MESSAGE" = "Mark it as done?";
 "SHIPPING POSITION ALERT BEGINNING STRING" = "Shipping position:";
 "SHIPPING POSITION ALERT MIDDLE STRING" = "with parameters:";
 "EMPTY POSITION VOLUMES TITLE" = "One does not simply";

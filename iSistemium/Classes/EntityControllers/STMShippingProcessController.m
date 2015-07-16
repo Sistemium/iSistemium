@@ -131,6 +131,21 @@
     
 }
 
+- (void)markUnprocessedPositionsAsDoneForShipment:(STMShipment *)shipment {
+    
+    if ([self shippingProcessIsRunningWithShipment:shipment]) {
+
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
+        NSArray *unprocessedPositions = [shipment.shipmentPositions filteredSetUsingPredicate:predicate].allObjects;
+        
+        for (STMShipmentPosition *position in unprocessedPositions) {
+            [self shippingPosition:position withDoneVolume:position.volume.integerValue];
+        }
+        
+    }
+    
+}
+
 - (NSString *)checkingInfoForPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume shortageVolume:(NSInteger)shortageVolume excessVolume:(NSInteger)excessVolume badVolume:(NSInteger)badVolume {
     
     NSString *beginningString = NSLocalizedString(@"SHIPPING POSITION ALERT BEGINNING STRING", nil);
@@ -197,12 +212,16 @@
     
 }
 
+- (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume {
+    [self shippingPosition:position withDoneVolume:doneVolume shortageVolume:0 excessVolume:0 badVolume:0];
+}
+
 - (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume shortageVolume:(NSInteger)shortageVolume excessVolume:(NSInteger)excessVolume badVolume:(NSInteger)badVolume {
     
-    position.doneVolume = [NSNumber numberWithInteger:doneVolume];
-    position.badVolume = [NSNumber numberWithInteger:badVolume];
-    position.excessVolume = [NSNumber numberWithInteger:excessVolume];
-    position.shortageVolume = [NSNumber numberWithInteger:shortageVolume];
+    position.doneVolume = (doneVolume > 0) ? [NSNumber numberWithInteger:doneVolume] : nil;
+    position.badVolume = (badVolume > 0) ? [NSNumber numberWithInteger:badVolume] : nil;
+    position.excessVolume = (excessVolume > 0) ? [NSNumber numberWithInteger:excessVolume] : nil;
+    position.shortageVolume = (shortageVolume > 0) ? [NSNumber numberWithInteger:shortageVolume] : nil;
     position.isProcessed = @YES;
     
 }

@@ -445,11 +445,11 @@
     
     if (position.isProcessed.boolValue) {
         
-        NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:position.doneVolume.integerValue
-                                                                                              shortageVolume:position.shortageVolume.integerValue
-                                                                                                excessVolume:position.excessVolume.integerValue
-                                                                                                   badVolume:position.badVolume.integerValue
-                                                                                                  packageRel:position.article.packageRel.integerValue];
+        NSString *volumesString = [self.shippingProcessController volumesStringWithDoneVolume:position.doneVolume.integerValue
+                                                                               shortageVolume:position.shortageVolume.integerValue
+                                                                                 excessVolume:position.excessVolume.integerValue
+                                                                                    badVolume:position.badVolume.integerValue
+                                                                                   packageRel:position.article.packageRel.integerValue];
         
         cell.detailLabel.text = [@"\n" stringByAppendingString:volumesString];
         
@@ -625,8 +625,7 @@
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
 
         STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
-        position.doneVolume = position.volume;
-        position.isProcessed = @YES;
+        [self.shippingProcessController shippingPosition:position withDoneVolume:position.volume.integerValue];
         
     }
     
@@ -719,11 +718,12 @@
         
         if ([self haveUnprocessedPositions]) {
             
-            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS", nil)
-                                               message:@""
+            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS TITLE", nil)
+                                               message:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS MESSAGE", nil)
                                               delegate:self
-                                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                     otherButtonTitles:nil];
+                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            alert.tag = 555;
             
         } else {
             
@@ -732,7 +732,6 @@
                                               delegate:self
                                      cancelButtonTitle:NSLocalizedString(@"NO", nil)
                                      otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-            
             alert.tag = 444;
             
         }
@@ -820,6 +819,18 @@
         case 444:
             switch (buttonIndex) {
                 case 1:
+                    [self stopShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case 555:
+            switch (buttonIndex) {
+                case 1:
+                    [self.shippingProcessController markUnprocessedPositionsAsDoneForShipment:self.shipment];
                     [self stopShipping];
                     break;
                     
