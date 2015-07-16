@@ -129,12 +129,25 @@
 
 - (void)setupTitleTextView {
     
-    self.titleTextView.text = [NSString stringWithFormat:@"%@ — %@", self.position.article.name, [self.position volumeText]];
+    UIFont *font = self.titleTextView.font;
+    
+    NSDictionary *attributes = @{NSFontAttributeName:font};
+    
+    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:self.position.article.name attributes:attributes];
+    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+    
+    font = [UIFont boldSystemFontOfSize:font.pointSize];
+    attributes = @{NSFontAttributeName:font};
+    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:[self.position volumeText] attributes:attributes]];
+    
+    self.titleTextView.attributedText = attributedText;
+    
+//    self.titleTextView.text = [NSString stringWithFormat:@"%@ — %@", self.position.article.name, [self.position volumeText]];
 
 //    self.titleTextView.layer.borderWidth = 1.0;
 //    self.titleTextView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-    self.titleTextView.layer.cornerRadius = 5.0;
-    self.titleTextView.layer.backgroundColor = [STM_LIGHT_LIGHT_GREY_COLOR CGColor];
+//    self.titleTextView.layer.cornerRadius = 5.0;
+//    self.titleTextView.layer.backgroundColor = [STM_LIGHT_LIGHT_GREY_COLOR CGColor];
     
 }
 
@@ -182,6 +195,13 @@
     
     [super viewDidLoad];
     [self customInit];
+
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self.titleTextView flashScrollIndicators];
 
 }
 
