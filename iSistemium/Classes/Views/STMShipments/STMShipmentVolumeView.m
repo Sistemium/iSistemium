@@ -122,15 +122,6 @@
     
 }
 
-- (NSInteger)bottleCountPreviousValue {
-    
-    if (!_bottleCountPreviousValue) {
-        _bottleCountPreviousValue = 0;
-    }
-    return _bottleCountPreviousValue;
-    
-}
-
 
 #pragma mark - actions
 
@@ -141,8 +132,10 @@
 }
 
 - (void)updateBoxCountLabel {
+
+    NSInteger count = (self.boxCountStepper) ? (NSInteger)self.boxCountStepper.value : self.boxCount;
     
-    NSString *boxCountString = [NSString stringWithFormat:@"%d", (int)self.boxCountStepper.value];
+    NSString *boxCountString = [NSString stringWithFormat:@"%ld", (long)count];
     self.boxCountLabel.text = boxCountString;
 
     UIColor *textColor = (self.boxCountStepper.value == 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
@@ -195,8 +188,10 @@
 }
 
 - (void)updateBottleCountLabel {
+    
+    NSInteger count = (self.bottleCountStepper) ? (NSInteger)self.bottleCountStepper.value : self.bottleCount;
 
-    NSString *bottleCountString = [NSString stringWithFormat:@"%d", (int)self.bottleCountStepper.value];
+    NSString *bottleCountString = [NSString stringWithFormat:@"%ld", (long)count];
     self.bottleCountLabel.text = bottleCountString;
 
     UIColor *textColor = (self.bottleCountStepper.value == 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
@@ -309,6 +304,29 @@
         self.boxCountStepper.maximumValue = boxCountMax;
         
     }
+    
+}
+
+- (NSInteger)bottleCountPreviousValue {
+    
+    if (!_bottleCountPreviousValue) {
+        _bottleCountPreviousValue = 0;
+    }
+    return _bottleCountPreviousValue;
+    
+}
+
+- (void)setBoxCount:(NSInteger)boxCount {
+    
+    _boxCount = boxCount;
+    [self updateBoxCountLabel];
+    
+}
+
+- (void)setBottleCount:(NSInteger)bottleCount {
+    
+    _bottleCount = bottleCount;
+    [self updateBottleCountLabel];
     
 }
 

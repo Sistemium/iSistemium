@@ -27,6 +27,9 @@
 @property (nonatomic) NSInteger volumeLimit;
 @property (nonatomic) NSInteger shipmentVolumeLimit;
 
+@property (nonatomic) NSInteger boxCount;
+@property (nonatomic) NSInteger bottleCount;
+
 - (void)nullifyView;
 
 
