@@ -128,6 +128,7 @@
 - (void)boxCountChange {
     
     [self updateBoxCountLabel];
+    [self.parentVC volumeChangedInView:self];
     
 }
 
@@ -138,7 +139,7 @@
     NSString *boxCountString = [NSString stringWithFormat:@"%ld", (long)count];
     self.boxCountLabel.text = boxCountString;
 
-    UIColor *textColor = (self.boxCountStepper.value == 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    UIColor *textColor = (count == 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
     
     self.boxCountLabel.textColor = textColor;
     self.boxUnitLabel.textColor = textColor;
@@ -182,6 +183,7 @@
         self.bottleCountPreviousValue = self.bottleCountStepper.value;
 
         [self updateBottleCountLabel];
+        [self.parentVC volumeChangedInView:self];
         
     }
     
@@ -194,7 +196,7 @@
     NSString *bottleCountString = [NSString stringWithFormat:@"%ld", (long)count];
     self.bottleCountLabel.text = bottleCountString;
 
-    UIColor *textColor = (self.bottleCountStepper.value == 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    UIColor *textColor = (count == 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
     
     self.bottleCountLabel.textColor = textColor;
     self.bottleUnitLabel.textColor = textColor;
@@ -247,6 +249,8 @@
             NSInteger bottleCount = self.shipmentVolumeLimit % self.packageRel;
             self.bottleCountStepper.value = bottleCount;
             
+            [self.parentVC volumeChangedInView:self];
+            
             [self updateBoxCountLabel];
             [self updateBottleCountLabel];
             
@@ -273,15 +277,24 @@
 - (void)setVolume:(NSInteger)volume {
     
     if (self.packageRel && self.packageRel != 0) {
-        
+
         NSInteger boxCount = floor(volume / self.packageRel);
-        self.boxCountStepper.value = boxCount;
-        
         NSInteger bottleCount = volume % self.packageRel;
-        self.bottleCountStepper.value = bottleCount;
-        
-        [self updateBoxCountLabel];
-        [self updateBottleCountLabel];
+
+        if (self.boxCountStepper && self.bottleCountStepper) {
+
+            self.boxCountStepper.value = boxCount;
+            self.bottleCountStepper.value = bottleCount;
+            
+            [self updateBoxCountLabel];
+            [self updateBottleCountLabel];
+
+        } else {
+            
+            self.boxCount = boxCount;
+            self.bottleCount = bottleCount;
+            
+        }
         
     }
     

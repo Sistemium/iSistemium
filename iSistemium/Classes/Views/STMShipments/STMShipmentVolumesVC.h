@@ -14,5 +14,7 @@
 
 @property (nonatomic, strong) STMShipmentPosition *position;
 
+- (void)volumeChangedInView:(UIView *)volumeView;
+
 
 @end

@@ -134,6 +134,26 @@
     
 }
 
+
+#pragma mark - methods
+
+- (void)volumeChangedInView:(UIView *)volumeView {
+    
+    if ([volumeView isKindOfClass:[STMShipmentVolumeView class]]) {
+        
+//        STMShipmentVolumeView *shipmentVolumeView = (STMShipmentVolumeView *)volumeView;
+        
+        NSInteger summVolume = self.doneVolumeView.volume + self.excessVolumeView.volume + self.shortageVolumeView.volume + self.badVolumeView.volume;
+        
+        NSInteger discrepancyVolume = self.position.volume.integerValue - summVolume;
+        
+        self.discrepancyVolumeView.volume = discrepancyVolume;
+        
+    }
+    
+}
+
+
 #pragma mark - views
 
 - (void)setupTitleTextView {
@@ -150,13 +170,6 @@
     [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:[self.position volumeText] attributes:attributes]];
     
     self.titleTextView.attributedText = attributedText;
-    
-//    self.titleTextView.text = [NSString stringWithFormat:@"%@ — %@", self.position.article.name, [self.position volumeText]];
-
-//    self.titleTextView.layer.borderWidth = 1.0;
-//    self.titleTextView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-//    self.titleTextView.layer.cornerRadius = 5.0;
-//    self.titleTextView.layer.backgroundColor = [STM_LIGHT_LIGHT_GREY_COLOR CGColor];
     
 }
 
@@ -188,6 +201,8 @@
 
         [volumeView.allCountButton setTitle:NSLocalizedString(@"ALL VOLUME BUTTON", nil) forState:UIControlStateNormal];
         [volumeView.allCountButton setTitle:@"" forState:UIControlStateDisabled];
+        
+        volumeView.parentVC = self;
 
     }
 

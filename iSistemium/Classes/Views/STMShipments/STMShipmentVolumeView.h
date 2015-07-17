@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMShipmentVolumesVC.h"
+
 
 @interface STMShipmentVolumeView : UIView
+
+@property (nonatomic, weak) STMShipmentVolumesVC *parentVC;
 
 @property (nonatomic, strong) UILabel *titleLabel;
 
