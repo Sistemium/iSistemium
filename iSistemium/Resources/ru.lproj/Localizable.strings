@@ -290,4 +290,5 @@
 "EMPTY POSITION VOLUMES TITLE" = "Нельзя так просто взять";
 "EMPTY POSITION VOLUMES MESSAGE" = "и отгрузить пустую позицию";
 "SHIPPING" = "Отгрузка";
+"SUMMARY CELL TITLE" = "Сводка";
 

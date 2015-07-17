@@ -69,6 +69,21 @@
     
 }
 
+- (NSArray *)processedShipments {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue == YES"];
+    
+    NSArray *shipments = [self.resultsController.fetchedObjects valueForKeyPath:@"@distinctUnionOfSets.shipments"];
+    shipments = [shipments filteredArrayUsingPredicate:predicate];
+
+    return shipments;
+    
+}
+
+- (BOOL)haveProcessedShipments {
+    return ([self processedShipments].count > 0);
+}
+
 
 #pragma mark - table view data
 
@@ -80,7 +95,7 @@
     
     switch (section) {
         case 0:
-            return 1;
+            return ([self haveProcessedShipments]) ? 2 : 1;
             break;
             
         case 1:
@@ -199,12 +214,26 @@
             cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
             cell.detailLabel.text = @"";
             cell.accessoryType = UITableViewCellAccessoryNone;
-
+        break;
+            
+        case 1:
+            cell.titleLabel.text = [self summaryCellTitle];
+            cell.detailLabel.text = @"";
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
             
         default:
             break;
     }
+    
+}
+
+- (NSString *)summaryCellTitle {
+    
+    NSString *pluralString = [STMFunctions pluralTypeForCount:[self processedShipments].count];
+    NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SRPOINTS"], nil);
+    
+    return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"SUMMARY CELL TITLE", nil), (unsigned long)[self processedShipments].count, pointsString];
     
 }
 
