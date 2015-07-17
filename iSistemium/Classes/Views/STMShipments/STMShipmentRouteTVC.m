@@ -12,6 +12,7 @@
 #import "STMFunctions.h"
 
 #import "STMShipmentRoutePointTVC.h"
+#import "STMShipmentRouteSummaryTVC.h"
 
 
 @interface STMShipmentRouteTVC ()
@@ -304,6 +305,14 @@
             
         }
 
+    } else if (indexPath.section == 0) {
+        
+        if (indexPath.row == 1) {
+            
+            [self performSegueWithIdentifier:@"showSummary" sender:self];
+            
+        }
+        
     }
     
 }
@@ -372,6 +381,11 @@
         
         STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
         [(STMShipmentRoutePointTVC *)segue.destinationViewController setPoint:point];
+        
+    } else if ([segue.identifier isEqualToString:@"showSummary"] &&
+               [segue.destinationViewController isKindOfClass:[STMShipmentRouteSummaryTVC class]]) {
+        
+        [(STMShipmentRouteSummaryTVC *)segue.destinationViewController setRoute:self.route];
         
     }
     

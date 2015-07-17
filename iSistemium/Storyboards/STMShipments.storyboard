@@ -77,6 +77,7 @@
                     <navigationItem key="navigationItem" id="nQH-Lb-bPq"/>
                     <connections>
                         <segue destination="Tfv-Xo-E63" kind="push" identifier="showShipments" id="GhB-On-gJZ"/>
+                        <segue destination="Jve-ss-y13" kind="push" identifier="showSummary" id="u0R-gU-Aag"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rir-fS-2jY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -167,6 +168,35 @@
             </objects>
             <point key="canvasLocation" x="1684.8" y="331.33333333333331"/>
         </scene>
+        <!--Shipment Route SummaryTVC-->
+        <scene sceneID="AzK-vT-7sB">
+            <objects>
+                <tableViewController id="Jve-ss-y13" customClass="STMShipmentRouteSummaryTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="jVr-le-4Ob">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="summaryCell" id="ZAK-sY-S8S">
+                                <rect key="frame" x="0.0" y="114" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZAK-sY-S8S" id="tHP-b5-Tvk">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Jve-ss-y13" id="kRG-22-GsH"/>
+                            <outlet property="delegate" destination="Jve-ss-y13" id="QyU-Ve-mT1"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="YRW-Pj-SU9"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gXH-bf-7Sa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1393" y="1079"/>
+        </scene>
         <!--Shipping Location PicturesPVC-->
         <scene sceneID="iDr-AX-qzY">
             <objects>
@@ -227,7 +257,7 @@
                                 <rect key="frame" x="0.0" y="114" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MVX-sl-Leb" id="jz2-D1-15Z">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="03Y-XX-AQp">
