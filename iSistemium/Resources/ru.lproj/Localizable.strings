@@ -281,6 +281,7 @@
 "SHORTAGE VOLUME LABEL" = "Недостача";
 "EXCESS VOLUME LABEL" = "Излишек";
 "BAD VOLUME LABEL" = "Брак";
+"DISCREPANCY VOLUME LABEL" = "Расхождение";
 "ALL VOLUME BUTTON" = "Целиком";
 "HAVE UNPROCESSED POSITIONS TITLE" = "Остались необработанные позиции";
 "HAVE UNPROCESSED POSITIONS MESSAGE" = "Отметить их как отгруженные?";

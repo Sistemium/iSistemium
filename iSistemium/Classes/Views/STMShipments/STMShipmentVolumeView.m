@@ -38,12 +38,30 @@
     
 }
 
+- (UILabel *)boxUnitLabel {
+    
+    if (!_boxUnitLabel) {
+        _boxUnitLabel = [self labelWithTag:7];
+    }
+    return _boxUnitLabel;
+    
+}
+
 - (UILabel *)bottleCountLabel {
     
     if (!_bottleCountLabel) {
         _bottleCountLabel = [self labelWithTag:3];
     }
     return _bottleCountLabel;
+    
+}
+
+- (UILabel *)bottleUnitLabel {
+    
+    if (!_bottleUnitLabel) {
+        _bottleUnitLabel = [self labelWithTag:8];
+    }
+    return _bottleUnitLabel;
     
 }
 
@@ -127,6 +145,11 @@
     NSString *boxCountString = [NSString stringWithFormat:@"%d", (int)self.boxCountStepper.value];
     self.boxCountLabel.text = boxCountString;
 
+    UIColor *textColor = (self.boxCountStepper.value == 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    
+    self.boxCountLabel.textColor = textColor;
+    self.boxUnitLabel.textColor = textColor;
+    
     [self bottleCountStepperWraps];
 
 }
@@ -175,6 +198,11 @@
 
     NSString *bottleCountString = [NSString stringWithFormat:@"%d", (int)self.bottleCountStepper.value];
     self.bottleCountLabel.text = bottleCountString;
+
+    UIColor *textColor = (self.bottleCountStepper.value == 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    
+    self.bottleCountLabel.textColor = textColor;
+    self.bottleUnitLabel.textColor = textColor;
 
     [self bottleCountStepperWraps];
 
@@ -291,6 +319,13 @@
     
     self.boxCountLabel.text = [[NSNumber numberWithInteger:0] stringValue];
     self.bottleCountLabel.text = [[NSNumber numberWithInteger:0] stringValue];
+    
+    UIColor *textColor = [UIColor lightGrayColor];
+    
+    self.boxCountLabel.textColor = textColor;
+    self.boxUnitLabel.textColor = textColor;
+    self.bottleCountLabel.textColor = textColor;
+    self.bottleUnitLabel.textColor = textColor;
     
     [self boxCountStepper];
     [self bottleCountStepper];

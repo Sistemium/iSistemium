@@ -11,11 +11,16 @@
 @interface STMShipmentVolumeView : UIView
 
 @property (nonatomic, strong) UILabel *titleLabel;
+
 @property (nonatomic, strong) UILabel *boxCountLabel;
-@property (nonatomic, strong) UILabel *bottleCountLabel;
-@property (nonatomic, strong) UIButton *allCountButton;
+@property (nonatomic, strong) UILabel *boxUnitLabel;
 @property (nonatomic, strong) UIStepper *boxCountStepper;
+
+@property (nonatomic, strong) UILabel *bottleCountLabel;
+@property (nonatomic, strong) UILabel *bottleUnitLabel;
 @property (nonatomic, strong) UIStepper *bottleCountStepper;
+
+@property (nonatomic, strong) UIButton *allCountButton;
 
 @property (nonatomic) NSInteger packageRel;
 @property (nonatomic) NSInteger volume;

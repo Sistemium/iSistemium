@@ -10,6 +10,8 @@
 #import "STMShipmentVolumeView.h"
 #import "STMConstants.h"
 #import "STMShippingProcessController.h"
+#import "STMUI.h"
+
 
 #define MAX_VOLUME_LIMIT 10000
 
@@ -21,8 +23,11 @@
 @property (weak, nonatomic) IBOutlet STMShipmentVolumeView *excessVolumeView;
 @property (weak, nonatomic) IBOutlet STMShipmentVolumeView *shortageVolumeView;
 @property (weak, nonatomic) IBOutlet STMShipmentVolumeView *badVolumeView;
-@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
-@property (weak, nonatomic) IBOutlet UIButton *doneButton;
+@property (weak, nonatomic) IBOutlet STMShipmentVolumeView *discrepancyVolumeView;
+
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, strong) STMBarButtonItemCancel *cancelButton;
+@property (nonatomic, strong) STMBarButtonItemDone *doneButton;
 
 @property (nonatomic, strong) NSArray *volumeViews;
 
@@ -35,7 +40,11 @@
 - (NSArray *)volumeViews {
     
     if (!_volumeViews) {
-        _volumeViews = @[self.doneVolumeView, self.excessVolumeView, self.shortageVolumeView, self.badVolumeView];
+        _volumeViews = @[self.doneVolumeView,
+                         self.excessVolumeView,
+                         self.shortageVolumeView,
+                         self.badVolumeView,
+                         self.discrepancyVolumeView];
     }
     return _volumeViews;
     
@@ -151,6 +160,22 @@
     
 }
 
+- (void)setupToolbar {
+    
+    self.cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                             target:self
+                                                                             action:@selector(cancelButtonPressed:)];
+    
+    self.doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                         target:self
+                                                                         action:@selector(doneButtonPressed:)];
+                           
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+    
+    self.toolbar.items = @[self.cancelButton, flexibleSpace, self.doneButton];
+    
+}
+
 - (void)initVolumeViews {
     
     for (STMShipmentVolumeView *volumeView in self.volumeViews) {
@@ -178,6 +203,7 @@
     self.excessVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
     self.shortageVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
     self.badVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"BAD VOLUME LABEL", nil)];
+    self.discrepancyVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"DISCREPANCY VOLUME LABEL", nil)];
     
 }
 
@@ -188,6 +214,7 @@
     self.navigationController.navigationBarHidden = YES;
 
     [self setupTitleTextView];
+    [self setupToolbar];
     [self initVolumeViews];
     
 }

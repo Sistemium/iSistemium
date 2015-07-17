@@ -281,6 +281,7 @@
 "SHORTAGE VOLUME LABEL" = "Shortage";
 "EXCESS VOLUME LABEL" = "Excess";
 "BAD VOLUME LABEL" = "Bad";
+"DISCREPANCY VOLUME LABEL" = "Discrepancy";
 "ALL VOLUME BUTTON" = "All";
 "HAVE UNPROCESSED POSITIONS TITLE" = "Have unprocessed positions";
 "HAVE UNPROCESSED POSITIONS MESSAGE" = "Mark it as done?";
