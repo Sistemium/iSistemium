@@ -105,7 +105,7 @@
     
 }
 
-- (void)stopShippingWithShipment:(STMShipment *)shipment  withCompletionHandler:(void (^)(BOOL success))completionHandler {
+- (void)doneShippingWithShipment:(STMShipment *)shipment  withCompletionHandler:(void (^)(BOOL success))completionHandler {
 
     if ([self haveUnprocessedPositionsAtShipment:shipment]) {
         
@@ -115,8 +115,17 @@
         
         shipment.isProcessed = @YES;
         [self.shipments removeObject:shipment];
-        completionHandler(YES);
         
+        [[STMShippingProcessController document] saveDocument:^(BOOL success) {
+            
+            if (success) {
+                [[STMShippingProcessController syncer] setSyncerState:STMSyncerSendDataOnce];
+            }
+            
+        }];
+
+        completionHandler(YES);
+
     }
 
 }

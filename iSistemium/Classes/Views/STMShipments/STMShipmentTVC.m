@@ -467,7 +467,7 @@
         } else {
             
             if ([self.shippingProcessController.shipments containsObject:self.shipment]) {
-                [self showStopShippingAlert];
+                [self showDoneShippingAlert];
             } else {
                 [self showStartShippingAlert];
             }
@@ -633,12 +633,10 @@
     [self.shippingProcessController cancelShippingWithShipment:self.shipment];
 
     [self.tableView reloadData];
-
-//    [self stopShipping];
     
 }
 
-- (void)showStopShippingAlert {
+- (void)showDoneShippingAlert {
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
@@ -670,12 +668,12 @@
 
 }
 
-- (void)stopShipping {
+- (void)doneShipping {
     
-    [self.shippingProcessController stopShippingWithShipment:self.shipment withCompletionHandler:^(BOOL success) {
+    [self.shippingProcessController doneShippingWithShipment:self.shipment withCompletionHandler:^(BOOL success) {
         
         if (!success) {
-            [self showStopShippingErrorAlert];
+            [self showDoneShippingErrorAlert];
         }
         
         [self.tableView reloadData];
@@ -684,7 +682,7 @@
 
 }
 
-- (void)showStopShippingErrorAlert {
+- (void)showDoneShippingErrorAlert {
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         
@@ -747,7 +745,7 @@
         case 444:
             switch (buttonIndex) {
                 case 1:
-                    [self stopShipping];
+                    [self doneShipping];
                     break;
                     
                 default:
@@ -759,7 +757,7 @@
             switch (buttonIndex) {
                 case 1:
                     [self.shippingProcessController markUnprocessedPositionsAsDoneForShipment:self.shipment];
-                    [self stopShipping];
+                    [self doneShipping];
                     break;
                     
                 default:
