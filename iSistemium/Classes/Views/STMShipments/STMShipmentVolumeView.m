@@ -11,6 +11,7 @@
 @interface STMShipmentVolumeView()
 
 @property (nonatomic) NSInteger bottleCountPreviousValue;
+@property (nonatomic) BOOL initialVolumeSetWasDone;
 
 
 @end
@@ -206,10 +207,14 @@
 }
 
 - (void)bottleCountStepperWraps {
+    [self bottleCountStepperWrapsForVolume:self.volume];
+}
+
+- (void)bottleCountStepperWrapsForVolume:(NSInteger)volume {
     
     if (self.volumeLimit) {
         
-        if (self.volume + 1 > self.volumeLimit) {
+        if (volume + 1 > self.volumeLimit) {
             
             self.bottleCountStepper.maximumValue = self.bottleCountStepper.value;
             self.bottleCountStepper.minimumValue = (self.bottleCountStepper.value == 0) ? -1 : 0;
@@ -219,12 +224,12 @@
             
             self.bottleCountStepper.maximumValue = self.packageRel - 1;
             self.bottleCountStepper.minimumValue = 0;
-            self.bottleCountStepper.wraps = (self.volume - 1 >= 0);
+            self.bottleCountStepper.wraps = (volume - 1 >= 0);
             
         }
         
     } else {
-        self.bottleCountStepper.wraps = (self.volume - 1 >= 0);
+        self.bottleCountStepper.wraps = (volume - 1 >= 0);
     }
 
 }
@@ -278,9 +283,11 @@
     
     if (self.packageRel && self.packageRel != 0) {
 
+        (self.initialVolumeSetWasDone) ? [self bottleCountStepperWrapsForVolume:volume] : [self bottleCountStepperWraps];
+        
         NSInteger boxCount = floor(volume / self.packageRel);
         NSInteger bottleCount = volume % self.packageRel;
-
+        
         if (self.boxCountStepper && self.bottleCountStepper) {
 
             self.boxCountStepper.value = boxCount;
@@ -295,6 +302,8 @@
             self.bottleCount = bottleCount;
             
         }
+        
+        self.initialVolumeSetWasDone = YES;
         
     }
     

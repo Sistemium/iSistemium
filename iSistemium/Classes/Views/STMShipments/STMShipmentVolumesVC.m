@@ -141,7 +141,16 @@
     
     if ([volumeView isKindOfClass:[STMShipmentVolumeView class]]) {
         
-//        STMShipmentVolumeView *shipmentVolumeView = (STMShipmentVolumeView *)volumeView;
+        STMShipmentVolumeView *shipmentVolumeView = (STMShipmentVolumeView *)volumeView;
+        
+        if (![shipmentVolumeView isEqual:self.doneVolumeView]) {
+            
+            NSInteger notDoneVolume = self.excessVolumeView.volume + self.shortageVolumeView.volume + self.badVolumeView.volume;
+            NSInteger doneVolume = self.position.volume.integerValue - notDoneVolume;
+            
+            self.doneVolumeView.volume = (doneVolume > 0) ? doneVolume : 0;
+            
+        }
         
         NSInteger summVolume = self.doneVolumeView.volume + self.excessVolumeView.volume + self.shortageVolumeView.volume + self.badVolumeView.volume;
         
