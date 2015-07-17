@@ -31,6 +31,8 @@
 
 @property (nonatomic, strong) NSArray *volumeViews;
 
+@property (nonatomic) NSInteger discrepancyVolume;
+
 
 @end
 
@@ -59,26 +61,32 @@
     
     if (self.doneVolumeView.volume + self.shortageVolumeView.volume + self.excessVolumeView.volume + self.badVolumeView.volume > 0) {
         
-        NSString *checkingInfo = [[STMShippingProcessController sharedInstance] checkingInfoForPosition:self.position
-                                                                                         withDoneVolume:self.doneVolumeView.volume
-                                                                                         shortageVolume:self.shortageVolumeView.volume
-                                                                                           excessVolume:self.excessVolumeView.volume
-                                                                                              badVolume:self.badVolumeView.volume];
-        
-        if (!checkingInfo) {
+        if (self.discrepancyVolume != 0) {
             
-            [self shippingPositionAndDismiss];
+            NSString *checkingInfo = [[STMShippingProcessController sharedInstance] checkingInfoForPosition:self.position
+                                                                                             withDoneVolume:self.doneVolumeView.volume
+                                                                                             shortageVolume:self.shortageVolumeView.volume
+                                                                                               excessVolume:self.excessVolumeView.volume
+                                                                                                  badVolume:self.badVolumeView.volume];
             
+            if (!checkingInfo) {
+                
+                [self shippingPositionAndDismiss];
+                
+            } else {
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                                message:checkingInfo
+                                                               delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                      otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                alert.tag = 111;
+                [alert show];
+                
+            }
+
         } else {
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
-                                                            message:checkingInfo
-                                                           delegate:self
-                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-            alert.tag = 111;
-            [alert show];
-            
+            [self shippingPositionAndDismiss];
         }
         
     } else {
@@ -154,9 +162,9 @@
         
         NSInteger summVolume = self.doneVolumeView.volume + self.excessVolumeView.volume + self.shortageVolumeView.volume + self.badVolumeView.volume;
         
-        NSInteger discrepancyVolume = self.position.volume.integerValue - summVolume;
+        self.discrepancyVolume = self.position.volume.integerValue - summVolume;
         
-        self.discrepancyVolumeView.volume = discrepancyVolume;
+        self.discrepancyVolumeView.volume = self.discrepancyVolume;
         
     }
     
