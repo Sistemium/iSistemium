@@ -53,66 +53,6 @@ typedef NS_ENUM(NSInteger, STMDataType) {
 }
 
 - (void)prepareTableData {
-
-/*
-    
-    NSString *entityName = NSStringFromClass([STMShipmentPosition class]);
-//    NSString *property = @"article";
-//
-//    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:self.document.managedObjectContext];
-//    NSPropertyDescription *entityProperty = entity.propertiesByName[property];
-
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-
-//    if (entityProperty) {
-
-//        NSExpression *expression = [NSExpression expressionForKeyPath:property];
-//        NSExpression *countExpression = [NSExpression expressionForFunction:@"count:" arguments:@[expression]];
-//        NSExpressionDescription *ed = [[NSExpressionDescription alloc] init];
-//        ed.expression = countExpression;
-//        ed.expressionResultType = NSInteger64AttributeType;
-//        ed.name = @"count";
-        
-        
-
-//        request.propertiesToFetch = @[entityProperty, ed];
-//        request.propertiesToFetch = @[entityProperty];
-//        request.propertiesToGroupBy = @[entityProperty];
-//        request.resultType = NSDictionaryResultType;
-
-        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-//        NSSortDescriptor *propertyDescriptor = [NSSortDescriptor sortDescriptorWithKey:property ascending:YES];
-        
-        request.sortDescriptors = @[nameDescriptor];
-
-        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[self requestPredicate]];
-
-        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
-
-        
-//        result = [result filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"count > 1"]];
-
-        
-//    }
-    
-    NSArray *badResult = [result filteredArrayUsingPredicate:[self badVolumePredicate]];
-    NSArray *shortageResult = [result filteredArrayUsingPredicate:[self shortageVolumePredicate]];
-    NSArray *excessResult = [result filteredArrayUsingPredicate:[self excessVolumePredicate]];
-    
-    if (badResult.count > 0) {
-        [self.tableData addObject:@{@(STMDataTypeBad) : badResult}];
-    }
-    
-    if (shortageResult.count > 0) {
-        [self.tableData addObject:@{@(STMDataTypeShortage) : shortageResult}];
-    }
-    
-    if (excessResult.count > 0) {
-        [self.tableData addObject:@{@(STMDataTypeExcess) : excessResult}];
-  }
- 
-*/
-    
     
     NSString *entityName = NSStringFromClass([STMArticle class]);
     STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
@@ -162,7 +102,7 @@ typedef NS_ENUM(NSInteger, STMDataType) {
         
         NSMutableArray *articlesArray = [NSMutableArray array];
         
-        for (STMArticle *article in badResult) {
+        for (STMArticle *article in shortageResult) {
             
             predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
             NSArray *tempPositions = [positions filteredArrayUsingPredicate:predicate];
@@ -186,7 +126,7 @@ typedef NS_ENUM(NSInteger, STMDataType) {
         
         NSMutableArray *articlesArray = [NSMutableArray array];
         
-        for (STMArticle *article in badResult) {
+        for (STMArticle *article in excessResult) {
             
             predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
             NSArray *tempPositions = [positions filteredArrayUsingPredicate:predicate];
@@ -321,7 +261,6 @@ typedef NS_ENUM(NSInteger, STMDataType) {
         STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
         
         NSDictionary *sectionData = self.tableData[indexPath.section];
-//        NSNumber *sectionKey = sectionData.allKeys.firstObject;
         NSArray *sectionValues = sectionData.allValues.firstObject;
         
         NSDictionary *sectionValue = sectionValues[indexPath.row];
@@ -331,26 +270,7 @@ typedef NS_ENUM(NSInteger, STMDataType) {
         
         customCell.titleLabel.text = article.name;
         customCell.detailLabel.text = nil;
-        
-//        NSNumber *volume = nil;
-//        
-//        switch (sectionKey.integerValue) {
-//            case STMDataTypeBad:
-//                volume = position.badVolume;
-//                break;
-//                
-//            case STMDataTypeShortage:
-//                volume = position.shortageVolume;
-//                break;
-//                
-//            case STMDataTypeExcess:
-//                volume = position.excessVolume;
-//                break;
-//                
-//            default:
-//                break;
-//        }
-        
+                
         STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
         infoLabel.text = [STMFunctions volumeStringWithVolume:volumeSum.integerValue andPackageRel:article.packageRel.integerValue];
         infoLabel.textAlignment = NSTextAlignmentRight;

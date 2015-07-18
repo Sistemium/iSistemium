@@ -415,19 +415,19 @@
         
         if (filteredPositions.count > 1) {
             
-//            NSLog(@"article.name %@", article.name);
-//            
-//            for (STMShipmentPosition *position in filteredPositions) {
-//                
-//                NSLog(@"shipment.ndoc %@", position.shipment.ndoc);
-//
-//                for (STMShipmentRoutePoint *point in position.shipment.shipmentRoutePoints) {
-//                    
-//                    NSLog(@"point.name %@", point.name);
-//                    
-//                }
-//                
-//            }
+            NSLog(@"article.name %@", article.name);
+            
+            for (STMShipmentPosition *position in filteredPositions) {
+                
+                NSLog(@"shipment.ndoc %@", position.shipment.ndoc);
+
+                for (STMShipmentRoutePoint *point in position.shipment.shipmentRoutePoints) {
+                    
+                    NSLog(@"point.name %@", point.name);
+                    
+                }
+                
+            }
             
         }
         
@@ -443,7 +443,7 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
     
-    [self shipmentsInfo];
+//    [self shipmentsInfo];
     
     [super customInit];
     

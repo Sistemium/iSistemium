@@ -90,7 +90,10 @@
 }
 
 - (void)startShippingWithShipment:(STMShipment *)shipment {
+    
+    shipment.isProcessed = @NO;
     [self.shipments addObject:shipment];
+    
 }
 
 - (void)cancelShippingWithShipment:(STMShipment *)shipment {
