@@ -42,7 +42,13 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
 - (NSSet *)shipments {
     
     if (!_shipments) {
-        _shipments = [self.route valueForKeyPath:@"shipmentRoutePoints.@distinctUnionOfSets.shipments"];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue == YES"];
+        NSSet *shipments = [self.route valueForKeyPath:@"shipmentRoutePoints.@distinctUnionOfSets.shipments"];
+        shipments = [shipments filteredSetUsingPredicate:predicate];
+
+        _shipments = shipments;
+        
     }
     return _shipments;
     
