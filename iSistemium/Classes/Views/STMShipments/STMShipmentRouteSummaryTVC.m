@@ -12,10 +12,10 @@
 #import "STMFunctions.h"
 
 
-typedef NS_ENUM(NSInteger, STMDataType) {
-    STMDataTypeBad,
-    STMDataTypeShortage,
-    STMDataTypeExcess
+typedef NS_ENUM(NSInteger, STMSummaryType) {
+    STMSummaryTypeBad,
+    STMSummaryTypeShortage,
+    STMSummaryTypeExcess
 };
 
 
@@ -65,82 +65,46 @@ typedef NS_ENUM(NSInteger, STMDataType) {
     
     NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
 
-    NSArray *badResult = [result filteredArrayUsingPredicate:[self badVolumePredicate]];
-    NSArray *shortageResult = [result filteredArrayUsingPredicate:[self shortageVolumePredicate]];
-    NSArray *excessResult = [result filteredArrayUsingPredicate:[self excessVolumePredicate]];
-
-    if (badResult.count > 0) {
+    NSArray *availableTypes = @[@(STMSummaryTypeBad), @(STMSummaryTypeExcess), @(STMSummaryTypeShortage)];
+    
+    for (NSNumber *typeNumber in availableTypes) {
         
-        NSArray *positions = [self filteredPositionsForArticlesArray:badResult];
+        STMSummaryType type = typeNumber.integerValue;
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"badVolume.integerValue > 0"];
-        positions = [positions filteredArrayUsingPredicate:predicate];
-
-        NSMutableArray *articlesArray = [NSMutableArray array];
+        NSPredicate *resultPredicate = nil;
         
-        for (STMArticle *article in badResult) {
-            
-            predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
-            NSArray *tempPositions = [positions filteredArrayUsingPredicate:predicate];
-            
-            NSNumber *volumeSum = [tempPositions valueForKeyPath:@"@sum.badVolume"];
-            
-            [articlesArray addObject:@{@"article": article, @"volumeSum": volumeSum}];
-            
+        switch (type) {
+            case STMSummaryTypeBad: {
+                resultPredicate = [self badVolumePredicate];
+                break;
+            }
+            case STMSummaryTypeShortage: {
+                resultPredicate = [self shortageVolumePredicate];
+                break;
+            }
+            case STMSummaryTypeExcess: {
+                resultPredicate = [self excessVolumePredicate];
+                break;
+            }
+            default: {
+                break;
+            }
         }
         
-        [self.tableData addObject:@{@(STMDataTypeBad) : articlesArray}];
+        NSArray *notShippingArticles = [result filteredArrayUsingPredicate:resultPredicate];
+        
+        if (notShippingArticles.count > 0) {
+            
+            NSArray *positions = [self filteredPositionsForArticlesArray:notShippingArticles];
+            
+            NSArray *articlesArray = [self articlesArrayForType:type withPositions:positions andArticles:notShippingArticles];
+            
+            [self.tableData addObject:@{typeNumber : articlesArray}];
+
+        }
         
     }
     
-    if (shortageResult.count > 0) {
-        
-        NSArray *positions = [self filteredPositionsForArticlesArray:shortageResult];
-        
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shortageVolume.integerValue > 0"];
-        positions = [positions filteredArrayUsingPredicate:predicate];
-        
-        NSMutableArray *articlesArray = [NSMutableArray array];
-        
-        for (STMArticle *article in shortageResult) {
-            
-            predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
-            NSArray *tempPositions = [positions filteredArrayUsingPredicate:predicate];
-            
-            NSNumber *volumeSum = [tempPositions valueForKeyPath:@"@sum.shortageVolume"];
-            
-            [articlesArray addObject:@{@"article": article, @"volumeSum": volumeSum}];
-            
-        }
-
-        [self.tableData addObject:@{@(STMDataTypeShortage) : articlesArray}];
-        
-    }
-    
-    if (excessResult.count > 0) {
-        
-        NSArray *positions = [self filteredPositionsForArticlesArray:excessResult];
-        
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"excessVolume.integerValue > 0"];
-        positions = [positions filteredArrayUsingPredicate:predicate];
-        
-        NSMutableArray *articlesArray = [NSMutableArray array];
-        
-        for (STMArticle *article in excessResult) {
-            
-            predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
-            NSArray *tempPositions = [positions filteredArrayUsingPredicate:predicate];
-            
-            NSNumber *volumeSum = [tempPositions valueForKeyPath:@"@sum.excessVolume"];
-            
-            [articlesArray addObject:@{@"article": article, @"volumeSum": volumeSum}];
-            
-        }
-        
-        [self.tableData addObject:@{@(STMDataTypeExcess) : articlesArray}];
-        
-    }
-
 }
 
 - (NSArray *)filteredPositionsForArticlesArray:(NSArray *)articlesArray {
@@ -154,6 +118,64 @@ typedef NS_ENUM(NSInteger, STMDataType) {
     positions = [positions filteredArrayUsingPredicate:predicate];
 
     return positions;
+    
+}
+
+- (NSArray *)articlesArrayForType:(STMSummaryType)type withPositions:(NSArray *)positions  andArticles:(NSArray *)articles {
+    
+    NSString *volumeProperty = [self stringVolumePropertyForType:type];
+    
+    if (volumeProperty) {
+        
+        NSString *predicateFormat = [volumeProperty stringByAppendingString:@".integerValue > 0"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat];
+        positions = [positions filteredArrayUsingPredicate:predicate];
+        
+        NSMutableArray *articlesArray = [NSMutableArray array];
+        
+        for (STMArticle *article in articles) {
+            
+            predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
+            NSArray *tempPositions = [positions filteredArrayUsingPredicate:predicate];
+            
+            NSString *keyPath = [@"@sum." stringByAppendingString:volumeProperty];
+            NSNumber *volumeSum = [tempPositions valueForKeyPath:keyPath];
+            
+            [articlesArray addObject:@{@"article": article, @"volumeSum": volumeSum}];
+            
+        }
+
+        return articlesArray;
+        
+    } else {
+        return nil;
+    }
+    
+}
+
+- (NSString *)stringVolumePropertyForType:(STMSummaryType)type {
+    
+    NSString *volumeType = nil;
+    
+    switch (type) {
+        case STMSummaryTypeBad: {
+            volumeType = @"badVolume";
+            break;
+        }
+        case STMSummaryTypeShortage: {
+            volumeType = @"shortageVolume";
+            break;
+        }
+        case STMSummaryTypeExcess: {
+            volumeType = @"excessVolume";
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+
+    return volumeType;
     
 }
 
@@ -219,15 +241,15 @@ typedef NS_ENUM(NSInteger, STMDataType) {
         NSNumber *sectionKey = sectionData.allKeys.firstObject;
         
         switch (sectionKey.integerValue) {
-            case STMDataTypeBad:
+            case STMSummaryTypeBad:
                 return NSLocalizedString(@"BAD VOLUME LABEL", nil);
                 break;
 
-            case STMDataTypeShortage:
+            case STMSummaryTypeShortage:
                 return NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil);
                 break;
 
-            case STMDataTypeExcess:
+            case STMSummaryTypeExcess:
                 return NSLocalizedString(@"EXCESS VOLUME LABEL", nil);
                 break;
 
