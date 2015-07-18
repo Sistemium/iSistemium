@@ -14,8 +14,8 @@
 
 typedef NS_ENUM(NSInteger, STMSummaryType) {
     STMSummaryTypeBad,
-    STMSummaryTypeShortage,
-    STMSummaryTypeExcess
+    STMSummaryTypeExcess,
+    STMSummaryTypeShortage
 };
 
 
@@ -84,12 +84,12 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
                 resultPredicate = [self badVolumePredicate];
                 break;
             }
-            case STMSummaryTypeShortage: {
-                resultPredicate = [self shortageVolumePredicate];
-                break;
-            }
             case STMSummaryTypeExcess: {
                 resultPredicate = [self excessVolumePredicate];
+                break;
+            }
+            case STMSummaryTypeShortage: {
+                resultPredicate = [self shortageVolumePredicate];
                 break;
             }
             default: {
@@ -168,12 +168,12 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
             volumeType = @"badVolume";
             break;
         }
-        case STMSummaryTypeShortage: {
-            volumeType = @"shortageVolume";
-            break;
-        }
         case STMSummaryTypeExcess: {
             volumeType = @"excessVolume";
+            break;
+        }
+        case STMSummaryTypeShortage: {
+            volumeType = @"shortageVolume";
             break;
         }
         default: {
@@ -251,14 +251,14 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
                 return NSLocalizedString(@"BAD VOLUME LABEL", nil);
                 break;
 
-            case STMSummaryTypeShortage:
-                return NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil);
-                break;
-
             case STMSummaryTypeExcess:
                 return NSLocalizedString(@"EXCESS VOLUME LABEL", nil);
                 break;
 
+            case STMSummaryTypeShortage:
+                return NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil);
+                break;
+                
             default:
                 return nil;
                 break;
