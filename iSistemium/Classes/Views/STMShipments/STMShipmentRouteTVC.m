@@ -17,7 +17,7 @@
 
 @interface STMShipmentRouteTVC ()
 
-@property (nonatomic, strong) NSIndexSet *routePointsIndexSet;
+//@property (nonatomic, strong) NSIndexSet *routePointsIndexSet;
 
 
 @end
@@ -117,7 +117,7 @@
             break;
             
         case 1:
-            self.routePointsIndexSet = [NSIndexSet indexSetWithIndex:section];
+//            self.routePointsIndexSet = [NSIndexSet indexSetWithIndex:section];
             return NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
             break;
             
@@ -232,7 +232,7 @@
 - (NSString *)summaryCellTitle {
     
     NSString *pluralString = [STMFunctions pluralTypeForCount:[self processedShipments].count];
-    NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SRPOINTS"], nil);
+    NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SHIPMENTS"], nil);
     
     return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"SUMMARY CELL TITLE", nil), (unsigned long)[self processedShipments].count, pointsString];
     
@@ -391,6 +391,50 @@
     
 }
 
+- (void)shipmentsInfo {
+    
+    NSLog(@"shipmentRoutePoints.count %d", self.route.shipmentRoutePoints.count);
+    
+    NSSet *shipments = [self.route valueForKeyPath:@"shipmentRoutePoints.@distinctUnionOfSets.shipments"];
+    
+    NSLog(@"shipments.count %d", shipments.count);
+    
+    NSSet *positions = [shipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    
+    NSLog(@"positions.count %d", positions.count);
+    
+    NSArray *articles = [positions valueForKeyPath:@"@distinctUnionOfObjects.article"];
+    
+    NSLog(@"articles.count %d", articles.count);
+    
+    for (STMArticle *article in articles) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipment IN %@", shipments];
+        
+        NSSet *filteredPositions = [article.shipmentPositions filteredSetUsingPredicate:predicate];
+        
+        if (filteredPositions.count > 1) {
+            
+//            NSLog(@"article.name %@", article.name);
+//            
+//            for (STMShipmentPosition *position in filteredPositions) {
+//                
+//                NSLog(@"shipment.ndoc %@", position.shipment.ndoc);
+//
+//                for (STMShipmentRoutePoint *point in position.shipment.shipmentRoutePoints) {
+//                    
+//                    NSLog(@"point.name %@", point.name);
+//                    
+//                }
+//                
+//            }
+            
+        }
+        
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 
@@ -398,6 +442,8 @@
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
+    
+    [self shipmentsInfo];
     
     [super customInit];
     
@@ -410,9 +456,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    if (self.routePointsIndexSet) {
-        [self.tableView reloadSections:self.routePointsIndexSet withRowAnimation:UITableViewRowAnimationNone];
-    }
+//    if (self.routePointsIndexSet) {
+//        [self.tableView reloadSections:self.routePointsIndexSet withRowAnimation:UITableViewRowAnimationNone];
+//    }
+
+    [self.tableView reloadData];
     
     [super viewWillAppear:animated];
     
