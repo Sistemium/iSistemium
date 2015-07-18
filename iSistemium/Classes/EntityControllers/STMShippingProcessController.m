@@ -108,7 +108,7 @@
     
 }
 
-- (void)doneShippingWithShipment:(STMShipment *)shipment  withCompletionHandler:(void (^)(BOOL success))completionHandler {
+- (void)doneShippingWithShipment:(STMShipment *)shipment withCompletionHandler:(void (^)(BOOL success))completionHandler {
 
     if ([self haveUnprocessedPositionsAtShipment:shipment]) {
         
@@ -158,7 +158,7 @@
     
 }
 
-- (NSString *)checkingInfoForPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume shortageVolume:(NSInteger)shortageVolume excessVolume:(NSInteger)excessVolume badVolume:(NSInteger)badVolume {
+- (NSString *)checkingInfoForPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume {
     
     NSString *beginningString = NSLocalizedString(@"SHIPPING POSITION ALERT BEGINNING STRING", nil);
     NSString *positionTitle = [NSString stringWithFormat:@"%@: %@", position.article.name, [position volumeText]];
@@ -167,9 +167,9 @@
     NSInteger packageRel = position.article.packageRel.integerValue;
     
     NSString *parametersString = [self volumesStringWithDoneVolume:doneVolume
-                                                    shortageVolume:shortageVolume
-                                                      excessVolume:excessVolume
                                                          badVolume:badVolume
+                                                      excessVolume:excessVolume
+                                                    shortageVolume:shortageVolume
                                                         packageRel:packageRel];
 
     NSString *endString = @"?";
@@ -180,7 +180,7 @@
     
 }
 
-- (NSString *)volumesStringWithDoneVolume:(NSInteger)doneVolume shortageVolume:(NSInteger)shortageVolume excessVolume:(NSInteger)excessVolume badVolume:(NSInteger)badVolume packageRel:(NSInteger)packageRel {
+- (NSString *)volumesStringWithDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume packageRel:(NSInteger)packageRel {
     
     NSString *parametersString = nil;
     
@@ -193,6 +193,15 @@
         
     }
     
+    if (badVolume > 0) {
+        
+        NSString *badVolumeString = [STMFunctions volumeStringWithVolume:badVolume andPackageRel:packageRel];
+        NSString *badString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BAD VOLUME LABEL", nil), badVolumeString];
+        
+        parametersString = [NSString stringWithFormat:@"%@%@\n", (parametersString) ? parametersString : @"", badString];
+        
+    }
+
     if (excessVolume > 0) {
         
         NSString *excessVolumeString = [STMFunctions volumeStringWithVolume:excessVolume andPackageRel:packageRel];
@@ -211,24 +220,15 @@
         
     }
     
-    if (badVolume > 0) {
-        
-        NSString *badVolumeString = [STMFunctions volumeStringWithVolume:badVolume andPackageRel:packageRel];
-        NSString *badString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BAD VOLUME LABEL", nil), badVolumeString];
-        
-        parametersString = [NSString stringWithFormat:@"%@%@\n", (parametersString) ? parametersString : @"", badString];
-        
-    }
-
     return parametersString;
     
 }
 
 - (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume {
-    [self shippingPosition:position withDoneVolume:doneVolume shortageVolume:0 excessVolume:0 badVolume:0];
+    [self shippingPosition:position withDoneVolume:doneVolume badVolume:0 excessVolume:0 shortageVolume:0];
 }
 
-- (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume shortageVolume:(NSInteger)shortageVolume excessVolume:(NSInteger)excessVolume badVolume:(NSInteger)badVolume {
+- (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume {
     
     position.doneVolume = (doneVolume > 0) ? [NSNumber numberWithInteger:doneVolume] : nil;
     position.badVolume = (badVolume > 0) ? [NSNumber numberWithInteger:badVolume] : nil;

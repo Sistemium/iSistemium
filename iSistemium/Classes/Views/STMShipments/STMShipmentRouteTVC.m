@@ -14,6 +14,8 @@
 #import "STMShipmentRoutePointTVC.h"
 #import "STMShipmentRouteSummaryTVC.h"
 
+#import "STMShippingProcessController.h"
+
 
 @interface STMShipmentRouteTVC ()
 
@@ -85,6 +87,32 @@
     return ([self processedShipments].count > 0);
 }
 
+- (NSNumber *)badVolumeSummary {
+    
+    NSArray *positions = [[self processedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSNumber *volume = [positions valueForKeyPath:@"@sum.badVolume"];
+    
+    return volume;
+    
+}
+
+- (NSNumber *)shortageVolumeSummary {
+
+    NSArray *positions = [[self processedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSNumber *volume = [positions valueForKeyPath:@"@sum.shortageVolume"];
+    
+    return volume;
+
+}
+
+- (NSNumber *)excessVolumeSummary {
+    
+    NSArray *positions = [[self processedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSNumber *volume = [positions valueForKeyPath:@"@sum.excessVolume"];
+    
+    return volume;
+
+}
 
 #pragma mark - table view data
 
@@ -219,13 +247,18 @@
             
         case 1:
             cell.titleLabel.text = [self summaryCellTitle];
-            cell.detailLabel.text = @"";
+            cell.detailLabel.text = [self summaryCellDetails];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
             
         default:
             break;
     }
+    
+    UIColor *textColor = [UIColor blackColor];
+
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
     
 }
 
@@ -235,6 +268,22 @@
     NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SHIPMENTS"], nil);
     
     return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"SUMMARY CELL TITLE", nil), (unsigned long)[self processedShipments].count, pointsString];
+    
+}
+
+- (NSString *)summaryCellDetails {
+    
+    NSNumber *badVolume = [self badVolumeSummary];
+    NSNumber *shortageVolume = [self shortageVolumeSummary];
+    NSNumber *excessVolume = [self excessVolumeSummary];
+    
+    NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:0
+                                                                                               badVolume:badVolume.integerValue
+                                                                                            excessVolume:excessVolume.integerValue
+                                                                                          shortageVolume:shortageVolume.integerValue
+                                                                                              packageRel:0];
+    
+    return (volumesString) ? [@"\n" stringByAppendingString:volumesString] : @"";
     
 }
 

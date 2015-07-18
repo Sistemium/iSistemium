@@ -428,9 +428,9 @@
     if (position.isProcessed.boolValue) {
         
         NSString *volumesString = [self.shippingProcessController volumesStringWithDoneVolume:position.doneVolume.integerValue
-                                                                               shortageVolume:position.shortageVolume.integerValue
-                                                                                 excessVolume:position.excessVolume.integerValue
                                                                                     badVolume:position.badVolume.integerValue
+                                                                                 excessVolume:position.excessVolume.integerValue
+                                                                               shortageVolume:position.shortageVolume.integerValue
                                                                                    packageRel:position.article.packageRel.integerValue];
         
         cell.detailLabel.text = [@"\n" stringByAppendingString:volumesString];

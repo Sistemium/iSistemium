@@ -65,9 +65,9 @@
             
             NSString *checkingInfo = [[STMShippingProcessController sharedInstance] checkingInfoForPosition:self.position
                                                                                              withDoneVolume:self.doneVolumeView.volume
-                                                                                             shortageVolume:self.shortageVolumeView.volume
+                                                                                                  badVolume:self.badVolumeView.volume
                                                                                                excessVolume:self.excessVolumeView.volume
-                                                                                                  badVolume:self.badVolumeView.volume];
+                                                                                             shortageVolume:self.shortageVolumeView.volume];
             
             if (!checkingInfo) {
                 
@@ -106,9 +106,9 @@
 
     [[STMShippingProcessController sharedInstance] shippingPosition:self.position
                                                      withDoneVolume:self.doneVolumeView.volume
-                                                     shortageVolume:self.shortageVolumeView.volume
+                                                          badVolume:self.badVolumeView.volume
                                                        excessVolume:self.excessVolumeView.volume
-                                                          badVolume:self.badVolumeView.volume];
+                                                     shortageVolume:self.shortageVolumeView.volume];
     [self dismissSelf];
 
 }
