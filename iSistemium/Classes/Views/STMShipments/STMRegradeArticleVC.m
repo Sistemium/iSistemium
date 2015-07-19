@@ -150,6 +150,7 @@
     
     searchBar.showsCancelButton = NO;
     searchBar.text = nil;
+    self.selectedIndexPath = nil;
     
     [self hideKeyboard];
     [self prepareTableData];
