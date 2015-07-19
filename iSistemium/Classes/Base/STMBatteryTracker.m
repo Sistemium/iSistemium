@@ -78,7 +78,9 @@
     }
     
     batteryStatus.batteryState = batteryState;
-    NSLog(@"batteryStatus %@", batteryStatus);
+    
+    NSLog(@"batteryLevel %@", batteryStatus.batteryLevel);
+    NSLog(@"batteryState %@", batteryStatus.batteryState);
     
 }
 
