@@ -296,6 +296,8 @@
         [tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
     
+    [self hideKeyboard];
+    
 }
 
 #pragma mark - view lifecycle
