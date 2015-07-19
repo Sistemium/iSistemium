@@ -8,9 +8,12 @@
 
 #import "STMRegradeArticleVC.h"
 #import "STMUI.h"
+#import "STMNS.h"
+#import "STMDataModel.h"
+#import "STMSessionManagement.h"
 
 
-@interface STMRegradeArticleVC ()
+@interface STMRegradeArticleVC () <UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -19,11 +22,38 @@
 @property (nonatomic, strong) STMBarButtonItemCancel *cancelButton;
 @property (nonatomic, strong) STMBarButtonItemDone *doneButton;
 
+@property (nonatomic, strong) NSArray *tableData;
+@property (nonatomic, strong) NSString *cellIdentifier;
+
 
 @end
 
 
 @implementation STMRegradeArticleVC
+
+- (STMDocument *)document {
+    return [[STMSessionManager sharedManager].currentSession document];
+}
+
+- (NSString *)cellIdentifier {
+    return @"regradeArticleCell";
+}
+
+- (void)prepareTableData {
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
+    
+    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"pieceVolume" ascending:YES selector:@selector(compare:)];
+    
+    request.sortDescriptors = @[nameDescriptor, volumeDescriptor];
+    
+    request.predicate = [STMPredicate predicateWithNoFantoms];
+    
+    self.tableData = [[self document].managedObjectContext executeFetchRequest:request error:nil];
+
+}
+
 
 - (void)cancelButtonPressed:(id)sender {
     [self dismissSelf];
@@ -54,11 +84,39 @@
 }
 
 
+#pragma mark - UITableViewDataSource, UITableViewDelegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.tableData.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    
+    STMArticle *article = self.tableData[indexPath.row];
+    
+    cell.textLabel.text = article.name;
+    
+    return cell;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    
     [self setupToolbar];
+    
+    [self prepareTableData];
     
 }
 
