@@ -165,6 +165,12 @@
     
 }
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    [self hideKeyboard];
+    
+}
+
 
 #pragma mark - UITableViewDataSource, UITableViewDelegate
 
