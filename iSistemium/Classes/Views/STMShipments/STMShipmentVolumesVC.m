@@ -56,6 +56,9 @@
 }
 
 - (IBAction)regradeButtonPressed:(id)sender {
+    
+    [self performSegueWithIdentifier:@"showArticleList" sender:self];
+    
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
