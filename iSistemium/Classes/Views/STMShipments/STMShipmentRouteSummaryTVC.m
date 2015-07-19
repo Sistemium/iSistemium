@@ -117,7 +117,7 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     
     NSArray *positions = [articlesArray valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipment.isProcessed.boolValue == YES"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipment.isShipped.boolValue == YES"];
     positions = [positions filteredArrayUsingPredicate:predicate];
     
     predicate = [NSPredicate predicateWithFormat:@"shipment in %@", self.shipments];
