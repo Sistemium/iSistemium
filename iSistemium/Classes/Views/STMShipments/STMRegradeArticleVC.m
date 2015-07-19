@@ -13,7 +13,7 @@
 #import "STMSessionManagement.h"
 
 
-@interface STMRegradeArticleVC () <UITableViewDataSource, UITableViewDelegate>
+@interface STMRegradeArticleVC () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -56,11 +56,21 @@
 }
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
-    self.cachedCellsHeights[indexPath] = @(height);
+    
+    STMArticle *article = self.tableData[indexPath.row];
+    NSManagedObjectID *objectID = article.objectID;
+    
+    self.cachedCellsHeights[objectID] = @(height);
+    
 }
 
 - (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
-    return self.cachedCellsHeights[indexPath];
+    
+    STMArticle *article = self.tableData[indexPath.row];
+    NSManagedObjectID *objectID = article.objectID;
+
+    return self.cachedCellsHeights[objectID];
+    
 }
 
 
@@ -106,9 +116,52 @@
     
     request.sortDescriptors = @[nameDescriptor, volumeDescriptor];
     
-    request.predicate = [STMPredicate predicateWithNoFantoms];
+    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text];
+        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
+
+    } else {
+        request.predicate = [STMPredicate predicateWithNoFantoms];
+    }
     
     self.tableData = [[self document].managedObjectContext executeFetchRequest:request error:nil];
+    
+    [self.tableView reloadData];
+    
+}
+
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    [self prepareTableData];
+    
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = YES;
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = NO;
+    searchBar.text = nil;
+    
+    [self hideKeyboard];
+    [self prepareTableData];
+    
+}
+
+
+- (void)hideKeyboard {
+    
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
     
 }
 
@@ -241,6 +294,8 @@
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    self.searchBar.delegate = self;
     
     [self setupToolbar];
     
