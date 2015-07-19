@@ -423,7 +423,32 @@
 
 - (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
     
-    cell.titleLabel.text = position.article.name;
+    UIFont *font = [UIFont systemFontOfSize:17];
+    
+    NSDictionary *attributes = @{NSFontAttributeName:font};
+    
+    NSMutableAttributedString *attributedText = nil;
+    
+    if (position.articleFact) {
+        
+        attributedText = [[NSMutableAttributedString alloc] initWithString:[position.articleFact.name stringByAppendingString:@"\n"] attributes:attributes];
+        
+        font = [UIFont systemFontOfSize:font.pointSize - 4];
+        
+        NSDictionary *attributes = @{NSStrikethroughStyleAttributeName   : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
+                                     NSFontAttributeName                 : font};
+        
+        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:position.article.name attributes:attributes];
+        
+        [attributedText appendAttributedString:appendString];
+        
+    } else {
+        
+        attributedText = [[NSMutableAttributedString alloc] initWithString:position.article.name attributes:attributes];
+        
+    }
+    
+    cell.titleLabel.attributedText = attributedText;
     
     if (position.isProcessed.boolValue) {
         

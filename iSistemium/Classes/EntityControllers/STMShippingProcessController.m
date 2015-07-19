@@ -135,6 +135,7 @@
 
 - (void)resetPosition:(STMShipmentPosition *)position {
     
+    position.articleFact = nil;
     position.doneVolume = nil;
     position.badVolume = nil;
     position.excessVolume = nil;

@@ -196,7 +196,7 @@
 
 - (void)setupTitleTextView {
     
-    UIFont *font = self.titleTextView.font;
+    UIFont *font = [UIFont systemFontOfSize:14];
     
     NSDictionary *attributes = @{NSFontAttributeName:font};
     
@@ -208,7 +208,7 @@
     
         attributedText = [[NSMutableAttributedString alloc] initWithString:[articleFact.name stringByAppendingString:@"\n"] attributes:attributes];
         
-        font = [UIFont systemFontOfSize:font.pointSize - 2];
+        font = [UIFont systemFontOfSize:font.pointSize - 4];
         
         NSDictionary *attributes = @{NSStrikethroughStyleAttributeName   : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
                                      NSFontAttributeName                 : font};
