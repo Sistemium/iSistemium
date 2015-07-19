@@ -237,6 +237,7 @@
 		2CCD06DD1B54F2C1002591C4 /* STMShipmentVolumesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06DC1B54F2C1002591C4 /* STMShipmentVolumesVC.m */; };
 		2CCD06E01B54F2E9002591C4 /* STMShipmentVolumeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06DF1B54F2E9002591C4 /* STMShipmentVolumeView.m */; };
 		2CCD06E31B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06E21B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m */; };
+		2CCD06E51B5B9551002591C4 /* data_in_both_directions.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */; };
 		2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */; };
 		2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CD443F0195AD76E004ADE58 /* photo-icon.png */; };
 		2CD657A61AC17E3D00EAB4FF /* STMArticleGroup+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD657A51AC17E3D00EAB4FF /* STMArticleGroup+custom.m */; };
@@ -750,6 +751,7 @@
 		2CCD06DF1B54F2E9002591C4 /* STMShipmentVolumeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentVolumeView.m; sourceTree = "<group>"; };
 		2CCD06E11B5931E6002591C4 /* STMShipmentRouteSummaryTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRouteSummaryTVC.h; sourceTree = "<group>"; };
 		2CCD06E21B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRouteSummaryTVC.m; sourceTree = "<group>"; };
+		2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = data_in_both_directions.png; sourceTree = "<group>"; };
 		2CD4311B1A850A4F00AFB5DE /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		2CD443F0195AD76E004ADE58 /* photo-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo-icon.png"; sourceTree = "<group>"; };
@@ -1512,6 +1514,7 @@
 		2CD443EF195AD741004ADE58 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */,
 				2C7678301B4125100085C514 /* location.png */,
 				2C2957981B400FD600A2D163 /* plus.png */,
 				2C761BC41B01F2D0001DA33E /* Down4-25.png */,
@@ -1740,6 +1743,7 @@
 				2C761BB21B00824F001DA33E /* Picture-32.png in Resources */,
 				2C761BB31B00824F001DA33E /* Picture-25.png in Resources */,
 				2C5763BC1AA472B700B9FD2C /* STMCatalog.storyboard in Resources */,
+				2CCD06E51B5B9551002591C4 /* data_in_both_directions.png in Resources */,
 				2C73A9241AF8F59F00FB7662 /* iphoneTabs.json in Resources */,
 				2C88F1BE1B18947700E30418 /* STMCustom6TVCell.xib in Resources */,
 				2C761BBB1B00CA02001DA33E /* STMCustom4TVCell.xib in Resources */,

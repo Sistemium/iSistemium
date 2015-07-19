@@ -19,6 +19,9 @@
 @interface STMShipmentVolumesVC () <UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextView *titleTextView;
+@property (weak, nonatomic) IBOutlet UILabel *volumeLabel;
+@property (weak, nonatomic) IBOutlet UIButton *regradeButton;
+
 @property (weak, nonatomic) IBOutlet STMShipmentVolumeView *doneVolumeView;
 @property (weak, nonatomic) IBOutlet STMShipmentVolumeView *excessVolumeView;
 @property (weak, nonatomic) IBOutlet STMShipmentVolumeView *shortageVolumeView;
@@ -52,6 +55,8 @@
     
 }
 
+- (IBAction)regradeButtonPressed:(id)sender {
+}
 
 - (IBAction)cancelButtonPressed:(id)sender {
     [self dismissSelf];
@@ -180,13 +185,16 @@
     NSDictionary *attributes = @{NSFontAttributeName:font};
     
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:self.position.article.name attributes:attributes];
-    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\n" attributes:attributes]];
-    
-    font = [UIFont boldSystemFontOfSize:font.pointSize];
-    attributes = @{NSFontAttributeName:font};
-    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:[self.position volumeText] attributes:attributes]];
-    
+
     self.titleTextView.attributedText = attributedText;
+
+    self.volumeLabel.text = [self.position volumeText];
+      
+//    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+//    
+//    font = [UIFont boldSystemFontOfSize:font.pointSize];
+//    attributes = @{NSFontAttributeName:font};
+//    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:[self.position volumeText] attributes:attributes]];
     
 }
 
