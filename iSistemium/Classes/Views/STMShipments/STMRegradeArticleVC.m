@@ -25,6 +25,11 @@
 @property (nonatomic, strong) NSArray *tableData;
 @property (nonatomic, strong) NSString *cellIdentifier;
 
+@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
+@property (nonatomic) CGFloat standardCellHeight;
+
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+
 
 @end
 
@@ -39,21 +44,27 @@
     return @"regradeArticleCell";
 }
 
-- (void)prepareTableData {
-    
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
-    
-    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-    NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"pieceVolume" ascending:YES selector:@selector(compare:)];
-    
-    request.sortDescriptors = @[nameDescriptor, volumeDescriptor];
-    
-    request.predicate = [STMPredicate predicateWithNoFantoms];
-    
-    self.tableData = [[self document].managedObjectContext executeFetchRequest:request error:nil];
+#pragma mark - cell's height caching
 
+- (NSMutableDictionary *)cachedCellsHeights {
+    
+    if (!_cachedCellsHeights) {
+        _cachedCellsHeights = [NSMutableDictionary dictionary];
+    }
+    return _cachedCellsHeights;
+    
 }
 
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    self.cachedCellsHeights[indexPath] = @(height);
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    return self.cachedCellsHeights[indexPath];
+}
+
+
+#pragma mark - buttons
 
 - (void)cancelButtonPressed:(id)sender {
     [self dismissSelf];
@@ -84,7 +95,86 @@
 }
 
 
+#pragma mark - table data
+
+- (void)prepareTableData {
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
+    
+    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    NSSortDescriptor *volumeDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"pieceVolume" ascending:YES selector:@selector(compare:)];
+    
+    request.sortDescriptors = @[nameDescriptor, volumeDescriptor];
+    
+    request.predicate = [STMPredicate predicateWithNoFantoms];
+    
+    self.tableData = [[self document].managedObjectContext executeFetchRequest:request error:nil];
+    
+}
+
+
 #pragma mark - UITableViewDataSource, UITableViewDelegate
+
+- (CGFloat)standardCellHeight {
+    
+    if (!_standardCellHeight) {
+        
+        static CGFloat standardCellHeight;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+        });
+        
+        _standardCellHeight = standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+        
+    }
+    return _standardCellHeight;
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.standardCellHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [self heightForCellAtIndexPath:indexPath];
+}
+
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+    
+    if (cachedHeight) {
+        
+        return cachedHeight.floatValue;
+        
+    } else {
+        
+        static UITableViewCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+        });
+        
+        [self fillCell:cell atIndexPath:indexPath];
+        
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+        
+        [cell setNeedsLayout];
+        [cell layoutIfNeeded];
+        
+        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+        
+        height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
+        
+        [self putCachedHeight:height forIndexPath:indexPath];
+        
+        return height;
+        
+    }
+    
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -96,20 +186,58 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMCustom7TVCell *cell = (STMCustom7TVCell *)[tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    STMArticle *article = self.tableData[indexPath.row];
+    [self fillCell:cell atIndexPath:indexPath];
     
-    cell.textLabel.text = article.name;
+    cell.tintColor = ([indexPath isEqual:self.selectedIndexPath]) ? ACTIVE_BLUE_COLOR : [UIColor clearColor];
     
     return cell;
     
 }
 
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        
+        STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
+        
+        STMArticle *article = self.tableData[indexPath.row];
+        
+        customCell.titleLabel.text = article.name;
+        customCell.detailLabel.text = nil;
+        
+        customCell.accessoryType = UITableViewCellAccessoryCheckmark;
+        
+        [cell setNeedsUpdateConstraints];
+        [cell updateConstraintsIfNeeded];
+    
+    }
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSIndexPath *previouslySelectedIndexPath = self.selectedIndexPath;
+    self.selectedIndexPath = indexPath;
+    
+    if (previouslySelectedIndexPath) {
+        [tableView reloadRowsAtIndexPaths:@[previouslySelectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+    
+    if (self.selectedIndexPath) {
+        [tableView reloadRowsAtIndexPaths:@[self.selectedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+    
+}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
