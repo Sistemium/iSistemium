@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     
     if (!_shipments) {
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue == YES"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue == YES"];
         NSSet *shipments = [self.route valueForKeyPath:@"shipmentRoutePoints.@distinctUnionOfSets.shipments"];
         shipments = [shipments filteredSetUsingPredicate:predicate];
 
@@ -193,10 +193,10 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
 
     NSCompoundPredicate *volumesPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[badVolumePredicate, shortageVolumePredicate, excessVolumePredicate]];
 
-    NSPredicate *shipmentIsProcessedPredicate = [NSPredicate predicateWithFormat:@"ANY shipmentPositions.shipment.isProcessed.boolValue == YES"];
+    NSPredicate *shipmentIsShippedPredicate = [NSPredicate predicateWithFormat:@"ANY shipmentPositions.shipment.isShipped.boolValue == YES"];
     NSPredicate *shipmentPredicate = [NSPredicate predicateWithFormat:@"ANY shipmentPositions.shipment in %@", self.shipments];
 
-    NSCompoundPredicate *finalPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[shipmentIsProcessedPredicate, shipmentPredicate, volumesPredicate]];
+    NSCompoundPredicate *finalPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[shipmentIsShippedPredicate, shipmentPredicate, volumesPredicate]];
     
     return finalPredicate;
     

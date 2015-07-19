@@ -2,7 +2,7 @@
 //  STMArticle.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
+//  Created by Maxim Grigoriev on 19/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -30,7 +30,8 @@
 @dynamic pictures;
 @dynamic prices;
 @dynamic saleOrderPositions;
-@dynamic stock;
 @dynamic shipmentPositions;
+@dynamic stock;
+@dynamic factShipmentPositions;
 
 @end

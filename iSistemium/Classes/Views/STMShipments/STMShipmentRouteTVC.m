@@ -72,9 +72,9 @@
     
 }
 
-- (NSArray *)processedShipments {
+- (NSArray *)shippedShipments {
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue == YES"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue == YES"];
     
     NSArray *shipments = [self.resultsController.fetchedObjects valueForKeyPath:@"@distinctUnionOfSets.shipments"];
     shipments = [shipments filteredArrayUsingPredicate:predicate];
@@ -84,12 +84,12 @@
 }
 
 - (BOOL)haveProcessedShipments {
-    return ([self processedShipments].count > 0);
+    return ([self shippedShipments].count > 0);
 }
 
 - (NSNumber *)badVolumeSummary {
     
-    NSArray *positions = [[self processedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
     NSNumber *volume = [positions valueForKeyPath:@"@sum.badVolume"];
     
     return volume;
@@ -98,7 +98,7 @@
 
 - (NSNumber *)shortageVolumeSummary {
 
-    NSArray *positions = [[self processedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
     NSNumber *volume = [positions valueForKeyPath:@"@sum.shortageVolume"];
     
     return volume;
@@ -107,7 +107,7 @@
 
 - (NSNumber *)excessVolumeSummary {
     
-    NSArray *positions = [[self processedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
     NSNumber *volume = [positions valueForKeyPath:@"@sum.excessVolume"];
     
     return volume;
@@ -264,10 +264,10 @@
 
 - (NSString *)summaryCellTitle {
     
-    NSString *pluralString = [STMFunctions pluralTypeForCount:[self processedShipments].count];
+    NSString *pluralString = [STMFunctions pluralTypeForCount:[self shippedShipments].count];
     NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SHIPMENTS"], nil);
     
-    return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"SUMMARY CELL TITLE", nil), (unsigned long)[self processedShipments].count, pointsString];
+    return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"SUMMARY CELL TITLE", nil), (unsigned long)[self shippedShipments].count, pointsString];
     
 }
 
@@ -297,7 +297,7 @@
     
     if (point.isReached.boolValue) {
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
         NSUInteger unprocessedShipmentsCount = [point.shipments filteredSetUsingPredicate:predicate].count;
         
         titleColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];

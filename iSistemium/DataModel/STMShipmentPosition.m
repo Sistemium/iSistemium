@@ -2,7 +2,7 @@
 //  STMShipmentPosition.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 09/07/15.
+//  Created by Maxim Grigoriev on 19/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -13,15 +13,16 @@
 
 @implementation STMShipmentPosition
 
+@dynamic badVolume;
+@dynamic doneVolume;
+@dynamic excessVolume;
+@dynamic isProcessed;
 @dynamic price;
 @dynamic priceDoc;
-@dynamic volume;
-@dynamic isProcessed;
-@dynamic doneVolume;
 @dynamic shortageVolume;
-@dynamic excessVolume;
-@dynamic badVolume;
+@dynamic volume;
 @dynamic article;
 @dynamic shipment;
+@dynamic articleFact;
 
 @end

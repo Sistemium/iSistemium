@@ -2,7 +2,7 @@
 //  STMArticle.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
+//  Created by Maxim Grigoriev on 19/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -26,8 +26,9 @@
 @property (nonatomic, retain) NSSet *pictures;
 @property (nonatomic, retain) NSSet *prices;
 @property (nonatomic, retain) NSSet *saleOrderPositions;
-@property (nonatomic, retain) STMStock *stock;
 @property (nonatomic, retain) NSSet *shipmentPositions;
+@property (nonatomic, retain) STMStock *stock;
+@property (nonatomic, retain) NSSet *factShipmentPositions;
 @end
 
 @interface STMArticle (CoreDataGeneratedAccessors)
@@ -56,5 +57,10 @@
 - (void)removeShipmentPositionsObject:(STMShipmentPosition *)value;
 - (void)addShipmentPositions:(NSSet *)values;
 - (void)removeShipmentPositions:(NSSet *)values;
+
+- (void)addFactShipmentPositionsObject:(STMShipmentPosition *)value;
+- (void)removeFactShipmentPositionsObject:(STMShipmentPosition *)value;
+- (void)addFactShipmentPositions:(NSSet *)values;
+- (void)removeFactShipmentPositions:(NSSet *)values;
 
 @end

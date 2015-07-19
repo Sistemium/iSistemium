@@ -91,7 +91,7 @@
 
 - (void)startShippingWithShipment:(STMShipment *)shipment {
     
-    shipment.isProcessed = @NO;
+    shipment.isShipped = @NO;
     [self.shipments addObject:shipment];
     
 }
@@ -102,7 +102,7 @@
         [self resetPosition:position];
     }
     
-    shipment.isProcessed = @NO;
+    shipment.isShipped = @NO;
     
     [self.shipments removeObject:shipment];
     
@@ -116,7 +116,7 @@
         
     } else {
         
-        shipment.isProcessed = @YES;
+        shipment.isShipped = @YES;
         [self.shipments removeObject:shipment];
         
         [[STMShippingProcessController document] saveDocument:^(BOOL success) {

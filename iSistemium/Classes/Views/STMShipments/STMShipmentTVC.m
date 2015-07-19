@@ -357,7 +357,7 @@
         
     } else {
         
-        if (self.shipment.isProcessed.boolValue) {
+        if (self.shipment.isShipped.boolValue) {
             
             cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON EDIT TITLE", nil);
             
@@ -589,7 +589,7 @@
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     
-        NSString *title = (self.shipment.isProcessed.boolValue) ? NSLocalizedString(@"EDIT SHIPPING?", nil) : ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
+        NSString *title = (self.shipment.isShipped.boolValue) ? NSLocalizedString(@"EDIT SHIPPING?", nil) : ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
                                                         message:@""
@@ -960,7 +960,7 @@
 
     if (![self.navigationController.viewControllers containsObject:self]) {
         
-        if (self.point.isReached.boolValue && !self.shipment.isProcessed.boolValue) {
+        if (self.point.isReached.boolValue && !self.shipment.isShipped.boolValue) {
             [self.parentVC shippingProcessWasInterrupted];
         }
         [self removeObservers];
