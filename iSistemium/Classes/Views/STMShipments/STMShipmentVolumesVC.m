@@ -189,12 +189,19 @@
     self.titleTextView.attributedText = attributedText;
 
     self.volumeLabel.text = [self.position volumeText];
-      
+    
 //    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\n" attributes:attributes]];
 //    
 //    font = [UIFont boldSystemFontOfSize:font.pointSize];
 //    attributes = @{NSFontAttributeName:font};
 //    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:[self.position volumeText] attributes:attributes]];
+    
+}
+
+- (void)setupRegradeButton {
+    
+    [self.regradeButton setImage:[self.regradeButton.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+    self.regradeButton.tintColor = ACTIVE_BLUE_COLOR;
     
 }
 
@@ -254,6 +261,7 @@
     self.navigationController.navigationBarHidden = YES;
 
     [self setupTitleTextView];
+    [self setupRegradeButton];
     [self setupToolbar];
     [self initVolumeViews];
     
