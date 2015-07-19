@@ -82,6 +82,11 @@
 
 - (void)doneButtonPressed:(id)sender {
 
+    STMArticle *article = self.tableData[self.selectedIndexPath.row];
+    [self.parentVC userSelectArticleFact:article];
+    
+    [self dismissSelf];
+    
 }
 
 - (void)dismissSelf {

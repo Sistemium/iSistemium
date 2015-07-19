@@ -16,5 +16,6 @@
 
 - (void)volumeChangedInView:(UIView *)volumeView;
 
+- (void)userSelectArticleFact:(STMArticle *)articleFact;
 
 @end

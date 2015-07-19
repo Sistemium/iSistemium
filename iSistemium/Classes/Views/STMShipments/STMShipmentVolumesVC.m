@@ -12,6 +12,8 @@
 #import "STMShippingProcessController.h"
 #import "STMUI.h"
 
+#import "STMRegradeArticleVC.h"
+
 
 #define MAX_VOLUME_LIMIT 10000
 
@@ -35,6 +37,8 @@
 @property (nonatomic, strong) NSArray *volumeViews;
 
 @property (nonatomic) NSInteger discrepancyVolume;
+
+@property (nonatomic, strong) STMArticle *userArticleFact;
 
 
 @end
@@ -110,8 +114,17 @@
     
 }
 
+- (void)userSelectArticleFact:(STMArticle *)articleFact {
+    
+    self.userArticleFact = articleFact;
+    [self setupTitleTextView];
+    
+}
+
 - (void)shippingPositionAndDismiss {
 
+    if (self.userArticleFact) self.position.articleFact = self.userArticleFact;
+    
     [[STMShippingProcessController sharedInstance] shippingPosition:self.position
                                                      withDoneVolume:self.doneVolumeView.volume
                                                           badVolume:self.badVolumeView.volume
@@ -187,17 +200,32 @@
     
     NSDictionary *attributes = @{NSFontAttributeName:font};
     
-    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:self.position.article.name attributes:attributes];
+    NSMutableAttributedString *attributedText = nil;
+    
+    STMArticle *articleFact = (self.userArticleFact) ? self.userArticleFact : self.position.articleFact;
+    
+    if (articleFact) {
+    
+        attributedText = [[NSMutableAttributedString alloc] initWithString:[articleFact.name stringByAppendingString:@"\n"] attributes:attributes];
+        
+        font = [UIFont systemFontOfSize:font.pointSize - 2];
+        
+        NSDictionary *attributes = @{NSStrikethroughStyleAttributeName   : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
+                                     NSFontAttributeName                 : font};
 
+        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:self.position.article.name attributes:attributes];
+        
+        [attributedText appendAttributedString:appendString];
+        
+    } else {
+        
+        attributedText = [[NSMutableAttributedString alloc] initWithString:self.position.article.name attributes:attributes];
+        
+    }
+    
     self.titleTextView.attributedText = attributedText;
 
     self.volumeLabel.text = [self.position volumeText];
-    
-//    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\n" attributes:attributes]];
-//    
-//    font = [UIFont boldSystemFontOfSize:font.pointSize];
-//    attributes = @{NSFontAttributeName:font};
-//    [attributedText appendAttributedString:[[NSMutableAttributedString alloc] initWithString:[self.position volumeText] attributes:attributes]];
     
 }
 
@@ -297,14 +325,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+
+    if ([segue.identifier isEqualToString:@"showArticleList"] &&
+        [segue.destinationViewController isKindOfClass:[STMRegradeArticleVC class]]) {
+        
+        [(STMRegradeArticleVC *)segue.destinationViewController setParentVC:self];
+        
+    }
+
 }
-*/
+
 
 @end
