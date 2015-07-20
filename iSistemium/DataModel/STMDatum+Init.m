@@ -56,7 +56,8 @@
                                        @"deviceTs",
                                        @"imagePath",
                                        @"resizedImagePath",
-                                       @"calculatedSum"];
+                                       @"calculatedSum",
+                                       @"imageThumbnail"];
         
         NSMutableArray *changedKeysArray = self.changedValues.allKeys.mutableCopy;
         [changedKeysArray removeObjectsInArray:excludeProperties];
