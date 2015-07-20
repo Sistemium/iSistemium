@@ -302,7 +302,9 @@
             
         } else {
             
-            [object setValue:nil forKey:key];
+            if (![object isKindOfClass:[STMShippingLocationPicture class]]) {
+                [object setValue:nil forKey:key];
+            }
             
         }
         
