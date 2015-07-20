@@ -13,6 +13,7 @@
 #import "STMSession.h"
 #import "STMPicturesController.h"
 #import "STMLocationController.h"
+#import "STMObjectsController.h"
 
 #import "STMShipmentTVC.h"
 #import "STMShippingLocationMapVC.h"
@@ -245,20 +246,13 @@
 
 - (void)saveImage:(UIImage *)image {
     
-    STMShippingLocationPicture *shippingLocationPicture = [STMEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STMShippingLocationPicture class]) inManagedObjectContext:self.document.managedObjectContext];
+    STMShippingLocationPicture *shippingLocationPicture = (STMShippingLocationPicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocationPicture class])];
+    shippingLocationPicture.isFantom = @NO;
     
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
     [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:shippingLocationPicture];
 
     shippingLocationPicture.shippingLocation = self.point.shippingLocation;
-    
-//    [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
-//    self.selectedPhotoReport.campaign = self.campaign;
-    
-//    [self.waitingLocationPhotos addObject:self.selectedPhotoReport];
-//    [self.locationTracker getLocation];
-    
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
     
     [[self document] saveDocument:^(BOOL success) {
         
