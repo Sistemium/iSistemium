@@ -2,7 +2,7 @@
 //  STMLocation.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 09/07/15.
+//  Created by Maxim Grigoriev on 20/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -14,18 +14,18 @@
 
 @interface STMLocation : STMComment
 
-@property (nonatomic, retain) NSNumber * altitude;
-@property (nonatomic, retain) NSNumber * course;
-@property (nonatomic, retain) NSNumber * horizontalAccuracy;
-@property (nonatomic, retain) NSNumber * latitude;
-@property (nonatomic, retain) NSNumber * longitude;
-@property (nonatomic, retain) NSNumber * speed;
+@property (nonatomic, retain) NSDecimalNumber * altitude;
+@property (nonatomic, retain) NSDecimalNumber * course;
+@property (nonatomic, retain) NSDecimalNumber * horizontalAccuracy;
+@property (nonatomic, retain) NSDecimalNumber * latitude;
+@property (nonatomic, retain) NSDecimalNumber * longitude;
+@property (nonatomic, retain) NSDecimalNumber * speed;
 @property (nonatomic, retain) NSDate * timestamp;
-@property (nonatomic, retain) NSNumber * verticalAccuracy;
+@property (nonatomic, retain) NSDecimalNumber * verticalAccuracy;
 @property (nonatomic, retain) NSSet *photos;
+@property (nonatomic, retain) STMShipmentRoutePoint *shipmentRoutePoint;
 @property (nonatomic, retain) NSSet *shippings;
 @property (nonatomic, retain) STMTrack *track;
-@property (nonatomic, retain) STMShipmentRoutePoint *shipmentRoutePoint;
 @end
 
 @interface STMLocation (CoreDataGeneratedAccessors)

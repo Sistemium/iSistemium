@@ -16,14 +16,14 @@
     
     STMLocation *locationObject = (STMLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLocation class])];
     locationObject.isFantom = @NO;
-    [locationObject setLatitude:@(location.coordinate.latitude)];
-    [locationObject setLongitude:@(location.coordinate.longitude)];
-    [locationObject setHorizontalAccuracy:@(location.horizontalAccuracy)];
-    [locationObject setSpeed:@(location.speed)];
-    [locationObject setCourse:@(location.course)];
-    [locationObject setAltitude:@(location.altitude)];
-    [locationObject setVerticalAccuracy:@(location.verticalAccuracy)];
-    [locationObject setTimestamp:location.timestamp];
+    locationObject.latitude = [NSDecimalNumber decimalNumberWithDecimal:@(location.coordinate.latitude).decimalValue];
+    locationObject.longitude = [NSDecimalNumber decimalNumberWithDecimal:@(location.coordinate.longitude).decimalValue];
+    locationObject.horizontalAccuracy = [NSDecimalNumber decimalNumberWithDecimal:@(location.horizontalAccuracy).decimalValue];
+    locationObject.speed = [NSDecimalNumber decimalNumberWithDecimal:@(location.speed).decimalValue];
+    locationObject.course = [NSDecimalNumber decimalNumberWithDecimal:@(location.course).decimalValue];
+    locationObject.altitude = [NSDecimalNumber decimalNumberWithDecimal:@(location.altitude).decimalValue];
+    locationObject.verticalAccuracy = [NSDecimalNumber decimalNumberWithDecimal:@(location.verticalAccuracy).decimalValue];
+    locationObject.timestamp = location.timestamp;
     return locationObject;
     
 }
