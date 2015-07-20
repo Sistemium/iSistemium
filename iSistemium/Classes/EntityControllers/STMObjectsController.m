@@ -1389,9 +1389,11 @@
         allKeys = object.entity.attributesByName.allKeys;
     }
     
+    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail"];
+    
     for (NSString *key in allKeys) {
         
-        if (![key isEqualToString:@"xid"]) {
+        if (![notSyncableProperties containsObject:key]) {
             
             id value = [object valueForKey:key];
             
