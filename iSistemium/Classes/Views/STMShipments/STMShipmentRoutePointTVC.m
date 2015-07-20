@@ -694,41 +694,40 @@
     
     cell.textLabel.text = shipment.ndoc;
     
-    UIColor *textColor = [UIColor blackColor];
-    
-    if (self.point.isReached.boolValue) {
-        
-//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
-//        NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
-//        
-//        textColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
-
-        textColor = (shipment.isShipped.boolValue) ? [UIColor lightGrayColor] : [UIColor redColor];
-
-    }
-    
-    cell.textLabel.textColor = textColor;
-    
     NSUInteger positionsCount = shipment.shipmentPositions.count;
-    NSString *pluralType = [STMFunctions pluralTypeForCount:positionsCount];
-    NSString *localizedString = [NSString stringWithFormat:@"%@POSITIONS", pluralType];
     
+    NSString *pluralType = [STMFunctions pluralTypeForCount:positionsCount];
+    NSString *positionString = [NSString stringWithFormat:@"%@POSITIONS", pluralType];
+
     NSString *detailText;
     
     if (positionsCount > 0) {
         
-        detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(localizedString, nil)];
+        NSString *positions = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(positionString, nil)];
+        
+        double approximateVolume = 0;
+        
+        for (STMShipmentPosition *position in shipment.shipmentPositions) {
+            approximateVolume += position.volume.doubleValue / position.article.packageRel.integerValue;
+        }
+        
+        NSUInteger boxesCount = ceil(approximateVolume);
+        
+        pluralType = [STMFunctions pluralTypeForCount:boxesCount];
+        NSString *boxString = [NSString stringWithFormat:@"%@BOXES", pluralType];
+        NSString *boxes = [NSString stringWithFormat:@"%lu %@", (unsigned long)boxesCount, NSLocalizedString(boxString, nil)];
+        
+        detailText = [NSString stringWithFormat:@"%@, %@", positions, boxes];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
     } else {
         
-        detailText = NSLocalizedString(localizedString, nil);
+        detailText = NSLocalizedString(positionString, nil);
         cell.accessoryType = UITableViewCellAccessoryNone;
         
     }
     
     cell.detailTextLabel.text = detailText;
-    cell.detailTextLabel.textColor = textColor;
 
     if ([shipment.needCashing boolValue]) {
         
@@ -738,6 +737,15 @@
         cell.imageView.image = nil;
     }
     
+    UIColor *textColor = [UIColor blackColor];
+    
+    if (self.point.isReached.boolValue) {
+        textColor = (shipment.isShipped.boolValue) ? [UIColor lightGrayColor] : [UIColor redColor];
+    }
+    
+    cell.textLabel.textColor = textColor;
+    cell.detailTextLabel.textColor = textColor;
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

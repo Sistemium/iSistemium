@@ -291,4 +291,8 @@
 "EMPTY POSITION VOLUMES MESSAGE" = "make shipping";
 "SHIPPING" = "Shipping";
 "SUMMARY CELL TITLE" = "Summary";
+"0BOXES" = "no boxes";
+"1BOXES" = "box";
+"2BOXES" = "boxes";
+"5BOXES" = "boxes";
 

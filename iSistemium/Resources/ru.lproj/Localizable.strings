@@ -291,4 +291,8 @@
 "EMPTY POSITION VOLUMES MESSAGE" = "и отгрузить пустую позицию";
 "SHIPPING" = "Отгрузка";
 "SUMMARY CELL TITLE" = "Сводка";
+"0BOXES" = "нет коробов";
+"1BOXES" = "короб";
+"2BOXES" = "короба";
+"5BOXES" = "коробов";
 
