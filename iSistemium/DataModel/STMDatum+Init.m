@@ -78,30 +78,30 @@
             [self setPrimitiveValue:newDeviceTs forKey:@"deviceTs"];
             [self didChangeValueForKey:@"deviceTs"];
             
-            if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
-                
-                NSString *xidString = [STMFunctions UUIDStringFromUUIDData:self.xid];
-                
-                if ([self.deviceTs compare:newDeviceTs] != NSOrderedSame) {
-                    
-                    NSString *logMessage = [NSString stringWithFormat:@"deviceTs might not updated to %@", [[STMFunctions dateFormatter] stringFromDate:newDeviceTs]];
-                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-                    
-                }
-                                
-                NSDictionary *objectDic = @{
-                                            @"saleOrderXid":xidString,
-                                            @"tsValues":@{
-                                                          @"ts":[[STMFunctions dateFormatter] stringFromDate:newDeviceTs],
-                                                          @"dotDeviceTs":[[STMFunctions dateFormatter] stringFromDate:self.deviceTs],
-                                                          @"deviceTs":[[STMFunctions dateFormatter] stringFromDate:[self valueForKey:@"deviceTs"]]
-                                                          }
-                                            };
-                
-                NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
-                [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
-
-            }
+//            if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
+//                
+//                NSString *xidString = [STMFunctions UUIDStringFromUUIDData:self.xid];
+//                
+//                if ([self.deviceTs compare:newDeviceTs] != NSOrderedSame) {
+//                    
+//                    NSString *logMessage = [NSString stringWithFormat:@"deviceTs might not updated to %@", [[STMFunctions dateFormatter] stringFromDate:newDeviceTs]];
+//                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+//                    
+//                }
+//                                
+//                NSDictionary *objectDic = @{
+//                                            @"saleOrderXid":xidString,
+//                                            @"tsValues":@{
+//                                                          @"ts":[[STMFunctions dateFormatter] stringFromDate:newDeviceTs],
+//                                                          @"dotDeviceTs":[[STMFunctions dateFormatter] stringFromDate:self.deviceTs],
+//                                                          @"deviceTs":[[STMFunctions dateFormatter] stringFromDate:[self valueForKey:@"deviceTs"]]
+//                                                          }
+//                                            };
+//                
+//                NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
+//                [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
+//
+//            }
             
             [self setPrimitiveValue:newDeviceTs forKey:@"deviceTs"];
             
