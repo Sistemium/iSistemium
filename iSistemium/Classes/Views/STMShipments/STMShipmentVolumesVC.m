@@ -272,7 +272,7 @@
 //    self.excessVolumeView.volumeLimit = MAX_VOLUME_LIMIT;
 //    self.excessVolumeView.allCountButton.enabled = NO;
     
-    self.doneVolumeView.volume = (self.position.isProcessed) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
+    self.doneVolumeView.volume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
     self.excessVolumeView.volume = self.position.excessVolume.integerValue;
     self.shortageVolumeView.volume = self.position.shortageVolume.integerValue;
     self.badVolumeView.volume = self.position.badVolume.integerValue;
