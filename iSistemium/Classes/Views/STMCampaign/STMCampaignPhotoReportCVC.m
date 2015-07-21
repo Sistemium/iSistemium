@@ -420,7 +420,10 @@
 - (void)saveImage:(UIImage *)image {
 
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
-    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:self.selectedPhotoReport];
+    
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
+                                  forPicture:self.selectedPhotoReport
+                                   andUpload:YES];
 
     [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
     self.selectedPhotoReport.campaign = self.campaign;

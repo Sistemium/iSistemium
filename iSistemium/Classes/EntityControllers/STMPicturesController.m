@@ -526,7 +526,7 @@
             
             if (photoData && photoData.length > 0) {
                 
-                [self setImagesFromData:photoData forPicture:picture];
+                [self setImagesFromData:photoData forPicture:picture andUpload:NO];
                 
             } else {
                 
@@ -600,8 +600,11 @@
     
 }
 
+//+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
+//    [self setImagesFromData:data forPicture:picture andUpload:NO];
+//}
 
-+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
++ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture andUpload:(BOOL)shouldUpload {
     
     NSData *weakData = data;
     STMPicture *weakPicture = picture;
@@ -613,7 +616,9 @@
         NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
         fileName = [xid stringByAppendingString:@".jpg"];
         
-        [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
+        if (shouldUpload) {
+            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
+        }
 
     } else if ([picture isKindOfClass:[STMPicture class]]) {
         
@@ -768,14 +773,14 @@
                 
             } else {
                 
-                //            NSLog(@"%@ load successefully", href);
+//                NSLog(@"%@ load successefully", href);
                 
                 [self.hrefDictionary removeObjectForKey:href];
                 
                 NSData *dataCopy = [data copy];
                 
                 if ([object isKindOfClass:[STMPicture class]]) {
-                    [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object];
+                    [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
                 }
                 
             }
@@ -868,6 +873,8 @@
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
                             picture.href = href;
+                            
+#warning - does it needed to set deviceTs here?
                             picture.deviceTs = [NSDate date];
                             
                             __block STMSession *session = [STMSessionManager sharedManager].currentSession;

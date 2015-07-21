@@ -250,7 +250,10 @@
     shippingLocationPicture.isFantom = @NO;
     
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
-    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:shippingLocationPicture];
+    
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
+                                  forPicture:shippingLocationPicture
+                                   andUpload:YES];
 
     shippingLocationPicture.shippingLocation = self.point.shippingLocation;
     
