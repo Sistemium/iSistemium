@@ -180,17 +180,22 @@
             self.doneVolumeView.volume = (doneVolume > 0) ? doneVolume : 0;
             
         }
-        
-        NSInteger summVolume = self.doneVolumeView.volume + self.excessVolumeView.volume + self.shortageVolumeView.volume + self.badVolumeView.volume;
-        
-        self.discrepancyVolume = self.position.volume.integerValue - summVolume;
-        
-        self.discrepancyVolumeView.volume = self.discrepancyVolume;
+
+        [self calcDisperancyVolume];
         
     }
     
 }
 
+- (void)calcDisperancyVolume {
+
+    NSInteger summVolume = self.doneVolumeView.volume + self.excessVolumeView.volume + self.shortageVolumeView.volume + self.badVolumeView.volume;
+    
+    self.discrepancyVolume = self.position.volume.integerValue - summVolume;
+    
+    self.discrepancyVolumeView.volume = self.discrepancyVolume;
+
+}
 
 #pragma mark - views
 
@@ -203,6 +208,8 @@
     NSMutableAttributedString *attributedText = nil;
     
     STMArticle *articleFact = (self.userArticleFact) ? self.userArticleFact : self.position.articleFact;
+
+    NSString *articleName = (self.position.article.name) ? self.position.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
     
     if (articleFact) {
     
@@ -212,14 +219,14 @@
         
         NSDictionary *attributes = @{NSStrikethroughStyleAttributeName   : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
                                      NSFontAttributeName                 : font};
-
-        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:self.position.article.name attributes:attributes];
+        
+        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:articleName attributes:attributes];
         
         [attributedText appendAttributedString:appendString];
         
     } else {
         
-        attributedText = [[NSMutableAttributedString alloc] initWithString:self.position.article.name attributes:attributes];
+        attributedText = [[NSMutableAttributedString alloc] initWithString:articleName attributes:attributes];
         
     }
     
@@ -257,8 +264,8 @@
     for (STMShipmentVolumeView *volumeView in self.volumeViews) {
         
         [volumeView nullifyView];
-        
-        volumeView.packageRel = self.position.article.packageRel.integerValue;
+
+        volumeView.packageRel = (self.position.article.packageRel) ? self.position.article.packageRel.integerValue : self.position.volume.integerValue + 1;
         volumeView.volumeLimit = self.position.volume.integerValue;
         volumeView.shipmentVolumeLimit = self.position.volume.integerValue;
 
@@ -266,17 +273,16 @@
         [volumeView.allCountButton setTitle:@"" forState:UIControlStateDisabled];
         
         volumeView.parentVC = self;
-
+        
     }
-
-//    self.excessVolumeView.volumeLimit = MAX_VOLUME_LIMIT;
-//    self.excessVolumeView.allCountButton.enabled = NO;
     
     self.doneVolumeView.volume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
     self.excessVolumeView.volume = self.position.excessVolume.integerValue;
     self.shortageVolumeView.volume = self.position.shortageVolume.integerValue;
     self.badVolumeView.volume = self.position.badVolume.integerValue;
-
+    
+    [self calcDisperancyVolume];
+    
     self.doneVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"DONE VOLUME LABEL", nil)];
     self.excessVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
     self.shortageVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
