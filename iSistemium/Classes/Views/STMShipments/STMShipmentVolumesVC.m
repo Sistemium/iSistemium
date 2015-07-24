@@ -181,13 +181,13 @@
             
         }
 
-        [self calcDisperancyVolume];
+        [self calcDiscrepancyVolume];
         
     }
     
 }
 
-- (void)calcDisperancyVolume {
+- (void)calcDiscrepancyVolume {
 
     NSInteger summVolume = self.doneVolumeView.volume + self.excessVolumeView.volume + self.shortageVolumeView.volume + self.badVolumeView.volume;
     
@@ -281,7 +281,7 @@
     self.shortageVolumeView.volume = self.position.shortageVolume.integerValue;
     self.badVolumeView.volume = self.position.badVolume.integerValue;
     
-    [self calcDisperancyVolume];
+    [self calcDiscrepancyVolume];
     
     self.doneVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"DONE VOLUME LABEL", nil)];
     self.excessVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
