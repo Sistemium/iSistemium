@@ -425,7 +425,8 @@
     
     UIFont *font = [UIFont systemFontOfSize:17];
     
-    NSDictionary *attributes = @{NSFontAttributeName:font};
+    NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor blackColor],
+                                 NSFontAttributeName            : font};
     
     NSMutableAttributedString *attributedText = nil;
     
@@ -435,8 +436,9 @@
         
         font = [UIFont systemFontOfSize:font.pointSize - 4];
         
-        NSDictionary *attributes = @{NSStrikethroughStyleAttributeName   : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
-                                     NSFontAttributeName                 : font};
+        NSDictionary *attributes = @{NSForegroundColorAttributeName     : [UIColor blackColor],
+                                     NSStrikethroughStyleAttributeName  : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
+                                     NSFontAttributeName                : font};
         
         NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:position.article.name attributes:attributes];
         
@@ -444,7 +446,18 @@
         
     } else {
         
-        attributedText = [[NSMutableAttributedString alloc] initWithString:position.article.name attributes:attributes];
+        if (position.article.name) {
+            
+            attributedText = [[NSMutableAttributedString alloc] initWithString:position.article.name attributes:attributes];
+
+        } else {
+        
+            attributes = @{NSForegroundColorAttributeName : [UIColor redColor],
+                           NSFontAttributeName            : font};
+
+            attributedText = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"UNKNOWN ARTICLE", nil) attributes:attributes];
+            
+        }
         
     }
     
@@ -473,7 +486,7 @@
     
     cell.accessoryView = infoLabel;
     
-    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : attributes[NSForegroundColorAttributeName];
 
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
