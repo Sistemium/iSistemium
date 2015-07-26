@@ -841,11 +841,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< HEAD
 				2C88F1DE1B30143900E30418 /* Fabric.framework in Frameworks */,
-=======
 				2CEAC1751B3ECC3A00AD068E /* MapKit.framework in Frameworks */,
->>>>>>> drivers
 				2C8EF5F7194089E10021D202 /* Security.framework in Frameworks */,
 				2C8EF5A11940859F0021D202 /* CoreGraphics.framework in Frameworks */,
 				2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */,
@@ -1424,11 +1421,8 @@
 		2C8EF59D1940859F0021D202 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				2C88F1DD1B30143900E30418 /* Fabric.framework */,
-=======
 				2CEAC1741B3ECC3A00AD068E /* MapKit.framework */,
->>>>>>> drivers
 				2C9D04B81ADE549400D0421D /* Crashlytics.framework */,
 				2C53B8DB1940A515002298A5 /* SystemConfiguration.framework */,
 				2C8EF5F6194089E10021D202 /* Security.framework */,

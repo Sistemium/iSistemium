@@ -21,7 +21,6 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-<<<<<<< HEAD
 	<string>TEST</string>
 	<key>Fabric</key>
 	<dict>
@@ -37,9 +36,6 @@
 			</dict>
 		</array>
 	</dict>
-=======
-	<string>131</string>
->>>>>>> drivers
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>
