@@ -394,7 +394,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
     [self fillOrderInfoCell:cell forRow:indexPath.row];
     
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
     
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
@@ -420,7 +420,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 
     [self fillOrderPositionCell:cell forRow:indexPath.row];
     
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
     
     [cell setNeedsLayout];
     [cell layoutIfNeeded];

@@ -54,6 +54,7 @@
 @property (nonatomic) BOOL sendOnce;
 @property (nonatomic) BOOL errorOccured;
 @property (nonatomic) BOOL fullSyncWasDone;
+@property (nonatomic) BOOL isFirstSyncCycleIteration;
 
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
@@ -64,6 +65,8 @@
 
 
 @property (nonatomic, strong) void (^fetchCompletionHandler) (UIBackgroundFetchResult result);
+
+@property (nonatomic) UIBackgroundFetchResult fetchResult;
 
 - (void)didReceiveRemoteNotification;
 - (void)didEnterBackground;
@@ -218,6 +221,7 @@
 - (void)setSyncerState:(STMSyncerState) syncerState fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
     
     self.fetchCompletionHandler = handler;
+    self.fetchResult = UIBackgroundFetchResultNewData;
     self.syncerState = syncerState;
     
 }
@@ -240,6 +244,8 @@
         
         NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
         NSLog(logMessage);
+        
+        self.isFirstSyncCycleIteration = (previousState == STMSyncerIdle);
         
         switch (syncerState) {
                 
@@ -284,7 +290,7 @@
                 
                 self.entitySyncNames = nil;
                 if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
-                if (self.fetchCompletionHandler) self.fetchCompletionHandler(UIBackgroundFetchResultNewData);
+                if (self.fetchCompletionHandler) self.fetchCompletionHandler(self.fetchResult);
                 
                 break;
                 
@@ -323,24 +329,6 @@
         
         NSDictionary *stcEntities = [STMEntityController stcEntities];
         
-        if (!stcEntities[@"STMEntity"]) {
-            
-            NSDictionary *coreEntityDic = @{
-                                            @"name": @"stc.entity",
-                                            @"properties": @{
-                                                    @"name": @"Entity",
-                                                    @"url": self.restServerURI
-                                                    }
-                                            };
-            
-            [STMObjectsController insertObjectFromDictionary:coreEntityDic withCompletionHandler:^(BOOL success) {
-
-            }];
-            
-            stcEntities = [STMEntityController stcEntities];
-            
-        }
-        
         _stcEntities = [stcEntities mutableCopy];
         
     }
@@ -370,32 +358,101 @@
         [STMObjectsController initObjectsCacheWithCompletionHandler:^(BOOL success) {
            
             if (success) {
-        
-                [STMEntityController checkEntitiesForDuplicates];
-//                [STMPicturesController checkPhotos];
-                [STMClientDataController checkClientData];
-                [self.session.logger saveLogMessageDictionaryToDocument];
-                [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
-                [self initTimer];
-                [self addObservers];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
+                [self checkStcEntitiesWithCompletionHandler:^(BOOL success) {
+                    
+                    if (success) {
                 
-                NSError *error;
-                if (![self.resultsController performFetch:&error]) {
-                    
-                    NSLog(@"fetch error %@", error);
-                    
-                } else {
-                    
-                }
+                        [STMEntityController checkEntitiesForDuplicates];
+                        //                [STMPicturesController checkPhotos];
+                        [STMClientDataController checkClientData];
+                        [self.session.logger saveLogMessageDictionaryToDocument];
+                        [self.session.logger saveLogMessageWithText:@"Syncer start" type:@""];
+                        
+                        [self checkUploadableEntities];
+                        
+                        [self initTimer];
+                        [self addObservers];
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
+                        
+                        [self performFetch];
 
+                    } else {
+                        NSLog(@"checkStcEntities fail");
+                    }
+                
+                }];
+                
+            } else {
+                NSLog(@"init object's cache fail");
             }
             
         }];
         
     }
     
+}
+
+- (void)checkStcEntitiesWithCompletionHandler:(void (^)(BOOL success))completionHandler {
+    
+    NSDictionary *stcEntities = [STMEntityController stcEntities];
+    
+    NSString *stcEntityName = NSStringFromClass([STMEntity class]);
+    
+    if (!stcEntities[stcEntityName]) {
+        
+        STMEntity *entity = (STMEntity *)[STMObjectsController newObjectForEntityName:stcEntityName];
+        
+        if ([stcEntityName hasPrefix:ISISTEMIUM_PREFIX]) {
+            stcEntityName = [stcEntityName substringFromIndex:[ISISTEMIUM_PREFIX length]];
+        }
+        
+        entity.name = stcEntityName;
+        entity.url = self.restServerURI;
+        entity.isFantom = @NO;
+        
+        [self.document saveDocument:^(BOOL success) {
+            completionHandler(success);
+        }];
+        
+    } else {
+        completionHandler(YES);
+    }
+
+}
+
+- (void)checkUploadableEntities {
+    
+    NSArray *uploadableEntitiesNames = [STMEntityController uploadableEntitiesNames];
+    NSLog(@"uploadableEntitiesNames %@", uploadableEntitiesNames);
+    
+    if (uploadableEntitiesNames.count == 0) {
+        
+        NSString *stcEntityName = NSStringFromClass([STMEntity class]);
+        
+        if ([stcEntityName hasPrefix:ISISTEMIUM_PREFIX]) {
+            stcEntityName = [stcEntityName substringFromIndex:[ISISTEMIUM_PREFIX length]];
+        }
+        
+        STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:stcEntityName];
+        clientEntity.eTag = nil;
+        
+    }
+
+}
+
+- (void)performFetch {
+    
+    NSError *error;
+    if (![self.resultsController performFetch:&error]) {
+        
+        NSLog(@"fetch error %@", error);
+        
+    } else {
+        
+    }
+
 }
 
 - (void)stopSyncer {
@@ -426,7 +483,8 @@
         
         for (NSString *entityName in entitiesNames) {
             
-            NSString *name = [@"STM" stringByAppendingString:entityName];
+            NSString *name = ([entityName hasPrefix:ISISTEMIUM_PREFIX]) ? entityName : [ISISTEMIUM_PREFIX stringByAppendingString:entityName];
+            
             if ([localDataModelEntityNames containsObject:name]) {
                 [existingNames addObject:name];
             }
@@ -513,30 +571,30 @@
                name:@"syncerSettingsChanged"
              object:self.session];
     
-    [nc addObserver:self
-           selector:@selector(didReceiveRemoteNotification)
-               name:@"applicationDidReceiveRemoteNotification"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(didReceiveRemoteNotification)
+//               name:@"applicationDidReceiveRemoteNotification"
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(appDidBecomeActive)
                name:UIApplicationDidBecomeActiveNotification
              object:nil];
     
-    [nc addObserver:self
-           selector:@selector(didReceiveRemoteNotification)
-               name:@"applicationPerformFetchWithCompletionHandler"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(didReceiveRemoteNotification)
+//               name:@"applicationPerformFetchWithCompletionHandler"
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(didEnterBackground)
                name:UIApplicationDidEnterBackgroundNotification
              object:nil];
     
-    [nc addObserver:self
-           selector:@selector(syncerDidReceiveRemoteNotification:)
-               name:@"syncerDidReceiveRemoteNotification"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(syncerDidReceiveRemoteNotification:)
+//               name:@"syncerDidReceiveRemoteNotification"
+//             object:nil];
     
 }
 
@@ -743,7 +801,7 @@
     
     for (NSManagedObject *object in dataForSyncing) {
         
-        NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
+        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
         NSString *entityName = object.entity.name;
         BOOL isInSyncList = [entityNamesForSending containsObject:entityName];
         BOOL isFantom = [[object valueForKey:@"isFantom"] boolValue];
@@ -761,6 +819,13 @@
             } else {
                 [self addObject:object toSyncDataArray:syncDataArray];
             }
+            
+        }
+        
+        if (syncDataArray.count >= 100) {
+            
+            NSLog(@"Syncer JSONFrom break");
+            break;
             
         }
         
@@ -812,7 +877,7 @@
     if (self.document.managedObjectContext) {
         
         NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
-        NSArray *entityNamesForSending = [STMObjectsController entityNamesForSyncing];
+        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
         
         NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
         unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
@@ -857,6 +922,8 @@
                 
                 [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
                 self.syncing = NO;
+                self.fetchResult = UIBackgroundFetchResultFailed;
+
                 self.syncerState = STMSyncerIdle;
                 
             } else {
@@ -912,16 +979,19 @@
                 switch (statusCode) {
                         
                     case 200:
+                        self.fetchResult = UIBackgroundFetchResultNewData;
                         [self parseNewsData:data];
                         break;
                         
                     case 204:
                         NSLog(@"    news: 204 No Content");
+                        self.fetchResult = UIBackgroundFetchResultNoData;
                         [self receivingDidFinish];
                         break;
                         
                     default:
                         NSLog(@"    news statusCode: %d", statusCode);
+                        self.fetchResult = UIBackgroundFetchResultFailed;
                         [self receivingDidFinish];
                         break;
                         
@@ -931,6 +1001,8 @@
                 
                 NSLog(@"connectionError %@", connectionError.localizedDescription);
                 self.errorOccured = YES;
+                self.fetchResult = UIBackgroundFetchResultFailed;
+
                 [self receivingDidFinish];
                 
             }
@@ -970,7 +1042,7 @@
             NSMutableArray *tempArray = [NSMutableArray array];
             
             for (NSString *entityName in entitiesNames) {
-                [tempArray addObject:[@"STM" stringByAppendingString:entityName]];
+                [tempArray addObject:[ISISTEMIUM_PREFIX stringByAppendingString:entityName]];
             }
             
             self.entitySyncNames = tempArray;
@@ -1030,6 +1102,11 @@
     
     if (self.syncerState != STMSyncerIdle) {
 
+        if ([entityName isEqualToString:@"STMShipmentRoutePointShipment"]) {
+            
+        }
+        
+        
         STMEntity *entity = (self.stcEntities)[entityName];
         NSString *url = entity.url;
         
@@ -1082,6 +1159,8 @@
             
             [self.session.logger saveLogMessageWithText:@"Syncer: no connection" type:@"error"];
             self.syncing = NO;
+            self.fetchResult = UIBackgroundFetchResultFailed;
+
             self.syncerState = STMSyncerIdle;
             
         } else {
@@ -1099,6 +1178,7 @@
 
 - (void)notAuthorized {
     
+    self.fetchResult = UIBackgroundFetchResultFailed;
     [self stopSyncer];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"notAuthorized" object:self];
     
@@ -1167,6 +1247,7 @@
     [self saveReceiveDate];
     
     self.fullSyncWasDone = YES;
+    self.isFirstSyncCycleIteration = NO;
     
     [self.document saveDocument:^(BOOL success) {
         
@@ -1198,6 +1279,8 @@
     }
     
     self.syncing = NO;
+    self.fetchResult = UIBackgroundFetchResultFailed;
+    
     self.syncerState = STMSyncerIdle;
     
 }
@@ -1267,6 +1350,8 @@
     [self.responses removeObjectForKey:entityName];
     
     if ([entityName isEqualToString:@"STMEntity"]) {
+        
+        [STMEntityController flushSelf];
         
         self.stcEntities = nil;
         NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
@@ -1375,22 +1460,24 @@
             
             self.syncing = NO;
 
-            [self.sendedEntities removeObjectsInArray:@[
-                                                        NSStringFromClass([STMClientEntity class]),
-                                                        NSStringFromClass([STMEntity class]),
-                                                        NSStringFromClass([STMLogMessage class]),
-                                                        NSStringFromClass([STMLocation class]),
-                                                        NSStringFromClass([STMBatteryStatus class])
-                                                        ]];
-            
-            BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
-            
-            if (self.syncerState == STMSyncerSendData && !onlyStcEntitiesWasSend) {
-                self.syncerState = STMSyncerReceiveData;
-            } else /*if (self.syncerState == STMSyncerSendDataOnce)*/ {
-                self.syncerState = STMSyncerIdle;
-            }
-            
+//            [self.sendedEntities removeObjectsInArray:@[
+//                                                        NSStringFromClass([STMClientEntity class]),
+//                                                        NSStringFromClass([STMEntity class]),
+//                                                        NSStringFromClass([STMLogMessage class]),
+//                                                        NSStringFromClass([STMLocation class]),
+//                                                        NSStringFromClass([STMBatteryStatus class])
+//                                                        ]];
+//            
+//            BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
+//            
+//            if (self.syncerState == STMSyncerSendData && (!onlyStcEntitiesWasSend || !self.fullSyncWasDone)) {
+//                self.syncerState = STMSyncerReceiveData;
+//            } else /*if (self.syncerState == STMSyncerSendDataOnce)*/ {
+//                self.syncerState = STMSyncerIdle;
+//            }
+
+            self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
+
         }
         
     } else {
@@ -1439,7 +1526,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSString *key = [@"sendDate" stringByAppendingString:self.session.uid];
-    NSString *sendDateString = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:[NSDate date]];
+    NSString *sendDateString = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:[NSDate date]];
     
     [defaults setObject:sendDateString forKey:key];
     [defaults synchronize];
@@ -1452,7 +1539,7 @@
     
     NSString *key = [@"receiveDate" stringByAppendingString:self.session.uid];
 
-    NSString *receiveDateString = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:[NSDate date]];
+    NSString *receiveDateString = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:[NSDate date]];
     
     [defaults setObject:receiveDateString forKey:key];
     [defaults synchronize];

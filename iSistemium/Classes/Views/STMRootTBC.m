@@ -23,10 +23,14 @@
 #import "STMMessageController.h"
 #import "STMCampaignController.h"
 
+<<<<<<< HEAD
 #import <Crashlytics/Crashlytics.h>
 
 
 @interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
+=======
+@interface STMRootTBC () <UITabBarControllerDelegate, /*UIViewControllerAnimatedTransitioning, */UIAlertViewDelegate>
+>>>>>>> drivers
 
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
@@ -377,18 +381,24 @@
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
 
     if ([viewController isEqual:self.selectedViewController]) {
+        
         self.currentTappedVC = viewController;
-    }
-    
-//    NSString *logMessage = [NSString stringWithFormat:@"shouldSelect tab %@", viewController.tabBarItem.title];
-//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+        [self currentTabBarItemDidTapped];
+        self.currentTappedVC = nil;
 
-    return YES;
+        return NO;
+        
+    } else {
+    
+        return YES;
+
+    }
     
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
+<<<<<<< HEAD
     if (self.currentTappedVC) {
         
         [self currentTabBarItemDidTapped];
@@ -400,8 +410,18 @@
     
 //    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
 //    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+=======
+//    if (self.currentTappedVC) {
+//        
+//        [self currentTabBarItemDidTapped];
+//        self.currentTappedVC = nil;
+//        
+//    }
+>>>>>>> drivers
 
 }
+
+/*  *** animation transition for tab switching ***
 
 - (id <UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
     
@@ -431,6 +451,7 @@
                     }];
 
 }
+*/
 
 
 #pragma mark - alertView & delegate
@@ -563,7 +584,9 @@
 
 - (void)syncStateChanged {
 
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMMessageController unreadMessagesCount];
+    NSInteger badgeNumber = ([self.session.status isEqualToString:@"running"]) ? [STMMessageController unreadMessagesCount] : 0;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = badgeNumber;
+
     [self checkTimeoutAlert];
     
 }

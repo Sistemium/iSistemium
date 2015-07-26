@@ -12,11 +12,29 @@
 
 + (STMSpinnerView *)spinnerViewWithFrame:(CGRect)frame {
     
+    return [self spinnerViewWithFrame:frame indicatorStyle:UIActivityIndicatorViewStyleWhiteLarge backgroundColor:[UIColor grayColor] alfa:0.75];
+    
+//    STMSpinnerView *view = [[STMSpinnerView alloc] initWithFrame:frame];
+//    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+//    view.backgroundColor = [UIColor grayColor];
+//    view.alpha = 0.75;
+//    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    spinner.center = view.center;
+//    spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+//    [spinner startAnimating];
+//    [view addSubview:spinner];
+//    
+//    return view;
+    
+}
+
++ (STMSpinnerView *)spinnerViewWithFrame:(CGRect)frame indicatorStyle:(UIActivityIndicatorViewStyle)style backgroundColor:(UIColor *)color alfa:(CGFloat)alfa {
+    
     STMSpinnerView *view = [[STMSpinnerView alloc] initWithFrame:frame];
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    view.backgroundColor = [UIColor grayColor];
-    view.alpha = 0.75;
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    view.backgroundColor = color;
+    view.alpha = alfa;
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
     spinner.center = view.center;
     spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
     [spinner startAnimating];
@@ -25,6 +43,7 @@
     return view;
     
 }
+
 
 /*
 // Only override drawRect: if you perform custom drawing.

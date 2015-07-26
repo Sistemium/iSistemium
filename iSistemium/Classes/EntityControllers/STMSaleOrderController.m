@@ -94,7 +94,7 @@
 + (STMEntity *)saleOrderEntity {
     
     NSString *entityName = NSStringFromClass([STMSaleOrder class]);
-    entityName = [entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
+    entityName = [entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
     
     STMEntity *saleOrderEntity = [STMEntityController entityWithName:entityName];
     

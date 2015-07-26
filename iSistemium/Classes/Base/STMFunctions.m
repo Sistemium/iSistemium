@@ -70,6 +70,16 @@
     
 }
 
++ (NSDateFormatter *)dateShortTimeShortFormatter {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    
+    return dateFormatter;
+    
+}
+
 + (NSDateFormatter *)dateMediumNoTimeFormatter {
     
     NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
@@ -141,6 +151,7 @@
     NSDate *localDate = [NSDate date];
     
     NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
+    hourFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
     hourFormatter.dateFormat = @"HH";
     double hour = [[hourFormatter stringFromDate:localDate] doubleValue];
     
@@ -660,6 +671,42 @@
     
 }
 
+
++ (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel {
+    
+    NSString *volumeUnitString = nil;
+    NSString *infoText = nil;
+    
+    if (packageRel != 0 && volume >= packageRel) {
+        
+        NSInteger package = floor(volume / packageRel);
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
+        NSString *packageString = [NSString stringWithFormat:@"%ld %@", (long)package, volumeUnitString];
+        
+        NSInteger bottle = volume % packageRel;
+        
+        if (bottle > 0) {
+            
+            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+            NSString *bottleString = [NSString stringWithFormat:@" %ld %@", (long)bottle, volumeUnitString];
+            
+            packageString = [packageString stringByAppendingString:bottleString];
+            
+        }
+        
+        infoText = packageString;
+        
+    } else {
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+        infoText = [NSString stringWithFormat:@"%ld %@", (long)volume, volumeUnitString];
+        
+    }
+
+    return infoText;
+    
+}
 
 
 @end

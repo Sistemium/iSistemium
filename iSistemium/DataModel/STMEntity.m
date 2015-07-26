@@ -2,7 +2,7 @@
 //  STMEntity.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/03/15.
+//  Created by Maxim Grigoriev on 03/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -18,5 +18,6 @@
 @dynamic roleOwner;
 @dynamic url;
 @dynamic workflow;
+@dynamic isUploadable;
 
 @end

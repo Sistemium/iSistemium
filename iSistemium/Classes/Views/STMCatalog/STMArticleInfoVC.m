@@ -9,7 +9,6 @@
 #import "STMArticleInfoVC.h"
 #import "STMArticlePicturePVC.h"
 
-#define RESIZED_IMAGE_PATH_KEY @"resizedImagePath"
 
 @interface STMArticleInfoVC () <UITableViewDelegate, UITableViewDataSource>
 
@@ -22,7 +21,7 @@
 @property (nonatomic, strong) UIImageView *downImageView;
 
 @property (nonatomic, strong) NSMutableArray *articleInfo;
-@property (nonatomic, strong) NSMutableArray *picturesUnderObserving;
+
 
 @end
 
@@ -35,15 +34,6 @@
         _articleInfo = [NSMutableArray array];
     }
     return _articleInfo;
-    
-}
-
-- (NSMutableArray *)picturesUnderObserving {
-    
-    if (!_picturesUnderObserving) {
-        _picturesUnderObserving = [NSMutableArray array];
-    }
-    return _picturesUnderObserving;
     
 }
 
@@ -142,22 +132,11 @@
             
             [self.imageView addSubview:view];
             
-            [picture addObserver:self forKeyPath:RESIZED_IMAGE_PATH_KEY options:NSKeyValueObservingOptionNew context:nil];
-            [self.picturesUnderObserving addObject:picture];
-
         }
         
     } else {
         self.imageView.image = [UIImage imageNamed:@"wine_bottle-512.png"];
     }
-    
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    
-    [self setupImage];
-    [self.picturesUnderObserving removeObject:object];
-    [object removeObserver:self forKeyPath:keyPath context:context];
     
 }
 
@@ -332,7 +311,7 @@
 
         [self fillCell:cell forIndexPath:indexPath];
         
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
         
         [cell setNeedsLayout];
         [cell layoutIfNeeded];
@@ -455,15 +434,8 @@
     
 }
 
-#pragma mark - view lifecycle
 
-- (void)removeObservers {
-    
-    for (NSManagedObject *object in self.picturesUnderObserving) {
-        [object removeObserver:self forKeyPath:RESIZED_IMAGE_PATH_KEY context:nil];
-    }
-    
-}
+#pragma mark - view lifecycle
 
 - (void)customInit {
     
@@ -497,11 +469,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    
-    [self removeObservers];
-    
     [super viewWillDisappear:animated];
-    
 }
 
 - (void)didReceiveMemoryWarning {

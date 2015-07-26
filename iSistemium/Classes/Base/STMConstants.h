@@ -9,6 +9,7 @@
 #ifndef iSistemium_STMConstants_h
 #define iSistemium_STMConstants_h
 
+#define ISISTEMIUM_PREFIX @"STM"
 
 #define ACTIVE_BLUE_COLOR [UIColor colorWithRed:0 green:0.478431 blue:1 alpha:1]
 #define GREY_LINE_COLOR [UIColor colorWithRed:0.785 green:0.78 blue:0.8 alpha:1]
@@ -31,6 +32,8 @@
 
 #define BUILD_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]
 #define APP_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
+
+#define MAGIC_NUMBER_FOR_CELL_WIDTH 16
 
 
 #endif

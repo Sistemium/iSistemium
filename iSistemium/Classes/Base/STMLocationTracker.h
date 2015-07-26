@@ -13,11 +13,12 @@
 @interface STMLocationTracker : STMTracker
 
 @property (nonatomic) CLLocationAccuracy currentAccuracy;
+@property (nonatomic) BOOL isAccuracySufficient;
 @property (nonatomic, strong) CLLocation *lastLocation;
 @property (nonatomic, strong) STMTrack *currentTrack;
 
 - (void)getLocation;
-- (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location;
+//- (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location;
 - (NSString *)locationServiceStatus;
 
 @end

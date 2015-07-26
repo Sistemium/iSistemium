@@ -2,7 +2,7 @@
 //  STMEntity.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/03/15.
+//  Created by Maxim Grigoriev on 03/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -20,5 +20,6 @@
 @property (nonatomic, retain) NSString * roleOwner;
 @property (nonatomic, retain) NSString * url;
 @property (nonatomic, retain) NSString * workflow;
+@property (nonatomic, retain) NSNumber * isUploadable;
 
 @end

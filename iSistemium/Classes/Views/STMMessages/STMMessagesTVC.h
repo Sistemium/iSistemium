@@ -10,4 +10,7 @@
 
 @interface STMMessagesTVC : STMFetchedResultsControllerTVC
 
+#warning — have to use STMVariableCellsHeightTVC class?
+
+
 @end

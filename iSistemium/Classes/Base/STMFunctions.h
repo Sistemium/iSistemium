@@ -34,6 +34,7 @@
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateNumbersFormatter;
 + (NSDateFormatter *)dateShortNoTimeFormatter;
++ (NSDateFormatter *)dateShortTimeShortFormatter;
 + (NSDateFormatter *)dateMediumNoTimeFormatter;
 + (NSDateFormatter *)dateLongNoTimeFormatter;
 + (NSDateFormatter *)dateMediumTimeMediumFormatter;
@@ -67,5 +68,6 @@
 
 + (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic;
 
++ (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel;
 
 @end

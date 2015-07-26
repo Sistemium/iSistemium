@@ -43,8 +43,6 @@
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
 
-+ (NSArray *)entityNamesForSyncing;
-
 + (NSArray *)localDataModelEntityNames;
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName;

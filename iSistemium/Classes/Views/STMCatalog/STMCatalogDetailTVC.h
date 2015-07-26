@@ -13,6 +13,8 @@
 
 @interface STMCatalogDetailTVC : STMFetchedResultsControllerTVC
 
+#warning — have to use STMVariableCellsHeightTVC class?
+
 @property (nonatomic, strong) STMPriceType *selectedPriceType;
 
 - (void)refreshTable;
