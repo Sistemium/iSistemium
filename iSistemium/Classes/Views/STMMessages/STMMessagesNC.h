@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMTabBarViewController.h"
+#import "STMTabBarItemControllable.h"
 
-@interface STMMessagesNC : UINavigationController <STMTabBarViewController>
+@interface STMMessagesNC : UINavigationController <STMTabBarItemControllable>
 
 - (void)showActionSheetFromTabBarItem;
 

@@ -17,7 +17,7 @@
 #import "STMConstants.h"
 
 #import "STMObjectsController.h"
-#import "STMTabBarViewController.h"
+#import "STMTabBarItemControllable.h"
 #import "STMClientDataController.h"
 #import "STMAuthController.h"
 #import "STMMessageController.h"
@@ -361,9 +361,9 @@
 
 - (void)currentTabBarItemDidTapped {
     
-    if ([self.currentTappedVC conformsToProtocol:@protocol(STMTabBarViewController)]) {
+    if ([self.currentTappedVC conformsToProtocol:@protocol(STMTabBarItemControllable)]) {
         
-        [(id <STMTabBarViewController>)self.currentTappedVC showActionSheetFromTabBarItem];
+        [(id <STMTabBarItemControllable>)self.currentTappedVC showActionSheetFromTabBarItem];
         
     }
     

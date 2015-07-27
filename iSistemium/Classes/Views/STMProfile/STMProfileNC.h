@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMTabBarViewController.h"
+#import "STMTabBarItemControllable.h"
 
-@interface STMProfileNC : UINavigationController <STMTabBarViewController>
+@interface STMProfileNC : UINavigationController <STMTabBarItemControllable>
 
 @end

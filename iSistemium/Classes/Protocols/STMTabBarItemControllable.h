@@ -1,5 +1,5 @@
 //
-//  STMTabBarViewController.h
+//  STMTabBarItemControllable.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 25/12/14.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol STMTabBarViewController <NSObject>
+@protocol STMTabBarItemControllable <NSObject>
 
 - (void)showActionSheetFromTabBarItem;
 
