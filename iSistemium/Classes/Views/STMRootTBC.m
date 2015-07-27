@@ -23,7 +23,12 @@
 #import "STMMessageController.h"
 #import "STMCampaignController.h"
 
+#import <Crashlytics/Crashlytics.h>
+#import "STMAppDelegate.h"
+
+
 @interface STMRootTBC () <UITabBarControllerDelegate, /*UIViewControllerAnimatedTransitioning, */UIAlertViewDelegate>
+
 
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
@@ -387,6 +392,11 @@
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
+//    [(STMAppDelegate *)[UIApplication sharedApplication].delegate testCrash];
+    
+//    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
+//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+
 //    if (self.currentTappedVC) {
 //        
 //        [self currentTabBarItemDidTapped];
