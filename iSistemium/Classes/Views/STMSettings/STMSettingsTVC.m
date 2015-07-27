@@ -529,13 +529,15 @@
     
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
+- (void)didReceiveMemoryWarning {
+    
     if ([self isViewLoaded] && [self.view window] == nil) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"settingsChanged" object:self.session];
         self.view = nil;
     }
+
+    [super didReceiveMemoryWarning];
+    
 }
 
 @end

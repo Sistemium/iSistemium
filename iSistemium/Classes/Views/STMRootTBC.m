@@ -17,13 +17,18 @@
 #import "STMConstants.h"
 
 #import "STMObjectsController.h"
-#import "STMTabBarViewController.h"
+#import "STMTabBarItemControllable.h"
 #import "STMClientDataController.h"
 #import "STMAuthController.h"
 #import "STMMessageController.h"
 #import "STMCampaignController.h"
 
+#import <Crashlytics/Crashlytics.h>
+#import "STMAppDelegate.h"
+
+
 @interface STMRootTBC () <UITabBarControllerDelegate, /*UIViewControllerAnimatedTransitioning, */UIAlertViewDelegate>
+
 
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
@@ -356,9 +361,9 @@
 
 - (void)currentTabBarItemDidTapped {
     
-    if ([self.currentTappedVC conformsToProtocol:@protocol(STMTabBarViewController)]) {
+    if ([self.currentTappedVC conformsToProtocol:@protocol(STMTabBarItemControllable)]) {
         
-        [(id <STMTabBarViewController>)self.currentTappedVC showActionSheetFromTabBarItem];
+        [(id <STMTabBarItemControllable>)self.currentTappedVC showActionSheetFromTabBarItem];
         
     }
     
@@ -370,27 +375,34 @@
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
 
     if ([viewController isEqual:self.selectedViewController]) {
+        
         self.currentTappedVC = viewController;
-    }
-    
-//    NSString *logMessage = [NSString stringWithFormat:@"shouldSelect tab %@", viewController.tabBarItem.title];
-//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+        [self currentTabBarItemDidTapped];
+        self.currentTappedVC = nil;
 
-    return YES;
+        return NO;
+        
+    } else {
+    
+        return YES;
+
+    }
     
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
-    if (self.currentTappedVC) {
-        
-        [self currentTabBarItemDidTapped];
-        self.currentTappedVC = nil;
-        
-    }
+//    [(STMAppDelegate *)[UIApplication sharedApplication].delegate testCrash];
     
 //    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
 //    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+
+//    if (self.currentTappedVC) {
+//        
+//        [self currentTabBarItemDidTapped];
+//        self.currentTappedVC = nil;
+//        
+//    }
 
 }
 
@@ -557,7 +569,9 @@
 
 - (void)syncStateChanged {
 
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMMessageController unreadMessagesCount];
+    NSInteger badgeNumber = ([self.session.status isEqualToString:@"running"]) ? [STMMessageController unreadMessagesCount] : 0;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = badgeNumber;
+
     [self checkTimeoutAlert];
     
 }

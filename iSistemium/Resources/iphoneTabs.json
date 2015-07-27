@@ -9,5 +9,6 @@
     "STMOrders": null,
     "STMSettings": "STMSettings",
     "STMUncashing": null,
-    "STMWebView": "STMWebView"
+    "STMWebView": "STMWebView",
+    "STMShipments": "STMShipments"
 }

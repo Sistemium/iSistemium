@@ -200,8 +200,8 @@
         //    NSLog(@"currentSettings %@", [self.settingsController currentSettings]);
         self.locationTracker.session = self;
         self.batteryTracker.session = self;
-        self.syncer.session = self;
         self.syncer.authDelegate = self.authDelegate;
+        self.syncer.session = self;
         self.status = @"running";
 
     }

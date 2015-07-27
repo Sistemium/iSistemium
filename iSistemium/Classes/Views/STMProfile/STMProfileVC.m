@@ -29,15 +29,24 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
+
 @property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
+
 @property (weak, nonatomic) IBOutlet UILabel *sendDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *receiveDateLabel;
+
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
+
 @property (weak, nonatomic) IBOutlet UILabel *lastLocationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
+
 @property (weak, nonatomic) IBOutlet UIButton *nonloadedPicturesButton;
+
+@property (weak, nonatomic) IBOutlet UIImageView *uploadImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *downloadImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *lastLocationImageView;
 
 @property (weak, nonatomic) UIImageView *syncImageView;
 
@@ -49,6 +58,10 @@
 @property (nonatomic) BOOL downloadAlertWasShown;
 @property (nonatomic) BOOL newsReceiving;
 
+<<<<<<< HEAD
+=======
+@property (nonatomic, strong) STMSpinnerView *spinner;
+>>>>>>> drivers
 @property (nonatomic, strong) UIAlertView *locationDisabledAlert;
 @property (nonatomic) BOOL locationDisabledAlertIsShown;
 
@@ -149,6 +162,8 @@
     
     STMSyncer *syncer = [self syncer];
     BOOL hasObjectsToUpload = ([syncer numbersOfUnsyncedObjects] > 0);
+
+    [self.spinner removeFromSuperview];
     
     NSString *imageName;
     
@@ -157,16 +172,17 @@
             imageName = (hasObjectsToUpload) ? @"Upload To Cloud-100" : @"Download From Cloud-100";
             break;
         }
-        case STMSyncerSendData: {
-            imageName = @"Upload To Cloud-100";
-            break;
-        }
+        case STMSyncerSendData:
         case STMSyncerSendDataOnce: {
             imageName = @"Upload To Cloud-100";
+            self.spinner = [STMSpinnerView spinnerViewWithFrame:self.uploadImageView.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
+            [self.uploadImageView addSubview:self.spinner];
             break;
         }
         case STMSyncerReceiveData: {
             imageName = @"Download From Cloud-100";
+            self.spinner = [STMSpinnerView spinnerViewWithFrame:self.downloadImageView.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
+            [self.downloadImageView addSubview:self.spinner];
             break;
         }
         default: {
@@ -362,17 +378,20 @@
     key = [@"receiveDate" stringByAppendingString:[STMAuthController authController].userID];
     NSString *receiveDateString = [defaults objectForKey:key];
     
-    if (sendDateString) {
-        self.sendDateLabel.text = [NSLocalizedString(@"SEND DATE", nil) stringByAppendingString:sendDateString];
-    } else {
-        self.sendDateLabel.text = nil;
-    }
-    
-    if (receiveDateString) {
-        self.receiveDateLabel.text = [NSLocalizedString(@"RECEIVE DATE", nil) stringByAppendingString:receiveDateString];
-    } else {
-        self.receiveDateLabel.text = nil;
-    }
+    self.sendDateLabel.text = (sendDateString) ? sendDateString : nil;
+    self.receiveDateLabel.text = (receiveDateString) ? receiveDateString : nil;
+
+//    if (sendDateString) {
+//        self.sendDateLabel.text = [NSLocalizedString(@"SEND DATE", nil) stringByAppendingString:sendDateString];
+//    } else {
+//        self.sendDateLabel.text = nil;
+//    }
+//    
+//    if (receiveDateString) {
+//        self.receiveDateLabel.text = [NSLocalizedString(@"RECEIVE DATE", nil) stringByAppendingString:receiveDateString];
+//    } else {
+//        self.receiveDateLabel.text = nil;
+//    }
     
 }
 
@@ -401,7 +420,10 @@
         badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)unloadedPicturesCount];
         
     } else {
+        
         self.downloadAlertWasShown = NO;
+        self.nonloadedPicturesButton.enabled = NO;
+        
     }
     
     [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
@@ -659,8 +681,9 @@
     
     if (self.locationTracker.lastLocation) {
         
-        lastLocationTime = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
-        lastLocationLabelText = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
+        lastLocationTime = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:self.locationTracker.lastLocation.timestamp];
+//        lastLocationLabelText = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"LAST LOCATION", nil), lastLocationTime];
+        lastLocationLabelText = lastLocationTime;
         
     } else {
         
@@ -675,20 +698,29 @@
 
 - (void)setupLocationSystemStatusLabel {
     
+    UIColor *color;
+    NSString *text;
+    
     if ([CLLocationManager locationServicesEnabled]) {
         
         switch ([CLLocationManager authorizationStatus]) {
             case kCLAuthorizationStatusAuthorizedAlways:
+                color = [UIColor greenColor];
+                text = NSLocalizedString(@"LOCATIONS ON", nil);
                 self.locationSystemStatusLabel.textColor = [UIColor greenColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
                 break;
                 
             case kCLAuthorizationStatusAuthorizedWhenInUse:
+                color = [UIColor brownColor];
+                text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
                 self.locationSystemStatusLabel.textColor = [UIColor brownColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
                 break;
                 
             default:
+                color = [UIColor redColor];
+                text = NSLocalizedString(@"LOCATIONS OFF", nil);
                 self.locationSystemStatusLabel.textColor = [UIColor redColor];
                 self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
                 break;
@@ -696,10 +728,76 @@
         
     } else {
         
+        color = [UIColor redColor];
+        text = NSLocalizedString(@"LOCATIONS OFF", nil);
         self.locationSystemStatusLabel.textColor = [UIColor redColor];
         self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
         
     }
+
+    [self checkLocationDisabled];
+    
+}
+
+- (void)checkLocationDisabled {
+    
+    if ([CLLocationManager locationServicesEnabled]) {
+        
+        switch ([CLLocationManager authorizationStatus]) {
+            case kCLAuthorizationStatusAuthorizedAlways:
+                [self hideLocationDisabledAlert];
+                break;
+                
+            default:
+                [self showLocationDisabledAlert];
+                break;
+        }
+        
+    } else {
+        [self showLocationDisabledAlert];
+    }
+
+}
+
+- (void)showLocationDisabledAlert {
+    
+    if ([self blockIfNoLocationPermission] && !self.locationDisabledAlertIsShown) {
+        
+        self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK TITLE", nil)
+                                                                message:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK MESSAGE", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:nil];
+        
+        [self.locationDisabledAlert show];
+        self.locationDisabledAlertIsShown = YES;
+
+    } else if (![self blockIfNoLocationPermission] && self.locationDisabledAlertIsShown) {
+        [self hideLocationDisabledAlert];
+    }
+        
+}
+
+- (void)hideLocationDisabledAlert {
+    
+    if (self.locationDisabledAlertIsShown) {
+        
+        [self.locationDisabledAlert dismissWithClickedButtonIndex:0 animated:NO];
+        self.locationDisabledAlertIsShown = NO;
+        
+    }
+    
+}
+
+- (BOOL)blockIfNoLocationPermission {
+    
+    NSDictionary *settings = [[self settingsController] currentSettingsForGroup:@"appSettings"];
+    BOOL blockIfNoLocationPermission = [settings[@"blockIfNoLocationPermission"] boolValue];
+    BOOL locationTrackerAutoStart = [self locationTracker].trackerAutoStart;
+    
+    return (blockIfNoLocationPermission && locationTrackerAutoStart);
+    
+    self.lastLocationImageView.tintColor = color;
 
     [self checkLocationDisabled];
     
@@ -969,6 +1067,8 @@
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
     self.syncImageView = imageView;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:imageView];
+
+//    self.lastLocationImageView.image = [self.lastLocationImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
     [self updateCloudImages];
     [self updateSyncDatesLabels];

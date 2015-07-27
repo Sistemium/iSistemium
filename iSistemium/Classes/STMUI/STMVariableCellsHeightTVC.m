@@ -7,10 +7,12 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import "STMConstants.h"
+
+#import <Crashlytics/Crashlytics.h>
+
 
 @interface STMVariableCellsHeightTVC ()
-
-@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 
 
 @end
@@ -42,9 +44,14 @@
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
     
-    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    NSManagedObject *object = [self.resultsController objectAtIndexPath:indexPath];
+    NSManagedObjectID *objectID = object.objectID;
     
-    self.cachedCellsHeights[objectID] = @(height);
+    if (objectID) {
+        self.cachedCellsHeights[objectID] = @(height);
+    } else {
+        CLS_LOG(@"objectID is nil for %@", objectID);
+    }
     
 }
 
@@ -59,16 +66,25 @@
 
 #pragma mark - table view dataSource & delegate
 
+- (CGFloat)standardCellHeight {
+    
+    if (!_standardCellHeight) {
+        
+        static CGFloat standardCellHeight;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+        });
+        
+        _standardCellHeight = standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+        
+    }
+    return _standardCellHeight;
+    
+}
+
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static CGFloat standardCellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-    });
-    
-    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
-    
+    return self.standardCellHeight;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -90,13 +106,17 @@
     
     [self fillCell:cell atIndexPath:indexPath];
     
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
     
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
     
     CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
     CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+    
+    if (height < [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath]) {
+        height = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+    }
     
     [self putCachedHeight:height forIndexPath:indexPath];
     

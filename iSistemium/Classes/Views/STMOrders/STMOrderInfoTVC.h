@@ -12,6 +12,8 @@
 
 @interface STMOrderInfoTVC : STMFetchedResultsControllerTVC
 
+#warning — have to use STMVariableCellsHeightTVC class?
+
 @property (nonatomic, strong) STMSaleOrder *saleOrder;
 
 

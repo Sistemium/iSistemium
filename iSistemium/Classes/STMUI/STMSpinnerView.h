@@ -11,5 +11,7 @@
 @interface STMSpinnerView : UIView
 
 + (STMSpinnerView *)spinnerViewWithFrame:(CGRect)frame;
++ (STMSpinnerView *)spinnerViewWithFrame:(CGRect)frame indicatorStyle:(UIActivityIndicatorViewStyle)style backgroundColor:(UIColor *)color alfa:(CGFloat)alfa;
+
 
 @end

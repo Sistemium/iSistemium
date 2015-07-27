@@ -10,4 +10,8 @@ xcuserdata
 /Crashlytics.framework/*
 /Fabric.framework/*
 
+<<<<<<< HEAD
 iSistemium/Classes/Base/STMDevDef.h
+=======
+iSistemium/Classes/Base/STMDevDef.h
+>>>>>>> drivers

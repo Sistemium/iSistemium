@@ -2,7 +2,7 @@
 //  STMOutlet.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/05/15.
+//  Created by Maxim Grigoriev on 25/06/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -10,14 +10,14 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMCampaign, STMCashing, STMDebt, STMPartner, STMPhotoReport, STMSaleOrder, STMSalesman;
+@class STMCampaign, STMCashing, STMDebt, STMPartner, STMPhotoReport, STMSaleOrder, STMSalesman, STMShipment;
 
 @interface STMOutlet : STMComment
 
 @property (nonatomic, retain) NSString * address;
+@property (nonatomic, retain) NSNumber * isActive;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * shortName;
-@property (nonatomic, retain) NSNumber * isActive;
 @property (nonatomic, retain) NSSet *campaigns;
 @property (nonatomic, retain) NSSet *cashings;
 @property (nonatomic, retain) NSSet *debts;
@@ -25,6 +25,7 @@
 @property (nonatomic, retain) NSSet *photoReports;
 @property (nonatomic, retain) NSSet *saleOrders;
 @property (nonatomic, retain) STMSalesman *salesman;
+@property (nonatomic, retain) NSSet *shipments;
 @end
 
 @interface STMOutlet (CoreDataGeneratedAccessors)
@@ -53,5 +54,10 @@
 - (void)removeSaleOrdersObject:(STMSaleOrder *)value;
 - (void)addSaleOrders:(NSSet *)values;
 - (void)removeSaleOrders:(NSSet *)values;
+
+- (void)addShipmentsObject:(STMShipment *)value;
+- (void)removeShipmentsObject:(STMShipment *)value;
+- (void)addShipments:(NSSet *)values;
+- (void)removeShipments:(NSSet *)values;
 
 @end

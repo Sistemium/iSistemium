@@ -804,7 +804,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
         [self fillPictureCell:cell withPrice:price];
         
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
         
         [cell setNeedsLayout];
         [cell layoutIfNeeded];
@@ -826,7 +826,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         
         [self fillCell:cell withPrice:price];
         
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
         
         [cell setNeedsLayout];
         [cell layoutIfNeeded];

@@ -22,6 +22,8 @@
 #import "STMConstants.h"
 #import "STMEntityDescription.h"
 #import "STMImagePickerController.h"
+#import "STMLocationController.h"
+
 
 @interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate, UISearchBarDelegate>
 
@@ -418,7 +420,10 @@
 - (void)saveImage:(UIImage *)image {
 
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
-    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:self.selectedPhotoReport];
+    
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
+                                  forPicture:self.selectedPhotoReport
+                                   andUpload:YES];
 
     [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
     self.selectedPhotoReport.campaign = self.campaign;
@@ -463,7 +468,7 @@
         CLLocation *currentLocation = (notification.userInfo)[@"currentLocation"];
         NSLog(@"currentLocation %@", currentLocation);
 
-        STMLocation *location = [self.locationTracker locationObjectFromCLLocation:currentLocation];
+        STMLocation *location = [STMLocationController locationObjectFromCLLocation:currentLocation];
 
         [self setLocationForWaitingLocationPhotos:location];
 

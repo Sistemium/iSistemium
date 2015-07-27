@@ -10,6 +10,8 @@
 
 @interface STMOrdersDetailTVC : STMFetchedResultsControllerTVC
 
+#warning — have to use STMVariableCellsHeightTVC class?
+
 - (void)refreshTable;
 
 

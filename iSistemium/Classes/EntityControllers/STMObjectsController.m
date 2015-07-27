@@ -210,7 +210,7 @@
     NSString *nameTail = (nameExplode.count > 1) ? nameExplode[1] : name;
     NSString *capEntityName = [nameTail stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[nameTail substringToIndex:1] capitalizedString]];
 
-    NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
+    NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
     
     NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
@@ -302,7 +302,9 @@
             
         } else {
             
-            [object setValue:nil forKey:key];
+            if (![object isKindOfClass:[STMShippingLocationPicture class]]) {
+                [object setValue:nil forKey:key];
+            }
             
         }
         
@@ -526,7 +528,7 @@
     
     NSString *name = dictionary[@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-    NSString *entityName = [@"STM" stringByAppendingString:nameExplode[1]];
+    NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:nameExplode[1]];
 
     NSDictionary *serverDataModel = [[STMEntityController stcEntities] copy];
 
@@ -534,11 +536,11 @@
         
         STMEntity *entityModel = serverDataModel[entityName];
         NSString *roleOwner = entityModel.roleOwner;
-        NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
+        NSString *roleOwnerEntityName = [ISISTEMIUM_PREFIX stringByAppendingString:roleOwner];
         NSString *roleName = entityModel.roleName;
         NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
         NSString *destinationEntityName = ownerRelationships[roleName];
-        NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
+        NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
         NSDictionary *properties = dictionary[@"properties"];
         NSDictionary *ownerData = properties[roleOwner];
         NSDictionary *destinationData = properties[destination];
@@ -617,37 +619,13 @@
 
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
-    BOOL isInSyncList = [[self entityNamesForSyncing] containsObject:object.entity.name];
+    BOOL isInSyncList = [[STMEntityController uploadableEntitiesNames] containsObject:object.entity.name];
 
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
     
     return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
     
-}
-
-+ (NSArray *)entityNamesForSyncing {
-    
-    NSArray *entityNamesForSyncing = @[
-                                       NSStringFromClass([STMEntity class]),
-                                       NSStringFromClass([STMClientEntity class]),
-                                       NSStringFromClass([STMPhotoReport class]),
-                                       NSStringFromClass([STMCashing class]),
-                                       NSStringFromClass([STMUncashing class]),
-                                       NSStringFromClass([STMClientData class]),
-                                       NSStringFromClass([STMRecordStatus class]),
-                                       NSStringFromClass([STMUncashingPicture class]),
-                                       NSStringFromClass([STMDebt class]),
-                                       NSStringFromClass([STMBatteryStatus class]),
-                                       NSStringFromClass([STMOutlet class]),
-                                       NSStringFromClass([STMPartner class]),
-                                       NSStringFromClass([STMLocation class]),
-                                       NSStringFromClass([STMSaleOrder class]),
-                                       NSStringFromClass([STMLogMessage class])
-                                       ];
-    
-    return entityNamesForSyncing;
-
 }
 
 
@@ -1027,7 +1005,7 @@
             
             NSString *capFirstLetter = (name) ? [[name substringToIndex:1] capitalizedString] : nil;
             NSString *capEntityName = [name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
-            NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
+            NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
             
             NSError *error;
             
@@ -1182,6 +1160,7 @@
                              NSStringFromClass([STMCashing class]),
                              NSStringFromClass([STMClientData class]),
                              NSStringFromClass([STMDebt class]),
+                             NSStringFromClass([STMDriver class]),
                              NSStringFromClass([STMLocation class]),
                              NSStringFromClass([STMLogMessage class]),
                              NSStringFromClass([STMMessage class]),
@@ -1196,6 +1175,12 @@
                              NSStringFromClass([STMSaleOrderPosition class]),
                              NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMSetting class]),
+                             NSStringFromClass([STMShipment class]),
+                             NSStringFromClass([STMShipmentPosition class]),
+                             NSStringFromClass([STMShipmentRoute class]),
+                             NSStringFromClass([STMShipmentRoutePoint class]),
+                             NSStringFromClass([STMShippingLocation class]),
+                             NSStringFromClass([STMShippingLocationPicture class]),
                              NSStringFromClass([STMStock class]),
                              NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMUncashing class]),
@@ -1318,7 +1303,7 @@
     
     if ([parameters isKindOfClass:[NSDictionary class]]) {
         
-        NSString *entityName = [@"STM" stringByAppendingString:parameters[@"entityName"]];
+        NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:parameters[@"entityName"]];
         NSUInteger size = [parameters[@"size"] integerValue];
         NSString *orderBy = parameters[@"orderBy"];
         BOOL ascending = [[parameters[@"order"] lowercaseString] isEqualToString:@"asc"];
@@ -1378,7 +1363,7 @@
     if (object) {
         
         NSString *entityName = object.entity.name;
-        NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
+        NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""]];
         NSData *xidData = [object valueForKey:@"xid"];
         NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
         
@@ -1404,9 +1389,11 @@
         allKeys = object.entity.attributesByName.allKeys;
     }
     
+    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail"];
+    
     for (NSString *key in allKeys) {
         
-        if (![key isEqualToString:@"xid"]) {
+        if (![notSyncableProperties containsObject:key]) {
             
             id value = [object valueForKey:key];
             

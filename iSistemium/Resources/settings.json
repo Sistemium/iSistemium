@@ -81,8 +81,16 @@
           "value": 100,
           "control": "slider",
           "min": 0,
-          "max": 100,
+          "max": 1000,
           "step": 10
+        },
+        {
+            "name": "permanentLocationRequiredAccuracy",
+            "value": 10,
+            "control": "slider",
+            "min": 0,
+            "max": 100,
+            "step": 5
         },
         {
           "name": "distanceFilter",
