@@ -232,10 +232,10 @@
 "PRICE_" = "Price";
 "STOCK_" = "Stock";
 "ROLES REQUEST ERROR" = "Roles request error: ";
-<<<<<<< HEAD
+
 "NO LOCATION PERMISSION BLOCK TITLE" = "No location tracking allowed";
 "NO LOCATION PERMISSION BLOCK MESSAGE" = "You should allow location tracking to use app";
-=======
+
 "SHIPMENT ROUTES" = "Shipment routes";
 "SHIPMENT ROUTE POINTS" = "Shipment route points";
 "0SRPOINTS" = "no points";
@@ -300,5 +300,4 @@
 "2BOXES" = "boxes";
 "5BOXES" = "boxes";
 "UNKNOWN ARTICLE" = "Unknown article";
->>>>>>> drivers
 

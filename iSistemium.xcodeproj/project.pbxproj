@@ -386,13 +386,8 @@
 		2C29691819B1CFAB0038B122 /* STMMessagesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMMessagesTVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2C297F9519507A01000D9485 /* STMExtendNSLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMExtendNSLog.h; sourceTree = "<group>"; };
 		2C297F9619507A01000D9485 /* STMExtendNSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMExtendNSLog.m; sourceTree = "<group>"; };
-<<<<<<< HEAD
-		2C2FCBEB1B4C0AF60069CCC7 /* STMDevDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDevDef.h; sourceTree = "<group>"; };
-		2C420FC51A4C24DE001C65B9 /* STMTabBarViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMTabBarViewController.h; sourceTree = "<group>"; };
-=======
 		2C3771B41B5E7038003493FB /* Sync With Cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Sync With Cloud.png"; sourceTree = "<group>"; };
 		2C420FC51A4C24DE001C65B9 /* STMTabBarItemControllable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMTabBarItemControllable.h; sourceTree = "<group>"; };
->>>>>>> drivers
 		2C420FC61A4C29B4001C65B9 /* STMMessagesNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMessagesNC.h; sourceTree = "<group>"; };
 		2C420FC71A4C29B4001C65B9 /* STMMessagesNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessagesNC.m; sourceTree = "<group>"; };
 		2C42ECB51B1342D300B5C91A /* STMArticlePicturePVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticlePicturePVC.h; sourceTree = "<group>"; };
@@ -873,11 +868,7 @@
 		2C0A9E1B1A78F32A00C892EA /* Base */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
-				2C2FCBEB1B4C0AF60069CCC7 /* STMDevDef.h */,
-=======
 				2C76783C1B43C1D90085C514 /* STMDevDef.h */,
->>>>>>> drivers
 				2C80C829198FB03C0044ADE4 /* STMConstants.h */,
 				2CFDD88C1A308B4C003515C5 /* STMSingleton.h */,
 				2CFDD88D1A308B4C003515C5 /* STMSingleton.m */,

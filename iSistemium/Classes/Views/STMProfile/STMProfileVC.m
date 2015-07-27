@@ -58,10 +58,8 @@
 @property (nonatomic) BOOL downloadAlertWasShown;
 @property (nonatomic) BOOL newsReceiving;
 
-<<<<<<< HEAD
-=======
 @property (nonatomic, strong) STMSpinnerView *spinner;
->>>>>>> drivers
+
 @property (nonatomic, strong) UIAlertView *locationDisabledAlert;
 @property (nonatomic) BOOL locationDisabledAlertIsShown;
 
@@ -796,71 +794,7 @@
     BOOL locationTrackerAutoStart = [self locationTracker].trackerAutoStart;
     
     return (blockIfNoLocationPermission && locationTrackerAutoStart);
-    
-    self.lastLocationImageView.tintColor = color;
-
-    [self checkLocationDisabled];
-    
-}
-
-- (void)checkLocationDisabled {
-    
-    if ([CLLocationManager locationServicesEnabled]) {
         
-        switch ([CLLocationManager authorizationStatus]) {
-            case kCLAuthorizationStatusAuthorizedAlways:
-                [self hideLocationDisabledAlert];
-                break;
-                
-            default:
-                [self showLocationDisabledAlert];
-                break;
-        }
-        
-    } else {
-        [self showLocationDisabledAlert];
-    }
-
-}
-
-- (void)showLocationDisabledAlert {
-    
-    if ([self blockIfNoLocationPermission] && !self.locationDisabledAlertIsShown) {
-        
-        self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK TITLE", nil)
-                                                                message:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK MESSAGE", nil)
-                                                               delegate:nil
-                                                      cancelButtonTitle:nil
-                                                      otherButtonTitles:nil];
-        
-        [self.locationDisabledAlert show];
-        self.locationDisabledAlertIsShown = YES;
-
-    } else if (![self blockIfNoLocationPermission] && self.locationDisabledAlertIsShown) {
-        [self hideLocationDisabledAlert];
-    }
-        
-}
-
-- (void)hideLocationDisabledAlert {
-    
-    if (self.locationDisabledAlertIsShown) {
-        
-        [self.locationDisabledAlert dismissWithClickedButtonIndex:0 animated:NO];
-        self.locationDisabledAlertIsShown = NO;
-        
-    }
-    
-}
-
-- (BOOL)blockIfNoLocationPermission {
-    
-    NSDictionary *settings = [[self settingsController] currentSettingsForGroup:@"appSettings"];
-    BOOL blockIfNoLocationPermission = [settings[@"blockIfNoLocationPermission"] boolValue];
-    BOOL locationTrackerAutoStart = [self locationTracker].trackerAutoStart;
-    
-    return (blockIfNoLocationPermission && locationTrackerAutoStart);
-    
 }
 
 - (void)setupLocationAppStatusLabel {

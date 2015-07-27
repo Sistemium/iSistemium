@@ -232,10 +232,10 @@
 "PRICE_" = "Цены";
 "STOCK_" = "Остатки";
 "ROLES REQUEST ERROR" = "Ошибка проверки ролей: ";
-<<<<<<< HEAD
+
 "NO LOCATION PERMISSION BLOCK TITLE" = "Геолокация запрещена";
 "NO LOCATION PERMISSION BLOCK MESSAGE" = "Необходимо разрешить геолокацию для продолжения работы";
-=======
+
 "SHIPMENT ROUTES" = "Маршруты";
 "SHIPMENT ROUTE POINTS" = "Точки маршрута";
 "0SRPOINTS" = "нет точек";
@@ -300,5 +300,4 @@
 "2BOXES" = "короба";
 "5BOXES" = "коробов";
 "UNKNOWN ARTICLE" = "Неизвестный товар";
->>>>>>> drivers
 
