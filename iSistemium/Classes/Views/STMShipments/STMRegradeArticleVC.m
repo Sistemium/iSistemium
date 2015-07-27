@@ -12,6 +12,8 @@
 #import "STMDataModel.h"
 #import "STMSessionManagement.h"
 
+#import <Crashlytics/Answers.h>
+
 
 @interface STMRegradeArticleVC () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
@@ -153,6 +155,13 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     
+    if (searchBar.text) {
+        
+        [Answers logSearchWithQuery:searchBar.text
+                   customAttributes:@{}];
+        
+    }
+    
     searchBar.showsCancelButton = NO;
     searchBar.text = nil;
     self.selectedIndexPath = nil;
@@ -166,7 +175,12 @@
 - (void)hideKeyboard {
     
     if ([self.searchBar isFirstResponder]) {
+        
+        [Answers logSearchWithQuery:self.searchBar.text
+                   customAttributes:@{}];
+
         [self.searchBar resignFirstResponder];
+        
     }
     
 }

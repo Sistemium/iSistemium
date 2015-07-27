@@ -24,6 +24,7 @@
 #import "STMCampaignController.h"
 
 #import <Crashlytics/Crashlytics.h>
+#import "STMAppDelegate.h"
 
 
 @interface STMRootTBC () <UITabBarControllerDelegate, /*UIViewControllerAnimatedTransitioning, */UIAlertViewDelegate>
@@ -368,10 +369,6 @@
     
 }
 
-- (void)testCrash {
-    [CrashlyticsKit crash];
-}
-
 
 #pragma mark - UITabBarControllerDelegate
 
@@ -395,7 +392,7 @@
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
-    [self testCrash];
+//    [(STMAppDelegate *)[UIApplication sharedApplication].delegate testCrash];
     
 //    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
 //    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
