@@ -478,9 +478,53 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if (![self.navigationController.viewControllers containsObject:self]) {
+        [self flushMapView];
+    }
+    
+    [super viewWillDisappear:animated];
+    
+}
+
+- (void)flushMapView {
+    
+    switch (self.mapView.mapType) {
+        case MKMapTypeHybrid:
+        {
+            self.mapView.mapType = MKMapTypeStandard;
+        }
+            
+            break;
+        case MKMapTypeStandard:
+        {
+            self.mapView.mapType = MKMapTypeHybrid;
+        }
+            
+            break;
+        default:
+            break;
+    }
+        
+    self.mapView.showsUserLocation = NO;
+    self.mapView.delegate = nil;
+    [self.mapView removeFromSuperview];
+    self.mapView = nil;
+    
+}
+
 - (void)didReceiveMemoryWarning {
+    
+    if ([self isViewLoaded] && [self.view window] == nil) {
+        
+        [self flushMapView];
+        self.view = nil;
+        
+    }
+
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
 /*
