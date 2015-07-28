@@ -66,16 +66,6 @@
     
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-//    
-//    if (section < 2) {
-//        return tableView.estimatedSectionHeaderHeight;
-//    } else {
-//        return 0.1;
-//    }
-//    
-//}
-
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
     switch (section) {
@@ -90,6 +80,35 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    switch (indexPath.section) {
+        case 0:
+            return [super tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
+            break;
+            
+        case 1:
+            switch (indexPath.row) {
+                case 0:
+                    return self.standardCellHeight;
+                    break;
+                    
+                case 1:
+                    return self.standardCellHeight;
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+        default:
+            break;
+    }
+
+    return self.standardCellHeight;
+
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell;
@@ -98,9 +117,17 @@
         case 0:
             cell = [tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier forIndexPath:indexPath];
             break;
-            
+
         default:
-            cell = [tableView dequeueReusableCellWithIdentifier:@"volumeCell" forIndexPath:indexPath];
+            switch (indexPath.row) {
+                case 0:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.volumeCellIdentifier forIndexPath:indexPath];
+                    break;
+                    
+                default:
+                    cell = [tableView dequeueReusableCellWithIdentifier:@"volumeCell" forIndexPath:indexPath];
+                    break;
+            }
             break;
     }
     
@@ -119,9 +146,25 @@
                 [self fillPositionInfoCell:(STMCustom2TVCell *)cell atIndexPath:indexPath];
             }
             break;
-            
+
+        case 1:
+            switch (indexPath.row) {
+                case 0:
+                    if ([cell isKindOfClass:[STMVolumeTVCell class]]) {
+                        [self fillVolumeCell:(STMVolumeTVCell *)cell atIndexPath:indexPath];
+                    }
+                    break;
+                    
+                case 1:
+                    [self fillControlCell:cell atIndexPath:indexPath];
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
         default:
-            [self fillVolumeCell:cell atIndexPath:indexPath];
             break;
     }
     
@@ -135,11 +178,13 @@
         case 0:
             cell.titleLabel.text = @"Товар";
             cell.detailLabel.text = self.position.article.name;
+            cell.detailLabel.textAlignment = NSTextAlignmentLeft;
             break;
 
         case 1:
             cell.titleLabel.text = @"По накладной";
             cell.detailLabel.text = [self.position volumeText];
+            cell.detailLabel.textAlignment = NSTextAlignmentRight;
             break;
 
         default:
@@ -148,20 +193,12 @@
     
 }
 
-- (void)fillVolumeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
-    switch (indexPath.row) {
-        case 0:
-            cell.textLabel.text = @"TEST";
-            break;
-            
-        case 1:
-            cell.textLabel.text = @"CONTROLS";
-            
-        default:
-            break;
-    }
-    
+- (void)fillVolumeCell:(STMVolumeTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    cell.titleLabel.text = @"TEST";
+}
+
+- (void)fillControlCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    cell.textLabel.text = @"CONTROLS";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -223,6 +260,7 @@
 - (void)customInit {
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeTVCell" bundle:nil] forCellReuseIdentifier:self.volumeCellIdentifier];
     
     [super customInit];
     

@@ -68,6 +68,8 @@
 		2C42ECC51B15A39400B5C91A /* STMCatalogSettingsNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C42ECC41B15A39400B5C91A /* STMCatalogSettingsNC.m */; };
 		2C42ECC81B15F37000B5C91A /* STMCatalogParametersTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C42ECC71B15F37000B5C91A /* STMCatalogParametersTVC.m */; };
 		2C4620521B67712B007FD646 /* STMShipmentVolumesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4620511B67712B007FD646 /* STMShipmentVolumesTVC.m */; };
+		2C4620541B67B30C007FD646 /* STMVolumeTVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C4620531B67B30C007FD646 /* STMVolumeTVCell.xib */; };
+		2C4620571B67B349007FD646 /* STMVolumeTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4620561B67B349007FD646 /* STMVolumeTVCell.m */; };
 		2C4BA3C91A41AE8B007F1D0A /* STMOutletController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3C81A41AE8B007F1D0A /* STMOutletController.m */; };
 		2C4BA3CC1A41AE9A007F1D0A /* STMPartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3CB1A41AE9A007F1D0A /* STMPartnerController.m */; };
 		2C4E443B1A810A6D006E6AF1 /* STMRecordStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */; };
@@ -405,6 +407,9 @@
 		2C42ECC71B15F37000B5C91A /* STMCatalogParametersTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCatalogParametersTVC.m; sourceTree = "<group>"; };
 		2C4620501B67712B007FD646 /* STMShipmentVolumesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentVolumesTVC.h; sourceTree = "<group>"; };
 		2C4620511B67712B007FD646 /* STMShipmentVolumesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentVolumesTVC.m; sourceTree = "<group>"; };
+		2C4620531B67B30C007FD646 /* STMVolumeTVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMVolumeTVCell.xib; sourceTree = "<group>"; };
+		2C4620551B67B349007FD646 /* STMVolumeTVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMVolumeTVCell.h; sourceTree = "<group>"; };
+		2C4620561B67B349007FD646 /* STMVolumeTVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMVolumeTVCell.m; sourceTree = "<group>"; };
 		2C49731B1A3893C7006CDF06 /* STMDataModel 27.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 27.xcdatamodel"; sourceTree = "<group>"; };
 		2C4BA3C71A41AE8B007F1D0A /* STMOutletController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMOutletController.h; sourceTree = "<group>"; };
 		2C4BA3C81A41AE8B007F1D0A /* STMOutletController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMOutletController.m; sourceTree = "<group>"; };
@@ -1014,6 +1019,7 @@
 				2C761BBF1B00DF21001DA33E /* STMCustom5TVCell.xib */,
 				2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */,
 				2C88F1C51B1ECECC00E30418 /* STMCustom7TVCell.xib */,
+				2C4620531B67B30C007FD646 /* STMVolumeTVCell.xib */,
 			);
 			path = STMCustomCells;
 			sourceTree = "<group>";
@@ -1397,6 +1403,8 @@
 				2C88F1C01B1894B500E30418 /* STMCustom6TVCell.m */,
 				2C88F1C91B1ED00400E30418 /* STMCustom7TVCell.h */,
 				2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */,
+				2C4620551B67B349007FD646 /* STMVolumeTVCell.h */,
+				2C4620561B67B349007FD646 /* STMVolumeTVCell.m */,
 			);
 			path = STMCustomTVCells;
 			sourceTree = "<group>";
@@ -1736,6 +1744,7 @@
 				2C5764541AAA096000B9FD2C /* STMOrders.storyboard in Resources */,
 				2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */,
 				2C5764561AAA0A7D00B9FD2C /* bill-128.png in Resources */,
+				2C4620541B67B30C007FD646 /* STMVolumeTVCell.xib in Resources */,
 				2C5764391AA8962600B9FD2C /* wine_bottle-512.png in Resources */,
 				2C81AD5B1AD1180F00246666 /* close-128.png in Resources */,
 				2C5764371AA88ABA00B9FD2C /* Dossier Folder-100.png in Resources */,
@@ -1932,6 +1941,7 @@
 				2C559F681AC040BB00E25831 /* STMArticleGroup.m in Sources */,
 				2C16CC501AF7668E00A2EC2D /* STMProfileNC.m in Sources */,
 				2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */,
+				2C4620571B67B349007FD646 /* STMVolumeTVCell.m in Sources */,
 				2C57642F1AA5EA6800B9FD2C /* STMInfoTableViewCell.m in Sources */,
 				2C5764241AA5E1E500B9FD2C /* STMSelectPartnerTVC.m in Sources */,
 				2CFDD88A1A308B1C003515C5 /* STMCashingProcessController.m in Sources */,
