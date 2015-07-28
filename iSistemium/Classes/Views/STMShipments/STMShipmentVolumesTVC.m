@@ -16,7 +16,8 @@
 @property (nonatomic, strong) NSString *positionCellIdentifier;
 @property (nonatomic, strong) NSString *volumeCellIdentifier;
 
-@property (nonatomic, strong) NSNumber *selectedSection;
+@property (nonatomic, strong) NSMutableArray *selectedSections;
+
 
 @end
 
@@ -35,6 +36,15 @@
     return @"volumeCellIdentifier";
 }
 
+- (NSMutableArray *)selectedSections {
+    
+    if (!_selectedSections) {
+        _selectedSections = [NSMutableArray array];
+    }
+    return _selectedSections;
+    
+}
+
 
 #pragma mark - tableView dataSource & delegate
 
@@ -50,7 +60,7 @@
             break;
             
         default:
-            return (section == self.selectedSection.integerValue) ? 2 : 1;
+            return ([self.selectedSections containsObject:@(section)]) ? 2 : 1;
             break;
     }
     
@@ -95,6 +105,8 @@
     }
     
     [self fillCell:cell atIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     return cell;
     
 }
@@ -154,20 +166,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row == 0 && indexPath.section > 0 && indexPath.section != self.selectedSection.integerValue) {
+    if (indexPath.row == 0 && indexPath.section > 0) {
 
-        NSIndexPath *previousIndexPath = (self.selectedSection) ? [NSIndexPath indexPathForRow:1 inSection:self.selectedSection.integerValue] : nil;
+        BOOL isSelected = [self.selectedSections containsObject:@(indexPath.section)];
         
-        self.selectedSection = @(indexPath.section);
+        (isSelected) ? [self.selectedSections removeObject:@(indexPath.section)] : [self.selectedSections addObject:@(indexPath.section)];
         
-        [tableView beginUpdates];
-        
-        if (previousIndexPath) {
-            [self hideControlsAtIndexPath:previousIndexPath tableView:tableView];
-        }
-        [self showControlsAtIndexPath:indexPath tableView:tableView];
-        
-        [tableView endUpdates];
+        (isSelected) ? [self hideControlsAtIndexPath:indexPath tableView:tableView] : [self showControlsAtIndexPath:indexPath tableView:tableView];
         
     }
     
@@ -175,21 +180,29 @@
 
 - (void)showControlsAtIndexPath:(NSIndexPath *)indexPath tableView:(UITableView *)tableView {
 
+    [tableView beginUpdates];
+
     [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
     
     [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     NSIndexPath *controlsIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section];
     [tableView reloadRowsAtIndexPaths:@[controlsIndexPath] withRowAnimation:UITableViewRowAnimationTop];
+    
+    [tableView endUpdates];
+
+    if (![tableView.visibleCells containsObject:[tableView cellForRowAtIndexPath:controlsIndexPath]]) {
+        [tableView scrollToRowAtIndexPath:controlsIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    }
 
 }
 
 - (void)hideControlsAtIndexPath:(NSIndexPath *)indexPath tableView:(UITableView *)tableView {
     
-//    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//    NSIndexPath *controlsIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section];
-//    [tableView reloadRowsAtIndexPaths:@[controlsIndexPath] withRowAnimation:UITableViewRowAnimationTop];
+//    [tableView beginUpdates];
     
     [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+    
+//    [tableView endUpdates];
 
 }
 
