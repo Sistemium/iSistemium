@@ -147,7 +147,7 @@
             }
             break;
 
-        case 1:
+        default:
             switch (indexPath.row) {
                 case 0:
                     if ([cell isKindOfClass:[STMVolumeTVCell class]]) {
@@ -162,9 +162,6 @@
                 default:
                     break;
             }
-            break;
-
-        default:
             break;
     }
     
@@ -194,7 +191,11 @@
 }
 
 - (void)fillVolumeCell:(STMVolumeTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    cell.titleLabel.text = @"TEST";
+
+    NSString *title = [NSString stringWithFormat:@"%ld_VOLUME_TYPE", (NSInteger)(indexPath.section - 1)];
+    
+    cell.titleLabel.text = NSLocalizedString(title, nil);
+    
 }
 
 - (void)fillControlCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {

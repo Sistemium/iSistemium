@@ -76,7 +76,9 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="bottleCountLabel" destination="h05-2M-Ors" id="wdw-1e-6MH"/>
+                <outlet property="bottleUnitLabel" destination="eV7-gv-HOf" id="8Xn-XQ-acL"/>
                 <outlet property="boxCountLabel" destination="9L8-9x-XBV" id="jM6-3N-DTA"/>
+                <outlet property="boxUnitLabel" destination="GUO-3t-Lxl" id="Rh0-dH-Ew6"/>
                 <outlet property="titleLabel" destination="yDM-Gf-ySm" id="zpk-lw-EUX"/>
             </connections>
             <point key="canvasLocation" x="515" y="173"/>

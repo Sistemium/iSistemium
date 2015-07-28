@@ -300,4 +300,9 @@
 "2BOXES" = "короба";
 "5BOXES" = "коробов";
 "UNKNOWN ARTICLE" = "Неизвестный товар";
+"0_VOLUME_TYPE" = "Отгружено";
+"1_VOLUME_TYPE" = "Брак";
+"2_VOLUME_TYPE" = "Излишек";
+"3_VOLUME_TYPE" = "Недостача";
+"4_VOLUME_TYPE" = "Пересортица";
 

@@ -300,4 +300,9 @@
 "2BOXES" = "boxes";
 "5BOXES" = "boxes";
 "UNKNOWN ARTICLE" = "Unknown article";
+"0_VOLUME_TYPE" = "Done";
+"1_VOLUME_TYPE" = "Bad";
+"2_VOLUME_TYPE" = "Excess";
+"3_VOLUME_TYPE" = "Shortage";
+"4_VOLUME_TYPE" = "Regrade";
 
