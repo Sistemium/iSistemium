@@ -794,7 +794,7 @@
     BOOL locationTrackerAutoStart = [self locationTracker].trackerAutoStart;
     
     return (blockIfNoLocationPermission && locationTrackerAutoStart);
-        
+    
 }
 
 - (void)setupLocationAppStatusLabel {

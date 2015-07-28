@@ -289,7 +289,31 @@
     self.badVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"BAD VOLUME LABEL", nil)];
     self.discrepancyVolumeView.titleLabel.text = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"DISCREPANCY VOLUME LABEL", nil)];
     
+/*  tap to popover with volume's controls — does not work on iPhone iOS 7
+
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(volumeTitlePressed:)];
+    
+    [self.doneVolumeView addGestureRecognizer:tap];
+    self.doneVolumeView.userInteractionEnabled = YES;
+*/
+    
 }
+
+- (void)volumeTitlePressed:(id)sender {
+    
+    [self showVolumeControlsFromView:self.doneVolumeView];
+    
+}
+
+- (void)showVolumeControlsFromView:(UIView *)view {
+    
+    UIViewController *volumeControls = [self.storyboard instantiateViewControllerWithIdentifier:@"volumeControls"];
+    UIPopoverController *pc = [[UIPopoverController alloc] initWithContentViewController:volumeControls];
+    
+    [pc presentPopoverFromRect:view.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
+}
+
 
 #pragma mark - view lifecycle
 
