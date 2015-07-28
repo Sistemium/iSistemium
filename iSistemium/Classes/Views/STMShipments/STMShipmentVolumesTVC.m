@@ -192,9 +192,12 @@
 
 - (void)fillVolumeCell:(STMVolumeTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 
-    NSString *title = [NSString stringWithFormat:@"%ld_VOLUME_TYPE", (NSInteger)(indexPath.section - 1)];
+    NSString *title = [NSString stringWithFormat:@"%ld_VOLUME_TYPE", (long)(indexPath.section - 1)];
     
     cell.titleLabel.text = NSLocalizedString(title, nil);
+    
+    cell.packageRel = self.position.article.packageRel.integerValue;
+    cell.volume = self.position.volume.integerValue;
     
 }
 
@@ -263,6 +266,8 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeTVCell" bundle:nil] forCellReuseIdentifier:self.volumeCellIdentifier];
     
+    self.navigationController.navigationBarHidden = YES;
+
     [super customInit];
     
 }

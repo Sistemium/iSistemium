@@ -732,9 +732,9 @@
         <!--Shipment VolumesTVC-->
         <scene sceneID="PcI-1L-5KN">
             <objects>
-                <tableViewController id="g7N-s8-vF6" customClass="STMShipmentVolumesTVC" sceneMemberID="viewController">
+                <tableViewController hidesBottomBarWhenPushed="YES" id="g7N-s8-vF6" customClass="STMShipmentVolumesTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Xre-6e-lZO">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -754,6 +754,8 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="PvH-Bd-nK4"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ml8-2g-MKz" userLabel="First Responder" sceneMemberID="firstResponder"/>
