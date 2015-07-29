@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "STMDataModel.h"
+#import "STMUI.h"
+
 
 @interface STMPositionVolumesVC : UIViewController
 
 @property (nonatomic, strong) STMShipmentPosition *position;
+
+- (void)volumeChangedInCell:(STMVolumeTVCell *)cell;
 
 
 @end

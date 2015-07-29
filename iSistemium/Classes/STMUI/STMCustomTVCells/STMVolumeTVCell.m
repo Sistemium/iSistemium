@@ -7,11 +7,29 @@
 //
 
 #import "STMVolumeTVCell.h"
+#import "STMPositionVolumesVC.h"
+
+
+@interface STMVolumeTVCell()
+
+@property (nonatomic) BOOL isInitializing;
+
+
+@end
+
 
 @implementation STMVolumeTVCell
 
+- (void)setInitVolume:(NSInteger)initVolume {
+    
+    self.isInitializing = YES;
+    self.volume = initVolume;
+    
+}
 
 - (void)setVolume:(NSInteger)volume {
+    
+    _volume = volume;
     
     if (self.packageRel && self.packageRel != 0) {
         
@@ -26,6 +44,18 @@
         [self setCount:0 forLabel:self.boxCountLabel];
         [self setCount:volume forLabel:self.bottleCountLabel];
 
+    }
+    
+    if (self.isInitializing) {
+        
+        self.isInitializing = NO;
+        
+    } else {
+        
+        if ([self.parentVC isKindOfClass:[STMPositionVolumesVC class]]) {
+            [(STMPositionVolumesVC *)self.parentVC volumeChangedInCell:self];
+        }
+        
     }
     
 }

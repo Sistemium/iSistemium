@@ -7,7 +7,6 @@
 //
 
 #import "STMPositionVolumesVC.h"
-#import "STMUI.h"
 
 
 @interface STMPositionVolumesVC () <UITableViewDataSource, UITableViewDelegate>
@@ -327,36 +326,37 @@
 
 - (void)fillVolumeCell:(STMVolumeTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
+    cell.parentVC = self;
+    
     NSString *title = [NSString stringWithFormat:@"%ld_VOLUME_TYPE", (long)(indexPath.section - 1)];
     cell.titleLabel.text = NSLocalizedString(title, nil);
 
     cell.packageRel = self.position.article.packageRel.integerValue;
-    cell.volume = 0;
     
     switch (indexPath.section) {
         case 1:
             self.doneVolumeCell = cell;
-            cell.volume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
+            cell.initVolume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
             break;
             
         case 2:
             self.badVolumeCell = cell;
-            cell.volume = self.position.badVolume.integerValue;
+            cell.initVolume = self.position.badVolume.integerValue;
             break;
 
         case 3:
             self.excessVolumeCell = cell;
-            cell.volume = self.position.excessVolume.integerValue;
+            cell.initVolume = self.position.excessVolume.integerValue;
             break;
 
         case 4:
             self.shortageVolumeCell = cell;
-            cell.volume = self.position.shortageVolume.integerValue;
+            cell.initVolume = self.position.shortageVolume.integerValue;
             break;
 
         case 5:
             self.regradeVolumeCell = cell;
-            cell.volume = self.position.regradeVolume.integerValue;
+            cell.initVolume = self.position.regradeVolume.integerValue;
             break;
 
         default:
@@ -470,6 +470,20 @@
     }
 
 }
+
+- (void)volumeChangedInCell:(STMVolumeTVCell *)cell {
+    
+    if (![cell isEqual:self.doneVolumeCell]) {
+        
+        NSInteger notDoneVolume = self.badVolumeCell.volume + self.excessVolumeCell.volume + self.shortageVolumeCell.volume + self.regradeVolumeCell.volume;
+        NSInteger doneVolume = self.position.volume.integerValue - notDoneVolume;
+        
+        self.doneVolumeCell.volume = (doneVolume > 0) ? doneVolume : 0;
+        
+    }
+    
+}
+
 
 #pragma mark - cell's heights cache
 

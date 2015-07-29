@@ -20,6 +20,8 @@
 
 @property (nonatomic) NSInteger packageRel;
 @property (nonatomic) NSInteger volume;
+@property (nonatomic) NSInteger initVolume;
 
+@property (nonatomic, weak) id parentVC;
 
 @end
