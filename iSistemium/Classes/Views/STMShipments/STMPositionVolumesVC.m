@@ -19,6 +19,7 @@
 
 @property (nonatomic, strong) NSString *positionCellIdentifier;
 @property (nonatomic, strong) NSString *volumeCellIdentifier;
+@property (nonatomic, strong) NSString *controlsCellIdentifier;
 
 @property (nonatomic, strong) NSMutableArray *selectedSections;
 
@@ -44,6 +45,10 @@
 
 - (NSString *)volumeCellIdentifier {
     return @"volumeCellIdentifier";
+}
+
+- (NSString *)controlsCellIdentifier {
+    return @"controlsCellIdentifier";
 }
 
 - (NSMutableArray *)selectedSections {
@@ -238,7 +243,7 @@
                     break;
                     
                 default:
-                    cell = [tableView dequeueReusableCellWithIdentifier:@"volumeCell" forIndexPath:indexPath];
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.controlsCellIdentifier forIndexPath:indexPath];
                     break;
             }
             break;
@@ -281,7 +286,9 @@
                     break;
                     
                 case 1:
-                    [self fillControlCell:cell atIndexPath:indexPath];
+                    if ([cell isKindOfClass:[STMVolumeControlsTVCell class]]) {
+                        [self fillControlCell:(STMVolumeControlsTVCell *)cell atIndexPath:indexPath];
+                    }
                     break;
                     
                 default:
@@ -367,8 +374,10 @@
     
 }
 
-- (void)fillControlCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    cell.textLabel.text = @"CONTROLS";
+- (void)fillControlCell:(STMVolumeControlsTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+//    cell.textLabel.text = @"CONTROLS";
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -505,6 +514,7 @@
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeTVCell" bundle:nil] forCellReuseIdentifier:self.volumeCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeControlsTVCell" bundle:nil] forCellReuseIdentifier:self.controlsCellIdentifier];
 
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 

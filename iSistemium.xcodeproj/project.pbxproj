@@ -71,6 +71,8 @@
 		2C4620571B67B349007FD646 /* STMVolumeTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4620561B67B349007FD646 /* STMVolumeTVCell.m */; };
 		2C46205A1B68F813007FD646 /* STMPositionVolumesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4620591B68F813007FD646 /* STMPositionVolumesVC.m */; };
 		2C4620641B690CA1007FD646 /* STMShipmentPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4620631B690CA1007FD646 /* STMShipmentPosition.m */; };
+		2C4620661B6911DE007FD646 /* STMVolumeControlsTVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C4620651B6911DE007FD646 /* STMVolumeControlsTVCell.xib */; };
+		2C4620691B6912F5007FD646 /* STMVolumeControlsTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4620681B6912F5007FD646 /* STMVolumeControlsTVCell.m */; };
 		2C4BA3C91A41AE8B007F1D0A /* STMOutletController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3C81A41AE8B007F1D0A /* STMOutletController.m */; };
 		2C4BA3CC1A41AE9A007F1D0A /* STMPartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3CB1A41AE9A007F1D0A /* STMPartnerController.m */; };
 		2C4E443B1A810A6D006E6AF1 /* STMRecordStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */; };
@@ -413,6 +415,9 @@
 		2C4620611B690C67007FD646 /* STMDataModel 58.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 58.xcdatamodel"; sourceTree = "<group>"; };
 		2C4620621B690CA1007FD646 /* STMShipmentPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentPosition.h; sourceTree = "<group>"; };
 		2C4620631B690CA1007FD646 /* STMShipmentPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentPosition.m; sourceTree = "<group>"; };
+		2C4620651B6911DE007FD646 /* STMVolumeControlsTVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMVolumeControlsTVCell.xib; sourceTree = "<group>"; };
+		2C4620671B6912F5007FD646 /* STMVolumeControlsTVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMVolumeControlsTVCell.h; sourceTree = "<group>"; };
+		2C4620681B6912F5007FD646 /* STMVolumeControlsTVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMVolumeControlsTVCell.m; sourceTree = "<group>"; };
 		2C49731B1A3893C7006CDF06 /* STMDataModel 27.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 27.xcdatamodel"; sourceTree = "<group>"; };
 		2C4BA3C71A41AE8B007F1D0A /* STMOutletController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMOutletController.h; sourceTree = "<group>"; };
 		2C4BA3C81A41AE8B007F1D0A /* STMOutletController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMOutletController.m; sourceTree = "<group>"; };
@@ -1021,6 +1026,7 @@
 				2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */,
 				2C88F1C51B1ECECC00E30418 /* STMCustom7TVCell.xib */,
 				2C4620531B67B30C007FD646 /* STMVolumeTVCell.xib */,
+				2C4620651B6911DE007FD646 /* STMVolumeControlsTVCell.xib */,
 			);
 			path = STMCustomCells;
 			sourceTree = "<group>";
@@ -1406,6 +1412,8 @@
 				2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */,
 				2C4620551B67B349007FD646 /* STMVolumeTVCell.h */,
 				2C4620561B67B349007FD646 /* STMVolumeTVCell.m */,
+				2C4620671B6912F5007FD646 /* STMVolumeControlsTVCell.h */,
+				2C4620681B6912F5007FD646 /* STMVolumeControlsTVCell.m */,
 			);
 			path = STMCustomTVCells;
 			sourceTree = "<group>";
@@ -1783,6 +1791,7 @@
 				2C761BB81B00833F001DA33E /* Picture Filled-32.png in Resources */,
 				2C5297E81ACECAA2008496AE /* STMMessageVC.storyboard in Resources */,
 				2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */,
+				2C4620661B6911DE007FD646 /* STMVolumeControlsTVCell.xib in Resources */,
 				2C16CC401AF3940200A2EC2D /* Upload To Cloud-100.png in Resources */,
 				2C7678311B4125100085C514 /* location.png in Resources */,
 				2C5797ED1A432CDF00EEFBA7 /* STMWebView.storyboard in Resources */,
@@ -1998,6 +2007,7 @@
 				2C53B8EB1941C147002298A5 /* STMSyncer.m in Sources */,
 				2C0CDDC71B4664B9000CA183 /* STMEntity.m in Sources */,
 				2C5763F81AA5E13600B9FD2C /* STMPhotoReportPVC.m in Sources */,
+				2C4620691B6912F5007FD646 /* STMVolumeControlsTVCell.m in Sources */,
 				2CCD06D01B4E5AC9002591C4 /* STMShipmentRoutePoint.m in Sources */,
 				2C5763F21AA5E13600B9FD2C /* STMCampaignPhotoReportCVC.m in Sources */,
 				2C5763BF1AA4739200B9FD2C /* STMCatalogSVC.m in Sources */,
