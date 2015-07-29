@@ -15,13 +15,17 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="E4G-n6-Y1X">
-                        <rect key="frame" x="218" y="7" width="94" height="29"/>
+                        <rect key="frame" x="224" y="7" width="94" height="29"/>
                     </stepper>
                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="ohV-wN-rh4">
-                        <rect key="frame" x="113" y="7" width="94" height="29"/>
+                        <rect key="frame" x="126" y="7" width="94" height="29"/>
                     </stepper>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1vn-cv-j5u">
-                        <rect key="frame" x="8" y="7" width="97" height="30"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1vn-cv-j5u">
+                        <rect key="frame" x="8" y="8.5" width="90" height="27"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="90" id="yvM-zW-gfM"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <state key="normal" title="All count">
                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
@@ -30,12 +34,17 @@
                 <constraints>
                     <constraint firstAttribute="centerY" secondItem="E4G-n6-Y1X" secondAttribute="centerY" constant="0.25" id="ADP-T0-RGl"/>
                     <constraint firstAttribute="centerY" secondItem="1vn-cv-j5u" secondAttribute="centerY" constant="-0.25" id="Hza-2z-UQI"/>
-                    <constraint firstItem="E4G-n6-Y1X" firstAttribute="trailing" secondItem="V4m-Bt-3AN" secondAttribute="trailingMargin" id="PyP-on-z3i"/>
-                    <constraint firstItem="E4G-n6-Y1X" firstAttribute="leading" secondItem="ohV-wN-rh4" secondAttribute="trailing" constant="11" id="Vfg-7Y-OQ0"/>
-                    <constraint firstItem="ohV-wN-rh4" firstAttribute="leading" secondItem="1vn-cv-j5u" secondAttribute="trailing" constant="8" id="rwI-Tg-LYk"/>
+                    <constraint firstItem="E4G-n6-Y1X" firstAttribute="trailing" secondItem="V4m-Bt-3AN" secondAttribute="trailingMargin" constant="6" id="PyP-on-z3i"/>
+                    <constraint firstItem="E4G-n6-Y1X" firstAttribute="leading" secondItem="ohV-wN-rh4" secondAttribute="trailing" constant="4" id="Vfg-7Y-OQ0"/>
+                    <constraint firstItem="ohV-wN-rh4" firstAttribute="leading" secondItem="1vn-cv-j5u" secondAttribute="trailing" constant="21" id="rwI-Tg-LYk"/>
                     <constraint firstAttribute="centerY" secondItem="ohV-wN-rh4" secondAttribute="centerY" constant="0.25" id="s1n-fg-jUB"/>
                     <constraint firstItem="1vn-cv-j5u" firstAttribute="leading" secondItem="V4m-Bt-3AN" secondAttribute="leadingMargin" id="wXK-Vu-F4w"/>
                 </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="rwI-Tg-LYk"/>
+                    </mask>
+                </variation>
             </tableViewCellContentView>
             <point key="canvasLocation" x="634" y="287"/>
         </tableViewCell>

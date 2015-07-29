@@ -24,7 +24,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="б." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eV7-gv-HOf" customClass="STMLabel">
-                        <rect key="frame" x="298" y="11" width="14" height="21"/>
+                        <rect key="frame" x="299" y="11" width="14" height="21"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="14" id="aX4-b9-t6S"/>
                         </constraints>
@@ -32,8 +32,8 @@
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="999" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h05-2M-Ors" customClass="STMLabel">
-                        <rect key="frame" x="248" y="11" width="42" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="999" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="h05-2M-Ors" customClass="STMLabel">
+                        <rect key="frame" x="249" y="11" width="42" height="21"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="42" id="kre-me-hVL"/>
                         </constraints>
@@ -42,7 +42,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="к." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GUO-3t-Lxl" customClass="STMLabel">
-                        <rect key="frame" x="226" y="11" width="14" height="21"/>
+                        <rect key="frame" x="202" y="11" width="14" height="21"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="14" id="XUO-0C-B6B"/>
                         </constraints>
@@ -50,8 +50,8 @@
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="999" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9L8-9x-XBV" customClass="STMLabel">
-                        <rect key="frame" x="176" y="11" width="42" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="999" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="9L8-9x-XBV" customClass="STMLabel">
+                        <rect key="frame" x="152" y="11" width="42" height="21"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="42" id="3cS-L6-LRg"/>
                         </constraints>
@@ -65,12 +65,12 @@
                     <constraint firstItem="GUO-3t-Lxl" firstAttribute="leading" secondItem="9L8-9x-XBV" secondAttribute="trailing" constant="8" id="7HD-Xb-DYa"/>
                     <constraint firstAttribute="centerY" secondItem="GUO-3t-Lxl" secondAttribute="centerY" constant="0.25" id="Dg7-Pz-tIR"/>
                     <constraint firstItem="yDM-Gf-ySm" firstAttribute="top" secondItem="W4V-Cr-MUo" secondAttribute="topMargin" constant="3" id="Ffo-Pe-AFW"/>
-                    <constraint firstItem="eV7-gv-HOf" firstAttribute="trailing" secondItem="W4V-Cr-MUo" secondAttribute="trailingMargin" id="X6I-ik-2yS"/>
+                    <constraint firstItem="eV7-gv-HOf" firstAttribute="trailing" secondItem="W4V-Cr-MUo" secondAttribute="trailingMargin" constant="1" id="X6I-ik-2yS"/>
                     <constraint firstAttribute="centerY" secondItem="9L8-9x-XBV" secondAttribute="centerY" constant="0.25" id="XfE-Ma-abP"/>
                     <constraint firstAttribute="centerY" secondItem="h05-2M-Ors" secondAttribute="centerY" constant="0.25" id="YWy-rH-q7c"/>
                     <constraint firstItem="yDM-Gf-ySm" firstAttribute="leading" secondItem="W4V-Cr-MUo" secondAttribute="leadingMargin" id="ftu-cS-1BF"/>
                     <constraint firstItem="eV7-gv-HOf" firstAttribute="leading" secondItem="h05-2M-Ors" secondAttribute="trailing" constant="8" id="hum-h5-oqs"/>
-                    <constraint firstItem="h05-2M-Ors" firstAttribute="leading" secondItem="GUO-3t-Lxl" secondAttribute="trailing" constant="8" id="lWG-wf-kxQ"/>
+                    <constraint firstItem="h05-2M-Ors" firstAttribute="leading" secondItem="GUO-3t-Lxl" secondAttribute="trailing" constant="33" id="lWG-wf-kxQ"/>
                     <constraint firstAttribute="bottomMargin" secondItem="yDM-Gf-ySm" secondAttribute="bottom" constant="3.5" id="yT8-OO-DDu"/>
                 </constraints>
             </tableViewCellContentView>
