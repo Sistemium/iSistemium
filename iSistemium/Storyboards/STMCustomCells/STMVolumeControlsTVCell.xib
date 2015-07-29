@@ -16,9 +16,15 @@
                 <subviews>
                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="E4G-n6-Y1X">
                         <rect key="frame" x="224" y="7" width="94" height="29"/>
+                        <connections>
+                            <action selector="bottleCountChanged:" destination="rj7-UL-Sr5" eventType="valueChanged" id="nOu-ui-qcn"/>
+                        </connections>
                     </stepper>
                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="ohV-wN-rh4">
                         <rect key="frame" x="126" y="7" width="94" height="29"/>
+                        <connections>
+                            <action selector="boxCountChanged:" destination="rj7-UL-Sr5" eventType="valueChanged" id="1R0-Ua-DDA"/>
+                        </connections>
                     </stepper>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1vn-cv-j5u">
                         <rect key="frame" x="8" y="8.5" width="90" height="27"/>
@@ -29,6 +35,9 @@
                         <state key="normal" title="All count">
                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
+                        <connections>
+                            <action selector="allCountButtonPressed:" destination="rj7-UL-Sr5" eventType="touchUpInside" id="kfX-n7-7rR"/>
+                        </connections>
                     </button>
                 </subviews>
                 <constraints>
@@ -46,6 +55,11 @@
                     </mask>
                 </variation>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="allCountButton" destination="1vn-cv-j5u" id="HjB-bl-Q2z"/>
+                <outlet property="bottleCountStepper" destination="E4G-n6-Y1X" id="H52-iL-TM8"/>
+                <outlet property="boxCountStepper" destination="ohV-wN-rh4" id="bUH-JH-A77"/>
+            </connections>
             <point key="canvasLocation" x="634" y="287"/>
         </tableViewCell>
     </objects>

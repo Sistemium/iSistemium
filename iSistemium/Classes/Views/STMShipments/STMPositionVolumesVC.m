@@ -376,7 +376,39 @@
 
 - (void)fillControlCell:(STMVolumeControlsTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-//    cell.textLabel.text = @"CONTROLS";
+    cell.packageRel = self.position.article.packageRel.integerValue;
+    cell.volumeLimit = self.position.volume.integerValue;
+    cell.shipmentVolumeLimit = self.position.volume.integerValue;
+    
+    switch (indexPath.section) {
+        case 1:
+            cell.volume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
+            cell.volumeCell = self.doneVolumeCell;
+            break;
+            
+        case 2:
+            cell.volume = self.position.badVolume.integerValue;
+            cell.volumeCell = self.badVolumeCell;
+            break;
+            
+        case 3:
+            cell.volume = self.position.excessVolume.integerValue;
+            cell.volumeCell = self.excessVolumeCell;
+            break;
+            
+        case 4:
+            cell.volume = self.position.shortageVolume.integerValue;
+            cell.volumeCell = self.shortageVolumeCell;
+            break;
+            
+        case 5:
+            cell.volume = self.position.regradeVolume.integerValue;
+            cell.volumeCell = self.regradeVolumeCell;
+            break;
+            
+        default:
+            break;
+    }
     
 }
 
