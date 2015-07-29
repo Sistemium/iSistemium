@@ -9,8 +9,8 @@
 #import "STMPositionVolumesVC.h"
 #import "STMUI.h"
 
-@interface STMPositionVolumesVC ()
 
+@interface STMPositionVolumesVC () <UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -18,11 +18,63 @@
 @property (nonatomic, strong) STMBarButtonItemCancel *cancelButton;
 @property (nonatomic, strong) STMBarButtonItemDone *doneButton;
 
+@property (nonatomic, strong) NSString *positionCellIdentifier;
+@property (nonatomic, strong) NSString *volumeCellIdentifier;
+
+@property (nonatomic, strong) NSMutableArray *selectedSections;
+
+@property (nonatomic) CGFloat standardCellHeight;
+@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
+
 
 @end
 
 
 @implementation STMPositionVolumesVC
+
+- (NSString *)positionCellIdentifier {
+    return @"positionCellIdentifier";
+}
+
+- (NSString *)volumeCellIdentifier {
+    return @"volumeCellIdentifier";
+}
+
+- (NSMutableArray *)selectedSections {
+    
+    if (!_selectedSections) {
+        _selectedSections = [NSMutableArray array];
+    }
+    return _selectedSections;
+    
+}
+
+- (NSMutableDictionary *)cachedCellsHeights {
+    
+    if (!_cachedCellsHeights) {
+        _cachedCellsHeights = [NSMutableDictionary dictionary];
+    }
+    return _cachedCellsHeights;
+    
+}
+
+- (CGFloat)standardCellHeight {
+    
+    if (!_standardCellHeight) {
+        
+        static CGFloat standardCellHeight;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+        });
+        
+        _standardCellHeight = standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
+        
+    }
+    return _standardCellHeight;
+    
+}
+
 
 - (void)setupToolbar {
     
@@ -53,10 +105,286 @@
 }
 
 
+#pragma mark - tableView dataSource & delegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 6;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return 2;
+            break;
+            
+        default:
+            return ([self.selectedSections containsObject:@(section)]) ? 2 : 1;
+            break;
+    }
+    
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return @"   ";
+            break;
+            
+        case 1:
+            return @"   ";
+            break;
+
+        default:
+            return nil;
+            break;
+    }
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.standardCellHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+    
+    return height;
+    
+}
+
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        if (indexPath.row == 0) {
+            
+            static UITableViewCell *cell = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                cell = [self.tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier];
+            });
+            
+            [self fillCell:cell atIndexPath:indexPath];
+            
+            cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+            
+            [cell setNeedsLayout];
+            [cell layoutIfNeeded];
+            
+            CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+            CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+            
+            if (height < [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath]) {
+                height = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+            }
+            
+            [self putCachedHeight:height forIndexPath:indexPath];
+            
+            return height;
+
+        } else {
+            return self.standardCellHeight;
+        }
+        
+    } else {
+        return self.standardCellHeight;
+    }
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell;
+    
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier forIndexPath:indexPath];
+                    break;
+                    
+                default:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.volumeCellIdentifier forIndexPath:indexPath];
+                    break;
+            }
+            break;
+            
+        default:
+            switch (indexPath.row) {
+                case 0:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.volumeCellIdentifier forIndexPath:indexPath];
+                    break;
+                    
+                default:
+                    cell = [tableView dequeueReusableCellWithIdentifier:@"volumeCell" forIndexPath:indexPath];
+                    break;
+            }
+            break;
+    }
+    
+    [self fillCell:cell atIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    return cell;
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0:
+                    if ([cell isKindOfClass:[STMCustom2TVCell class]]) {
+                        [self fillPositionNameCell:(STMCustom2TVCell *)cell atIndexPath:indexPath];
+                    }
+                    break;
+                    
+                default:
+                    if ([cell isKindOfClass:[STMVolumeTVCell class]]) {
+                        [self fillPositionVolumeCell:(STMVolumeTVCell *)cell atIndexPath:indexPath];
+                    }
+                    break;
+            }
+            break;
+            
+        default:
+            switch (indexPath.row) {
+                case 0:
+                    if ([cell isKindOfClass:[STMVolumeTVCell class]]) {
+                        [self fillVolumeCell:(STMVolumeTVCell *)cell atIndexPath:indexPath];
+                    }
+                    break;
+                    
+                case 1:
+                    [self fillControlCell:cell atIndexPath:indexPath];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+    }
+    
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+    
+}
+
+- (void)fillPositionNameCell:(STMCustom2TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.row) {
+        case 0:
+            cell.titleLabel.text = @"Товар";
+            cell.detailLabel.text = self.position.article.name;
+            cell.detailLabel.textAlignment = NSTextAlignmentLeft;
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+- (void)fillPositionVolumeCell:(STMVolumeTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.row) {
+        case 1:
+            cell.titleLabel.text = @"По накладной";
+            cell.volume = self.position.volume.integerValue;
+            break;
+            
+        default:
+            break;
+    }
+
+}
+
+- (void)fillVolumeCell:(STMVolumeTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    NSString *title = [NSString stringWithFormat:@"%ld_VOLUME_TYPE", (long)(indexPath.section - 1)];
+    
+    cell.titleLabel.text = NSLocalizedString(title, nil);
+    
+    cell.packageRel = self.position.article.packageRel.integerValue;
+    cell.volume = self.position.volume.integerValue;
+    
+}
+
+- (void)fillControlCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    cell.textLabel.text = @"CONTROLS";
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row == 0 && indexPath.section > 0) {
+        
+        BOOL isSelected = [self.selectedSections containsObject:@(indexPath.section)];
+        
+        (isSelected) ? [self.selectedSections removeObject:@(indexPath.section)] : [self.selectedSections addObject:@(indexPath.section)];
+        
+        (isSelected) ? [self hideControlsAtIndexPath:indexPath tableView:tableView] : [self showControlsAtIndexPath:indexPath tableView:tableView];
+        
+    }
+    
+}
+
+- (void)showControlsAtIndexPath:(NSIndexPath *)indexPath tableView:(UITableView *)tableView {
+    
+    [tableView beginUpdates];
+    
+    [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+    
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    NSIndexPath *controlsIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section];
+    [tableView reloadRowsAtIndexPaths:@[controlsIndexPath] withRowAnimation:UITableViewRowAnimationTop];
+    
+    [tableView endUpdates];
+    
+//    if (![tableView.visibleCells containsObject:[tableView cellForRowAtIndexPath:controlsIndexPath]]) {
+        [tableView scrollToRowAtIndexPath:controlsIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+//    }
+    
+}
+
+- (void)hideControlsAtIndexPath:(NSIndexPath *)indexPath tableView:(UITableView *)tableView {
+    
+    //    [tableView beginUpdates];
+    
+    [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+    
+    //    [tableView endUpdates];
+    
+}
+
+
+#pragma mark - cell's heights cache
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath) self.cachedCellsHeights[indexPath] = @(height);
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    return self.cachedCellsHeights[indexPath];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeTVCell" bundle:nil] forCellReuseIdentifier:self.volumeCellIdentifier];
+
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+
     self.navigationController.navigationBarHidden = YES;
 
     [self setupToolbar];

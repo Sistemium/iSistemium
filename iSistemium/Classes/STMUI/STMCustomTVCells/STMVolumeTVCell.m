@@ -21,6 +21,11 @@
         [self setCount:boxCount forLabel:self.boxCountLabel];
         [self setCount:bottleCount forLabel:self.bottleCountLabel];
         
+    } else {
+
+        [self setCount:0 forLabel:self.boxCountLabel];
+        [self setCount:volume forLabel:self.bottleCountLabel];
+
     }
     
 }
