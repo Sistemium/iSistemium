@@ -12,8 +12,9 @@
 #import "STMFunctions.h"
 #import "STMShippingProcessController.h"
 
-#import "STMShipmentVolumesVC.h"
-#import "STMShipmentVolumesTVC.h"
+//#import "STMShipmentVolumesVC.h"
+//#import "STMShipmentVolumesTVC.h"
+#import "STMPositionVolumesVC.h"
 
 
 #define POSITION_SECTION_INDEX 2
@@ -536,7 +537,8 @@
         
         self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
 //        [self performSegueWithIdentifier:@"showVolumes" sender:self];
-        [self performSegueWithIdentifier:@"showVolumesTVC" sender:self];
+//        [self performSegueWithIdentifier:@"showVolumesTVC" sender:self];
+        [self performSegueWithIdentifier:@"showPositionVolumes" sender:self];
 
     }
     
@@ -939,17 +941,25 @@
     
     if ([segue.identifier isEqualToString:@"showVolumes"]) {
         
-        if ([segue.destinationViewController isKindOfClass:[STMShipmentVolumesVC class]]) {
-            
-            [(STMShipmentVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
-            
-        }
+//        if ([segue.destinationViewController isKindOfClass:[STMShipmentVolumesVC class]]) {
+//            
+//            [(STMShipmentVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
+//            
+//        }
         
     } else if ([segue.identifier isEqualToString:@"showVolumesTVC"]) {
         
-        if ([segue.destinationViewController isKindOfClass:[STMShipmentVolumesTVC class]]) {
+//        if ([segue.destinationViewController isKindOfClass:[STMShipmentVolumesTVC class]]) {
+//            
+//            [(STMShipmentVolumesTVC *)segue.destinationViewController setPosition:self.selectedPosition];
+//            
+//        }
+        
+    } else if ([segue.identifier isEqualToString:@"showPositionVolumes"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMPositionVolumesVC class]]) {
             
-            [(STMShipmentVolumesTVC *)segue.destinationViewController setPosition:self.selectedPosition];
+            [(STMPositionVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
             
         }
         
