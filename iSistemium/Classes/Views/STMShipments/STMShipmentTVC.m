@@ -537,7 +537,6 @@
         
         self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
 //        [self performSegueWithIdentifier:@"showVolumes" sender:self];
-//        [self performSegueWithIdentifier:@"showVolumesTVC" sender:self];
         [self performSegueWithIdentifier:@"showPositionVolumes" sender:self];
 
     }
@@ -944,14 +943,6 @@
 //        if ([segue.destinationViewController isKindOfClass:[STMShipmentVolumesVC class]]) {
 //            
 //            [(STMShipmentVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
-//            
-//        }
-        
-    } else if ([segue.identifier isEqualToString:@"showVolumesTVC"]) {
-        
-//        if ([segue.destinationViewController isKindOfClass:[STMShipmentVolumesTVC class]]) {
-//            
-//            [(STMShipmentVolumesTVC *)segue.destinationViewController setPosition:self.selectedPosition];
 //            
 //        }
         

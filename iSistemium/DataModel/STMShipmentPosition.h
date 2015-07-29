@@ -2,7 +2,7 @@
 //  STMShipmentPosition.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 19/07/15.
+//  Created by Maxim Grigoriev on 29/07/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -22,8 +22,9 @@
 @property (nonatomic, retain) NSDecimalNumber * priceDoc;
 @property (nonatomic, retain) NSNumber * shortageVolume;
 @property (nonatomic, retain) NSNumber * volume;
+@property (nonatomic, retain) NSNumber * regradeVolume;
 @property (nonatomic, retain) STMArticle *article;
-@property (nonatomic, retain) STMShipment *shipment;
 @property (nonatomic, retain) STMArticle *articleFact;
+@property (nonatomic, retain) STMShipment *shipment;
 
 @end

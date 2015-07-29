@@ -26,6 +26,13 @@
 @property (nonatomic) CGFloat standardCellHeight;
 @property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 
+@property (nonatomic, strong) STMVolumeTVCell *doneVolumeCell;
+@property (nonatomic, strong) STMVolumeTVCell *badVolumeCell;
+@property (nonatomic, strong) STMVolumeTVCell *excessVolumeCell;
+@property (nonatomic, strong) STMVolumeTVCell *shortageVolumeCell;
+@property (nonatomic, strong) STMVolumeTVCell *regradeVolumeCell;
+@property (nonatomic, strong) STMVolumeTVCell *discrepancyVolumeCell;
+@property (nonatomic, strong) NSArray *volumeCells;
 
 @end
 
@@ -75,6 +82,18 @@
     
 }
 
+- (NSArray *)volumeCells {
+    
+    if (!_volumeCells) {
+        _volumeCells = @[self.doneVolumeCell,
+                         self.badVolumeCell,
+                         self.excessVolumeCell,
+                         self.shortageVolumeCell,
+                         self.regradeVolumeCell];
+    }
+    return _volumeCells;
+    
+}
 
 - (void)setupToolbar {
     
@@ -226,6 +245,8 @@
             break;
     }
     
+    [self removeSwipeGesturesFromCell:cell];
+    
     [self fillCell:cell atIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -307,11 +328,42 @@
 - (void)fillVolumeCell:(STMVolumeTVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     NSString *title = [NSString stringWithFormat:@"%ld_VOLUME_TYPE", (long)(indexPath.section - 1)];
-    
     cell.titleLabel.text = NSLocalizedString(title, nil);
-    
+
     cell.packageRel = self.position.article.packageRel.integerValue;
-    cell.volume = self.position.volume.integerValue;
+    cell.volume = 0;
+    
+    switch (indexPath.section) {
+        case 1:
+            self.doneVolumeCell = cell;
+            cell.volume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
+            break;
+            
+        case 2:
+            self.badVolumeCell = cell;
+            cell.volume = self.position.badVolume.integerValue;
+            break;
+
+        case 3:
+            self.excessVolumeCell = cell;
+            cell.volume = self.position.excessVolume.integerValue;
+            break;
+
+        case 4:
+            self.shortageVolumeCell = cell;
+            cell.volume = self.position.shortageVolume.integerValue;
+            break;
+
+        case 5:
+            self.regradeVolumeCell = cell;
+            cell.volume = self.position.regradeVolume.integerValue;
+            break;
+
+        default:
+            break;
+    }
+    
+    [self addSwipeGestureToCell:cell];
     
 }
 
@@ -362,6 +414,63 @@
 }
 
 
+#pragma mark - cell's swipe
+
+- (void)addSwipeGestureToCell:(UITableViewCell *)cell {
+    
+    UISwipeGestureRecognizer *swipeToRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToRight:)];
+    swipeToRight.direction = UISwipeGestureRecognizerDirectionRight;
+
+    UISwipeGestureRecognizer *swipeToLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToLeft:)];
+    swipeToLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+
+    if (swipeToRight) [cell addGestureRecognizer:swipeToRight];
+    if (swipeToLeft) [cell addGestureRecognizer:swipeToLeft];
+    
+}
+
+- (void)removeSwipeGesturesFromCell:(UITableViewCell *)cell {
+    
+    for (UIGestureRecognizer *gesture in cell.gestureRecognizers) {
+        if ([gesture isKindOfClass:[UISwipeGestureRecognizer class]]) {
+            [cell removeGestureRecognizer:gesture];
+        }
+    }
+    
+}
+
+- (void)swipeToRight:(id)sender {
+    
+//    NSLogMethodName;
+    
+    if ([sender isKindOfClass:[UISwipeGestureRecognizer class]]) {
+        
+        STMVolumeTVCell *cell = (STMVolumeTVCell *)[(UISwipeGestureRecognizer *)sender view];
+        
+        if ([self.volumeCells containsObject:cell]) {
+            cell.volume = self.position.volume.integerValue;
+        }
+
+    }
+    
+}
+
+- (void)swipeToLeft:(id)sender {
+    
+//    NSLogMethodName;
+
+    if ([sender isKindOfClass:[UISwipeGestureRecognizer class]]) {
+
+        STMVolumeTVCell *cell = (STMVolumeTVCell *)[(UISwipeGestureRecognizer *)sender view];
+        
+        if ([self.volumeCells containsObject:cell]) {
+            cell.volume = 0;
+        }
+
+    }
+
+}
+
 #pragma mark - cell's heights cache
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
@@ -397,6 +506,15 @@
     [self customInit];
 
 }
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    self.navigationController.navigationBarHidden = NO;
+    
+    [super viewWillDisappear:animated];
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
