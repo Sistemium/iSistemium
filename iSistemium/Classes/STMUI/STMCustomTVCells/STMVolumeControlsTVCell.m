@@ -34,6 +34,7 @@
         }
 
         self.volumeCell.volume = self.shipmentVolumeLimit;
+        self.volume = self.shipmentVolumeLimit;
 
     }
 
@@ -123,7 +124,8 @@
     [self bottleCountStepperWraps];
     
     self.volumeCell.volume = self.packageRel * self.boxCountStepper.value + self.bottleCountStepper.value;
-    
+    self.allCountButton.enabled = (self.volume < self.shipmentVolumeLimit);
+
 }
 
 - (NSInteger)bottleCountPreviousValue {
@@ -160,21 +162,15 @@
             self.boxCountStepper.value = boxCount;
             self.bottleCountStepper.value = bottleCount;
             
-//            [self updateBoxCountLabel];
-//            [self updateBottleCountLabel];
-            
             [self bottleCountStepperWraps];
-            
-        } else {
-            
-//            self.boxCount = boxCount;
-//            self.bottleCount = bottleCount;
             
         }
         
         self.initialVolumeSetWasDone = YES;
         
     }
+    
+    self.allCountButton.enabled = (self.volume < self.shipmentVolumeLimit);
     
 }
 
