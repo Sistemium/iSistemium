@@ -79,7 +79,8 @@
                                                                                              withDoneVolume:self.doneVolumeView.volume
                                                                                                   badVolume:self.badVolumeView.volume
                                                                                                excessVolume:self.excessVolumeView.volume
-                                                                                             shortageVolume:self.shortageVolumeView.volume];
+                                                                                             shortageVolume:self.shortageVolumeView.volume
+                                                                                              regradeVolume:0];
             
             if (!checkingInfo) {
                 
@@ -129,7 +130,8 @@
                                                      withDoneVolume:self.doneVolumeView.volume
                                                           badVolume:self.badVolumeView.volume
                                                        excessVolume:self.excessVolumeView.volume
-                                                     shortageVolume:self.shortageVolumeView.volume];
+                                                     shortageVolume:self.shortageVolumeView.volume
+                                                      regradeVolume:0];
     [self dismissSelf];
 
 }

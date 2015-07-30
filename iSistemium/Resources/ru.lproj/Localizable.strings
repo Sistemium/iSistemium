@@ -286,6 +286,7 @@
 "EXCESS VOLUME LABEL" = "Излишек";
 "BAD VOLUME LABEL" = "Брак";
 "DISCREPANCY VOLUME LABEL" = "Расхождение";
+"REGRADE VOLUME LABEL" = "Пересортица";
 "ALL VOLUME BUTTON" = "Целиком";
 "HAVE UNPROCESSED POSITIONS TITLE" = "Остались необработанные позиции";
 "HAVE UNPROCESSED POSITIONS MESSAGE" = "Отметить их как отгруженные?";

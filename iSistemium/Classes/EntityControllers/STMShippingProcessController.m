@@ -159,7 +159,7 @@
     
 }
 
-- (NSString *)checkingInfoForPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume {
+- (NSString *)checkingInfoForPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume {
     
     NSString *beginningString = NSLocalizedString(@"SHIPPING POSITION ALERT BEGINNING STRING", nil);
     NSString *positionTitle = [NSString stringWithFormat:@"%@: %@", position.article.name, [position volumeText]];
@@ -171,6 +171,7 @@
                                                          badVolume:badVolume
                                                       excessVolume:excessVolume
                                                     shortageVolume:shortageVolume
+                                                     regradeVolume:regradeVolume
                                                         packageRel:packageRel];
 
     NSString *endString = @"?";
@@ -181,7 +182,7 @@
     
 }
 
-- (NSString *)volumesStringWithDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume packageRel:(NSInteger)packageRel {
+- (NSString *)volumesStringWithDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume packageRel:(NSInteger)packageRel {
     
     NSString *parametersString = nil;
     
@@ -221,20 +222,30 @@
         
     }
     
+    if (regradeVolume > 0) {
+        
+        NSString *regradeVolumeString = [STMFunctions volumeStringWithVolume:regradeVolume andPackageRel:packageRel];
+        NSString *regradeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REGRADE VOLUME LABEL", nil), regradeVolumeString];
+        
+        parametersString = [NSString stringWithFormat:@"%@%@\n", (parametersString) ? parametersString : @"", regradeString];
+        
+    }
+    
     return parametersString;
     
 }
 
 - (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume {
-    [self shippingPosition:position withDoneVolume:doneVolume badVolume:0 excessVolume:0 shortageVolume:0];
+    [self shippingPosition:position withDoneVolume:doneVolume badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:0];
 }
 
-- (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume {
+- (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume {
     
     position.doneVolume = (doneVolume > 0) ? [NSNumber numberWithInteger:doneVolume] : nil;
     position.badVolume = (badVolume > 0) ? [NSNumber numberWithInteger:badVolume] : nil;
     position.excessVolume = (excessVolume > 0) ? [NSNumber numberWithInteger:excessVolume] : nil;
     position.shortageVolume = (shortageVolume > 0) ? [NSNumber numberWithInteger:shortageVolume] : nil;
+    position.regradeVolume = (regradeVolume > 0) ? [NSNumber numberWithInteger:regradeVolume] : nil;
     position.isProcessed = @YES;
     
 }

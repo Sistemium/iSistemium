@@ -114,6 +114,15 @@
 
 }
 
+- (NSNumber *)regradeVolumeSummary {
+
+    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSNumber *volume = [positions valueForKeyPath:@"@sum.regradeVolume"];
+    
+    return volume;
+
+}
+
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -276,11 +285,13 @@
     NSNumber *badVolume = [self badVolumeSummary];
     NSNumber *shortageVolume = [self shortageVolumeSummary];
     NSNumber *excessVolume = [self excessVolumeSummary];
+    NSNumber *regradeVolume = [self regradeVolumeSummary];
     
     NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:0
                                                                                                badVolume:badVolume.integerValue
                                                                                             excessVolume:excessVolume.integerValue
                                                                                           shortageVolume:shortageVolume.integerValue
+                                                                                           regradeVolume:regradeVolume.integerValue
                                                                                               packageRel:0];
     
     return (volumesString) ? [@"\n" stringByAppendingString:volumesString] : @"";

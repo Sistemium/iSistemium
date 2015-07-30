@@ -7,9 +7,10 @@
 //
 
 #import "STMPositionVolumesVC.h"
+#import "STMShippingProcessController.h"
 
 
-@interface STMPositionVolumesVC () <UITableViewDataSource, UITableViewDelegate>
+@interface STMPositionVolumesVC () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -143,7 +144,91 @@
 }
 
 - (void)doneButtonPressed:(id)sender {
+    
+    NSNumber *volumesSum = [self.volumeValues.allValues valueForKeyPath:@"@sum.self"];
+
+    if (volumesSum > 0) {
+        
+        NSInteger discrepancyVolume = self.position.volume.integerValue - volumesSum.integerValue;
+
+        
+        if (discrepancyVolume != 0) {
+            
+            NSString *checkingInfo = [[STMShippingProcessController sharedInstance] checkingInfoForPosition:self.position
+                                                                                             withDoneVolume:[self.volumeValues[@(STMVolumeTypeDone)] integerValue]
+                                                                                                  badVolume:[self.volumeValues[@(STMVolumeTypeBad)] integerValue]
+                                                                                               excessVolume:[self.volumeValues[@(STMVolumeTypeExcess)] integerValue]
+                                                                                             shortageVolume:[self.volumeValues[@(STMVolumeTypeShortage)] integerValue]
+                                                                                              regradeVolume:[self.volumeValues[@(STMVolumeTypeRegrade)] integerValue]];
+            
+            if (!checkingInfo) {
+                
+                [self shippingPositionAndDismiss];
+                
+            } else {
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                                message:checkingInfo
+                                                               delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                      otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                alert.tag = 111;
+                [alert show];
+                
+            }
+            
+        } else {
+            [self shippingPositionAndDismiss];
+        }
+        
+    } else {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"EMPTY POSITION VOLUMES TITLE", nil)
+                                                        message:NSLocalizedString(@"EMPTY POSITION VOLUMES MESSAGE", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+    }
+
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 111:
+            
+            switch (buttonIndex) {
+                case 1:
+                    [self shippingPositionAndDismiss];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+
+- (void)shippingPositionAndDismiss {
+    
+    [[STMShippingProcessController sharedInstance] shippingPosition:self.position
+                                                     withDoneVolume:[self.volumeValues[@(STMVolumeTypeDone)] integerValue]
+                                                          badVolume:[self.volumeValues[@(STMVolumeTypeBad)] integerValue]
+                                                       excessVolume:[self.volumeValues[@(STMVolumeTypeExcess)] integerValue]
+                                                     shortageVolume:[self.volumeValues[@(STMVolumeTypeShortage)] integerValue]
+                                                      regradeVolume:[self.volumeValues[@(STMVolumeTypeRegrade)] integerValue]];
     [self dismissSelf];
+    
 }
 
 - (void)dismissSelf {
