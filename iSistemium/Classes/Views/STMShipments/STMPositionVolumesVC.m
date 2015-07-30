@@ -527,7 +527,10 @@
         STMVolumeTVCell *cell = (STMVolumeTVCell *)[(UISwipeGestureRecognizer *)sender view];
         
         if ([self.volumeCells containsObject:cell]) {
+            
             cell.volume = self.position.volume.integerValue;
+            [self syncControlsVolumeWithCell:cell];
+            
         }
 
     }
@@ -543,9 +546,25 @@
         STMVolumeTVCell *cell = (STMVolumeTVCell *)[(UISwipeGestureRecognizer *)sender view];
         
         if ([self.volumeCells containsObject:cell]) {
+
             cell.volume = 0;
+            [self syncControlsVolumeWithCell:cell];
+
         }
 
+    }
+
+}
+
+- (void)syncControlsVolumeWithCell:(STMVolumeTVCell *)cell {
+    
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSIndexPath *controlsIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section];
+    
+    STMVolumeControlsTVCell *controlCell = (STMVolumeControlsTVCell *)[self.tableView cellForRowAtIndexPath:controlsIndexPath];
+    
+    if (controlCell) {
+        controlCell.volume = cell.volume;
     }
 
 }
