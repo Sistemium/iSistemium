@@ -414,7 +414,6 @@
     
     cell.packageRel = self.position.article.packageRel.integerValue;
     cell.volumeLimit = self.position.volume.integerValue;
-    cell.shipmentVolumeLimit = self.position.volume.integerValue;
     
     NSNumber *volume = self.volumeValues[@(indexPath.section - 1)];
 

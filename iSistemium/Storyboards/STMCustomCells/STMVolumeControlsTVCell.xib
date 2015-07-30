@@ -18,12 +18,14 @@
                         <rect key="frame" x="224" y="7" width="94" height="29"/>
                         <connections>
                             <action selector="bottleCountChanged:" destination="rj7-UL-Sr5" eventType="valueChanged" id="nOu-ui-qcn"/>
+                            <action selector="bottleCountTouchedDown:" destination="rj7-UL-Sr5" eventType="touchDown" id="M9n-q6-gIq"/>
                         </connections>
                     </stepper>
                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="ohV-wN-rh4">
                         <rect key="frame" x="126" y="7" width="94" height="29"/>
                         <connections>
                             <action selector="boxCountChanged:" destination="rj7-UL-Sr5" eventType="valueChanged" id="1R0-Ua-DDA"/>
+                            <action selector="boxCountTouchedDown:" destination="rj7-UL-Sr5" eventType="touchDown" id="Dkz-b9-29S"/>
                         </connections>
                     </stepper>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1vn-cv-j5u">
