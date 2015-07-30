@@ -166,6 +166,24 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+
+    switch (section) {
+        case 0:
+            return 20;
+            break;
+            
+        case 1:
+            return 20;
+            break;
+            
+        default:
+            return 5;
+            break;
+    }
+
+}
+
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return self.standardCellHeight;
 }
@@ -307,8 +325,9 @@
     switch (indexPath.row) {
         case 0:
             cell.titleLabel.text = @"Товар";
+            cell.titleLabel.textColor = [UIColor blackColor];
             cell.detailLabel.text = self.position.article.name;
-            cell.detailLabel.textAlignment = NSTextAlignmentLeft;
+            cell.detailLabel.textAlignment = NSTextAlignmentRight;
             break;
             
         default:
@@ -322,6 +341,7 @@
     switch (indexPath.row) {
         case 1:
             cell.titleLabel.text = @"По накладной";
+            cell.titleLabel.textColor = [UIColor blackColor];
             cell.volume = self.position.volume.integerValue;
             break;
             
@@ -337,6 +357,8 @@
     
     NSString *title = [NSString stringWithFormat:@"%ld_VOLUME_TYPE", (long)(indexPath.section - 1)];
     cell.titleLabel.text = NSLocalizedString(title, nil);
+    
+    cell.titleLabel.textColor = [UIColor blackColor];
 
     cell.packageRel = self.position.article.packageRel.integerValue;
     
