@@ -57,42 +57,24 @@
     
     _volume = volume;
     
+    if (!self.initialVolumeSetWasDone) {
+        
+        self.boxCountStepper.value = 0;
+        self.boxCountStepper.minimumValue = 0;
+        self.boxCountStepper.maximumValue = (self.packageRel && self.packageRel != 0) ? floor(self.volumeLimit / self.packageRel) : 0;
+        
+        self.bottleCountStepper.value = volume;
+        self.bottleCountStepper.minimumValue = 0;
+        self.bottleCountStepper.maximumValue = self.volumeLimit;
+        
+        self.initialVolumeSetWasDone = YES;
+        
+    }
+    
     if (self.volumeCell.volume != volume) self.volumeCell.volume = volume;
     
-    if (self.packageRel && self.packageRel != 0) {
-        
-        self.boxCountStepper.value = floor(volume / self.packageRel);
-        self.bottleCountStepper.value = volume;
-
-        if (!self.initialVolumeSetWasDone) {
-            
-            self.boxCountStepper.minimumValue = 0;
-            self.boxCountStepper.maximumValue = floor(self.volumeLimit / self.packageRel);
-            
-            self.bottleCountStepper.minimumValue = 0;
-            self.bottleCountStepper.maximumValue = self.volumeLimit;
-            
-            self.initialVolumeSetWasDone = YES;
-            
-        }
-        
-    } else {
-        
-        if (!self.initialVolumeSetWasDone) {
-            
-            self.boxCountStepper.value = 0;
-            self.boxCountStepper.maximumValue = 0;
-            self.boxCountStepper.minimumValue = 0;
-
-            self.bottleCountStepper.value = volume;
-            self.bottleCountStepper.minimumValue = 0;
-            self.bottleCountStepper.maximumValue = self.volumeLimit;
-            
-            self.initialVolumeSetWasDone = YES;
-        
-        }
-                
-    }
+    self.boxCountStepper.value = (self.packageRel && self.packageRel != 0) ? floor(volume / self.packageRel) : 0;
+    self.bottleCountStepper.value = volume;
     
     self.allCountButton.enabled = (self.volume < self.volumeLimit);
     
