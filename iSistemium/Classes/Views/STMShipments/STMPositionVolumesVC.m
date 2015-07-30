@@ -279,8 +279,6 @@
             break;
     }
     
-    [self removeSwipeGesturesFromCell:cell];
-    
     [self fillCell:cell atIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -380,31 +378,26 @@
     switch (indexPath.section) {
         case 1:
             self.doneVolumeCell = cell;
-//            cell.initVolume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
             cell.volume = (volume) ? volume.integerValue : (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
             break;
             
         case 2:
             self.badVolumeCell = cell;
-//            cell.initVolume = self.position.badVolume.integerValue;
             cell.volume = (volume) ? volume.integerValue : self.position.badVolume.integerValue;
             break;
 
         case 3:
             self.excessVolumeCell = cell;
-//            cell.initVolume = self.position.excessVolume.integerValue;
             cell.volume = (volume) ? volume.integerValue : self.position.excessVolume.integerValue;
             break;
 
         case 4:
             self.shortageVolumeCell = cell;
-//            cell.initVolume = self.position.shortageVolume.integerValue;
             cell.volume = (volume) ? volume.integerValue : self.position.shortageVolume.integerValue;
             break;
 
         case 5:
             self.regradeVolumeCell = cell;
-//            cell.initVolume = self.position.regradeVolume.integerValue;
             cell.volume = (volume) ? volume.integerValue : self.position.regradeVolume.integerValue;
             break;
 
@@ -412,6 +405,7 @@
             break;
     }
     
+    [self removeSwipeGesturesFromCell:cell];
     [self addSwipeGestureToCell:cell];
     
 }
@@ -558,15 +552,19 @@
 
 - (void)volumeChangedInCell:(STMVolumeTVCell *)cell {
     
-    self.volumeValues[@(cell.volumeType)] = @(cell.volume);
+    if ([self.volumeValues[@(cell.volumeType)] integerValue] != cell.volume) {
+        
+        self.volumeValues[@(cell.volumeType)] = @(cell.volume);
+        
+        if (![cell isEqual:self.doneVolumeCell]) {
+            
+            NSInteger notDoneVolume = self.badVolumeCell.volume + self.excessVolumeCell.volume + self.shortageVolumeCell.volume + self.regradeVolumeCell.volume;
+            NSInteger doneVolume = self.position.volume.integerValue - notDoneVolume;
+            
+            self.doneVolumeCell.volume = (doneVolume > 0) ? doneVolume : 0;
+            
+        }
 
-    if (![cell isEqual:self.doneVolumeCell]) {
-        
-        NSInteger notDoneVolume = self.badVolumeCell.volume + self.excessVolumeCell.volume + self.shortageVolumeCell.volume + self.regradeVolumeCell.volume;
-        NSInteger doneVolume = self.position.volume.integerValue - notDoneVolume;
-        
-        self.doneVolumeCell.volume = (doneVolume > 0) ? doneVolume : 0;
-        
     }
     
 }

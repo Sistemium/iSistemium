@@ -12,20 +12,12 @@
 
 @interface STMVolumeTVCell()
 
-//@property (nonatomic) BOOL isInitializing;
-
 
 @end
 
 
 @implementation STMVolumeTVCell
 
-//- (void)setInitVolume:(NSInteger)initVolume {
-//    
-//    self.isInitializing = YES;
-//    self.volume = initVolume;
-//    
-//}
 
 - (void)setVolume:(NSInteger)volume {
     
@@ -48,17 +40,10 @@
             
         }
         
-        //    if (self.isInitializing) {
-        //
-        //        self.isInitializing = NO;
-        //
-        //    } else {
-        
         if ([self.parentVC isKindOfClass:[STMPositionVolumesVC class]]) {
             [(STMPositionVolumesVC *)self.parentVC volumeChangedInCell:self];
         }
         
-        //    }
     }
     
 }
