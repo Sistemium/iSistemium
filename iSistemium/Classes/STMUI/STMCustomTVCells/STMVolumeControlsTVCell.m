@@ -135,6 +135,17 @@
     
 }
 
+- (NSInteger)volume {
+    
+    NSInteger boxValue = floor(self.boxCountStepper.value);
+    NSInteger bottleValue = floor(self.bottleCountStepper.value);
+    
+    NSInteger volume = boxValue * self.packageRel + bottleValue;
+    
+    return volume;
+    
+}
+
 - (void)setVolume:(NSInteger)volume {
     
     if (self.packageRel && self.packageRel != 0) {
@@ -187,6 +198,15 @@
     
 }
 
+
+- (void)awakeFromNib {
+    
+    [self.allCountButton setTitle:NSLocalizedString(@"ALL VOLUME BUTTON", nil) forState:UIControlStateNormal];
+    [self.allCountButton setTitle:@"" forState:UIControlStateDisabled];
+    
+    [super awakeFromNib];
+    
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.
