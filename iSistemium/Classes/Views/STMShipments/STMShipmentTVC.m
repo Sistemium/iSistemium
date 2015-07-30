@@ -12,8 +12,6 @@
 #import "STMFunctions.h"
 #import "STMShippingProcessController.h"
 
-//#import "STMShipmentVolumesVC.h"
-//#import "STMShipmentVolumesTVC.h"
 #import "STMPositionVolumesVC.h"
 
 
@@ -537,7 +535,6 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
-//        [self performSegueWithIdentifier:@"showVolumes" sender:self];
         [self performSegueWithIdentifier:@"showPositionVolumes" sender:self];
 
     }
@@ -939,15 +936,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"showVolumes"]) {
-        
-//        if ([segue.destinationViewController isKindOfClass:[STMShipmentVolumesVC class]]) {
-//            
-//            [(STMShipmentVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
-//            
-//        }
-        
-    } else if ([segue.identifier isEqualToString:@"showPositionVolumes"]) {
+    if ([segue.identifier isEqualToString:@"showPositionVolumes"]) {
         
         if ([segue.destinationViewController isKindOfClass:[STMPositionVolumesVC class]]) {
             

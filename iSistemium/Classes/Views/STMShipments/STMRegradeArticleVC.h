@@ -7,12 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMShipmentVolumesVC.h"
 
 
 @interface STMRegradeArticleVC : UIViewController
 
-@property (nonatomic, weak) STMShipmentVolumesVC *parentVC;
+//@property (nonatomic, weak) STMShipmentVolumesVC *parentVC;
 
 
 @end
