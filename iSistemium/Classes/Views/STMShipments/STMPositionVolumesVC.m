@@ -34,6 +34,9 @@
 @property (nonatomic, strong) STMVolumeTVCell *discrepancyVolumeCell;
 @property (nonatomic, strong) NSArray *volumeCells;
 
+@property (nonatomic, strong) NSMutableDictionary *volumeValues;
+
+
 @end
 
 
@@ -96,6 +99,15 @@
                          self.regradeVolumeCell];
     }
     return _volumeCells;
+    
+}
+
+- (NSMutableDictionary *)volumeValues {
+    
+    if (!_volumeValues) {
+        _volumeValues = [NSMutableDictionary dictionary];
+    }
+    return _volumeValues;
     
 }
 
@@ -362,30 +374,38 @@
 
     cell.packageRel = self.position.article.packageRel.integerValue;
     
+    cell.volumeType = (int)(indexPath.section - 1);
+    NSNumber *volume = self.volumeValues[@(indexPath.section - 1)];
+    
     switch (indexPath.section) {
         case 1:
             self.doneVolumeCell = cell;
-            cell.initVolume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
+//            cell.initVolume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
             break;
             
         case 2:
             self.badVolumeCell = cell;
-            cell.initVolume = self.position.badVolume.integerValue;
+//            cell.initVolume = self.position.badVolume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : self.position.badVolume.integerValue;
             break;
 
         case 3:
             self.excessVolumeCell = cell;
-            cell.initVolume = self.position.excessVolume.integerValue;
+//            cell.initVolume = self.position.excessVolume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : self.position.excessVolume.integerValue;
             break;
 
         case 4:
             self.shortageVolumeCell = cell;
-            cell.initVolume = self.position.shortageVolume.integerValue;
+//            cell.initVolume = self.position.shortageVolume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : self.position.shortageVolume.integerValue;
             break;
 
         case 5:
             self.regradeVolumeCell = cell;
-            cell.initVolume = self.position.regradeVolume.integerValue;
+//            cell.initVolume = self.position.regradeVolume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : self.position.regradeVolume.integerValue;
             break;
 
         default:
@@ -402,29 +422,31 @@
     cell.volumeLimit = self.position.volume.integerValue;
     cell.shipmentVolumeLimit = self.position.volume.integerValue;
     
+    NSNumber *volume = self.volumeValues[@(indexPath.section - 1)];
+
     switch (indexPath.section) {
         case 1:
-            cell.volume = (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
             cell.volumeCell = self.doneVolumeCell;
             break;
             
         case 2:
-            cell.volume = self.position.badVolume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : self.position.badVolume.integerValue;
             cell.volumeCell = self.badVolumeCell;
             break;
             
         case 3:
-            cell.volume = self.position.excessVolume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : self.position.excessVolume.integerValue;
             cell.volumeCell = self.excessVolumeCell;
             break;
             
         case 4:
-            cell.volume = self.position.shortageVolume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : self.position.shortageVolume.integerValue;
             cell.volumeCell = self.shortageVolumeCell;
             break;
             
         case 5:
-            cell.volume = self.position.regradeVolume.integerValue;
+            cell.volume = (volume) ? volume.integerValue : self.position.regradeVolume.integerValue;
             cell.volumeCell = self.regradeVolumeCell;
             break;
             
@@ -536,6 +558,8 @@
 
 - (void)volumeChangedInCell:(STMVolumeTVCell *)cell {
     
+    self.volumeValues[@(cell.volumeType)] = @(cell.volume);
+
     if (![cell isEqual:self.doneVolumeCell]) {
         
         NSInteger notDoneVolume = self.badVolumeCell.volume + self.excessVolumeCell.volume + self.shortageVolumeCell.volume + self.regradeVolumeCell.volume;

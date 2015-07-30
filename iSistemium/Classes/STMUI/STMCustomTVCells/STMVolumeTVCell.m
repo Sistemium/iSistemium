@@ -12,7 +12,7 @@
 
 @interface STMVolumeTVCell()
 
-@property (nonatomic) BOOL isInitializing;
+//@property (nonatomic) BOOL isInitializing;
 
 
 @end
@@ -20,42 +20,45 @@
 
 @implementation STMVolumeTVCell
 
-- (void)setInitVolume:(NSInteger)initVolume {
-    
-    self.isInitializing = YES;
-    self.volume = initVolume;
-    
-}
+//- (void)setInitVolume:(NSInteger)initVolume {
+//    
+//    self.isInitializing = YES;
+//    self.volume = initVolume;
+//    
+//}
 
 - (void)setVolume:(NSInteger)volume {
     
-    _volume = volume;
-    
-    if (self.packageRel && self.packageRel != 0) {
+    if (_volume != volume) {
         
-        NSInteger boxCount = floor(volume / self.packageRel);
-        NSInteger bottleCount = volume % self.packageRel;
+        _volume = volume;
         
-        [self setCount:boxCount forLabel:self.boxCountLabel];
-        [self setCount:bottleCount forLabel:self.bottleCountLabel];
+        if (self.packageRel && self.packageRel != 0) {
+            
+            NSInteger boxCount = floor(volume / self.packageRel);
+            NSInteger bottleCount = volume % self.packageRel;
+            
+            [self setCount:boxCount forLabel:self.boxCountLabel];
+            [self setCount:bottleCount forLabel:self.bottleCountLabel];
+            
+        } else {
+            
+            [self setCount:0 forLabel:self.boxCountLabel];
+            [self setCount:volume forLabel:self.bottleCountLabel];
+            
+        }
         
-    } else {
-
-        [self setCount:0 forLabel:self.boxCountLabel];
-        [self setCount:volume forLabel:self.bottleCountLabel];
-
-    }
-    
-    if (self.isInitializing) {
-        
-        self.isInitializing = NO;
-        
-    } else {
+        //    if (self.isInitializing) {
+        //
+        //        self.isInitializing = NO;
+        //
+        //    } else {
         
         if ([self.parentVC isKindOfClass:[STMPositionVolumesVC class]]) {
             [(STMPositionVolumesVC *)self.parentVC volumeChangedInCell:self];
         }
         
+        //    }
     }
     
 }
@@ -74,6 +77,14 @@
     
 }
 
+- (void)awakeFromNib {
+    
+    [self setCount:0 forLabel:self.boxCountLabel];
+    [self setCount:0 forLabel:self.bottleCountLabel];
+    
+    [super awakeFromNib];
+    
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

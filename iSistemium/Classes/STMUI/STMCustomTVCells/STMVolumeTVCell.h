@@ -8,6 +8,15 @@
 
 #import "STMTableViewCell.h"
 
+typedef enum NSInteger {
+    STMVolumeTypeDone = 0,
+    STMVolumeTypeBad = 1,
+    STMVolumeTypeExcess = 2,
+    STMVolumeTypeShortage = 3,
+    STMVolumeTypeRegrade = 4
+} STMVolumeType;
+
+
 @interface STMVolumeTVCell : STMTableViewCell
 
 @property (weak, nonatomic) IBOutlet STMLabel *titleLabel;
@@ -20,8 +29,11 @@
 
 @property (nonatomic) NSInteger packageRel;
 @property (nonatomic) NSInteger volume;
-@property (nonatomic) NSInteger initVolume;
+//@property (nonatomic) NSInteger initVolume;
 
 @property (nonatomic, weak) id parentVC;
+
+@property (nonatomic) STMVolumeType volumeType;
+
 
 @end
