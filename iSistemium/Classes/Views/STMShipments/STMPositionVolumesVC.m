@@ -17,7 +17,8 @@
 @property (nonatomic, strong) STMBarButtonItemCancel *cancelButton;
 @property (nonatomic, strong) STMBarButtonItemDone *doneButton;
 
-@property (nonatomic, strong) NSString *positionCellIdentifier;
+@property (nonatomic, strong) NSString *positionTitleCellIdentifier;
+@property (nonatomic, strong) NSString *positionVolumeCellIdentifier;
 @property (nonatomic, strong) NSString *volumeCellIdentifier;
 @property (nonatomic, strong) NSString *controlsCellIdentifier;
 
@@ -31,7 +32,7 @@
 @property (nonatomic, strong) STMVolumeTVCell *excessVolumeCell;
 @property (nonatomic, strong) STMVolumeTVCell *shortageVolumeCell;
 @property (nonatomic, strong) STMVolumeTVCell *regradeVolumeCell;
-@property (nonatomic, strong) STMVolumeTVCell *discrepancyVolumeCell;
+//@property (nonatomic, strong) STMVolumeTVCell *discrepancyVolumeCell;
 @property (nonatomic, strong) NSArray *volumeCells;
 
 @property (nonatomic, strong) NSMutableDictionary *volumeValues;
@@ -42,8 +43,12 @@
 
 @implementation STMPositionVolumesVC
 
-- (NSString *)positionCellIdentifier {
-    return @"positionCellIdentifier";
+- (NSString *)positionTitleCellIdentifier {
+    return @"positionTitleCellIdentifier";
+}
+
+- (NSString *)positionVolumeCellIdentifier {
+    return @"positionVolumeCellIdentifier";
 }
 
 - (NSString *)volumeCellIdentifier {
@@ -91,14 +96,20 @@
 
 - (NSArray *)volumeCells {
     
-    if (!_volumeCells) {
-        _volumeCells = @[self.doneVolumeCell,
-                         self.badVolumeCell,
-                         self.excessVolumeCell,
-                         self.shortageVolumeCell,
-                         self.regradeVolumeCell];
+    return @[self.doneVolumeCell,
+             self.badVolumeCell,
+             self.excessVolumeCell,
+             self.shortageVolumeCell,
+             self.regradeVolumeCell];
+    
+}
+
+- (STMVolumeTVCell *)doneVolumeCell {
+    
+    if (!_doneVolumeCell) {
+        _doneVolumeCell = [[NSBundle mainBundle] loadNibNamed:@"STMVolumeTVCell" owner:nil options:nil].firstObject;
     }
-    return _volumeCells;
+    return _doneVolumeCell;
     
 }
 
@@ -218,7 +229,7 @@
             static UITableViewCell *cell = nil;
             static dispatch_once_t onceToken;
             dispatch_once(&onceToken, ^{
-                cell = [self.tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier];
+                cell = [self.tableView dequeueReusableCellWithIdentifier:self.positionTitleCellIdentifier];
             });
             
             [self fillCell:cell atIndexPath:indexPath];
@@ -257,11 +268,11 @@
         case 0:
             switch (indexPath.row) {
                 case 0:
-                    cell = [tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier forIndexPath:indexPath];
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.positionTitleCellIdentifier forIndexPath:indexPath];
                     break;
                     
                 default:
-                    cell = [tableView dequeueReusableCellWithIdentifier:self.volumeCellIdentifier forIndexPath:indexPath];
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.positionVolumeCellIdentifier forIndexPath:indexPath];
                     break;
             }
             break;
@@ -269,7 +280,8 @@
         default:
             switch (indexPath.row) {
                 case 0:
-                    cell = [tableView dequeueReusableCellWithIdentifier:self.volumeCellIdentifier forIndexPath:indexPath];
+//                    cell = [tableView dequeueReusableCellWithIdentifier:self.volumeCellIdentifier forIndexPath:indexPath];
+                    cell = [self volumeCellForIndexPath:indexPath];
                     break;
                     
                 default:
@@ -283,6 +295,20 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
+    
+}
+
+- (STMVolumeTVCell *)volumeCellForIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+        case 1:
+            return self.doneVolumeCell;
+            break;
+            
+        default:
+            return [self.tableView dequeueReusableCellWithIdentifier:self.volumeCellIdentifier forIndexPath:indexPath];
+            break;
+    }
     
 }
 
@@ -352,6 +378,7 @@
         case 1:
             cell.titleLabel.text = @"По накладной";
             cell.titleLabel.textColor = [UIColor blackColor];
+            cell.packageRel = self.position.article.packageRel.integerValue;
             cell.volume = self.position.volume.integerValue;
             break;
             
@@ -377,7 +404,7 @@
     
     switch (indexPath.section) {
         case 1:
-            self.doneVolumeCell = cell;
+//            self.doneVolumeCell = cell;
             cell.volume = (volume) ? volume.integerValue : (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
             break;
             
@@ -419,28 +446,28 @@
 
     switch (indexPath.section) {
         case 1:
-            cell.volume = (volume) ? volume.integerValue : (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
             cell.volumeCell = self.doneVolumeCell;
+            cell.volume = (volume) ? volume.integerValue : (self.position.isProcessed.boolValue) ? self.position.doneVolume.integerValue : self.position.volume.integerValue;
             break;
             
         case 2:
-            cell.volume = (volume) ? volume.integerValue : self.position.badVolume.integerValue;
             cell.volumeCell = self.badVolumeCell;
+            cell.volume = (volume) ? volume.integerValue : self.position.badVolume.integerValue;
             break;
             
         case 3:
-            cell.volume = (volume) ? volume.integerValue : self.position.excessVolume.integerValue;
             cell.volumeCell = self.excessVolumeCell;
+            cell.volume = (volume) ? volume.integerValue : self.position.excessVolume.integerValue;
             break;
             
         case 4:
-            cell.volume = (volume) ? volume.integerValue : self.position.shortageVolume.integerValue;
             cell.volumeCell = self.shortageVolumeCell;
+            cell.volume = (volume) ? volume.integerValue : self.position.shortageVolume.integerValue;
             break;
             
         case 5:
-            cell.volume = (volume) ? volume.integerValue : self.position.regradeVolume.integerValue;
             cell.volumeCell = self.regradeVolumeCell;
+            cell.volume = (volume) ? volume.integerValue : self.position.regradeVolume.integerValue;
             break;
             
         default:
@@ -606,7 +633,8 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.positionTitleCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeTVCell" bundle:nil] forCellReuseIdentifier:self.positionVolumeCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeTVCell" bundle:nil] forCellReuseIdentifier:self.volumeCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeControlsTVCell" bundle:nil] forCellReuseIdentifier:self.controlsCellIdentifier];
 
