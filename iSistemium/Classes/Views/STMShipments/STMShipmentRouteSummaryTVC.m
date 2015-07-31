@@ -304,6 +304,8 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
         NSNumber *sectionKey = sectionData.allKeys.firstObject;
         NSString *volumeType = [self stringVolumePropertyForType:sectionKey.integerValue];
         
+        NSString *volumeTypeTitle = [self tableView:self.tableView titleForHeaderInSection:indexPath.section];
+        
         STMArticle *article = sectionValue[@"article"];
         NSSet *positions = sectionValue[@"positions"];
         NSSortDescriptor *articleNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
@@ -311,6 +313,7 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
         articleInfoTVC.article = article;
         articleInfoTVC.positions = [positions sortedArrayUsingDescriptors:@[articleNameSortDescriptor]];
         articleInfoTVC.volumeType = volumeType;
+        articleInfoTVC.volumeTypeTitle = volumeTypeTitle;
         
     }
     

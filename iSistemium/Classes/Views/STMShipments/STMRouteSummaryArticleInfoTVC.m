@@ -39,7 +39,7 @@
     
     switch (section) {
         case 0:
-            return nil;
+            return self.volumeTypeTitle;
             break;
             
         default:

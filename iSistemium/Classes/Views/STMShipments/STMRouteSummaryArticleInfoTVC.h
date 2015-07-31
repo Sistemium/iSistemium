@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSArray *positions;
 
 @property (nonatomic, strong) NSString *volumeType;
+@property (nonatomic, strong) NSString *volumeTypeTitle;
 
 
 @end
