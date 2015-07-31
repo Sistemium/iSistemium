@@ -54,7 +54,7 @@
 #include "STMSalesman.h"
 #include "STMSetting.h"
 
-#include "STMShipment.h"
+#include "STMShipment+custom.h"
 #include "STMShipmentPosition+custom.h"
 #include "STMShipmentRoute.h"
 #include "STMShipmentRoutePoint.h"

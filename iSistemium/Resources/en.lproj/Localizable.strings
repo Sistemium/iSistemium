@@ -306,4 +306,8 @@
 "2_VOLUME_TYPE" = "Excess";
 "3_VOLUME_TYPE" = "Shortage";
 "4_VOLUME_TYPE" = "Regrade";
+"0BOTTLES" = "no bottles";
+"1BOTTLES" = "bottle";
+"2BOTTLES" = "bottles";
+"5BOTTLES" = "bottles";
 

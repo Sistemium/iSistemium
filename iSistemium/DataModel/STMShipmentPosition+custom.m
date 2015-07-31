@@ -18,9 +18,7 @@
 }
 
 - (NSString *)volumeText {
-    
     return [STMFunctions volumeStringWithVolume:self.volume.integerValue andPackageRel:self.article.packageRel.integerValue];
-    
 }
 
 

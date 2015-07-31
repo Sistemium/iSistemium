@@ -306,4 +306,8 @@
 "2_VOLUME_TYPE" = "Излишек";
 "3_VOLUME_TYPE" = "Недостача";
 "4_VOLUME_TYPE" = "Пересортица";
+"0BOTTLES" = "нет бутылок";
+"1BOTTLES" = "бутылка";
+"2BOTTLES" = "бутылки";
+"5BOTTLES" = "бутылок";
 

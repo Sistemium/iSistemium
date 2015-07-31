@@ -702,19 +702,19 @@
         
         NSString *positions = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(positionString, nil)];
         
-        double approximateVolume = 0;
-        
-        for (STMShipmentPosition *position in shipment.shipmentPositions) {
-            approximateVolume += position.volume.doubleValue / position.article.packageRel.integerValue;
-        }
-        
-        NSUInteger boxesCount = ceil(approximateVolume);
-        
+        NSUInteger boxesCount = [shipment approximateBoxCount];
+
         pluralType = [STMFunctions pluralTypeForCount:boxesCount];
         NSString *boxString = [NSString stringWithFormat:@"%@BOXES", pluralType];
         NSString *boxes = [NSString stringWithFormat:@"%lu %@", (unsigned long)boxesCount, NSLocalizedString(boxString, nil)];
         
-        detailText = [NSString stringWithFormat:@"%@, %@", positions, boxes];
+        NSUInteger bottleCount = [shipment bottleCount];
+
+        pluralType = [STMFunctions pluralTypeForCount:bottleCount];
+        NSString *bottleString = [NSString stringWithFormat:@"%@BOTTLES", pluralType];
+        NSString *bottles = [NSString stringWithFormat:@"%lu %@", (unsigned long)bottleCount, NSLocalizedString(bottleString, nil)];
+
+        detailText = [NSString stringWithFormat:@"%@, %@, %@", positions, boxes, bottles];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
     } else {
