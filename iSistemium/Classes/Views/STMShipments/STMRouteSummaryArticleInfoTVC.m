@@ -142,6 +142,17 @@
 }
 
 
+#pragma mark - cell's heights cache
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath) self.cachedCellsHeights[indexPath] = @(height);
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    return self.cachedCellsHeights[indexPath];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
