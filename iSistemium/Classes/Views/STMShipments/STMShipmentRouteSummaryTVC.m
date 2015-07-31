@@ -11,6 +11,8 @@
 #import "STMNS.h"
 #import "STMFunctions.h"
 
+#import "STMRouteSummaryArticleInfoTVC.h"
+
 
 typedef NS_ENUM(NSInteger, STMSummaryType) {
     STMSummaryTypeBad,
@@ -96,7 +98,7 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
                 NSString *keyPath = [@"@sum." stringByAppendingString:typeString];
                 NSNumber *volumeSum = [articlePositions valueForKeyPath:keyPath];
                 
-                [articlesArray addObject:@{@"article": article, @"volumeSum": volumeSum}];
+                [articlesArray addObject:@{@"article": article, @"volumeSum": volumeSum, @"positions": articlePositions}];
                 
             }
             
@@ -242,7 +244,7 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self performSegueWithIdentifier:@"showArticleInfo" sender:self];
+    [self performSegueWithIdentifier:[self showArticleInfoSegueId] sender:indexPath];
 }
 
 
@@ -278,14 +280,36 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (NSString *)showArticleInfoSegueId {
+    return @"showArticleInfo";
 }
-*/
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:[self showArticleInfoSegueId]] &&
+        [segue.destinationViewController isKindOfClass:[STMRouteSummaryArticleInfoTVC class]] &&
+        [sender isKindOfClass:[NSIndexPath class]]) {
+        
+        NSIndexPath *indexPath = (NSIndexPath *)sender;
+        STMRouteSummaryArticleInfoTVC *articleInfoTVC = (STMRouteSummaryArticleInfoTVC *)segue.destinationViewController;
+        
+        NSDictionary *sectionData = self.tableData[indexPath.section];
+        NSArray *sectionValues = sectionData.allValues.firstObject;
+        
+        NSDictionary *sectionValue = sectionValues[indexPath.row];
+        
+        STMArticle *article = sectionValue[@"article"];
+        NSSet *positions = sectionValue[@"positions"];
+        NSSortDescriptor *articleNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        
+        articleInfoTVC.article = article;
+        articleInfoTVC.positions = [positions sortedArrayUsingDescriptors:@[articleNameSortDescriptor]];
+        
+    }
+    
+}
 
 @end
