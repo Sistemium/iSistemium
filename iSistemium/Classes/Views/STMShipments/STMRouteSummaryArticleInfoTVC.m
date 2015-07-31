@@ -8,6 +8,7 @@
 
 #import "STMRouteSummaryArticleInfoTVC.h"
 #import "STMUI.h"
+#import "STMFunctions.h"
 
 
 @interface STMRouteSummaryArticleInfoTVC ()
@@ -121,7 +122,22 @@
 
 - (void)fillShipmentCell:(UITableViewCell *)cell forPosition:(STMShipmentPosition *)position {
     
+    cell.accessoryView = nil;
+    
     cell.textLabel.text = position.shipment.ndoc;
+    
+    NSNumber *volume = [position valueForKey:self.volumeType];
+    
+    if (volume) {
+        
+        STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
+        infoLabel.text = [STMFunctions volumeStringWithVolume:volume.integerValue andPackageRel:position.article.packageRel.integerValue];
+        infoLabel.textAlignment = NSTextAlignmentRight;
+        infoLabel.adjustsFontSizeToFitWidth = YES;
+        
+        cell.accessoryView = infoLabel;
+        
+    }
     
 }
 

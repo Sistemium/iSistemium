@@ -9,10 +9,13 @@
 #import "STMVariableCellsHeightTVC.h"
 #import "STMDataModel.h"
 
+
 @interface STMRouteSummaryArticleInfoTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMArticle *article;
 @property (nonatomic, strong) NSArray *positions;
+
+@property (nonatomic, strong) NSString *volumeType;
 
 
 @end

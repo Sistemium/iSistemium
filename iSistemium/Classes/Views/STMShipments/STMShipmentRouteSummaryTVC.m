@@ -301,12 +301,16 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
         
         NSDictionary *sectionValue = sectionValues[indexPath.row];
         
+        NSNumber *sectionKey = sectionData.allKeys.firstObject;
+        NSString *volumeType = [self stringVolumePropertyForType:sectionKey.integerValue];
+        
         STMArticle *article = sectionValue[@"article"];
         NSSet *positions = sectionValue[@"positions"];
         NSSortDescriptor *articleNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         
         articleInfoTVC.article = article;
         articleInfoTVC.positions = [positions sortedArrayUsingDescriptors:@[articleNameSortDescriptor]];
+        articleInfoTVC.volumeType = volumeType;
         
     }
     
