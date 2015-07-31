@@ -15,14 +15,15 @@
 typedef NS_ENUM(NSInteger, STMSummaryType) {
     STMSummaryTypeBad,
     STMSummaryTypeExcess,
-    STMSummaryTypeShortage
+    STMSummaryTypeShortage,
+    STMSummaryTypeRegrade
 };
 
 
 @interface STMShipmentRouteSummaryTVC ()
 
 @property (nonatomic, strong) NSMutableArray *tableData;
-@property (nonatomic, strong) NSSet *shipments;
+@property (nonatomic, strong) NSSet *shippedShipments;
 
 
 @end
@@ -39,18 +40,18 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     
 }
 
-- (NSSet *)shipments {
+- (NSSet *)shippedShipments {
     
-    if (!_shipments) {
+    if (!_shippedShipments) {
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue == YES"];
         NSSet *shipments = [self.route valueForKeyPath:@"shipmentRoutePoints.@distinctUnionOfSets.shipments"];
-        shipments = [shipments filteredSetUsingPredicate:predicate];
+        NSSet *shippedShipments = [shipments filteredSetUsingPredicate:predicate];
 
-        _shipments = shipments;
+        _shippedShipments = shippedShipments;
         
     }
-    return _shipments;
+    return _shippedShipments;
     
 }
 
@@ -58,103 +59,51 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     return @"summaryCell";
 }
 
+- (NSArray *)availableTypes {
+    
+    return @[@(STMSummaryTypeBad),
+             @(STMSummaryTypeExcess),
+             @(STMSummaryTypeShortage),
+             @(STMSummaryTypeRegrade)];
+    
+}
+
 - (void)prepareTableData {
     
-    NSString *entityName = NSStringFromClass([STMArticle class]);
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-
-    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    NSSet *positions = [self.shippedShipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
     
-    request.sortDescriptors = @[nameDescriptor];
-    
-    request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[self requestPredicate]];
-    
-    NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:nil];
-
-    NSArray *availableTypes = @[@(STMSummaryTypeBad), @(STMSummaryTypeExcess), @(STMSummaryTypeShortage)];
-    
-    for (NSNumber *typeNumber in availableTypes) {
+    for (NSNumber *typeNumber in [self availableTypes]) {
         
         STMSummaryType type = typeNumber.integerValue;
+        NSString *typeString = [self stringVolumePropertyForType:type];
         
-        NSPredicate *resultPredicate = nil;
+        NSString *predicateFormat = [typeString stringByAppendingString:@".integerValue > 0"];
+        NSPredicate *volumePredicate = [NSPredicate predicateWithFormat:predicateFormat];
+
+        NSSet *filteredPositions = [positions filteredSetUsingPredicate:volumePredicate];
         
-        switch (type) {
-            case STMSummaryTypeBad: {
-                resultPredicate = [self badVolumePredicate];
-                break;
-            }
-            case STMSummaryTypeExcess: {
-                resultPredicate = [self excessVolumePredicate];
-                break;
-            }
-            case STMSummaryTypeShortage: {
-                resultPredicate = [self shortageVolumePredicate];
-                break;
-            }
-            default: {
-                break;
-            }
-        }
-        
-        NSArray *notShippingArticles = [result filteredArrayUsingPredicate:resultPredicate];
-        
-        if (notShippingArticles.count > 0) {
+        if (filteredPositions.count > 0) {
             
-            NSArray *positions = [self filteredPositionsForArticlesArray:notShippingArticles];
+            NSSortDescriptor *articleNameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+            NSArray *articles = [[filteredPositions valueForKeyPath:@"@distinctUnionOfObjects.article"] sortedArrayUsingDescriptors:@[articleNameDescriptor]];
             
-            NSArray *articlesArray = [self articlesArrayForType:type withPositions:positions andArticles:notShippingArticles];
+            NSMutableArray *articlesArray = [NSMutableArray array];
+            
+            for (STMArticle *article in articles) {
+                
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
+                NSSet *articlePositions = [filteredPositions filteredSetUsingPredicate:predicate];
+                NSString *keyPath = [@"@sum." stringByAppendingString:typeString];
+                NSNumber *volumeSum = [articlePositions valueForKeyPath:keyPath];
+                
+                [articlesArray addObject:@{@"article": article, @"volumeSum": volumeSum}];
+                
+            }
             
             [self.tableData addObject:@{typeNumber : articlesArray}];
 
         }
         
-    }
-    
-}
-
-- (NSArray *)filteredPositionsForArticlesArray:(NSArray *)articlesArray {
-    
-    NSArray *positions = [articlesArray valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipment.isShipped.boolValue == YES"];
-    positions = [positions filteredArrayUsingPredicate:predicate];
-    
-    predicate = [NSPredicate predicateWithFormat:@"shipment in %@", self.shipments];
-    positions = [positions filteredArrayUsingPredicate:predicate];
-
-    return positions;
-    
-}
-
-- (NSArray *)articlesArrayForType:(STMSummaryType)type withPositions:(NSArray *)positions  andArticles:(NSArray *)articles {
-    
-    NSString *volumeProperty = [self stringVolumePropertyForType:type];
-    
-    if (volumeProperty) {
-        
-        NSString *predicateFormat = [volumeProperty stringByAppendingString:@".integerValue > 0"];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat];
-        positions = [positions filteredArrayUsingPredicate:predicate];
-        
-        NSMutableArray *articlesArray = [NSMutableArray array];
-        
-        for (STMArticle *article in articles) {
-            
-            predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
-            NSArray *tempPositions = [positions filteredArrayUsingPredicate:predicate];
-            
-            NSString *keyPath = [@"@sum." stringByAppendingString:volumeProperty];
-            NSNumber *volumeSum = [tempPositions valueForKeyPath:keyPath];
-            
-            [articlesArray addObject:@{@"article": article, @"volumeSum": volumeSum}];
-            
-        }
-
-        return articlesArray;
-        
-    } else {
-        return nil;
     }
     
 }
@@ -176,6 +125,10 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
             volumeType = @"shortageVolume";
             break;
         }
+        case STMSummaryTypeRegrade: {
+            volumeType = @"regradeVolume";
+            break;
+        }
         default: {
             break;
         }
@@ -183,35 +136,6 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
 
     return volumeType;
     
-}
-
-- (NSPredicate *)requestPredicate {
-
-    NSPredicate *badVolumePredicate = [self badVolumePredicate];
-    NSPredicate *shortageVolumePredicate = [self shortageVolumePredicate];
-    NSPredicate *excessVolumePredicate = [self excessVolumePredicate];
-
-    NSCompoundPredicate *volumesPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[badVolumePredicate, shortageVolumePredicate, excessVolumePredicate]];
-
-    NSPredicate *shipmentIsShippedPredicate = [NSPredicate predicateWithFormat:@"ANY shipmentPositions.shipment.isShipped.boolValue == YES"];
-    NSPredicate *shipmentPredicate = [NSPredicate predicateWithFormat:@"ANY shipmentPositions.shipment in %@", self.shipments];
-
-    NSCompoundPredicate *finalPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[shipmentIsShippedPredicate, shipmentPredicate, volumesPredicate]];
-    
-    return finalPredicate;
-    
-}
-
-- (NSPredicate *)badVolumePredicate {
-    return [NSPredicate predicateWithFormat:@"ANY shipmentPositions.badVolume.integerValue > 0"];
-}
-
-- (NSPredicate *)shortageVolumePredicate {
-    return [NSPredicate predicateWithFormat:@"ANY shipmentPositions.shortageVolume.integerValue > 0"];
-}
-
-- (NSPredicate *)excessVolumePredicate {
-    return [NSPredicate predicateWithFormat:@"ANY shipmentPositions.excessVolume.integerValue > 0"];
 }
 
 
@@ -259,6 +183,10 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
                 return NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil);
                 break;
                 
+            case STMSummaryTypeRegrade:
+                return NSLocalizedString(@"REGRADE VOLUME LABEL", nil);
+                break;
+
             default:
                 return nil;
                 break;
