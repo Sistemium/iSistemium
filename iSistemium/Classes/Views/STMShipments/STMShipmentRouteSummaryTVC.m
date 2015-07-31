@@ -241,6 +241,10 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self performSegueWithIdentifier:@"showArticleInfo" sender:self];
+}
+
 
 #pragma mark - height's cache
 

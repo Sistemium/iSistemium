@@ -15,7 +15,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shipmentRouteCell" textLabel="Yi7-7j-H7m" detailTextLabel="kMK-oB-Ja1" style="IBUITableViewCellStyleSubtitle" id="NMw-SB-Axw">
-                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NMw-SB-Axw" id="0Tj-p8-0hQ">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -192,10 +192,42 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="YRW-Pj-SU9"/>
+                    <connections>
+                        <segue destination="FjK-b9-1o1" kind="push" identifier="showArticleInfo" id="MgM-0O-EMZ"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gXH-bf-7Sa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1393" y="1079"/>
+            <point key="canvasLocation" x="1024" y="1079"/>
+        </scene>
+        <!--Route Summary Article Info-->
+        <scene sceneID="brh-c2-Rc8">
+            <objects>
+                <tableViewController id="FjK-b9-1o1" customClass="STMRouteSummaryArticleInfo" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="EPP-Iw-7HE">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="articleInfoCell" id="Crt-Yb-jEt">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Crt-Yb-jEt" id="zDc-Mz-Wga">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="FjK-b9-1o1" id="aog-lJ-QZW"/>
+                            <outlet property="delegate" destination="FjK-b9-1o1" id="q4i-5X-Owk"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="2jw-hx-Bqi"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4C6-ss-Hgb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1436" y="1079"/>
         </scene>
         <!--Shipping Location PicturesPVC-->
         <scene sceneID="iDr-AX-qzY">
