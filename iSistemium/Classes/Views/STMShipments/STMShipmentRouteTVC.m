@@ -19,7 +19,7 @@
 
 @interface STMShipmentRouteTVC ()
 
-//@property (nonatomic, strong) NSIndexSet *routePointsIndexSet;
+@property (nonatomic, strong) NSIndexPath *summaryIndexPath;
 
 
 @end
@@ -227,7 +227,7 @@
         
         switch (indexPath.section) {
             case 0:
-                [self fillRouteCell:customCell atIndex:indexPath.row];
+                [self fillRouteCell:customCell atIndexPath:indexPath];
                 break;
                 
             case 1:
@@ -244,9 +244,9 @@
     
 }
 
-- (void)fillRouteCell:(STMCustom7TVCell *)cell atIndex:(NSUInteger)index {
+- (void)fillRouteCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    switch (index) {
+    switch (indexPath.row) {
         case 0:
 
             cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
@@ -258,6 +258,7 @@
             cell.titleLabel.text = [self summaryCellTitle];
             cell.detailLabel.text = [self summaryCellDetails];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            self.summaryIndexPath = indexPath;
             break;
             
         default:
@@ -418,7 +419,7 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView reloadData];
+    [self reloadData];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -495,6 +496,13 @@
     
 }
 
+- (void)reloadData {
+    
+    if (self.summaryIndexPath) [self.cachedCellsHeights removeObjectForKey:self.summaryIndexPath];
+
+    [self.tableView reloadData];
+
+}
 
 #pragma mark - view lifecycle
 
@@ -516,11 +524,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-//    if (self.routePointsIndexSet) {
-//        [self.tableView reloadSections:self.routePointsIndexSet withRowAnimation:UITableViewRowAnimationNone];
-//    }
-
-    [self.tableView reloadData];
+    [self reloadData];
     
     [super viewWillAppear:animated];
     
