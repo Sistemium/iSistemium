@@ -320,24 +320,23 @@
     
     cell.titleLabel.text = shipment.ndoc;
     
-    NSUInteger positionsCount = shipment.shipmentPositions.count;
-    NSString *pluralType = [STMFunctions pluralTypeForCount:positionsCount];
-    NSString *localizedString = [NSString stringWithFormat:@"%@POSITIONS", pluralType];
+    NSString *positions = [shipment positionsCountString];
     
     NSString *detailText;
     
-    if (positionsCount > 0) {
+    if (shipment.shipmentPositions.count > 0) {
         
-        detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(localizedString, nil)];
+        NSString *boxes = [shipment approximateBoxCountString];
+        NSString *bottles = [shipment bottleCountString];
         
-    } else {
+        detailText = [NSString stringWithFormat:@"%@, %@, %@", positions, boxes, bottles];
         
-        detailText = NSLocalizedString(localizedString, nil);
-        
+    } else {        
+        detailText = NSLocalizedString(positions, nil);
     }
     
     cell.detailLabel.text = detailText;
-    
+
 //    if ([shipment.needCashing boolValue]) {
 //        
 //        cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];

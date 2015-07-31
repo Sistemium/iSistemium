@@ -691,35 +691,21 @@
     
     cell.textLabel.text = shipment.ndoc;
     
-    NSUInteger positionsCount = shipment.shipmentPositions.count;
-    
-    NSString *pluralType = [STMFunctions pluralTypeForCount:positionsCount];
-    NSString *positionString = [NSString stringWithFormat:@"%@POSITIONS", pluralType];
+    NSString *positions = [shipment positionsCountString];
 
     NSString *detailText;
     
-    if (positionsCount > 0) {
+    if (shipment.shipmentPositions.count > 0) {
         
-        NSString *positions = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(positionString, nil)];
-        
-        NSUInteger boxesCount = [shipment approximateBoxCount];
-
-        pluralType = [STMFunctions pluralTypeForCount:boxesCount];
-        NSString *boxString = [NSString stringWithFormat:@"%@BOXES", pluralType];
-        NSString *boxes = [NSString stringWithFormat:@"%lu %@", (unsigned long)boxesCount, NSLocalizedString(boxString, nil)];
-        
-        NSUInteger bottleCount = [shipment bottleCount];
-
-        pluralType = [STMFunctions pluralTypeForCount:bottleCount];
-        NSString *bottleString = [NSString stringWithFormat:@"%@BOTTLES", pluralType];
-        NSString *bottles = [NSString stringWithFormat:@"%lu %@", (unsigned long)bottleCount, NSLocalizedString(bottleString, nil)];
+        NSString *boxes = [shipment approximateBoxCountString];
+        NSString *bottles = [shipment bottleCountString];
 
         detailText = [NSString stringWithFormat:@"%@, %@, %@", positions, boxes, bottles];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
     } else {
         
-        detailText = NSLocalizedString(positionString, nil);
+        detailText = NSLocalizedString(positions, nil);
         cell.accessoryType = UITableViewCellAccessoryNone;
         
     }

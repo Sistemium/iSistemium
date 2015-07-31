@@ -13,5 +13,8 @@
 - (NSUInteger)approximateBoxCount;
 - (NSUInteger)bottleCount;
 
+- (NSString *)positionsCountString;
+- (NSString *)approximateBoxCountString;
+- (NSString *)bottleCountString;
 
 @end
