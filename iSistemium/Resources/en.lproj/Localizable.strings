@@ -310,4 +310,8 @@
 "1BOTTLES" = "bottle";
 "2BOTTLES" = "bottles";
 "5BOTTLES" = "bottles";
-
+"_SHIPMENTS" = "s.";
+"_NEED_CASHING" = "c.";
+"_POSITIONS" = "p.";
+"_BOXES" = "bx.";
+"_BOTTLES" = "bt.";

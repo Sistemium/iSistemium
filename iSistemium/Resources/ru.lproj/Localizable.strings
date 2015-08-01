@@ -310,4 +310,9 @@
 "1BOTTLES" = "бутылка";
 "2BOTTLES" = "бутылки";
 "5BOTTLES" = "бутылок";
+"_SHIPMENTS" = "н.";
+"_NEED_CASHING" = "и.";
+"_POSITIONS" = "п.";
+"_BOXES" = "к.";
+"_BOTTLES" = "б.";
 

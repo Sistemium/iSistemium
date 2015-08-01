@@ -318,38 +318,11 @@
     
     cell.titleLabel.textColor = titleColor;
     
-    NSUInteger shipmentsCount = point.shipments.count;
-    NSString *pluralType = [STMFunctions pluralTypeForCount:shipmentsCount];
-    NSString *localizedString = [NSString stringWithFormat:@"%@SHIPMENTS", pluralType];
+    cell.detailLabel.text = [point shortInfo];
+    cell.detailLabel.textColor = titleColor;
     
-    NSString *detailText;
-    
-    if (shipmentsCount > 0) {
-        
-        detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)shipmentsCount, NSLocalizedString(localizedString, nil)];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        
-    } else {
-        
-        detailText = NSLocalizedString(localizedString, nil);
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        
-    }
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"needCashing == YES"];
-    NSUInteger needCashingCount = [point.shipments filteredSetUsingPredicate:predicate].count;
-    
-    if (needCashingCount > 0) {
-        
-        pluralType = [STMFunctions pluralTypeForCount:needCashingCount];
-        localizedString = [NSString stringWithFormat:@"%@NEED CASHING", pluralType];
+    cell.accessoryType = (point.shipments.count > 0) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
 
-        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@", %lu %@", (unsigned long)needCashingCount, NSLocalizedString(localizedString, nil)]];
-        
-    }
-    
-    cell.detailLabel.text = detailText;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

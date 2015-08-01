@@ -540,7 +540,8 @@
 
     cell.textLabel.text = point.name;
     cell.textLabel.numberOfLines = 0;
-    cell.detailTextLabel.text = @"";
+    
+    cell.detailTextLabel.text = [point shortInfo];
 
     cell.accessoryType = UITableViewCellAccessoryNone;
 
