@@ -315,3 +315,10 @@
 "_POSITIONS" = "p";
 "_BOXES" = "bx";
 "_BOTTLES" = "bt";
+"DISTANCE_KM" = "km";
+"DISTANCE_M" = "m";
+"TIME_H" = "h";
+"TIME_M" = "min";
+"NO ROUTES" = "No routes";
+
+

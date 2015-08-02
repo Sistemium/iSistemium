@@ -315,4 +315,11 @@
 "_POSITIONS" = "п";
 "_BOXES" = "к";
 "_BOTTLES" = "б";
+"DISTANCE_KM" = "км";
+"DISTANCE_M" = "м";
+"TIME_H" = "ч";
+"TIME_M" = "мин";
+"NO ROUTES" = "Нет маршрутов";
+
+
 

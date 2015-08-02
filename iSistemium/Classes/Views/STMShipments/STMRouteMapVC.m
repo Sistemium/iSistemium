@@ -8,6 +8,7 @@
 
 #import "STMRouteMapVC.h"
 #import "STMMapAnnotation.h"
+#import "STMUI.h"
 
 #define DISTANCE_SCALE 1.5
 
@@ -17,8 +18,16 @@
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *routeInfoLabel;
+
+
 @property (nonatomic, strong) STMMapAnnotation *startPin;
 @property (nonatomic, strong) STMMapAnnotation *destinationPin;
+
+@property (nonatomic, strong) NSArray *routes;
+@property (nonatomic) NSUInteger selectedRouteNumber;
 
 
 @end
@@ -55,6 +64,7 @@
 - (void)calcRoute {
     
     MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
+    request.transportType = MKDirectionsTransportTypeAutomobile;
     
     MKPlacemark *start = [[MKPlacemark alloc] initWithCoordinate:self.startPoint.coordinate addressDictionary:nil];
     MKPlacemark *destination = [[MKPlacemark alloc] initWithCoordinate:self.destinationPoint.coordinate addressDictionary:nil];
@@ -69,16 +79,21 @@
     [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
         
          if (!error) {
-             [self showRoute:response];
+             
+             self.routes = response.routes;
+             self.selectedRouteNumber = 0;
+             [self updateToolbar];
+             [self showRoutes];
+             
          }
         
      }];
 
 }
 
-- (void)showRoute:(MKDirectionsResponse *)response {
+- (void)showRoutes {
     
-    for (MKRoute *route in response.routes) {
+    for (MKRoute *route in self.routes) {
         
         [self.mapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
         
@@ -87,6 +102,96 @@
         }
         
     }
+    
+}
+
+- (void)updateToolbar {
+    
+    if (self.routes.count > 0) {
+        
+        MKRoute *route = self.routes[self.selectedRouteNumber];
+        
+        NSLog(@"Route name: %@", route.name);
+        
+        NSUInteger distanceInKm = (NSUInteger)floor(route.distance / 1000);
+        NSUInteger meters = (NSUInteger)(route.distance - 1000 * distanceInKm);
+
+        NSString *distanceString;
+        if (distanceInKm > 0) {
+            distanceString = [NSString stringWithFormat:@"%@%@ %@%@", @(distanceInKm), NSLocalizedString(@"DISTANCE_KM", nil), @(meters), NSLocalizedString(@"DISTANCE_M", nil)];
+        } else {
+            distanceString = [NSString stringWithFormat:@"%@%@", @(meters), NSLocalizedString(@"DISTANCE_M", nil)];
+        }
+        
+        NSUInteger timeInMinutes = (NSUInteger)ceil(route.expectedTravelTime / 60);
+        NSUInteger hours = (NSUInteger)floor(timeInMinutes / 60);
+        NSUInteger minutes = (NSUInteger)(timeInMinutes % 60);
+        
+        NSString *timeString;
+        if (hours > 0) {
+            timeString = [NSString stringWithFormat:@"%@%@ %@%@", @(hours), NSLocalizedString(@"TIME_H", nil), @(minutes), NSLocalizedString(@"TIME_M", nil)];
+        } else {
+            timeString = [NSString stringWithFormat:@"%@%@", @(minutes), NSLocalizedString(@"TIME_M", nil)];
+        }
+        
+        self.routeInfoLabel.title = [NSString stringWithFormat:@"%@, %@", distanceString, timeString];
+        self.routeInfoLabel.enabled = YES;
+
+        self.backButton.enabled = !(self.selectedRouteNumber == 0);
+        self.forwardButton.enabled = !(self.selectedRouteNumber == self.routes.count - 1);
+        
+    } else {
+        
+        self.routeInfoLabel.title = NSLocalizedString(@"NO ROUTES", nil);
+        self.routeInfoLabel.enabled = NO;
+        
+        self.backButton.enabled = NO;
+        self.forwardButton.enabled = NO;
+        
+    }
+    
+}
+
+
+#pragma mark - actions
+
+- (IBAction)backButtonPressed:(id)sender {
+    
+    self.selectedRouteNumber = (self.selectedRouteNumber != 0) ? self.selectedRouteNumber - 1 : 0;
+    [self updateToolbar];
+    
+}
+
+- (IBAction)forwardButtonPressed:(id)sender {
+    
+    self.selectedRouteNumber = (self.selectedRouteNumber != self.routes.count - 1) ? self.selectedRouteNumber + 1 : self.routes.count - 1;
+    [self updateToolbar];
+
+}
+
+- (IBAction)routeInfoPressed:(id)sender {
+    [self showRouteInfoAlert];
+}
+
+- (void)showRouteInfoAlert {
+    
+    MKRoute *route = self.routes[self.selectedRouteNumber];
+    
+    NSString *message = @"";
+    
+    for (MKRouteStep *step in route.steps) {
+        
+        message = [message stringByAppendingString:step.instructions];
+        message = [message stringByAppendingString:@"\n"];
+
+    }
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:route.name
+                                                    message:message
+                                                   delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                          otherButtonTitles:nil];
+    [alert show];
     
 }
 
@@ -107,7 +212,7 @@
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay {
     
     MKPolylineRenderer *renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
-    renderer.strokeColor = [UIColor blueColor];
+    renderer.strokeColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:.5];
     renderer.lineWidth = 5.0;
     
     return renderer;
@@ -147,7 +252,10 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [self updateToolbar];
     [self setupMapView];
+    
 }
 
 - (void)viewDidLoad {
