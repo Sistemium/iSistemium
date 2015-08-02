@@ -1040,7 +1040,6 @@
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.arrivalButtonCellIdentifier];
     
-    [self setupNavBar];
     [self addObservers];
     [self performFetch];
     
@@ -1054,10 +1053,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
-//    if (self.shipmentsIndexSet) {
-//        [self.tableView reloadSections:self.shipmentsIndexSet withRowAnimation:UITableViewRowAnimationNone];
-//    }
+
+    [self setupNavBar];
     
     [super viewWillAppear:animated];
     
