@@ -76,6 +76,7 @@
 		2C46206C1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C46206B1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.m */; };
 		2C46206F1B6BA43B007FD646 /* STMShipment+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C46206E1B6BA43B007FD646 /* STMShipment+custom.m */; };
 		2C4620721B6CBADF007FD646 /* STMShipmentRoutePoint+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4620711B6CBADF007FD646 /* STMShipmentRoutePoint+custom.m */; };
+		2C4620741B6E027B007FD646 /* waypoint_map.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C4620731B6E027B007FD646 /* waypoint_map.png */; };
 		2C4BA3C91A41AE8B007F1D0A /* STMOutletController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3C81A41AE8B007F1D0A /* STMOutletController.m */; };
 		2C4BA3CC1A41AE9A007F1D0A /* STMPartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4BA3CB1A41AE9A007F1D0A /* STMPartnerController.m */; };
 		2C4E443B1A810A6D006E6AF1 /* STMRecordStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */; };
@@ -425,6 +426,7 @@
 		2C46206E1B6BA43B007FD646 /* STMShipment+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMShipment+custom.m"; sourceTree = "<group>"; };
 		2C4620701B6CBADF007FD646 /* STMShipmentRoutePoint+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMShipmentRoutePoint+custom.h"; sourceTree = "<group>"; };
 		2C4620711B6CBADF007FD646 /* STMShipmentRoutePoint+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMShipmentRoutePoint+custom.m"; sourceTree = "<group>"; };
+		2C4620731B6E027B007FD646 /* waypoint_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = waypoint_map.png; sourceTree = "<group>"; };
 		2C49731B1A3893C7006CDF06 /* STMDataModel 27.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 27.xcdatamodel"; sourceTree = "<group>"; };
 		2C4BA3C71A41AE8B007F1D0A /* STMOutletController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMOutletController.h; sourceTree = "<group>"; };
 		2C4BA3C81A41AE8B007F1D0A /* STMOutletController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMOutletController.m; sourceTree = "<group>"; };
@@ -1552,12 +1554,6 @@
 		2CD443EF195AD741004ADE58 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				2C3771B41B5E7038003493FB /* Sync With Cloud.png */,
-				2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */,
-				2C7678301B4125100085C514 /* location.png */,
-				2C2957981B400FD600A2D163 /* plus.png */,
-				2C761BC41B01F2D0001DA33E /* Down4-25.png */,
-				2C761BC51B01F2D0001DA33E /* Up4-25.png */,
 				2C734B8119B4E6FD00EE33FA /* archive-128.png */,
 				2C2968EF19A0C22F0038B122 /* banknotes-128.png */,
 				2C5763C01AA4752600B9FD2C /* beer_bottle-128.png */,
@@ -1567,24 +1563,31 @@
 				D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */,
 				2C88F1D21B24664600E30418 /* Clear Filters-25.png */,
 				2C81AD5A1AD1180F00246666 /* close-128.png */,
+				2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */,
 				2C5764361AA88ABA00B9FD2C /* Dossier Folder-100.png */,
+				2C761BC41B01F2D0001DA33E /* Down4-25.png */,
 				2C16CC3F1AF3940200A2EC2D /* Download From Cloud-100.png */,
-				2C16CC3E1AF3940200A2EC2D /* Upload To Cloud-100.png */,
 				2C02F2C61A8B95F600E0E890 /* exit-128.png */,
 				2C02F2C41A8B503A00E0E890 /* full_moon-128.png */,
+				2C7678301B4125100085C514 /* location.png */,
 				2C29690519B1B4210038B122 /* message-128.png */,
 				D94AC56B198BC6A300D8CD63 /* password2-128.png */,
 				2CD443F0195AD76E004ADE58 /* photo-icon.png */,
-				2C761BB11B00824F001DA33E /* Picture-25.png */,
-				2C761BB01B00824F001DA33E /* Picture-32.png */,
-				2C761BAE1B008185001DA33E /* Picture-100.png */,
 				2C761BB41B00833F001DA33E /* Picture Filled-25.png */,
 				2C761BB51B00833F001DA33E /* Picture Filled-32.png */,
 				2C761BB61B00833F001DA33E /* Picture Filled-100.png */,
+				2C761BB11B00824F001DA33E /* Picture-25.png */,
+				2C761BB01B00824F001DA33E /* Picture-32.png */,
+				2C761BAE1B008185001DA33E /* Picture-100.png */,
+				2C2957981B400FD600A2D163 /* plus.png */,
 				2C5797F11A43608300EEFBA7 /* purchase_order-128.png */,
-				2CEAC15D1B3BF78200AD068E /* truck_filled.png */,
 				2C42ECBE1B15996100B5C91A /* Settings-25.png */,
 				2CF365AD19EE8C0100F078BD /* settings3-128.png */,
+				2C3771B41B5E7038003493FB /* Sync With Cloud.png */,
+				2CEAC15D1B3BF78200AD068E /* truck_filled.png */,
+				2C761BC51B01F2D0001DA33E /* Up4-25.png */,
+				2C16CC3E1AF3940200A2EC2D /* Upload To Cloud-100.png */,
+				2C4620731B6E027B007FD646 /* waypoint_map.png */,
 				2C5764381AA8962600B9FD2C /* wine_bottle-512.png */,
 			);
 			path = Images;
@@ -1743,6 +1746,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */,
+				2C4620741B6E027B007FD646 /* waypoint_map.png in Resources */,
 				2C88F1C61B1ECECC00E30418 /* STMCustom7TVCell.xib in Resources */,
 				2C16CC4C1AF7652A00A2EC2D /* STMProfile.storyboard in Resources */,
 				2C734B8219B4E6FD00EE33FA /* archive-128.png in Resources */,

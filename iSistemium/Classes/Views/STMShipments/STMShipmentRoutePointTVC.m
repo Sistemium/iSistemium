@@ -544,7 +544,7 @@
     cell.detailTextLabel.text = [point shortInfo];
 
     cell.accessoryType = UITableViewCellAccessoryNone;
-
+    
 }
 
 - (void)fillArrivalButtonCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -965,6 +965,43 @@
 }
 
 
+#pragma mark - navbar
+
+- (void)setupNavBar {
+    
+    if (self.point.shippingLocation.location) {
+        
+        STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
+        self.navigationItem.rightBarButtonItem = waypointButton;
+        
+    } else {
+
+    }
+
+}
+
+- (UIView *)waypointView {
+    
+    CGFloat imageSize = 22;
+    CGFloat imagePadding = 0;
+    
+    UIImage *image = [[UIImage imageNamed:@"waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
+    imageView.tintColor = ACTIVE_BLUE_COLOR;
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
+    [button addTarget:self action:@selector(waypointButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [button addSubview:imageView];
+    
+    return button;
+    
+}
+
+- (void)waypointButtonPressed {
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -991,6 +1028,7 @@
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.arrivalButtonCellIdentifier];
     
+    [self setupNavBar];
     [self addObservers];
     [self performFetch];
     
