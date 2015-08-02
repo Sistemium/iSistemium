@@ -11,6 +11,7 @@
 #import "STMUI.h"
 
 #define DISTANCE_SCALE 1.5
+#define EDGE_INSET 50
 
 
 @interface STMRouteMapVC () <MKMapViewDelegate>
@@ -29,8 +30,6 @@
 @property (nonatomic, strong) NSArray *routes;
 @property (nonatomic) NSUInteger selectedRouteNumber;
 
-@property (nonatomic, strong) NSMutableArray *routesOverlays;
-
 
 @end
 
@@ -48,7 +47,7 @@
         self.destinationPin = [STMMapAnnotation createAnnotationForCLLocation:self.destinationPoint];
         [self.mapView addAnnotation:self.startPin];
         [self.mapView addAnnotation:self.destinationPin];
-        
+
         CLLocationDegrees midLatitude = (self.startPoint.coordinate.latitude + self.destinationPoint.coordinate.latitude) / 2;
         CLLocationDegrees midLongitude = (self.startPoint.coordinate.longitude + self.destinationPoint.coordinate.longitude) / 2;
         CLLocationCoordinate2D centerCoordinate = CLLocationCoordinate2DMake(midLatitude, midLongitude);
@@ -56,9 +55,23 @@
         MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(centerCoordinate, distance, distance);
         
         [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
-
-        [self calcRoute];
         
+        [self calcRoute];
+
+    }
+    
+}
+
+- (void)updateMapView {
+ 
+    if (self.routes) {
+        
+        MKRoute *currentRoute = self.routes[self.selectedRouteNumber];
+        
+        [self.mapView setVisibleMapRect:currentRoute.polyline.boundingMapRect
+                            edgePadding:UIEdgeInsetsMake(EDGE_INSET, EDGE_INSET, EDGE_INSET, EDGE_INSET)
+                               animated:YES];
+
     }
     
 }
@@ -96,8 +109,6 @@
 - (void)updateRoutesOverlays {
     
     [self.mapView removeOverlays:self.mapView.overlays];
-    
-    self.routesOverlays = [NSMutableArray array];
     
     for (MKRoute *route in self.routes) {
         
@@ -189,22 +200,27 @@
     
 }
 
+- (void)updateAll {
+    
+    [self updateToolbar];
+    [self updateRoutesOverlays];
+    [self updateMapView];
+
+}
 
 #pragma mark - actions
 
 - (IBAction)backButtonPressed:(id)sender {
     
     self.selectedRouteNumber = (self.selectedRouteNumber != 0) ? self.selectedRouteNumber - 1 : 0;
-    [self updateToolbar];
-    [self updateRoutesOverlays];
+    [self updateAll];
     
 }
 
 - (IBAction)forwardButtonPressed:(id)sender {
     
     self.selectedRouteNumber = (self.selectedRouteNumber != self.routes.count - 1) ? self.selectedRouteNumber + 1 : self.routes.count - 1;
-    [self updateToolbar];
-    [self updateRoutesOverlays];
+    [self updateAll];
 
 }
 
