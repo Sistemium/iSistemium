@@ -29,6 +29,8 @@
 @property (nonatomic, strong) NSArray *routes;
 @property (nonatomic) NSUInteger selectedRouteNumber;
 
+@property (nonatomic, strong) NSMutableArray *routesOverlays;
+
 
 @end
 
@@ -83,7 +85,7 @@
              self.routes = response.routes;
              self.selectedRouteNumber = 0;
              [self updateToolbar];
-             [self showRoutes];
+             [self updateRoutesOverlays];
              
          }
         
@@ -91,7 +93,11 @@
 
 }
 
-- (void)showRoutes {
+- (void)updateRoutesOverlays {
+    
+    [self.mapView removeOverlays:self.mapView.overlays];
+    
+    self.routesOverlays = [NSMutableArray array];
     
     for (MKRoute *route in self.routes) {
         
@@ -106,6 +112,8 @@
 }
 
 - (void)updateToolbar {
+    
+    [self removeAllSwipes];
     
     if (self.routes.count > 0) {
         
@@ -140,6 +148,9 @@
         self.backButton.enabled = !(self.selectedRouteNumber == 0);
         self.forwardButton.enabled = !(self.selectedRouteNumber == self.routes.count - 1);
         
+//        if (self.backButton.enabled) [self addSwipeToRight];
+//        if (self.forwardButton.enabled) [self addSwipeToLeft];
+        
     } else {
         
         self.routeInfoLabel.title = NSLocalizedString(@"NO ROUTES", nil);
@@ -152,6 +163,32 @@
     
 }
 
+- (void)addSwipeToLeft {
+    
+    UISwipeGestureRecognizer *swipeToLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(forwardButtonPressed:)];
+    [self.toolbar addGestureRecognizer:swipeToLeft];
+    
+}
+
+- (void)addSwipeToRight {
+
+    UISwipeGestureRecognizer *swipeToRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(backButtonPressed:)];
+    [self.toolbar addGestureRecognizer:swipeToRight];
+
+}
+
+- (void)removeAllSwipes {
+    
+    for (UIGestureRecognizer *gesture in self.toolbar.gestureRecognizers) {
+        
+        if ([gesture isKindOfClass:[UISwipeGestureRecognizer class]]) {
+            [self.toolbar removeGestureRecognizer:gesture];
+        }
+        
+    }
+    
+}
+
 
 #pragma mark - actions
 
@@ -159,6 +196,7 @@
     
     self.selectedRouteNumber = (self.selectedRouteNumber != 0) ? self.selectedRouteNumber - 1 : 0;
     [self updateToolbar];
+    [self updateRoutesOverlays];
     
 }
 
@@ -166,6 +204,7 @@
     
     self.selectedRouteNumber = (self.selectedRouteNumber != self.routes.count - 1) ? self.selectedRouteNumber + 1 : self.routes.count - 1;
     [self updateToolbar];
+    [self updateRoutesOverlays];
 
 }
 
@@ -211,8 +250,13 @@
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay {
     
+    MKRoute *route = self.routes[self.selectedRouteNumber];
+    MKPolyline *currentRouteOverlay = route.polyline;
+    
+    UIColor *color = ([overlay isEqual:currentRouteOverlay]) ? [UIColor blueColor] : [UIColor colorWithRed:0 green:0 blue:1 alpha:.3];
+    
     MKPolylineRenderer *renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
-    renderer.strokeColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:.5];
+    renderer.strokeColor = color;
     renderer.lineWidth = 5.0;
     
     return renderer;
@@ -237,7 +281,7 @@
         if ([myAnnotation isEqual:self.startPin]) {
             annotationView.pinColor = MKPinAnnotationColorRed;
         } else if ([myAnnotation isEqual:self.destinationPin]) {
-            annotationView.pinColor = MKPinAnnotationColorGreen;
+            annotationView.pinColor = MKPinAnnotationColorPurple;
         }
         
         return annotationView;
