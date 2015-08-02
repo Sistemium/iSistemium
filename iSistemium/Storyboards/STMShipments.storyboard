@@ -15,7 +15,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shipmentRouteCell" textLabel="Yi7-7j-H7m" detailTextLabel="kMK-oB-Ja1" style="IBUITableViewCellStyleSubtitle" id="NMw-SB-Axw">
-                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NMw-SB-Axw" id="0Tj-p8-0hQ">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -61,7 +61,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="routePointCell" id="sWQ-m9-Ntt">
-                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sWQ-m9-Ntt" id="Pwo-xl-JnJ">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -83,6 +83,37 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rir-fS-2jY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1323.7333333333333" y="331.33333333333331"/>
+        </scene>
+        <!--Route MapVC-->
+        <scene sceneID="N2p-c9-SCV">
+            <objects>
+                <viewController hidesBottomBarWhenPushed="YES" id="OCF-wh-XaN" customClass="STMRouteMapVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="n3e-zH-h9o">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="9VA-K3-eKb">
+                                <rect key="frame" x="0.0" y="460" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items/>
+                            </toolbar>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="nC2-tk-7ZU">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="460"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" id="Fcw-09-4kE"/>
+                    <connections>
+                        <outlet property="mapView" destination="nC2-tk-7ZU" id="raN-Mg-8cZ"/>
+                        <outlet property="toolbar" destination="9VA-K3-eKb" id="gxE-ws-bXB"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L7P-ug-D3m" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1596" y="-413"/>
         </scene>
         <!--Shipping Location MapVC-->
         <scene sceneID="bZy-KE-pUT">
@@ -118,7 +149,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mkz-hB-f04" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1810" y="-409"/>
+            <point key="canvasLocation" x="2020" y="-413"/>
         </scene>
         <!--Shipment Route PointTVC-->
         <scene sceneID="qop-uJ-JJQ">
@@ -130,7 +161,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shipmentCell" textLabel="Sc2-RV-8Ie" detailTextLabel="ZsR-OB-bwV" style="IBUITableViewCellStyleSubtitle" id="ckt-qV-pMQ">
-                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ckt-qV-pMQ" id="Cxq-Y5-a0H">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -162,6 +193,7 @@
                         <segue destination="UcJ-cZ-FU5" kind="push" identifier="showShipmentPositions" id="LaE-NC-55L"/>
                         <segue destination="64u-7v-NYy" kind="push" identifier="showShippingLocationMap" id="DoY-zm-5lH"/>
                         <segue destination="ulO-gf-N6h" kind="modal" identifier="showPhotos" id="Y1F-Vo-4I5"/>
+                        <segue destination="OCF-wh-XaN" kind="push" identifier="showRoute" id="ata-3g-0QZ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ARf-FV-bPw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -286,7 +318,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shipmentPositionCell" textLabel="03Y-XX-AQp" detailTextLabel="eOx-kK-JOW" style="IBUITableViewCellStyleSubtitle" id="MVX-sl-Leb">
-                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MVX-sl-Leb" id="jz2-D1-15Z">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>

@@ -18,6 +18,7 @@
 #import "STMShipmentTVC.h"
 #import "STMShippingLocationMapVC.h"
 #import "STMShippingLocationPicturesPVC.h"
+#import "STMRouteMapVC.h"
 
 
 #define CELL_IMAGES_SIZE 54
@@ -898,10 +899,12 @@
         [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentTVC class]]) {
         
+        STMShipmentTVC *shipmentTVC = (STMShipmentTVC *)segue.destinationViewController;
         STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
-        [(STMShipmentTVC *)segue.destinationViewController setShipment:shipment];
-        [(STMShipmentTVC *)segue.destinationViewController setPoint:self.point];
-        [(STMShipmentTVC *)segue.destinationViewController setParentVC:self];
+        
+        shipmentTVC.shipment = shipment;
+        shipmentTVC.point = self.point;
+        shipmentTVC.parentVC = self;
         
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
@@ -912,12 +915,21 @@
                [sender isKindOfClass:[UIView class]] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationPicturesPVC class]]) {
         
+        STMShippingLocationPicturesPVC *picturesPVC = (STMShippingLocationPicturesPVC *)segue.destinationViewController;
+        
         NSSortDescriptor *sortDesriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)];
         NSArray *photoArray = [self.point.shippingLocation.shippingLocationPictures sortedArrayUsingDescriptors:@[sortDesriptor]];
         
-        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setPhotoArray:[photoArray mutableCopy]];
-        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setCurrentIndex:[self.picturesView.subviews indexOfObject:sender]];
-        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setParentVC:self];
+        picturesPVC.photoArray = [photoArray mutableCopy];
+        picturesPVC.currentIndex = [self.picturesView.subviews indexOfObject:sender];
+        picturesPVC.parentVC = self;
+        
+    } else if ([segue.identifier isEqualToString:@"showRoute"] &&
+               [segue.destinationViewController isKindOfClass:[STMRouteMapVC class]]) {
+        
+        STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
+        
+        routeMapVC.destinationPoint = [STMLocationController locationFromLocationObject:self.point.shippingLocation.location];
         
     }
     
@@ -999,7 +1011,7 @@
 }
 
 - (void)waypointButtonPressed {
-    
+    [self performSegueWithIdentifier:@"showRoute" sender:self];
 }
 
 #pragma mark - view lifecycle
