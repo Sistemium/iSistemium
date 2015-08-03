@@ -130,7 +130,7 @@
         
         MKRoute *route = self.routes[self.selectedRouteNumber];
         
-        NSLog(@"Route name: %@", route.name);
+//        NSLog(@"Route name: %@", route.name);
         
         NSUInteger distanceInKm = (NSUInteger)floor(route.distance / 1000);
         NSUInteger meters = (NSUInteger)(route.distance - 1000 * distanceInKm);

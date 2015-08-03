@@ -18,6 +18,7 @@
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *routesInfoLabel;
 
 @property (nonatomic, strong) NSMutableArray *locationsArray;
 
@@ -25,6 +26,8 @@
 @property (nonatomic, strong) NSArray *locationsPins;
 
 @property (nonatomic, strong) NSMutableArray *routes;
+@property (nonatomic) NSTimeInterval routesOverallTime;
+@property (nonatomic) CLLocationDistance routesOverallDistance;
 
 
 @end
@@ -124,6 +127,8 @@
 - (void)calcRoutes {
     
     self.routes = nil;
+    self.routesOverallDistance = 0;
+    self.routesOverallTime = 0;
     
     NSArray *points = [[@[self.startPoint] arrayByAddingObjectsFromArray:self.locationsArray] arrayByAddingObject:self.startPoint];
     
@@ -153,15 +158,13 @@
     
     MKDirections *directions = [[MKDirections alloc] initWithRequest:request];
     
-    BOOL isLastRoute = ([finishLocation isEqual:self.startPoint]);
-    
     [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
         
         if (!error) {
             
             [self.routes addObject:response.routes.firstObject];
             
-            if (isLastRoute) [self showRoutes];
+            if ([finishLocation isEqual:self.startPoint]) [self showRoutes];
             
         }
         
@@ -185,11 +188,54 @@
             polylineRect = MKMapRectUnion(polylineRect, route.polyline.boundingMapRect);
         }
         
+        self.routesOverallTime += route.expectedTravelTime;
+        self.routesOverallDistance += route.distance;
+        
     }
 
     [self.mapView setVisibleMapRect:polylineRect
                         edgePadding:UIEdgeInsetsMake(EDGE_INSET, EDGE_INSET, EDGE_INSET, EDGE_INSET)
                            animated:YES];
+    
+    [self updateRoutesInfoLabel];
+    
+}
+
+- (void)updateRoutesInfoLabel {
+
+    self.routesInfoLabel.enabled = NO;
+//    self.routesInfoLabel.tintColor = [UIColor blackColor];
+
+    if (self.routes.count > 0) {
+        
+        NSUInteger distanceInKm = (NSUInteger)floor(self.routesOverallDistance / 1000);
+        NSUInteger meters = (NSUInteger)(self.routesOverallDistance - 1000 * distanceInKm);
+        
+        NSString *distanceString;
+        if (distanceInKm > 0) {
+            distanceString = [NSString stringWithFormat:@"%@%@ %@%@", @(distanceInKm), NSLocalizedString(@"DISTANCE_KM", nil), @(meters), NSLocalizedString(@"DISTANCE_M", nil)];
+        } else {
+            distanceString = [NSString stringWithFormat:@"%@%@", @(meters), NSLocalizedString(@"DISTANCE_M", nil)];
+        }
+        
+        NSUInteger timeInMinutes = (NSUInteger)ceil(self.routesOverallTime / 60);
+        NSUInteger hours = (NSUInteger)floor(timeInMinutes / 60);
+        NSUInteger minutes = (NSUInteger)(timeInMinutes % 60);
+        
+        NSString *timeString;
+        if (hours > 0) {
+            timeString = [NSString stringWithFormat:@"%@%@ %@%@", @(hours), NSLocalizedString(@"TIME_H", nil), @(minutes), NSLocalizedString(@"TIME_M", nil)];
+        } else {
+            timeString = [NSString stringWithFormat:@"%@%@", @(minutes), NSLocalizedString(@"TIME_M", nil)];
+        }
+        
+        self.routesInfoLabel.title = [NSString stringWithFormat:@"%@, %@", distanceString, timeString];
+        
+    } else {
+        
+        self.routesInfoLabel.title = @"";
+        
+    }
     
 }
 
@@ -253,6 +299,7 @@
     
     [self prepareArrayOfCLLocations];
     [self setupMapView];
+    [self updateRoutesInfoLabel];
     
 }
 
