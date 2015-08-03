@@ -323,6 +323,7 @@
 "ROUTING ERROR" = "Невозможно построить маршрут";
 "NOT ENOUGH LOCATIONS" = "Не у всех точек есть координаты.";
 "CURRENT GEOPOSITION" = "Текущая позиция";
+"START POINT" = "Стартовая позиция";
 
 
 

@@ -86,6 +86,8 @@
     
     self.locationsArray = nil;
     
+    NSMutableArray *pins = [NSMutableArray array];
+    
     if (self.points.count > 0) {
         
         for (STMShipmentRoutePoint *point in self.points) {
@@ -94,7 +96,14 @@
             CLLocation *location = [STMLocationController locationFromLocationObject:pointLocation];
             [self.locationsArray addObject:location];
             
+            STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
+                                                                          withTitle:point.name
+                                                                        andSubtitle:nil];
+            [pins addObject:pin];
+
         }
+        
+        self.locationsPins = pins.copy;
         
     }
     
@@ -119,7 +128,10 @@
         
     } else {
         
-        self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint];
+        self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint
+                                                              withTitle:NSLocalizedString(@"START POINT", nil)
+                                                            andSubtitle:nil];
+        
         NSArray *pins = [self.locationsPins arrayByAddingObject:self.startPin];
         
         [self.mapView showAnnotations:pins animated:YES];
@@ -289,6 +301,8 @@
         } else {
             annotationView.pinColor = MKPinAnnotationColorPurple;
         }
+        
+        annotationView.canShowCallout = YES;
         
         return annotationView;
         
