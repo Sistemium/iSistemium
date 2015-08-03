@@ -132,8 +132,6 @@
 - (void)calcRoutes {
     
     self.routes = nil;
-    self.routesOverallDistance = 0;
-    self.routesOverallTime = 0;
     
     NSArray *points = [[@[self.startPoint] arrayByAddingObjectsFromArray:self.locationsArray] arrayByAddingObject:self.startPoint];
     
@@ -169,7 +167,7 @@
             
             [self.routes addObject:response.routes.firstObject];
             
-            if ([finishLocation isEqual:self.startPoint]) [self showRoutes];
+            [self showRoutes];
             
         }
         
@@ -180,6 +178,9 @@
 - (void)showRoutes {
 
     [self.mapView removeOverlays:self.mapView.overlays];
+
+    self.routesOverallDistance = 0;
+    self.routesOverallTime = 0;
 
     MKMapRect polylineRect;
     

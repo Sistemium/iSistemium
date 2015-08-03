@@ -114,9 +114,9 @@
         
         [self.mapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
         
-        for (MKRouteStep *step in route.steps) {
-            NSLog(@"%@", step.instructions);
-        }
+//        for (MKRouteStep *step in route.steps) {
+//            NSLog(@"%@", step.instructions);
+//        }
         
     }
     
