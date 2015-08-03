@@ -13,6 +13,7 @@
 
 #import "STMShipmentRoutePointTVC.h"
 #import "STMShipmentRouteSummaryTVC.h"
+#import "STMAllRoutesMapVC.h"
 
 #import "STMShippingProcessController.h"
 
@@ -421,6 +422,11 @@
         
         [(STMShipmentRouteSummaryTVC *)segue.destinationViewController setRoute:self.route];
         
+    } else if ([segue.identifier isEqualToString:@"showAllRoutes"] &&
+               [segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
+        
+        [(STMAllRoutesMapVC *)segue.destinationViewController setPoints:[self pointsWithLocation]];
+        
     }
     
 }
@@ -487,13 +493,20 @@
 
 }
 
-- (BOOL)isAllPointsHaveLocation {
+- (NSArray *)pointsWithLocation {
 
     NSPredicate *locationPredicate = [NSPredicate predicateWithFormat:@"shippingLocation.location != %@", nil];
     NSSet *pointsWithLocation = [self.route.shipmentRoutePoints filteredSetUsingPredicate:locationPredicate];
 
-    return (self.route.shipmentRoutePoints.count == pointsWithLocation.count);
+    NSSortDescriptor *orderDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+    NSArray *result = [pointsWithLocation sortedArrayUsingDescriptors:@[orderDescriptor]];
+    
+    return result;
+    
+}
 
+- (BOOL)isAllPointsHaveLocation {
+    return (self.route.shipmentRoutePoints.count == [self pointsWithLocation].count);
 }
 
 - (UIView *)waypointView {
@@ -516,13 +529,13 @@
 
 - (void)waypointButtonPressed {
     
-    if ([self isAllPointsHaveLocation]) {
-        
+//    if ([self isAllPointsHaveLocation]) {
+    
         [self performSegueWithIdentifier:@"showAllRoutes" sender:self];
         
-    } else {
-        [self showNotEnoughLocationsAlert];
-    }
+//    } else {
+//        [self showNotEnoughLocationsAlert];
+//    }
 
 }
 
