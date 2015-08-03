@@ -41,10 +41,11 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentRoutePoint class])];
         
-        NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:NO selector:@selector(compare:)];
+        NSSortDescriptor *localOrdDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"localOrd" ascending:YES selector:@selector(compare:)];
+        NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
         NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         
-        request.sortDescriptors = @[ordDescriptor, nameDescriptor];
+        request.sortDescriptors = @[localOrdDescriptor, ordDescriptor, nameDescriptor];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipmentRoute == %@", self.route];
         
@@ -501,6 +502,10 @@
     NSSortDescriptor *orderDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
     NSArray *result = [pointsWithLocation sortedArrayUsingDescriptors:@[orderDescriptor]];
     
+    for (STMShipmentRoutePoint *point in result) {
+        point.localOrd = @([result indexOfObject:point]);
+    }
+    
     return result;
     
 }
@@ -529,13 +534,11 @@
 
 - (void)waypointButtonPressed {
     
-//    if ([self isAllPointsHaveLocation]) {
-    
+    if ([self isAllPointsHaveLocation]) {
         [self performSegueWithIdentifier:@"showAllRoutes" sender:self];
-        
-//    } else {
-//        [self showNotEnoughLocationsAlert];
-//    }
+    } else {
+        [self showNotEnoughLocationsAlert];
+    }
 
 }
 
