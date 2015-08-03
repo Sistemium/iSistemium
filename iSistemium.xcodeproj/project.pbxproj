@@ -42,6 +42,8 @@
 		2C1AB28C1B6E556000BF5C50 /* forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1AB28B1B6E556000BF5C50 /* forward.png */; };
 		2C1AB28E1B6F581300BF5C50 /* single_waypoint_map.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1AB28D1B6F581300BF5C50 /* single_waypoint_map.png */; };
 		2C1AB2911B6F5CF200BF5C50 /* STMAllRoutesMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1AB2901B6F5CF200BF5C50 /* STMAllRoutesMapVC.m */; };
+		2C1AB2931B6F925100BF5C50 /* reordering.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1AB2921B6F925100BF5C50 /* reordering.png */; };
+		2C1AB2961B6F937B00BF5C50 /* STMReorderRoutePointsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1AB2951B6F937B00BF5C50 /* STMReorderRoutePointsTVC.m */; };
 		2C1D72DF1AB99DEC00C97599 /* STMCustom1TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D72DE1AB99DEC00C97599 /* STMCustom1TVCell.xib */; };
 		2C1D72E41AB9A88700C97599 /* STMCustom1TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */; };
 		2C1D72E71AB9BCFE00C97599 /* STMInsetLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1D72E61AB9BCFE00C97599 /* STMInsetLabel.m */; };
@@ -369,6 +371,9 @@
 		2C1AB28D1B6F581300BF5C50 /* single_waypoint_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = single_waypoint_map.png; sourceTree = "<group>"; };
 		2C1AB28F1B6F5CF200BF5C50 /* STMAllRoutesMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMAllRoutesMapVC.h; sourceTree = "<group>"; };
 		2C1AB2901B6F5CF200BF5C50 /* STMAllRoutesMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMAllRoutesMapVC.m; sourceTree = "<group>"; };
+		2C1AB2921B6F925100BF5C50 /* reordering.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reordering.png; sourceTree = "<group>"; };
+		2C1AB2941B6F937B00BF5C50 /* STMReorderRoutePointsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMReorderRoutePointsTVC.h; sourceTree = "<group>"; };
+		2C1AB2951B6F937B00BF5C50 /* STMReorderRoutePointsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMReorderRoutePointsTVC.m; sourceTree = "<group>"; };
 		2C1D72DE1AB99DEC00C97599 /* STMCustom1TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom1TVCell.xib; sourceTree = "<group>"; };
 		2C1D72E21AB9A88700C97599 /* STMCustom1TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom1TVCell.h; sourceTree = "<group>"; };
 		2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom1TVCell.m; sourceTree = "<group>"; };
@@ -1566,6 +1571,7 @@
 		2CD443EF195AD741004ADE58 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2C1AB2921B6F925100BF5C50 /* reordering.png */,
 				2C1AB28D1B6F581300BF5C50 /* single_waypoint_map.png */,
 				2C1AB28B1B6E556000BF5C50 /* forward.png */,
 				2C1AB2891B6E555500BF5C50 /* back.png */,
@@ -1640,6 +1646,8 @@
 				2CEAC1641B3C031F00AD068E /* STMShipmentRouteTVC.m */,
 				2C1AB28F1B6F5CF200BF5C50 /* STMAllRoutesMapVC.h */,
 				2C1AB2901B6F5CF200BF5C50 /* STMAllRoutesMapVC.m */,
+				2C1AB2941B6F937B00BF5C50 /* STMReorderRoutePointsTVC.h */,
+				2C1AB2951B6F937B00BF5C50 /* STMReorderRoutePointsTVC.m */,
 				2CCD06E11B5931E6002591C4 /* STMShipmentRouteSummaryTVC.h */,
 				2CCD06E21B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m */,
 				2C46206A1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.h */,
@@ -1789,6 +1797,7 @@
 				2C02F2C71A8B95F600E0E890 /* exit-128.png in Resources */,
 				2C761BC61B01F2D0001DA33E /* Down4-25.png in Resources */,
 				2C5764981AB4713B00B9FD2C /* checked_user-128.png in Resources */,
+				2C1AB2931B6F925100BF5C50 /* reordering.png in Resources */,
 				2CEAC15E1B3BF78200AD068E /* truck_filled.png in Resources */,
 				D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */,
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
@@ -1977,6 +1986,7 @@
 				2C9D04B61ADBC01800D0421D /* STMRemoteController.m in Sources */,
 				2CEAC14B1B3BEBB500AD068E /* STMDriver.m in Sources */,
 				2C5764191AA5E1E500B9FD2C /* STMAddPartnerVC.m in Sources */,
+				2C1AB2961B6F937B00BF5C50 /* STMReorderRoutePointsTVC.m in Sources */,
 				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,
 				2C57645D1AAB138600B9FD2C /* STMOrdersMasterPVC.m in Sources */,
 				2C8047231A12352F00FEFEFF /* STMUncashingPhotoVC.m in Sources */,

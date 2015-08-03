@@ -11,6 +11,11 @@
 #import "STMLocationController.h"
 #import "STMMapAnnotation.h"
 
+#import "STMUI.h"
+
+#import "STMReorderRoutePointsTVC.h"
+
+
 #define EDGE_INSET 50
 
 
@@ -293,10 +298,46 @@
 }
 
 
+#pragma mark - navBar
+
+- (void)setupNavBar {
+    
+    if (self.points.count > 0) {
+        
+        CGFloat imageSize = 22;
+        CGFloat imagePadding = 0;
+        
+        UIImage *image = [[UIImage imageNamed:@"reordering"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
+        imageView.tintColor = ACTIVE_BLUE_COLOR;
+        
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
+        [button addTarget:self action:@selector(reorderButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        [button addSubview:imageView];
+
+        STMBarButtonItem *reorderButton = [[STMBarButtonItem alloc] initWithCustomView:button];
+        self.navigationItem.rightBarButtonItem = reorderButton;
+                
+    }
+    
+}
+
+- (void)reorderButtonPressed {
+    
+    STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] init];
+    reorderTVC.points = self.points;
+    
+    [self.navigationController pushViewController:reorderTVC animated:YES];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    [self setupNavBar];
     [self prepareArrayOfCLLocations];
     [self setupMapView];
     [self updateRoutesInfoLabel];
