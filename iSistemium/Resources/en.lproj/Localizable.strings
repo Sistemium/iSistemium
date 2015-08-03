@@ -322,4 +322,4 @@
 "NO ROUTES" = "No routes";
 "ROUTING ERROR" = "Routing error";
 "NOT ENOUGH LOCATIONS" = "Not enough locations.";
-
+"CURRENT GEOPOSITION" = "Current location";

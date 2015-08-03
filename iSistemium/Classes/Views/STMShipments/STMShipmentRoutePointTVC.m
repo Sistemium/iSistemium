@@ -928,8 +928,9 @@
                [segue.destinationViewController isKindOfClass:[STMRouteMapVC class]]) {
         
         STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
-        
-        routeMapVC.destinationPoint = [STMLocationController locationFromLocationObject:self.point.shippingLocation.location];
+
+        routeMapVC.shippingLocation = self.point.shippingLocation;
+        routeMapVC.destinationPointName = self.point.name;
         
     }
     

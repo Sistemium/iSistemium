@@ -9,6 +9,8 @@
 #import "STMRouteMapVC.h"
 #import "STMMapAnnotation.h"
 #import "STMUI.h"
+#import "STMLocationController.h"
+
 
 #define DISTANCE_SCALE 1.5
 #define EDGE_INSET 50
@@ -40,11 +42,20 @@
 
     self.mapView.delegate = self;
     self.mapView.showsUserLocation = YES;
+    
+    if (self.startPoint && self.shippingLocation.location) {
+    
+        self.destinationPoint = [STMLocationController locationFromLocationObject:self.shippingLocation.location];
 
-    if (self.startPoint && self.destinationPoint) {
+        self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint
+                                                              withTitle:NSLocalizedString(@"CURRENT GEOPOSITION", nil)
+                                                            andSubtitle:nil];
         
-        self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint];
-        self.destinationPin = [STMMapAnnotation createAnnotationForCLLocation:self.destinationPoint];
+        NSString *title = (self.shippingLocation.name) ? self.shippingLocation.name : self.destinationPointName;
+        
+        self.destinationPin = [STMMapAnnotation createAnnotationForCLLocation:self.destinationPoint
+                                                                    withTitle:title
+                                                                  andSubtitle:self.shippingLocation.address];
         [self.mapView addAnnotation:self.startPin];
         [self.mapView addAnnotation:self.destinationPin];
 
@@ -300,11 +311,18 @@
             annotationView.pinColor = MKPinAnnotationColorPurple;
         }
         
+        annotationView.canShowCallout = YES;
+        annotationView.enabled = YES;
+        
         return annotationView;
         
     } else {
         return nil;
     }
+    
+}
+
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     
 }
 

@@ -17,5 +17,8 @@
 + (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location;
 + (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation;
 
++ (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location withTitle:(NSString *)title andSubtitle:(NSString *)subtitle;
++ (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation withTitle:(NSString *)title andSubtitle:(NSString *)subtitle;
+
 
 @end

@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
+#import "STMDataModel.h"
 
 
 @interface STMRouteMapVC : UIViewController
 
+@property (nonatomic, strong) STMShippingLocation *shippingLocation;
 @property (nonatomic, strong) CLLocation *destinationPoint;
 @property (nonatomic, strong) CLLocation *startPoint;
-
+@property (nonatomic, strong) NSString *destinationPointName;
 
 @end
