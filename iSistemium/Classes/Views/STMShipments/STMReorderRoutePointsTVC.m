@@ -71,15 +71,37 @@
         customCell.detailLabel.textColor = titleColor;
         
         customCell.accessoryType = UITableViewCellAccessoryNone;
+        customCell.showsReorderControl = YES;
+        customCell.shouldIndentWhileEditing = NO;
         
     }
     
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
+
+- (BOOL)tableView:(UITableView *)tableview canMoveRowAtIndexPath:(NSIndexPath *)indexPath{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath{
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return UITableViewCellEditingStyleNone;
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    self.editing = YES;
+    
 }
 
 - (void)viewDidLoad {

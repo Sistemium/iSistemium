@@ -325,7 +325,7 @@
 
 - (void)reorderButtonPressed {
     
-    STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] init];
+    STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     reorderTVC.points = self.points;
     
     [self.navigationController pushViewController:reorderTVC animated:YES];
