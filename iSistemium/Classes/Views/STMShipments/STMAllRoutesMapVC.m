@@ -11,6 +11,8 @@
 #import "STMLocationController.h"
 #import "STMMapAnnotation.h"
 
+#define EDGE_INSET 50
+
 
 @interface STMAllRoutesMapVC () <MKMapViewDelegate>
 
@@ -21,6 +23,9 @@
 
 @property (nonatomic, strong) STMMapAnnotation *startPin;
 @property (nonatomic, strong) NSArray *locationsPins;
+
+@property (nonatomic, strong) NSMutableArray *routes;
+
 
 @end
 
@@ -33,6 +38,15 @@
         _locationsArray = [NSMutableArray array];
     }
     return _locationsArray;
+    
+}
+
+- (NSMutableArray *)routes {
+    
+    if (!_routes) {
+        _routes = [NSMutableArray array];
+    }
+    return _routes;
     
 }
 
@@ -101,10 +115,84 @@
         NSArray *pins = [self.locationsPins arrayByAddingObject:self.startPin];
         
         [self.mapView showAnnotations:pins animated:YES];
+        [self calcRoutes];
         
     }
 
 }
+
+- (void)calcRoutes {
+    
+    self.routes = nil;
+    
+    NSArray *points = [[@[self.startPoint] arrayByAddingObjectsFromArray:self.locationsArray] arrayByAddingObject:self.startPoint];
+    
+    for (int i = 0; i < points.count - 1; i++) {
+        
+        CLLocation *startLocation = points[i];
+        CLLocation *finishLocation = points[i+1];
+        
+        [self calcRouteFromStartLocation:startLocation toFinishLocation:finishLocation];
+        
+    }
+    
+}
+
+- (void)calcRouteFromStartLocation:(CLLocation *)startLocation toFinishLocation:(CLLocation *)finishLocation {
+    
+    MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
+    request.transportType = MKDirectionsTransportTypeAutomobile;
+    
+    MKPlacemark *start = [[MKPlacemark alloc] initWithCoordinate:startLocation.coordinate addressDictionary:nil];
+    MKPlacemark *destination = [[MKPlacemark alloc] initWithCoordinate:finishLocation.coordinate addressDictionary:nil];
+    
+    request.source = [[MKMapItem alloc] initWithPlacemark:start];
+    request.destination = [[MKMapItem alloc] initWithPlacemark:destination];
+    
+    request.requestsAlternateRoutes = NO;
+    
+    MKDirections *directions = [[MKDirections alloc] initWithRequest:request];
+    
+    BOOL isLastRoute = ([finishLocation isEqual:self.startPoint]);
+    
+    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+        
+        if (!error) {
+            
+            [self.routes addObject:response.routes.firstObject];
+            
+            if (isLastRoute) [self showRoutes];
+            
+        }
+        
+    }];
+
+}
+
+- (void)showRoutes {
+
+    [self.mapView removeOverlays:self.mapView.overlays];
+
+    MKMapRect polylineRect;
+    
+    for (MKRoute *route in self.routes) {
+        
+        [self.mapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
+        
+        if ([route isEqual:self.routes.firstObject]) {
+            polylineRect = route.polyline.boundingMapRect;
+        } else {
+            polylineRect = MKMapRectUnion(polylineRect, route.polyline.boundingMapRect);
+        }
+        
+    }
+
+    [self.mapView setVisibleMapRect:polylineRect
+                        edgePadding:UIEdgeInsetsMake(EDGE_INSET, EDGE_INSET, EDGE_INSET, EDGE_INSET)
+                           animated:YES];
+    
+}
+
 
 #pragma mark - MKMapViewDelegate
 
