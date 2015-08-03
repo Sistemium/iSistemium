@@ -78,6 +78,13 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    cell.backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
+    cell.backgroundView.backgroundColor = [UIColor whiteColor];
+    
+}
+
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
 }
@@ -92,6 +99,17 @@
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
     return UITableViewCellEditingStyleNone;
+}
+
+
+#pragma mark - cell's heights cache
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath) self.cachedCellsHeights[indexPath] = @(height);
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    return self.cachedCellsHeights[indexPath];
 }
 
 
