@@ -997,7 +997,7 @@
     CGFloat imageSize = 22;
     CGFloat imagePadding = 0;
     
-    UIImage *image = [[UIImage imageNamed:@"waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *image = [[UIImage imageNamed:@"single_waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
     imageView.tintColor = ACTIVE_BLUE_COLOR;

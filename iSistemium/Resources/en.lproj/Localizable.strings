@@ -320,5 +320,6 @@
 "TIME_H" = "h";
 "TIME_M" = "min";
 "NO ROUTES" = "No routes";
-
+"ROUTING ERROR" = "Routing error";
+"NOT ENOUGH LOCATIONS" = "Not enough locations.";
 

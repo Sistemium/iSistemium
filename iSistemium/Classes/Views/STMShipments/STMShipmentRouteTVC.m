@@ -477,9 +477,71 @@
 
 }
 
+
+#pragma mark - navbar
+
+- (void)setupNavBar {
+    
+    STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
+    self.navigationItem.rightBarButtonItem = waypointButton;
+
+}
+
+- (BOOL)isAllPointsHaveLocation {
+
+    NSPredicate *locationPredicate = [NSPredicate predicateWithFormat:@"shippingLocation.location != %@", nil];
+    NSSet *pointsWithLocation = [self.route.shipmentRoutePoints filteredSetUsingPredicate:locationPredicate];
+
+    return (self.route.shipmentRoutePoints.count == pointsWithLocation.count);
+
+}
+
+- (UIView *)waypointView {
+    
+    CGFloat imageSize = 22;
+    CGFloat imagePadding = 0;
+    
+    UIImage *image = [[UIImage imageNamed:@"waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
+    imageView.tintColor = ACTIVE_BLUE_COLOR;
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
+    [button addTarget:self action:@selector(waypointButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [button addSubview:imageView];
+    
+    return button;
+    
+}
+
+- (void)waypointButtonPressed {
+    
+    if ([self isAllPointsHaveLocation]) {
+        
+//        [self performSegueWithIdentifier:@"showRoute" sender:self];
+        
+    } else {
+        [self showNotEnoughLocationsAlert];
+    }
+
+}
+
+- (void)showNotEnoughLocationsAlert {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ROUTING ERROR", nil)
+                                                    message:NSLocalizedString(@"NOT ENOUGH LOCATIONS", nil)
+                                                   delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                          otherButtonTitles:nil];
+    [alert show];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [self setupNavBar];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
