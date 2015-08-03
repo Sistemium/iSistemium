@@ -518,7 +518,7 @@
     
     if ([self isAllPointsHaveLocation]) {
         
-//        [self performSegueWithIdentifier:@"showRoute" sender:self];
+        [self performSegueWithIdentifier:@"showAllRoutes" sender:self];
         
     } else {
         [self showNotEnoughLocationsAlert];
