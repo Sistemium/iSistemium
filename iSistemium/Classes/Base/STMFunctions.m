@@ -755,7 +755,9 @@
     
 }
 
-+ (void)logMemoryUsageFromVC:(UIViewController *)vc {
++ (void)nilifyViewForVC:(UIViewController *)vc {
+    
+    vc.view = nil;
 
     NSString *logMessage = [NSString stringWithFormat:@"%@ set it's view to nil. %@", NSStringFromClass(vc.class), [self memoryStatistic]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
