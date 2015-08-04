@@ -440,10 +440,10 @@
 
 - (void)didReceiveMemoryWarning {
     
-    if ([self isViewLoaded] && [self.view window] == nil) {
-        
+    if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
+
         [self flushMapView];
-        self.view = nil;
+        [STMFunctions logMemoryUsageFromVC:self];
         
     }
     
