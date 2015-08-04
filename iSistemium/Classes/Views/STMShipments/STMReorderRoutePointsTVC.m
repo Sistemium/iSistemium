@@ -13,6 +13,8 @@
 
 @interface STMReorderRoutePointsTVC ()
 
+@property (nonatomic) BOOL orderWasChanged;
+
 
 @end
 
@@ -36,7 +38,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMCustom8TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     [self fillCell:cell atIndexPath:indexPath];
     
@@ -46,29 +48,32 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+    if ([cell isKindOfClass:[STMCustom8TVCell class]]) {
         
-        STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
+        STMCustom8TVCell *customCell = (STMCustom8TVCell *)cell;
         
         STMShipmentRoutePoint *point = self.points[indexPath.row];
         
         customCell.titleLabel.text = point.name;
         
-        UIColor *titleColor = [UIColor blackColor];
+        UIColor *textColor = [UIColor blackColor];
         
         if (point.isReached.boolValue) {
             
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
             NSUInteger unprocessedShipmentsCount = [point.shipments filteredSetUsingPredicate:predicate].count;
             
-            titleColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
+            textColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
             
         }
         
-        customCell.titleLabel.textColor = titleColor;
+        customCell.titleLabel.textColor = textColor;
         
         customCell.detailLabel.text = [point shortInfo];
-        customCell.detailLabel.textColor = titleColor;
+        customCell.detailLabel.textColor = textColor;
+        
+        customCell.infoLabel.text = @(point.ord.integerValue + 1).stringValue;
+        customCell.infoLabel.textColor = textColor;
         
         customCell.accessoryType = UITableViewCellAccessoryNone;
         customCell.showsReorderControl = YES;
@@ -95,6 +100,30 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath{
     
+    NSInteger fromIndex = fromIndexPath.row;
+    NSInteger toIndex = toIndexPath.row;
+    
+    NSUInteger minIndex = MIN(fromIndex, toIndex);
+    NSUInteger loc = (minIndex == fromIndex) ? minIndex + 1 : minIndex;
+    
+    NSRange affectedPointsRange = NSMakeRange(loc, labs(fromIndex - toIndex));
+    
+    NSArray *affectedPoints = [self.points subarrayWithRange:affectedPointsRange];
+
+    for (STMShipmentRoutePoint *point in affectedPoints) {
+        point.ord = (minIndex == fromIndex) ? @(point.ord.integerValue - 1) : @(point.ord.integerValue + 1);
+    }
+    
+    STMShipmentRoutePoint *movedPoint = self.points[fromIndex];
+    movedPoint.ord = @(toIndex);
+    
+    self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC.parentVC shipmentRoutePointsSortDescriptors]];
+    
+    self.cachedCellsHeights = nil;
+    [self.tableView reloadData];
+    
+    self.orderWasChanged = YES;
+    
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -117,7 +146,7 @@
 
 - (void)customInit {
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     self.editing = YES;
     
 }
@@ -126,6 +155,14 @@
     
     [super viewDidLoad];
     [self customInit];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if (self.orderWasChanged) [self.parentVC recalcRoutes];
+    
+    [super viewWillDisappear:animated];
     
 }
 

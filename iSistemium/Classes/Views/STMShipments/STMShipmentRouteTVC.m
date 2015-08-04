@@ -431,7 +431,9 @@
     } else if ([segue.identifier isEqualToString:@"showAllRoutes"] &&
                [segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
         
-        [(STMAllRoutesMapVC *)segue.destinationViewController setPoints:[self pointsWithLocation]];
+        STMAllRoutesMapVC *allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
+        allRoutesMapVC.points = [self pointsWithLocation];
+        allRoutesMapVC.parentVC = self;
         
     }
     
@@ -513,7 +515,7 @@
         }
         
     }
-    
+
     return result;
     
 }

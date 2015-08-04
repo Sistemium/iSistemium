@@ -63,7 +63,7 @@
 - (void)prepareArrayOfCLLocations {
     
     self.locationsArray = nil;
-    
+        
     NSMutableArray *pins = [NSMutableArray array];
     
     if (self.points.count > 0) {
@@ -118,6 +118,17 @@
         
     }
 
+}
+
+- (void)recalcRoutes {
+    
+    [self.view addSubview:self.spinner];
+
+    self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
+    
+    [self prepareArrayOfCLLocations];
+    [self updateMapView];
+    
 }
 
 - (void)calcRoutes {
@@ -363,6 +374,7 @@
     
     STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     reorderTVC.points = self.points;
+    reorderTVC.parentVC = self;
     
     [self.navigationController pushViewController:reorderTVC animated:YES];
     

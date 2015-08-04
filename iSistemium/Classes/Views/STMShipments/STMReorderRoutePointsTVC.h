@@ -7,10 +7,13 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import "STMAllRoutesMapVC.h"
+
 
 @interface STMReorderRoutePointsTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) NSArray *points;
+@property (nonatomic, weak) STMAllRoutesMapVC *parentVC;
 
 
 @end

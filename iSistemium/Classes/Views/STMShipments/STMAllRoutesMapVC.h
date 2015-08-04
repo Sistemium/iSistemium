@@ -9,11 +9,16 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
+#import "STMShipmentRouteTVC.h"
+
 
 @interface STMAllRoutesMapVC : UIViewController
 
 @property (nonatomic, strong) CLLocation *startPoint;
 @property (nonatomic, strong) NSArray *points;
+@property (nonatomic, weak) STMShipmentRouteTVC *parentVC;
+
+- (void)recalcRoutes;
 
 
 @end
