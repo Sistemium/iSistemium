@@ -41,11 +41,10 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentRoutePoint class])];
         
-        NSSortDescriptor *localOrdDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"localOrd" ascending:YES selector:@selector(compare:)];
         NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
         NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         
-        request.sortDescriptors = @[localOrdDescriptor, ordDescriptor, nameDescriptor];
+        request.sortDescriptors = @[ordDescriptor, nameDescriptor];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipmentRoute == %@", self.route];
         
