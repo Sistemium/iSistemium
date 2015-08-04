@@ -193,7 +193,10 @@
     [self removeObservers];
 
     if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
-        [STMFunctions logMemoryUsageFromVC:self];        
+
+        self.view = nil;
+        [STMFunctions logMemoryUsageFromVC:self];
+
     }
 
 }
