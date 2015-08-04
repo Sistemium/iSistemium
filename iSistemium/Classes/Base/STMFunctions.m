@@ -12,6 +12,8 @@
 
 #import <CommonCrypto/CommonDigest.h>
 #import <sys/sysctl.h>
+#import "mach/mach.h"
+
 
 @implementation STMDateFormatter
 
@@ -718,11 +720,14 @@
     
     if ([vc isViewLoaded] && [vc.view window] == nil) {
         
-        NSString *logMessage = [NSString stringWithFormat:@"%@ receive memory warning", NSStringFromClass(vc.class)];
-        
+        NSString *logMessage = [NSString stringWithFormat:@"%@ receive memory warning. %@", NSStringFromClass(vc.class), [self memoryStatistic]];
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
         
         vc.view = nil;
+
+        logMessage = [NSString stringWithFormat:@"%@ set it's view to nil. %@", NSStringFromClass(vc.class), [self memoryStatistic]];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+
         return YES;
         
     } else {
@@ -732,6 +737,40 @@
     }
     
 }
+
++ (NSString *)memoryStatistic {
+    
+    NSString *usedMemoryString = [NSString stringWithFormat:@"Used memory: %f Kb", usedMemory()/1024.0f];
+    NSString *freeMemoryString = [NSString stringWithFormat:@"Free memory: %f Kb", freeMemory()/1024.0f];
+    
+    return [NSString stringWithFormat:@"%@ / %@", usedMemoryString, freeMemoryString];
+    
+}
+
+vm_size_t usedMemory(void) {
+    
+    struct task_basic_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &size);
+    
+    return (kerr == KERN_SUCCESS) ? info.resident_size : 0; // size in bytes
+    
+}
+
+vm_size_t freeMemory(void) {
+    
+    mach_port_t host_port = mach_host_self();
+    mach_msg_type_number_t host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
+    vm_size_t pagesize;
+    vm_statistics_data_t vm_stat;
+    
+    host_page_size(host_port, &pagesize);
+    (void) host_statistics(host_port, HOST_VM_INFO, (host_info_t)&vm_stat, &host_size);
+    
+    return vm_stat.free_count * pagesize;
+    
+}
+
 
 
 @end
