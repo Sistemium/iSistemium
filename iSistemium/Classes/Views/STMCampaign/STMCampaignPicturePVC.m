@@ -35,26 +35,17 @@
 }
 
 - (STMCampaignPictureVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
-    
-    if ((self.campaign.pictures.count == 0) || (index >= self.campaign.pictures.count)) {
 
-        return nil;
-
-    } else {
+    STMCampaignPictureVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPictureVC"];
     
-        STMCampaignPictureVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"campaignPictureVC"];
-//        STMCampaignPictureVC *vc = [[STMCampaignPictureVC alloc] init];
+    if ((self.campaign.pictures.count != 0) && (index < self.campaign.pictures.count)) {
 
         vc.index = index;
-        
         vc.picture = self.picturesArray[index];
         
-//        NSLog(@"index %d", index);
-//        NSLog(@"vc.view %@", vc.view);
-
-        return vc;
-        
     }
+    
+    return vc;
 
 }
 
@@ -137,8 +128,10 @@
     [self.view addGestureRecognizer:tap];
     
     STMCampaignPictureVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
+
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
+    
     [self refreshTitle];
     
 }
