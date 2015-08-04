@@ -384,7 +384,7 @@
     if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
         
         [self flushMapView];
-        [STMFunctions logMemoryUsageFromVC:self];
+        [STMFunctions nilifyViewForVC:self];
         
     }
     
