@@ -747,9 +747,6 @@
         
         vc.view = nil;
 
-        logMessage = [NSString stringWithFormat:@"%@ set it's view to nil. %@", NSStringFromClass(vc.class), [self memoryStatistic]];
-        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-
         return YES;
         
     } else {
@@ -758,6 +755,13 @@
         
     }
     
+}
+
++ (void)logMemoryUsageFromVC:(UIViewController *)vc {
+
+    NSString *logMessage = [NSString stringWithFormat:@"%@ set it's view to nil. %@", NSStringFromClass(vc.class), [self memoryStatistic]];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+
 }
 
 + (NSString *)memoryStatistic {

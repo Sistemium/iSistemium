@@ -192,7 +192,9 @@
     [super didReceiveMemoryWarning];
     [self removeObservers];
 
-    [STMFunctions shouldHandleMemoryWarningFromVC:self];
+    if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
+        [STMFunctions logMemoryUsageFromVC:self];        
+    }
 
 }
 

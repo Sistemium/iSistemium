@@ -265,7 +265,9 @@
 
 - (void)didReceiveMemoryWarning {
     
-    [STMFunctions shouldHandleMemoryWarningFromVC:self];
+    if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
+        [STMFunctions logMemoryUsageFromVC:self];
+    }
 
     [super didReceiveMemoryWarning];
 
