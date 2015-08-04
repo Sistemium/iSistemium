@@ -9,7 +9,7 @@
 #ifndef iSistemium_STMDevDef_h
 #define iSistemium_STMDevDef_h
 
-#define GRIMAX 0
+#define GRIMAX 1
 
 
 #endif

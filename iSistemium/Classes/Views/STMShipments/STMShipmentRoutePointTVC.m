@@ -930,7 +930,8 @@
         STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
 
         routeMapVC.shippingLocation = self.point.shippingLocation;
-        routeMapVC.destinationPointName = self.point.name;
+        routeMapVC.destinationPointName = self.point.shortName;
+        routeMapVC.destinationPointAddress = self.point.address;
         
     }
     

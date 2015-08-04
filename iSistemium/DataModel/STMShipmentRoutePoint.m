@@ -18,6 +18,8 @@
 @dynamic isReached;
 @dynamic name;
 @dynamic ord;
+@dynamic shortName;
+@dynamic address;
 @dynamic reachedAtLocation;
 @dynamic shipmentRoute;
 @dynamic shipments;

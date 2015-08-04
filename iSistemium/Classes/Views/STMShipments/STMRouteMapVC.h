@@ -17,5 +17,7 @@
 @property (nonatomic, strong) CLLocation *destinationPoint;
 @property (nonatomic, strong) CLLocation *startPoint;
 @property (nonatomic, strong) NSString *destinationPointName;
+@property (nonatomic, strong) NSString *destinationPointAddress;
+
 
 @end
