@@ -383,6 +383,69 @@
 }
 
 
+#pragma mark - images
+
++ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
+    return [self resizeImage:image toSize:size allowRetina:YES];
+}
+
++ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina {
+    
+    if (image.size.height > 0 && image.size.width > 0) {
+        
+        CGFloat width = size.width;
+        CGFloat height = size.height;
+        
+        if (image.size.width >= image.size.height) {
+            
+            height = width * image.size.height / image.size.width;
+            
+        } else {
+            
+            width = height * image.size.width / image.size.height;
+            
+        }
+        
+        // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+        // Pass 1.0 to force exact pixel size.
+        
+        CGFloat scale = (retina) ? 0.0 : 1.0;
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, scale);
+        [image drawInRect:CGRectMake(0, 0, width, height)];
+        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        return resultImage;
+        
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
+
++ (UIImage *)colorImage:(UIImage *)origImage withColor:(UIColor *)color {
+    
+    UIGraphicsBeginImageContextWithOptions(origImage.size, YES, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, (CGRect){ {0,0}, origImage.size} );
+    
+    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, origImage.size.height);
+    CGContextConcatCTM(context, flipVertical);
+    CGContextDrawImage(context, (CGRect){{0,0}, origImage.size }, [origImage CGImage]);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+    
+}
+
+
 #pragma mark - some other usefull methods
 
 + (NSString *)pluralTypeForCount:(NSUInteger)count {
@@ -428,47 +491,6 @@
     }
     
     return result;
-    
-}
-
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
-    return [self resizeImage:image toSize:size allowRetina:YES];
-}
-
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina {
-    
-    if (image.size.height > 0 && image.size.width > 0) {
-        
-        CGFloat width = size.width;
-        CGFloat height = size.height;
-        
-        if (image.size.width >= image.size.height) {
-            
-            height = width * image.size.height / image.size.width;
-            
-        } else {
-            
-            width = height * image.size.width / image.size.height;
-            
-        }
-        
-        // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
-        // Pass 1.0 to force exact pixel size.
-        
-        CGFloat scale = (retina) ? 0.0 : 1.0;
-        
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, scale);
-        [image drawInRect:CGRectMake(0, 0, width, height)];
-        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        return resultImage;
-        
-    } else {
-        
-        return nil;
-        
-    }
     
 }
 

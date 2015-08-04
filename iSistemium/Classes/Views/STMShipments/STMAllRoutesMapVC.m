@@ -58,29 +58,29 @@
     
 }
 
-- (NSArray *)locationsPins {
-    
-    if (!_locationsPins) {
-
-        if (self.locationsArray.count > 0) {
-            
-            NSMutableArray *pins = [NSMutableArray array];
-            
-            for (CLLocation *location in self.locationsArray) {
-                
-                STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location];
-                [pins addObject:pin];
-                
-            }
-            
-            _locationsPins = pins.copy;
-            
-        }
-        
-    }
-    return _locationsPins;
-    
-}
+//- (NSArray *)locationsPins {
+//    
+//    if (!_locationsPins) {
+//
+//        if (self.locationsArray.count > 0) {
+//            
+//            NSMutableArray *pins = [NSMutableArray array];
+//            
+//            for (CLLocation *location in self.locationsArray) {
+//                
+//                STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location];
+//                [pins addObject:pin];
+//                
+//            }
+//            
+//            _locationsPins = pins.copy;
+//            
+//        }
+//        
+//    }
+//    return _locationsPins;
+//    
+//}
 
 - (void)prepareArrayOfCLLocations {
     
@@ -98,7 +98,8 @@
             
             STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
                                                                           withTitle:point.name
-                                                                        andSubtitle:nil];
+                                                                        andSubtitle:nil
+                                                                             andOrd:point.ord];
             [pins addObject:pin];
 
         }
@@ -285,21 +286,52 @@
     
     if ([annotation isKindOfClass:[STMMapAnnotation class]]) {
         
-        static NSString *identifier = @"STMMapAnnotation";
-        MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
-        
         STMMapAnnotation *myAnnotation = (STMMapAnnotation *)annotation;
+
+        MKPinAnnotationView *annotationView;
         
-        if (!annotationView) {
-            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:myAnnotation reuseIdentifier:identifier];
+        if ([myAnnotation isEqual:self.startPin]) {
+
+            static NSString *identifier = @"STMMapAnnotationStart";
+            annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+            
+            if (!annotationView) {
+                annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:myAnnotation reuseIdentifier:identifier];
+            } else {
+                annotationView.annotation = annotation;
+            }
+            
         } else {
-            annotationView.annotation = annotation;
+            
+            static NSString *identifier = @"STMMapAnnotation";
+            annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+            
+            if (!annotationView) {
+                annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:myAnnotation reuseIdentifier:identifier];
+            } else {
+                annotationView.annotation = annotation;
+            }
+
         }
         
         if ([myAnnotation isEqual:self.startPin]) {
+            
             annotationView.pinColor = MKPinAnnotationColorRed;
+            
         } else {
-            annotationView.pinColor = MKPinAnnotationColorPurple;
+            
+            if (myAnnotation.ord) {
+
+                NSString *imageName = (myAnnotation.ord.integerValue < 9) ? [NSString stringWithFormat:@"%@_circle_colored_blue", @(myAnnotation.ord.integerValue + 1)] : @"circle_colored_blue";
+                
+                annotationView.image = [UIImage imageNamed:imageName];
+                
+            } else {
+            
+                annotationView.pinColor = MKPinAnnotationColorPurple;
+
+            }
+            
         }
         
         annotationView.canShowCallout = YES;

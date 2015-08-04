@@ -41,10 +41,7 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentRoutePoint class])];
         
-        NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
-        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        
-        request.sortDescriptors = @[ordDescriptor, nameDescriptor];
+        request.sortDescriptors = [self shipmentRoutePointsSortDescriptors];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipmentRoute == %@", self.route];
         
@@ -57,6 +54,15 @@
     }
     return _resultsController;
     
+}
+
+- (NSArray *)shipmentRoutePointsSortDescriptors {
+    
+    NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    
+    return @[ordDescriptor, nameDescriptor];
+
 }
 
 - (void)performFetch {
@@ -498,8 +504,7 @@
     NSPredicate *locationPredicate = [NSPredicate predicateWithFormat:@"shippingLocation.location != %@", nil];
     NSSet *pointsWithLocation = [self.route.shipmentRoutePoints filteredSetUsingPredicate:locationPredicate];
 
-    NSSortDescriptor *orderDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
-    NSArray *result = [pointsWithLocation sortedArrayUsingDescriptors:@[orderDescriptor]];
+    NSArray *result = [pointsWithLocation sortedArrayUsingDescriptors:[self shipmentRoutePointsSortDescriptors]];
     
     for (STMShipmentRoutePoint *point in result) {
         

@@ -27,14 +27,19 @@
 }
 
 + (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location withTitle:(NSString *)title andSubtitle:(NSString *)subtitle {
+    return [self createAnnotationForLocation:location withTitle:title andSubtitle:subtitle andOrd:nil];
+}
 
++ (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location withTitle:(NSString *)title andSubtitle:(NSString *)subtitle andOrd:(NSNumber *)ord {
+    
     STMMapAnnotation *annotation = [[STMMapAnnotation alloc] init];
     annotation.location = location;
     annotation.annotationTitle = title;
     annotation.annotationSubtitle = subtitle;
+    annotation.ord = ord;
     
     return annotation;
-
+    
 }
 
 + (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation {
@@ -42,15 +47,21 @@
 }
 
 + (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation withTitle:(NSString *)title andSubtitle:(NSString *)subtitle {
+    return [self createAnnotationForCLLocation:clLocation withTitle:title andSubtitle:subtitle andOrd:nil];
+}
 
++ (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation withTitle:(NSString *)title andSubtitle:(NSString *)subtitle andOrd:(NSNumber *)ord {
+    
     STMMapAnnotation *annotation = [[STMMapAnnotation alloc] init];
     annotation.clLocation = clLocation;
     annotation.annotationTitle = title;
     annotation.annotationSubtitle = subtitle;
+    annotation.ord = ord;
     
     return annotation;
 
 }
+
 
 - (NSString *)title {
     return self.annotationTitle;
