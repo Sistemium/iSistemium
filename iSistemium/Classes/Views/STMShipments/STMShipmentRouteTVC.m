@@ -328,7 +328,8 @@
     cell.detailLabel.text = [point shortInfo];
     cell.detailLabel.textColor = titleColor;
     
-    cell.accessoryType = (point.shipments.count > 0) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+//    cell.accessoryType = (point.shipments.count > 0) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
 }
 
@@ -338,13 +339,15 @@
         
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
         
-        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
-        
-        if (point.shipments.count > 0) {
-            
-            [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
-            
-        }
+//        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
+
+        [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
+
+//        if (point.shipments.count > 0) {
+//            
+//            [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
+//            
+//        }
 
     } else if (indexPath.section == 0) {
         
