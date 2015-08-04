@@ -34,6 +34,8 @@
 @property (nonatomic) NSTimeInterval routesOverallTime;
 @property (nonatomic) CLLocationDistance routesOverallDistance;
 
+@property (nonatomic, strong) STMSpinnerView *spinner;
+
 
 @end
 
@@ -57,30 +59,6 @@
     return _routes;
     
 }
-
-//- (NSArray *)locationsPins {
-//    
-//    if (!_locationsPins) {
-//
-//        if (self.locationsArray.count > 0) {
-//            
-//            NSMutableArray *pins = [NSMutableArray array];
-//            
-//            for (CLLocation *location in self.locationsArray) {
-//                
-//                STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location];
-//                [pins addObject:pin];
-//                
-//            }
-//            
-//            _locationsPins = pins.copy;
-//            
-//        }
-//        
-//    }
-//    return _locationsPins;
-//    
-//}
 
 - (void)prepareArrayOfCLLocations {
     
@@ -180,7 +158,9 @@
             
             [self.routes addObject:response.routes.firstObject];
             
-            [self showRoutes];
+            if (self.routes.count == self.points.count + 1) {
+                [self showRoutes];
+            }
             
         }
         
@@ -190,6 +170,8 @@
 
 - (void)showRoutes {
 
+    [self.spinner removeFromSuperview];
+    
     [self.mapView removeOverlays:self.mapView.overlays];
 
     self.routesOverallDistance = 0;
@@ -273,10 +255,17 @@
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay {
-    
+
     MKPolylineRenderer *renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
-    renderer.strokeColor = [UIColor blueColor];
-    renderer.lineWidth = 5.0;
+
+    NSUInteger routeNumber = [[self.routes valueForKeyPath:@"polyline"] indexOfObject:overlay];
+    CGFloat k = 0.5 / (self.routes.count - 1);
+    CGFloat alfa = 1 - k * routeNumber;
+    
+    alfa = 1;
+
+    renderer.strokeColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:alfa];
+    renderer.lineWidth = 3.0;
     
     return renderer;
     
@@ -383,6 +372,9 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
+    [self.view addSubview:self.spinner];
     
     [self setupNavBar];
     [self prepareArrayOfCLLocations];
