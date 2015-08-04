@@ -534,8 +534,7 @@
     if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
         
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"settingsChanged" object:self.session];
-        self.view = nil;
-        [STMFunctions logMemoryUsageFromVC:self];
+        [STMFunctions nilifyViewForVC:self];
         
     }
 

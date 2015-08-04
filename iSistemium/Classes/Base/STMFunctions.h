@@ -71,7 +71,7 @@
 + (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel;
 
 + (BOOL)shouldHandleMemoryWarningFromVC:(UIViewController *)vc;
-+ (void)logMemoryUsageFromVC:(UIViewController *)vc;
++ (void)nilifyViewForVC:(UIViewController *)vc;
 
 
 @end

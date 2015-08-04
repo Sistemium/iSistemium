@@ -266,10 +266,7 @@
 - (void)didReceiveMemoryWarning {
     
     if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
-        
-        self.view = nil;
-        [STMFunctions logMemoryUsageFromVC:self];
-        
+        [STMFunctions nilifyViewForVC:self];
     }
 
     [super didReceiveMemoryWarning];
