@@ -503,7 +503,11 @@
     NSArray *result = [pointsWithLocation sortedArrayUsingDescriptors:@[orderDescriptor]];
     
     for (STMShipmentRoutePoint *point in result) {
-        point.localOrd = @([result indexOfObject:point]);
+        
+        if (point.ord.integerValue != [result indexOfObject:point]) {
+            point.ord = @([result indexOfObject:point]);
+        }
+        
     }
     
     return result;

@@ -2,7 +2,7 @@
 //  STMShipmentRoutePoint.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 03/08/15.
+//  Created by Maxim Grigoriev on 04/08/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -18,7 +18,6 @@
 @dynamic isReached;
 @dynamic name;
 @dynamic ord;
-@dynamic localOrd;
 @dynamic reachedAtLocation;
 @dynamic shipmentRoute;
 @dynamic shipments;

@@ -2,7 +2,7 @@
 //  STMShipmentRoutePoint.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 03/08/15.
+//  Created by Maxim Grigoriev on 04/08/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -17,7 +17,6 @@
 @property (nonatomic, retain) NSNumber * isReached;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * ord;
-@property (nonatomic, retain) NSNumber * localOrd;
 @property (nonatomic, retain) STMLocation *reachedAtLocation;
 @property (nonatomic, retain) STMShipmentRoute *shipmentRoute;
 @property (nonatomic, retain) NSSet *shipments;
