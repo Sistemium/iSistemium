@@ -723,8 +723,6 @@
         NSString *logMessage = [NSString stringWithFormat:@"%@ receive memory warning. %@", NSStringFromClass(vc.class), [self memoryStatistic]];
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
         
-        vc.view = nil;
-
         return YES;
         
     } else {
