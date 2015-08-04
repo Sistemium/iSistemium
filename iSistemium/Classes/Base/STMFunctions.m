@@ -7,6 +7,9 @@
 //
 
 #import "STMFunctions.h"
+
+#import "STMLogger.h"
+
 #import <CommonCrypto/CommonDigest.h>
 #import <sys/sysctl.h>
 
@@ -705,6 +708,28 @@
     }
 
     return infoText;
+    
+}
+
+
+#pragma mark - memory warning handle
+
++ (BOOL)shouldHandleMemoryWarningFromVC:(UIViewController *)vc {
+    
+    if ([vc isViewLoaded] && [vc.view window] == nil) {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"%@ receive memory warning", NSStringFromClass(vc.class)];
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+        
+        vc.view = nil;
+        return YES;
+        
+    } else {
+        
+        return NO;
+        
+    }
     
 }
 

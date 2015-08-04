@@ -191,9 +191,8 @@
     
     [super didReceiveMemoryWarning];
     [self removeObservers];
-    if ([self isViewLoaded] && [self.view window] == nil) {
-        self.view = nil;
-    }
+
+    [STMFunctions shouldHandleMemoryWarningFromVC:self];
 
 }
 

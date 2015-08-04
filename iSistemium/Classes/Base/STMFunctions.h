@@ -70,4 +70,7 @@
 
 + (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel;
 
++ (BOOL)shouldHandleMemoryWarningFromVC:(UIViewController *)vc;
+
+
 @end

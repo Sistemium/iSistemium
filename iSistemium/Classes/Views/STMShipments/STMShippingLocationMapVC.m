@@ -516,11 +516,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)didReceiveMemoryWarning {
     
-    if ([self isViewLoaded] && [self.view window] == nil) {
-        
+    if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
         [self flushMapView];
-        self.view = nil;
-        
     }
 
     [super didReceiveMemoryWarning];
