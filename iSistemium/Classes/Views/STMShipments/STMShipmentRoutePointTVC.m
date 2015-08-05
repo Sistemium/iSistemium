@@ -36,7 +36,6 @@
 @property (nonatomic, strong) NSString *arrivalButtonCellIdentifier;
 
 @property (nonatomic, strong) NSIndexPath *arrivalButtonCellIndexPath;
-//@property (nonatomic, strong) NSIndexSet *shipmentsIndexSet;
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
@@ -51,6 +50,8 @@
 @property (nonatomic ,strong) STMSpinnerView *spinner;
 
 @property (nonatomic, strong) UIView *picturesView;
+
+@property (nonatomic, strong) CLLocation *geocodedLocation;
 
 
 @end
@@ -353,7 +354,7 @@
             break;
             
         case 2:
-            return (self.point.shippingLocation.location) ? 2 : 1;
+            return (self.point.shippingLocation.location || self.geocodedLocation) ? 2 : 1;
             break;
             
         case 3:
@@ -589,39 +590,18 @@
         customCell.detailLabel.textAlignment = NSTextAlignmentCenter;
         
         [[customCell viewWithTag:666] removeFromSuperview];
-        
-//        if (self.isWaitingLocation) {
-//            
-//            STMSpinnerView *spinner = [STMSpinnerView spinnerViewWithFrame:customCell.contentView.bounds];
-//            spinner.tag = 666;
-//            
-//            [customCell.contentView addSubview:spinner];
-//            
-//        } else {
-        
-            if (!shippingLocation.location) {
                 
-                customCell.titleLabel.text = NSLocalizedString(@"SET LOCATION", nil);
-                customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-                
-//                if (self.session.locationTracker.isAccuracySufficient) {
-//                    
-//                    customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-//                    
-//                } else {
-//                    
-//                    customCell.titleLabel.textColor = [UIColor lightGrayColor];
-//                    customCell.detailLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
-//                    
-//                }
-                
-            } else {
-                
-                customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
-                
-            }
-
-//        }
+        if (shippingLocation.location || self.geocodedLocation) {
+            
+            customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
+            customCell.detailLabel.text = (shippingLocation.location) ? @"" : NSLocalizedString(@"LOCATION NOT CONFIRMED", nil);
+            
+        } else {
+            
+            customCell.titleLabel.text = NSLocalizedString(@"SET LOCATION", nil);
+            customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+            
+        }
         
     }
 
@@ -909,8 +889,11 @@
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
         
-        [(STMShippingLocationMapVC *)segue.destinationViewController setPoint:self.point];
+        STMShippingLocationMapVC *mapVC = (STMShippingLocationMapVC *)segue.destinationViewController;
         
+        mapVC.point = self.point;
+        mapVC.geocodedLocation = self.geocodedLocation;
+                
     } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
                [sender isKindOfClass:[UIView class]] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationPicturesPVC class]]) {
@@ -1016,6 +999,31 @@
     [self performSegueWithIdentifier:@"showRoute" sender:self];
 }
 
+
+#pragma mark - CLGeocode
+
+- (void)checkPointLocation {
+    
+    if (!self.point.shippingLocation.location && self.point.address) {
+        
+        [[[CLGeocoder alloc] init] geocodeAddressString:self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
+            
+            if (!error) {
+                
+                CLPlacemark *placemark = placemarks.firstObject;
+                self.geocodedLocation = placemark.location;
+                
+                [self.tableView reloadData];
+
+            }
+            
+        }];
+        
+    }
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -1044,6 +1052,7 @@
     
     [self addObservers];
     [self performFetch];
+    [self checkPointLocation];
     
 }
 

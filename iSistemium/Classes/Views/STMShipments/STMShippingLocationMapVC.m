@@ -155,35 +155,52 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)centeringMapOnSettedLocation {
     
-    self.locationPin = [STMMapAnnotation createAnnotationForLocation:self.location];
-    [self.mapView addAnnotation:self.locationPin];
+    CLLocation *location = nil;
     
-    CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+    if (self.location) {
     
-    CLLocationDistance distance = 10000;
-    
-    CLLocation *userLocation = self.mapView.userLocation.location;
-    
-    if (userLocation) {
+        CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
+        location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+
+    } else if (self.geocodedLocation) {
         
-        distance = [location distanceFromLocation:userLocation] * 2;
-        
-    } else {
-        
-        CLLocation *lastLocation = self.session.locationTracker.lastLocation;
-        
-        if (lastLocation) {
-            
-            distance = [location distanceFromLocation:lastLocation] * 2;
-            
-        }
+        location = self.geocodedLocation;
         
     }
     
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(locationCoordinate, distance, distance);
-    
-    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+    if (location) {
+        
+        self.locationPin = [STMMapAnnotation createAnnotationForCLLocation:location
+                                                                 withTitle:self.point.shortName
+                                                               andSubtitle:self.point.address];
+        
+        [self.mapView addAnnotation:self.locationPin];
+        
+        CLLocationDistance distance = 10000;
+        
+        CLLocation *userLocation = self.mapView.userLocation.location;
+        
+        if (userLocation) {
+            
+            distance = [location distanceFromLocation:userLocation] * 2;
+            
+        } else {
+            
+            CLLocation *lastLocation = self.session.locationTracker.lastLocation;
+            
+            if (lastLocation) {
+                
+                distance = [location distanceFromLocation:lastLocation] * 2;
+                
+            }
+            
+        }
+        
+        MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(location.coordinate, distance, distance);
+        
+        [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+        
+    }
 
 }
 
@@ -425,6 +442,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
             }
         }
         
+        annotationView.canShowCallout = YES;
+        
         return annotationView;
 
     } else {
@@ -440,7 +459,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)initState {
     
-    self.state = (self.location) ? STMShippingLocationHaveLocation : STMShippingLocationNoLocation;
+    self.state = (self.location || self.geocodedLocation) ? STMShippingLocationHaveLocation : STMShippingLocationNoLocation;
     
 }
 
