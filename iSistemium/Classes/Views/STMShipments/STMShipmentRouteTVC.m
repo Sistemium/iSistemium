@@ -487,6 +487,15 @@
                [segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
         
         STMAllRoutesMapVC *allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
+        
+        for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
+            
+            if (point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point]) {
+                point.ord = @([self.resultsController.fetchedObjects indexOfObject:point]);
+            }
+            
+        }
+        
 //        allRoutesMapVC.points = [self pointsWithLocation];
         allRoutesMapVC.points = self.resultsController.fetchedObjects;
         allRoutesMapVC.geocodedLocations = self.geocodedLocations.copy;
