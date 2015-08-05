@@ -16,7 +16,10 @@
 
 @property (nonatomic, strong) CLLocation *startPoint;
 @property (nonatomic, strong) NSArray *points;
+@property (nonatomic, strong) NSDictionary *geocodedLocations;
+
 @property (nonatomic, weak) STMShipmentRouteTVC *parentVC;
+
 
 - (void)recalcRoutes;
 

@@ -487,7 +487,9 @@
                [segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
         
         STMAllRoutesMapVC *allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
-        allRoutesMapVC.points = [self pointsWithLocation];
+//        allRoutesMapVC.points = [self pointsWithLocation];
+        allRoutesMapVC.points = self.resultsController.fetchedObjects;
+        allRoutesMapVC.geocodedLocations = self.geocodedLocations.copy;
         allRoutesMapVC.parentVC = self;
         
     }
@@ -640,6 +642,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+    [self setupNavBar];
     [self reloadData];
     
     [super viewWillAppear:animated];

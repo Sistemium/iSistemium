@@ -70,15 +70,25 @@
         
         for (STMShipmentRoutePoint *point in self.points) {
             
-            STMLocation *pointLocation = point.shippingLocation.location;
-            CLLocation *location = [STMLocationController locationFromLocationObject:pointLocation];
-            [self.locationsArray addObject:location];
+            CLLocation *location = nil;
             
-            STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
-                                                                          withTitle:point.shortName
-                                                                        andSubtitle:point.address
-                                                                             andOrd:point.ord];
-            [pins addObject:pin];
+            if (point.shippingLocation.location) {
+                location = [STMLocationController locationFromLocationObject:point.shippingLocation.location];
+            } else {
+                location = self.geocodedLocations[point.xid];
+            }
+            
+            if (location) {
+
+                [self.locationsArray addObject:location];
+                
+                STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
+                                                                              withTitle:point.shortName
+                                                                            andSubtitle:point.address
+                                                                                 andOrd:point.ord];
+                [pins addObject:pin];
+
+            }
 
         }
         
