@@ -325,6 +325,6 @@
 "CURRENT GEOPOSITION" = "Текущая геопозиция";
 "START POINT" = "Стартовая позиция";
 "LOCATION NOT CONFIRMED" = "Геометка не подтверждена";
-
+"NO LOCATION" = "Нет геометки";
 
 
