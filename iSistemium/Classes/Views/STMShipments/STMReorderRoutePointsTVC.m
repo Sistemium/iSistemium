@@ -149,6 +149,8 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     self.editing = YES;
     
+    [super customInit];
+    
 }
 
 - (void)viewDidLoad {

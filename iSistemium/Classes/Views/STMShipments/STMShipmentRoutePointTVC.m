@@ -51,8 +51,6 @@
 
 @property (nonatomic, strong) UIView *picturesView;
 
-@property (nonatomic, strong) CLLocation *geocodedLocation;
-
 
 @end
 
@@ -1004,7 +1002,7 @@
 
 - (void)checkPointLocation {
     
-    if (!self.point.shippingLocation.location && self.point.address) {
+    if (!self.point.shippingLocation.location && !self.geocodedLocation && self.point.address) {
         
         [[[CLGeocoder alloc] init] geocodeAddressString:self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
             
