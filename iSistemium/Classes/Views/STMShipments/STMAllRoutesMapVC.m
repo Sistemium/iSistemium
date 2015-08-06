@@ -83,7 +83,7 @@
                 [self.locationsArray addObject:location];
                 
                 STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
-                                                                              withTitle:point.shortName
+                                                                              withTitle:[STMFunctions shortCompanyName:point.shortName]
                                                                             andSubtitle:point.address
                                                                                  andOrd:point.ord];
                 [pins addObject:pin];

@@ -171,7 +171,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     if (location) {
         
         self.locationPin = [STMMapAnnotation createAnnotationForCLLocation:location
-                                                                 withTitle:self.point.shortName
+                                                                 withTitle:[STMFunctions shortCompanyName:self.point.shortName]
                                                                andSubtitle:self.point.address];
         
         [self.mapView addAnnotation:self.locationPin];

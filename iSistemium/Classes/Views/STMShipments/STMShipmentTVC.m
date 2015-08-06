@@ -310,7 +310,7 @@
 
 - (void)fillCell:(STMCustom7TVCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
     
-    cell.titleLabel.text = point.name;
+    cell.titleLabel.text = [STMFunctions shortCompanyName:point.name];
     cell.titleLabel.numberOfLines = 0;
     cell.detailLabel.text = @"";
     

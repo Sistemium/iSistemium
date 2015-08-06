@@ -55,7 +55,7 @@
         NSString *subtitle = (self.shippingLocation.address) ? self.shippingLocation.address : self.destinationPointAddress;
         
         self.destinationPin = [STMMapAnnotation createAnnotationForCLLocation:self.destinationPoint
-                                                                    withTitle:title
+                                                                    withTitle:[STMFunctions shortCompanyName:title]
                                                                   andSubtitle:subtitle];
         [self.mapView addAnnotation:self.startPin];
         [self.mapView addAnnotation:self.destinationPin];

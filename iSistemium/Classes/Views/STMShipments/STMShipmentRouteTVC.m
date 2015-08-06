@@ -348,7 +348,7 @@
     
     STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 
-    cell.titleLabel.text = point.name;
+    cell.titleLabel.text = [STMFunctions shortCompanyName:point.name];
 
     UIColor *titleColor = [UIColor blackColor];
     

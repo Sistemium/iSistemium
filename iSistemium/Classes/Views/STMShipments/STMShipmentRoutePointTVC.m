@@ -435,7 +435,7 @@
 
 - (CGFloat)heightForRoutePointCell {
     
-    CGFloat diff = [self heightDiffForText:self.point.name];
+    CGFloat diff = [self heightDiffForText:[STMFunctions shortCompanyName:self.point.name]];
     
     CGFloat height = [self estimatedHeightForRow] + diff;
     
@@ -538,7 +538,7 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
 
-    cell.textLabel.text = point.name;
+    cell.textLabel.text = [STMFunctions shortCompanyName:point.name];
     cell.textLabel.numberOfLines = 0;
     
     cell.detailTextLabel.text = [point shortInfo];
