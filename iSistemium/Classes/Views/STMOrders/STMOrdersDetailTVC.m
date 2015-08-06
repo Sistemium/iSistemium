@@ -169,7 +169,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     NSString *salesman = NSLocalizedString(@"ALL SALESMANS", nil);
     
     if (self.splitVC.selectedOutlet) {
-        outlet = self.splitVC.selectedOutlet.name;
+        outlet = [STMFunctions shortCompanyName:self.splitVC.selectedOutlet.name];
     }
 
     if (self.splitVC.selectedDate) {
@@ -643,7 +643,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     cell.titleLabel.textColor = textColor;
 //    cell.detailLabel.textColor = textColor;
     
-    cell.titleLabel.text = saleOrder.outlet.name;
+    cell.titleLabel.text = [STMFunctions shortCompanyName:saleOrder.outlet.name];
     
     NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
     NSString *totalCostString = [currencyFormatter stringFromNumber:saleOrder.totalCost];

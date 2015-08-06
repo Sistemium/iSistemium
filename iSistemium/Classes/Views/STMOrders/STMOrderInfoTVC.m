@@ -504,7 +504,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     switch (row) {
         case 0:
             cell.titleLabel.text = NSLocalizedString(@"OUTLET", nil);
-            cell.detailLabel.text = self.saleOrder.outlet.name;
+            cell.detailLabel.text = [STMFunctions shortCompanyName:self.saleOrder.outlet.name];
             cell.detailLabel.textColor = (!self.saleOrder.outlet.isActive || [self.saleOrder.outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
             break;
 

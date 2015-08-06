@@ -289,7 +289,7 @@
     cell.titleLabel.textColor = textColor;
     //    cell.detailLabel.textColor = textColor;
     
-    cell.titleLabel.text = saleOrder.outlet.name;
+    cell.titleLabel.text = [STMFunctions shortCompanyName:saleOrder.outlet.name];
     
     NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
     NSString *totalCostString = [currencyFormatter stringFromNumber:saleOrder.totalCost];

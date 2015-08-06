@@ -362,6 +362,10 @@
 
 #pragma mark - table view data source
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return [STMFunctions shortCompanyName:[super tableView:tableView titleForHeaderInSection:section]];
+}
+
 - (STMTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"uncashingDetailCell" forIndexPath:indexPath];
