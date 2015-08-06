@@ -620,15 +620,15 @@
 
 + (NSString *)shortCompanyName:(NSString *)companyName {
     
-    NSString *searchString = @"Общество с ограниченной ответственностью";
-    
-    NSRange range = [companyName.lowercaseString rangeOfString:searchString.lowercaseString];
-
-    if (range.location != NSNotFound) {
-        
-        companyName = [companyName stringByReplacingCharactersInRange:range withString:@"ООО"];
-        
-    }
+//    NSString *searchString = @"Общество с ограниченной ответственностью";
+//    
+//    NSRange range = [companyName.lowercaseString rangeOfString:searchString.lowercaseString];
+//
+//    if (range.location != NSNotFound) {
+//        
+//        companyName = [companyName stringByReplacingCharactersInRange:range withString:@"ООО"];
+//        
+//    }
     
     return companyName;
     
