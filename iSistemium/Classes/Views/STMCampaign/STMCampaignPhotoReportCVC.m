@@ -604,7 +604,7 @@
             
             label = (UILabel *)view;
             
-            label.text = outlet.name;
+            label.text = [STMFunctions shortCompanyName:outlet.name];
             label.textColor = [UIColor blackColor];
             
         }
