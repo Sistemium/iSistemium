@@ -102,7 +102,7 @@
                     self.geocodedLocations[point.xid] = placemark.location;
                     
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.resultsController.fetchedObjects indexOfObject:point] inSection:1];
-                    if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
                     
                     [self setupNavBar];
                     
@@ -490,7 +490,7 @@
         
         for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
             
-            if (point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point]) {
+            if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point]) {
                 point.ord = @([self.resultsController.fetchedObjects indexOfObject:point]);
             }
             
@@ -610,11 +610,11 @@
 
 - (void)waypointButtonPressed {
     
-    if ([self isAllPointsHaveLocation]) {
+//    if ([self isAllPointsHaveLocation]) {
         [self performSegueWithIdentifier:@"showAllRoutes" sender:self];
-    } else {
-        [self showNotEnoughLocationsAlert];
-    }
+//    } else {
+//        [self showNotEnoughLocationsAlert];
+//    }
 
 }
 

@@ -57,27 +57,35 @@
         customCell.titleLabel.text = point.name;
         
         UIColor *textColor = [UIColor blackColor];
+        NSString *detailString;
         
-        if (point.isReached.boolValue) {
+        detailString = [point shortInfo];
+        
+        if (!point.shippingLocation.location) {
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
-            NSUInteger unprocessedShipmentsCount = [point.shipments filteredSetUsingPredicate:predicate].count;
+            detailString = [detailString stringByAppendingString:@"\n"];
             
-            textColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
+            if (self.parentVC.geocodedLocations[point.xid]) {
+                
+                detailString = [detailString stringByAppendingString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil)];
+                textColor = [UIColor lightGrayColor];
+                
+            } else {
+                
+                detailString = [detailString stringByAppendingString:NSLocalizedString(@"NO LOCATION", nil)];
+                textColor = [UIColor redColor];
+                
+            }
             
         }
-        
-        customCell.titleLabel.textColor = textColor;
-        
-        customCell.detailLabel.text = [point shortInfo];
-        customCell.detailLabel.textColor = textColor;
+
+        customCell.detailLabel.text = detailString;
         
         customCell.infoLabel.text = @(point.ord.integerValue + 1).stringValue;
         customCell.infoLabel.textColor = textColor;
         
         customCell.accessoryType = UITableViewCellAccessoryNone;
         customCell.showsReorderControl = YES;
-        customCell.shouldIndentWhileEditing = NO;
         
     }
     

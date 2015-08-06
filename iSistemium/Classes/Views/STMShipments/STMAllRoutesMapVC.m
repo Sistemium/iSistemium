@@ -179,7 +179,7 @@
             
             [self.routes addObject:response.routes.firstObject];
             
-            if (self.routes.count == self.points.count + 1) {
+            if (self.routes.count == self.locationsArray.count + 1) {
                 [self showRoutes];
             }
             
