@@ -11,6 +11,8 @@
 #import "STMUI.h"
 #import "STMLocationController.h"
 
+#import <AVFoundation/AVFoundation.h>
+
 
 #define DISTANCE_SCALE 1.5
 #define EDGE_INSET 50
@@ -127,7 +129,15 @@
         [self.mapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
         
 //        for (MKRouteStep *step in route.steps) {
+//            
 //            NSLog(@"%@", step.instructions);
+//            
+//            AVSpeechSynthesizer *synthesizer = [[AVSpeechSynthesizer alloc] init];
+//            synthesizer.delegate = self;
+//            AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:step.instructions];
+//            
+//            [synthesizer speakUtterance:utterance];
+//            
 //        }
         
     }

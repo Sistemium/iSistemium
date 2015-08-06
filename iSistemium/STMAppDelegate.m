@@ -10,6 +10,7 @@
 
 #import <AdSupport/AdSupport.h>
 #import <Crashlytics/Crashlytics.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import "STMAuthController.h"
 #import "STMRemoteController.h"
@@ -51,6 +52,11 @@
 
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
+//    AVSpeechSynthesizer *synthesizer = [[AVSpeechSynthesizer alloc] init];
+//    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:@"Добро пожаловать в Sistemium!"];
+//    utterance.rate = AVSpeechUtteranceMinimumSpeechRate;
+//    [synthesizer speakUtterance:utterance];
+    
     return YES;
     
 }
