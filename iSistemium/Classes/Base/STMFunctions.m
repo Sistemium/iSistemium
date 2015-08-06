@@ -450,6 +450,40 @@
     
 }
 
++ (UIImage *)drawText:(NSString *)text withFont:(UIFont *)font color:(UIColor *)color inImage:(UIImage *)image atCenter:(BOOL)atCenter {
+    
+    NSDictionary *attributes = @{NSFontAttributeName:font,
+                                 NSForegroundColorAttributeName:color};
+    
+    CGSize textSize = [text sizeWithAttributes:attributes];
+    CGSize imageSize = image.size;
+    
+    CGPoint point = CGPointMake(0, 0);
+    
+    if (atCenter) {
+        
+        CGFloat x = (imageSize.width - textSize.width) / 2;
+        CGFloat y = (imageSize.height - textSize.height) / 2;
+        
+        point = CGPointMake(x, y);
+        
+    }
+    
+    UIGraphicsBeginImageContext(imageSize);
+    
+    [image drawInRect:CGRectMake(0,0,imageSize.width,imageSize.height)];
+    CGRect rect = CGRectMake(point.x, point.y, imageSize.width, imageSize.height);
+    [[UIColor whiteColor] set];
+    [text drawInRect:CGRectIntegral(rect) withAttributes:attributes];
+//    [text drawInRect:CGRectIntegral(rect) withFont:font];
+    UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resultImage;
+    
+}
+
 
 #pragma mark - some other usefull methods
 

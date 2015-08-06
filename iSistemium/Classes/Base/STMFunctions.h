@@ -29,6 +29,7 @@
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina;
 + (UIImage *)colorImage:(UIImage *)origImage withColor:(UIColor *)color;
++ (UIImage *)drawText:(NSString *)text withFont:(UIFont *)font color:(UIColor *)color inImage:(UIImage *)image atCenter:(BOOL)atCenter;
 
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 

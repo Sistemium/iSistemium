@@ -332,9 +332,13 @@
             
             if (myAnnotation.ord) {
 
-                NSString *imageName = (myAnnotation.ord.integerValue < 9) ? [NSString stringWithFormat:@"%@_circle_colored_blue", @(myAnnotation.ord.integerValue + 1)] : @"circle_colored_blue";
+                UIImage *image = [STMFunctions drawText:myAnnotation.ord.stringValue
+                                               withFont:[UIFont systemFontOfSize:10]
+                                                  color:[UIColor whiteColor]
+                                                inImage:[UIImage imageNamed:@"circle_colored_blue"]
+                                               atCenter:YES];
                 
-                annotationView.image = [UIImage imageNamed:imageName];
+                annotationView.image = image;
                 
             } else {
             
