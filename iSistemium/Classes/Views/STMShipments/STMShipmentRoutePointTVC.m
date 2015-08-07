@@ -911,6 +911,7 @@
         STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
 
         routeMapVC.shippingLocation = self.point.shippingLocation;
+        routeMapVC.destinationPoint = self.geocodedLocation;
         routeMapVC.destinationPointName = self.point.shortName;
         routeMapVC.destinationPointAddress = self.point.address;
         
@@ -964,7 +965,7 @@
 
 - (void)setupNavBar {
     
-    if (self.point.shippingLocation.location) {
+    if (self.point.shippingLocation.location || self.geocodedLocation) {
         
         STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
         self.navigationItem.rightBarButtonItem = waypointButton;
@@ -983,7 +984,7 @@
     UIImage *image = [[UIImage imageNamed:@"single_waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
-    imageView.tintColor = ACTIVE_BLUE_COLOR;
+    imageView.tintColor = (self.point.shippingLocation.location) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
     
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
     [button addTarget:self action:@selector(waypointButtonPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -1012,6 +1013,7 @@
                 self.geocodedLocation = placemark.location;
                 
                 [self.tableView reloadData];
+                [self setupNavBar];
 
             }
             

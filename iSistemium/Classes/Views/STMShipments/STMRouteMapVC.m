@@ -45,10 +45,10 @@
     self.mapView.delegate = self;
     self.mapView.showsUserLocation = YES;
     
-    if (self.startPoint && self.shippingLocation.location) {
+    self.destinationPoint = (self.shippingLocation.location) ? [STMLocationController locationFromLocationObject:self.shippingLocation.location] : self.destinationPoint;
     
-        self.destinationPoint = [STMLocationController locationFromLocationObject:self.shippingLocation.location];
-
+    if (self.startPoint && self.destinationPoint) {
+    
         self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint
                                                               withTitle:NSLocalizedString(@"CURRENT GEOPOSITION", nil)
                                                             andSubtitle:nil];
