@@ -115,6 +115,7 @@
                         <outlet property="mapView" destination="XV8-mD-2S8" id="QRs-uv-l60"/>
                         <outlet property="routesInfoLabel" destination="QNS-QC-y3G" id="AI4-MO-VIT"/>
                         <outlet property="toolbar" destination="cce-Mu-V9d" id="Kf6-bp-U63"/>
+                        <segue destination="Tfv-Xo-E63" kind="push" identifier="showPoint" id="EdL-3T-pxt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UQy-aS-EQd" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -376,7 +377,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shipmentPositionCell" textLabel="03Y-XX-AQp" detailTextLabel="eOx-kK-JOW" style="IBUITableViewCellStyleSubtitle" id="MVX-sl-Leb">
-                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MVX-sl-Leb" id="jz2-D1-15Z">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -924,4 +925,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="EdL-3T-pxt"/>
+    </inferredMetricsTieBreakers>
 </document>

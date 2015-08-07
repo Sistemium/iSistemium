@@ -14,6 +14,7 @@
 #import "STMUI.h"
 
 #import "STMReorderRoutePointsTVC.h"
+#import "STMShipmentRoutePointTVC.h"
 
 
 #define EDGE_INSET 50
@@ -347,6 +348,13 @@
             }
             
         }
+
+        UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        CGSize size = infoButton.frame.size;
+        infoButton.frame = CGRectMake(0, 0, size.width + 10, size.height);
+        infoButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+        
+        annotationView.rightCalloutAccessoryView = infoButton;
         
         annotationView.canShowCallout = YES;
         
@@ -354,6 +362,33 @@
         
     } else {
         return nil;
+    }
+    
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+    [self performSegueWithIdentifier:@"showPoint" sender:view.annotation];
+}
+
+
+#pragma mark - Navigation
+ 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:@"showPoint"] &&
+        [segue.destinationViewController isKindOfClass:[STMShipmentRoutePointTVC class]] &&
+        [sender isKindOfClass:[STMMapAnnotation class]]) {
+        
+        STMShipmentRoutePointTVC *pointTVC = (STMShipmentRoutePointTVC *)segue.destinationViewController;
+        
+        STMMapAnnotation *annotation = (STMMapAnnotation *)sender;
+        
+        STMShipmentRoutePoint *point = self.points[annotation.ord.integerValue];
+        CLLocation *geocodedLocation = self.geocodedLocations[point.xid];
+        
+        pointTVC.point = point;
+        pointTVC.geocodedLocation = geocodedLocation;
+        
     }
     
 }
@@ -465,14 +500,5 @@
     
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

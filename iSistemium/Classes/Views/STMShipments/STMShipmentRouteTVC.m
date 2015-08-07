@@ -350,37 +350,55 @@
 
     cell.titleLabel.text = [STMFunctions shortCompanyName:point.name];
 
-    UIColor *titleColor = [UIColor blackColor];
+    UIColor *textColor = [UIColor blackColor];
     
     if (point.isReached.boolValue) {
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
         NSUInteger unprocessedShipmentsCount = [point.shipments filteredSetUsingPredicate:predicate].count;
         
-        titleColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
+        textColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
 
     }
     
-    cell.titleLabel.textColor = titleColor;
+    cell.titleLabel.textColor = textColor;
     
-    NSString *detailString;
+    NSMutableAttributedString *detailString;
     
-    detailString = [point shortInfo];
+    NSDictionary *attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                                 NSForegroundColorAttributeName:textColor};
+
+    detailString = [[NSMutableAttributedString alloc] initWithString:[point shortInfo] attributes:attributes];
     
     if (!point.shippingLocation.location) {
 
-        detailString = [detailString stringByAppendingString:@"\n"];
+        [detailString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
 
         if (self.geocodedLocations[point.xid]) {
-            detailString = [detailString stringByAppendingString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil)];
+        
+            textColor = [UIColor lightGrayColor];
+
+            attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                           NSForegroundColorAttributeName:textColor};
+
+            NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil) attributes:attributes];
+            [detailString appendAttributedString:appendString];
+
         } else {
-            detailString = [detailString stringByAppendingString:NSLocalizedString(@"NO LOCATION", nil)];
+            
+            textColor = [UIColor redColor];
+            
+            attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                           NSForegroundColorAttributeName:textColor};
+
+            NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"NO LOCATION", nil) attributes:attributes];
+            [detailString appendAttributedString:appendString];
+
         }
         
     }
     
-    cell.detailLabel.text = detailString;
-    cell.detailLabel.textColor = titleColor;
+    cell.detailLabel.attributedText = detailString;
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
