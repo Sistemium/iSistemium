@@ -146,7 +146,8 @@
     
     self.routes = nil;
     
-    NSArray *points = [[@[self.startPoint] arrayByAddingObjectsFromArray:self.locationsArray] arrayByAddingObject:self.startPoint];
+//    NSArray *points = [[@[self.startPoint] arrayByAddingObjectsFromArray:self.locationsArray] arrayByAddingObject:self.startPoint];
+    NSArray *points = self.locationsArray.copy;
     
     for (int i = 0; i < points.count - 1; i++) {
         
@@ -180,7 +181,7 @@
             
             [self.routes addObject:response.routes.firstObject];
             
-            if (self.routes.count == self.locationsArray.count + 1) {
+            if (self.routes.count == self.locationsArray.count - 1) {
                 [self showRoutes];
             }
             
