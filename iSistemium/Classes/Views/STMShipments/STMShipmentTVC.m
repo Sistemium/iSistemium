@@ -20,7 +20,8 @@
 
 @interface STMShipmentTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 
-@property (nonatomic, strong) NSIndexPath *processedButtonCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *shippingButtonCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *finishShippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
 
 @property (nonatomic, strong) STMShipmentPosition *selectedPosition;
@@ -116,7 +117,7 @@
             break;
             
         case 1:
-            return ([self shippingProcessIsRunning]) ? 2 : 1;
+            return ([self shippingProcessIsRunning]) ? 3 : 1;
             break;
             
         case 2:
@@ -272,10 +273,14 @@
             case 1:
                 switch (indexPath.row) {
                     case 0:
-                        [self fillProcessedButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
+                        [self fillShippingButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
                         break;
                         
                     case 1:
+                        [self fillFinishShippingButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
+                        break;
+                        
+                    case 2:
                         [self fillCancelButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
                         break;
                         
@@ -347,7 +352,49 @@
 
 }
 
-- (void)fillProcessedButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillShippingButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+    
+    if ([self shippingProcessIsRunning]) {
+        
+        cell.titleLabel.text = NSLocalizedString(@"SHIPPING", nil);
+        cell.titleLabel.textColor = [UIColor blackColor];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+    } else {
+        
+        if (self.shipment.isShipped.boolValue) {
+            
+            cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON EDIT TITLE", nil);
+            
+        } else {
+            
+            if ([self haveProcessedPositions]) {
+                cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON CONTINUE TITLE", nil);
+            } else {
+                cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
+            }
+            
+        }
+
+        cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+        cell.accessoryType = UITableViewCellAccessoryNone;
+
+    }
+    
+    cell.titleLabel.textAlignment = NSTextAlignmentCenter;
+    
+    cell.detailLabel.text = (self.point.isReached.boolValue) ? @"" : NSLocalizedString(@"SHOULD CONFIRM ARRIVAL FIRST", nil);
+    
+    cell.detailLabel.textColor = [UIColor lightGrayColor];
+    cell.detailLabel.textAlignment = NSTextAlignmentCenter;
+
+    self.shippingButtonCellIndexPath = indexPath;
+    
+}
+
+- (void)fillFinishShippingButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
     
@@ -357,31 +404,17 @@
         
     } else {
         
-        if (self.shipment.isShipped.boolValue) {
-            
-            cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON EDIT TITLE", nil);
-            
-        } else {
-        
-            if ([self haveProcessedPositions]) {
-                cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON CONTINUE TITLE", nil);
-            } else {
-                cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON START TITLE", nil);
-            }
-
-        }
+        cell.titleLabel.text = @"";
         
     }
     
     cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
     cell.titleLabel.textAlignment = NSTextAlignmentCenter;
-
-    cell.detailLabel.text = (self.point.isReached.boolValue) ? @"" : NSLocalizedString(@"SHOULD CONFIRM ARRIVAL FIRST", nil);
     
     cell.detailLabel.textColor = [UIColor lightGrayColor];
     cell.detailLabel.textAlignment = NSTextAlignmentCenter;
     
-    self.processedButtonCellIndexPath = indexPath;
+    self.finishShippingButtonCellIndexPath = indexPath;
     
 }
 
@@ -497,7 +530,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    if ([indexPath isEqual:self.processedButtonCellIndexPath]) {
+    if ([indexPath isEqual:self.shippingButtonCellIndexPath]) {
         
         if (!self.point.isReached.boolValue) {
             
@@ -506,12 +539,16 @@
         } else {
             
             if ([self.shippingProcessController.shipments containsObject:self.shipment]) {
-                [self showDoneShippingAlert];
+                [self performSegueWithIdentifier:@"showShipping" sender:self];
             } else {
                 [self showStartShippingAlert];
             }
             
         }
+        
+    } else if ([indexPath isEqual:self.finishShippingButtonCellIndexPath]) {
+        
+        [self showDoneShippingAlert];
         
     } else if ([indexPath isEqual:self.cancelButtonCellIndexPath]) {
         
@@ -619,7 +656,7 @@
 
 - (void)routePointIsReached {
     
-    [self reloadProcessedButtonCell];
+    [self reloadStopShippingButtonCell];
     [self showStartShippingAlert];
     
 }
@@ -737,18 +774,18 @@
 
 }
 
-- (void)reloadProcessedButtonCell {
+- (void)reloadStopShippingButtonCell {
     
-    if (self.processedButtonCellIndexPath) {
-        [self.tableView reloadRowsAtIndexPaths:@[self.processedButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    if (self.shippingButtonCellIndexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[self.shippingButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 
 }
 
 - (void)reloadButtonsSections {
     
-    if (self.processedButtonCellIndexPath) {
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.processedButtonCellIndexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+    if (self.shippingButtonCellIndexPath) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.shippingButtonCellIndexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     
 }
@@ -763,6 +800,7 @@
             switch (buttonIndex) {
                 case 1:
                     [self startShipping];
+                    [self performSegueWithIdentifier:@"showShipping" sender:self];
                     break;
                     
                 default:
