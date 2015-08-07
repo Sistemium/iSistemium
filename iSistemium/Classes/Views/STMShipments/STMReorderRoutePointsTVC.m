@@ -87,29 +87,43 @@
         customCell.titleLabel.text = point.name;
         
         UIColor *textColor = [UIColor blackColor];
-        NSString *detailString;
         
-        detailString = [point shortInfo];
+        NSMutableAttributedString *detailString;
+        
+        NSDictionary *attributes = @{NSFontAttributeName:customCell.detailLabel.font,
+                                     NSForegroundColorAttributeName:textColor};
+        
+        detailString = [[NSMutableAttributedString alloc] initWithString:[point shortInfo] attributes:attributes];
         
         if (!point.shippingLocation.location) {
             
-            detailString = [detailString stringByAppendingString:@"\n"];
+            [detailString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
             
             if (self.parentVC.geocodedLocations[point.xid]) {
                 
-                detailString = [detailString stringByAppendingString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil)];
                 textColor = [UIColor lightGrayColor];
+                
+                attributes = @{NSFontAttributeName:customCell.detailLabel.font,
+                               NSForegroundColorAttributeName:textColor};
+                
+                NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil) attributes:attributes];
+                [detailString appendAttributedString:appendString];
                 
             } else {
                 
-                detailString = [detailString stringByAppendingString:NSLocalizedString(@"NO LOCATION", nil)];
                 textColor = [UIColor redColor];
+                
+                attributes = @{NSFontAttributeName:customCell.detailLabel.font,
+                               NSForegroundColorAttributeName:textColor};
+                
+                NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"NO LOCATION", nil) attributes:attributes];
+                [detailString appendAttributedString:appendString];
                 
             }
             
         }
-
-        customCell.detailLabel.text = detailString;
+        
+        customCell.detailLabel.attributedText = detailString;
         
         customCell.infoLabel.text = @(point.ord.integerValue + 1).stringValue;
         customCell.infoLabel.textColor = textColor;
