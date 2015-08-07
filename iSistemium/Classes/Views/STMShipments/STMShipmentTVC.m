@@ -13,6 +13,7 @@
 #import "STMShippingProcessController.h"
 
 #import "STMPositionVolumesVC.h"
+#import "STMShippingVC.h"
 
 
 #define POSITION_SECTION_INDEX 2
@@ -980,6 +981,12 @@
             [(STMPositionVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
             
         }
+        
+    } else if ([segue.identifier isEqualToString:@"showShipping"] &&
+               [segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
+        
+        STMShippingVC *shippingVC = (STMShippingVC *)segue.destinationViewController;
+        shippingVC.shipment = self.shipment;
         
     }
 
