@@ -146,16 +146,22 @@
     
     self.routes = nil;
     
-//    NSArray *points = [[@[self.startPoint] arrayByAddingObjectsFromArray:self.locationsArray] arrayByAddingObject:self.startPoint];
-    NSArray *points = self.locationsArray.copy;
-    
-    for (int i = 0; i < points.count - 1; i++) {
+    if (self.locationsArray.count > 1) {
         
-        CLLocation *startLocation = points[i];
-        CLLocation *finishLocation = points[i+1];
+//        NSArray *points = [[@[self.startPoint] arrayByAddingObjectsFromArray:self.locationsArray] arrayByAddingObject:self.startPoint];
+        NSArray *points = self.locationsArray.copy;
         
-        [self calcRouteFromStartLocation:startLocation toFinishLocation:finishLocation];
-        
+        for (int i = 0; i < points.count - 1; i++) {
+            
+            CLLocation *startLocation = points[i];
+            CLLocation *finishLocation = points[i+1];
+            
+            [self calcRouteFromStartLocation:startLocation toFinishLocation:finishLocation];
+            
+        }
+
+    } else {
+        [self.spinner removeFromSuperview];
     }
     
 }
@@ -305,36 +311,18 @@
         if ([myAnnotation isEqual:self.startPin]) {
 
             static NSString *identifier = @"STMMapAnnotationStart";
-            annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+            annotationView = [self annotationViewForAnnotation:annotation WithIdentifier:identifier];
             
-            if (!annotationView) {
-                annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:myAnnotation reuseIdentifier:identifier];
-            } else {
-                annotationView.annotation = annotation;
-            }
-            
+            annotationView.pinColor = MKPinAnnotationColorRed;
+
         } else {
             
             static NSString *identifier = @"STMMapAnnotation";
-            annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
-            
-            if (!annotationView) {
-                annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:myAnnotation reuseIdentifier:identifier];
-            } else {
-                annotationView.annotation = annotation;
-            }
-
-        }
-        
-        if ([myAnnotation isEqual:self.startPin]) {
-            
-            annotationView.pinColor = MKPinAnnotationColorRed;
-            
-        } else {
+            annotationView = [self annotationViewForAnnotation:annotation WithIdentifier:identifier];
             
             if (myAnnotation.ord) {
-
-                UIImage *image = [STMFunctions drawText:myAnnotation.ord.stringValue
+                
+                UIImage *image = [STMFunctions drawText:@(myAnnotation.ord.integerValue + 1).stringValue
                                                withFont:[UIFont systemFontOfSize:10]
                                                   color:[UIColor whiteColor]
                                                 inImage:[UIImage imageNamed:@"circle_colored_blue"]
@@ -343,19 +331,19 @@
                 annotationView.image = image;
                 
             } else {
-            
+                
                 annotationView.pinColor = MKPinAnnotationColorPurple;
-
+                
             }
             
-        }
+            UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+            CGSize size = infoButton.frame.size;
+            infoButton.frame = CGRectMake(0, 0, size.width + 10, size.height);
+            infoButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+            
+            annotationView.rightCalloutAccessoryView = infoButton;
 
-        UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        CGSize size = infoButton.frame.size;
-        infoButton.frame = CGRectMake(0, 0, size.width + 10, size.height);
-        infoButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
-        
-        annotationView.rightCalloutAccessoryView = infoButton;
+        }
         
         annotationView.canShowCallout = YES;
         
@@ -365,6 +353,20 @@
         return nil;
     }
     
+}
+
+- (MKPinAnnotationView *)annotationViewForAnnotation:(id <MKAnnotation>)annotation WithIdentifier:(NSString *)identifier {
+    
+    MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+    
+    if (!annotationView) {
+        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+    } else {
+        annotationView.annotation = annotation;
+    }
+    
+    return annotationView;
+
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
