@@ -585,6 +585,7 @@
         customCell.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         customCell.detailLabel.text = @"";
+        customCell.detailLabel.textColor = [UIColor blackColor];
         customCell.detailLabel.textAlignment = NSTextAlignmentCenter;
         
         [[customCell viewWithTag:666] removeFromSuperview];
@@ -592,7 +593,13 @@
         if (shippingLocation.location || self.geocodedLocation) {
             
             customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
-            customCell.detailLabel.text = (shippingLocation.location) ? @"" : NSLocalizedString(@"LOCATION NOT CONFIRMED", nil);
+            
+            if (!shippingLocation.location) {
+                
+                customCell.detailLabel.text = NSLocalizedString(@"LOCATION NEEDS CONFIRMATION", nil);
+                customCell.detailLabel.textColor = [UIColor redColor];
+
+            }
             
         } else {
             
