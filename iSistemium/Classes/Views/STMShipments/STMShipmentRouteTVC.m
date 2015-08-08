@@ -580,9 +580,17 @@
 
 - (void)setupNavBar {
     
-    STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
-    self.navigationItem.rightBarButtonItem = waypointButton;
+    if (([self pointsWithLocation].count + self.geocodedLocations.count) > 0) {
+        
+        STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
+        self.navigationItem.rightBarButtonItem = waypointButton;
 
+    } else {
+        
+        self.navigationItem.rightBarButtonItem = nil;
+        
+    }
+    
 }
 
 - (NSArray *)pointsWithLocation {
