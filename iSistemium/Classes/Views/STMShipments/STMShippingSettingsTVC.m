@@ -10,8 +10,13 @@
 
 @interface STMShippingSettingsTVC ()
 
-@property (weak, nonatomic) IBOutlet UITableViewCell *nameSortCell;
-@property (weak, nonatomic) IBOutlet UITableViewCell *timestampSortCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *nameAscCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *nameDescCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *timestampAscCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *timestampDescCell;
+
+@property (nonatomic, strong) NSArray *sortOrderCells;
+
 
 @property (nonatomic) STMShipmentPositionSort sortOrder;
 
@@ -21,44 +26,35 @@
 
 @implementation STMShippingSettingsTVC
 
+- (NSArray *)sortOrderCells {
+    
+    if (!_sortOrderCells) {
+        _sortOrderCells = @[self.nameAscCell, self.nameDescCell, self.timestampAscCell, self.timestampDescCell];
+    }
+    return _sortOrderCells;
+    
+}
+
 - (void)setSortOrder:(STMShipmentPositionSort)sortOrder {
+
+    UITableViewCell *cell = self.sortOrderCells[_sortOrder];
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
+    cell = self.sortOrderCells[sortOrder];
+    cell.accessoryType = UITableViewCellAccessoryCheckmark;
     
     _sortOrder = sortOrder;
 
-    self.nameSortCell.accessoryType = UITableViewCellAccessoryNone;
-    self.timestampSortCell.accessoryType = UITableViewCellAccessoryNone;
-    self.nameSortCell.textLabel.text = @"Наименование";
-    self.timestampSortCell.textLabel.text = @"Время обработки";
-
-    switch (sortOrder) {
-        case STMShipmentPositionSortNameAsc:
-            self.nameSortCell.accessoryType = UITableViewCellAccessoryCheckmark;
-            self.nameSortCell.textLabel.text = @"Наименование (А-Я)";
-            break;
-            
-        case STMShipmentPositionSortNameDesc:
-            self.nameSortCell.accessoryType = UITableViewCellAccessoryCheckmark;
-            self.nameSortCell.textLabel.text = @"Наименование (Я-А)";
-            break;
-
-        case STMShipmentPositionSortTsAsc:
-            self.timestampSortCell.accessoryType = UITableViewCellAccessoryCheckmark;
-            self.timestampSortCell.textLabel.text = @"Время обработки (новые сверху)";
-            break;
-
-        case STMShipmentPositionSortTsDesc:
-            self.timestampSortCell.accessoryType = UITableViewCellAccessoryCheckmark;
-            self.timestampSortCell.textLabel.text = @"Время обработки (старые сверху)";
-            break;
-
-        default:
-            break;
-    }
+    self.parentVC.sortOrder = sortOrder;
     
 }
 
 
-#pragma mark - Table view data source
+#pragma mark - Table view data source & delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.sortOrder = (STMShipmentPositionSort)indexPath.row;
+}
 
 
 #pragma mark - view lifecycle

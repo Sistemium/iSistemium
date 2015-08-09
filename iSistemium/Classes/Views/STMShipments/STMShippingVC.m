@@ -58,6 +58,13 @@
     
 }
 
+- (void)setSortOrder:(STMShipmentPositionSort)sortOrder {
+    
+    _sortOrder = sortOrder;
+    self.parentVC.sortOrder = sortOrder;
+    
+}
+
 - (NSMutableDictionary *)cachedCellsHeights {
     
     if (!_cachedCellsHeights) {
@@ -367,6 +374,8 @@
         cell.detailLabel.text = @"";
         
     }
+    
+    cell.detailLabel.text = [NSString stringWithFormat:@"%@", position.deviceTs];
     
     STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
     infoLabel.text = [position volumeText];
@@ -680,7 +689,7 @@
     
     self.searchBar.delegate = self;
     
-    [self performFetch];
+//    [self performFetch];
     
 }
 
@@ -689,6 +698,13 @@
     [super viewDidLoad];
     [self customInit];
 
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [self performFetch];
+    [super viewWillAppear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {

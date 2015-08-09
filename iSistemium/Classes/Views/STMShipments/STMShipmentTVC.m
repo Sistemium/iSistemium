@@ -36,6 +36,8 @@
 @implementation STMShipmentTVC
 
 @synthesize resultsController = _resultsController;
+@synthesize sortOrder = _sortOrder;
+
 
 - (STMShippingProcessController *)shippingProcessController {
     return [STMShippingProcessController sharedInstance];
@@ -66,6 +68,16 @@
         
     }
     return _sortOrder;
+    
+}
+
+- (void)setSortOrder:(STMShipmentPositionSort)sortOrder {
+    
+    _sortOrder = sortOrder;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setValue:@(_sortOrder) forKey:@"STMShipmentPositionSort"];
+    [defaults synchronize];
     
 }
 
@@ -135,7 +147,7 @@
     if (![self.resultsController performFetch:&error]) {
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
     } else {
-        
+        [self.tableView reloadData];
     }
     
 }
@@ -1074,7 +1086,7 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [self addObservers];
-    [self performFetch];
+//    [self performFetch];
     
     [super customInit];
     
@@ -1092,6 +1104,8 @@
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
+    
+    [self performFetch];
 
 }
 

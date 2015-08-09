@@ -11,10 +11,10 @@
 #import "STMShipmentRoutePointTVC.h"
 
 typedef enum NSUInteger {
-    STMShipmentPositionSortNameAsc,
-    STMShipmentPositionSortNameDesc,
-    STMShipmentPositionSortTsAsc,
-    STMShipmentPositionSortTsDesc
+    STMShipmentPositionSortNameAsc = 0,
+    STMShipmentPositionSortNameDesc = 1,
+    STMShipmentPositionSortTsAsc = 2,
+    STMShipmentPositionSortTsDesc = 3
 } STMShipmentPositionSort;
 
 
