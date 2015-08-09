@@ -648,46 +648,22 @@
     
 }
 
-
-
-/*
-- (UIView *)titleView {
-    
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@""];
-    cell.textLabel.text = self.shipment.ndoc;
-    
-    NSString *positions = [self.shipment positionsCountString];
-    
-    NSString *detailText;
-    
-    if (self.shipment.shipmentPositions.count > 0) {
-        
-        NSString *boxes = [self.shipment approximateBoxCountString];
-        NSString *bottles = [self.shipment bottleCountString];
-        
-        detailText = [NSString stringWithFormat:@"%@, %@, %@", positions, boxes, bottles];
-        
-    } else {
-        detailText = NSLocalizedString(positions, nil);
-    }
-    
-    cell.detailTextLabel.text = detailText;
-    
-    cell.textLabel.textAlignment = NSTextAlignmentCenter;
-    cell.detailTextLabel.textAlignment = NSTextAlignmentCenter;
-    
-    return cell;
+- (void)settingsButtonPressed {
     
 }
-*/
 
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-//    self.navigationItem.titleView = [self titleView];
     self.navigationItem.title = self.shipment.ndoc;
+    
+    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings-25"]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(settingsButtonPressed)];
+    self.navigationItem.rightBarButtonItem = settingButton;
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
