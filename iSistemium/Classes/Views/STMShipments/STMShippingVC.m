@@ -320,10 +320,11 @@
 
 - (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
     
+    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : [UIColor blackColor];
     UIFont *font = [UIFont systemFontOfSize:17];
-    
-    NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor blackColor],
-                                 NSFontAttributeName            : font};
+
+    NSMutableDictionary *attributes = @{NSForegroundColorAttributeName : textColor,
+                                        NSFontAttributeName            : font}.mutableCopy;
     
     NSMutableAttributedString *attributedText = nil;
     
@@ -349,8 +350,7 @@
             
         } else {
             
-            attributes = @{NSForegroundColorAttributeName : [UIColor redColor],
-                           NSFontAttributeName            : font};
+            attributes[NSForegroundColorAttributeName] = [UIColor redColor];
             
             attributedText = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"UNKNOWN ARTICLE", nil) attributes:attributes];
             
@@ -360,20 +360,32 @@
     
     cell.titleLabel.attributedText = attributedText;
     
+    attributes[NSFontAttributeName] = cell.detailLabel.font;
+    
     if (position.isProcessed.boolValue) {
         
-        NSString *volumesString = [self.shippingProcessController volumesStringWithDoneVolume:position.doneVolume.integerValue
-                                                                                    badVolume:position.badVolume.integerValue
-                                                                                 excessVolume:position.excessVolume.integerValue
-                                                                               shortageVolume:position.shortageVolume.integerValue
-                                                                                regradeVolume:position.regradeVolume.integerValue
-                                                                                   packageRel:position.article.packageRel.integerValue];
+//        NSString *volumesString = [self.shippingProcessController volumesStringWithDoneVolume:position.doneVolume.integerValue
+//                                                                                    badVolume:position.badVolume.integerValue
+//                                                                                 excessVolume:position.excessVolume.integerValue
+//                                                                               shortageVolume:position.shortageVolume.integerValue
+//                                                                                regradeVolume:position.regradeVolume.integerValue
+//                                                                                   packageRel:position.article.packageRel.integerValue];
+//        
+//        cell.detailLabel.text = [@"\n" stringByAppendingString:volumesString];
         
-        cell.detailLabel.text = [@"\n" stringByAppendingString:volumesString];
+        NSAttributedString *volumes = [self.shippingProcessController volumesAttributedStringWithAttributes:attributes
+                                                                                                 doneVolume:position.doneVolume.integerValue
+                                                                                                  badVolume:position.badVolume.integerValue
+                                                                                               excessVolume:position.excessVolume.integerValue
+                                                                                             shortageVolume:position.shortageVolume.integerValue
+                                                                                              regradeVolume:position.regradeVolume.integerValue
+                                                                                                 packageRel:position.article.packageRel.integerValue];
+        cell.detailLabel.attributedText = volumes;
         
     } else {
         
-        cell.detailLabel.text = @"";
+//        cell.detailLabel.text = @"";
+        cell.detailLabel.attributedText = nil;
         
     }
     
@@ -384,10 +396,10 @@
     
     cell.accessoryView = infoLabel;
     
-    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : attributes[NSForegroundColorAttributeName];
+//    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : attributes[NSForegroundColorAttributeName];
     
-    cell.titleLabel.textColor = textColor;
-    cell.detailLabel.textColor = textColor;
+//    cell.titleLabel.textColor = textColor;
+//    cell.detailLabel.textColor = textColor;
     infoLabel.textColor = textColor;
     
 }

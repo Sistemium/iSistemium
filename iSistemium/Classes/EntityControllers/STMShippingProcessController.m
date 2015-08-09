@@ -238,6 +238,63 @@
     
 }
 
+- (NSAttributedString *)volumesAttributedStringWithAttributes:(NSDictionary *)attributes doneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume packageRel:(NSInteger)packageRel {
+    
+    NSMutableAttributedString *parametersString = [[NSMutableAttributedString alloc] initWithString:@"\n" attributes:attributes];
+    
+    if (doneVolume > 0) {
+        
+        NSString *doneVolumeString = [STMFunctions volumeStringWithVolume:doneVolume andPackageRel:packageRel];
+        NSString *doneString = [NSString stringWithFormat:@"%@: %@\n", NSLocalizedString(@"DONE VOLUME LABEL", nil), doneVolumeString];
+
+        [parametersString appendAttributedString:[[NSAttributedString alloc] initWithString:doneString attributes:attributes]];
+        
+    }
+
+    NSMutableDictionary *redColorAttributes = attributes.mutableCopy;
+    
+    redColorAttributes[NSForegroundColorAttributeName] = [UIColor redColor];
+    
+    if (badVolume > 0) {
+        
+        NSString *badVolumeString = [STMFunctions volumeStringWithVolume:badVolume andPackageRel:packageRel];
+        NSString *badString = [NSString stringWithFormat:@"%@: %@\n", NSLocalizedString(@"BAD VOLUME LABEL", nil), badVolumeString];
+        
+        [parametersString appendAttributedString:[[NSAttributedString alloc] initWithString:badString attributes:redColorAttributes]];
+        
+    }
+    
+    if (excessVolume > 0) {
+        
+        NSString *excessVolumeString = [STMFunctions volumeStringWithVolume:excessVolume andPackageRel:packageRel];
+        NSString *excessString = [NSString stringWithFormat:@"%@: %@\n", NSLocalizedString(@"EXCESS VOLUME LABEL", nil), excessVolumeString];
+        
+        [parametersString appendAttributedString:[[NSAttributedString alloc] initWithString:excessString attributes:redColorAttributes]];
+        
+    }
+    
+    if (shortageVolume > 0) {
+        
+        NSString *shortageVolumeString = [STMFunctions volumeStringWithVolume:shortageVolume andPackageRel:packageRel];
+        NSString *shortageString = [NSString stringWithFormat:@"%@: %@\n", NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil), shortageVolumeString];
+        
+        [parametersString appendAttributedString:[[NSAttributedString alloc] initWithString:shortageString attributes:redColorAttributes]];
+        
+    }
+    
+    if (regradeVolume > 0) {
+        
+        NSString *regradeVolumeString = [STMFunctions volumeStringWithVolume:regradeVolume andPackageRel:packageRel];
+        NSString *regradeString = [NSString stringWithFormat:@"%@: %@\n", NSLocalizedString(@"REGRADE VOLUME LABEL", nil), regradeVolumeString];
+        
+        [parametersString appendAttributedString:[[NSAttributedString alloc] initWithString:regradeString attributes:redColorAttributes]];
+        
+    }
+    
+    return parametersString;
+
+}
+
 - (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume {
     [self shippingPosition:position withDoneVolume:doneVolume badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:0];
 }
