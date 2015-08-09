@@ -63,6 +63,8 @@
     _sortOrder = sortOrder;
     self.parentVC.sortOrder = sortOrder;
     
+    [self setupSortSettingsButton];
+    
 }
 
 - (NSMutableDictionary *)cachedCellsHeights {
@@ -663,6 +665,42 @@
     
 }
 
+
+#pragma mark - sort settings button
+
+- (void)setupSortSettingsButton {
+    
+    NSString *imageName;
+    
+    switch (self.sortOrder) {
+        case STMShipmentPositionSortNameAsc:
+            imageName = @"alphabetical_sorting.png";
+            break;
+            
+        case STMShipmentPositionSortNameDesc:
+            imageName = @"alphabetical_sorting_2.png";
+            break;
+
+        case STMShipmentPositionSortTsAsc:
+            imageName = @"future.png";
+            break;
+
+        case STMShipmentPositionSortTsDesc:
+            imageName = @"past.png";
+            break;
+
+        default:
+            break;
+    }
+    
+    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(settingsButtonPressed)];
+    self.navigationItem.rightBarButtonItem = settingButton;
+
+}
+
 - (void)settingsButtonPressed {
     [self performSegueWithIdentifier:@"showSettings" sender:self];
 }
@@ -674,11 +712,7 @@
     
     self.navigationItem.title = self.shipment.ndoc;
     
-    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings-25"]
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(settingsButtonPressed)];
-    self.navigationItem.rightBarButtonItem = settingButton;
+    [self setupSortSettingsButton];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
