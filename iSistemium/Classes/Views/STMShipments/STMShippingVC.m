@@ -375,8 +375,6 @@
         
     }
     
-    cell.detailLabel.text = [NSString stringWithFormat:@"%@", position.deviceTs];
-    
     STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
     infoLabel.text = [position volumeText];
     infoLabel.textAlignment = NSTextAlignmentRight;

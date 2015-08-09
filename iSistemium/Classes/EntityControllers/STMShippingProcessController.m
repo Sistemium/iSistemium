@@ -142,6 +142,9 @@
     position.shortageVolume = nil;
     position.isProcessed = nil;
     
+    [[STMShippingProcessController document] saveDocument:^(BOOL success) {
+    }];
+
 }
 
 - (void)markUnprocessedPositionsAsDoneForShipment:(STMShipment *)shipment {
@@ -247,6 +250,9 @@
     position.shortageVolume = (shortageVolume > 0) ? [NSNumber numberWithInteger:shortageVolume] : nil;
     position.regradeVolume = (regradeVolume > 0) ? [NSNumber numberWithInteger:regradeVolume] : nil;
     position.isProcessed = @YES;
+    
+    [[STMShippingProcessController document] saveDocument:^(BOOL success) {
+    }];
     
 }
 
