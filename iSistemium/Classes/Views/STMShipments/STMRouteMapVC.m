@@ -34,6 +34,8 @@
 @property (nonatomic, strong) NSArray *routes;
 @property (nonatomic) NSUInteger selectedRouteNumber;
 
+@property (nonatomic, strong) STMSpinnerView *spinner;
+
 
 @end
 
@@ -111,16 +113,21 @@
              
              self.routes = response.routes;
              self.selectedRouteNumber = 0;
-             [self updateToolbar];
              [self updateRoutesOverlays];
              
+         } else {
+             [self.spinner removeFromSuperview];
          }
-        
+
+        [self updateToolbar];
+
      }];
 
 }
 
 - (void)updateRoutesOverlays {
+    
+    [self.spinner removeFromSuperview];
     
     [self.mapView removeOverlays:self.mapView.overlays];
     
@@ -342,8 +349,14 @@
 
 - (void)customInit {
     
+    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
+    [self.view addSubview:self.spinner];
+
     [self updateToolbar];
     [self setupMapView];
+    
+    self.routeInfoLabel.title = NSLocalizedString(@"CALC ROUTES", nil);
+    self.routeInfoLabel.enabled = NO;
     
 }
 

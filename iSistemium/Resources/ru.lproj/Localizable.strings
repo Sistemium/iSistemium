@@ -327,5 +327,6 @@
 "LOCATION NOT CONFIRMED" = "Геометка не подтверждена";
 "NO LOCATION" = "Нет геометки";
 "LOCATION NEEDS CONFIRMATION" = "Подтвердите геометку";
+"CALC ROUTES" = "Расчёт маршрутов";
 
 
