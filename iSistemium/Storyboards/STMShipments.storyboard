@@ -441,6 +441,7 @@
                     <connections>
                         <outlet property="searchBar" destination="Via-zG-4zE" id="K90-65-wAg"/>
                         <outlet property="tableView" destination="hGz-vR-JfV" id="u6R-aV-Mcz"/>
+                        <segue destination="B1k-lv-ofn" kind="push" identifier="showPositionVolumes" id="eXu-X4-lDs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1IO-SG-gA7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -960,5 +961,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="EdL-3T-pxt"/>
+        <segue reference="eXu-X4-lDs"/>
     </inferredMetricsTieBreakers>
 </document>

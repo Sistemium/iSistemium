@@ -12,6 +12,8 @@
 
 #import "STMShippingProcessController.h"
 
+#import "STMPositionVolumesVC.h"
+
 
 @interface STMShippingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 
@@ -26,6 +28,9 @@
 @property (nonatomic, strong) NSMutableDictionary *cachedCellsHeights;
 
 @property (nonatomic, strong) STMShipmentPosition *selectedPosition;
+
+@property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
+@property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
 
 
 @end
@@ -56,6 +61,26 @@
         _cachedCellsHeights = [NSMutableDictionary dictionary];
     }
     return _cachedCellsHeights;
+    
+}
+
+- (NSMutableIndexSet *)deletedSectionIndexes {
+    
+    if (!_deletedSectionIndexes) {
+        _deletedSectionIndexes = [NSMutableIndexSet indexSet];
+    }
+    
+    return _deletedSectionIndexes;
+    
+}
+
+- (NSMutableIndexSet *)insertedSectionIndexes {
+    
+    if (!_insertedSectionIndexes) {
+        _insertedSectionIndexes = [NSMutableIndexSet indexSet];
+    }
+    
+    return _insertedSectionIndexes;
     
 }
 
@@ -360,6 +385,109 @@
         self.selectedPosition = [self.resultsController objectAtIndexPath:indexPath];
         [self performSegueWithIdentifier:@"showPositionVolumes" sender:self];
         
+    }
+    
+}
+
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showPositionVolumes"] &&
+        [segue.destinationViewController isKindOfClass:[STMPositionVolumesVC class]]) {
+        
+            [(STMPositionVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
+        
+        }
+    
+}
+
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    if (![self shippingProcessIsRunning]) {
+        
+        self.cachedCellsHeights = nil;
+        [self.tableView reloadData];
+        
+    }
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+    
+    switch (type) {
+            
+        case NSFetchedResultsChangeInsert:
+            [self.insertedSectionIndexes addIndex:sectionIndex];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.deletedSectionIndexes addIndex:sectionIndex];
+            break;
+            
+        default:
+            ; // Shouldn't have a default
+            break;
+            
+    }
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    if ([self shippingProcessIsRunning]) {
+        
+        self.cachedCellsHeights = nil;
+        
+        switch (type) {
+                
+            case NSFetchedResultsChangeMove: {
+                //                NSLog(@"NSFetchedResultsChangeMove");
+                [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
+                break;
+            }
+                
+            default: {
+                [self.tableView reloadData];
+                break;
+            }
+                
+        }
+        
+    }
+    
+}
+
+- (void)moveObject:(id)anObject atIndexPath:indexPath toIndexPath:newIndexPath {
+    
+    if ([anObject isKindOfClass:[STMShipmentPosition class]]) {
+        
+        UITableViewRowAnimation rowAnimation = UITableViewRowAnimationRight;
+                
+        [self.tableView beginUpdates];
+        
+        [self.tableView deleteSections:self.deletedSectionIndexes withRowAnimation:rowAnimation];
+        [self.tableView insertSections:self.insertedSectionIndexes withRowAnimation:rowAnimation];
+        
+        self.insertedSectionIndexes = nil;
+        self.deletedSectionIndexes = nil;
+        
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:rowAnimation];
+        [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:rowAnimation];
+        
+        [self.tableView endUpdates];
+        
+    } else {
+        [self.tableView reloadData];
     }
     
 }
