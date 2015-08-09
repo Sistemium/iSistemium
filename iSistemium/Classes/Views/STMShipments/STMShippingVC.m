@@ -15,7 +15,7 @@
 #import "STMPositionVolumesVC.h"
 
 
-@interface STMShippingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
+@interface STMShippingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -31,6 +31,8 @@
 
 @property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
+
+//@property (nonatomic) BOOL searchFieldIsScrolledAway;
 
 
 @end
@@ -95,7 +97,17 @@
         
         request.sortDescriptors = @[processedDescriptor, nameDescriptor];
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipment == %@", self.shipment];
+        NSMutableArray *subpredicates = [NSMutableArray array];
+        
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"shipment == %@", self.shipment]];
+        
+        if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+            
+            [subpredicates addObject:[NSPredicate predicateWithFormat:@"article.name CONTAINS[cd] %@", self.searchBar.text]];
+            
+        }
+
+        NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
         
         request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
         
@@ -117,7 +129,7 @@
     if (![self.resultsController performFetch:&error]) {
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
     } else {
-        
+        [self.tableView reloadData];
     }
     
 }
@@ -404,6 +416,90 @@
 }
 
 
+#pragma mark - search & UISearchBarDelegate
+
+- (void)searchButtonPressed {
+    
+    [self.searchBar becomeFirstResponder];
+    [self.tableView setContentOffset:CGPointZero animated:YES];
+    
+//    [self hideSearchButton];
+//    
+//}
+//
+//- (void)showSearchButton {
+//    
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+//}
+//
+//- (void)hideSearchButton {
+//    self.navigationItem.rightBarButtonItem = nil;
+//}
+//
+//- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
+//    
+//    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
+//        
+//        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
+//        
+//        if (_searchFieldIsScrolledAway) {
+//            [self showSearchButton];
+//        } else {
+//            [self hideSearchButton];
+//        }
+//        
+//    }
+    
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    [self performFetch];
+    
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = YES;
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = NO;
+    searchBar.text = nil;
+    
+    [self hideKeyboard];
+    [self performFetch];
+    
+//    if (self.searchFieldIsScrolledAway) {
+//        [self showSearchButton];
+//    }
+    
+}
+
+
+- (void)hideKeyboard {
+    
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
+    
+}
+
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+//    
+//    self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchBar.frame.size.height);
+//    
+//}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    [self hideKeyboard];
+    
+}
+
+
 #pragma mark - NSFetchedResultsController delegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
@@ -497,31 +593,15 @@
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 0) {
-        
-        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section]] objectID];
-        self.cachedCellsHeights[objectID] = @(height);
-        
-    } else {
-        
-        self.cachedCellsHeights[indexPath] = @(height);
-        
-    }
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    self.cachedCellsHeights[objectID] = @(height);
     
 }
 
 - (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 0) {
-        
-        NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section]] objectID];;
-        return self.cachedCellsHeights[objectID];
-        
-    } else {
-        
-        return self.cachedCellsHeights[indexPath];
-        
-    }
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];;
+    return self.cachedCellsHeights[objectID];
     
 }
 
@@ -613,6 +693,8 @@
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    
+    self.searchBar.delegate = self;
     
     [self performFetch];
     
