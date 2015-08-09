@@ -705,7 +705,10 @@
             break;
     }
     
-    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
+    UIImage *image = [UIImage imageNamed:imageName];
+    image = [STMFunctions resizeImage:image toSize:CGSizeMake(25, 25)];
+    
+    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:image
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
                                                                        action:@selector(settingsButtonPressed)];
