@@ -45,6 +45,30 @@
     return @"shipmentPositionCell";
 }
 
+- (STMShipmentPositionSort)sortOrder {
+    
+    if (!_sortOrder) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSNumber *sortOrder = [defaults valueForKey:@"STMShipmentPositionSort"];
+        
+        if (sortOrder) {
+            
+            _sortOrder = (STMShipmentPositionSort)sortOrder.integerValue;
+            
+        } else {
+            
+            _sortOrder = STMShipmentPositionSortNameAsc;
+            [defaults setValue:@(_sortOrder) forKey:@"STMShipmentPositionSort"];
+            [defaults synchronize];
+            
+        }
+        
+    }
+    return _sortOrder;
+    
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -52,9 +76,9 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentPosition class])];
         
         NSSortDescriptor *processedDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"isProcessed.boolValue" ascending:YES selector:@selector(compare:)];
-        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         
-        request.sortDescriptors = @[processedDescriptor, nameDescriptor];
+        request.sortDescriptors = @[processedDescriptor, [self currentSortDescriptor]];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipment == %@", self.shipment];
         
@@ -67,6 +91,39 @@
     }
     return _resultsController;
     
+}
+
+- (NSSortDescriptor *)currentSortDescriptor {
+    return [self sortDescriptorForSortOrder:self.sortOrder];
+}
+
+- (NSSortDescriptor *)sortDescriptorForSortOrder:(STMShipmentPositionSort)sortOrder {
+    
+    NSSortDescriptor *sortDescriptor;
+    
+    switch (sortOrder) {
+        case STMShipmentPositionSortNameAsc:
+            sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+            break;
+            
+        case STMShipmentPositionSortNameDesc:
+            sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:NO selector:@selector(caseInsensitiveCompare:)];
+            break;
+            
+        case STMShipmentPositionSortTsAsc:
+            sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:YES selector:@selector(compare:)];
+            break;
+            
+        case STMShipmentPositionSortTsDesc:
+            sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)];
+            break;
+            
+        default:
+            break;
+    }
+    
+    return sortDescriptor;
+
 }
 
 - (void)performFetch {
@@ -987,6 +1044,8 @@
         
         STMShippingVC *shippingVC = (STMShippingVC *)segue.destinationViewController;
         shippingVC.shipment = self.shipment;
+        shippingVC.parentVC = self;
+        shippingVC.sortOrder = self.sortOrder;
         
     }
 

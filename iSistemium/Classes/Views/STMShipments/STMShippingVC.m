@@ -13,6 +13,7 @@
 #import "STMShippingProcessController.h"
 
 #import "STMPositionVolumesVC.h"
+#import "STMShippingSettingsTVC.h"
 
 
 @interface STMShippingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate>
@@ -93,9 +94,9 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentPosition class])];
         
         NSSortDescriptor *processedDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"isProcessed.boolValue" ascending:YES selector:@selector(compare:)];
-        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+//        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         
-        request.sortDescriptors = @[processedDescriptor, nameDescriptor];
+        request.sortDescriptors = @[processedDescriptor, [self.parentVC sortDescriptorForSortOrder:self.sortOrder]];
         
         NSMutableArray *subpredicates = [NSMutableArray array];
         
@@ -411,7 +412,14 @@
         
             [(STMPositionVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
         
-        }
+    } else if ([segue.identifier isEqualToString:@"showSettings"] &&
+               [segue.destinationViewController isKindOfClass:[STMShippingSettingsTVC class]]) {
+        
+        STMShippingSettingsTVC *settingTVC = (STMShippingSettingsTVC *)segue.destinationViewController;
+        
+        settingTVC.parentVC = self;
+    
+    }
     
 }
 
@@ -649,7 +657,7 @@
 }
 
 - (void)settingsButtonPressed {
-    
+    [self performSegueWithIdentifier:@"showSettings" sender:self];
 }
 
 

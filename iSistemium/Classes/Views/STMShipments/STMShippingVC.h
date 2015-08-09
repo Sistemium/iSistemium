@@ -8,11 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "STMDataModel.h"
+#import "STMShipmentTVC.h"
 
 
 @interface STMShippingVC : UIViewController
 
 @property (nonatomic, strong) STMShipment *shipment;
+@property (nonatomic, weak) STMShipmentTVC *parentVC;
+@property (nonatomic) STMShipmentPositionSort sortOrder;
 
 
 @end

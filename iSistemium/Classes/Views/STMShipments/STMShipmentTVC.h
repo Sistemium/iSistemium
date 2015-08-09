@@ -10,6 +10,13 @@
 #import "STMDataModel.h"
 #import "STMShipmentRoutePointTVC.h"
 
+typedef enum NSUInteger {
+    STMShipmentPositionSortNameAsc,
+    STMShipmentPositionSortNameDesc,
+    STMShipmentPositionSortTsAsc,
+    STMShipmentPositionSortTsDesc
+} STMShipmentPositionSort;
+
 
 @interface STMShipmentTVC : STMVariableCellsHeightTVC
 
@@ -18,5 +25,9 @@
 
 @property (nonatomic, weak) STMShipmentRoutePointTVC *parentVC;
 
+@property (nonatomic) STMShipmentPositionSort sortOrder;
+
+- (NSSortDescriptor *)currentSortDescriptor;
+- (NSSortDescriptor *)sortDescriptorForSortOrder:(STMShipmentPositionSort)sortOrder;
 
 @end
