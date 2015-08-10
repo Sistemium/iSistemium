@@ -8,7 +8,6 @@
 
 #import "STMShipmentTVC.h"
 #import "STMNS.h"
-#import "STMUI.h"
 #import "STMFunctions.h"
 #import "STMShippingProcessController.h"
 
@@ -570,15 +569,6 @@
     
     if (position.isProcessed.boolValue) {
         
-        //        NSString *volumesString = [self.shippingProcessController volumesStringWithDoneVolume:position.doneVolume.integerValue
-        //                                                                                    badVolume:position.badVolume.integerValue
-        //                                                                                 excessVolume:position.excessVolume.integerValue
-        //                                                                               shortageVolume:position.shortageVolume.integerValue
-        //                                                                                regradeVolume:position.regradeVolume.integerValue
-        //                                                                                   packageRel:position.article.packageRel.integerValue];
-        //
-        //        cell.detailLabel.text = [@"\n" stringByAppendingString:volumesString];
-        
         NSAttributedString *volumes = [self.shippingProcessController volumesAttributedStringWithAttributes:attributes
                                                                                                  doneVolume:position.doneVolume.integerValue
                                                                                                   badVolume:position.badVolume.integerValue
@@ -590,7 +580,6 @@
         
     } else {
         
-        //        cell.detailLabel.text = @"";
         cell.detailLabel.attributedText = nil;
         
     }
@@ -602,10 +591,6 @@
     
     cell.accessoryView = infoLabel;
     
-    //    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : attributes[NSForegroundColorAttributeName];
-    
-    //    cell.titleLabel.textColor = textColor;
-    //    cell.detailLabel.textColor = textColor;
     infoLabel.textColor = textColor;
     
 }

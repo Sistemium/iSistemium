@@ -319,89 +319,7 @@
 }
 
 - (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
-    
-    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : [UIColor blackColor];
-    UIFont *font = [UIFont systemFontOfSize:17];
-
-    NSMutableDictionary *attributes = @{NSForegroundColorAttributeName : textColor,
-                                        NSFontAttributeName            : font}.mutableCopy;
-    
-    NSMutableAttributedString *attributedText = nil;
-    
-    if (position.articleFact) {
-        
-        attributedText = [[NSMutableAttributedString alloc] initWithString:[position.articleFact.name stringByAppendingString:@"\n"] attributes:attributes];
-        
-        font = [UIFont systemFontOfSize:font.pointSize - 4];
-        
-        NSDictionary *attributes = @{NSForegroundColorAttributeName     : [UIColor blackColor],
-                                     NSStrikethroughStyleAttributeName  : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
-                                     NSFontAttributeName                : font};
-        
-        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:position.article.name attributes:attributes];
-        
-        [attributedText appendAttributedString:appendString];
-        
-    } else {
-        
-        if (position.article.name) {
-            
-            attributedText = [[NSMutableAttributedString alloc] initWithString:position.article.name attributes:attributes];
-            
-        } else {
-            
-            attributes[NSForegroundColorAttributeName] = [UIColor redColor];
-            
-            attributedText = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"UNKNOWN ARTICLE", nil) attributes:attributes];
-            
-        }
-        
-    }
-    
-    cell.titleLabel.attributedText = attributedText;
-    
-    attributes[NSFontAttributeName] = cell.detailLabel.font;
-    
-    if (position.isProcessed.boolValue) {
-        
-//        NSString *volumesString = [self.shippingProcessController volumesStringWithDoneVolume:position.doneVolume.integerValue
-//                                                                                    badVolume:position.badVolume.integerValue
-//                                                                                 excessVolume:position.excessVolume.integerValue
-//                                                                               shortageVolume:position.shortageVolume.integerValue
-//                                                                                regradeVolume:position.regradeVolume.integerValue
-//                                                                                   packageRel:position.article.packageRel.integerValue];
-//        
-//        cell.detailLabel.text = [@"\n" stringByAppendingString:volumesString];
-        
-        NSAttributedString *volumes = [self.shippingProcessController volumesAttributedStringWithAttributes:attributes
-                                                                                                 doneVolume:position.doneVolume.integerValue
-                                                                                                  badVolume:position.badVolume.integerValue
-                                                                                               excessVolume:position.excessVolume.integerValue
-                                                                                             shortageVolume:position.shortageVolume.integerValue
-                                                                                              regradeVolume:position.regradeVolume.integerValue
-                                                                                                 packageRel:position.article.packageRel.integerValue];
-        cell.detailLabel.attributedText = volumes;
-        
-    } else {
-        
-//        cell.detailLabel.text = @"";
-        cell.detailLabel.attributedText = nil;
-        
-    }
-    
-    STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
-    infoLabel.text = [position volumeText];
-    infoLabel.textAlignment = NSTextAlignmentRight;
-    infoLabel.adjustsFontSizeToFitWidth = YES;
-    
-    cell.accessoryView = infoLabel;
-    
-//    UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : attributes[NSForegroundColorAttributeName];
-    
-//    cell.titleLabel.textColor = textColor;
-//    cell.detailLabel.textColor = textColor;
-    infoLabel.textColor = textColor;
-    
+    [self.parentVC fillCell:cell withShipmentPosition:position];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -452,33 +370,6 @@
     [self.searchBar becomeFirstResponder];
     [self.tableView setContentOffset:CGPointZero animated:YES];
     
-//    [self hideSearchButton];
-//    
-//}
-//
-//- (void)showSearchButton {
-//    
-//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
-//}
-//
-//- (void)hideSearchButton {
-//    self.navigationItem.rightBarButtonItem = nil;
-//}
-//
-//- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
-//    
-//    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
-//        
-//        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
-//        
-//        if (_searchFieldIsScrolledAway) {
-//            [self showSearchButton];
-//        } else {
-//            [self hideSearchButton];
-//        }
-//        
-//    }
-    
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -501,12 +392,7 @@
     [self hideKeyboard];
     [self performFetch];
     
-//    if (self.searchFieldIsScrolledAway) {
-//        [self showSearchButton];
-//    }
-    
 }
-
 
 - (void)hideKeyboard {
     
@@ -515,12 +401,6 @@
     }
     
 }
-
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    
-//    self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchBar.frame.size.height);
-//    
-//}
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     

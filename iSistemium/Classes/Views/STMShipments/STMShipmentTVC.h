@@ -8,6 +8,8 @@
 
 #import "STMVariableCellsHeightTVC.h"
 #import "STMDataModel.h"
+#import "STMUI.h"
+
 #import "STMShipmentRoutePointTVC.h"
 
 typedef enum NSUInteger {
@@ -29,5 +31,8 @@ typedef enum NSUInteger {
 
 - (NSSortDescriptor *)currentSortDescriptor;
 - (NSSortDescriptor *)sortDescriptorForSortOrder:(STMShipmentPositionSort)sortOrder;
+
+- (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position;
+
 
 @end
