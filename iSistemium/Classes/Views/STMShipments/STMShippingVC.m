@@ -528,6 +528,7 @@ typedef enum STMPositionProcessingType {
             case NSFetchedResultsChangeMove: {
 
                 [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
+                [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationNone];
                 break;
             }
                 
