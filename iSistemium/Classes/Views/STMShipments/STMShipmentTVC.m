@@ -13,6 +13,7 @@
 
 #import "STMPositionVolumesVC.h"
 #import "STMShippingVC.h"
+#import "STMShippingSettingsTVC.h"
 
 
 #define POSITION_SECTION_INDEX 2
@@ -77,6 +78,8 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:@(_sortOrder) forKey:@"STMShipmentPositionSort"];
     [defaults synchronize];
+    
+    [self setupSortSettingsButton];
     
 }
 
@@ -973,21 +976,20 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"showPositionVolumes"]) {
-        
-        if ([segue.destinationViewController isKindOfClass:[STMPositionVolumesVC class]]) {
-            
-            [(STMPositionVolumesVC *)segue.destinationViewController setPosition:self.selectedPosition];
-            
-        }
-        
-    } else if ([segue.identifier isEqualToString:@"showShipping"] &&
+    if ([segue.identifier isEqualToString:@"showShipping"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
         
         STMShippingVC *shippingVC = (STMShippingVC *)segue.destinationViewController;
         shippingVC.shipment = self.shipment;
         shippingVC.parentVC = self;
         shippingVC.sortOrder = self.sortOrder;
+        
+    } else if ([segue.identifier isEqualToString:@"showSettings"] &&
+               [segue.destinationViewController isKindOfClass:[STMShippingSettingsTVC class]]) {
+        
+        STMShippingSettingsTVC *settingTVC = (STMShippingSettingsTVC *)segue.destinationViewController;
+        
+        settingTVC.parentVC = self;
         
     }
 
@@ -1009,10 +1011,55 @@
 }
 
 
+#pragma mark - sort settings button
+
+- (void)setupSortSettingsButton {
+    
+    NSString *imageName;
+    
+    switch (self.sortOrder) {
+        case STMShipmentPositionSortNameAsc:
+            imageName = @"alphabetical_sorting.png";
+            break;
+            
+        case STMShipmentPositionSortNameDesc:
+            imageName = @"alphabetical_sorting_2.png";
+            break;
+            
+        case STMShipmentPositionSortTsAsc:
+            imageName = @"future.png";
+            break;
+            
+        case STMShipmentPositionSortTsDesc:
+            imageName = @"past.png";
+            break;
+            
+        default:
+            break;
+    }
+    
+    UIImage *image = [UIImage imageNamed:imageName];
+    image = [STMFunctions resizeImage:image toSize:CGSizeMake(25, 25)];
+    
+    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:image
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(settingsButtonPressed)];
+    self.navigationItem.rightBarButtonItem = settingButton;
+    
+}
+
+- (void)settingsButtonPressed {
+    [self performSegueWithIdentifier:@"showSettings" sender:self];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    [self setupSortSettingsButton];
+
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [self addObservers];

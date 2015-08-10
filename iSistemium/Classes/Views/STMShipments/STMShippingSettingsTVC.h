@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMShippingVC.h"
+#import "STMShipmentPositionSortable.h"
 
 
 @interface STMShippingSettingsTVC : UITableViewController
 
-@property (nonatomic, weak) STMShippingVC *parentVC;
+@property (nonatomic, weak) UIViewController <STMShipmentPositionSortable> *parentVC;
 
 
 @end

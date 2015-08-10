@@ -11,16 +11,10 @@
 #import "STMUI.h"
 
 #import "STMShipmentRoutePointTVC.h"
-
-typedef enum NSUInteger {
-    STMShipmentPositionSortNameAsc = 0,
-    STMShipmentPositionSortNameDesc = 1,
-    STMShipmentPositionSortTsAsc = 2,
-    STMShipmentPositionSortTsDesc = 3
-} STMShipmentPositionSort;
+#import "STMShipmentPositionSortable.h"
 
 
-@interface STMShipmentTVC : STMVariableCellsHeightTVC
+@interface STMShipmentTVC : STMVariableCellsHeightTVC <STMShipmentPositionSortable>
 
 @property (nonatomic, strong) STMShipment *shipment;
 @property (nonatomic, strong) STMShipmentRoutePoint *point;

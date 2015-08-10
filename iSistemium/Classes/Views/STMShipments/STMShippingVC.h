@@ -10,8 +10,10 @@
 #import "STMDataModel.h"
 #import "STMShipmentTVC.h"
 
+#import "STMShipmentPositionSortable.h"
 
-@interface STMShippingVC : UIViewController
+
+@interface STMShippingVC : UIViewController <STMShipmentPositionSortable>
 
 @property (nonatomic, strong) STMShipment *shipment;
 @property (nonatomic, weak) STMShipmentTVC *parentVC;

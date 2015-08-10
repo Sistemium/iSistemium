@@ -407,8 +407,8 @@
                     <navigationItem key="navigationItem" id="U2O-PX-Re2"/>
                     <connections>
                         <segue destination="82M-bF-O0j" kind="push" identifier="showVolumes" id="nsp-Lh-2Qx"/>
-                        <segue destination="B1k-lv-ofn" kind="push" identifier="showPositionVolumes" id="ome-cw-pmb"/>
                         <segue destination="P6c-7b-Ihx" kind="push" identifier="showShipping" id="UFd-Ak-9Zh"/>
+                        <segue destination="Nd0-s6-ZvY" kind="push" identifier="showSettings" id="auM-lf-3pc"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JMb-lt-p9N" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -542,7 +542,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D2k-5J-UYe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2962" y="331"/>
+            <point key="canvasLocation" x="2502" y="-413"/>
         </scene>
         <!--Shipment VolumesVC-->
         <scene sceneID="dIl-A5-x1B">
@@ -889,7 +889,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YU6-jx-uTS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2880" y="-377"/>
+            <point key="canvasLocation" x="3896" y="-556"/>
         </scene>
         <!--Regrade ArticleVC-->
         <scene sceneID="AOK-c0-4rt">
@@ -939,7 +939,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KhH-G7-Lj6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3290" y="-377"/>
+            <point key="canvasLocation" x="4306" y="-556"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="O1Y-Wp-Z0z">
@@ -980,7 +980,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LOb-Is-4Fi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2879" y="-728"/>
+            <point key="canvasLocation" x="3895" y="-907"/>
         </scene>
         <!--Position VolumesVC-->
         <scene sceneID="L3K-Oh-9is">
@@ -1057,6 +1057,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="EdL-3T-pxt"/>
-        <segue reference="eXu-X4-lDs"/>
+        <segue reference="auM-lf-3pc"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -920,6 +920,7 @@
 		2CF126471B778AB50059701F /* past.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = past.png; sourceTree = "<group>"; };
 		2CF126481B778AB50059701F /* alphabetical_sorting_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alphabetical_sorting_2.png; sourceTree = "<group>"; };
 		2CF126491B778AB50059701F /* alphabetical_sorting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alphabetical_sorting.png; sourceTree = "<group>"; };
+		2CF1264E1B7880750059701F /* STMShipmentPositionSortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentPositionSortable.h; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -1207,6 +1208,7 @@
 				2C53B8AE1940A092002298A5 /* STMSessionManagement.h */,
 				2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */,
 				2C420FC51A4C24DE001C65B9 /* STMTabBarItemControllable.h */,
+				2CF1264E1B7880750059701F /* STMShipmentPositionSortable.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
