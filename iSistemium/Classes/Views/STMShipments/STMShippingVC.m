@@ -126,9 +126,14 @@ typedef enum STMPositionProcessingType {
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentPosition class])];
         
         NSSortDescriptor *processedDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"isProcessed.boolValue" ascending:YES selector:@selector(compare:)];
-//        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+
+        NSSortDescriptor *sortOrderDescriptor = [self.parentVC currentSortDescriptor];
         
-        request.sortDescriptors = @[processedDescriptor, [self.parentVC sortDescriptorForSortOrder:self.sortOrder]];
+        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name"
+                                                                         ascending:sortOrderDescriptor.ascending
+                                                                          selector:@selector(caseInsensitiveCompare:)];
+
+        request.sortDescriptors = @[processedDescriptor, sortOrderDescriptor, nameDescriptor];
         
         NSMutableArray *subpredicates = [NSMutableArray array];
         
@@ -699,6 +704,14 @@ typedef enum STMPositionProcessingType {
     NSString *imageName;
     
     switch (self.sortOrder) {
+        case STMShipmentPositionSortOrdAsc:
+            imageName = @"numerical_sorting_12.png";
+            break;
+            
+        case STMShipmentPositionSortOrdDesc:
+            imageName = @"numerical_sorting_21.png";
+            break;
+
         case STMShipmentPositionSortNameAsc:
             imageName = @"alphabetical_sorting.png";
             break;

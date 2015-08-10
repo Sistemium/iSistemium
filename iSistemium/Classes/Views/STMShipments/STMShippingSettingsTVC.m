@@ -10,6 +10,9 @@
 
 @interface STMShippingSettingsTVC ()
 
+
+@property (weak, nonatomic) IBOutlet UITableViewCell *ordAscCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *ordDescCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *nameAscCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *nameDescCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *timestampAscCell;
@@ -29,7 +32,12 @@
 - (NSArray *)sortOrderCells {
     
     if (!_sortOrderCells) {
-        _sortOrderCells = @[self.nameAscCell, self.nameDescCell, self.timestampAscCell, self.timestampDescCell];
+        _sortOrderCells = @[self.ordAscCell,
+                            self.ordDescCell,
+                            self.nameAscCell,
+                            self.nameDescCell,
+                            self.timestampAscCell,
+                            self.timestampDescCell];
     }
     return _sortOrderCells;
     

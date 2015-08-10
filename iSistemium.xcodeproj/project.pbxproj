@@ -318,6 +318,8 @@
 		2CF126521B7895EB0059701F /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126501B7895EB0059701F /* checkmark.png */; };
 		2CF126541B789B360059701F /* uncheckmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126531B789B360059701F /* uncheckmark.png */; };
 		2CF126581B78DBE10059701F /* STMShipmentPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126571B78DBE10059701F /* STMShipmentPosition.m */; };
+		2CF1265B1B78DD330059701F /* numerical_sorting_12.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126591B78DD330059701F /* numerical_sorting_12.png */; };
+		2CF1265C1B78DD330059701F /* numerical_sorting_21.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF1265A1B78DD330059701F /* numerical_sorting_21.png */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -928,6 +930,8 @@
 		2CF126551B78DBAF0059701F /* STMDataModel 60.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 60.xcdatamodel"; sourceTree = "<group>"; };
 		2CF126561B78DBE10059701F /* STMShipmentPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentPosition.h; sourceTree = "<group>"; };
 		2CF126571B78DBE10059701F /* STMShipmentPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentPosition.m; sourceTree = "<group>"; };
+		2CF126591B78DD330059701F /* numerical_sorting_12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = numerical_sorting_12.png; sourceTree = "<group>"; };
+		2CF1265A1B78DD330059701F /* numerical_sorting_21.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = numerical_sorting_21.png; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -1713,6 +1717,8 @@
 				2CF126531B789B360059701F /* uncheckmark.png */,
 				2CF126461B778AB50059701F /* future.png */,
 				2CF126471B778AB50059701F /* past.png */,
+				2CF126591B78DD330059701F /* numerical_sorting_12.png */,
+				2CF1265A1B78DD330059701F /* numerical_sorting_21.png */,
 				2CF126481B778AB50059701F /* alphabetical_sorting_2.png */,
 				2CF126491B778AB50059701F /* alphabetical_sorting.png */,
 				2C1AB2921B6F925100BF5C50 /* reordering.png */,
@@ -1988,6 +1994,7 @@
 				2CEAC15C1B3BF64C00AD068E /* STMShipments.storyboard in Resources */,
 				2C3771B51B5E7038003493FB /* Sync With Cloud.png in Resources */,
 				2C88F1D31B24664600E30418 /* Clear Filters-25.png in Resources */,
+				2CF1265C1B78DD330059701F /* numerical_sorting_21.png in Resources */,
 				2C1AB28E1B6F581300BF5C50 /* single_waypoint_map.png in Resources */,
 				2C761BB21B00824F001DA33E /* Picture-32.png in Resources */,
 				2CF126541B789B360059701F /* uncheckmark.png in Resources */,
@@ -2028,6 +2035,7 @@
 				2C1AB2FF1B70AE4400BF5C50 /* 4_circle_filled.png in Resources */,
 				2C02F2AE1A8A307A00E0E890 /* STMAuth.storyboard in Resources */,
 				2C1AB3131B70B22800BF5C50 /* 4_circle_colored_blue.png in Resources */,
+				2CF1265B1B78DD330059701F /* numerical_sorting_12.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
