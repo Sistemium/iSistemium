@@ -33,7 +33,7 @@
 @property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
 
-//@property (nonatomic) BOOL searchFieldIsScrolledAway;
+@property (nonatomic, strong) NSMutableArray *checkedPositions;
 
 
 @end
@@ -55,6 +55,15 @@
         _document = (STMDocument *)[STMSessionManager sharedManager].currentSession.document;
     }
     return _document;
+    
+}
+
+- (NSMutableArray *)checkedPositions {
+    
+    if (!_checkedPositions) {
+        _checkedPositions = [NSMutableArray array];
+    }
+    return _checkedPositions;
     
 }
 
@@ -319,7 +328,42 @@
 }
 
 - (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
+    
     [self.parentVC fillCell:cell withShipmentPosition:position];
+    
+    if ([self.checkedPositions containsObject:position]) {
+        
+        if ([cell.accessoryView isKindOfClass:[STMLabel class]]) {
+            
+            cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+            
+            STMLabel *infoLabel = (STMLabel *)cell.accessoryView;
+            infoLabel.frame = CGRectMake(infoLabel.frame.origin.x, infoLabel.frame.origin.y, infoLabel.frame.size.width + 20, infoLabel.frame.size.height);
+            infoLabel.text = [infoLabel.text stringByAppendingString:@" ✓"];
+            infoLabel.textColor = ACTIVE_BLUE_COLOR;
+            
+            cell.accessoryView = infoLabel;
+            
+        }
+        
+    }
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
+
+    if (!position.isProcessed.boolValue) {
+        
+        ([self.checkedPositions containsObject:position]) ? [self.checkedPositions removeObject:position] : [self.checkedPositions addObject:position];
+        
+        [self.cachedCellsHeights removeObjectForKey:position.objectID];
+        
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+    }
+    
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
