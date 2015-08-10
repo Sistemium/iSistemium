@@ -310,8 +310,6 @@
     cell.detailLabel.text = @"";
     cell.detailLabel.textColor = [UIColor blackColor];
     cell.detailLabel.textAlignment = NSTextAlignmentLeft;
-
-    [self removeSwipeGesturesFromCell:cell];
     
 }
 
@@ -507,10 +505,6 @@
     STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
     [self fillCell:cell withShipmentPosition:position];
     
-    if ([self shippingProcessIsRunning]) {
-        [self addSwipeGestureToCell:cell withPosition:position];
-    }
-    
 }
 
 - (STMShipmentPosition *)shipmentPositionForTableIndexPath:(NSIndexPath *)indexPath {
@@ -625,25 +619,6 @@
     
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return ((indexPath.section >= POSITION_SECTION_INDEX) && [self shippingProcessIsRunning]);
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NSLocalizedString(@"SHIPPING", nil);
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
-        self.selectedPosition = [self.resultsController objectAtIndexPath:[self resultsControllerIndexPathFromTableIndexPath:indexPath]];
-        [self performSegueWithIdentifier:@"showPositionVolumes" sender:self];
-
-    }
-    
-}
-
 
 #pragma mark - action sheet
 
@@ -673,48 +648,6 @@
     NSLog(@"buttonIndex %d", buttonIndex);
     
     [self performSegueWithIdentifier:@"showVolumes" sender:self];
-    
-}
-
-#pragma mark - cell's swipe
-
-- (void)addSwipeGestureToCell:(UITableViewCell *)cell withPosition:(STMShipmentPosition *)position {
-    
-    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToRight:)];
-    swipe.direction = UISwipeGestureRecognizerDirectionRight;
-    
-    if (swipe) [cell addGestureRecognizer:swipe];
-
-}
-
-- (void)removeSwipeGesturesFromCell:(UITableViewCell *)cell {
-    
-    for (UIGestureRecognizer *gesture in cell.gestureRecognizers) {
-        if ([gesture isKindOfClass:[UISwipeGestureRecognizer class]]) {
-            [cell removeGestureRecognizer:gesture];
-        }
-    }
-    
-}
-
-- (void)swipeToRight:(id)sender {
-
-//    NSLogMethodName;
-    
-    if ([sender isKindOfClass:[UISwipeGestureRecognizer class]]) {
-        
-        UITableViewCell *cell = (UITableViewCell *)[(UISwipeGestureRecognizer *)sender view];
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-
-        STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
-        
-        if (position.isProcessed.boolValue) {
-            [self.shippingProcessController resetPosition:position];
-        } else {
-            [self.shippingProcessController shippingPosition:position withDoneVolume:position.volume.integerValue];
-        }
-        
-    }
     
 }
 
@@ -928,7 +861,7 @@
 
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 2) {
+    if (indexPath.section >= 2) {
         
         NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-2]] objectID];
         self.cachedCellsHeights[objectID] = @(height);
@@ -943,7 +876,7 @@
 
 - (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.section == 2) {
+    if (indexPath.section >= 2) {
         
         NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-2]] objectID];;
         return self.cachedCellsHeights[objectID];
