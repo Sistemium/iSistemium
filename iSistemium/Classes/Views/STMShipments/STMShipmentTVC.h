@@ -26,7 +26,7 @@
 - (NSSortDescriptor *)currentSortDescriptor;
 - (NSSortDescriptor *)sortDescriptorForSortOrder:(STMShipmentPositionSort)sortOrder;
 
-- (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position;
+- (void)fillCell:(UITableViewCell <STMTDICell> *)cell withShipmentPosition:(STMShipmentPosition *)position;
 
 
 @end

@@ -304,16 +304,16 @@ typedef enum STMPositionProcessingType {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMCustom8TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    [self flushCellBeforeUse:(STMCustom7TVCell *)cell];
+    [self flushCellBeforeUse:(STMCustom8TVCell *)cell];
     [self fillCell:cell atIndexPath:indexPath];
     
     return cell;
     
 }
 
-- (void)flushCellBeforeUse:(STMCustom7TVCell *)cell {
+- (void)flushCellBeforeUse:(STMCustom8TVCell *)cell {
     
     cell.accessoryView = nil;
     
@@ -332,8 +332,8 @@ typedef enum STMPositionProcessingType {
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
-        [self fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
+    if ([cell conformsToProtocol:@protocol(STMTDICell)]) {
+        [self fillShipmentPositionCell:(UITableViewCell <STMTDICell> *)cell atIndexPath:indexPath];
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -343,7 +343,7 @@ typedef enum STMPositionProcessingType {
     
 }
 
-- (void)fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillShipmentPositionCell:(UITableViewCell <STMTDICell> *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
     [self fillCell:cell withShipmentPosition:position];
@@ -354,7 +354,7 @@ typedef enum STMPositionProcessingType {
     
 }
 
-- (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
+- (void)fillCell:(UITableViewCell <STMTDICell> *)cell withShipmentPosition:(STMShipmentPosition *)position {
     
     [self.parentVC fillCell:cell withShipmentPosition:position];
     
@@ -370,6 +370,8 @@ typedef enum STMPositionProcessingType {
             infoLabel.textColor = ACTIVE_BLUE_COLOR;
             
             cell.accessoryView = infoLabel;
+            
+            cell.infoLabel.textColor = ACTIVE_BLUE_COLOR;
             
         }
         
@@ -842,7 +844,7 @@ typedef enum STMPositionProcessingType {
     [self setupToolbarButtons];
     [self setupSortSettingsButton];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;

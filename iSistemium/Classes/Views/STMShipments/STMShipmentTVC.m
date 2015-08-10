@@ -29,6 +29,8 @@
 
 @property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
 
+@property (nonatomic, strong) NSString *positionCellIdentifier;
+
 
 @end
 
@@ -44,7 +46,11 @@
 }
 
 - (NSString *)cellIdentifier {
-    return @"shipmentPositionCell";
+    return @"shipmentTVCell";
+}
+
+- (NSString *)positionCellIdentifier {
+    return @"positionCell";
 }
 
 - (STMShipmentPositionSort)sortOrder {
@@ -279,11 +285,29 @@
         
     } else {
     
-        static UITableViewCell *cell = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
-        });
+        UITableViewCell *cell = nil;
+        
+        if (indexPath.section < 2) {
+            
+            static UITableViewCell *shipmentTVCell = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                shipmentTVCell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+            });
+            
+            cell = shipmentTVCell;
+
+        } else {
+            
+            static UITableViewCell *positionCell = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                positionCell = [self.tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier];
+            });
+            
+            cell = positionCell;
+
+        }
         
         [self fillCell:cell atIndexPath:indexPath];
         
@@ -307,16 +331,26 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell;
+
+    if (indexPath.section < 2) {
+        cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier forIndexPath:indexPath];
+    }
     
-    [self flushCellBeforeUse:(STMCustom7TVCell *)cell];
-    [self fillCell:cell atIndexPath:indexPath];
+    if ([cell conformsToProtocol:@protocol(STMTDCell)]) {
+        
+        [self flushCellBeforeUse:(UITableViewCell <STMTDCell> *)cell];
+        [self fillCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:indexPath];
+
+    }
     
     return cell;
     
 }
 
-- (void)flushCellBeforeUse:(STMCustom7TVCell *)cell {
+- (void)flushCellBeforeUse:(UITableViewCell <STMTDCell> *)cell {
     
     cell.accessoryView = nil;
 
@@ -333,58 +367,56 @@
     
 }
 
-- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
-        
-        switch (indexPath.section) {
-            case 0:
-                switch (indexPath.row) {
-                    case 0:
-                        [self fillCell:(STMCustom7TVCell *)cell withRoute:self.point.shipmentRoute];
-                        break;
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0:
+                    [self fillCell:cell withRoute:self.point.shipmentRoute];
+                    break;
 
-                    case 1:
-                        [self fillCell:(STMCustom7TVCell *)cell withRoutePoint:self.point];
-                        break;
+                case 1:
+                    [self fillCell:cell withRoutePoint:self.point];
+                    break;
 
-                    case 2:
-                        [self fillCell:(STMCustom7TVCell *)cell withShipment:self.shipment];
-                        break;
+                case 2:
+                    [self fillCell:cell withShipment:self.shipment];
+                    break;
 
-                    default:
-                        break;
-                }
-                break;
-                
-            case 1:
-                switch (indexPath.row) {
-                    case 0:
-                        [self fillShippingButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
-                        break;
-                        
-                    case 1:
-                        [self fillFinishShippingButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
-                        break;
-                        
-                    case 2:
-                        [self fillCancelButtonCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
-                        break;
-                        
-                    default:
-                        break;
-                }
-                break;
-                
-            case 2:
-            case 3:
-                [self fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
-                break;
-                
-            default:
-                break;
-        }
-        
+                default:
+                    break;
+            }
+            break;
+            
+        case 1:
+            switch (indexPath.row) {
+                case 0:
+                    [self fillShippingButtonCell:cell atIndexPath:indexPath];
+                    break;
+                    
+                case 1:
+                    [self fillFinishShippingButtonCell:cell atIndexPath:indexPath];
+                    break;
+                    
+                case 2:
+                    [self fillCancelButtonCell:cell atIndexPath:indexPath];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case 2:
+        case 3:
+            if ([cell conformsToProtocol:@protocol(STMTDICell)]) {
+                [self fillShipmentPositionCell:(UITableViewCell <STMTDICell> *)cell atIndexPath:indexPath];
+            }
+            break;
+            
+        default:
+            break;
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -393,14 +425,14 @@
     
 }
 
-- (void)fillCell:(STMCustom7TVCell *)cell withRoute:(STMShipmentRoute *)route {
+- (void)fillCell:(UITableViewCell <STMTDCell> *)cell withRoute:(STMShipmentRoute *)route {
     
     cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
     cell.detailLabel.text = @"";
     
 }
 
-- (void)fillCell:(STMCustom7TVCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
+- (void)fillCell:(UITableViewCell <STMTDCell> *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
     
     cell.titleLabel.text = [STMFunctions shortCompanyName:point.name];
     cell.titleLabel.numberOfLines = 0;
@@ -408,7 +440,7 @@
     
 }
 
-- (void)fillCell:(STMCustom7TVCell *)cell withShipment:(STMShipment *)shipment {
+- (void)fillCell:(UITableViewCell <STMTDCell> *)cell withShipment:(STMShipment *)shipment {
     
     cell.titleLabel.text = shipment.ndoc;
     
@@ -439,7 +471,7 @@
 
 }
 
-- (void)fillShippingButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillShippingButtonCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
     
@@ -481,7 +513,7 @@
     
 }
 
-- (void)fillFinishShippingButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillFinishShippingButtonCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
     
@@ -505,7 +537,7 @@
     
 }
 
-- (void)fillCancelButtonCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillCancelButtonCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
     
@@ -520,7 +552,7 @@
 
 }
 
-- (void)fillShipmentPositionCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillShipmentPositionCell:(UITableViewCell <STMTDICell> *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
     [self fillCell:cell withShipmentPosition:position];
@@ -537,9 +569,10 @@
     
 }
 
-- (void)fillCell:(STMCustom7TVCell *)cell withShipmentPosition:(STMShipmentPosition *)position {
+- (void)fillCell:(UITableViewCell <STMTDICell> *)cell withShipmentPosition:(STMShipmentPosition *)position {
     
     UIColor *textColor = (position.isProcessed.boolValue) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    
     UIFont *font = [UIFont systemFontOfSize:17];
     
     NSMutableDictionary *attributes = @{NSForegroundColorAttributeName : textColor,
@@ -598,15 +631,17 @@
         
     }
     
-    STMLabel *infoLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
-    infoLabel.text = [position volumeText];
-    infoLabel.textAlignment = NSTextAlignmentRight;
-    infoLabel.adjustsFontSizeToFitWidth = YES;
+    STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
+    volumeLabel.text = [position volumeText];
+    volumeLabel.textAlignment = NSTextAlignmentRight;
+    volumeLabel.textColor = textColor;
+    volumeLabel.adjustsFontSizeToFitWidth = YES;
+
+    cell.accessoryView = volumeLabel;
     
-    cell.accessoryView = infoLabel;
-    
-    infoLabel.textColor = textColor;
-    
+    cell.infoLabel.text = position.ord.stringValue;
+    cell.infoLabel.textColor = textColor;
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1085,6 +1120,7 @@
     
     [self setupSortSettingsButton];
 
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [self addObservers];
