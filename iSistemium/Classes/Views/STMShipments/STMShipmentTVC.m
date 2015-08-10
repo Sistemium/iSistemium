@@ -1088,6 +1088,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     
+    self.resultsController.delegate = nil;
+    
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }

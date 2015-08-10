@@ -34,6 +34,7 @@
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
 
 @property (nonatomic, strong) NSMutableArray *checkedPositions;
+@property (nonatomic) BOOL isBunchProcessing;
 
 
 @end
@@ -466,6 +467,8 @@
         self.cachedCellsHeights = nil;
         [self.tableView reloadData];
         
+    } else {
+        
     }
     
 }
@@ -500,7 +503,7 @@
         switch (type) {
                 
             case NSFetchedResultsChangeMove: {
-                //                NSLog(@"NSFetchedResultsChangeMove");
+
                 [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
                 break;
             }
@@ -534,6 +537,10 @@
         [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:rowAnimation];
         
         [self.tableView endUpdates];
+        
+        if (self.isBunchProcessing) {
+            [self bunchShippingProcessing];
+        }
         
     } else {
         [self.tableView reloadData];
@@ -592,10 +599,40 @@
         STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
         
         if (position.isProcessed.boolValue) {
+            
             [self.shippingProcessController resetPosition:position];
+            
         } else {
-            [self.shippingProcessController shippingPosition:position withDoneVolume:position.volume.integerValue];
+            
+            if ([self.checkedPositions containsObject:position]) {
+                
+                self.isBunchProcessing = YES;
+                [self bunchShippingProcessing];
+                
+            } else {
+            
+                [self.shippingProcessController shippingPosition:position withDoneVolume:position.volume.integerValue];
+
+            }
+            
         }
+        
+    }
+    
+}
+
+- (void)bunchShippingProcessing {
+    
+    STMShipmentPosition *position = self.checkedPositions.firstObject;
+    
+    if (position) {
+        
+        [self.checkedPositions removeObject:position];
+        [self.shippingProcessController shippingPosition:position withDoneVolume:position.doneVolume.integerValue];
+        
+    } else {
+        
+        self.isBunchProcessing = NO;
         
     }
     
