@@ -320,6 +320,8 @@
 		2CF126581B78DBE10059701F /* STMShipmentPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126571B78DBE10059701F /* STMShipmentPosition.m */; };
 		2CF1265B1B78DD330059701F /* numerical_sorting_12.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126591B78DD330059701F /* numerical_sorting_12.png */; };
 		2CF1265C1B78DD330059701F /* numerical_sorting_21.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF1265A1B78DD330059701F /* numerical_sorting_21.png */; };
+		2CF1265E1B78EC390059701F /* STMCustom9TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CF1265D1B78EC390059701F /* STMCustom9TVCell.xib */; };
+		2CF126611B78ED870059701F /* STMCustom9TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126601B78ED870059701F /* STMCustom9TVCell.m */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -932,6 +934,9 @@
 		2CF126571B78DBE10059701F /* STMShipmentPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentPosition.m; sourceTree = "<group>"; };
 		2CF126591B78DD330059701F /* numerical_sorting_12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = numerical_sorting_12.png; sourceTree = "<group>"; };
 		2CF1265A1B78DD330059701F /* numerical_sorting_21.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = numerical_sorting_21.png; sourceTree = "<group>"; };
+		2CF1265D1B78EC390059701F /* STMCustom9TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom9TVCell.xib; sourceTree = "<group>"; };
+		2CF1265F1B78ED870059701F /* STMCustom9TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom9TVCell.h; sourceTree = "<group>"; };
+		2CF126601B78ED870059701F /* STMCustom9TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom9TVCell.m; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -1183,6 +1188,7 @@
 				2C88F1BD1B18947700E30418 /* STMCustom6TVCell.xib */,
 				2C88F1C51B1ECECC00E30418 /* STMCustom7TVCell.xib */,
 				2C1AB3191B70E77700BF5C50 /* STMCustom8TVCell.xib */,
+				2CF1265D1B78EC390059701F /* STMCustom9TVCell.xib */,
 				2C4620531B67B30C007FD646 /* STMVolumeTVCell.xib */,
 				2C4620651B6911DE007FD646 /* STMVolumeControlsTVCell.xib */,
 			);
@@ -1575,6 +1581,8 @@
 				2C88F1CA1B1ED00400E30418 /* STMCustom7TVCell.m */,
 				2C1AB31B1B70E7B700BF5C50 /* STMCustom8TVCell.h */,
 				2C1AB31C1B70E7B700BF5C50 /* STMCustom8TVCell.m */,
+				2CF1265F1B78ED870059701F /* STMCustom9TVCell.h */,
+				2CF126601B78ED870059701F /* STMCustom9TVCell.m */,
 				2C4620551B67B349007FD646 /* STMVolumeTVCell.h */,
 				2C4620561B67B349007FD646 /* STMVolumeTVCell.m */,
 				2C4620671B6912F5007FD646 /* STMVolumeControlsTVCell.h */,
@@ -1954,6 +1962,7 @@
 				2C1AB2E81B70ADBB00BF5C50 /* 4_circle.png in Resources */,
 				2C1AB2EE1B70ADBB00BF5C50 /* 2_circle.png in Resources */,
 				2C5764541AAA096000B9FD2C /* STMOrders.storyboard in Resources */,
+				2CF1265E1B78EC390059701F /* STMCustom9TVCell.xib in Resources */,
 				2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */,
 				2C5764561AAA0A7D00B9FD2C /* bill-128.png in Resources */,
 				2C4620541B67B30C007FD646 /* STMVolumeTVCell.xib in Resources */,
@@ -2275,6 +2284,7 @@
 				2C57649F1AB75A9A00B9FD2C /* STMOrderEditablesVC.m in Sources */,
 				2CEAC1421B3BEBB500AD068E /* STMSaleOrder.m in Sources */,
 				2C420FC81A4C29B4001C65B9 /* STMMessagesNC.m in Sources */,
+				2CF126611B78ED870059701F /* STMCustom9TVCell.m in Sources */,
 				2CFDD72C1A29B709003515C5 /* STMPicture+customs.m in Sources */,
 				2C4BA3C91A41AE8B007F1D0A /* STMOutletController.m in Sources */,
 				2CF365BC19FA511C00F078BD /* STMDebt.m in Sources */,

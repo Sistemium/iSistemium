@@ -844,7 +844,7 @@ typedef enum STMPositionProcessingType {
     [self setupToolbarButtons];
     [self setupSortSettingsButton];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom9TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;

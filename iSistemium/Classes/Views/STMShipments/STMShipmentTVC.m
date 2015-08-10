@@ -557,6 +557,8 @@
     STMShipmentPosition *position = [self shipmentPositionForTableIndexPath:indexPath];
     [self fillCell:cell withShipmentPosition:position];
     
+//    cell.infoLabel.text = @(indexPath.row).stringValue;
+    
 }
 
 - (STMShipmentPosition *)shipmentPositionForTableIndexPath:(NSIndexPath *)indexPath {
@@ -640,7 +642,7 @@
     cell.accessoryView = volumeLabel;
     
     cell.infoLabel.text = position.ord.stringValue;
-    cell.infoLabel.textColor = textColor;
+    cell.infoLabel.textColor = [UIColor lightGrayColor];
 
 }
 
@@ -1120,7 +1122,7 @@
     
     [self setupSortSettingsButton];
 
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom9TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [self addObservers];
