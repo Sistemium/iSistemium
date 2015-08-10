@@ -429,18 +429,44 @@
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="hGz-vR-JfV">
-                                <rect key="frame" x="0.0" y="44" width="320" height="460"/>
+                                <rect key="frame" x="0.0" y="44" width="320" height="416"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                             </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="W2w-WY-Xet">
+                                <rect key="frame" x="0.0" y="460" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items>
+                                    <barButtonItem title="Uncheck" id="jZP-A6-0Ur">
+                                        <connections>
+                                            <action selector="uncheckAll:" destination="P6c-7b-Ihx" id="dK4-2B-T91"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="usc-un-xIf"/>
+                                    <barButtonItem title="Processing" id="Avq-HF-8ng">
+                                        <connections>
+                                            <action selector="processingButtonPressed:" destination="P6c-7b-Ihx" id="We5-7L-rsq"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Jpy-jp-2yj"/>
+                                    <barButtonItem title="Check" id="KjB-dl-38S">
+                                        <connections>
+                                            <action selector="checkAll:" destination="P6c-7b-Ihx" id="7d0-xC-Y4l"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="3Ze-Lq-9wc"/>
                     <connections>
+                        <outlet property="checkAllButton" destination="KjB-dl-38S" id="5YB-Yb-PFr"/>
+                        <outlet property="processingButton" destination="Avq-HF-8ng" id="lQC-XO-hXX"/>
                         <outlet property="searchBar" destination="Via-zG-4zE" id="K90-65-wAg"/>
                         <outlet property="tableView" destination="hGz-vR-JfV" id="u6R-aV-Mcz"/>
+                        <outlet property="uncheckAllButton" destination="jZP-A6-0Ur" id="dVp-yk-ku2"/>
                         <segue destination="B1k-lv-ofn" kind="push" identifier="showPositionVolumes" id="eXu-X4-lDs"/>
                         <segue destination="Nd0-s6-ZvY" kind="push" identifier="showSettings" id="SZw-j3-U1E"/>
                     </connections>
@@ -1057,6 +1083,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="EdL-3T-pxt"/>
-        <segue reference="auM-lf-3pc"/>
+        <segue reference="SZw-j3-U1E"/>
     </inferredMetricsTieBreakers>
 </document>

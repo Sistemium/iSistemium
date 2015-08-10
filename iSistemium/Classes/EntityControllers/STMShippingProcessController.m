@@ -299,6 +299,23 @@
     [self shippingPosition:position withDoneVolume:doneVolume badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:0];
 }
 
+- (void)shippingPosition:(STMShipmentPosition *)position withBadVolume:(NSInteger)badVolume {
+    [self shippingPosition:position withDoneVolume:0 badVolume:badVolume excessVolume:0 shortageVolume:0 regradeVolume:0];
+}
+
+- (void)shippingPosition:(STMShipmentPosition *)position withExcessVolume:(NSInteger)excessVolume {
+    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:excessVolume shortageVolume:0 regradeVolume:0];
+}
+
+- (void)shippingPosition:(STMShipmentPosition *)position withShortageVolume:(NSInteger)shortageVolume {
+    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:0 shortageVolume:shortageVolume regradeVolume:0];
+}
+
+- (void)shippingPosition:(STMShipmentPosition *)position withRegradeVolume:(NSInteger)regradeVolume {
+    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:regradeVolume];
+}
+
+
 - (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume {
     
     position.doneVolume = (doneVolume > 0) ? [NSNumber numberWithInteger:doneVolume] : nil;
@@ -324,10 +341,18 @@
 }
 
 - (BOOL)haveUnprocessedPositionsAtShipment:(STMShipment *)shipment {
+    return ([self unprocessedPositionsCountForShipment:shipment] > 0);
+}
+
+- (NSUInteger)unprocessedPositionsCountForShipment:(STMShipment *)shipment {
+    return [self unprocessedPositionsForShipment:shipment].count;
+}
+
+- (NSSet *)unprocessedPositionsForShipment:(STMShipment *)shipment {
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed.boolValue != YES"];
-    return ([shipment.shipmentPositions filteredSetUsingPredicate:predicate].count > 0);
-    
+    return [shipment.shipmentPositions filteredSetUsingPredicate:predicate];
+
 }
 
 

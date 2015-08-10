@@ -315,6 +315,9 @@
 		2CF1264B1B778AB50059701F /* past.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126471B778AB50059701F /* past.png */; };
 		2CF1264C1B778AB50059701F /* alphabetical_sorting_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126481B778AB50059701F /* alphabetical_sorting_2.png */; };
 		2CF1264D1B778AB50059701F /* alphabetical_sorting.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126491B778AB50059701F /* alphabetical_sorting.png */; };
+		2CF126511B7895EB0059701F /* checkmark_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF1264F1B7895EB0059701F /* checkmark_filled.png */; };
+		2CF126521B7895EB0059701F /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126501B7895EB0059701F /* checkmark.png */; };
+		2CF126541B789B360059701F /* uncheckmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126531B789B360059701F /* uncheckmark.png */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -921,6 +924,9 @@
 		2CF126481B778AB50059701F /* alphabetical_sorting_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alphabetical_sorting_2.png; sourceTree = "<group>"; };
 		2CF126491B778AB50059701F /* alphabetical_sorting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alphabetical_sorting.png; sourceTree = "<group>"; };
 		2CF1264E1B7880750059701F /* STMShipmentPositionSortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentPositionSortable.h; sourceTree = "<group>"; };
+		2CF1264F1B7895EB0059701F /* checkmark_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark_filled.png; sourceTree = "<group>"; };
+		2CF126501B7895EB0059701F /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
+		2CF126531B789B360059701F /* uncheckmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uncheckmark.png; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -1701,6 +1707,9 @@
 			isa = PBXGroup;
 			children = (
 				2C1AB2DA1B70ADA700BF5C50 /* Digits */,
+				2CF1264F1B7895EB0059701F /* checkmark_filled.png */,
+				2CF126501B7895EB0059701F /* checkmark.png */,
+				2CF126531B789B360059701F /* uncheckmark.png */,
 				2CF126461B778AB50059701F /* future.png */,
 				2CF126471B778AB50059701F /* past.png */,
 				2CF126481B778AB50059701F /* alphabetical_sorting_2.png */,
@@ -1918,6 +1927,7 @@
 				2CF1264C1B778AB50059701F /* alphabetical_sorting_2.png in Resources */,
 				2C734B8219B4E6FD00EE33FA /* archive-128.png in Resources */,
 				2C1AB2FC1B70AE4400BF5C50 /* 9_circle_filled.png in Resources */,
+				2CF126521B7895EB0059701F /* checkmark.png in Resources */,
 				2C1D72DF1AB99DEC00C97599 /* STMCustom1TVCell.xib in Resources */,
 				2C761BC01B00DF21001DA33E /* STMCustom5TVCell.xib in Resources */,
 				2C761BB71B00833F001DA33E /* Picture Filled-25.png in Resources */,
@@ -1979,10 +1989,12 @@
 				2C88F1D31B24664600E30418 /* Clear Filters-25.png in Resources */,
 				2C1AB28E1B6F581300BF5C50 /* single_waypoint_map.png in Resources */,
 				2C761BB21B00824F001DA33E /* Picture-32.png in Resources */,
+				2CF126541B789B360059701F /* uncheckmark.png in Resources */,
 				2C1AB2E91B70ADBB00BF5C50 /* 6_circle.png in Resources */,
 				2C1AB2ED1B70ADBB00BF5C50 /* 9_circle.png in Resources */,
 				2C761BB31B00824F001DA33E /* Picture-25.png in Resources */,
 				2C5763BC1AA472B700B9FD2C /* STMCatalog.storyboard in Resources */,
+				2CF126511B7895EB0059701F /* checkmark_filled.png in Resources */,
 				2C1AB3001B70AE4400BF5C50 /* 5_circle_filled.png in Resources */,
 				2CCD06E51B5B9551002591C4 /* data_in_both_directions.png in Resources */,
 				2C1AB30F1B70B22800BF5C50 /* 8_circle_colored_blue.png in Resources */,

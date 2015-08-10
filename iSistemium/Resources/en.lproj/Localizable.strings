@@ -328,3 +328,6 @@
 "NO LOCATION" = "No location";
 "LOCATION NEEDS CONFIRMATION" = "Location needs confirmation";
 "CALC ROUTES" = "Calculate routes";
+"PROCESSING BUTTON TITLE" = "Processing";
+"PROCESSING ACTION SHEET TITLE" = "All checked positions process as";
+

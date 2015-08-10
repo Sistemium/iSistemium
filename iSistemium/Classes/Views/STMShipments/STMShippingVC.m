@@ -15,11 +15,23 @@
 #import "STMPositionVolumesVC.h"
 #import "STMShippingSettingsTVC.h"
 
+typedef enum STMPositionProcessingType {
+    STMPositionProcessingTypeDone = 0,
+    STMPositionProcessingTypeBad = 1,
+    STMPositionProcessingTypeExcess = 2,
+    STMPositionProcessingTypeShortage = 3,
+    STMPositionProcessingTypeRegrade = 4
+} STMPositionProcessingType;
 
-@interface STMShippingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate>
+
+@interface STMShippingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate, UIActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *uncheckAllButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *checkAllButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *processingButton;
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
@@ -35,6 +47,7 @@
 
 @property (nonatomic, strong) NSMutableArray *checkedPositions;
 @property (nonatomic) BOOL isBunchProcessing;
+@property (nonatomic) STMPositionProcessingType currentProcessingType;
 
 
 @end
@@ -164,6 +177,14 @@
 
 - (BOOL)shippingProcessIsRunning {
     return [self.shippingProcessController shippingProcessIsRunningWithShipment:self.shipment];
+}
+
+- (NSUInteger)unprocessedPositionsCount {
+    return [self.shippingProcessController unprocessedPositionsCountForShipment:self.shipment];
+}
+
+- (NSSet *)unprocessedPositions {
+    return [self.shippingProcessController unprocessedPositionsForShipment:self.shipment];
 }
 
 - (CGFloat)standardCellHeight {
@@ -362,6 +383,8 @@
         [self.cachedCellsHeights removeObjectForKey:position.objectID];
         
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        [self updateToolbarButtons];
 
     }
     
@@ -468,7 +491,7 @@
         [self.tableView reloadData];
         
     } else {
-        
+        [self updateToolbarButtons];
     }
     
 }
@@ -607,6 +630,7 @@
             if ([self.checkedPositions containsObject:position]) {
                 
                 self.isBunchProcessing = YES;
+                self.currentProcessingType = STMPositionProcessingTypeDone;
                 [self bunchShippingProcessing];
                 
             } else {
@@ -628,11 +652,37 @@
     if (position) {
         
         [self.checkedPositions removeObject:position];
-        [self.shippingProcessController shippingPosition:position withDoneVolume:position.doneVolume.integerValue];
+        
+        switch (self.currentProcessingType) {
+            case STMPositionProcessingTypeDone: {
+                [self.shippingProcessController shippingPosition:position withDoneVolume:position.volume.integerValue];
+                break;
+            }
+            case STMPositionProcessingTypeBad: {
+                [self.shippingProcessController shippingPosition:position withBadVolume:position.volume.integerValue];
+                break;
+            }
+            case STMPositionProcessingTypeExcess: {
+                [self.shippingProcessController shippingPosition:position withExcessVolume:position.volume.integerValue];
+                break;
+            }
+            case STMPositionProcessingTypeShortage: {
+                [self.shippingProcessController shippingPosition:position withShortageVolume:position.volume.integerValue];
+                break;
+            }
+            case STMPositionProcessingTypeRegrade: {
+                [self.shippingProcessController shippingPosition:position withRegradeVolume:position.volume.integerValue];
+                break;
+            }
+            default: {
+                break;
+            }
+        }
         
     } else {
         
         self.isBunchProcessing = NO;
+        [self updateToolbarButtons];
         
     }
     
@@ -682,12 +732,98 @@
 }
 
 
+#pragma mark - toolbar setup
+
+- (void)setupToolbarButtons {
+    
+    self.checkAllButton.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checkmark_filled"] toSize:CGSizeMake(25, 25)];
+    self.uncheckAllButton.image = [STMFunctions resizeImage:[UIImage imageNamed:@"uncheckmark"] toSize:CGSizeMake(25, 25)];
+    self.processingButton.title = NSLocalizedString(@"PROCESSING BUTTON TITLE", nil);
+    
+    [self updateToolbarButtons];
+    
+}
+
+- (void)updateToolbarButtons {
+    
+    self.checkAllButton.enabled = ([self haveUnprocessedPositions] && (self.checkedPositions.count < [self unprocessedPositionsCount]));
+    self.uncheckAllButton.enabled = ([self haveUnprocessedPositions] && (self.checkedPositions.count > 0));
+    self.processingButton.enabled = (self.checkedPositions.count > 0);
+    
+}
+
+- (IBAction)uncheckAll:(id)sender {
+
+    for (STMShipmentPosition *position in [self unprocessedPositions].allObjects) {
+        
+        [self.checkedPositions removeObject:position];
+        [self.cachedCellsHeights removeObjectForKey:position.objectID];
+        
+    }
+    [self reloadUnprocessedSection];
+    
+}
+
+- (IBAction)checkAll:(id)sender {
+    
+    for (STMShipmentPosition *position in [self unprocessedPositions].allObjects) {
+        
+        [self.checkedPositions addObject:position];
+        [self.cachedCellsHeights removeObjectForKey:position.objectID];
+
+    }
+    [self reloadUnprocessedSection];
+    
+}
+
+- (IBAction)processingButtonPressed:(id)sender {
+    [self showProcessingActionSheet];
+}
+
+- (void)reloadUnprocessedSection {
+    
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    [self updateToolbarButtons];
+
+}
+
+
+#pragma mark - UIActionSheet
+
+- (void)showProcessingActionSheet {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"PROCESSING ACTION SHEET TITLE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
+
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"DONE VOLUME LABEL", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"BAD VOLUME LABEL", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"REGRADE VOLUME LABEL", nil)];
+    
+    [actionSheet showFromBarButtonItem:self.processingButton animated:YES];
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex > 0) {
+        
+        self.isBunchProcessing = YES;
+        self.currentProcessingType = (STMPositionProcessingType)(buttonIndex - 1);
+        [self bunchShippingProcessing];
+
+    }
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     self.navigationItem.title = self.shipment.ndoc;
     
+    [self setupToolbarButtons];
     [self setupSortSettingsButton];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
