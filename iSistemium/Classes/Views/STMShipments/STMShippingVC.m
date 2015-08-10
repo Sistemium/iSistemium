@@ -542,7 +542,7 @@ typedef enum STMPositionProcessingType {
     
 }
 
-- (void)moveObject:(id)anObject atIndexPath:indexPath toIndexPath:newIndexPath {
+- (void)moveObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath {
     
     if ([anObject isKindOfClass:[STMShipmentPosition class]]) {
         
@@ -560,6 +560,8 @@ typedef enum STMPositionProcessingType {
         [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:rowAnimation];
         
         [self.tableView endUpdates];
+
+        [self.checkedPositions removeObject:anObject];
         
         if (self.isBunchProcessing) {
             [self bunchShippingProcessing];

@@ -314,6 +314,8 @@
     cell.detailLabel.textColor = [UIColor blackColor];
     cell.detailLabel.textAlignment = NSTextAlignmentLeft;
     
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
 }
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
