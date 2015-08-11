@@ -207,8 +207,8 @@ typedef enum STMPositionProcessingType {
 
     if ([self haveUnprocessedPositions]) {
         
-        id <NSFetchedResultsSectionInfo> unprocessedSection = self.resultsController.sections.firstObject;
-        NSArray *currentUnprocessedPositions = unprocessedSection.objects;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed == NO OR isProcessed == %@", nil];
+        NSArray *currentUnprocessedPositions = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
         
         return currentUnprocessedPositions;
 
@@ -266,7 +266,7 @@ typedef enum STMPositionProcessingType {
     
     switch (section) {
         case 0:
-            return ([self haveUnprocessedPositions]) ? NSLocalizedString(@"SHIPMENT POSITIONS", nil) : NSLocalizedString(@"PROCESSED SHIPMENT POSITIONS", nil);
+            return ([self currentUnprocessedPositions].count > 0) ? NSLocalizedString(@"SHIPMENT POSITIONS", nil) : NSLocalizedString(@"PROCESSED SHIPMENT POSITIONS", nil);
             break;
             
         case 1:
