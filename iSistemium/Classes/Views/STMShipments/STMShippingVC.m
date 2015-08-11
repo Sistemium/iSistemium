@@ -819,7 +819,22 @@ typedef enum STMPositionProcessingType {
 
 - (void)showProcessingActionSheet {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"PROCESSING ACTION SHEET TITLE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
+    NSNumber *count = @(self.checkedPositions.count);
+    NSString *pluralType = [STMFunctions pluralTypeForCount:count.integerValue];
+    NSString *countString = [NSString stringWithFormat:@"%@POSITIONS", pluralType];
+    
+    NSString *title = [NSString stringWithFormat:@"%@ %@,", count, NSLocalizedString(countString, nil)];
+    
+    count = [self.checkedPositions valueForKeyPath:@"@sum.volume"];
+    pluralType = [STMFunctions pluralTypeForCount:count.integerValue];
+    countString = [NSString stringWithFormat:@"%@BOTTLES", pluralType];
+    
+    title = [title stringByAppendingString:@"\n"];
+    title = [title stringByAppendingString:[NSString stringWithFormat:@"%@ %@", count, NSLocalizedString(countString, nil)]];
+    title = [title stringByAppendingString:@"\n"];
+    title = [title stringByAppendingString:NSLocalizedString(@"PROCESSING ACTION SHEET TITLE", nil)];
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
 
     [actionSheet addButtonWithTitle:NSLocalizedString(@"DONE VOLUME LABEL", nil)];
     [actionSheet addButtonWithTitle:NSLocalizedString(@"BAD VOLUME LABEL", nil)];
