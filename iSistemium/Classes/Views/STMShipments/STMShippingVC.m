@@ -171,9 +171,14 @@ typedef enum STMPositionProcessingType {
     NSError *error;
     
     if (![self.resultsController performFetch:&error]) {
+        
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
+        
     } else {
+        
         [self.tableView reloadData];
+        [self updateToolbarButtons];
+        
     }
     
 }
@@ -196,6 +201,21 @@ typedef enum STMPositionProcessingType {
 
 - (NSSet *)unprocessedPositions {
     return [self.shippingProcessController unprocessedPositionsForShipment:self.shipment];
+}
+
+- (NSArray *)currentUnprocessedPositions {
+
+    if ([self haveUnprocessedPositions]) {
+        
+        id <NSFetchedResultsSectionInfo> unprocessedSection = self.resultsController.sections.firstObject;
+        NSArray *currentUnprocessedPositions = unprocessedSection.objects;
+        
+        return currentUnprocessedPositions;
+
+    } else {
+        return nil;
+    }
+    
 }
 
 - (CGFloat)standardCellHeight {
@@ -784,25 +804,34 @@ typedef enum STMPositionProcessingType {
     
     self.processingButton.title = processingButtonTitle;
     
-    self.checkAllButton.enabled = ([self haveUnprocessedPositions] && (self.checkedPositions.count < [self unprocessedPositionsCount]));
-    self.uncheckAllButton.enabled = ([self haveUnprocessedPositions] && (self.checkedPositions.count > 0));
+    self.checkAllButton.enabled = ([self currentUnprocessedPositions].count > 0 && ![self isAllCurrentUnprocessedPositionsChecked]);
+    self.uncheckAllButton.enabled = ([self currentUnprocessedPositions].count > 0 && ![self isAllCurrentUnprocessedPositionsUnchecked]);
     self.processingButton.enabled = (self.checkedPositions.count > 0);
     
 }
 
 - (IBAction)uncheckAll:(id)sender {
 
-    if (self.checkedPositions.count == [self unprocessedPositionsCount]) {
-        [self uncheckAllUnprocessedPositions];
+    if ([self isAllCurrentUnprocessedPositionsChecked]) {
+        [self uncheckAllCurrentUnprocessedPositions];
     } else {
         [self showUncheckAllAlert];
     }
     
 }
 
-- (void)uncheckAllUnprocessedPositions {
+- (BOOL)isAllCurrentUnprocessedPositionsChecked {
+    
+    NSMutableArray *positions = [self currentUnprocessedPositions].mutableCopy;
+    [positions removeObjectsInArray:self.checkedPositions];
+    
+    return (positions.count == 0);
+    
+}
 
-    for (STMShipmentPosition *position in [self unprocessedPositions].allObjects) {
+- (void)uncheckAllCurrentUnprocessedPositions {
+
+    for (STMShipmentPosition *position in [self currentUnprocessedPositions]) {
         
         [self.checkedPositions removeObject:position];
         [self.cachedCellsHeights removeObjectForKey:position.objectID];
@@ -814,17 +843,26 @@ typedef enum STMPositionProcessingType {
 
 - (IBAction)checkAll:(id)sender {
 
-    if (self.checkedPositions.count == 0) {
-        [self checkAllUnprocessedPositions];
+    if ([self isAllCurrentUnprocessedPositionsUnchecked]) {
+        [self checkAllCurrentUnprocessedPositions];
     } else {
         [self showCheckAllAlert];
     }
     
 }
 
-- (void)checkAllUnprocessedPositions {
+- (BOOL)isAllCurrentUnprocessedPositionsUnchecked {
 
-    for (STMShipmentPosition *position in [self unprocessedPositions].allObjects) {
+    NSMutableArray *positions = [self currentUnprocessedPositions].mutableCopy;
+    [positions removeObjectsInArray:self.checkedPositions];
+    
+    return (positions.count == [self currentUnprocessedPositions].count);
+
+}
+
+- (void)checkAllCurrentUnprocessedPositions {
+
+    for (STMShipmentPosition *position in [self currentUnprocessedPositions]) {
         
         if (![self.checkedPositions containsObject:position]) [self.checkedPositions addObject:position];
         [self.cachedCellsHeights removeObjectForKey:position.objectID];
@@ -880,11 +918,11 @@ typedef enum STMPositionProcessingType {
     
     switch (alertView.tag) {
         case 111: {
-            if (buttonIndex == 1) [self uncheckAllUnprocessedPositions];
+            if (buttonIndex == 1) [self uncheckAllCurrentUnprocessedPositions];
             break;
         }
         case 222: {
-            if (buttonIndex == 1) [self checkAllUnprocessedPositions];
+            if (buttonIndex == 1) [self checkAllCurrentUnprocessedPositions];
             break;
         }
         default: {
