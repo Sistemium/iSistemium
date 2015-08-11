@@ -330,4 +330,6 @@
 "CALC ROUTES" = "Calculate routes";
 "PROCESSING BUTTON TITLE" = "Processing";
 "PROCESSING ACTION SHEET TITLE" = "All checked positions process as";
+"UNCHECK ALL POSITION" = "Uncheck all positions";
+"CHECK ALL POSITION" = "Check all positions";
 

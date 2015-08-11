@@ -24,7 +24,13 @@ typedef enum STMPositionProcessingType {
 } STMPositionProcessingType;
 
 
-@interface STMShippingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate, UIActionSheetDelegate>
+@interface STMShippingVC ()    <UITableViewDataSource,
+                                UITableViewDelegate,
+                                NSFetchedResultsControllerDelegate,
+                                UISearchBarDelegate,
+                                UIActionSheetDelegate,
+                                UIAlertViewDelegate>
+
 
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -785,6 +791,16 @@ typedef enum STMPositionProcessingType {
 
 - (IBAction)uncheckAll:(id)sender {
 
+    if (self.checkedPositions.count == [self unprocessedPositionsCount]) {
+        [self uncheckAllUnprocessedPositions];
+    } else {
+        [self showUncheckAllAlert];
+    }
+    
+}
+
+- (void)uncheckAllUnprocessedPositions {
+
     for (STMShipmentPosition *position in [self unprocessedPositions].allObjects) {
         
         [self.checkedPositions removeObject:position];
@@ -792,19 +808,29 @@ typedef enum STMPositionProcessingType {
         
     }
     [self reloadUnprocessedSection];
-    
+
 }
 
 - (IBAction)checkAll:(id)sender {
+
+    if (self.checkedPositions.count == 0) {
+        [self checkAllUnprocessedPositions];
+    } else {
+        [self showCheckAllAlert];
+    }
     
+}
+
+- (void)checkAllUnprocessedPositions {
+
     for (STMShipmentPosition *position in [self unprocessedPositions].allObjects) {
         
-        [self.checkedPositions addObject:position];
+        if (![self.checkedPositions containsObject:position]) [self.checkedPositions addObject:position];
         [self.cachedCellsHeights removeObjectForKey:position.objectID];
-
+        
     }
     [self reloadUnprocessedSection];
-    
+
 }
 
 - (IBAction)processingButtonPressed:(id)sender {
@@ -816,6 +842,55 @@ typedef enum STMPositionProcessingType {
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self updateToolbarButtons];
 
+}
+
+
+#pragma mark - UIAlertView
+
+- (void)showUncheckAllAlert {
+
+    NSString *message = [NSString stringWithFormat:@"%@?", NSLocalizedString(@"UNCHECK ALL POSITION", nil)];
+
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                    message:message
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    alert.tag = 111;
+    [alert show];
+    
+}
+
+- (void)showCheckAllAlert {
+
+    NSString *message = [NSString stringWithFormat:@"%@?", NSLocalizedString(@"CHECK ALL POSITION", nil)];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                    message:message
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    alert.tag = 222;
+    [alert show];
+
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 111: {
+            if (buttonIndex == 1) [self uncheckAllUnprocessedPositions];
+            break;
+        }
+        case 222: {
+            if (buttonIndex == 1) [self checkAllUnprocessedPositions];
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
 }
 
 
