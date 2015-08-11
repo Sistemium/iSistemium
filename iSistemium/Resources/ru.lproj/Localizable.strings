@@ -273,7 +273,7 @@
 "CONTINUE SHIPPING?" = "Продолжить отгрузку?";
 "CANCEL SHIPPING?" = "Отменить отгрузку?";
 "EDIT SHIPPING?" = "Редактировать отгрузку?";
-"CANCEL SHIPPING MESSAGE" = "Все позиции вернутся в исходное состояние.";
+"CANCEL SHIPPING MESSAGE" = "Все позиции будут отмечены как необработанные.";
 "STOP SHIPPING?" = "Завершить отгрузку?";
 "SHIPMENT PROCESS WAS INTERRUPTED TITLE" = "Процесс отгрузки был прерван";
 "SHIPMENT PROCESS WAS INTERRUPTED MESSAGE" = "Накладная осталась необработанной.";

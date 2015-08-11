@@ -767,8 +767,12 @@ typedef enum STMPositionProcessingType {
     
     if (self.checkedPositions.count > 0) {
         
-        processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" (%lu)", (unsigned long)self.checkedPositions.count]];
-        
+        processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" %lu%@", (unsigned long)self.checkedPositions.count, NSLocalizedString(@"_POSITIONS", nil)]];
+
+        NSNumber *bottlesCount = [self.checkedPositions valueForKeyPath:@"@sum.volume"];
+
+        processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@"/%@%@", bottlesCount, NSLocalizedString(@"_BOTTLES", nil)]];
+
     }
     
     self.processingButton.title = processingButtonTitle;
