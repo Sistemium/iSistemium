@@ -720,26 +720,33 @@
 
 - (void)showStartShippingAlert {
     
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    if (!self.shipment.isShipped.boolValue && ![self haveProcessedPositions]) {
+        [self startShipping];
+    } else {
     
-        NSString *title = (self.shipment.isShipped.boolValue) ? NSLocalizedString(@"EDIT SHIPPING?", nil) : ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                        message:@""
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-        
-        alert.tag = 222;
-        [alert show];
-    
-    }];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            NSString *title = (self.shipment.isShipped.boolValue) ? NSLocalizedString(@"EDIT SHIPPING?", nil) : ([self haveProcessedPositions]) ? NSLocalizedString(@"CONTINUE SHIPPING?", nil) : NSLocalizedString(@"START SHIPPING?", nil);
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                            message:@""
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            
+            alert.tag = 222;
+            [alert show];
+            
+        }];
+
+    }
     
 }
 
 - (void)startShipping {
 
     [self.shippingProcessController startShippingWithShipment:self.shipment];
+    [self performSegueWithIdentifier:@"showShipping" sender:self];
     [self.tableView reloadData];
     
 }
@@ -857,7 +864,6 @@
             switch (buttonIndex) {
                 case 1:
                     [self startShipping];
-                    [self performSegueWithIdentifier:@"showShipping" sender:self];
                     break;
                     
                 default:
