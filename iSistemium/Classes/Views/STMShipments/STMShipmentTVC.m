@@ -816,7 +816,7 @@
             [self showDoneShippingErrorAlert];
         }
         
-        [self.tableView reloadData];
+        [self performFetch];
         
     }];
 
@@ -896,6 +896,7 @@
         case 555:
             switch (buttonIndex) {
                 case 1:
+                    self.resultsController.delegate = nil;
                     [self.shippingProcessController markUnprocessedPositionsAsDoneForShipment:self.shipment];
                     [self doneShipping];
                     break;
