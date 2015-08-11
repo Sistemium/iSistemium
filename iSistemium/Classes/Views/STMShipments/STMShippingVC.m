@@ -756,13 +756,22 @@ typedef enum STMPositionProcessingType {
     
     self.checkAllButton.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checkmark_filled"] toSize:CGSizeMake(25, 25)];
     self.uncheckAllButton.image = [STMFunctions resizeImage:[UIImage imageNamed:@"uncheckmark"] toSize:CGSizeMake(25, 25)];
-    self.processingButton.title = NSLocalizedString(@"PROCESSING BUTTON TITLE", nil);
     
     [self updateToolbarButtons];
     
 }
 
 - (void)updateToolbarButtons {
+
+    NSString *processingButtonTitle = NSLocalizedString(@"PROCESSING BUTTON TITLE", nil);
+    
+    if (self.checkedPositions.count > 0) {
+        
+        processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" (%lu)", (unsigned long)self.checkedPositions.count]];
+        
+    }
+    
+    self.processingButton.title = processingButtonTitle;
     
     self.checkAllButton.enabled = ([self haveUnprocessedPositions] && (self.checkedPositions.count < [self unprocessedPositionsCount]));
     self.uncheckAllButton.enabled = ([self haveUnprocessedPositions] && (self.checkedPositions.count > 0));
