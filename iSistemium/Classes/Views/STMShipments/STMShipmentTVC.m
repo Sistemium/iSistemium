@@ -770,9 +770,9 @@
 
 - (void)cancelShipping {
 
+    self.resultsController.delegate = nil;
     [self.shippingProcessController cancelShippingWithShipment:self.shipment];
-
-    [self.tableView reloadData];
+    [self performFetch];
     
 }
 

@@ -239,7 +239,10 @@ typedef enum STMPositionProcessingType {
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return ([self haveProcessedPositions] && [self haveUnprocessedPositions]) ? 2 : 1;
+    
+//    return ([self haveProcessedPositions] && [self haveUnprocessedPositions]) ? 2 : 1;
+    return self.resultsController.sections.count;
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
