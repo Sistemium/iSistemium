@@ -484,11 +484,12 @@ typedef enum STMPositionProcessingType {
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    
     [self hideKeyboard];
-    
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self hideKeyboard];
+}
 
 #pragma mark - NSFetchedResultsController delegate
 
