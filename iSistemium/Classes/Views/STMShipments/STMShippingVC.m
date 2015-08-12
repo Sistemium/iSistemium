@@ -391,30 +391,24 @@ typedef enum STMPositionProcessingType {
         
         STMCustom9TVCell *customCell = (STMCustom9TVCell *)cell;
 
-//        customCell.checkboxView.layer.borderColor = [STM_LIGHT_LIGHT_GREY_COLOR CGColor];
-//        customCell.checkboxView.layer.cornerRadius = 4;
-//    
-//        customCell.checkboxView.layer.borderWidth = (!position.isProcessed.boolValue & ![self.checkedPositions containsObject:position]);
-
         [[customCell.checkboxView viewWithTag:444] removeFromSuperview];
 
         if ([self.checkedPositions containsObject:position]) {
         
-//            STMLabel *checkLabel = [[STMLabel alloc] initWithFrame:customCell.checkboxView.bounds];
-//            checkLabel.text = @"✓";
-//            checkLabel.textColor = ACTIVE_BLUE_COLOR;
-//            checkLabel.textAlignment = NSTextAlignmentLeft;
-//            checkLabel.tag = 444;
-//            
-//            [customCell.checkboxView addSubview:checkLabel];
+            STMLabel *checkLabel = [[STMLabel alloc] initWithFrame:customCell.checkboxView.bounds];
+            checkLabel.text = @"✓";
+            checkLabel.textColor = ACTIVE_BLUE_COLOR;
+            checkLabel.textAlignment = NSTextAlignmentLeft;
+            checkLabel.tag = 444;
+            
+            [customCell.checkboxView addSubview:checkLabel];
 
-            cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-            cell.infoLabel.textColor = ACTIVE_BLUE_COLOR;
+            cell.titleLabel.textColor = [UIColor lightGrayColor];
 
             if ([cell.accessoryView isKindOfClass:[STMLabel class]]) {
                 
                 STMLabel *infoLabel = (STMLabel *)cell.accessoryView;
-                infoLabel.textColor = ACTIVE_BLUE_COLOR;
+                infoLabel.textColor = [UIColor lightGrayColor];
             }
             
         } else {
