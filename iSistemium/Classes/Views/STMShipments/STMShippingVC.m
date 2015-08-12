@@ -408,14 +408,14 @@ typedef enum STMPositionProcessingType {
             
             [customCell.checkboxView addSubview:checkLabel];
 
-            cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-            cell.infoLabel.textColor = ACTIVE_BLUE_COLOR;
-
-            if ([cell.accessoryView isKindOfClass:[STMLabel class]]) {
-                
-                STMLabel *infoLabel = (STMLabel *)cell.accessoryView;
-                infoLabel.textColor = ACTIVE_BLUE_COLOR;
-            }
+//            cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+//            cell.infoLabel.textColor = ACTIVE_BLUE_COLOR;
+//
+//            if ([cell.accessoryView isKindOfClass:[STMLabel class]]) {
+//                
+//                STMLabel *infoLabel = (STMLabel *)cell.accessoryView;
+//                infoLabel.textColor = ACTIVE_BLUE_COLOR;
+//            }
             
         } else {
             
