@@ -733,6 +733,52 @@ typedef enum STMPositionProcessingType {
     
 }
 
+#pragma mark - navigation bar
+
+- (void)setupNavBar {
+    
+//    self.navigationItem.title = self.shipment.ndoc;
+    [self setupTitleView];
+    [self setupSortSettingsButton];
+
+}
+
+- (void)setupTitleView {
+    
+    UIButton *titleLabelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    titleLabelButton.titleLabel.font = [UIFont boldSystemFontOfSize:titleLabelButton.titleLabel.font.pointSize];
+    [titleLabelButton setTitle:self.shipment.ndoc forState:UIControlStateNormal];
+    [titleLabelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [titleLabelButton addTarget:self action:@selector(titleViewTapped:) forControlEvents:UIControlEventTouchUpInside];
+
+    self.navigationItem.titleView = titleLabelButton;
+
+}
+
+- (void)titleViewTapped:(id)sender {
+    
+    NSIndexPath *indexPath = nil;
+    
+    if (self.resultsController.sections.count > 1) {
+        
+        indexPath = [NSIndexPath indexPathForRow:NSNotFound inSection:1];
+        
+    } else if ([self currentUnprocessedPositions].count == 0) {
+        
+        indexPath = [NSIndexPath indexPathForRow:NSNotFound inSection:0];
+        
+    }
+    
+    if (indexPath) {
+        
+        [self.tableView scrollToRowAtIndexPath:indexPath
+                              atScrollPosition:UITableViewScrollPositionTop
+                                      animated:YES];
+
+    }
+    
+}
+
 
 #pragma mark - sort settings button
 
@@ -989,10 +1035,8 @@ typedef enum STMPositionProcessingType {
 
 - (void)customInit {
     
-    self.navigationItem.title = self.shipment.ndoc;
-    
+    [self setupNavBar];
     [self setupToolbarButtons];
-    [self setupSortSettingsButton];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom9TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
