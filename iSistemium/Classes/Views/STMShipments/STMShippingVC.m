@@ -391,10 +391,10 @@ typedef enum STMPositionProcessingType {
         
         STMCustom9TVCell *customCell = (STMCustom9TVCell *)cell;
 
-        customCell.checkboxView.layer.borderColor = [STM_LIGHT_LIGHT_GREY_COLOR CGColor];
-        customCell.checkboxView.layer.cornerRadius = 4;
-    
-        customCell.checkboxView.layer.borderWidth = (!position.isProcessed.boolValue & ![self.checkedPositions containsObject:position]);
+//        customCell.checkboxView.layer.borderColor = [STM_LIGHT_LIGHT_GREY_COLOR CGColor];
+//        customCell.checkboxView.layer.cornerRadius = 4;
+//    
+//        customCell.checkboxView.layer.borderWidth = (!position.isProcessed.boolValue & ![self.checkedPositions containsObject:position]);
 
         [[customCell.checkboxView viewWithTag:444] removeFromSuperview];
 
