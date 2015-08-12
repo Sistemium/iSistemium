@@ -400,22 +400,22 @@ typedef enum STMPositionProcessingType {
 
         if ([self.checkedPositions containsObject:position]) {
         
-            STMLabel *checkLabel = [[STMLabel alloc] initWithFrame:customCell.checkboxView.bounds];
-            checkLabel.text = @"✓";
-            checkLabel.textColor = ACTIVE_BLUE_COLOR;
-            checkLabel.textAlignment = NSTextAlignmentLeft;
-            checkLabel.tag = 444;
-            
-            [customCell.checkboxView addSubview:checkLabel];
+//            STMLabel *checkLabel = [[STMLabel alloc] initWithFrame:customCell.checkboxView.bounds];
+//            checkLabel.text = @"✓";
+//            checkLabel.textColor = ACTIVE_BLUE_COLOR;
+//            checkLabel.textAlignment = NSTextAlignmentLeft;
+//            checkLabel.tag = 444;
+//            
+//            [customCell.checkboxView addSubview:checkLabel];
 
-//            cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-//            cell.infoLabel.textColor = ACTIVE_BLUE_COLOR;
-//
-//            if ([cell.accessoryView isKindOfClass:[STMLabel class]]) {
-//                
-//                STMLabel *infoLabel = (STMLabel *)cell.accessoryView;
-//                infoLabel.textColor = ACTIVE_BLUE_COLOR;
-//            }
+            cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+            cell.infoLabel.textColor = ACTIVE_BLUE_COLOR;
+
+            if ([cell.accessoryView isKindOfClass:[STMLabel class]]) {
+                
+                STMLabel *infoLabel = (STMLabel *)cell.accessoryView;
+                infoLabel.textColor = ACTIVE_BLUE_COLOR;
+            }
             
         } else {
             
