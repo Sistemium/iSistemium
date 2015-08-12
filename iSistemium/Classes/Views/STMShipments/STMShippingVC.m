@@ -387,25 +387,42 @@ typedef enum STMPositionProcessingType {
     
     [self.parentVC fillCell:cell withShipmentPosition:position];
     
-    if ([self.checkedPositions containsObject:position]) {
+    if ([cell isKindOfClass:[STMCustom9TVCell class]]) {
         
-        if ([cell.accessoryView isKindOfClass:[STMLabel class]]) {
+        STMCustom9TVCell *customCell = (STMCustom9TVCell *)cell;
+
+        customCell.checkboxView.layer.borderColor = [STM_LIGHT_LIGHT_GREY_COLOR CGColor];
+        customCell.checkboxView.layer.cornerRadius = 4;
+    
+        customCell.checkboxView.layer.borderWidth = (!position.isProcessed.boolValue & ![self.checkedPositions containsObject:position]);
+
+        [[customCell.checkboxView viewWithTag:444] removeFromSuperview];
+
+        if ([self.checkedPositions containsObject:position]) {
+        
+            STMLabel *checkLabel = [[STMLabel alloc] initWithFrame:customCell.checkboxView.bounds];
+            checkLabel.text = @"✓";
+            checkLabel.textColor = ACTIVE_BLUE_COLOR;
+            checkLabel.textAlignment = NSTextAlignmentLeft;
+            checkLabel.tag = 444;
             
+            [customCell.checkboxView addSubview:checkLabel];
+
             cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-            
-            STMLabel *infoLabel = (STMLabel *)cell.accessoryView;
-            infoLabel.frame = CGRectMake(infoLabel.frame.origin.x, infoLabel.frame.origin.y, infoLabel.frame.size.width + 20, infoLabel.frame.size.height);
-            infoLabel.text = [infoLabel.text stringByAppendingString:@" ✓"];
-            infoLabel.textColor = ACTIVE_BLUE_COLOR;
-            
-            cell.accessoryView = infoLabel;
-            
             cell.infoLabel.textColor = ACTIVE_BLUE_COLOR;
+
+            if ([cell.accessoryView isKindOfClass:[STMLabel class]]) {
+                
+                STMLabel *infoLabel = (STMLabel *)cell.accessoryView;
+                infoLabel.textColor = ACTIVE_BLUE_COLOR;
+            }
+            
+        } else {
             
         }
-        
+
     }
-    
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

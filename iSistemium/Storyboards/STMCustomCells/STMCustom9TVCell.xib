@@ -15,19 +15,19 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="288" translatesAutoresizingMaskIntoConstraints="NO" id="4sW-69-O9s" customClass="STMLabel">
-                        <rect key="frame" x="24" y="25" width="288" height="13.5"/>
+                        <rect key="frame" x="24" y="25" width="288" height="14"/>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="288" translatesAutoresizingMaskIntoConstraints="NO" id="nYQ-QR-geR" customClass="STMLabel">
-                        <rect key="frame" x="24" y="4" width="288" height="21.5"/>
+                        <rect key="frame" x="24" y="4" width="288" height="22"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="99" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="32" translatesAutoresizingMaskIntoConstraints="NO" id="oum-ZL-NcO" customClass="STMLabel">
-                        <rect key="frame" x="0.0" y="8" width="16" height="14.5"/>
+                        <rect key="frame" x="0.0" y="1" width="16" height="15"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="16" id="syT-9J-2d5"/>
                         </constraints>
@@ -35,9 +35,17 @@
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pgg-Ar-lpj" userLabel="Checkbox">
+                        <rect key="frame" x="2" y="15" width="14" height="14"/>
+                        <accessibility key="accessibilityConfiguration" hint="" label=""/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="14" id="78A-Dh-NUH"/>
+                            <constraint firstAttribute="height" constant="14" id="twN-eV-7k7"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="oum-ZL-NcO" firstAttribute="top" secondItem="HB5-Z6-7rM" secondAttribute="topMargin" id="0BL-Dj-oCx"/>
+                    <constraint firstItem="oum-ZL-NcO" firstAttribute="top" secondItem="HB5-Z6-7rM" secondAttribute="topMargin" constant="-7" id="0BL-Dj-oCx"/>
                     <constraint firstItem="nYQ-QR-geR" firstAttribute="top" secondItem="HB5-Z6-7rM" secondAttribute="topMargin" constant="-4" id="41c-bI-BIU"/>
                     <constraint firstItem="nYQ-QR-geR" firstAttribute="trailing" secondItem="HB5-Z6-7rM" secondAttribute="trailingMargin" id="ElQ-vd-D6D"/>
                     <constraint firstAttribute="bottomMargin" secondItem="4sW-69-O9s" secondAttribute="bottom" constant="-3" id="XeZ-S7-IAh"/>
@@ -45,7 +53,9 @@
                     <constraint firstItem="4sW-69-O9s" firstAttribute="trailing" secondItem="HB5-Z6-7rM" secondAttribute="trailingMargin" id="dES-DD-kKl"/>
                     <constraint firstItem="oum-ZL-NcO" firstAttribute="leading" secondItem="HB5-Z6-7rM" secondAttribute="leadingMargin" constant="-8" id="fyo-Af-q52"/>
                     <constraint firstItem="4sW-69-O9s" firstAttribute="top" secondItem="nYQ-QR-geR" secondAttribute="bottom" id="lSj-96-nBO"/>
+                    <constraint firstItem="Pgg-Ar-lpj" firstAttribute="leading" secondItem="HB5-Z6-7rM" secondAttribute="leadingMargin" constant="-6" id="lUH-Oc-58L"/>
                     <constraint firstAttribute="centerY" secondItem="oum-ZL-NcO" secondAttribute="centerY" constant="0.25" id="mvf-tl-N7a"/>
+                    <constraint firstAttribute="centerY" secondItem="Pgg-Ar-lpj" secondAttribute="centerY" id="sIi-59-chh"/>
                     <constraint firstItem="4sW-69-O9s" firstAttribute="leading" secondItem="oum-ZL-NcO" secondAttribute="trailing" constant="8" id="tvU-rq-m8C"/>
                 </constraints>
                 <variation key="default">
@@ -55,6 +65,7 @@
                 </variation>
             </tableViewCellContentView>
             <connections>
+                <outlet property="checkboxView" destination="Pgg-Ar-lpj" id="JzY-Tq-F8o"/>
                 <outlet property="detailLabel" destination="4sW-69-O9s" id="l7W-Or-jEk"/>
                 <outlet property="infoLabel" destination="oum-ZL-NcO" id="VxY-OA-Lbe"/>
                 <outlet property="titleLabel" destination="nYQ-QR-geR" id="Dgb-6c-WY1"/>
