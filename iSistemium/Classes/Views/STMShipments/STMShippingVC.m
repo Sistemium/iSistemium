@@ -420,8 +420,9 @@ typedef enum STMPositionProcessingType {
         
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
+        [self hideKeyboard];
         [self updateToolbarButtons];
-
+        
     }
     
 }
@@ -717,6 +718,10 @@ typedef enum STMPositionProcessingType {
             default: {
                 break;
             }
+        }
+        
+        if (![self.resultsController.fetchedObjects containsObject:position]) {
+            [self bunchShippingProcessing];
         }
         
     } else {

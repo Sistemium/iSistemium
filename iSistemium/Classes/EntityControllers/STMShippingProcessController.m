@@ -318,11 +318,11 @@
 
 - (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume {
     
-    position.doneVolume = (doneVolume > 0) ? [NSNumber numberWithInteger:doneVolume] : nil;
-    position.badVolume = (badVolume > 0) ? [NSNumber numberWithInteger:badVolume] : nil;
-    position.excessVolume = (excessVolume > 0) ? [NSNumber numberWithInteger:excessVolume] : nil;
-    position.shortageVolume = (shortageVolume > 0) ? [NSNumber numberWithInteger:shortageVolume] : nil;
-    position.regradeVolume = (regradeVolume > 0) ? [NSNumber numberWithInteger:regradeVolume] : nil;
+    position.doneVolume = (doneVolume > 0) ? @(doneVolume) : nil;
+    position.badVolume = (badVolume > 0) ? @(badVolume) : nil;
+    position.excessVolume = (excessVolume > 0) ? @(excessVolume) : nil;
+    position.shortageVolume = (shortageVolume > 0) ? @(shortageVolume) : nil;
+    position.regradeVolume = (regradeVolume > 0) ? @(regradeVolume) : nil;
     position.isProcessed = @YES;
     
     [[STMShippingProcessController document] saveDocument:^(BOOL success) {
