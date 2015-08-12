@@ -433,7 +433,7 @@ typedef enum STMPositionProcessingType {
         
         ([self.checkedPositions containsObject:position]) ? [self.checkedPositions removeObject:position] : [self.checkedPositions addObject:position];
         
-        [self.cachedCellsHeights removeObjectForKey:position.objectID];
+//        [self.cachedCellsHeights removeObjectForKey:position.objectID];
         
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
