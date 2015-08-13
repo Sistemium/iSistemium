@@ -16,6 +16,7 @@
 
 #import "STMFunctions.h"
 #import "STMMapAnnotation.h"
+#import "STMRouteMapVC.h"
 
 #import "STMUI.h"
 
@@ -143,6 +144,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         }
     }
     
+    [self updateNavBar];
+
     if (self.location) {
 
         
@@ -455,6 +458,81 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 
+#pragma mark - navBar
+
+- (void)updateNavBar {
+
+    self.navigationItem.rightBarButtonItem = nil;
+
+    if (self.mapView.userLocation.location) {
+        
+        if (self.shippingLocation || self.geocodedLocation) {
+            
+            STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
+            self.navigationItem.rightBarButtonItem = waypointButton;
+
+        }
+        
+    }
+    
+}
+
+- (UIView *)waypointView {
+    
+    CGFloat imageSize = 22;
+    CGFloat imagePadding = 0;
+    
+    UIImage *image = [[UIImage imageNamed:@"single_waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
+    imageView.tintColor = (self.state == STMShippingLocationHaveLocation) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
+    [button addTarget:self action:@selector(waypointButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [button addSubview:imageView];
+    
+    return button;
+    
+}
+
+- (void)waypointButtonPressed {
+    if (self.state == STMShippingLocationHaveLocation) [self performSegueWithIdentifier:@"showRoute" sender:self];
+}
+
+
+#pragma mark - Navigation
+ 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showRoute"] &&
+        [segue.destinationViewController isKindOfClass:[STMRouteMapVC class]]) {
+        
+        STMRouteMapVC *mapVC = (STMRouteMapVC *)segue.destinationViewController;
+        
+        mapVC.shippingLocation = self.shippingLocation;
+        
+        CLLocation *location = nil;
+        
+        if (self.location) {
+            
+            CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
+            location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+            
+        } else if (self.geocodedLocation) {
+            
+            location = self.geocodedLocation;
+            
+        }
+        
+        mapVC.destinationPoint = location;
+        mapVC.destinationPointName = self.point.name;
+        mapVC.destinationPointAddress = self.point.address;
+        
+    }
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)initState {
@@ -546,14 +624,5 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
