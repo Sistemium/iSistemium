@@ -209,7 +209,8 @@
         
         self.routesCalcCounter ++;
         
-        self.progressBar.progress = (float)self.routesCalcCounter / (self.locationsArray.count - 1);
+        float progress = (float)self.routesCalcCounter / (self.locationsArray.count - 1);
+        [self.progressBar setProgress:progress animated:YES];
 
         if (!error) {
             [self.routes addObject:response.routes.firstObject];
