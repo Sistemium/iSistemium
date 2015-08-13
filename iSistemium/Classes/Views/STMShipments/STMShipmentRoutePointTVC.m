@@ -991,7 +991,7 @@
     UIImage *image = [[UIImage imageNamed:@"single_waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
-    imageView.tintColor = (self.point.shippingLocation.location) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
+    imageView.tintColor = (self.point.shippingLocation.location || self.geocodedLocation) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
     
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
     [button addTarget:self action:@selector(waypointButtonPressed) forControlEvents:UIControlEventTouchUpInside];

@@ -94,6 +94,9 @@
 
 - (void)calcRoute {
     
+    self.routeInfoLabel.title = NSLocalizedString(@"CALC ROUTES", nil);
+    self.routeInfoLabel.enabled = NO;
+    
     MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
     request.transportType = MKDirectionsTransportTypeAutomobile;
     
@@ -116,7 +119,16 @@
              [self updateRoutesOverlays];
              
          } else {
+        
              [self.spinner removeFromSuperview];
+             
+             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                             message:error.localizedDescription
+                                                            delegate:nil
+                                                   cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                   otherButtonTitles:nil];
+             [alert show];
+             
          }
 
         [self updateToolbar];
@@ -193,8 +205,8 @@
         
     } else {
         
-        self.routeInfoLabel.title = NSLocalizedString(@"NO ROUTES", nil);
-        self.routeInfoLabel.enabled = NO;
+        self.routeInfoLabel.title = NSLocalizedString(@"CALC ROUTES", nil);
+        self.routeInfoLabel.enabled = YES;
         
         self.backButton.enabled = NO;
         self.forwardButton.enabled = NO;
@@ -254,7 +266,18 @@
 }
 
 - (IBAction)routeInfoPressed:(id)sender {
-    [self showRouteInfoAlert];
+    
+    if (self.routes.count > 0) {
+        
+        [self showRouteInfoAlert];
+        
+    } else {
+        
+        [self.view addSubview:self.spinner];
+        [self calcRoute];
+        
+    }
+    
 }
 
 - (void)showRouteInfoAlert {
