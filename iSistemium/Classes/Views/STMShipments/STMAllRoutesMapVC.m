@@ -20,7 +20,7 @@
 #define EDGE_INSET 50
 
 
-@interface STMAllRoutesMapVC () <MKMapViewDelegate>
+@interface STMAllRoutesMapVC () <MKMapViewDelegate, UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
@@ -37,6 +37,8 @@
 
 @property (nonatomic, strong) STMSpinnerView *spinner;
 
+@property (atomic) NSUInteger routesCalcCounter;
+@property (nonatomic, strong) NSMutableString *routesCalcErrors;
 
 @end
 
@@ -145,6 +147,8 @@
 - (void)calcRoutes {
     
     self.routes = nil;
+    self.routesCalcCounter = 0;
+    self.routesCalcErrors = [NSMutableString string];
     
     if (self.locationsArray.count > 1) {
         
@@ -183,18 +187,66 @@
     
     [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
         
+        self.routesCalcCounter ++;
+
         if (!error) {
-            
             [self.routes addObject:response.routes.firstObject];
+        } else {
+            [self.routesCalcErrors appendFormat:@"%lu. %@\n\n", (unsigned long)self.routesCalcCounter, error.localizedDescription];
+        }
+        
+        if (self.self.routesCalcCounter == self.locationsArray.count - 1) {
             
-            if (self.routes.count == self.locationsArray.count - 1) {
+            if (self.routesCalcErrors.length > 0) {
+                [self showRoutesCalcErrors];
+            }
+            
+            if (self.routes.count > 0) {
                 [self showRoutes];
             }
             
         }
-        
+
     }];
 
+}
+
+- (void)showRoutesCalcErrors {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                    message:self.routesCalcErrors
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                          otherButtonTitles:NSLocalizedString(@"RECALC", nil), nil];
+    alert.tag = 111;
+    [alert show];
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 111: {
+            
+            [self.spinner removeFromSuperview];
+            
+            switch (buttonIndex) {
+                case 1: {
+                    [self recalcRoutes];
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+            
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
 }
 
 - (void)showRoutes {
