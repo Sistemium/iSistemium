@@ -35,8 +35,7 @@ typedef enum STMPositionProcessingType {
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *uncheckAllButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *checkAllButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *checkButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *processingButton;
 
 @property (nonatomic, strong) NSString *cellIdentifier;
@@ -846,18 +845,17 @@ typedef enum STMPositionProcessingType {
 
 - (void)setupToolbarButtons {
     
-    self.checkAllButton.image = [STMFunctions resizeImage:[UIImage imageNamed:@"checkmark_filled"] toSize:CGSizeMake(25, 25)];
-    self.uncheckAllButton.image = [STMFunctions resizeImage:[UIImage imageNamed:@"uncheckmark"] toSize:CGSizeMake(25, 25)];
-    
     [self updateToolbarButtons];
     
 }
 
 - (void)updateToolbarButtons {
 
-    NSString *processingButtonTitle = NSLocalizedString(@"PROCESSING BUTTON TITLE", nil);
+    NSString *processingButtonTitle = nil;
     
     if (self.checkedPositions.count > 0) {
+        
+        processingButtonTitle = NSLocalizedString(@"PROCESSING BUTTON TITLE", nil);
         
         processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" %lu%@", (unsigned long)self.checkedPositions.count, NSLocalizedString(@"_POSITIONS", nil)]];
 
@@ -865,22 +863,47 @@ typedef enum STMPositionProcessingType {
 
         processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@"/%@%@", bottlesCount, NSLocalizedString(@"_BOTTLES", nil)]];
 
+        self.processingButton.enabled = YES;
+
+    } else {
+        
+        self.processingButton.enabled = NO;
+        
     }
     
     self.processingButton.title = processingButtonTitle;
     
-    self.checkAllButton.enabled = ([self currentUnprocessedPositions].count > 0 && ![self isAllCurrentUnprocessedPositionsChecked]);
-    self.uncheckAllButton.enabled = ([self currentUnprocessedPositions].count > 0 && ![self isAllCurrentUnprocessedPositionsUnchecked]);
-    self.processingButton.enabled = (self.checkedPositions.count > 0);
+    NSString *checkmarkImageName = ([self hasVisibileCheckedPositions]) ? @"uncheckmark" : @"checkmark_filled";
+    self.checkButton.image = [STMFunctions resizeImage:[UIImage imageNamed:checkmarkImageName] toSize:CGSizeMake(25, 25)];
     
 }
 
-- (IBAction)uncheckAll:(id)sender {
+- (IBAction)checkmarkPressed:(id)sender {
 
-    if ([self isAllCurrentUnprocessedPositionsChecked]) {
-        [self uncheckAllCurrentUnprocessedPositions];
+    if ([self hasVisibileCheckedPositions]) {
+        
+        if ([self isAllCurrentUnprocessedPositionsChecked]) {
+            [self uncheckAllCurrentUnprocessedPositions];
+        } else {
+            [self showUncheckAlert];
+        }
+
     } else {
-        [self showUncheckAllAlert];
+        [self checkAllCurrentUnprocessedPositions];
+    }
+    
+}
+
+- (BOOL)hasVisibileCheckedPositions {
+
+    if (self.checkedPositions > 0) {
+    
+        NSMutableSet *unprocessedPositions = [NSMutableSet setWithArray:[self currentUnprocessedPositions]];
+        NSSet *checkedPositions = [NSSet setWithArray:self.checkedPositions];
+        return [unprocessedPositions intersectsSet:checkedPositions];
+        
+    } else {
+        return NO;
     }
     
 }
@@ -903,25 +926,6 @@ typedef enum STMPositionProcessingType {
         
     }
     [self reloadUnprocessedSection];
-
-}
-
-- (IBAction)checkAll:(id)sender {
-
-    if ([self isAllCurrentUnprocessedPositionsUnchecked]) {
-        [self checkAllCurrentUnprocessedPositions];
-    } else {
-        [self showCheckAllAlert];
-    }
-    
-}
-
-- (BOOL)isAllCurrentUnprocessedPositionsUnchecked {
-
-    NSMutableArray *positions = [self currentUnprocessedPositions].mutableCopy;
-    [positions removeObjectsInArray:self.checkedPositions];
-    
-    return (positions.count == [self currentUnprocessedPositions].count);
 
 }
 
@@ -951,7 +955,7 @@ typedef enum STMPositionProcessingType {
 
 #pragma mark - UIAlertView
 
-- (void)showUncheckAllAlert {
+- (void)showUncheckAlert {
 
     NSString *message = [NSString stringWithFormat:@"%@?", NSLocalizedString(@"UNCHECK ALL POSITION", nil)];
 

@@ -322,6 +322,7 @@
 		2CF1265C1B78DD330059701F /* numerical_sorting_21.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF1265A1B78DD330059701F /* numerical_sorting_21.png */; };
 		2CF1265E1B78EC390059701F /* STMCustom9TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CF1265D1B78EC390059701F /* STMCustom9TVCell.xib */; };
 		2CF126611B78ED870059701F /* STMCustom9TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126601B78ED870059701F /* STMCustom9TVCell.m */; };
+		2CF126631B7CB4F50059701F /* uncheckmark_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126621B7CB4F50059701F /* uncheckmark_filled.png */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -937,6 +938,7 @@
 		2CF1265D1B78EC390059701F /* STMCustom9TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom9TVCell.xib; sourceTree = "<group>"; };
 		2CF1265F1B78ED870059701F /* STMCustom9TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom9TVCell.h; sourceTree = "<group>"; };
 		2CF126601B78ED870059701F /* STMCustom9TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom9TVCell.m; sourceTree = "<group>"; };
+		2CF126621B7CB4F50059701F /* uncheckmark_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uncheckmark_filled.png; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -1722,6 +1724,7 @@
 				2C1AB2DA1B70ADA700BF5C50 /* Digits */,
 				2CF1264F1B7895EB0059701F /* checkmark_filled.png */,
 				2CF126501B7895EB0059701F /* checkmark.png */,
+				2CF126621B7CB4F50059701F /* uncheckmark_filled.png */,
 				2CF126531B789B360059701F /* uncheckmark.png */,
 				2CF126461B778AB50059701F /* future.png */,
 				2CF126471B778AB50059701F /* past.png */,
@@ -1986,6 +1989,7 @@
 				2C1AB2EB1B70ADBB00BF5C50 /* 7_circle.png in Resources */,
 				2C1AB3011B70AE4400BF5C50 /* 1_circle_filled.png in Resources */,
 				2C1AB3181B70B47D00BF5C50 /* circle_colored_blue.png in Resources */,
+				2CF126631B7CB4F50059701F /* uncheckmark_filled.png in Resources */,
 				2C761BB91B00833F001DA33E /* Picture Filled-100.png in Resources */,
 				2C1AB2F01B70AE0F00BF5C50 /* 0_circle_filled.png in Resources */,
 				2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */,
