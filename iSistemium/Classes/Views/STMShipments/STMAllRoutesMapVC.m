@@ -40,10 +40,25 @@
 @property (atomic) NSUInteger routesCalcCounter;
 @property (nonatomic, strong) NSMutableString *routesCalcErrors;
 
+@property (nonatomic, strong) UIProgressView *progressBar;
+
+
 @end
 
 
 @implementation STMAllRoutesMapVC
+
+- (UIProgressView *)progressBar {
+    
+    if (!_progressBar) {
+
+        UIProgressView *progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+        _progressBar = progressView;
+        
+    }
+    return _progressBar;
+    
+}
 
 - (NSMutableArray *)locationsArray {
     
@@ -146,9 +161,14 @@
 
 - (void)calcRoutes {
     
+    self.progressBar.progress = 0;
+    self.progressBar.center = CGPointMake(self.spinner.center.x, self.spinner.center.y + 40);
+    [self.spinner addSubview:self.progressBar];
+    
     self.routes = nil;
     self.routesCalcCounter = 0;
     self.routesCalcErrors = [NSMutableString string];
+    self.routesInfoLabel.title = NSLocalizedString(@"CALC ROUTES", nil);
     
     if (self.locationsArray.count > 1) {
         
@@ -188,6 +208,8 @@
     [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
         
         self.routesCalcCounter ++;
+        
+        self.progressBar.progress = (float)self.routesCalcCounter / (self.locationsArray.count - 1);
 
         if (!error) {
             [self.routes addObject:response.routes.firstObject];
@@ -196,6 +218,8 @@
         }
         
         if (self.self.routesCalcCounter == self.locationsArray.count - 1) {
+            
+            [self.progressBar removeFromSuperview];
             
             if (self.routesCalcErrors.length > 0) {
                 [self showRoutesCalcErrors];
