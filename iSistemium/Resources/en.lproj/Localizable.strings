@@ -315,3 +315,6 @@
 "_POSITIONS" = "p";
 "_BOXES" = "bx";
 "_BOTTLES" = "bt";
+"COPY" = "Copy";
+"SEND EMAIL" = "Send e-mail";
+"SEND MESSAGE" = "Send message";

@@ -19,10 +19,23 @@
 #import "STMCashingProcessController.h"
 #import "STMDebtsController.h"
 
-@interface STMOutletDebtsTVC () <NSFetchedResultsControllerDelegate>
+#import <MessageUI/MessageUI.h>
+
+
+#define COPY_TITLE NSLocalizedString(@"COPY", nil)
+#define EMAIL_TITLE NSLocalizedString(@"SEND EMAIL", nil)
+#define MESSAGE_TITLE NSLocalizedString(@"SEND MESSAGE", nil)
+
+
+@interface STMOutletDebtsTVC ()    <NSFetchedResultsControllerDelegate,
+                                    UIActionSheetDelegate,
+                                    MFMailComposeViewControllerDelegate,
+                                    MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic, weak) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
+
+@property (nonatomic, strong) STMDebt *selectedDebt;
 
 
 @end
@@ -296,6 +309,8 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    [self addLongPressToCell:cell];
+    
     return cell;
     
 }
@@ -363,7 +378,6 @@
     }
 
 }
-
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -467,6 +481,186 @@
     
 }
 
+
+#pragma mark - debt long press
+
+- (void)addLongPressToCell:(UITableViewCell *)cell {
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasLongPressed:)];
+    [cell addGestureRecognizer:longPress];
+    
+}
+
+- (void)cellWasLongPressed:(UILongPressGestureRecognizer *)sender {
+    
+    if (sender.state == UIGestureRecognizerStateBegan){
+
+        [self showLongPressActionSheetFromView:sender.view];
+        
+    }
+
+}
+
+- (void)showLongPressActionSheetFromView:(UIView *)view {
+    
+    if ([view isKindOfClass:[UITableViewCell class]]) {
+        
+        UITableViewCell *cell = (UITableViewCell *)view;
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        self.selectedDebt = [self.resultsController objectAtIndexPath:indexPath];
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@""
+                                                                 delegate:self
+                                                        cancelButtonTitle:nil
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:nil];
+
+        [actionSheet addButtonWithTitle:COPY_TITLE];
+
+        if ([MFMailComposeViewController canSendMail]) {
+            [actionSheet addButtonWithTitle:EMAIL_TITLE];
+        }
+
+        if ([MFMessageComposeViewController canSendText]) {
+            [actionSheet addButtonWithTitle:MESSAGE_TITLE];
+        }
+
+        actionSheet.tag = 111;
+        
+        [actionSheet showFromRect:cell.frame inView:self.tableView animated:YES];
+        
+    }
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag == 111 && buttonIndex >= 0 && buttonIndex < actionSheet.numberOfButtons) {
+
+        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        
+        if ([buttonTitle isEqualToString:COPY_TITLE]) {
+            
+            [self copyDebtInfoIntoBuffer];
+            
+        } else if ([buttonTitle isEqualToString:EMAIL_TITLE]) {
+            
+            [self sendEmail];
+            
+        } else if ([buttonTitle isEqualToString:MESSAGE_TITLE]) {
+            
+            [self sendMessage];
+            
+        }
+        
+    }
+    
+}
+
+- (void)copyDebtInfoIntoBuffer {
+    
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = [self debtMessageBody];
+
+}
+
+- (void)sendEmail {
+    
+    NSString *emailTitle = [NSString stringWithFormat:@"Долг по %@", self.selectedDebt.outlet.name];
+    NSString *messageBody = [self debtMessageBody];
+    
+    MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
+    mailVC.mailComposeDelegate = self;
+    mailVC.modalPresentationStyle = UIModalPresentationPageSheet;
+    [mailVC setSubject:emailTitle];
+    [mailVC setMessageBody:messageBody isHTML:NO];
+    
+    [self presentViewController:mailVC animated:YES completion:nil];
+
+}
+
+- (void)sendMessage {
+    
+    MFMessageComposeViewController *messageVC = [[MFMessageComposeViewController alloc] init];
+    messageVC.messageComposeDelegate = self;
+    messageVC.modalPresentationStyle = UIModalPresentationPageSheet;
+    messageVC.body = [self debtMessageBody];
+    
+    [self presentViewController:messageVC animated:YES completion:nil];
+    
+}
+
+- (NSString *)debtMessageBody {
+    
+    NSString *messageBody = nil;
+    
+    messageBody = [NSString stringWithFormat:@"%@ \n", self.selectedDebt.outlet.name];
+    
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+    
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
+    
+    NSString *debtDate = [dateFormatter stringFromDate:self.selectedDebt.date];
+    NSString *debtSumOriginString = [numberFormatter stringFromNumber:self.selectedDebt.summOrigin];
+    NSString *debtSumRemainingString = [numberFormatter stringFromNumber:self.selectedDebt.calculatedSum];
+    
+    messageBody = [messageBody stringByAppendingString:[NSString stringWithFormat:@"Накладная: %@ \n", self.selectedDebt.ndoc]];
+    messageBody = [messageBody stringByAppendingString:[NSString stringWithFormat:@"Дата: %@ \n", debtDate]];
+    messageBody = [messageBody stringByAppendingString:[NSString stringWithFormat:@"Начальная сумма долга: %@ \n", debtSumOriginString]];
+    messageBody = [messageBody stringByAppendingString:[NSString stringWithFormat:@"Остаток долга: %@ \n", debtSumRemainingString]];
+
+    
+    return messageBody;
+    
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    
+    switch (result) {
+        case MFMailComposeResultCancelled:
+            NSLog(@"Mail cancelled");
+            break;
+        case MFMailComposeResultSaved:
+            NSLog(@"Mail saved");
+            break;
+        case MFMailComposeResultSent:
+            NSLog(@"Mail sent");
+            break;
+        case MFMailComposeResultFailed:
+            NSLog(@"Mail failed: %@", [error localizedDescription]);
+            break;
+        default:
+            break;
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:NULL];
+
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    
+    switch (result) {
+        case MessageComposeResultCancelled: {
+            NSLog(@"Message cancelled");
+            break;
+        }
+        case MessageComposeResultSent: {
+            NSLog(@"Message sent");
+            break;
+        }
+        case MessageComposeResultFailed: {
+            NSLog(@"Message failed");
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:NULL];
+
+}
 
 #pragma mark - observers methods
 

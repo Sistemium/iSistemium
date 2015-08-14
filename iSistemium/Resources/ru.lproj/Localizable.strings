@@ -315,4 +315,7 @@
 "_POSITIONS" = "п";
 "_BOXES" = "к";
 "_BOTTLES" = "б";
+"COPY" = "Скопировать";
+"SEND EMAIL" = "Отправить e-mail";
+"SEND MESSAGE" = "Отправить сообщение";
 
