@@ -267,6 +267,7 @@
 		2CEAC16C1B3C313000AD068E /* STMShipmentRoutePointTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16B1B3C313000AD068E /* STMShipmentRoutePointTVC.m */; };
 		2CEAC16F1B3C3E4200AD068E /* STMShipmentTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */; };
 		2CEAC1751B3ECC3A00AD068E /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEAC1741B3ECC3A00AD068E /* MapKit.framework */; };
+		2CF126661B7F2C0C0059701F /* STMSalesmanController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126651B7F2C0C0059701F /* STMSalesmanController.m */; };
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -816,6 +817,8 @@
 		2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentTVC.m; sourceTree = "<group>"; };
 		2CEAC1701B3EB3CD00AD068E /* STMDataModel 51.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 51.xcdatamodel"; sourceTree = "<group>"; };
 		2CEAC1741B3ECC3A00AD068E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		2CF126641B7F2C0C0059701F /* STMSalesmanController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSalesmanController.h; sourceTree = "<group>"; };
+		2CF126651B7F2C0C0059701F /* STMSalesmanController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSalesmanController.m; sourceTree = "<group>"; };
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
@@ -993,6 +996,8 @@
 				2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */,
 				2C5764741AAC421E00B9FD2C /* STMSaleOrderController.h */,
 				2C5764751AAC421E00B9FD2C /* STMSaleOrderController.m */,
+				2CF126641B7F2C0C0059701F /* STMSalesmanController.h */,
+				2CF126651B7F2C0C0059701F /* STMSalesmanController.m */,
 				2C140ADA1A1D3016002C5C17 /* STMUncashingController.h */,
 				2C140ADB1A1D3016002C5C17 /* STMUncashingController.m */,
 				2C140AC81A19F5B3002C5C17 /* STMUncashingPlaceController.h */,
@@ -1960,6 +1965,7 @@
 				2C5764241AA5E1E500B9FD2C /* STMSelectPartnerTVC.m in Sources */,
 				2CFDD88A1A308B1C003515C5 /* STMCashingProcessController.m in Sources */,
 				2C57641D1AA5E1E500B9FD2C /* STMDebtsCombineVC.m in Sources */,
+				2CF126661B7F2C0C0059701F /* STMSalesmanController.m in Sources */,
 				2C88F1CE1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m in Sources */,
 				2C2968F319A0C31B0038B122 /* STMUncashingSVC.m in Sources */,
 				2C53B8A419409E71002298A5 /* STMLocationTracker.m in Sources */,
