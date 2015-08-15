@@ -10,6 +10,9 @@
 #import "STMSaleOrderController.h"
 #import "STMOrderEditablesVC.h"
 
+#import "STMSalesmanController.h"
+
+
 static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 static NSString *positionCellIdentifier = @"orderPositionCell";
 
@@ -28,6 +31,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 @property (nonatomic) BOOL editablesPopoverWasVisible;
 
 @property (nonatomic, strong) NSMutableDictionary *cachedCellsHeights;
+
 
 @end
 
@@ -295,19 +299,23 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
 }
 
+- (NSInteger)numberOfOptionalRowsToShowInInfoSections {
+    
+    NSInteger counter = 0;
+    
+    counter += (self.saleOrder.commentText) ? 1 : 0;
+    counter += (self.saleOrder.processingMessage) ? 1 : 0;
+    counter += (![STMSalesmanController isItOnlyMeAmongSalesman]) ? 1 : 0;
+    
+    return counter;
+    
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     switch (section) {
         case 0:
-            
-            if (self.saleOrder.commentText && self.saleOrder.processingMessage) {
-                return 7;
-            } else if (self.saleOrder.commentText || self.saleOrder.processingMessage) {
-                return 6;
-            } else {
-                return 5;
-            }
-            
+            return 4 + [self numberOfOptionalRowsToShowInInfoSections];
             break;
             
         case 1:
@@ -509,21 +517,16 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
             break;
 
         case 1:
-            cell.titleLabel.text = NSLocalizedString(@"SALESMAN", nil);
-            cell.detailLabel.text = self.saleOrder.salesman.name;
-            break;
-
-        case 2:
             cell.titleLabel.text = NSLocalizedString(@"DISPATCH DATE", nil);
             cell.detailLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.saleOrder.date];
             break;
 
-        case 3:
+        case 2:
             cell.titleLabel.text = NSLocalizedString(@"COST", nil);
             cell.detailLabel.text = [[STMFunctions currencyFormatter] stringFromNumber:self.saleOrder.totalCost];
             break;
 
-        case 4:
+        case 3:
             cell.titleLabel.text = NSLocalizedString(@"STATUS", nil);
             
             cell.detailLabel.userInteractionEnabled = YES;
@@ -538,8 +541,45 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
             }
             break;
 
+        case 4:
+
+            if (![STMSalesmanController isItOnlyMeAmongSalesman]) {
+                
+                [self fillSalesmanForCell:cell];
+                
+            } else if (self.saleOrder.commentText) {
+                
+                [self fillCommentForCell:cell];
+                
+            } else {
+                
+                [self fillProcessingMessageForCell:cell];
+                
+            }
+            break;
+
         case 5:
-            (self.saleOrder.commentText) ? [self fillCommentForCell:cell] : [self fillProcessingMessageForCell:cell];
+            
+            if (![STMSalesmanController isItOnlyMeAmongSalesman]) {
+                
+                if (self.saleOrder.commentText) {
+                    
+                    [self fillCommentForCell:cell];
+                    
+                } else {
+                    
+                    [self fillProcessingMessageForCell:cell];
+                    
+                }
+                
+            } else {
+                
+                if (self.saleOrder.commentText) {
+                    
+                    [self fillProcessingMessageForCell:cell];
+                    
+                }
+            }
             break;
 
         case 6:
@@ -553,6 +593,13 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
     
+}
+
+- (void)fillSalesmanForCell:(STMCustom2TVCell *)cell {
+    
+    cell.titleLabel.text = NSLocalizedString(@"SALESMAN", nil);
+    cell.detailLabel.text = self.saleOrder.salesman.name;
+
 }
 
 - (void)fillCommentForCell:(STMCustom2TVCell *)cell {

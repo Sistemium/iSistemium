@@ -24,10 +24,6 @@
         
         NSString *loginName = [STMAuthController authController].userName;
         
-        // for testing
-        loginName = @"Сейлюс Александр";
-        //
-        
         if (loginName && [salesman.name caseInsensitiveCompare:loginName] == NSOrderedSame) {
             
             return YES;
