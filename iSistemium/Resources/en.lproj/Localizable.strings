@@ -315,7 +315,6 @@
 "_POSITIONS" = "p";
 "_BOXES" = "bx";
 "_BOTTLES" = "bt";
-<<<<<<< HEAD
 "DISTANCE_KM" = "km";
 "DISTANCE_M" = "m";
 "TIME_H" = "h";
@@ -334,8 +333,6 @@
 "UNCHECK ALL POSITION" = "Uncheck all positions";
 "CHECK ALL POSITION" = "Check all positions";
 "RECALC" = "Recalculate";
-=======
 "COPY" = "Copy";
 "SEND EMAIL" = "Send e-mail";
 "SEND MESSAGE" = "Send message";
->>>>>>> dev

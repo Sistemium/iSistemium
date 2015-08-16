@@ -315,7 +315,6 @@
 "_POSITIONS" = "п";
 "_BOXES" = "к";
 "_BOTTLES" = "б";
-<<<<<<< HEAD
 "DISTANCE_KM" = "км";
 "DISTANCE_M" = "м";
 "TIME_H" = "ч";
@@ -334,10 +333,7 @@
 "UNCHECK ALL POSITION" = "Снять отметки со всех позиций";
 "CHECK ALL POSITION" = "Отметить все позиции";
 "RECALC" = "Пересчитать";
-
-=======
 "COPY" = "Скопировать";
 "SEND EMAIL" = "Отправить e-mail";
 "SEND MESSAGE" = "Отправить сообщение";
->>>>>>> dev
 

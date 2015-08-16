@@ -308,7 +308,6 @@
 		2CEAC16C1B3C313000AD068E /* STMShipmentRoutePointTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16B1B3C313000AD068E /* STMShipmentRoutePointTVC.m */; };
 		2CEAC16F1B3C3E4200AD068E /* STMShipmentTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */; };
 		2CEAC1751B3ECC3A00AD068E /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEAC1741B3ECC3A00AD068E /* MapKit.framework */; };
-<<<<<<< HEAD
 		2CF126321B74F5210059701F /* STMShippingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126311B74F5210059701F /* STMShippingVC.m */; };
 		2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126341B77520F0059701F /* STMShippingSettingsTVC.m */; };
 		2CF1264A1B778AB50059701F /* future.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126461B778AB50059701F /* future.png */; };
@@ -324,9 +323,7 @@
 		2CF1265E1B78EC390059701F /* STMCustom9TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CF1265D1B78EC390059701F /* STMCustom9TVCell.xib */; };
 		2CF126611B78ED870059701F /* STMCustom9TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126601B78ED870059701F /* STMCustom9TVCell.m */; };
 		2CF126631B7CB4F50059701F /* uncheckmark_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126621B7CB4F50059701F /* uncheckmark_filled.png */; };
-=======
 		2CF126661B7F2C0C0059701F /* STMSalesmanController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126651B7F2C0C0059701F /* STMSalesmanController.m */; };
->>>>>>> dev
 		2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AB19EE884D00F078BD /* STMSettings.storyboard */; };
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
@@ -922,7 +919,6 @@
 		2CEAC16D1B3C3E4100AD068E /* STMShipmentTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentTVC.h; sourceTree = "<group>"; };
 		2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentTVC.m; sourceTree = "<group>"; };
 		2CEAC1741B3ECC3A00AD068E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-<<<<<<< HEAD
 		2CF126301B74F5200059701F /* STMShippingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingVC.h; sourceTree = "<group>"; };
 		2CF126311B74F5210059701F /* STMShippingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingVC.m; sourceTree = "<group>"; };
 		2CF126331B77520F0059701F /* STMShippingSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingSettingsTVC.h; sourceTree = "<group>"; };
@@ -944,10 +940,8 @@
 		2CF1265F1B78ED870059701F /* STMCustom9TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom9TVCell.h; sourceTree = "<group>"; };
 		2CF126601B78ED870059701F /* STMCustom9TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom9TVCell.m; sourceTree = "<group>"; };
 		2CF126621B7CB4F50059701F /* uncheckmark_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uncheckmark_filled.png; sourceTree = "<group>"; };
-=======
 		2CF126641B7F2C0C0059701F /* STMSalesmanController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSalesmanController.h; sourceTree = "<group>"; };
 		2CF126651B7F2C0C0059701F /* STMSalesmanController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSalesmanController.m; sourceTree = "<group>"; };
->>>>>>> dev
 		2CF365AB19EE884D00F078BD /* STMSettings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSettings.storyboard; sourceTree = "<group>"; };
 		2CF365AD19EE8C0100F078BD /* settings3-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings3-128.png"; sourceTree = "<group>"; };
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
