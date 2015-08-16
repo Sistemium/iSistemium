@@ -664,7 +664,13 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
     }
     
-    NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
+    NSString *detailText = nil;
+    
+    if ([STMSalesmanController isItOnlyMeAmongSalesman]) {
+        detailText = [NSString stringWithFormat:@"%@, %@", totalCostString, positionsCountString];
+    } else {
+        detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
+    }
     
     cell.detailLabel.text = detailText;
     

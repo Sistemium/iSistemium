@@ -13,5 +13,7 @@
 
 @property (nonatomic, strong) STMShipmentRoute *route;
 
+- (NSArray *)shipmentRoutePointsSortDescriptors;
+
 
 @end

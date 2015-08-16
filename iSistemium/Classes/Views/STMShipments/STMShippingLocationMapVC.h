@@ -14,6 +14,6 @@
 @interface STMShippingLocationMapVC : UIViewController
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
-
+@property (nonatomic, strong) CLLocation *geocodedLocation;
 
 @end

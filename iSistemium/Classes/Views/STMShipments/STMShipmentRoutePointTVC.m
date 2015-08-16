@@ -18,6 +18,7 @@
 #import "STMShipmentTVC.h"
 #import "STMShippingLocationMapVC.h"
 #import "STMShippingLocationPicturesPVC.h"
+#import "STMRouteMapVC.h"
 
 
 #define CELL_IMAGES_SIZE 54
@@ -35,7 +36,6 @@
 @property (nonatomic, strong) NSString *arrivalButtonCellIdentifier;
 
 @property (nonatomic, strong) NSIndexPath *arrivalButtonCellIndexPath;
-//@property (nonatomic, strong) NSIndexSet *shipmentsIndexSet;
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
@@ -352,7 +352,7 @@
             break;
             
         case 2:
-            return (self.point.shippingLocation.location) ? 2 : 1;
+            return (self.point.shippingLocation.location || self.geocodedLocation) ? 2 : 1;
             break;
             
         case 3:
@@ -435,7 +435,7 @@
 
 - (CGFloat)heightForRoutePointCell {
     
-    CGFloat diff = [self heightDiffForText:self.point.name];
+    CGFloat diff = [self heightDiffForText:[STMFunctions shortCompanyName:self.point.name]];
     
     CGFloat height = [self estimatedHeightForRow] + diff;
     
@@ -538,13 +538,13 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
 
-    cell.textLabel.text = point.name;
+    cell.textLabel.text = [STMFunctions shortCompanyName:point.name];
     cell.textLabel.numberOfLines = 0;
     
     cell.detailTextLabel.text = [point shortInfo];
 
     cell.accessoryType = UITableViewCellAccessoryNone;
-
+    
 }
 
 - (void)fillArrivalButtonCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -585,42 +585,28 @@
         customCell.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         customCell.detailLabel.text = @"";
+        customCell.detailLabel.textColor = [UIColor blackColor];
         customCell.detailLabel.textAlignment = NSTextAlignmentCenter;
         
         [[customCell viewWithTag:666] removeFromSuperview];
-        
-//        if (self.isWaitingLocation) {
-//            
-//            STMSpinnerView *spinner = [STMSpinnerView spinnerViewWithFrame:customCell.contentView.bounds];
-//            spinner.tag = 666;
-//            
-//            [customCell.contentView addSubview:spinner];
-//            
-//        } else {
-        
+                
+        if (shippingLocation.location || self.geocodedLocation) {
+            
+            customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
+            
             if (!shippingLocation.location) {
                 
-                customCell.titleLabel.text = NSLocalizedString(@"SET LOCATION", nil);
-                customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-                
-//                if (self.session.locationTracker.isAccuracySufficient) {
-//                    
-//                    customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-//                    
-//                } else {
-//                    
-//                    customCell.titleLabel.textColor = [UIColor lightGrayColor];
-//                    customCell.detailLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
-//                    
-//                }
-                
-            } else {
-                
-                customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
-                
-            }
+                customCell.detailLabel.text = NSLocalizedString(@"LOCATION NEEDS CONFIRMATION", nil);
+                customCell.detailLabel.textColor = [UIColor redColor];
 
-//        }
+            }
+            
+        } else {
+            
+            customCell.titleLabel.text = NSLocalizedString(@"SET LOCATION", nil);
+            customCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+            
+        }
         
     }
 
@@ -898,26 +884,43 @@
         [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentTVC class]]) {
         
+        STMShipmentTVC *shipmentTVC = (STMShipmentTVC *)segue.destinationViewController;
         STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
-        [(STMShipmentTVC *)segue.destinationViewController setShipment:shipment];
-        [(STMShipmentTVC *)segue.destinationViewController setPoint:self.point];
-        [(STMShipmentTVC *)segue.destinationViewController setParentVC:self];
+        
+        shipmentTVC.shipment = shipment;
+        shipmentTVC.point = self.point;
+        shipmentTVC.parentVC = self;
         
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
         
-        [(STMShippingLocationMapVC *)segue.destinationViewController setPoint:self.point];
+        STMShippingLocationMapVC *mapVC = (STMShippingLocationMapVC *)segue.destinationViewController;
         
+        mapVC.point = self.point;
+        mapVC.geocodedLocation = self.geocodedLocation;
+                
     } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
                [sender isKindOfClass:[UIView class]] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationPicturesPVC class]]) {
         
+        STMShippingLocationPicturesPVC *picturesPVC = (STMShippingLocationPicturesPVC *)segue.destinationViewController;
+        
         NSSortDescriptor *sortDesriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)];
         NSArray *photoArray = [self.point.shippingLocation.shippingLocationPictures sortedArrayUsingDescriptors:@[sortDesriptor]];
         
-        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setPhotoArray:[photoArray mutableCopy]];
-        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setCurrentIndex:[self.picturesView.subviews indexOfObject:sender]];
-        [(STMShippingLocationPicturesPVC *)segue.destinationViewController setParentVC:self];
+        picturesPVC.photoArray = [photoArray mutableCopy];
+        picturesPVC.currentIndex = [self.picturesView.subviews indexOfObject:sender];
+        picturesPVC.parentVC = self;
+        
+    } else if ([segue.identifier isEqualToString:@"showRoute"] &&
+               [segue.destinationViewController isKindOfClass:[STMRouteMapVC class]]) {
+        
+        STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
+
+        routeMapVC.shippingLocation = self.point.shippingLocation;
+        routeMapVC.destinationPoint = self.geocodedLocation;
+        routeMapVC.destinationPointName = self.point.shortName;
+        routeMapVC.destinationPointAddress = self.point.address;
         
     }
     
@@ -965,6 +968,69 @@
 }
 
 
+#pragma mark - navbar
+
+- (void)setupNavBar {
+    
+    if (self.point.shippingLocation.location || self.geocodedLocation) {
+        
+        STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
+        self.navigationItem.rightBarButtonItem = waypointButton;
+        
+    } else {
+
+    }
+
+}
+
+- (UIView *)waypointView {
+    
+    CGFloat imageSize = 22;
+    CGFloat imagePadding = 0;
+    
+    UIImage *image = [[UIImage imageNamed:@"single_waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
+    imageView.tintColor = (self.point.shippingLocation.location || self.geocodedLocation) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
+    [button addTarget:self action:@selector(waypointButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [button addSubview:imageView];
+    
+    return button;
+    
+}
+
+- (void)waypointButtonPressed {
+    [self performSegueWithIdentifier:@"showRoute" sender:self];
+}
+
+
+#pragma mark - CLGeocode
+
+- (void)checkPointLocation {
+    
+    if (!self.point.shippingLocation.location && !self.geocodedLocation && self.point.address) {
+        
+        [[[CLGeocoder alloc] init] geocodeAddressString:self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
+            
+            if (!error) {
+                
+                CLPlacemark *placemark = placemarks.firstObject;
+                self.geocodedLocation = placemark.location;
+                
+                [self.tableView reloadData];
+                [self setupNavBar];
+
+            }
+            
+        }];
+        
+    }
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -993,6 +1059,7 @@
     
     [self addObservers];
     [self performFetch];
+    [self checkPointLocation];
     
 }
 
@@ -1004,10 +1071,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
-//    if (self.shipmentsIndexSet) {
-//        [self.tableView reloadSections:self.shipmentsIndexSet withRowAnimation:UITableViewRowAnimationNone];
-//    }
+
+    [self setupNavBar];
     
     [super viewWillAppear:animated];
     

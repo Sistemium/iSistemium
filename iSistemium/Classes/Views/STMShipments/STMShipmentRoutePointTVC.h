@@ -7,11 +7,14 @@
 //
 
 #import "STMDataModel.h"
+#import <MapKit/MapKit.h>
 
 
 @interface STMShipmentRoutePointTVC : UITableViewController
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
+@property (nonatomic, strong) CLLocation *geocodedLocation;
+
 
 - (void)showArriveConfirmationAlert;
 - (void)shippingProcessWasInterrupted;

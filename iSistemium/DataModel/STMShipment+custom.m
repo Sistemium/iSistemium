@@ -18,7 +18,11 @@
     double approximateVolume = 0;
     
     for (STMShipmentPosition *position in self.shipmentPositions) {
-        approximateVolume += position.volume.doubleValue / position.article.packageRel.integerValue;
+        
+        if (position.article.packageRel.integerValue > 0) {
+            approximateVolume += position.volume.doubleValue / position.article.packageRel.integerValue;
+        }
+    
     }
     
     NSUInteger boxesCount = ceil(approximateVolume);

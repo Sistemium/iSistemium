@@ -13,6 +13,7 @@
 
 #import "STMShipmentRoutePointTVC.h"
 #import "STMShipmentRouteSummaryTVC.h"
+#import "STMAllRoutesMapVC.h"
 
 #import "STMShippingProcessController.h"
 
@@ -20,6 +21,7 @@
 @interface STMShipmentRouteTVC ()
 
 @property (nonatomic, strong) NSIndexPath *summaryIndexPath;
+@property (nonatomic, strong) NSMutableDictionary *geocodedLocations;
 
 
 @end
@@ -29,6 +31,14 @@
 
 @synthesize resultsController = _resultsController;
 
+- (NSMutableDictionary *)geocodedLocations {
+    
+    if (!_geocodedLocations) {
+        _geocodedLocations = [NSMutableDictionary dictionary];
+    }
+    return _geocodedLocations;
+    
+}
 
 - (NSString *)cellIdentifier {
     return @"routePointCell";
@@ -40,10 +50,7 @@
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentRoutePoint class])];
         
-        NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:NO selector:@selector(compare:)];
-        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        
-        request.sortDescriptors = @[ordDescriptor, nameDescriptor];
+        request.sortDescriptors = [self shipmentRoutePointsSortDescriptors];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"shipmentRoute == %@", self.route];
         
@@ -58,6 +65,15 @@
     
 }
 
+- (NSArray *)shipmentRoutePointsSortDescriptors {
+    
+    NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    
+    return @[ordDescriptor, nameDescriptor];
+
+}
+
 - (void)performFetch {
     
     self.resultsController = nil;
@@ -67,10 +83,39 @@
     if (![self.resultsController performFetch:&error]) {
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
     } else {
-        
+        [self checkPointsLocations];
     }
     
 }
+
+- (void)checkPointsLocations {
+    
+    for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
+        
+        if (!point.shippingLocation.location && point.address && !self.geocodedLocations[point.xid]) {
+            
+            [[[CLGeocoder alloc] init] geocodeAddressString:point.address completionHandler:^(NSArray *placemarks, NSError *error) {
+                
+                if (!error) {
+                    
+                    CLPlacemark *placemark = placemarks.firstObject;
+                    self.geocodedLocations[point.xid] = placemark.location;
+                    
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.resultsController.fetchedObjects indexOfObject:point] inSection:1];
+                    if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                    
+                    [self setupNavBar];
+                    
+                }
+                
+            }];
+            
+        }
+
+    }
+    
+}
+
 
 - (NSArray *)shippedShipments {
     
@@ -303,26 +348,60 @@
     
     STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 
-    cell.titleLabel.text = point.name;
+    cell.titleLabel.text = [STMFunctions shortCompanyName:point.name];
 
-    UIColor *titleColor = [UIColor blackColor];
+    UIColor *textColor = [UIColor blackColor];
     
     if (point.isReached.boolValue) {
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
         NSUInteger unprocessedShipmentsCount = [point.shipments filteredSetUsingPredicate:predicate].count;
         
-        titleColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
+        textColor = (unprocessedShipmentsCount > 0) ? [UIColor redColor] : [UIColor lightGrayColor];
 
     }
     
-    cell.titleLabel.textColor = titleColor;
+    cell.titleLabel.textColor = textColor;
     
-    cell.detailLabel.text = [point shortInfo];
-    cell.detailLabel.textColor = titleColor;
+    NSMutableAttributedString *detailString;
     
-    cell.accessoryType = (point.shipments.count > 0) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+    NSDictionary *attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                                 NSForegroundColorAttributeName:textColor};
 
+    detailString = [[NSMutableAttributedString alloc] initWithString:[point shortInfo] attributes:attributes];
+    
+    if (!point.shippingLocation.location) {
+
+        [detailString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+
+        if (self.geocodedLocations[point.xid]) {
+        
+            textColor = [UIColor lightGrayColor];
+
+            attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                           NSForegroundColorAttributeName:textColor};
+
+            NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil) attributes:attributes];
+            [detailString appendAttributedString:appendString];
+
+        } else {
+            
+            textColor = [UIColor redColor];
+            
+            attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                           NSForegroundColorAttributeName:textColor};
+
+            NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"NO LOCATION", nil) attributes:attributes];
+            [detailString appendAttributedString:appendString];
+
+        }
+        
+    }
+    
+    cell.detailLabel.attributedText = detailString;
+    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -331,13 +410,7 @@
         
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
         
-        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
-        
-        if (point.shipments.count > 0) {
-            
-            [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
-            
-        }
+        [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
 
     } else if (indexPath.section == 0) {
         
@@ -392,7 +465,10 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [self checkPointsLocations];
     [self reloadData];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -413,13 +489,35 @@
         [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentRoutePointTVC class]]) {
         
+        STMShipmentRoutePointTVC *pointTVC = (STMShipmentRoutePointTVC *)segue.destinationViewController;
+        
         STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
-        [(STMShipmentRoutePointTVC *)segue.destinationViewController setPoint:point];
+
+        pointTVC.point = point;
+        pointTVC.geocodedLocation = self.geocodedLocations[point.xid];
         
     } else if ([segue.identifier isEqualToString:@"showSummary"] &&
                [segue.destinationViewController isKindOfClass:[STMShipmentRouteSummaryTVC class]]) {
         
         [(STMShipmentRouteSummaryTVC *)segue.destinationViewController setRoute:self.route];
+        
+    } else if ([segue.identifier isEqualToString:@"showAllRoutes"] &&
+               [segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
+        
+        STMAllRoutesMapVC *allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
+        
+        for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
+            
+            if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point]) {
+                point.ord = @([self.resultsController.fetchedObjects indexOfObject:point]);
+            }
+            
+        }
+        
+//        allRoutesMapVC.points = [self pointsWithLocation];
+        allRoutesMapVC.points = self.resultsController.fetchedObjects;
+        allRoutesMapVC.geocodedLocations = self.geocodedLocations.copy;
+        allRoutesMapVC.parentVC = self;
         
     }
     
@@ -477,9 +575,91 @@
 
 }
 
+
+#pragma mark - navbar
+
+- (void)setupNavBar {
+    
+    if (([self pointsWithLocation].count + self.geocodedLocations.count) > 0) {
+        
+        STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
+        self.navigationItem.rightBarButtonItem = waypointButton;
+
+    } else {
+        
+        self.navigationItem.rightBarButtonItem = nil;
+        
+    }
+    
+}
+
+- (NSArray *)pointsWithLocation {
+
+    NSPredicate *locationPredicate = [NSPredicate predicateWithFormat:@"shippingLocation.location != %@", nil];
+    NSSet *pointsWithLocation = [self.route.shipmentRoutePoints filteredSetUsingPredicate:locationPredicate];
+
+    NSArray *result = [pointsWithLocation sortedArrayUsingDescriptors:[self shipmentRoutePointsSortDescriptors]];
+    
+    for (STMShipmentRoutePoint *point in result) {
+        
+        if (point.ord.integerValue != [result indexOfObject:point]) {
+            point.ord = @([result indexOfObject:point]);
+        }
+        
+    }
+
+    return result;
+    
+}
+
+- (BOOL)isAllPointsHaveLocation {
+    return (self.route.shipmentRoutePoints.count == [self pointsWithLocation].count + self.geocodedLocations.count);
+}
+
+- (UIView *)waypointView {
+    
+    CGFloat imageSize = 22;
+    CGFloat imagePadding = 0;
+    
+    UIImage *image = [[UIImage imageNamed:@"waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
+    imageView.tintColor = ([self isAllPointsHaveLocation]) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
+    [button addTarget:self action:@selector(waypointButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [button addSubview:imageView];
+    
+    return button;
+    
+}
+
+- (void)waypointButtonPressed {
+    
+//    if ([self isAllPointsHaveLocation]) {
+        [self performSegueWithIdentifier:@"showAllRoutes" sender:self];
+//    } else {
+//        [self showNotEnoughLocationsAlert];
+//    }
+
+}
+
+- (void)showNotEnoughLocationsAlert {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ROUTING ERROR", nil)
+                                                    message:NSLocalizedString(@"NOT ENOUGH LOCATIONS", nil)
+                                                   delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                          otherButtonTitles:nil];
+    [alert show];
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [self setupNavBar];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
@@ -497,6 +677,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+    [self setupNavBar];
     [self reloadData];
     
     [super viewWillAppear:animated];

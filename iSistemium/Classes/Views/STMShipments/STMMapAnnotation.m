@@ -13,6 +13,9 @@
 
 @property (nonatomic, strong) STMLocation *location;
 @property (nonatomic, strong) CLLocation *clLocation;
+@property (nonatomic ,strong) NSString *annotationTitle;
+@property (nonatomic, strong) NSString *annotationSubtitle;
+
 
 @end
 
@@ -20,41 +23,52 @@
 @implementation STMMapAnnotation
 
 + (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location {
+    return [self createAnnotationForLocation:location withTitle:nil andSubtitle:nil];
+}
+
++ (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location withTitle:(NSString *)title andSubtitle:(NSString *)subtitle {
+    return [self createAnnotationForLocation:location withTitle:title andSubtitle:subtitle andOrd:nil];
+}
+
++ (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location withTitle:(NSString *)title andSubtitle:(NSString *)subtitle andOrd:(NSNumber *)ord {
     
     STMMapAnnotation *annotation = [[STMMapAnnotation alloc] init];
     annotation.location = location;
-
+    annotation.annotationTitle = title;
+    annotation.annotationSubtitle = subtitle;
+    annotation.ord = ord;
+    
     return annotation;
     
 }
 
 + (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation {
+    return [self createAnnotationForCLLocation:clLocation withTitle:nil andSubtitle:nil];
+}
+
++ (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation withTitle:(NSString *)title andSubtitle:(NSString *)subtitle {
+    return [self createAnnotationForCLLocation:clLocation withTitle:title andSubtitle:subtitle andOrd:nil];
+}
+
++ (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation withTitle:(NSString *)title andSubtitle:(NSString *)subtitle andOrd:(NSNumber *)ord {
     
     STMMapAnnotation *annotation = [[STMMapAnnotation alloc] init];
     annotation.clLocation = clLocation;
+    annotation.annotationTitle = title;
+    annotation.annotationSubtitle = subtitle;
+    annotation.ord = ord;
     
     return annotation;
-    
+
 }
 
+
 - (NSString *)title {
-
-    if ([self.location isKindOfClass:[STMShippingLocation class]]) {
-        return [(STMShippingLocation *)self.location name];
-    } else {
-        return nil;
-    }
-
+    return self.annotationTitle;
 }
 
 - (NSString *)subtitle {
-    
-    if ([self.location isKindOfClass:[STMShippingLocation class]]) {
-        return [(STMShippingLocation *)self.location address];
-    } else {
-        return nil;
-    }
-
+    return self.annotationSubtitle;
 }
 
 - (CLLocationCoordinate2D)coordinate {

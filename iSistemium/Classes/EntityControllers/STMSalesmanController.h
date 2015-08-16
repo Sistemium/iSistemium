@@ -10,6 +10,8 @@
 
 @interface STMSalesmanController : STMController
 
++ (STMSalesmanController *)sharedInstance;
+
 + (BOOL)isItOnlyMeAmongSalesman;
 + (NSArray *)salesmansArray;
 

@@ -48,8 +48,28 @@ typedef NS_ENUM(NSInteger, STMShippingProcessState) {
                             regradeVolume:(NSInteger)regradeVolume
                                packageRel:(NSInteger)packageRel;
 
+- (NSAttributedString *)volumesAttributedStringWithAttributes:(NSDictionary *)attributes
+                                                   doneVolume:(NSInteger)doneVolume
+                                                    badVolume:(NSInteger)badVolume
+                                                 excessVolume:(NSInteger)excessVolume
+                                               shortageVolume:(NSInteger)shortageVolume
+                                                regradeVolume:(NSInteger)regradeVolume
+                                                   packageRel:(NSInteger)packageRel;
+
 - (void)shippingPosition:(STMShipmentPosition *)position
           withDoneVolume:(NSInteger)doneVolume;
+
+- (void)shippingPosition:(STMShipmentPosition *)position
+           withBadVolume:(NSInteger)badVolume;
+
+- (void)shippingPosition:(STMShipmentPosition *)position
+        withExcessVolume:(NSInteger)excessVolume;
+
+- (void)shippingPosition:(STMShipmentPosition *)position
+      withShortageVolume:(NSInteger)shortageVolume;
+
+- (void)shippingPosition:(STMShipmentPosition *)position
+       withRegradeVolume:(NSInteger)regradeVolume;
 
 - (void)shippingPosition:(STMShipmentPosition *)position
           withDoneVolume:(NSInteger)doneVolume
@@ -60,6 +80,8 @@ typedef NS_ENUM(NSInteger, STMShippingProcessState) {
 
 - (BOOL)haveProcessedPositionsAtShipment:(STMShipment *)shipment;
 - (BOOL)haveUnprocessedPositionsAtShipment:(STMShipment *)shipment;
+- (NSUInteger)unprocessedPositionsCountForShipment:(STMShipment *)shipment;
+- (NSSet *)unprocessedPositionsForShipment:(STMShipment *)shipment;
 
 
 @end

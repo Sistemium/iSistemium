@@ -9,7 +9,9 @@
 #import "STMAppDelegate.h"
 
 #import <AdSupport/AdSupport.h>
+#import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import "STMAuthController.h"
 #import "STMRemoteController.h"
@@ -51,6 +53,11 @@
 
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
+//    AVSpeechSynthesizer *synthesizer = [[AVSpeechSynthesizer alloc] init];
+//    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:@"Добро пожаловать в Sistemium!"];
+//    utterance.rate = AVSpeechUtteranceMinimumSpeechRate;
+//    [synthesizer speakUtterance:utterance];
+    
     return YES;
     
 }
@@ -416,7 +423,7 @@
     
 //    [[Crashlytics sharedInstance] setDebugMode:YES];
     
-    [Crashlytics startWithAPIKey:@"035bda92bd5b13402aaf2c6cb5f66b8ff23f2166"];
+    [Fabric with:@[CrashlyticsKit]];
     
     [[Crashlytics sharedInstance] setObjectValue:[[UIDevice currentDevice] name] forKey:@"deviceName"];
     [[Crashlytics sharedInstance] setObjectValue:[STMFunctions devicePlatform] forKey:@"devicePlatform"];

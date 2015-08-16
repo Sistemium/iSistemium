@@ -304,9 +304,15 @@
     } else {
         positionsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(pluralTypeString, nil)];
     }
+
+    NSString *detailText = nil;
     
-    NSString *detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
-    
+    if ([STMSalesmanController isItOnlyMeAmongSalesman]) {
+        detailText = [NSString stringWithFormat:@"%@, %@", totalCostString, positionsCountString];
+    } else {
+        detailText = [NSString stringWithFormat:@"%@, %@, %@", totalCostString, positionsCountString, saleOrder.salesman.name];
+    }
+
     cell.detailLabel.text = detailText;
     
     cell.messageLabel.text = saleOrder.processingMessage;
