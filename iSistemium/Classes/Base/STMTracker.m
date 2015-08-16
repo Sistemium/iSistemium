@@ -222,7 +222,7 @@
     
     if (!_startTimer) {
         
-        if (self.trackerStartTime) {
+        if ([self isValidTimeValue:self.trackerStartTime]) {
             
             NSDate *startTime = [STMFunctions dateFromDouble:self.trackerStartTime];
             
@@ -246,7 +246,7 @@
     
     if (!_finishTimer) {
         
-        if (self.trackerFinishTime) {
+        if ([self isValidTimeValue:self.trackerFinishTime]) {
             
             NSDate *finishTime = [STMFunctions dateFromDouble:self.trackerFinishTime];
             
@@ -270,7 +270,7 @@
     
     if (self.trackerAutoStart) {
         
-        if (self.trackerStartTime && self.trackerFinishTime) {
+        if ([self isValidTimeValue:self.trackerStartTime] && [self isValidTimeValue:self.trackerFinishTime]) {
             
             [self releaseTimers];
             [self checkTimeForTracking];
@@ -290,6 +290,10 @@
         
     }
     
+}
+
+- (BOOL)isValidTimeValue:(double)timeValue {
+    return (timeValue >= 0 && timeValue <= 24);
 }
 
 - (void)checkTimeForTracking {
