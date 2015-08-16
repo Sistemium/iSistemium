@@ -14,6 +14,9 @@
 #import "STMOrdersOutletTVC.h"
 #import "STMOrdersSalesmanTVC.h"
 
+#import "STMSalesmanController.h"
+
+
 @interface STMOrdersMasterPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
@@ -27,6 +30,7 @@
 @property (nonatomic) NSUInteger nextIndex;
 
 @property (nonatomic, strong) UIBarButtonItem *resetFilterButton;
+
 
 @end
 
@@ -51,8 +55,11 @@
     if (!_segmentedControl) {
         
         NSArray *controlItems = @[NSLocalizedString(@"OUTLETS", nil),
-                                  NSLocalizedString(@"DATES", nil),
-                                  NSLocalizedString(@"SALESMANS", nil)];
+                                  NSLocalizedString(@"DATES", nil)];
+        
+        if (![STMSalesmanController isItOnlyMeAmongSalesman]) {
+            controlItems = [controlItems arrayByAddingObject:NSLocalizedString(@"SALESMANS", nil)];
+        }
         
         UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:controlItems];
         segmentedControl.selectedSegmentIndex = self.currentIndex;

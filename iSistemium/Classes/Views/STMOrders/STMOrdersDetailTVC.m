@@ -12,6 +12,9 @@
 #import "STMOrderInfoTVC.h"
 #import "STMOrderEditablesVC.h"
 
+#import "STMSalesmanController.h"
+
+
 static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 
@@ -186,7 +189,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
     }
 
-    self.navigationItem.title = [NSString stringWithFormat:@"%@ / %@ / %@", date, salesman, outlet];
+    NSString *title = ([STMSalesmanController isItOnlyMeAmongSalesman]) ? [NSString stringWithFormat:@"%@ / %@", date, outlet] : [NSString stringWithFormat:@"%@ / %@ / %@", date, salesman, outlet];
+    
+    self.navigationItem.title = title;
     
 }
 

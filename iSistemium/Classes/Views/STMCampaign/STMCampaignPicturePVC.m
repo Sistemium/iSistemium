@@ -68,13 +68,13 @@
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
 
-    return [self viewControllerAtIndex:self.currentIndex-1 storyboard:self.storyboard];
+    return (self.currentIndex > 0) ? [self viewControllerAtIndex:self.currentIndex-1 storyboard:self.storyboard] : nil;
 
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
 
-    return [self viewControllerAtIndex:self.currentIndex+1 storyboard:self.storyboard];
+    return (self.currentIndex < self.campaign.pictures.count - 1) ? [self viewControllerAtIndex:self.currentIndex+1 storyboard:self.storyboard] : nil;
 
 }
 
