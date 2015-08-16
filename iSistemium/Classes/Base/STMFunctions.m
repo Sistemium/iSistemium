@@ -133,6 +133,18 @@
 
 }
 
++ (NSDateFormatter *)noDateShortTimeFormatterAllowZero:(BOOL)allowZero {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    if (allowZero) {
+        dateFormatter.dateFormat = @"HH:mm";
+    } else {
+        dateFormatter.dateFormat = @"kk:mm";
+    }
+    return dateFormatter;
+    
+}
+
 + (void)NSLogCurrentDateWithMilliseconds {
     NSLog(@"%@", [[self dateFormatter] stringFromDate:[NSDate date]]);
 }

@@ -42,6 +42,8 @@
 + (NSDateFormatter *)dateMediumTimeMediumFormatter;
 + (NSDateFormatter *)dateMediumTimeShortFormatter;
 + (NSDateFormatter *)noDateShortTimeFormatter;
++ (NSDateFormatter *)noDateShortTimeFormatterAllowZero:(BOOL)allowZero;
+
 + (void)NSLogCurrentDateWithMilliseconds;
 
 + (NSDate *)dateFromDouble:(double)time;
