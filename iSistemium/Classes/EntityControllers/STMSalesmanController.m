@@ -8,45 +8,90 @@
 
 #import "STMSalesmanController.h"
 
+@interface STMSalesmanController()
+
+@property (nonatomic) BOOL isItOnlyMeAmongSalesman;
+@property (nonatomic, strong) NSArray *salesmansArray;
+
+
+@end
+
+
 @implementation STMSalesmanController
 
-+ (BOOL)isItOnlyMeAmongSalesman {
++ (STMSalesmanController *)sharedInstance {
     
-    NSArray *salesmans = [self salesmansArray];
+    static dispatch_once_t pred = 0;
+    __strong static id _sharedInstance = nil;
+    
+    dispatch_once(&pred, ^{
+        _sharedInstance = [[self alloc] init];
+    });
+    
+    return _sharedInstance;
+    
+}
+
+- (instancetype)init {
+    
+    self = [super init];
+    if (self) {
+        [self checkSalesmans];
+    }
+    return self;
+
+}
+
++ (BOOL)isItOnlyMeAmongSalesman {
+    return [self sharedInstance].isItOnlyMeAmongSalesman;
+}
+
++ (NSArray *)salesmansArray {
+    return [self sharedInstance].salesmansArray;
+}
+
+- (NSArray *)salesmansArray {
+    
+    if (!_salesmansArray) {
+        
+        STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMSalesman class])];
+        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        request.sortDescriptors = @[nameDescriptor];
+        
+        NSArray *salesmans = [[STMSalesmanController document].managedObjectContext executeFetchRequest:request error:nil];
+        
+        _salesmansArray = salesmans;
+
+    }
+    return _salesmansArray;
+    
+}
+
+- (void)checkSalesmans {
+    
+    NSArray *salesmans = self.salesmansArray;
     
     if (salesmans.count != 1) {
         
-        return NO;
+        self.isItOnlyMeAmongSalesman = NO;
         
     } else {
         
         STMSalesman *salesman = salesmans.firstObject;
         
         NSString *loginName = [STMAuthController authController].userName;
-        
+
         if (loginName && [salesman.name caseInsensitiveCompare:loginName] == NSOrderedSame) {
             
-            return YES;
+            self.isItOnlyMeAmongSalesman = YES;
             
         } else {
             
-            return NO;
+            self.isItOnlyMeAmongSalesman = NO;
             
         }
         
     }
-    
-}
-
-+ (NSArray *)salesmansArray {
-    
-    STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMSalesman class])];
-    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-    request.sortDescriptors = @[nameDescriptor];
-    
-    NSArray *salesmans = [[self document].managedObjectContext executeFetchRequest:request error:nil];
-    
-    return salesmans;
     
 }
 

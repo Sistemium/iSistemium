@@ -22,6 +22,9 @@
 #import "STMFunctions.h"
 #import "STMConstants.h"
 
+#import "STMSalesmanController.h"
+
+
 @interface STMOrdersSVC : STMSplitViewController
 
 @property (nonatomic, strong) UINavigationController *masterNC;
