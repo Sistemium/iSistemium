@@ -800,18 +800,19 @@
 - (void)setupLocationAppStatusLabel {
     
     BOOL locationIsTracking = self.locationTracker.tracking;
-    BOOL autoStart = self.locationTracker.trackerAutoStart;
+//    BOOL autoStart = self.locationTracker.trackerAutoStart;
     double startTime = self.locationTracker.trackerStartTime;
     double finishTime = self.locationTracker.trackerFinishTime;
-    double currentTime = [STMFunctions currentTimeInDouble];
     
-    if (autoStart && startTime && finishTime) {
-        
+//    if (autoStart && startTime && finishTime) {
+    
+        double currentTime = [STMFunctions currentTimeInDouble];
+
         if (currentTime > startTime && currentTime < finishTime) {
             
             if (locationIsTracking) {
                 
-                NSString *finishTimeString = [[STMFunctions noDateShortTimeFormatter] stringFromDate:[STMFunctions dateFromDouble:finishTime]];
+                NSString *finishTimeString = [[STMFunctions noDateShortTimeFormatterAllowZero:NO] stringFromDate:[STMFunctions dateFromDouble:finishTime]];
                 NSString *labelText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"LOCATION IS TRACKING UNTIL", nil), finishTimeString];
                 self.locationAppStatusLabel.text = labelText;
                 self.locationAppStatusLabel.textColor = [UIColor blackColor];
@@ -841,12 +842,12 @@
             
         }
         
-    } else {
-        
-        self.locationAppStatusLabel.text = NSLocalizedString(@"WRONG LOCATION TIMERS SETTINGS", nil);
-        self.locationAppStatusLabel.textColor = [UIColor redColor];
-        
-    }
+//    } else {
+//        
+//        self.locationAppStatusLabel.text = NSLocalizedString(@"WRONG LOCATION TIMERS SETTINGS", nil);
+//        self.locationAppStatusLabel.textColor = [UIColor redColor];
+//        
+//    }
     
 }
 
