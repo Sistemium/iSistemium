@@ -239,7 +239,7 @@
         }];
         
     } else {
-        [self saveLogMessageDictionary:@{@"text": text, @"type": type}];
+        [self saveLogMessageDictionary:@{@"text": [NSString stringWithFormat:@"%@", text], @"type": [NSString stringWithFormat:@"%@", type]}];
     }
     
 }

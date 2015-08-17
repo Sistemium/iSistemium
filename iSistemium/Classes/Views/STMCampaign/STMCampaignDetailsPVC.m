@@ -359,6 +359,8 @@
     
 //    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
+    [super viewDidDisappear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning

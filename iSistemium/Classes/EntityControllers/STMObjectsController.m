@@ -1254,9 +1254,9 @@
     }
     
     if (errorMessage) {
-        *error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier
-                                     code:1
-                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+        if (error) *error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier
+                                                code:1
+                                            userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
     }
     
     return nil;
@@ -1348,9 +1348,9 @@
 
     if (errorMessage) {
         
-        *error = [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier]
-                                     code:0
-                                 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+        if (error) *error = [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier]
+                                                code:0
+                                            userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
         
     }
     
@@ -1441,7 +1441,8 @@
                     
                     NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
                     NSString *entityName = key;
-                    [propertiesDictionary setValue:[NSDictionary dictionaryWithObjectsAndKeys:entityName, @"name", xid, @"xid", nil] forKey:key];
+                    propertiesDictionary[key] = @{@"name": entityName, @"xid": xid};
+//                    [propertiesDictionary setValue:@{@"name": entityName, @"xid": xid} forKey:key];
                     
                 }
                 

@@ -705,22 +705,22 @@
             case kCLAuthorizationStatusAuthorizedAlways:
                 color = [UIColor greenColor];
                 text = NSLocalizedString(@"LOCATIONS ON", nil);
-                self.locationSystemStatusLabel.textColor = [UIColor greenColor];
-                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
+//                self.locationSystemStatusLabel.textColor = [UIColor greenColor];
+//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
                 break;
                 
             case kCLAuthorizationStatusAuthorizedWhenInUse:
                 color = [UIColor brownColor];
                 text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
-                self.locationSystemStatusLabel.textColor = [UIColor brownColor];
-                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
+//                self.locationSystemStatusLabel.textColor = [UIColor brownColor];
+//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
                 break;
                 
             default:
                 color = [UIColor redColor];
                 text = NSLocalizedString(@"LOCATIONS OFF", nil);
-                self.locationSystemStatusLabel.textColor = [UIColor redColor];
-                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+//                self.locationSystemStatusLabel.textColor = [UIColor redColor];
+//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
                 break;
         }
         
@@ -728,10 +728,13 @@
         
         color = [UIColor redColor];
         text = NSLocalizedString(@"LOCATIONS OFF", nil);
-        self.locationSystemStatusLabel.textColor = [UIColor redColor];
-        self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+//        self.locationSystemStatusLabel.textColor = [UIColor redColor];
+//        self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
         
     }
+
+    self.locationSystemStatusLabel.textColor = color;
+    self.locationSystemStatusLabel.text = text;
 
     [self checkLocationDisabled];
     

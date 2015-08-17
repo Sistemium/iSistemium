@@ -305,14 +305,14 @@
 
 - (void)fillingSumProcessing {
     
-    NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
+//    NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
     
     STMDebt *lastDebt = [self.debtsArray lastObject];
     
     if (lastDebt) {
         
         NSDecimalNumber *cashingSum = (self.debtsDictionary)[lastDebt.xid][1];
-        fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
+        NSDecimalNumber *fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
     
         if ([fillingSumm doubleValue] < 0) {
             

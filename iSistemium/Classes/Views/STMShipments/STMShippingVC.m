@@ -15,13 +15,13 @@
 #import "STMPositionVolumesVC.h"
 #import "STMShippingSettingsTVC.h"
 
-typedef enum STMPositionProcessingType {
+typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     STMPositionProcessingTypeDone = 0,
     STMPositionProcessingTypeBad = 1,
     STMPositionProcessingTypeExcess = 2,
     STMPositionProcessingTypeShortage = 3,
     STMPositionProcessingTypeRegrade = 4
-} STMPositionProcessingType;
+};
 
 
 @interface STMShippingVC ()    <UITableViewDataSource,

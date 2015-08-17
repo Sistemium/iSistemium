@@ -10,14 +10,14 @@
 
 @protocol STMShipmentPositionSortable <NSObject>
 
-typedef enum NSUInteger {
+typedef NS_ENUM (NSUInteger, STMShipmentPositionSort) {
     STMShipmentPositionSortOrdAsc,
     STMShipmentPositionSortOrdDesc,
     STMShipmentPositionSortNameAsc,
     STMShipmentPositionSortNameDesc,
     STMShipmentPositionSortTsAsc,
     STMShipmentPositionSortTsDesc
-} STMShipmentPositionSort;
+};
 
 @property (nonatomic) STMShipmentPositionSort sortOrder;
 

@@ -784,7 +784,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     for (NSDictionary *processing in processings) {
         
         NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:processing];
-        [dic setObject:[STMSaleOrderController labelForProcessing:processing[propertyName]] forKey:@"label"];
+        dic[@"label"] = [STMSaleOrderController labelForProcessing:processing[propertyName]];
         
         [processingLabels addObject:dic];
         
@@ -826,7 +826,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         if (!button) {
             
             button = [self filterButtonForProcessing:processingName];
-            [self.filterButtons setObject:button forKey:processingName];
+            (self.filterButtons)[processingName] = button;
             
         }
         

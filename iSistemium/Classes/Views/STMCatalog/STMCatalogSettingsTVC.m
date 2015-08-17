@@ -64,7 +64,7 @@
 - (void)updateParameters:(NSDictionary *)newParameters {
 
     NSMutableArray *newSettings = [self.settings mutableCopy];
-    [newSettings replaceObjectAtIndex:self.selectedSettingIndex withObject:newParameters];
+    newSettings[self.selectedSettingIndex] = newParameters;
     
     [self.parentNC updateSettings:newSettings];
     self.settings = newSettings;

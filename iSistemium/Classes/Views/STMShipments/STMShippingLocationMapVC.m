@@ -219,7 +219,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     } else {
         
         CLLocationDistance distance = 1000;
-        CLLocationCoordinate2D locationCoordinate;
+        CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(0, 0);
         
         CLLocation *lastLocation = self.session.locationTracker.lastLocation;
         
