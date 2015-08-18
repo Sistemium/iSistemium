@@ -13,7 +13,8 @@
 @interface STMShipmentRoutePoint (custom)
 
 - (NSString *)shortInfo;
-- (void)setGeocodedLocation:(CLLocation *)geocodedLocation;
+- (void)updateShippingLocationWithGeocodedLocation:(CLLocation *)location;
+- (void)updateShippingLocationWithConfirmedLocation:(CLLocation *)location;
 
 
 @end

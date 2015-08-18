@@ -1137,7 +1137,7 @@
                 
                 CLPlacemark *placemark = placemarks.firstObject;
                 
-                [self.point setGeocodedLocation:placemark.location];
+                [self.point updateShippingLocationWithGeocodedLocation:placemark.location];
                 
                 [self.tableView reloadData];
                 [self setupNavBar];

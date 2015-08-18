@@ -53,7 +53,15 @@
     
 }
 
-- (void)setGeocodedLocation:(CLLocation *)geocodedLocation {
+- (void)updateShippingLocationWithGeocodedLocation:(CLLocation *)location {
+    [self updateShippingLocationWithLocation:location confirmed:NO];
+}
+
+- (void)updateShippingLocationWithConfirmedLocation:(CLLocation *)location {
+    [self updateShippingLocationWithLocation:location confirmed:YES];
+}
+
+- (void)updateShippingLocationWithLocation:(CLLocation *)location confirmed:(BOOL)confirmed {
     
     if (!self.shippingLocation) {
         
@@ -64,9 +72,9 @@
         
     }
     
-    self.shippingLocation.location = [STMLocationController locationObjectFromCLLocation:geocodedLocation];
-    self.shippingLocation.isLocationConfirmed = @(NO);
-    
+    self.shippingLocation.location = [STMLocationController locationObjectFromCLLocation:location];
+    self.shippingLocation.isLocationConfirmed = @(confirmed);
+
 }
 
 @end

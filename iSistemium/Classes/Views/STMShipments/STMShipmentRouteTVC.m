@@ -92,7 +92,7 @@
                     
                     CLPlacemark *placemark = placemarks.firstObject;
                     
-                    [point setGeocodedLocation:placemark.location];
+                    [point updateShippingLocationWithGeocodedLocation:placemark.location];
                                         
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.resultsController.fetchedObjects indexOfObject:point] inSection:1];
                     if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
