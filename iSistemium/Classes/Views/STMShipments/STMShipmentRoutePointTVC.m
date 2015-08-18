@@ -689,7 +689,7 @@
             
             customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
             
-            if (!shippingLocation.location) {
+            if (!shippingLocation.location || !shippingLocation.isLocationConfirmed) {
                 
                 customCell.detailLabel.text = NSLocalizedString(@"LOCATION NEEDS CONFIRMATION", nil);
                 customCell.detailLabel.textColor = [UIColor redColor];

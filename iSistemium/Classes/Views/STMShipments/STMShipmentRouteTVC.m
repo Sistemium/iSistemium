@@ -396,6 +396,16 @@
 
         }
         
+    } else if (!point.shippingLocation.isLocationConfirmed) {
+        
+        textColor = [UIColor lightGrayColor];
+        
+        attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                       NSForegroundColorAttributeName:textColor};
+        
+        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil) attributes:attributes];
+        [detailString appendAttributedString:appendString];
+
     }
     
     cell.detailLabel.attributedText = detailString;
