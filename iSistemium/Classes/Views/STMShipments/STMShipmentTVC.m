@@ -206,7 +206,7 @@
     
     switch (section) {
         case 0:
-            return (self.shipment.commentText) ? 4 : 3;
+            return 3;
             break;
             
         case 1:
@@ -384,10 +384,6 @@
                     [self fillCell:cell withShipment:self.shipment];
                     break;
 
-                case 3:
-                    [self fillCell:cell withComment:self.shipment.commentText];
-                    break;
-
                 default:
                     break;
             }
@@ -445,38 +441,7 @@
 }
 
 - (void)fillCell:(UITableViewCell <STMTDCell> *)cell withShipment:(STMShipment *)shipment {
-    
-    cell.titleLabel.text = shipment.ndoc;
-    
-    NSString *positions = [shipment positionsCountString];
-    
-    NSString *detailText;
-    
-    if (shipment.shipmentPositions.count > 0) {
-        
-        NSString *boxes = [shipment approximateBoxCountString];
-        NSString *bottles = [shipment bottleCountString];
-        
-        detailText = [NSString stringWithFormat:@"%@, %@, %@", positions, boxes, bottles];
-        
-    } else {        
-        detailText = NSLocalizedString(positions, nil);
-    }
-    
-    cell.detailLabel.text = detailText;
-
-//    if ([shipment.needCashing boolValue]) {
-//        
-//        cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];
-//        
-//    } else {
-//        cell.imageView.image = nil;
-//    }
-
-}
-
-- (void)fillCell:(UITableViewCell <STMTDCell> *)cell withComment:(NSString *)comment {
-    cell.titleLabel.text = comment;
+    [self.parentVC fillCell:cell withShipment:shipment];
 }
 
 - (void)fillShippingButtonCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:(NSIndexPath *)indexPath {

@@ -8,7 +8,6 @@
 
 #import "STMShipmentRoutePointTVC.h"
 #import "STMNS.h"
-#import "STMUI.h"
 #import "STMFunctions.h"
 #import "STMSession.h"
 #import "STMPicturesController.h"
@@ -31,14 +30,14 @@
                                         UIAlertViewDelegate,
                                         NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) NSString *cellIdentifier;
+//@property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
 @property (nonatomic, strong) NSString *arrivalButtonCellIdentifier;
 
 @property (nonatomic, strong) NSIndexPath *arrivalButtonCellIndexPath;
 
-@property (nonatomic, strong) NSFetchedResultsController *resultsController;
-@property (nonatomic, strong) STMDocument *document;
+//@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+//@property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMSession *session;
 
 @property (nonatomic) BOOL isWaitingLocation;
@@ -57,6 +56,9 @@
 
 @implementation STMShipmentRoutePointTVC
 
+@synthesize resultsController = _resultsController;
+
+
 - (STMSession *)session {
     
     if (!_session) {
@@ -66,14 +68,14 @@
     
 }
 
-- (STMDocument *)document {
-    
-    if (!_document) {
-        _document = self.session.document;
-    }
-    return _document;
-    
-}
+//- (STMDocument *)document {
+//    
+//    if (!_document) {
+//        _document = self.session.document;
+//    }
+//    return _document;
+//    
+//}
 
 
 
@@ -424,6 +426,11 @@
                 default:
                     break;
             }
+            break;
+            
+        case 3:
+            return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+            break;
             
         default:
             break;
@@ -468,6 +475,32 @@
     
 }
 
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+    
+    NSManagedObject *object = [self.resultsController objectAtIndexPath:indexPath];
+    NSManagedObjectID *objectID = object.objectID;
+    
+    if (objectID) {
+        self.cachedCellsHeights[objectID] = @(height);
+    } else {
+        CLS_LOG(@"objectID is nil for %@", objectID);
+    }
+    
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    
+    return self.cachedCellsHeights[objectID];
+    
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell;
@@ -477,12 +510,10 @@
             switch (indexPath.row) {
                 case 0:
                     cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
-                    [self fillCell:cell withRoute:self.point.shipmentRoute];
                     break;
                     
                 case 1:
                     cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
-                    [self fillCell:cell withRoutePoint:self.point];
                     break;
                     
                 default:
@@ -492,18 +523,86 @@
             
         case 1:
             cell = [tableView dequeueReusableCellWithIdentifier:self.arrivalButtonCellIdentifier forIndexPath:indexPath];
-            [self fillArrivalButtonCell:cell atIndexPath:indexPath];
             break;
-
+            
         case 2:
             switch (indexPath.row) {
                 case 0:
                     cell = [tableView dequeueReusableCellWithIdentifier:self.shippingLocationCellIdentifier forIndexPath:indexPath];
-                    [self fillCell:cell withShippingLocation:self.point.shippingLocation];
                     break;
                     
                 case 1:
                     cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case 3:
+            cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+            break;
+            
+        default:
+            break;
+    }
+
+    [self flushCellBeforeUse:cell];
+    [self fillCell:cell atIndexPath:indexPath];
+
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    return cell;
+    
+}
+
+- (void)flushCellBeforeUse:(UITableViewCell *)cell {
+    
+    cell.textLabel.text = nil;
+    cell.detailTextLabel.text = nil;
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.imageView.image = nil;
+    
+    if ([cell conformsToProtocol:@protocol(STMTDCell)]) {
+        
+        UITableViewCell <STMTDCell> *customCell = (UITableViewCell <STMTDCell> *)cell;
+        customCell.titleLabel.text = nil;
+        customCell.detailLabel.text = nil;
+        
+    }
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0:
+                    [self fillCell:cell withRoute:self.point.shipmentRoute];
+                    break;
+                    
+                case 1:
+                    [self fillCell:cell withRoutePoint:self.point];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case 1:
+            [self fillArrivalButtonCell:cell atIndexPath:indexPath];
+            break;
+            
+        case 2:
+            switch (indexPath.row) {
+                case 0:
+                    [self fillCell:cell withShippingLocation:self.point.shippingLocation];
+                    break;
+                    
+                case 1:
                     [self fillCell:cell withPhotos:self.point.shippingLocation.shippingLocationPictures];
                     break;
                     
@@ -513,17 +612,13 @@
             break;
             
         case 3:
-            cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
-            [self fillCell:cell withShipment:self.resultsController.fetchedObjects[indexPath.row]];
+            [self fillShipmentCell:cell withShipment:self.resultsController.fetchedObjects[indexPath.row]];
+            [super fillCell:cell atIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
             break;
-
+            
         default:
             break;
     }
-
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    return cell;
     
 }
 
@@ -674,31 +769,60 @@
     
 }
 
-- (void)fillCell:(UITableViewCell *)cell withShipment:(STMShipment *)shipment {
+- (void)fillShipmentCell:(UITableViewCell *)cell withShipment:(STMShipment *)shipment {
     
-    cell.textLabel.text = shipment.ndoc;
+    if ([cell conformsToProtocol:@protocol(STMTDCell)]) {
+        
+        UITableViewCell <STMTDCell> *shipmentCell = (UITableViewCell <STMTDCell> *)cell;
+        
+        [self fillCell:shipmentCell withShipment:shipment];
+
+        UIColor *textColor = [UIColor blackColor];
+        
+        if (self.point.isReached.boolValue) {
+            textColor = (shipment.isShipped.boolValue) ? [UIColor lightGrayColor] : [UIColor redColor];
+        }
+        
+        shipmentCell.titleLabel.textColor = textColor;
+        shipmentCell.detailLabel.textColor = textColor;
+
+        if (shipment.shipmentPositions.count > 0) {
+            shipmentCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        } else {
+            shipmentCell.accessoryType = UITableViewCellAccessoryNone;
+        }
+
+    }
+    
+}
+
+- (void)fillCell:(UITableViewCell <STMTDCell> *)cell withShipment:(STMShipment *)shipment {
+    
+    cell.titleLabel.text = shipment.ndoc;
     
     NSString *positions = [shipment positionsCountString];
-
-    NSString *detailText;
+    
+    NSString *detailText = @"";
+    
+    if (shipment.commentText) {
+        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%@\n\n", shipment.commentText]];
+    }
     
     if (shipment.shipmentPositions.count > 0) {
         
         NSString *boxes = [shipment approximateBoxCountString];
         NSString *bottles = [shipment bottleCountString];
-
-        detailText = [NSString stringWithFormat:@"%@, %@, %@", positions, boxes, bottles];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%@, %@, %@", positions, boxes, bottles]];
         
     } else {
         
-        detailText = NSLocalizedString(positions, nil);
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        detailText = [detailText stringByAppendingString:NSLocalizedString(positions, nil)];
         
     }
     
-    cell.detailTextLabel.text = detailText;
-
+    cell.detailLabel.text = detailText;
+    
     if ([shipment.needCashing boolValue]) {
         
         cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];
@@ -707,15 +831,6 @@
         cell.imageView.image = nil;
     }
     
-    UIColor *textColor = [UIColor blackColor];
-    
-    if (self.point.isReached.boolValue) {
-        textColor = (shipment.isShipped.boolValue) ? [UIColor lightGrayColor] : [UIColor redColor];
-    }
-    
-    cell.textLabel.textColor = textColor;
-    cell.detailTextLabel.textColor = textColor;
-
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1056,6 +1171,7 @@
     UINib *custom7TVCellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.arrivalButtonCellIdentifier];
+    [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.cellIdentifier];
     
     [self addObservers];
     [self performFetch];
