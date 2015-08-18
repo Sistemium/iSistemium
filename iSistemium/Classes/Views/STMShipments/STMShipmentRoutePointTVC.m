@@ -805,12 +805,12 @@
     NSString *detailText = @"";
     
     if (shipment.commentText) {
-        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%@\n\n", shipment.commentText]];
+        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%@\n", shipment.commentText]];
     }
     
     if ([shipment.needCashing boolValue]) {
         
-        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%@\n\n", NSLocalizedString(@"NEED CASHING", nil)]];
+        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%@\n", NSLocalizedString(@"NEED CASHING", nil)]];
 
 //        cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];
         
