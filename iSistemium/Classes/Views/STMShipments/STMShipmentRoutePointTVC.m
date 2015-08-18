@@ -808,6 +808,16 @@
         detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%@\n\n", shipment.commentText]];
     }
     
+    if ([shipment.needCashing boolValue]) {
+        
+        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%@\n\n", NSLocalizedString(@"NEED CASHING", nil)]];
+
+//        cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];
+        
+    } else {
+//        cell.imageView.image = nil;
+    }
+    
     if (shipment.shipmentPositions.count > 0) {
         
         NSString *boxes = [shipment approximateBoxCountString];
@@ -822,14 +832,6 @@
     }
     
     cell.detailLabel.text = detailText;
-    
-    if ([shipment.needCashing boolValue]) {
-        
-        cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];
-        
-    } else {
-        cell.imageView.image = nil;
-    }
     
 }
 
@@ -892,6 +894,8 @@
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
     
 }
 
