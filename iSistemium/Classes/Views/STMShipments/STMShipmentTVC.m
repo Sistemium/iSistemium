@@ -206,7 +206,7 @@
     
     switch (section) {
         case 0:
-            return 3;
+            return (self.shipment.commentText) ? 4 : 3;
             break;
             
         case 1:
@@ -384,6 +384,10 @@
                     [self fillCell:cell withShipment:self.shipment];
                     break;
 
+                case 3:
+                    [self fillCell:cell withComment:self.shipment.commentText];
+                    break;
+
                 default:
                     break;
             }
@@ -469,6 +473,10 @@
 //        cell.imageView.image = nil;
 //    }
 
+}
+
+- (void)fillCell:(UITableViewCell <STMTDCell> *)cell withComment:(NSString *)comment {
+    cell.titleLabel.text = comment;
 }
 
 - (void)fillShippingButtonCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:(NSIndexPath *)indexPath {
