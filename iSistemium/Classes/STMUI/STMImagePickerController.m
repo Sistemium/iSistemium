@@ -28,7 +28,11 @@
 
 - (NSUInteger)supportedInterfaceOrientations{
 
-    return UIInterfaceOrientationMaskAll;
+    if (IPHONE) {
+        return UIInterfaceOrientationMaskPortrait;
+    } else {
+        return UIInterfaceOrientationMaskAll;    
+    }
     
 }
 
