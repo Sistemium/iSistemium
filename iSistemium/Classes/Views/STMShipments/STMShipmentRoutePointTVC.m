@@ -1136,19 +1136,8 @@
             if (!error) {
                 
                 CLPlacemark *placemark = placemarks.firstObject;
-                STMLocation *geocodedLocation = [STMLocationController locationObjectFromCLLocation:placemark.location];
                 
-                if (!self.point.shippingLocation) {
-                    
-                    STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class])];
-                    shippingLocation.isFantom = @(NO);
-                    
-                    self.point.shippingLocation = shippingLocation;
-                    
-                }
-                
-                self.point.shippingLocation.location = geocodedLocation;
-                self.point.shippingLocation.isLocationConfirmed = @(NO);
+                [self.point setGeocodedLocation:placemark.location];
                 
                 [self.tableView reloadData];
                 [self setupNavBar];

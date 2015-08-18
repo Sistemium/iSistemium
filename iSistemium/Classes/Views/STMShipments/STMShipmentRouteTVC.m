@@ -92,19 +92,8 @@
                     
                     CLPlacemark *placemark = placemarks.firstObject;
                     
-                    if (!point.shippingLocation) {
-                        
-                        STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class])];
-                        shippingLocation.isFantom = @(NO);
-                        
-                        point.shippingLocation = shippingLocation;
-                        
-                    }
-                    
-                    STMLocation *geocodedLocation = [STMLocationController locationObjectFromCLLocation:placemark.location];
-                    point.shippingLocation.location = geocodedLocation;
-                    point.shippingLocation.isLocationConfirmed = @(NO);
-                    
+                    [point setGeocodedLocation:placemark.location];
+                                        
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.resultsController.fetchedObjects indexOfObject:point] inSection:1];
                     if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
                     

@@ -7,10 +7,13 @@
 //
 
 #import "STMShipmentRoutePoint.h"
+#import <MapKit/MapKit.h>
+
 
 @interface STMShipmentRoutePoint (custom)
 
 - (NSString *)shortInfo;
+- (void)setGeocodedLocation:(CLLocation *)geocodedLocation;
 
 
 @end

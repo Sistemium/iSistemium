@@ -8,6 +8,10 @@
 
 #import "STMShipmentRoutePoint+custom.h"
 
+#import "STMObjectsController.h"
+#import "STMLocationController.h"
+
+
 @implementation STMShipmentRoutePoint (custom)
 
 - (NSString *)shortInfo {
@@ -49,5 +53,20 @@
     
 }
 
+- (void)setGeocodedLocation:(CLLocation *)geocodedLocation {
+    
+    if (!self.shippingLocation) {
+        
+        STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class])];
+        shippingLocation.isFantom = @(NO);
+        
+        self.shippingLocation = shippingLocation;
+        
+    }
+    
+    self.shippingLocation.location = [STMLocationController locationObjectFromCLLocation:geocodedLocation];
+    self.shippingLocation.isLocationConfirmed = @(NO);
+    
+}
 
 @end
