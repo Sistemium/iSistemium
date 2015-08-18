@@ -354,7 +354,7 @@
             break;
             
         case 2:
-            return (self.point.shippingLocation.location || self.geocodedLocation) ? 2 : 1;
+            return (self.point.shippingLocation.location) ? 2 : 1;
             break;
             
         case 3:
@@ -685,11 +685,11 @@
         
         [[customCell viewWithTag:666] removeFromSuperview];
                 
-        if (shippingLocation.location || self.geocodedLocation) {
+        if (shippingLocation.location) {
             
             customCell.titleLabel.text = NSLocalizedString(@"SHOW MAP", nil);
             
-            if (!shippingLocation.location || !shippingLocation.isLocationConfirmed) {
+            if (!shippingLocation.isLocationConfirmed.boolValue) {
                 
                 customCell.detailLabel.text = NSLocalizedString(@"LOCATION NEEDS CONFIRMATION", nil);
                 customCell.detailLabel.textColor = [UIColor redColor];
@@ -1016,8 +1016,8 @@
         STMShippingLocationMapVC *mapVC = (STMShippingLocationMapVC *)segue.destinationViewController;
         
         mapVC.point = self.point;
-        mapVC.geocodedLocation = self.geocodedLocation;
-                
+//        mapVC.geocodedLocation = self.geocodedLocation;
+        
     } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
                [sender isKindOfClass:[UIView class]] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationPicturesPVC class]]) {
@@ -1037,7 +1037,7 @@
         STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
 
         routeMapVC.shippingLocation = self.point.shippingLocation;
-        routeMapVC.destinationPoint = self.geocodedLocation;
+//        routeMapVC.destinationPoint = self.geocodedLocation;
         routeMapVC.destinationPointName = self.point.shortName;
         routeMapVC.destinationPointAddress = self.point.address;
         
@@ -1091,7 +1091,7 @@
 
 - (void)setupNavBar {
     
-    if (self.point.shippingLocation.location || self.geocodedLocation) {
+    if (self.point.shippingLocation.location) {
         
         STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
         self.navigationItem.rightBarButtonItem = waypointButton;
@@ -1110,7 +1110,7 @@
     UIImage *image = [[UIImage imageNamed:@"single_waypoint_map"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
-    imageView.tintColor = (self.point.shippingLocation.location || self.geocodedLocation) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
+    imageView.tintColor = (self.point.shippingLocation.location) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
     
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
     [button addTarget:self action:@selector(waypointButtonPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -1129,14 +1129,26 @@
 
 - (void)checkPointLocation {
     
-    if (!self.point.shippingLocation.location && !self.geocodedLocation && self.point.address) {
+    if (!self.point.shippingLocation.location && self.point.address) {
         
         [[[CLGeocoder alloc] init] geocodeAddressString:self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
             
             if (!error) {
                 
                 CLPlacemark *placemark = placemarks.firstObject;
-                self.geocodedLocation = placemark.location;
+                STMLocation *geocodedLocation = [STMLocationController locationObjectFromCLLocation:placemark.location];
+                
+                if (!self.point.shippingLocation) {
+                    
+                    STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class])];
+                    shippingLocation.isFantom = @(NO);
+                    
+                    self.point.shippingLocation = shippingLocation;
+                    
+                }
+                
+                self.point.shippingLocation.location = geocodedLocation;
+                self.point.shippingLocation.isLocationConfirmed = @(NO);
                 
                 [self.tableView reloadData];
                 [self setupNavBar];

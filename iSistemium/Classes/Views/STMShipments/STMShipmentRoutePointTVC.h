@@ -17,7 +17,6 @@
 @interface STMShipmentRoutePointTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
-@property (nonatomic, strong) CLLocation *geocodedLocation;
 
 
 - (void)showArriveConfirmationAlert;

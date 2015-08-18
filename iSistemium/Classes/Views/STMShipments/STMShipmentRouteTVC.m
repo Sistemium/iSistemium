@@ -396,8 +396,10 @@
 
         }
         
-    } else if (!point.shippingLocation.isLocationConfirmed) {
+    } else if (!point.shippingLocation.isLocationConfirmed.boolValue) {
         
+        [detailString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+
         textColor = [UIColor lightGrayColor];
         
         attributes = @{NSFontAttributeName:cell.detailLabel.font,
@@ -504,7 +506,6 @@
         STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
 
         pointTVC.point = point;
-        pointTVC.geocodedLocation = self.geocodedLocations[point.xid];
         
     } else if ([segue.identifier isEqualToString:@"showSummary"] &&
                [segue.destinationViewController isKindOfClass:[STMShipmentRouteSummaryTVC class]]) {
