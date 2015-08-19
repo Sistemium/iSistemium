@@ -569,8 +569,10 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
     if ([self shippingProcessIsRunning]) {
-        
-        self.cachedCellsHeights = nil;
+
+        if ([anObject isKindOfClass:[STMShipmentPosition class]]) {
+            [self.cachedCellsHeights removeObjectForKey:[(STMShipmentPosition *)anObject objectID]];
+        }
         
         switch (type) {
                 

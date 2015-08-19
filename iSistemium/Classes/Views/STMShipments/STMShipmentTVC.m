@@ -942,13 +942,15 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    if (![self shippingProcessIsRunning]) {
-        
-        self.cachedCellsHeights = nil;
-        [self.tableView reloadData];
-        
-    }
+//    if (![self shippingProcessIsRunning]) {
+//        
+//        self.cachedCellsHeights = nil;
+//        [self.tableView reloadData];
+//        
+//    }
 
+    [self.tableView reloadData];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -963,22 +965,24 @@
     
     if ([self shippingProcessIsRunning]) {
         
-        self.cachedCellsHeights = nil;
-
-        switch (type) {
-                
-            case NSFetchedResultsChangeMove: {
-//                NSLog(@"NSFetchedResultsChangeMove");
-                [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
-                break;
-            }
-                
-            default: {
-                [self.tableView reloadData];
-                break;
-            }
-                
+        if ([anObject isKindOfClass:[STMShipmentPosition class]]) {
+            [self.cachedCellsHeights removeObjectForKey:[(STMShipmentPosition *)anObject objectID]];
         }
+
+//        switch (type) {
+//                
+//            case NSFetchedResultsChangeMove: {
+////                NSLog(@"NSFetchedResultsChangeMove");
+//                [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
+//                break;
+//            }
+//                
+//            default: {
+//                [self.tableView reloadData];
+//                break;
+//            }
+//                
+//        }
         
     }
     
@@ -1113,7 +1117,9 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [self addObservers];
-    
+
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+
     [super customInit];
     
 }
@@ -1129,7 +1135,7 @@
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
     
-    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+//    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
 
     [super viewWillAppear:animated];
 
@@ -1137,7 +1143,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    self.resultsController.delegate = nil;
+//    self.resultsController.delegate = nil;
     
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
