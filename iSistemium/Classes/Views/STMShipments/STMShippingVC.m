@@ -98,7 +98,15 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 - (NSMutableDictionary *)cachedCellsHeights {
     
     if (!_cachedCellsHeights) {
-        _cachedCellsHeights = [NSMutableDictionary dictionary];
+        
+        NSMutableDictionary *cachedCellsHeights = [NSMutableDictionary dictionary];
+        
+        for (id key in self.cachedHeights.allKeys) {
+            if ([key isKindOfClass:[NSManagedObjectID class]]) cachedCellsHeights[key] = self.cachedHeights[key];
+        }
+        
+        _cachedCellsHeights = cachedCellsHeights;
+        
     }
     return _cachedCellsHeights;
     

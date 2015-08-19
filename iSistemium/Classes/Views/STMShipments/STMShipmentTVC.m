@@ -1028,6 +1028,7 @@
         shippingVC.shipment = self.shipment;
         shippingVC.parentVC = self;
         shippingVC.sortOrder = self.sortOrder;
+        shippingVC.cachedHeights = self.cachedCellsHeights;
         
     } else if ([segue.identifier isEqualToString:@"showSettings"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingSettingsTVC class]]) {
