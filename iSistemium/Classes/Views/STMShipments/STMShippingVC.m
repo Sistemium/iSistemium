@@ -1072,8 +1072,23 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)viewWillAppear:(BOOL)animated {
     
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+
     [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+    
     [super viewWillAppear:animated];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    }
+
+    [super viewWillDisappear:animated];
     
 }
 
