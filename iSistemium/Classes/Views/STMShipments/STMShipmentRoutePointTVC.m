@@ -1203,7 +1203,7 @@
     
     if (![self.navigationController.viewControllers containsObject:self]) {
         
-        [self checkShipments];
+//        [self checkShipments];
         [self removeObservers];
         
     }
