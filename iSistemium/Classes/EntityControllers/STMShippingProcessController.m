@@ -325,8 +325,8 @@
     position.regradeVolume = (regradeVolume > 0) ? @(regradeVolume) : nil;
     position.isProcessed = @YES;
     
-//    [[STMShippingProcessController document] saveDocument:^(BOOL success) {
-//    }];
+    [[STMShippingProcessController document] saveDocument:^(BOOL success) {
+    }];
     
 }
 

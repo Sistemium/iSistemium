@@ -165,6 +165,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)performFetch {
     
+    self.resultsController.delegate = nil;
     self.resultsController = nil;
     
     NSError *error;
@@ -489,7 +490,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     
-    [self performFetch];
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
     
 }
 
@@ -505,7 +506,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     searchBar.text = nil;
     
     [self hideKeyboard];
-    [self performFetch];
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
     
 }
 
@@ -1060,8 +1061,6 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     self.searchBar.delegate = self;
     
-//    [self performFetch];
-    
 }
 
 - (void)viewDidLoad {
@@ -1073,7 +1072,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [self performFetch];
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
     [super viewWillAppear:animated];
     
 }

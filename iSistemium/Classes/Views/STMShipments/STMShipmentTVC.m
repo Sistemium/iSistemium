@@ -163,6 +163,7 @@
 
 - (void)performFetch {
     
+    self.resultsController.delegate = nil;
     self.resultsController = nil;
     
     NSError *error;
@@ -745,7 +746,7 @@
 
     self.resultsController.delegate = nil;
     [self.shippingProcessController cancelShippingWithShipment:self.shipment];
-    [self performFetch];
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
     
 }
 
@@ -789,7 +790,9 @@
             [self showDoneShippingErrorAlert];
         }
         
-        [self performFetch];
+        NSLog(@"isMainThread %d", [NSThread isMainThread]);
+        
+        [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
         
     }];
 
@@ -1106,7 +1109,6 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [self addObservers];
-//    [self performFetch];
     
     [super customInit];
     
@@ -1119,13 +1121,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [super viewWillAppear:animated];
-    
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
     
-    [self performFetch];
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+
+    [super viewWillAppear:animated];
 
 }
 
