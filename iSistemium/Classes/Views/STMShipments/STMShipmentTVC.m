@@ -835,6 +835,10 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
     switch (alertView.tag) {
         case 222:
             switch (buttonIndex) {
@@ -857,7 +861,7 @@
                     break;
             }
             break;
-
+            
         case 444:
             switch (buttonIndex) {
                 case 1:
@@ -881,11 +885,11 @@
                     break;
             }
             break;
-
+            
         default:
             break;
     }
-    
+
 }
 
 - (void)willPresentAlertView:(UIAlertView *)alertView {
