@@ -1078,14 +1078,17 @@
     
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+//
+//    if ([object isEqual:self.point]) {
+//        [self.tableView reloadData];
+//    }
+//    
+//}
 
-    if ([object isEqual:self.point]) {
-        [self.tableView reloadData];
-    }
-    
+- (void)shippingLocationUpdated {
+    [self.tableView reloadData];
 }
-
 
 #pragma mark - navbar
 
@@ -1158,16 +1161,24 @@
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
 //    [nc addObserver:self selector:@selector(currentAccuracyUpdated:) name:@"currentAccuracyUpdated" object:self.session.locationTracker];
-    [nc addObserver:self selector:@selector(currentLocationWasUpdated:) name:@"currentLocationWasUpdated" object:self.session.locationTracker];
+    [nc addObserver:self
+           selector:@selector(currentLocationWasUpdated:)
+               name:@"currentLocationWasUpdated"
+             object:self.session.locationTracker];
 
-    [self.point addObserver:self forKeyPath:@"shippingLocation.location" options:NSKeyValueObservingOptionNew context:nil];
+    [nc addObserver:self
+           selector:@selector(shippingLocationUpdated)
+               name:@"shippingLocationUpdated"
+             object:self.point];
+    
+//    [self.point addObserver:self forKeyPath:@"shippingLocation.location" options:NSKeyValueObservingOptionNew context:nil];
     
 }
 
 - (void)removeObservers {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.point removeObserver:self forKeyPath:@"shippingLocation.location"];
+//    [self.point removeObserver:self forKeyPath:@"shippingLocation.location"];
     
 }
 
