@@ -13,6 +13,8 @@
 #import "STMObjectsController.h"
 #import "STMLocationController.h"
 
+#define ACTUAL_LOCATION_CHECK_TIME_INTERVAL 5.0
+
 
 @interface STMLocationTracker() <CLLocationManagerDelegate>
 
@@ -26,9 +28,11 @@
 @property (nonatomic) double requiredAccuracy;
 @property (nonatomic) CLLocationDistance distanceFilter;
 @property (nonatomic) NSTimeInterval timeFilter;
+
 @property (nonatomic) NSTimeInterval trackDetectionTime;
 @property (nonatomic) CLLocationDistance trackSeparationDistance;
 @property (nonatomic) CLLocationSpeed maxSpeedThreshold;
+
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
 @property (nonatomic, strong) NSTimer *timeFilterTimer;
@@ -249,6 +253,7 @@
                 
             } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
                 
+                [super stopTracking];
                 [self.locationManager requestAlwaysAuthorization];
                 
             } else {
@@ -278,22 +283,30 @@
 
 - (void)stopTracking {
     
+    [self flushLocationManager];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidPauseLocationUpdates" object:self];
+    [super stopTracking];
+    
+}
+
+- (void)flushLocationManager {
+    
     [self resetTimeFilterTimer];
     [[self locationManager] stopUpdatingLocation];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"locationManagerDidPauseLocationUpdates" object:self];
     self.locationManager.delegate = nil;
     self.locationManager = nil;
-    [super stopTracking];
     
 }
 
 - (void)getLocation {
     
-#warning - have to rewrite getting location, should give actual location, not previously received one
+    CLLocation *lastLocation = self.locationManager.location;
+    NSTimeInterval locationAge = -[lastLocation.timestamp timeIntervalSinceNow];
 
-    if ([[NSDate date] timeIntervalSinceDate:self.lastLocation.timestamp] < self.timeFilter) {
+    if (self.tracking && locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":self.lastLocation}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":lastLocation}];
         
     } else {
         
@@ -336,44 +349,47 @@
     NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
     self.currentAccuracy = newLocation.horizontalAccuracy;
     
-    if (locationAge < 5.0 &&
-        newLocation.horizontalAccuracy > 0 &&
-        newLocation.horizontalAccuracy <= self.requiredAccuracy) {
+    if (locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL &&
+        newLocation.horizontalAccuracy > 0) {
         
-        if (!self.getLocationsWithNegativeSpeed && newLocation.speed < 0) {
+        if (newLocation.horizontalAccuracy <= self.requiredAccuracy) {
             
-            [self.session.logger saveLogMessageWithText:@"location w/negative speed recieved" type:@""];
-            
-        } else {
-
-            NSTimeInterval time = [newLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp];
-
-            if (!self.lastLocation || time > self.timeFilter) {
+            if (!self.getLocationsWithNegativeSpeed && newLocation.speed < 0) {
                 
-                if (self.tracking) {
-                    
-                    [self addLocation:newLocation];
-                    
-                }
+                [self.session.logger saveLogMessageWithText:@"location w/negative speed recieved" type:@""];
                 
-                if (self.singlePointMode) {
+            } else {
+                
+                NSTimeInterval time = [newLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp];
+                
+                if (!self.lastLocation || time > self.timeFilter) {
                     
-                    if (!self.tracking) {
-                        [self stopTracking];
+                    if (self.tracking) {
+                        
+                        [self addLocation:newLocation];
+                        
                     }
                     
-                    self.singlePointMode = NO;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated"
-                                                                        object:self
-                                                                      userInfo:@{@"currentLocation":newLocation}];
-                    self.lastLocation = newLocation;
-
                 }
                 
             }
+
+        }
+        
+        
+        if (self.singlePointMode) {
+            
+            if (!self.tracking) {
+                [self flushLocationManager];
+            }
+            
+            self.singlePointMode = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated"
+                                                                object:self
+                                                              userInfo:@{@"currentLocation":newLocation}];
             
         }
-            
+        
     }
     
 }
