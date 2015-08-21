@@ -54,14 +54,14 @@
 }
 
 - (void)updateShippingLocationWithGeocodedLocation:(CLLocation *)location {
-    [self updateShippingLocationWithLocation:location confirmed:NO];
+    [self updateShippingLocationWithLocation:location confirmed:NO source:@"geocoder"];
 }
 
 - (void)updateShippingLocationWithConfirmedLocation:(CLLocation *)location {
-    [self updateShippingLocationWithLocation:location confirmed:YES];
+    [self updateShippingLocationWithLocation:location confirmed:YES source:nil];
 }
 
-- (void)updateShippingLocationWithLocation:(CLLocation *)location confirmed:(BOOL)confirmed {
+- (void)updateShippingLocationWithLocation:(CLLocation *)location confirmed:(BOOL)confirmed source:(NSString *)source {
     
     if (!self.shippingLocation) {
         
@@ -72,9 +72,13 @@
         
     }
     
-    self.shippingLocation.location = [STMLocationController locationObjectFromCLLocation:location];
-    self.shippingLocation.isLocationConfirmed = @(confirmed);
+    STMLocation *locationObject = [STMLocationController locationObjectFromCLLocation:location];
+    
+    if (source) locationObject.source = source;
 
+    self.shippingLocation.location = locationObject;
+    self.shippingLocation.isLocationConfirmed = @(confirmed);
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"shippingLocationUpdated" object:self];
     
 }
