@@ -98,7 +98,15 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 - (NSMutableDictionary *)cachedCellsHeights {
     
     if (!_cachedCellsHeights) {
-        _cachedCellsHeights = [NSMutableDictionary dictionary];
+        
+        NSMutableDictionary *cachedCellsHeights = [NSMutableDictionary dictionary];
+        
+        for (id key in self.cachedHeights.allKeys) {
+            if ([key isKindOfClass:[NSManagedObjectID class]]) cachedCellsHeights[key] = self.cachedHeights[key];
+        }
+        
+        _cachedCellsHeights = cachedCellsHeights;
+        
     }
     return _cachedCellsHeights;
     
@@ -165,6 +173,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)performFetch {
     
+    self.resultsController.delegate = nil;
     self.resultsController = nil;
     
     NSError *error;
@@ -489,7 +498,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     
-    [self performFetch];
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
     
 }
 
@@ -505,7 +514,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     searchBar.text = nil;
     
     [self hideKeyboard];
-    [self performFetch];
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
     
 }
 
@@ -568,8 +577,10 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
     if ([self shippingProcessIsRunning]) {
-        
-        self.cachedCellsHeights = nil;
+
+        if ([anObject isKindOfClass:[STMShipmentPosition class]]) {
+            [self.cachedCellsHeights removeObjectForKey:[(STMShipmentPosition *)anObject objectID]];
+        }
         
         switch (type) {
                 
@@ -1060,8 +1071,6 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     self.searchBar.delegate = self;
     
-//    [self performFetch];
-    
 }
 
 - (void)viewDidLoad {
@@ -1073,8 +1082,23 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [self performFetch];
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+    
     [super viewWillAppear:animated];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    }
+
+    [super viewWillDisappear:animated];
     
 }
 

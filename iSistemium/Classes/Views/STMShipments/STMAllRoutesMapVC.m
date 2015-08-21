@@ -467,7 +467,6 @@
         CLLocation *geocodedLocation = self.geocodedLocations[point.xid];
         
         pointTVC.point = point;
-        pointTVC.geocodedLocation = geocodedLocation;
         
     }
     

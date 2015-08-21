@@ -18,6 +18,7 @@
 @property (nonatomic, strong) STMShipment *shipment;
 @property (nonatomic, weak) STMShipmentTVC *parentVC;
 @property (nonatomic) STMShipmentPositionSort sortOrder;
+@property (nonatomic, strong) NSDictionary *cachedHeights;
 
 
 @end
