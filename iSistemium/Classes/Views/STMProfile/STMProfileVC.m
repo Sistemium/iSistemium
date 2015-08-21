@@ -705,22 +705,22 @@
             case kCLAuthorizationStatusAuthorizedAlways:
                 color = [UIColor greenColor];
                 text = NSLocalizedString(@"LOCATIONS ON", nil);
-                self.locationSystemStatusLabel.textColor = [UIColor greenColor];
-                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
+//                self.locationSystemStatusLabel.textColor = [UIColor greenColor];
+//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
                 break;
                 
             case kCLAuthorizationStatusAuthorizedWhenInUse:
                 color = [UIColor brownColor];
                 text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
-                self.locationSystemStatusLabel.textColor = [UIColor brownColor];
-                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
+//                self.locationSystemStatusLabel.textColor = [UIColor brownColor];
+//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
                 break;
                 
             default:
                 color = [UIColor redColor];
                 text = NSLocalizedString(@"LOCATIONS OFF", nil);
-                self.locationSystemStatusLabel.textColor = [UIColor redColor];
-                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+//                self.locationSystemStatusLabel.textColor = [UIColor redColor];
+//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
                 break;
         }
         
@@ -728,10 +728,13 @@
         
         color = [UIColor redColor];
         text = NSLocalizedString(@"LOCATIONS OFF", nil);
-        self.locationSystemStatusLabel.textColor = [UIColor redColor];
-        self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
+//        self.locationSystemStatusLabel.textColor = [UIColor redColor];
+//        self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
         
     }
+
+    self.locationSystemStatusLabel.textColor = color;
+    self.locationSystemStatusLabel.text = text;
 
     [self checkLocationDisabled];
     
@@ -800,18 +803,19 @@
 - (void)setupLocationAppStatusLabel {
     
     BOOL locationIsTracking = self.locationTracker.tracking;
-    BOOL autoStart = self.locationTracker.trackerAutoStart;
+//    BOOL autoStart = self.locationTracker.trackerAutoStart;
     double startTime = self.locationTracker.trackerStartTime;
     double finishTime = self.locationTracker.trackerFinishTime;
-    double currentTime = [STMFunctions currentTimeInDouble];
     
-    if (autoStart && startTime && finishTime) {
-        
+//    if (autoStart && startTime && finishTime) {
+    
+        double currentTime = [STMFunctions currentTimeInDouble];
+
         if (currentTime > startTime && currentTime < finishTime) {
             
             if (locationIsTracking) {
                 
-                NSString *finishTimeString = [[STMFunctions noDateShortTimeFormatter] stringFromDate:[STMFunctions dateFromDouble:finishTime]];
+                NSString *finishTimeString = [[STMFunctions noDateShortTimeFormatterAllowZero:NO] stringFromDate:[STMFunctions dateFromDouble:finishTime]];
                 NSString *labelText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"LOCATION IS TRACKING UNTIL", nil), finishTimeString];
                 self.locationAppStatusLabel.text = labelText;
                 self.locationAppStatusLabel.textColor = [UIColor blackColor];
@@ -841,12 +845,12 @@
             
         }
         
-    } else {
-        
-        self.locationAppStatusLabel.text = NSLocalizedString(@"WRONG LOCATION TIMERS SETTINGS", nil);
-        self.locationAppStatusLabel.textColor = [UIColor redColor];
-        
-    }
+//    } else {
+//        
+//        self.locationAppStatusLabel.text = NSLocalizedString(@"WRONG LOCATION TIMERS SETTINGS", nil);
+//        self.locationAppStatusLabel.textColor = [UIColor redColor];
+//        
+//    }
     
 }
 

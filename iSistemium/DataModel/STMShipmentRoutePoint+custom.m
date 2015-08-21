@@ -8,6 +8,10 @@
 
 #import "STMShipmentRoutePoint+custom.h"
 
+#import "STMObjectsController.h"
+#import "STMLocationController.h"
+
+
 @implementation STMShipmentRoutePoint (custom)
 
 - (NSString *)shortInfo {
@@ -49,5 +53,34 @@
     
 }
 
+- (void)updateShippingLocationWithGeocodedLocation:(CLLocation *)location {
+    [self updateShippingLocationWithLocation:location confirmed:NO source:@"geocoder"];
+}
+
+- (void)updateShippingLocationWithConfirmedLocation:(CLLocation *)location {
+    [self updateShippingLocationWithLocation:location confirmed:YES source:nil];
+}
+
+- (void)updateShippingLocationWithLocation:(CLLocation *)location confirmed:(BOOL)confirmed source:(NSString *)source {
+    
+    if (!self.shippingLocation) {
+        
+        STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class])];
+        shippingLocation.isFantom = @(NO);
+        
+        self.shippingLocation = shippingLocation;
+        
+    }
+    
+    STMLocation *locationObject = [STMLocationController locationObjectFromCLLocation:location];
+    
+    if (source) locationObject.source = source;
+
+    self.shippingLocation.location = locationObject;
+    self.shippingLocation.isLocationConfirmed = @(confirmed);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"shippingLocationUpdated" object:self];
+    
+}
 
 @end

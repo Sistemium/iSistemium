@@ -234,7 +234,7 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         
         NSExpression *expression = [NSExpression expressionForKeyPath:property];
-        NSExpression *countExpression = [NSExpression expressionForFunction:@"count:" arguments:[NSArray arrayWithObject:expression]];
+        NSExpression *countExpression = [NSExpression expressionForFunction:@"count:" arguments:@[expression]];
         NSExpressionDescription *ed = [[NSExpressionDescription alloc] init];
         ed.expression = countExpression;
         ed.expressionResultType = NSInteger64AttributeType;

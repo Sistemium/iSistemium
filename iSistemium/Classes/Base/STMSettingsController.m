@@ -73,6 +73,8 @@
                                     @"requiredAccuracy",
                                     @"permanentLocationRequiredAccuracy"];
     
+    NSArray *desiredAccuracySuffixes = @[@"DesiredAccuracy"];
+    
     NSArray *boolValues = @[@"localAccessToSettings",
                             @"deviceMotionUpdate",
                             @"enableDebtsEditing",
@@ -118,7 +120,7 @@
             return [NSString stringWithFormat:@"%f", [value doubleValue]];
         }
         
-    } else if ([key isEqualToString:@"desiredAccuracy"]) {
+    } else if ([key isEqualToString:@"desiredAccuracy"] || [self key:key hasSuffixFromArray:desiredAccuracySuffixes]) {
         double dValue = [value doubleValue];
         if (dValue == -2 || dValue == -1 || dValue == 10 || dValue == 100 || dValue == 1000 || dValue == 3000) {
             return [NSString stringWithFormat:@"%f", dValue];

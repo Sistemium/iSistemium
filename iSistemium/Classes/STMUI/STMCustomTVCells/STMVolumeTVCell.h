@@ -8,13 +8,13 @@
 
 #import "STMTableViewCell.h"
 
-typedef enum NSInteger {
+typedef NS_ENUM(NSUInteger, STMVolumeType) {
     STMVolumeTypeDone = 0,
     STMVolumeTypeBad = 1,
     STMVolumeTypeExcess = 2,
     STMVolumeTypeShortage = 3,
     STMVolumeTypeRegrade = 4
-} STMVolumeType;
+};
 
 
 @interface STMVolumeTVCell : STMTableViewCell

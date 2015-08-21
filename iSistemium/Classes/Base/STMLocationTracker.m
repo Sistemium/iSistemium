@@ -19,6 +19,10 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 
 @property (nonatomic) CLLocationAccuracy desiredAccuracy;
+@property (nonatomic) CLLocationAccuracy foregroundDesiredAccuracy;
+@property (nonatomic) CLLocationAccuracy backgroundDesiredAccuracy;
+@property (nonatomic) CLLocationAccuracy offtimeDesiredAccuracy;
+
 @property (nonatomic) double requiredAccuracy;
 @property (nonatomic) CLLocationDistance distanceFilter;
 @property (nonatomic) NSTimeInterval timeFilter;
@@ -66,8 +70,20 @@
 
 #pragma mark - locationTracker settings
 
-- (CLLocationAccuracy) desiredAccuracy {
+- (CLLocationAccuracy)desiredAccuracy {
     return [self.settings[@"desiredAccuracy"] doubleValue];
+}
+
+- (CLLocationAccuracy)backgroundDesiredAccuracy {
+    return [self.settings[@"backgroundDesiredAccuracy"] doubleValue];
+}
+
+- (CLLocationAccuracy)foregroundDesiredAccuracy {
+    return [self.settings[@"foregroundDesiredAccuracy"] doubleValue];
+}
+
+- (CLLocationAccuracy)offtimeDesiredAccuracy {
+    return [self.settings[@"offtimeDesiredAccuracy"] doubleValue];
 }
 
 - (double)requiredAccuracy {

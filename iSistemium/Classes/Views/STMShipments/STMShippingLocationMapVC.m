@@ -219,7 +219,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     } else {
         
         CLLocationDistance distance = 1000;
-        CLLocationCoordinate2D locationCoordinate;
+        CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(0, 0);
         
         CLLocation *lastLocation = self.session.locationTracker.lastLocation;
         
@@ -355,15 +355,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     self.spinner = [STMSpinnerView spinnerViewWithFrame:self.locationButton.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
     [self.locationButton addSubview:self.spinner];
     
-    if (!self.shippingLocation) {
-        
-        STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class])];
-        shippingLocation.isFantom = @NO;
-        self.point.shippingLocation = shippingLocation;
-        
-    }
-    
-    self.shippingLocation.location = [STMLocationController locationObjectFromCLLocation:self.confirmingLocation];
+    [self.point updateShippingLocationWithConfirmedLocation:self.confirmingLocation];
+
     self.confirmingLocation = nil;
     
     [self.session.document saveDocument:^(BOOL success) {

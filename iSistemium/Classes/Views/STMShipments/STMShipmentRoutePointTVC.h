@@ -6,14 +6,17 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
+#import "STMVariableCellsHeightTVC.h"
+
 #import "STMDataModel.h"
+#import "STMUI.h"
+
 #import <MapKit/MapKit.h>
 
 
-@interface STMShipmentRoutePointTVC : UITableViewController
+@interface STMShipmentRoutePointTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
-@property (nonatomic, strong) CLLocation *geocodedLocation;
 
 
 - (void)showArriveConfirmationAlert;
@@ -21,5 +24,6 @@
 
 - (void)photoWasDeleted:(STMShippingLocationPicture *)photo;
 
+- (void)fillCell:(UITableViewCell <STMTDCell> *)cell withShipment:(STMShipment *)shipment;
 
 @end

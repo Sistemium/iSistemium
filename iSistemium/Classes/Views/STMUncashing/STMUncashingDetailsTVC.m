@@ -449,8 +449,8 @@
     
     NSString *dateString = [NSString stringWithFormat:@" / %@", [dateFormatter stringFromDate:cashing.date]];
 
-    textColor = [UIColor blackColor];
-    backgroundColor = [UIColor clearColor];
+//    textColor = [UIColor blackColor];
+//    backgroundColor = [UIColor clearColor];
 
     [text appendAttributedString:[[NSAttributedString alloc] initWithString:dateString attributes:attributes]];
     

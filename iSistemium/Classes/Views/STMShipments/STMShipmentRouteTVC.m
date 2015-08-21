@@ -15,13 +15,14 @@
 #import "STMShipmentRouteSummaryTVC.h"
 #import "STMAllRoutesMapVC.h"
 
+#import "STMObjectsController.h"
+#import "STMLocationController.h"
 #import "STMShippingProcessController.h"
 
 
 @interface STMShipmentRouteTVC ()
 
 @property (nonatomic, strong) NSIndexPath *summaryIndexPath;
-@property (nonatomic, strong) NSMutableDictionary *geocodedLocations;
 
 
 @end
@@ -30,15 +31,6 @@
 @implementation STMShipmentRouteTVC
 
 @synthesize resultsController = _resultsController;
-
-- (NSMutableDictionary *)geocodedLocations {
-    
-    if (!_geocodedLocations) {
-        _geocodedLocations = [NSMutableDictionary dictionary];
-    }
-    return _geocodedLocations;
-    
-}
 
 - (NSString *)cellIdentifier {
     return @"routePointCell";
@@ -92,15 +84,16 @@
     
     for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
         
-        if (!point.shippingLocation.location && point.address && !self.geocodedLocations[point.xid]) {
+        if (!point.shippingLocation.location && point.address) {
             
             [[[CLGeocoder alloc] init] geocodeAddressString:point.address completionHandler:^(NSArray *placemarks, NSError *error) {
                 
                 if (!error) {
                     
                     CLPlacemark *placemark = placemarks.firstObject;
-                    self.geocodedLocations[point.xid] = placemark.location;
                     
+                    [point updateShippingLocationWithGeocodedLocation:placemark.location];
+                                        
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.resultsController.fetchedObjects indexOfObject:point] inSection:1];
                     if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
                     
@@ -373,29 +366,27 @@
     if (!point.shippingLocation.location) {
 
         [detailString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
-
-        if (self.geocodedLocations[point.xid]) {
         
-            textColor = [UIColor lightGrayColor];
-
-            attributes = @{NSFontAttributeName:cell.detailLabel.font,
-                           NSForegroundColorAttributeName:textColor};
-
-            NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil) attributes:attributes];
-            [detailString appendAttributedString:appendString];
-
-        } else {
-            
-            textColor = [UIColor redColor];
-            
-            attributes = @{NSFontAttributeName:cell.detailLabel.font,
-                           NSForegroundColorAttributeName:textColor};
-
-            NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"NO LOCATION", nil) attributes:attributes];
-            [detailString appendAttributedString:appendString];
-
-        }
+        textColor = [UIColor redColor];
         
+        attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                       NSForegroundColorAttributeName:textColor};
+
+        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"NO LOCATION", nil) attributes:attributes];
+        [detailString appendAttributedString:appendString];
+        
+    } else if (!point.shippingLocation.isLocationConfirmed.boolValue) {
+        
+        [detailString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+
+        textColor = [UIColor lightGrayColor];
+        
+        attributes = @{NSFontAttributeName:cell.detailLabel.font,
+                       NSForegroundColorAttributeName:textColor};
+        
+        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"LOCATION NOT CONFIRMED", nil) attributes:attributes];
+        [detailString appendAttributedString:appendString];
+
     }
     
     cell.detailLabel.attributedText = detailString;
@@ -494,7 +485,6 @@
         STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
 
         pointTVC.point = point;
-        pointTVC.geocodedLocation = self.geocodedLocations[point.xid];
         
     } else if ([segue.identifier isEqualToString:@"showSummary"] &&
                [segue.destinationViewController isKindOfClass:[STMShipmentRouteSummaryTVC class]]) {
@@ -516,7 +506,7 @@
         
 //        allRoutesMapVC.points = [self pointsWithLocation];
         allRoutesMapVC.points = self.resultsController.fetchedObjects;
-        allRoutesMapVC.geocodedLocations = self.geocodedLocations.copy;
+//        allRoutesMapVC.geocodedLocations = self.geocodedLocations.copy;
         allRoutesMapVC.parentVC = self;
         
     }
@@ -580,7 +570,7 @@
 
 - (void)setupNavBar {
     
-    if (([self pointsWithLocation].count + self.geocodedLocations.count) > 0) {
+    if ([self pointsWithLocation].count > 0) {
         
         STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
         self.navigationItem.rightBarButtonItem = waypointButton;
@@ -613,7 +603,7 @@
 }
 
 - (BOOL)isAllPointsHaveLocation {
-    return (self.route.shipmentRoutePoints.count == [self pointsWithLocation].count + self.geocodedLocations.count);
+    return (self.route.shipmentRoutePoints.count == [self pointsWithLocation].count);
 }
 
 - (UIView *)waypointView {

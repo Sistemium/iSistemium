@@ -283,7 +283,7 @@
     self.routesOverallDistance = 0;
     self.routesOverallTime = 0;
 
-    MKMapRect polylineRect;
+    MKMapRect polylineRect = {MKMapPointMake(0, 0), MKMapSizeMake(0, 0)};
     
     for (MKRoute *route in self.routes) {
         
@@ -364,11 +364,11 @@
 
     MKPolylineRenderer *renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
 
-    NSUInteger routeNumber = [[self.routes valueForKeyPath:@"polyline"] indexOfObject:overlay];
-    CGFloat k = 0.5 / (self.routes.count - 1);
-    CGFloat alfa = 1 - k * routeNumber;
+//    NSUInteger routeNumber = [[self.routes valueForKeyPath:@"polyline"] indexOfObject:overlay];
+//    CGFloat k = 0.5 / (self.routes.count - 1);
+//    CGFloat alfa = 1 - k * routeNumber;
     
-    alfa = 1;
+    CGFloat alfa = 1;
 
     renderer.strokeColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:alfa];
     renderer.lineWidth = 3.0;
@@ -467,7 +467,6 @@
         CLLocation *geocodedLocation = self.geocodedLocations[point.xid];
         
         pointTVC.point = point;
-        pointTVC.geocodedLocation = geocodedLocation;
         
     }
     

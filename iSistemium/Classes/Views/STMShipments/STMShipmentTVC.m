@@ -163,6 +163,7 @@
 
 - (void)performFetch {
     
+    self.resultsController.delegate = nil;
     self.resultsController = nil;
     
     NSError *error;
@@ -441,34 +442,7 @@
 }
 
 - (void)fillCell:(UITableViewCell <STMTDCell> *)cell withShipment:(STMShipment *)shipment {
-    
-    cell.titleLabel.text = shipment.ndoc;
-    
-    NSString *positions = [shipment positionsCountString];
-    
-    NSString *detailText;
-    
-    if (shipment.shipmentPositions.count > 0) {
-        
-        NSString *boxes = [shipment approximateBoxCountString];
-        NSString *bottles = [shipment bottleCountString];
-        
-        detailText = [NSString stringWithFormat:@"%@, %@, %@", positions, boxes, bottles];
-        
-    } else {        
-        detailText = NSLocalizedString(positions, nil);
-    }
-    
-    cell.detailLabel.text = detailText;
-
-//    if ([shipment.needCashing boolValue]) {
-//        
-//        cell.imageView.image = [STMFunctions resizeImage:[UIImage imageNamed:@"banknotes-128"] toSize:CGSizeMake(30, 30)];
-//        
-//    } else {
-//        cell.imageView.image = nil;
-//    }
-
+    [self.parentVC fillCell:cell withShipment:shipment];
 }
 
 - (void)fillShippingButtonCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -772,7 +746,7 @@
 
     self.resultsController.delegate = nil;
     [self.shippingProcessController cancelShippingWithShipment:self.shipment];
-    [self performFetch];
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
     
 }
 
@@ -816,7 +790,9 @@
             [self showDoneShippingErrorAlert];
         }
         
-        [self performFetch];
+        NSLog(@"isMainThread %d", [NSThread isMainThread]);
+        
+        [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
         
     }];
 
@@ -859,6 +835,10 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
     switch (alertView.tag) {
         case 222:
             switch (buttonIndex) {
@@ -881,7 +861,7 @@
                     break;
             }
             break;
-
+            
         case 444:
             switch (buttonIndex) {
                 case 1:
@@ -905,11 +885,11 @@
                     break;
             }
             break;
-
+            
         default:
             break;
     }
-    
+
 }
 
 - (void)willPresentAlertView:(UIAlertView *)alertView {
@@ -962,13 +942,15 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-    if (![self shippingProcessIsRunning]) {
-        
-        self.cachedCellsHeights = nil;
-        [self.tableView reloadData];
-        
-    }
+//    if (![self shippingProcessIsRunning]) {
+//        
+//        self.cachedCellsHeights = nil;
+//        [self.tableView reloadData];
+//        
+//    }
 
+    [self.tableView reloadData];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -983,22 +965,24 @@
     
     if ([self shippingProcessIsRunning]) {
         
-        self.cachedCellsHeights = nil;
-
-        switch (type) {
-                
-            case NSFetchedResultsChangeMove: {
-//                NSLog(@"NSFetchedResultsChangeMove");
-                [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
-                break;
-            }
-                
-            default: {
-                [self.tableView reloadData];
-                break;
-            }
-                
+        if ([anObject isKindOfClass:[STMShipmentPosition class]]) {
+            [self.cachedCellsHeights removeObjectForKey:[(STMShipmentPosition *)anObject objectID]];
         }
+
+//        switch (type) {
+//                
+//            case NSFetchedResultsChangeMove: {
+////                NSLog(@"NSFetchedResultsChangeMove");
+//                [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
+//                break;
+//            }
+//                
+//            default: {
+//                [self.tableView reloadData];
+//                break;
+//            }
+//                
+//        }
         
     }
     
@@ -1044,6 +1028,7 @@
         shippingVC.shipment = self.shipment;
         shippingVC.parentVC = self;
         shippingVC.sortOrder = self.sortOrder;
+        shippingVC.cachedHeights = self.cachedCellsHeights;
         
     } else if ([segue.identifier isEqualToString:@"showSettings"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingSettingsTVC class]]) {
@@ -1133,8 +1118,9 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [self addObservers];
-//    [self performFetch];
-    
+
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+
     [super customInit];
     
 }
@@ -1146,19 +1132,19 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [super viewWillAppear:animated];
-    
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
     
-    [self performFetch];
+//    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+
+    [super viewWillAppear:animated];
 
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    self.resultsController.delegate = nil;
+//    self.resultsController.delegate = nil;
     
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;

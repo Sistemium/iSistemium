@@ -534,7 +534,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
             STMPrice *price = nil;
             if (self.searchDisplayController.active) {
-                price = [self.searchResults objectAtIndex:indexPath.row];
+                price = (self.searchResults)[indexPath.row];
             } else {
                 price = [self.resultsController objectAtIndexPath:indexPath];
             }
@@ -792,7 +792,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMPrice *price = (self.tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+    STMPrice *price = (self.tableView == self.searchDisplayController.searchResultsTableView) ? (self.searchResults)[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
   
     if (price.article.pictures.count > 0) {
      
@@ -844,7 +844,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMPrice *price = (tableView == self.searchDisplayController.searchResultsTableView) ? [self.searchResults objectAtIndex:indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+    STMPrice *price = (tableView == self.searchDisplayController.searchResultsTableView) ? (self.searchResults)[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
     
     STMTableViewCell <STMTDICell> *cell = nil;
     
@@ -943,7 +943,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         
 //        self.selectedArticle = [self.searchResults objectAtIndex:indexPath.row];
-        price = [self.searchResults objectAtIndex:indexPath.row];
+        price = (self.searchResults)[indexPath.row];
         
     } else {
         

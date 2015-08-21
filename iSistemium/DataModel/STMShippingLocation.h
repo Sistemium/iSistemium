@@ -2,7 +2,7 @@
 //  STMShippingLocation.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 02/07/15.
+//  Created by Maxim Grigoriev on 18/08/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -16,9 +16,10 @@
 
 @property (nonatomic, retain) NSString * address;
 @property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSNumber * isLocationConfirmed;
+@property (nonatomic, retain) STMLocation *location;
 @property (nonatomic, retain) NSSet *shipmentRoutePoints;
 @property (nonatomic, retain) NSSet *shippingLocationPictures;
-@property (nonatomic, retain) STMLocation *location;
 @end
 
 @interface STMShippingLocation (CoreDataGeneratedAccessors)
