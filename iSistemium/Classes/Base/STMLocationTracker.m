@@ -31,7 +31,6 @@
 @property (nonatomic) CLLocationSpeed maxSpeedThreshold;
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
-@property (nonatomic, strong) NSString *timeDistanceLogic;
 @property (nonatomic, strong) NSTimer *timeFilterTimer;
 
 
@@ -114,12 +113,6 @@
     return [self.settings[@"getLocationsWithNegativeSpeed"] boolValue];
 }
 
-- (NSString *)timeDistanceLogic {
-    if (!_timeDistanceLogic) {
-        _timeDistanceLogic = self.settings[@"timeDistanceLogic"];
-    }
-    return _timeDistanceLogic;
-}
 
 - (STMTrack *)currentTrack {
     
@@ -355,7 +348,7 @@
 
             NSTimeInterval time = [newLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp];
 
-            if (!self.lastLocation || [self.timeDistanceLogic isEqualToString:@"OR"] || time > self.timeFilter) {
+            if (!self.lastLocation || time > self.timeFilter) {
                 
                 if (self.tracking) {
                     
@@ -466,12 +459,8 @@
 
 //    [self tracksManagementWithLocation:currentLocation];
 
-    if ([self.timeDistanceLogic isEqualToString:@"OR"]) {
-        
-        [self resetTimeFilterTimer];
-        [self startTimeFilterTimer];
-
-    }
+//    [self resetTimeFilterTimer];
+//    [self startTimeFilterTimer];
     
     [STMLocationController locationObjectFromCLLocation:currentLocation];
     
