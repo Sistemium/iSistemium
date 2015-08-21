@@ -48,6 +48,32 @@
     
     self.group = @"location";
     [super customInit];
+    [self initAppStateObservers];
+    
+}
+
+- (void)initAppStateObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    SEL selector = @selector(appStateDidChange);
+    
+    [nc addObserver:self
+           selector:selector
+               name:UIApplicationDidBecomeActiveNotification
+             object:nil];
+
+    [nc addObserver:self
+           selector:selector
+               name:UIApplicationDidEnterBackgroundNotification
+             object:nil];
+    
+}
+
+- (void)appStateDidChange {
+    
+    if (self.tracking) {
+        self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
+    }
     
 }
 
@@ -57,12 +83,11 @@
     
     if ([change valueForKey:NSKeyValueChangeNewKey] != [change valueForKey:NSKeyValueChangeOldKey]) {
         
-        if ([keyPath isEqualToString:@"distanceFilter"] || [keyPath isEqualToString:@"desiredAccuracy"]) {
+        if ([keyPath isEqualToString:@"distanceFilter"] ||
+            [keyPath isEqualToString:@"desiredAccuracy"] ||
+            [keyPath hasSuffix:@"DesiredAccuracy"]) {
             
-            self.desiredAccuracy = [[self.settings valueForKey:@"desiredAccuracy"] doubleValue];
-            self.locationManager.desiredAccuracy = self.desiredAccuracy;
-            
-            self.distanceFilter = [[self.settings valueForKey:@"distanceFilter"] doubleValue];
+            self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
             self.locationManager.distanceFilter = self.distanceFilter;
             
         }
@@ -72,6 +97,39 @@
 }
 
 #pragma mark - locationTracker settings
+
+- (CLLocationAccuracy)currentDesiredAccuracy {
+    
+    if (self.tracking) {
+        
+        UIApplicationState appState = [UIApplication sharedApplication].applicationState;
+        
+        switch (appState) {
+            case UIApplicationStateActive: {
+                return self.foregroundDesiredAccuracy;
+                break;
+            }
+            case UIApplicationStateInactive: {
+                return self.foregroundDesiredAccuracy;
+                break;
+            }
+            case UIApplicationStateBackground: {
+                return self.backgroundDesiredAccuracy;
+                break;
+            }
+            default: {
+                return self.desiredAccuracy;
+                break;
+            }
+        }
+        
+    } else {
+        
+        return self.offtimeDesiredAccuracy;
+        
+    }
+
+}
 
 - (CLLocationAccuracy)desiredAccuracy {
     return [self.settings[@"desiredAccuracy"] doubleValue];
@@ -333,7 +391,7 @@
         _locationManager = [[CLLocationManager alloc] init];
         _locationManager.delegate = self;
         _locationManager.distanceFilter = self.distanceFilter;
-        _locationManager.desiredAccuracy = self.desiredAccuracy;
+        _locationManager.desiredAccuracy = [self currentDesiredAccuracy];
         _locationManager.pausesLocationUpdatesAutomatically = NO;
         
     }
