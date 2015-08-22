@@ -157,22 +157,11 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 - (void)centeringMapOnSettedLocation {
-    
-    CLLocation *location = nil;
-    
+        
     if (self.location) {
     
-        CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
-        location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+        CLLocation *location = [STMLocationController locationFromLocationObject:self.location];
 
-    } else if (self.geocodedLocation) {
-        
-        location = self.geocodedLocation;
-        
-    }
-    
-    if (location) {
-        
         self.locationPin = [STMMapAnnotation createAnnotationForCLLocation:location
                                                                  withTitle:[STMFunctions shortCompanyName:self.point.shortName]
                                                                andSubtitle:self.point.address];
@@ -459,7 +448,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
     if (self.mapView.userLocation.location) {
         
-        if (self.shippingLocation || self.geocodedLocation) {
+        if (self.shippingLocation) {
             
             STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
             self.navigationItem.rightBarButtonItem = waypointButton;
@@ -502,22 +491,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         
         STMRouteMapVC *mapVC = (STMRouteMapVC *)segue.destinationViewController;
         
-        mapVC.shippingLocation = self.shippingLocation;
-        
-        CLLocation *location = nil;
-        
-        if (self.location) {
-            
-            CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
-            location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
-            
-        } else if (self.geocodedLocation) {
-            
-            location = self.geocodedLocation;
-            
-        }
-        
-        mapVC.destinationPoint = location;
+        mapVC.shippingLocation = self.shippingLocation;        
         mapVC.destinationPointName = self.point.name;
         mapVC.destinationPointAddress = self.point.address;
         
@@ -530,7 +504,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)initState {
     
-    self.state = (self.location || self.geocodedLocation) ? STMShippingLocationHaveLocation : STMShippingLocationNoLocation;
+    self.state = (self.location) ? STMShippingLocationHaveLocation : STMShippingLocationNoLocation;
     
 }
 

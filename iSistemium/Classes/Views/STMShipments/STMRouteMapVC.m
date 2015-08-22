@@ -27,6 +27,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *routeInfoLabel;
 
+@property (nonatomic, strong) CLLocation *destinationPoint;
 
 @property (nonatomic, strong) STMMapAnnotation *startPin;
 @property (nonatomic, strong) STMMapAnnotation *destinationPin;

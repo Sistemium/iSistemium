@@ -504,9 +504,7 @@
             
         }
         
-//        allRoutesMapVC.points = [self pointsWithLocation];
         allRoutesMapVC.points = self.resultsController.fetchedObjects;
-//        allRoutesMapVC.geocodedLocations = self.geocodedLocations.copy;
         allRoutesMapVC.parentVC = self;
         
     }

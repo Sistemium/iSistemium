@@ -1016,7 +1016,6 @@
         STMShippingLocationMapVC *mapVC = (STMShippingLocationMapVC *)segue.destinationViewController;
         
         mapVC.point = self.point;
-//        mapVC.geocodedLocation = self.geocodedLocation;
         
     } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
                [sender isKindOfClass:[UIView class]] &&
@@ -1037,7 +1036,6 @@
         STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
 
         routeMapVC.shippingLocation = self.point.shippingLocation;
-//        routeMapVC.destinationPoint = self.geocodedLocation;
         routeMapVC.destinationPointName = self.point.shortName;
         routeMapVC.destinationPointAddress = self.point.address;
         
