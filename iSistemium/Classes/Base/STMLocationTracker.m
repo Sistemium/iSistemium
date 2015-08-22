@@ -405,12 +405,14 @@
     CLLocation *newLocation = [locations lastObject];
     
     NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
+    
+    CLLocationAccuracy previousAccuracy = self.currentAccuracy;
     self.currentAccuracy = newLocation.horizontalAccuracy;
     
     if (locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL &&
-        newLocation.horizontalAccuracy > 0) {
+        self.currentAccuracy > 0) {
         
-        if (newLocation.horizontalAccuracy <= self.requiredAccuracy) {
+        if ([self isAccuracySufficient]) {
             
             if (!self.getLocationsWithNegativeSpeed && newLocation.speed < 0) {
                 
@@ -420,7 +422,7 @@
                 
                 NSTimeInterval time = [newLocation.timestamp timeIntervalSinceDate:self.lastLocation.timestamp];
                 
-                if (!self.lastLocation || time > self.timeFilter) {
+                if (!self.lastLocation || time > self.timeFilter || self.currentAccuracy < previousAccuracy) {
                     
                     if (self.tracking) {
                         
