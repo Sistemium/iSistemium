@@ -419,6 +419,7 @@
                           @"locationTrackerAutoStart"       : @YES,
                           @"locationTrackerStartTime"       : @"0",
                           @"locationTrackerFinishTime"      : @"24",
+                          @"locationWaitingTimeInterval"    : @"10",
                           @"batteryTrackerAutoStart"        : @YES,
                           @"batteryTrackerStartTime"        : @"8.0",
                           @"batteryTrackerFinishTime"       : @"22.0",

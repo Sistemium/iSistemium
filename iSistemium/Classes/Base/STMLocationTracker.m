@@ -28,6 +28,7 @@
 @property (nonatomic) double requiredAccuracy;
 @property (nonatomic) CLLocationDistance distanceFilter;
 @property (nonatomic) NSTimeInterval timeFilter;
+@property (nonatomic) NSTimeInterval locationWaitingTimeInterval;
 
 @property (nonatomic) NSTimeInterval trackDetectionTime;
 @property (nonatomic) CLLocationDistance trackSeparationDistance;
@@ -35,7 +36,7 @@
 
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
-@property (nonatomic, strong) NSTimer *timeFilterTimer;
+@property (nonatomic, strong) NSTimer *locationWaitingTimer;
 
 
 @end
@@ -159,6 +160,10 @@
     return [self.settings[@"timeFilter"] doubleValue];
 }
 
+- (NSTimeInterval)locationWaitingTimeInterval {
+    return [self.settings[@"locationWaitingTimeInterval"] doubleValue];
+}
+
 - (NSTimeInterval)trackDetectionTime {
     return [self.settings[@"trackDetectionTime"] doubleValue];
 }
@@ -195,6 +200,22 @@
     
 }
 
+- (STMLocation *)lastLocationObject {
+    
+    if (!_lastLocationObject) {
+
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLocation class])];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        NSError *error;
+        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+        
+        _lastLocationObject = result.lastObject;
+
+    }
+    return _lastLocationObject;
+    
+}
+
 - (CLLocation *)lastLocation {
     
     if (!_lastLocation) {
@@ -207,15 +228,9 @@
 //            }
 //        }
 
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLocation class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-        NSError *error;
-        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-        
-        STMLocation *lastLocation = [result lastObject];
-        if (lastLocation) {
+        if (self.lastLocationObject) {
             
-            _lastLocation = [STMLocationController locationFromLocationObject:lastLocation];
+            _lastLocation = [STMLocationController locationFromLocationObject:self.lastLocationObject];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"lastLocationUpdated" object:self];
 
         }
@@ -350,7 +365,7 @@
 
 - (void)flushLocationManager {
     
-    [self resetTimeFilterTimer];
+    [self resetLocationWaitingTimer];
     [[self locationManager] stopUpdatingLocation];
     self.locationManager.delegate = nil;
     self.locationManager = nil;
@@ -485,17 +500,17 @@
 
 #pragma mark - timeFilterTimer
 
-- (NSTimer *)timeFilterTimer {
+- (NSTimer *)locationWaitingTimer {
     
-    if (!_timeFilterTimer) {
+    if (!_locationWaitingTimer) {
         
-        NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:self.timeFilter];
+        NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:self.locationWaitingTimeInterval];
 //        NSLog(@"fireDate %@", fireDate);
         
-        _timeFilterTimer = [[NSTimer alloc] initWithFireDate:fireDate
+        _locationWaitingTimer = [[NSTimer alloc] initWithFireDate:fireDate
                                                     interval:0
                                                       target:self
-                                                    selector:@selector(timerTick)
+                                                    selector:@selector(locationWaitingTimerTick)
                                                     userInfo:nil
                                                      repeats:NO];
         
@@ -504,72 +519,66 @@
     }
     
     //    NSLog(@"_startTimer %@", _startTimer);
-    return _timeFilterTimer;
+    return _locationWaitingTimer;
     
 }
 
-- (void)startTimeFilterTimer {
-    [[NSRunLoop currentRunLoop] addTimer:self.timeFilterTimer forMode:NSRunLoopCommonModes];
+- (void)startLocationWaitingTimer {
+    [[NSRunLoop currentRunLoop] addTimer:self.locationWaitingTimer forMode:NSRunLoopCommonModes];
 }
 
-- (void)timerTick {
-    [self duplicateLastLocation];
+- (void)locationWaitingTimerTick {
+    [self updateLastSeenTimestamp];
 }
 
-- (void)resetTimeFilterTimer {
+- (void)resetLocationWaitingTimer {
     
     [[NSRunLoop currentRunLoop] performSelector:@selector(invalidate)
-                                         target:self.timeFilterTimer
+                                         target:self.locationWaitingTimer
                                        argument:nil
                                           order:0
                                           modes:@[NSRunLoopCommonModes]];
-//    [self.timeFilterTimer invalidate];
-    self.timeFilterTimer = nil;
+    self.locationWaitingTimer = nil;
     
 }
 
 
 #pragma mark - track management
 
-- (void)addLocation:(CLLocation *)currentLocation {
+- (void)addLocation:(CLLocation *)location {
 
 //    [self tracksManagementWithLocation:currentLocation];
 
-//    [self resetTimeFilterTimer];
-//    [self startTimeFilterTimer];
+    [self resetLocationWaitingTimer];
+    [self startLocationWaitingTimer];
     
-    [STMLocationController locationObjectFromCLLocation:currentLocation];
+    STMLocation *locationObject = [STMLocationController locationObjectFromCLLocation:location];
+    locationObject.lastSeenAt = locationObject.timestamp;
     
-    self.lastLocation = currentLocation;
-
+    self.lastLocation = location;
+    self.lastLocationObject = locationObject;
+    
     NSLog(@"location %@", self.lastLocation);
-
+    
     [self.document saveDocument:^(BOOL success) {
         
         if (success) {
-//            NSLog(@"save newLocation success");
+            //            NSLog(@"save newLocation success");
         }
         
     }];
     
 }
 
-- (void)duplicateLastLocation {
+- (void)updateLastSeenTimestamp {
     
-    if (self.lastLocation) {
-        
-        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(self.lastLocation.coordinate.latitude, self.lastLocation.coordinate.longitude);
-        CLLocation *location = [[CLLocation alloc] initWithCoordinate:coordinate
-                                                             altitude:self.lastLocation.altitude
-                                                   horizontalAccuracy:self.lastLocation.horizontalAccuracy
-                                                     verticalAccuracy:self.lastLocation.verticalAccuracy
-                                                               course:self.lastLocation.course
-                                                                speed:self.lastLocation.speed
-                                                            timestamp:[NSDate date]];
+    [self resetLocationWaitingTimer];
+    [self startLocationWaitingTimer];
 
+    if (self.lastLocationObject) {
         
-        NSLog(@"DUPLICATE LOCATION:");
-        [self addLocation:location];
+        NSLog(@"UPDATE LAST SEEN TIMESTAMP FOR LOCATION: %@", self.lastLocation);
+        self.lastLocationObject.lastSeenAt = [NSDate date];
         
     }
     

@@ -67,7 +67,8 @@
                                       @"maxSpeedThreshold",
                                       @"http.timeout.foreground",
                                       @"http.timeout.background",
-                                      @"objectsLifeTime"];
+                                      @"objectsLifeTime",
+                                      @"locationWaitingTimeInterval"];
     
     NSArray *zeroPositiveValues = @[@"timeFilter",
                                     @"requiredAccuracy",
