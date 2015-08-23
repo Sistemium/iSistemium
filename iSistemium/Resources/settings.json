@@ -85,7 +85,7 @@
            "step": 1
        },
        {
-           "name": "foregroundDesiredAccuacy",
+           "name": "foregroundDesiredAccuracy",
            "value": 10,
            "control": "slider",
            "min": 0,
@@ -93,7 +93,7 @@
            "step": 1
        },
        {
-           "name": "offtimeDesiredAccuacy",
+           "name": "offtimeDesiredAccuracy",
            "value": 10,
            "control": "slider",
            "min": 0,
