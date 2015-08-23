@@ -2,7 +2,7 @@
 //  STMLocation.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/08/15.
+//  Created by Maxim Grigoriev on 23/08/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -22,6 +22,7 @@
 @property (nonatomic, retain) NSDecimalNumber * speed;
 @property (nonatomic, retain) NSDate * timestamp;
 @property (nonatomic, retain) NSDecimalNumber * verticalAccuracy;
+@property (nonatomic, retain) NSDate * lastSeenAt;
 @property (nonatomic, retain) NSSet *photos;
 @property (nonatomic, retain) STMShipmentRoutePoint *shipmentRoutePoint;
 @property (nonatomic, retain) NSSet *shippings;
