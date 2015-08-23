@@ -15,6 +15,8 @@
 
 #define ACTUAL_LOCATION_CHECK_TIME_INTERVAL 5.0
 
+#warning - it seems this class use almost none of the parent class methods after implemetation of new "desiredAccuracy zero-rule"
+
 
 @interface STMLocationTracker() <CLLocationManagerDelegate>
 
@@ -38,8 +40,12 @@
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
 @property (nonatomic, strong) NSTimer *locationWaitingTimer;
 
+@property (nonatomic, strong) NSTimer *startTimer;
+@property (nonatomic, strong) NSTimer *finishTimer;
+
 
 @end
+
 
 @implementation STMLocationTracker
 
@@ -48,7 +54,9 @@
 - (void)customInit {
     
     self.group = @"location";
+    
     [super customInit];
+    
     [self initAppStateObservers];
     
 }
@@ -72,9 +80,8 @@
 
 - (void)appStateDidChange {
     
-    if (self.tracking) {
-        self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
-    }
+    self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
+    [self checkTrackerAutoStart];
     
 }
 
@@ -90,6 +97,7 @@
             
             self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
             self.locationManager.distanceFilter = self.distanceFilter;
+            [self checkTrackerAutoStart];
             
         }
         
@@ -97,11 +105,12 @@
     
 }
 
+
 #pragma mark - locationTracker settings
 
 - (CLLocationAccuracy)currentDesiredAccuracy {
     
-    if (self.tracking) {
+    if ([self currentTimeIsInsideOfScheduleLimits]) {
         
         UIApplicationState appState = [UIApplication sharedApplication].applicationState;
         
@@ -180,26 +189,6 @@
     return [self.settings[@"getLocationsWithNegativeSpeed"] boolValue];
 }
 
-
-- (STMTrack *)currentTrack {
-    
-//    if (!_currentTrack) {
-//        
-//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMTrack class])];
-//        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:NO selector:@selector(compare:)]];
-//        NSError *error;
-//        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-//        
-//        if (result.count > 0) {
-//            _currentTrack = [result objectAtIndex:0];
-//        }
-//        
-//    }
-//    return _currentTrack;
-    return nil;
-    
-}
-
 - (STMLocation *)lastLocationObject {
     
     if (!_lastLocationObject) {
@@ -220,14 +209,6 @@
     
     if (!_lastLocation) {
         
-//        if (self.currentTrack.locations.count > 0) {
-//            NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
-//            STMLocation *lastLocation = [[self.currentTrack.locations sortedArrayUsingDescriptors:sortDescriptors] objectAtIndex:0];
-//            if (lastLocation) {
-//                _lastLocation = [self locationFromLocationObject:lastLocation];
-//            }
-//        }
-
         if (self.lastLocationObject) {
             
             _lastLocation = [STMLocationController locationFromLocationObject:self.lastLocationObject];
@@ -543,6 +524,128 @@
 }
 
 
+#pragma mark - checking start tracking conditions
+
+- (void)checkTrackerAutoStart {
+    
+    [self initTimers];
+
+    if ([self currentDesiredAccuracy] != 0) {
+        
+        [self startTracking];
+        
+    } else {
+        
+        [self stopTracking];
+        
+    }
+
+}
+
+- (BOOL)isValidTimeValue:(double)timeValue {
+    return (timeValue >= 0 && timeValue <= 24);
+}
+
+- (BOOL)currentTimeIsInsideOfScheduleLimits {
+    
+    double currentTime = [STMFunctions currentTimeInDouble];
+    
+    if (self.trackerStartTime < self.trackerFinishTime) {
+        
+        return (currentTime > self.trackerStartTime && currentTime < self.trackerFinishTime);
+        
+    } else {
+        
+        return !(currentTime < self.trackerStartTime && currentTime > self.trackerFinishTime);
+        
+    }
+    
+}
+
+
+#pragma mark - timers
+
+- (void)initTimers {
+    
+    if (self.startTimer || self.finishTimer) {
+        [self releaseTimers];
+    }
+    
+    [[NSRunLoop currentRunLoop] addTimer:self.startTimer forMode:NSRunLoopCommonModes];
+    [[NSRunLoop currentRunLoop] addTimer:self.finishTimer forMode:NSRunLoopCommonModes];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TimersInit", self.group] object:self];
+    
+}
+
+- (void)releaseTimers {
+    
+    [self.startTimer invalidate];
+    [self.finishTimer invalidate];
+    self.startTimer = nil;
+    self.finishTimer = nil;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TimersRelease", self.group] object:self];
+    
+}
+
+- (NSTimer *)startTimer {
+    
+    if (!_startTimer) {
+        
+        if ([self isValidTimeValue:self.trackerStartTime]) {
+            
+            NSDate *startTime = [self timerTimeFromDoubleTime:self.trackerStartTime];
+            
+            _startTimer = [[NSTimer alloc] initWithFireDate:startTime
+                                                   interval:24*3600
+                                                     target:self
+                                                   selector:@selector(checkTrackerAutoStart)
+                                                   userInfo:nil
+                                                    repeats:YES];
+        }
+        
+    }
+
+    return _startTimer;
+    
+}
+
+- (NSTimer *)finishTimer {
+    
+    if (!_finishTimer) {
+        
+        if ([self isValidTimeValue:self.trackerFinishTime]) {
+            
+            NSDate *finishTime = [self timerTimeFromDoubleTime:self.trackerFinishTime];
+            
+            _finishTimer = [[NSTimer alloc] initWithFireDate:finishTime
+                                                    interval:24*3600
+                                                      target:self
+                                                    selector:@selector(checkTrackerAutoStart)
+                                                    userInfo:nil
+                                                     repeats:YES];
+        }
+        
+    }
+
+    return _finishTimer;
+    
+}
+
+- (NSDate *)timerTimeFromDoubleTime:(double)time {
+
+    NSDate *timerTime = [STMFunctions dateFromDouble:time];
+    
+    if ([timerTime compare:[NSDate date]] == NSOrderedAscending) {
+        timerTime = [NSDate dateWithTimeInterval:24*3600 sinceDate:timerTime];
+    }
+
+    return timerTime;
+    
+}
+
+
 #pragma mark - track management
 
 - (void)addLocation:(CLLocation *)location {
@@ -581,6 +684,28 @@
         self.lastLocationObject.lastSeenAt = [NSDate date];
         
     }
+    
+}
+
+
+#pragma mark - unused track methods
+
+- (STMTrack *)currentTrack {
+    
+    //    if (!_currentTrack) {
+    //
+    //        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMTrack class])];
+    //        request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:NO selector:@selector(compare:)]];
+    //        NSError *error;
+    //        NSArray *result = [self.document.managedObjectContext executeFetchRequest:request error:&error];
+    //
+    //        if (result.count > 0) {
+    //            _currentTrack = [result objectAtIndex:0];
+    //        }
+    //
+    //    }
+    //    return _currentTrack;
+    return nil;
     
 }
 
@@ -648,38 +773,6 @@
     self.lastLocation = [STMLocationController locationFromLocationObject:location];
     
 }
-
-/*
-- (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location {
-    
-    STMLocation *locationObject = (STMLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLocation class])];
-    locationObject.isFantom = @NO;
-    [locationObject setLatitude:@(location.coordinate.latitude)];
-    [locationObject setLongitude:@(location.coordinate.longitude)];
-    [locationObject setHorizontalAccuracy:@(location.horizontalAccuracy)];
-    [locationObject setSpeed:@(location.speed)];
-    [locationObject setCourse:@(location.course)];
-    [locationObject setAltitude:@(location.altitude)];
-    [locationObject setVerticalAccuracy:@(location.verticalAccuracy)];
-    [locationObject setTimestamp:location.timestamp];
-    return locationObject;
-    
-}
-
-- (CLLocation *)locationFromLocationObject:(STMLocation *)locationObject {
-    
-    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake([locationObject.latitude doubleValue], [locationObject.longitude doubleValue]);
-    CLLocation *location = [[CLLocation alloc] initWithCoordinate:coordinate
-                                                  altitude:[locationObject.altitude doubleValue]
-                                        horizontalAccuracy:[locationObject.horizontalAccuracy doubleValue]
-                                          verticalAccuracy:[locationObject.verticalAccuracy doubleValue]
-                                                    course:[locationObject.course doubleValue]
-                                                     speed:[locationObject.speed doubleValue]
-                                                 timestamp:locationObject.deviceCts];
-    return location;
-    
-}
-*/
 
 
 @end

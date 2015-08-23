@@ -57,10 +57,10 @@
                name:[NSString stringWithFormat:@"%@SettingsChanged", self.group]
              object:self.session];
     
-    [nc addObserver:self
-           selector:@selector(checkTimeForTracking)
-               name:UIApplicationDidBecomeActiveNotification
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(checkTimeForTracking)
+//               name:UIApplicationDidBecomeActiveNotification
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(checkTimeForTracking)
