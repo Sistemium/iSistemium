@@ -528,6 +528,8 @@
 
 - (void)checkTrackerAutoStart {
     
+    if (self.tracking) [self stopTracking];
+    
     [self initTimers];
 
     if ([self currentDesiredAccuracy] != 0) {

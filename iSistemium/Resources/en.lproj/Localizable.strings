@@ -201,8 +201,10 @@
 "ACCURACY IS NOT SUFFICIENT" = "Accuracy is not sufficient";
 "WRONG LOCATION TIMERS SETTINGS" = "Wrong location timers settings";
 "LOCATION IS TRACKING UNTIL" = "Location is tracking until";
+"LOCATION IS TRACKING" = "Location is tracking";
 "LOCATION SHOULD BE TRACKING BUT NOT" = "Location should be tracking but not";
 "LOCATION WILL TRACKING AT" = "Location will tracking at";
+"LOCATION IS NOT TRACKING" = "Location is not tracking";
 "LOCATION SHOULD NOT BE TRACKING BUT GOING ON" = "Location should not be tracking but going on";
 "CHECK ROLES" = "Check roles";
 "CAN NOT GET ROLES" = "Can not get roles. Repeat request?";
@@ -232,10 +234,6 @@
 "PRICE_" = "Price";
 "STOCK_" = "Stock";
 "ROLES REQUEST ERROR" = "Roles request error: ";
-
-"NO LOCATION PERMISSION BLOCK TITLE" = "No location tracking allowed";
-"NO LOCATION PERMISSION BLOCK MESSAGE" = "You should allow location tracking to use app";
-
 "SHIPMENT ROUTES" = "Shipment routes";
 "SHIPMENT ROUTE POINTS" = "Shipment route points";
 "0SRPOINTS" = "no points";

@@ -201,8 +201,10 @@
 "ACCURACY IS NOT SUFFICIENT" = "Недостаточная точность геолокации";
 "WRONG LOCATION TIMERS SETTINGS" = "Неверные настройки трекера, обратитесь к разработчику";
 "LOCATION IS TRACKING UNTIL" = "Геолокация включена до";
+"LOCATION IS TRACKING" = "Геолокация включена";
 "LOCATION SHOULD BE TRACKING BUT NOT" = "Геолокация не включилась по расписанию";
 "LOCATION WILL TRACKING AT" = "Геолокация остановлена до";
+"LOCATION IS NOT TRACKING" = "Геолокация остановлена";
 "LOCATION SHOULD NOT BE TRACKING BUT GOING ON" = "Геолокация не выключилась по расписанию";
 "CHECK ROLES" = "Проверка ролей";
 "CAN NOT GET ROLES" = "Не могу получить роли. Повторить попытку?";
@@ -232,10 +234,6 @@
 "PRICE_" = "Цены";
 "STOCK_" = "Остатки";
 "ROLES REQUEST ERROR" = "Ошибка проверки ролей: ";
-
-"NO LOCATION PERMISSION BLOCK TITLE" = "Геолокация запрещена";
-"NO LOCATION PERMISSION BLOCK MESSAGE" = "Необходимо разрешить геолокацию для продолжения работы";
-
 "SHIPMENT ROUTES" = "Маршруты";
 "SHIPMENT ROUTE POINTS" = "Точки маршрута";
 "0SRPOINTS" = "нет точек";

@@ -705,22 +705,16 @@
             case kCLAuthorizationStatusAuthorizedAlways:
                 color = [UIColor greenColor];
                 text = NSLocalizedString(@"LOCATIONS ON", nil);
-//                self.locationSystemStatusLabel.textColor = [UIColor greenColor];
-//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS ON", nil);
                 break;
                 
             case kCLAuthorizationStatusAuthorizedWhenInUse:
                 color = [UIColor brownColor];
                 text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
-//                self.locationSystemStatusLabel.textColor = [UIColor brownColor];
-//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS BACKGROUND OFF", nil);
                 break;
                 
             default:
                 color = [UIColor redColor];
                 text = NSLocalizedString(@"LOCATIONS OFF", nil);
-//                self.locationSystemStatusLabel.textColor = [UIColor redColor];
-//                self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
                 break;
         }
         
@@ -728,8 +722,6 @@
         
         color = [UIColor redColor];
         text = NSLocalizedString(@"LOCATIONS OFF", nil);
-//        self.locationSystemStatusLabel.textColor = [UIColor redColor];
-//        self.locationSystemStatusLabel.text = NSLocalizedString(@"LOCATIONS OFF", nil);
         
     }
 
@@ -804,47 +796,63 @@
     
     BOOL locationIsTracking = self.locationTracker.tracking;
 //    BOOL autoStart = self.locationTracker.trackerAutoStart;
-    double startTime = self.locationTracker.trackerStartTime;
-    double finishTime = self.locationTracker.trackerFinishTime;
+//    double startTime = self.locationTracker.trackerStartTime;
+//    double finishTime = self.locationTracker.trackerFinishTime;
     
 //    if (autoStart && startTime && finishTime) {
     
-        double currentTime = [STMFunctions currentTimeInDouble];
-
-        if (currentTime > startTime && currentTime < finishTime) {
-            
-            if (locationIsTracking) {
-                
-                NSString *finishTimeString = [[STMFunctions noDateShortTimeFormatterAllowZero:NO] stringFromDate:[STMFunctions dateFromDouble:finishTime]];
-                NSString *labelText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"LOCATION IS TRACKING UNTIL", nil), finishTimeString];
-                self.locationAppStatusLabel.text = labelText;
-                self.locationAppStatusLabel.textColor = [UIColor blackColor];
-                
-            } else {
-                
-                self.locationAppStatusLabel.text = NSLocalizedString(@"LOCATION SHOULD BE TRACKING BUT NOT", nil);
-                self.locationAppStatusLabel.textColor = [UIColor redColor];
-                
-            }
-            
-        } else {
-            
-            if (!locationIsTracking) {
-                
-                NSString *startTimeString = [[STMFunctions noDateShortTimeFormatter] stringFromDate:[STMFunctions dateFromDouble:startTime]];
-                NSString *labelText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"LOCATION WILL TRACKING AT", nil), startTimeString];
-                self.locationAppStatusLabel.text = labelText;
-                self.locationAppStatusLabel.textColor = [UIColor blackColor];
-                
-            } else {
-                
-                self.locationAppStatusLabel.text = NSLocalizedString(@"LOCATION SHOULD NOT BE TRACKING BUT GOING ON", nil);
-                self.locationAppStatusLabel.textColor = [UIColor redColor];
-                
-            }
-            
-        }
+    if (locationIsTracking) {
         
+//        NSString *finishTimeString = [[STMFunctions noDateShortTimeFormatterAllowZero:NO] stringFromDate:[STMFunctions dateFromDouble:finishTime]];
+//        NSString *labelText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"LOCATION IS TRACKING UNTIL", nil), finishTimeString];
+        self.locationAppStatusLabel.text = NSLocalizedString(@"LOCATION IS TRACKING", nil);
+        self.locationAppStatusLabel.textColor = [UIColor blackColor];
+        
+    } else {
+
+//        NSString *startTimeString = [[STMFunctions noDateShortTimeFormatter] stringFromDate:[STMFunctions dateFromDouble:startTime]];
+//        NSString *labelText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"LOCATION WILL TRACKING AT", nil), startTimeString];
+        self.locationAppStatusLabel.text = NSLocalizedString(@"LOCATION IS NOT TRACKING", nil);
+        self.locationAppStatusLabel.textColor = [UIColor blackColor];
+
+    }
+    
+//        double currentTime = [STMFunctions currentTimeInDouble];
+//
+//        if (currentTime > startTime && currentTime < finishTime) {
+//            
+//            if (locationIsTracking) {
+//                
+//                NSString *finishTimeString = [[STMFunctions noDateShortTimeFormatterAllowZero:NO] stringFromDate:[STMFunctions dateFromDouble:finishTime]];
+//                NSString *labelText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"LOCATION IS TRACKING UNTIL", nil), finishTimeString];
+//                self.locationAppStatusLabel.text = labelText;
+//                self.locationAppStatusLabel.textColor = [UIColor blackColor];
+//                
+//            } else {
+//                
+//                self.locationAppStatusLabel.text = NSLocalizedString(@"LOCATION SHOULD BE TRACKING BUT NOT", nil);
+//                self.locationAppStatusLabel.textColor = [UIColor redColor];
+//                
+//            }
+//            
+//        } else {
+//            
+//            if (!locationIsTracking) {
+//                
+//                NSString *startTimeString = [[STMFunctions noDateShortTimeFormatter] stringFromDate:[STMFunctions dateFromDouble:startTime]];
+//                NSString *labelText = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"LOCATION WILL TRACKING AT", nil), startTimeString];
+//                self.locationAppStatusLabel.text = labelText;
+//                self.locationAppStatusLabel.textColor = [UIColor blackColor];
+//                
+//            } else {
+//                
+//                self.locationAppStatusLabel.text = NSLocalizedString(@"LOCATION SHOULD NOT BE TRACKING BUT GOING ON", nil);
+//                self.locationAppStatusLabel.textColor = [UIColor redColor];
+//                
+//            }
+//            
+//        }
+    
 //    } else {
 //        
 //        self.locationAppStatusLabel.text = NSLocalizedString(@"WRONG LOCATION TIMERS SETTINGS", nil);
