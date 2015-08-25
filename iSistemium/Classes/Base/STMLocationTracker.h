@@ -19,7 +19,10 @@
 @property (nonatomic, strong) STMTrack *currentTrack;
 
 - (void)getLocation;
-//- (STMLocation *)locationObjectFromCLLocation:(CLLocation *)location;
+
 - (NSString *)locationServiceStatus;
+
+- (BOOL)currentTimeIsInsideOfScheduleLimits;
+
 
 @end

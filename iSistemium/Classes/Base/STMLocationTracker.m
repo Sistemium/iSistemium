@@ -408,7 +408,7 @@
     if (locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL &&
         self.currentAccuracy > 0) {
         
-        if ([self isAccuracySufficient]) {
+        if ([self isAccuracySufficient] && [self currentTimeIsInsideOfScheduleLimits]) {
             
             if (!self.getLocationsWithNegativeSpeed && newLocation.speed < 0) {
                 

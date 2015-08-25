@@ -200,10 +200,10 @@
 "NO LAST LOCATION" = "No last location";
 "ACCURACY IS NOT SUFFICIENT" = "Accuracy is not sufficient";
 "WRONG LOCATION TIMERS SETTINGS" = "Wrong location timers settings";
-"LOCATION IS TRACKING UNTIL" = "Location is tracking until";
+"MONITORING IS TRACKING UNTIL" = "Monitoring will end at";
 "LOCATION IS TRACKING" = "Location is tracking";
 "LOCATION SHOULD BE TRACKING BUT NOT" = "Location should be tracking but not";
-"LOCATION WILL TRACKING AT" = "Location will tracking at";
+"MONITORING WILL TRACKING AT" = "Monitoring will start at";
 "LOCATION IS NOT TRACKING" = "Location is not tracking";
 "LOCATION SHOULD NOT BE TRACKING BUT GOING ON" = "Location should not be tracking but going on";
 "CHECK ROLES" = "Check roles";
