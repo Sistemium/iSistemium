@@ -352,7 +352,10 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         self.state = STMShippingLocationHaveLocation;
     }];
     
+    [self.navigationController popViewControllerAnimated:YES];
+    
 }
+
 
 #pragma mark - MKMapViewDelegate
 
