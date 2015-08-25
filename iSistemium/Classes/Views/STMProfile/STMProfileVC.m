@@ -38,8 +38,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *numberOfObjectLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *lastLocationLabel;
-@property (weak, nonatomic) IBOutlet UILabel *locationSystemStatusLabel;
-@property (weak, nonatomic) IBOutlet UILabel *locationAppStatusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *locationTrackingStatusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *monitoringStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationWarningLabel;
 
 @property (weak, nonatomic) IBOutlet UIButton *nonloadedPicturesButton;
@@ -657,8 +657,8 @@
 - (void)hideLocationLabels {
     
     self.lastLocationLabel.text = @"";
-    self.locationAppStatusLabel.text = @"";
-    self.locationSystemStatusLabel.text = @"";
+    self.monitoringStatusLabel.text = @"";
+    self.locationTrackingStatusLabel.text = @"";
     self.locationWarningLabel.text = @"";
     
 }
@@ -666,8 +666,8 @@
 - (void)setupLocationLabels {
     
     [self setupLastLocationLabel];
-    [self setupLocationSystemStatusLabel];
-    [self setupLocationAppStatusLabel];
+    [self setupLocationTrackingStatusLabel];
+    [self setupMonitoringStatusLabel];
     
 }
 
@@ -694,7 +694,7 @@
     
 }
 
-- (void)setupLocationSystemStatusLabel {
+- (void)setupLocationTrackingStatusLabel {
     
     UIColor *color;
     NSString *text;
@@ -704,7 +704,7 @@
         switch ([CLLocationManager authorizationStatus]) {
             case kCLAuthorizationStatusAuthorizedAlways:
                 color = [UIColor greenColor];
-                text = NSLocalizedString(@"LOCATIONS ON", nil);
+                text = ([self locationTracker].tracking) ? NSLocalizedString(@"LOCATION IS TRACKING", nil) : NSLocalizedString(@"LOCATION IS NOT TRACKING", nil);
                 break;
                 
             case kCLAuthorizationStatusAuthorizedWhenInUse:
@@ -725,8 +725,8 @@
         
     }
 
-    self.locationSystemStatusLabel.textColor = color;
-    self.locationSystemStatusLabel.text = text;
+    self.locationTrackingStatusLabel.textColor = color;
+    self.locationTrackingStatusLabel.text = text;
 
     [self checkLocationDisabled];
     
@@ -792,35 +792,32 @@
     
 }
 
-- (void)setupLocationAppStatusLabel {
-    
-    BOOL locationIsTracking = [self locationTracker].tracking;
+- (void)setupMonitoringStatusLabel {
     
     UIColor *textColor = [UIColor blackColor];
-    NSString *text = (locationIsTracking) ? NSLocalizedString(@"LOCATION IS TRACKING", nil) : NSLocalizedString(@"LOCATION IS NOT TRACKING", nil);
-    NSString *appendString = nil;
+    NSString *text = nil;
     
     if ([[self locationTracker] currentTimeIsInsideOfScheduleLimits]) {
         
         double finishTime = [self locationTracker].trackerFinishTime;
         NSString *finishTimeString = [[STMFunctions noDateShortTimeFormatterAllowZero:NO] stringFromDate:[STMFunctions dateFromDouble:finishTime]];
 
-        appendString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"MONITORING IS TRACKING UNTIL", nil), finishTimeString];
+        text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"MONITORING IS TRACKING UNTIL", nil), finishTimeString];
                         
     } else {
 
         double startTime = [self locationTracker].trackerStartTime;
         NSString *startTimeString = [[STMFunctions noDateShortTimeFormatter] stringFromDate:[STMFunctions dateFromDouble:startTime]];
 
-        appendString = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"MONITORING WILL TRACKING AT", nil), startTimeString];
+        text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"MONITORING WILL TRACKING AT", nil), startTimeString];
         
         textColor = [UIColor lightGrayColor];
 
     }
     
-    self.locationAppStatusLabel.text = [NSString stringWithFormat:@"%@\n%@", text, appendString];
+    self.monitoringStatusLabel.text = [NSString stringWithFormat:@"%@", text];
     
-    self.locationAppStatusLabel.textColor = textColor;
+    self.monitoringStatusLabel.textColor = textColor;
     
 }
 
@@ -842,7 +839,10 @@
 }
 
 - (void)locationTrackerStatusChanged {
-    [self performSelector:@selector(setupLocationAppStatusLabel) withObject:nil afterDelay:5];
+    
+    [self performSelector:@selector(setupLocationTrackingStatusLabel) withObject:nil afterDelay:5];
+    [self performSelector:@selector(setupMonitoringStatusLabel) withObject:nil afterDelay:5];
+    
 }
 
 
