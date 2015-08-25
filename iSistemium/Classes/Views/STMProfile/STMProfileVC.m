@@ -648,9 +648,11 @@
     
     self.locationWarningLabel.text = @"";
     
-    BOOL autoStart = self.locationTracker.trackerAutoStart;
-    
-    (autoStart) ? [self setupLocationLabels] : [self hideLocationLabels];
+//    BOOL autoStart = self.locationTracker.trackerAutoStart;
+//    
+//    (autoStart) ? [self setupLocationLabels] : [self hideLocationLabels];
+
+    [self setupLocationLabels];
     
 }
 
