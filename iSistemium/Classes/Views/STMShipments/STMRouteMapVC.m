@@ -391,8 +391,18 @@
 
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+
+    [super viewWillAppear:animated];
+    
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+
     if (![self.navigationController.viewControllers containsObject:self]) {
         [self flushMapView];
     }
