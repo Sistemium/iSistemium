@@ -79,10 +79,7 @@
 }
 
 - (void)appStateDidChange {
-    
-    self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
     [self checkTrackerAutoStart];
-    
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -530,14 +527,14 @@
 
 - (void)checkTrackerAutoStart {
     
-    if (self.tracking) [self stopTracking];
-    
     [self initTimers];
 
     if ([self currentDesiredAccuracy] != 0) {
         
-        [self startTracking];
-        
+        if (!self.tracking) [self startTracking];
+        self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
+        NSLog(@"locationManager DA %f", self.locationManager.desiredAccuracy)
+
     } else {
         
         [self stopTracking];
@@ -556,11 +553,11 @@
     
     if (self.trackerStartTime < self.trackerFinishTime) {
         
-        return (currentTime > self.trackerStartTime && currentTime < self.trackerFinishTime);
+        return (currentTime >= self.trackerStartTime && currentTime < self.trackerFinishTime);
         
     } else {
         
-        return !(currentTime < self.trackerStartTime && currentTime > self.trackerFinishTime);
+        return !(currentTime < self.trackerStartTime && currentTime >= self.trackerFinishTime);
         
     }
     
