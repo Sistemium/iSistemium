@@ -146,15 +146,15 @@
 }
 
 - (CLLocationAccuracy)backgroundDesiredAccuracy {
-    return [self.settings[@"backgroundDesiredAccuracy"] doubleValue];
+    return (self.settings[@"backgroundDesiredAccuracy"]) ? [self.settings[@"backgroundDesiredAccuracy"] doubleValue] : self.desiredAccuracy;
 }
 
 - (CLLocationAccuracy)foregroundDesiredAccuracy {
-    return [self.settings[@"foregroundDesiredAccuracy"] doubleValue];
+    return (self.settings[@"foregroundDesiredAccuracy"]) ? [self.settings[@"foregroundDesiredAccuracy"] doubleValue] : self.desiredAccuracy;
 }
 
 - (CLLocationAccuracy)offtimeDesiredAccuracy {
-    return [self.settings[@"offtimeDesiredAccuracy"] doubleValue];
+    return (self.settings[@"offtimeDesiredAccuracy"]) ? [self.settings[@"offtimeDesiredAccuracy"] doubleValue] : self.desiredAccuracy;
 }
 
 - (double)requiredAccuracy {
@@ -389,6 +389,8 @@
         _locationManager.distanceFilter = self.distanceFilter;
         _locationManager.desiredAccuracy = [self currentDesiredAccuracy];
         _locationManager.pausesLocationUpdatesAutomatically = NO;
+        
+        NSLog(@"_locationManager DF %f, DA %f", _locationManager.distanceFilter, _locationManager.desiredAccuracy);
         
     }
     

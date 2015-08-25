@@ -57,123 +57,131 @@
     
 }
 
-- (NSString *)normalizeValue:(NSString *)value forKey:(NSString *)key {
+- (id)normalizeValue:(id)value forKey:(NSString *)key {
     
-    NSArray *positiveDoubleValues = @[@"trackDetectionTime",
-                                      @"trackSeparationDistance",
-                                      @"fetchLimit",
-                                      @"syncInterval",
-                                      @"deviceMotionUpdateInterval",
-                                      @"maxSpeedThreshold",
-                                      @"http.timeout.foreground",
-                                      @"http.timeout.background",
-                                      @"objectsLifeTime",
-                                      @"locationWaitingTimeInterval"];
-    
-    NSArray *zeroPositiveValues = @[@"timeFilter",
-                                    @"requiredAccuracy",
-                                    @"permanentLocationRequiredAccuracy"];
-    
-    NSArray *desiredAccuracySuffixes = @[@"DesiredAccuracy"];
-    
-    NSArray *boolValues = @[@"localAccessToSettings",
-                            @"deviceMotionUpdate",
-                            @"enableDebtsEditing",
-                            @"enablePartnersEditing",
-                            @"enableDownloadViaWWAN",
-                            @"getLocationsWithNegativeSpeed",
-                            @"blockIfNoLocationPermission"];
-    
-    NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
-    
-    NSArray *URIValues = @[@"restServerURI",
-                           @"xmlNamespace",
-                           @"recieveDataServerURI",
-                           @"sendDataServerURI",
-                           @"API.url"];
-
-    NSArray *timeValues = @[];
-    NSArray *timeValueSuffixes = @[@"TrackerStartTime",
-                                   @"TrackerFinishTime"];
-    
-    NSArray *stringValue = @[@"uploadLog.type",
-                             @"genericPriceType"];
-    
-    NSArray *logicValue = @[@"timeDistanceLogic"];
-    
-    if ([positiveDoubleValues containsObject:key]) {
-        if ([self isPositiveDouble:value]) {
-            return [NSString stringWithFormat:@"%f", [value doubleValue]];
-        }
+    if ([value isKindOfClass:[NSString class]]) {
         
-    } else  if ([boolValues containsObject:key] || [self key:key hasSuffixFromArray:boolValueSuffixes]) {
-        if ([self isBool:value]) {
-            return [NSString stringWithFormat:@"%d", [value boolValue]];
-        }
+        NSArray *positiveDoubleValues = @[@"trackDetectionTime",
+                                          @"trackSeparationDistance",
+                                          @"fetchLimit",
+                                          @"syncInterval",
+                                          @"deviceMotionUpdateInterval",
+                                          @"maxSpeedThreshold",
+                                          @"http.timeout.foreground",
+                                          @"http.timeout.background",
+                                          @"objectsLifeTime",
+                                          @"locationWaitingTimeInterval"];
         
-    } else if ([URIValues containsObject:key]) {
-        if ([self isValidURI:value]) {
+        NSArray *zeroPositiveValues = @[@"timeFilter",
+                                        @"requiredAccuracy",
+                                        @"permanentLocationRequiredAccuracy"];
+        
+        NSArray *desiredAccuracySuffixes = @[@"DesiredAccuracy"];
+        
+        NSArray *boolValues = @[@"localAccessToSettings",
+                                @"deviceMotionUpdate",
+                                @"enableDebtsEditing",
+                                @"enablePartnersEditing",
+                                @"enableDownloadViaWWAN",
+                                @"getLocationsWithNegativeSpeed",
+                                @"blockIfNoLocationPermission"];
+        
+        NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
+        
+        NSArray *URIValues = @[@"restServerURI",
+                               @"xmlNamespace",
+                               @"recieveDataServerURI",
+                               @"sendDataServerURI",
+                               @"API.url"];
+        
+        NSArray *timeValues = @[];
+        NSArray *timeValueSuffixes = @[@"TrackerStartTime",
+                                       @"TrackerFinishTime"];
+        
+        NSArray *stringValue = @[@"uploadLog.type",
+                                 @"genericPriceType"];
+        
+        NSArray *logicValue = @[@"timeDistanceLogic"];
+        
+        if ([positiveDoubleValues containsObject:key]) {
+            if ([self isPositiveDouble:value]) {
+                return [NSString stringWithFormat:@"%f", [value doubleValue]];
+            }
+            
+        } else  if ([boolValues containsObject:key] || [self key:key hasSuffixFromArray:boolValueSuffixes]) {
+            if ([self isBool:value]) {
+                return [NSString stringWithFormat:@"%d", [value boolValue]];
+            }
+            
+        } else if ([URIValues containsObject:key]) {
+            if ([self isValidURI:value]) {
+                return value;
+            }
+            
+        } else if ([timeValues containsObject:key] || [self key:key hasSuffixFromArray:timeValueSuffixes]) {
+            if ([self isValidTime:value]) {
+                return [NSString stringWithFormat:@"%f", [value doubleValue]];
+            }
+            
+        } else if ([key isEqualToString:@"desiredAccuracy"] || [self key:key hasSuffixFromArray:desiredAccuracySuffixes]) {
+            double dValue = [value doubleValue];
+            if (dValue == -2 || dValue == -1 || dValue == 0 || dValue == 10 || dValue == 100 || dValue == 1000 || dValue == 3000) {
+                return [NSString stringWithFormat:@"%f", dValue];
+            }
+            
+        } else if ([key isEqualToString:@"distanceFilter"]) {
+            double dValue = [value doubleValue];
+            if (dValue == -1 || dValue >= 0) {
+                return [NSString stringWithFormat:@"%f", dValue];
+            }
+            
+        } else if ([zeroPositiveValues containsObject:key]) {
+            double dValue = [value doubleValue];
+            if (dValue >= 0) {
+                return [NSString stringWithFormat:@"%f", dValue];
+            }
+            
+        } else if ([key isEqualToString:@"jpgQuality"]) {
+            double dValue = [value doubleValue];
+            if (dValue >= 0 && dValue <= 1) {
+                return [NSString stringWithFormat:@"%f", dValue];
+            }
+            
+        } else if ([stringValue containsObject:key]) {
             return value;
+            
+        } else if ([key isEqualToString:@"catalogue.cell.right"]) {
+            
+            NSArray *availableValues = @[@"price", @"pieceVolume", @"stock"];
+            
+            if ([availableValues containsObject:value]) {
+                return value;
+            } else {
+                return @"price";
+            }
+            
+        } else if ([logicValue containsObject:key]) {
+            
+            NSString *orValue = @"OR";
+            NSString *andValue = @"AND";
+            
+            NSArray *availableValues = @[orValue, andValue];
+            
+            if ([availableValues containsObject:[(NSString *)value uppercaseString]]) {
+                return [(NSString *)value uppercaseString];
+            } else {
+                return andValue;
+            }
+            
         }
         
-    } else if ([timeValues containsObject:key] || [self key:key hasSuffixFromArray:timeValueSuffixes]) {
-        if ([self isValidTime:value]) {
-            return [NSString stringWithFormat:@"%f", [value doubleValue]];
-        }
+        return nil;
         
-    } else if ([key isEqualToString:@"desiredAccuracy"] || [self key:key hasSuffixFromArray:desiredAccuracySuffixes]) {
-        double dValue = [value doubleValue];
-        if (dValue == -2 || dValue == -1 || dValue == 0 || dValue == 10 || dValue == 100 || dValue == 1000 || dValue == 3000) {
-            return [NSString stringWithFormat:@"%f", dValue];
-        }
-        
-    } else if ([key isEqualToString:@"distanceFilter"]) {
-        double dValue = [value doubleValue];
-        if (dValue == -1 || dValue >= 0) {
-            return [NSString stringWithFormat:@"%f", dValue];
-        }
-        
-    } else if ([zeroPositiveValues containsObject:key]) {
-        double dValue = [value doubleValue];
-        if (dValue >= 0) {
-            return [NSString stringWithFormat:@"%f", dValue];
-        }
-        
-    } else if ([key isEqualToString:@"jpgQuality"]) {
-        double dValue = [value doubleValue];
-        if (dValue >= 0 && dValue <= 1) {
-            return [NSString stringWithFormat:@"%f", dValue];
-        }
-        
-    } else if ([stringValue containsObject:key]) {
-        return value;
-        
-    } else if ([key isEqualToString:@"catalogue.cell.right"]) {
-        
-        NSArray *availableValues = @[@"price", @"pieceVolume", @"stock"];
-        
-        if ([availableValues containsObject:value]) {
-            return value;
-        } else {
-            return @"price";
-        }
-        
-    } else if ([logicValue containsObject:key]) {
+    } else {
 
-        NSString *orValue = @"OR";
-        NSString *andValue = @"AND";
-        
-        NSArray *availableValues = @[orValue, andValue];
-        
-        if ([availableValues containsObject:value.uppercaseString]) {
-            return value.uppercaseString;
-        } else {
-            return andValue;
-        }
-        
+        return [NSNull null];
+
     }
-    
-    return nil;
     
 }
 
@@ -331,10 +339,10 @@
             
             if ([[self.startSettings allKeys] containsObject:settingName]) {
                 
-                NSString *nValue = [self normalizeValue:[self.startSettings valueForKey:settingName] forKey:settingName];
+                id nValue = [self normalizeValue:[self.startSettings valueForKey:settingName] forKey:settingName];
                 
                 if (nValue) {
-                    settingValue = nValue;
+                    settingValue = ([nValue isKindOfClass:[NSString class]]) ? nValue : nil;
                 } else {
                     NSLog(@"value %@ is not correct for %@", [self.startSettings valueForKey:settingName], settingName);
                     [self.startSettings removeObjectForKey:settingName];
@@ -344,20 +352,21 @@
 
             if (!settingToCheck) {
                 
-//                    NSLog(@"settingName %@", settingName);
                 STMSetting *newSetting = (STMSetting *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMSetting class])];
                 newSetting.isFantom = @NO;
                 newSetting.group = settingsGroupName;
                 newSetting.name = settingName;
-//                newSetting.value = settingValue;
-                newSetting.value = [self normalizeValue:settingValue forKey:settingName];
+                
+                id nValue = [self normalizeValue:settingValue forKey:settingName];
+                newSetting.value = ([nValue isKindOfClass:[NSString class]]) ? nValue : nil;
+                
                 [newSetting addObserver:self forKeyPath:@"value" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
                 
-//                NSLog(@"newSetting %@", newSetting);
-
             } else {
                 
-                settingToCheck.value = [self normalizeValue:settingToCheck.value forKey:settingName];
+                id nValue = [self normalizeValue:settingToCheck.value forKey:settingName];
+
+                settingToCheck.value = ([nValue isKindOfClass:[NSString class]]) ? nValue : nil;
                 
 //                [settingToCheck addObserver:self forKeyPath:@"value" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
                 
@@ -403,7 +412,7 @@
                 
             }
             
-            setting.value = value;
+            setting.value = ([value isKindOfClass:[NSString class]]) ? value : nil;
             
         } else {
             

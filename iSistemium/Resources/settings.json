@@ -78,7 +78,7 @@
         },
        {
            "name": "backgroundDesiredAccuracy",
-           "value": 3000,
+           "value": null,
            "control": "slider",
            "min": 0,
            "max": 5,
@@ -86,7 +86,7 @@
        },
        {
            "name": "foregroundDesiredAccuracy",
-           "value": 10,
+           "value": null,
            "control": "slider",
            "min": 0,
            "max": 5,
@@ -94,7 +94,7 @@
        },
        {
            "name": "offtimeDesiredAccuracy",
-           "value": 3000,
+           "value": 0,
            "control": "slider",
            "min": 0,
            "max": 5,

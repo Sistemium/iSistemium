@@ -414,8 +414,8 @@
                           @"desiredAccuracy"                : @"10",
                           @"timeFilter"                     : @"60",
                           @"distanceFilter"                 : @"60",
-                          @"backgroundDesiredAccuracy"      : @"0",
-                          @"foregroundDesiredAccuracy"      : @"10",
+//                          @"backgroundDesiredAccuracy"      : @"0",
+//                          @"foregroundDesiredAccuracy"      : @"10",
                           @"offtimeDesiredAccuracy"         : @"3000",
                           @"maxSpeedThreshold"              : @"60",
                           @"locationTrackerAutoStart"       : @YES,
@@ -429,8 +429,7 @@
                           @"enablePartnersEditing"          : @YES,
                           @"http.timeout.foreground"        : @"60",
                           @"jpgQuality"                     : @"0.0",
-                          @"blockIfNoLocationPermission"    : @YES,
-                          @"backgroundDesiredAccuracy"      : @"3000"
+                          @"blockIfNoLocationPermission"    : @YES
                           };
         
     } else {
