@@ -14,9 +14,15 @@
 #import "STMOrdersOutletTVC.h"
 #import "STMOrdersSalesmanTVC.h"
 
+#import "STMSalesmanController.h"
+
+
 @interface STMOrdersMasterPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
+@property (nonatomic, strong) STMOrdersOutletTVC *outletTVC;
+@property (nonatomic, strong) STMOrdersDateTVC *dateTVC;
+@property (nonatomic, strong) STMOrdersSalesmanTVC *salesmanTVC;
 
 @property (nonatomic, strong) UISegmentedControl *segmentedControl;
 
@@ -24,6 +30,7 @@
 @property (nonatomic) NSUInteger nextIndex;
 
 @property (nonatomic, strong) UIBarButtonItem *resetFilterButton;
+
 
 @end
 
@@ -48,8 +55,11 @@
     if (!_segmentedControl) {
         
         NSArray *controlItems = @[NSLocalizedString(@"OUTLETS", nil),
-                                  NSLocalizedString(@"DATES", nil),
-                                  NSLocalizedString(@"SALESMANS", nil)];
+                                  NSLocalizedString(@"DATES", nil)];
+        
+        if (![STMSalesmanController isItOnlyMeAmongSalesman]) {
+            controlItems = [controlItems arrayByAddingObject:NSLocalizedString(@"SALESMANS", nil)];
+        }
         
         UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:controlItems];
         segmentedControl.selectedSegmentIndex = self.currentIndex;
@@ -80,7 +90,8 @@
     
     if (!_resetFilterButton) {
 
-        _resetFilterButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"RESET FILTER", nil) style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
+//        _resetFilterButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"RESET FILTER", nil) style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
+        _resetFilterButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Clear Filters-25"] style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
 
     }
     return _resetFilterButton;
@@ -92,6 +103,7 @@
     self.splitVC.selectedDate = nil;
     self.splitVC.selectedOutlet = nil;
     self.splitVC.selectedSalesman = nil;
+    self.splitVC.searchString = nil;
     
     STMOrdersMasterTVC *masterTVC = self.viewControllers[0];
     [masterTVC resetFilter];
@@ -100,7 +112,11 @@
 
 - (void)updateResetFilterButtonState {
     
-    self.resetFilterButton.enabled = (self.splitVC.selectedDate || self.splitVC.selectedOutlet || self.splitVC.selectedSalesman);
+    self.resetFilterButton.enabled = (self.splitVC.selectedDate ||
+                                      self.splitVC.selectedOutlet ||
+                                      self.splitVC.selectedSalesman ||
+                                      (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""])
+                                      );
     
 }
 
@@ -139,15 +155,15 @@
     switch (index) {
             
         case 0:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            vc = self.outletTVC;
             break;
 
         case 1:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersDateTVC alloc] init];
+            vc = self.dateTVC;
             break;
 
         case 2:
-            vc = (STMOrdersMasterTVC *)[[STMOrdersSalesmanTVC alloc] init];
+            vc = self.salesmanTVC;
             break;
             
         default:
@@ -159,6 +175,48 @@
     
     return vc;
     
+}
+
+- (STMOrdersOutletTVC *)outletTVC {
+    
+    if (!_outletTVC) {
+        _outletTVC = [[STMOrdersOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    }
+    return _outletTVC;
+    
+}
+
+- (STMOrdersDateTVC *)dateTVC {
+    
+    if (!_dateTVC) {
+        _dateTVC = [[STMOrdersDateTVC alloc] init];
+    }
+    return _dateTVC;
+    
+}
+
+- (STMOrdersSalesmanTVC *)salesmanTVC {
+    
+    if (!_salesmanTVC) {
+        _salesmanTVC = [[STMOrdersSalesmanTVC alloc] init];
+    }
+    return _salesmanTVC;
+    
+}
+
+- (void)refreshTables {
+    
+    [self.outletTVC refreshTable];
+    [self.dateTVC refreshTable];
+    [self.salesmanTVC refreshTable];
+    
+}
+
+- (NSArray *)defaultToolbarItemsArray {
+    
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    return @[self.resetFilterButton, flexibleSpace];
+
 }
 
 
@@ -175,6 +233,7 @@
     return [self viewControllerAtIndex:self.currentIndex+1 storyboard:self.storyboard];
     
 }
+
 
 #pragma mark - Page View Controller Delegate
 
@@ -209,9 +268,8 @@
     STMOrdersMasterTVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
     NSArray *viewControllers = @[vc];
     [self setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
-    
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self setToolbarItems:@[flexibleSpace, self.resetFilterButton, flexibleSpace]];
+
+    [self setToolbarItems:[self defaultToolbarItemsArray]];
     
     [self updateResetFilterButtonState];
     

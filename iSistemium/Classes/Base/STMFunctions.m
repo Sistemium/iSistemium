@@ -7,8 +7,13 @@
 //
 
 #import "STMFunctions.h"
+
+#import "STMLogger.h"
+
 #import <CommonCrypto/CommonDigest.h>
 #import <sys/sysctl.h>
+#import "mach/mach.h"
+
 
 @implementation STMDateFormatter
 
@@ -70,6 +75,16 @@
     
 }
 
++ (NSDateFormatter *)dateShortTimeShortFormatter {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    
+    return dateFormatter;
+    
+}
+
 + (NSDateFormatter *)dateMediumNoTimeFormatter {
     
     NSDateFormatter *dateFormatter = [self dateNoTimeFormatter];
@@ -118,6 +133,18 @@
 
 }
 
++ (NSDateFormatter *)noDateShortTimeFormatterAllowZero:(BOOL)allowZero {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    if (allowZero) {
+        dateFormatter.dateFormat = @"HH:mm";
+    } else {
+        dateFormatter.dateFormat = @"kk:mm";
+    }
+    return dateFormatter;
+    
+}
+
 + (void)NSLogCurrentDateWithMilliseconds {
     NSLog(@"%@", [[self dateFormatter] stringFromDate:[NSDate date]]);
 }
@@ -141,6 +168,7 @@
     NSDate *localDate = [NSDate date];
     
     NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
+    hourFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
     hourFormatter.dateFormat = @"HH";
     double hour = [[hourFormatter stringFromDate:localDate] doubleValue];
     
@@ -372,6 +400,103 @@
 }
 
 
+#pragma mark - images
+
++ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
+    return [self resizeImage:image toSize:size allowRetina:YES];
+}
+
++ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina {
+    
+    if (image.size.height > 0 && image.size.width > 0) {
+        
+        CGFloat width = size.width;
+        CGFloat height = size.height;
+        
+        if (image.size.width >= image.size.height) {
+            
+            height = width * image.size.height / image.size.width;
+            
+        } else {
+            
+            width = height * image.size.width / image.size.height;
+            
+        }
+        
+        // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+        // Pass 1.0 to force exact pixel size.
+        
+        CGFloat scale = (retina) ? 0.0 : 1.0;
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, scale);
+        [image drawInRect:CGRectMake(0, 0, width, height)];
+        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        return resultImage;
+        
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
+
++ (UIImage *)colorImage:(UIImage *)origImage withColor:(UIColor *)color {
+    
+    UIGraphicsBeginImageContextWithOptions(origImage.size, YES, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, (CGRect){ {0,0}, origImage.size} );
+    
+    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, origImage.size.height);
+    CGContextConcatCTM(context, flipVertical);
+    CGContextDrawImage(context, (CGRect){{0,0}, origImage.size }, [origImage CGImage]);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+    
+}
+
++ (UIImage *)drawText:(NSString *)text withFont:(UIFont *)font color:(UIColor *)color inImage:(UIImage *)image atCenter:(BOOL)atCenter {
+    
+    NSDictionary *attributes = @{NSFontAttributeName:font,
+                                 NSForegroundColorAttributeName:color};
+    
+    CGSize textSize = [text sizeWithAttributes:attributes];
+    CGSize imageSize = image.size;
+    
+    CGPoint point = CGPointMake(0, 0);
+    
+    if (atCenter) {
+        
+        CGFloat x = (imageSize.width - textSize.width) / 2;
+        CGFloat y = (imageSize.height - textSize.height) / 2;
+        
+        point = CGPointMake(x, y);
+        
+    }
+    
+    UIGraphicsBeginImageContext(imageSize);
+    
+    [image drawInRect:CGRectMake(0,0,imageSize.width,imageSize.height)];
+    CGRect rect = CGRectMake(point.x, point.y, imageSize.width, imageSize.height);
+    [[UIColor whiteColor] set];
+    [text drawInRect:CGRectIntegral(rect) withAttributes:attributes];
+//    [text drawInRect:CGRectIntegral(rect) withFont:font];
+    UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resultImage;
+    
+}
+
+
 #pragma mark - some other usefull methods
 
 + (NSString *)pluralTypeForCount:(NSUInteger)count {
@@ -417,47 +542,6 @@
     }
     
     return result;
-    
-}
-
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
-    return [self resizeImage:image toSize:size allowRetina:YES];
-}
-
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina {
-    
-    if (image.size.height > 0 && image.size.width > 0) {
-        
-        CGFloat width = size.width;
-        CGFloat height = size.height;
-        
-        if (image.size.width >= image.size.height) {
-            
-            height = width * image.size.height / image.size.width;
-            
-        } else {
-            
-            width = height * image.size.width / image.size.height;
-            
-        }
-        
-        // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
-        // Pass 1.0 to force exact pixel size.
-        
-        CGFloat scale = (retina) ? 0.0 : 1.0;
-        
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(width ,height), NO, scale);
-        [image drawInRect:CGRectMake(0, 0, width, height)];
-        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        return resultImage;
-        
-    } else {
-        
-        return nil;
-        
-    }
     
 }
 
@@ -559,7 +643,11 @@
 + (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController {
     
     CGFloat tabBarYPosition = tabBarController.tabBar.frame.origin.y;
+<<<<<<< HEAD
     CGRect rect = CGRectMake(0, 0, 0, 0);
+=======
+    CGRect rect = CGRectZero;
+>>>>>>> accuracies
     
     NSMutableArray *tabBarSubviews = [tabBarController.tabBar.subviews mutableCopy];
     
@@ -577,6 +665,22 @@
     rect = CGRectMake(rect.origin.x, rect.origin.y + tabBarYPosition, rect.size.width, rect.size.height);
 
     return rect;
+    
+}
+
++ (NSString *)shortCompanyName:(NSString *)companyName {
+    
+//    NSString *searchString = @"Общество с ограниченной ответственностью";
+//    
+//    NSRange range = [companyName.lowercaseString rangeOfString:searchString.lowercaseString];
+//
+//    if (range.location != NSNotFound) {
+//        
+//        companyName = [companyName stringByReplacingCharactersInRange:range withString:@"ООО"];
+//        
+//    }
+    
+    return companyName;
     
 }
 
@@ -657,6 +761,105 @@
     }
     
     return validArray;
+    
+}
+
+
++ (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel {
+    
+    NSString *volumeUnitString = nil;
+    NSString *infoText = nil;
+    
+    if (packageRel != 0 && volume >= packageRel) {
+        
+        NSInteger package = floor(volume / packageRel);
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT1", nil);
+        NSString *packageString = [NSString stringWithFormat:@"%ld %@", (long)package, volumeUnitString];
+        
+        NSInteger bottle = volume % packageRel;
+        
+        if (bottle > 0) {
+            
+            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+            NSString *bottleString = [NSString stringWithFormat:@" %ld %@", (long)bottle, volumeUnitString];
+            
+            packageString = [packageString stringByAppendingString:bottleString];
+            
+        }
+        
+        infoText = packageString;
+        
+    } else {
+        
+        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+        infoText = [NSString stringWithFormat:@"%ld %@", (long)volume, volumeUnitString];
+        
+    }
+
+    return infoText;
+    
+}
+
+
+#pragma mark - memory warning handle
+
++ (BOOL)shouldHandleMemoryWarningFromVC:(UIViewController *)vc {
+    
+    if ([vc isViewLoaded] && [vc.view window] == nil) {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"%@ receive memory warning. %@", NSStringFromClass(vc.class), [self memoryStatistic]];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+        
+        return YES;
+        
+    } else {
+        
+        return NO;
+        
+    }
+    
+}
+
++ (void)nilifyViewForVC:(UIViewController *)vc {
+    
+    vc.view = nil;
+
+    NSString *logMessage = [NSString stringWithFormat:@"%@ set it's view to nil. %@", NSStringFromClass(vc.class), [self memoryStatistic]];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+
+}
+
++ (NSString *)memoryStatistic {
+    
+    NSString *usedMemoryString = [NSString stringWithFormat:@"Used memory: %f Kb", usedMemory()/1024.0f];
+    NSString *freeMemoryString = [NSString stringWithFormat:@"Free memory: %f Kb", freeMemory()/1024.0f];
+    
+    return [NSString stringWithFormat:@"%@ / %@", usedMemoryString, freeMemoryString];
+    
+}
+
+vm_size_t usedMemory(void) {
+    
+    struct task_basic_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &size);
+    
+    return (kerr == KERN_SUCCESS) ? info.resident_size : 0; // size in bytes
+    
+}
+
+vm_size_t freeMemory(void) {
+    
+    mach_port_t host_port = mach_host_self();
+    mach_msg_type_number_t host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
+    vm_size_t pagesize;
+    vm_statistics_data_t vm_stat;
+    
+    host_page_size(host_port, &pagesize);
+    (void) host_statistics(host_port, HOST_VM_INFO, (host_info_t)&vm_stat, &host_size);
+    
+    return vm_stat.free_count * pagesize;
     
 }
 

@@ -9,6 +9,7 @@
 #import "STMOrdersOutletTVC.h"
 #import "STMOrdersSVC.h"
 
+
 @interface STMOrdersOutletTVC ()
 
 @end
@@ -16,16 +17,33 @@
 
 @implementation STMOrdersOutletTVC
 
+@synthesize cellIdentifier = _cellIdentifier;
+
+
+- (NSString *)cellIdentifier {
+    
+    if (!_cellIdentifier) {
+        _cellIdentifier = @"ordersOutletCell";
+    }
+    return _cellIdentifier;
+    
+}
+
 - (NSFetchRequest *)fetchRequest {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
     
-    NSSortDescriptor *partnerNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"partner.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"shortName" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    NSSortDescriptor *partnerNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"partner.name"
+                                                                                ascending:YES
+                                                                                 selector:@selector(compare:)];
+    
+    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"shortName"
+                                                                         ascending:YES
+                                                                          selector:@selector(caseInsensitiveCompare:)];
     
     request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
     
-    request.predicate = [NSPredicate predicateWithFormat:@"(saleOrders.@count > 0) AND (partner.name != %@)", nil];
+    request.predicate = [self predicate];
     
     self.sectionNameKeyPath = @"partner.name";
     
@@ -33,23 +51,113 @@
     
 }
 
+- (NSPredicate *)predicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    NSPredicate *outletPredicate = [NSPredicate predicateWithFormat:@"(saleOrders.@count > 0) AND (partner.name != %@)", nil];
+    
+    [subpredicates addObject:outletPredicate];
+    
+    if (self.splitVC.searchString && ![self.splitVC.searchString isEqualToString:@""]) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
+    }
+    
+    if (self.splitVC.selectedDate) {
+        
+        NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"ANY saleOrders.date == %@", self.splitVC.selectedDate];
+        [subpredicates addObject:datePredicate];
+        
+    }
+    
+    if (self.splitVC.selectedSalesman) {
+        
+        NSPredicate *salesmanPredicate = [NSPredicate predicateWithFormat:@"ANY saleOrders.salesman == %@", self.splitVC.selectedSalesman];
+        [subpredicates addObject:salesmanPredicate];
+        
+    }
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    return predicate;
+    
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    if (self.splitVC.selectedOutlet) self.splitVC.selectedOutlet = nil;
+    self.splitVC.searchString = searchText;
+
+    [super searchBar:searchBar textDidChange:searchText];
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    
+    self.splitVC.searchString = nil;
+    [super searchBarCancelButtonClicked:searchBar];
+    
+}
+
+- (void)showSearchButton {
+    
+    NSMutableArray *toolbarItems = self.parentViewController.toolbarItems.mutableCopy;
+    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+    [toolbarItems addObject:searchButton];
+    [self.parentViewController setToolbarItems:toolbarItems];
+    
+}
+
+- (void)hideSearchButton {
+
+    if ([self.parentViewController isKindOfClass:[STMOrdersMasterPVC class]]) {
+        
+        [self.parentViewController setToolbarItems:[(STMOrdersMasterPVC *)self.parentViewController defaultToolbarItemsArray]];
+                
+    }
+    
+}
+
+- (void)resetFilter {
+    
+    [super resetFilter];
+    [self searchBarCancelButtonClicked:self.searchBar];
+    
+}
+
 
 #pragma mark - Table view data source
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return [STMFunctions shortCompanyName:[super tableView:tableView titleForHeaderInSection:section]];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *cellIdentifier = @"ordersOutletCell";
+    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    [self fillCell:cell atIndexPath:indexPath];
+    
+    return cell;
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    STMCustom7TVCell *customCell = nil;
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        customCell = (STMCustom7TVCell *)cell;
+    }
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
     UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
     
-    cell.textLabel.textColor = textColor;
-    cell.detailTextLabel.textColor = textColor;
+    customCell.titleLabel.textColor = textColor;
+    customCell.detailLabel.textColor = textColor;
     
-    cell.textLabel.text = outlet.shortName;
+    customCell.titleLabel.text = outlet.shortName;
     
     NSUInteger count = outlet.saleOrders.count;
     NSString *pluralType = [STMFunctions pluralTypeForCount:count];
@@ -57,9 +165,9 @@
     
     NSString *ordersCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(ordersString, nil)];
     
-    cell.detailTextLabel.text = ordersCountString;
+    customCell.detailLabel.text = ordersCountString;
     
-    return cell;
+    [super fillCell:customCell atIndexPath:indexPath];
     
 }
 
@@ -94,6 +202,15 @@
 
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    
+    UINib *cellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
+
+    [super customInit];
+    
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
@@ -104,6 +221,17 @@
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
     }
+    
+    if (self.searchFieldIsScrolledAway) {
+        [self showSearchButton];
+    }
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    [self hideSearchButton];
     
 }
 

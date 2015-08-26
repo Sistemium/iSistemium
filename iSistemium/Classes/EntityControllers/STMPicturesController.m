@@ -23,9 +23,8 @@
 #import <Security/Security.h>
 #import "KeychainItemWrapper.h"
 
-@interface STMPicturesController()
+@interface STMPicturesController() <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) NSOperationQueue *downloadQueue;
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
 @property (nonatomic, strong) NSMutableArray *secondAttempt;
@@ -35,6 +34,8 @@
 @property (nonatomic) BOOL s3Initialized;
 @property (nonatomic, strong) STMSession *session;
 @property (nonatomic, strong) NSMutableDictionary *settings;
+
+@property (nonatomic, strong) NSFetchedResultsController *nonloadedPicturesResultsController;
 
 
 @end
@@ -68,7 +69,12 @@
     
     self = [super init];
     
-    if (self) [self addObservers];
+    if (self) {
+        
+        [self addObservers];
+        [self performFetch];
+        
+    }
     return self;
     
 }
@@ -88,8 +94,14 @@
     
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
         
+        self.downloadQueue.suspended = YES;
+        [self.downloadQueue cancelAllOperations];
         self.downloadQueue = nil;
+
+        self.uploadQueue.suspended = YES;
+        [self.uploadQueue cancelAllOperations];
         self.uploadQueue = nil;
+        
         self.hrefDictionary = nil;
         self.secondAttempt = nil;
         self.s3keychainItem = nil;
@@ -98,6 +110,7 @@
         self.s3Initialized = NO;
         self.session = nil;
         self.settings = nil;
+        self.nonloadedPicturesResultsController = nil;
         
     }
     
@@ -225,7 +238,8 @@
     if (!_downloadQueue) {
         
         _downloadQueue = [[NSOperationQueue alloc] init];
-        _downloadQueue.maxConcurrentOperationCount = 2;
+        _downloadQueue.maxConcurrentOperationCount = 1;
+        _downloadQueue.suspended = YES;
         
     }
     
@@ -261,6 +275,94 @@
     
 }
 
+- (NSFetchedResultsController *)nonloadedPicturesResultsController {
+    
+    if (!_nonloadedPicturesResultsController) {
+        
+        NSManagedObjectContext *context = self.session.document.managedObjectContext;
+        
+        if (context && [self.session.status isEqualToString:@"running"]) {
+            
+            STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:NSStringFromClass([STMPicture class])];
+            
+            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(href != %@) AND (imageThumbnail == %@)", nil, nil];
+            
+            request.sortDescriptors = @[sortDescriptor];
+            request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
+            
+            _nonloadedPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                     managedObjectContext:context
+                                                                                       sectionNameKeyPath:nil
+                                                                                                cacheName:nil];
+            _nonloadedPicturesResultsController.delegate = self;
+
+        } else {
+            
+            _nonloadedPicturesResultsController = nil;
+            
+        }
+        
+    }
+    return _nonloadedPicturesResultsController;
+    
+}
+
+- (void)performFetch {
+    
+    NSError *error;
+    if (![self.nonloadedPicturesResultsController performFetch:&error]) {
+        NSLog(@"unloadedPicturesResultsController fetch error: ", error.localizedDescription);
+    }
+
+}
+
+- (NSArray *)photoEntitiesNames {
+    
+    return @[NSStringFromClass([STMPhotoReport class]),
+             NSStringFromClass([STMUncashingPicture class])];
+
+}
+
+- (NSArray *)instantLoadPicturesEntityNames {
+    return @[NSStringFromClass([STMMessagePicture class])];
+}
+
+- (NSArray *)nonloadedPictures {
+    
+    NSArray *predicateArray = [[self photoEntitiesNames] arrayByAddingObjectsFromArray:[self instantLoadPicturesEntityNames]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (entity.name IN %@)", predicateArray];
+    return [self.nonloadedPicturesResultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
+    
+}
+
+- (NSUInteger)nonloadedPicturesCount {
+    
+    NSUInteger nonloadedPicturesCount = [self nonloadedPictures].count;
+    
+    if (nonloadedPicturesCount == 0) {
+
+        [self.session.document saveDocument:^(BOOL success) {
+            
+        }];
+        
+        self.downloadQueue.suspended = YES;
+    
+    }
+    
+    return nonloadedPicturesCount;
+    
+}
+
+
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"nonloadedPicturesCountDidChange" object:self];
+    
+}
+
 
 #pragma mark - class methods
 
@@ -284,18 +386,23 @@
 + (void)checkPicturesPaths {
     
     NSString *sessionUID = [STMSessionManager sharedManager].currentSessionUID;
-    NSString *keyToCheck = [@"picturePathsDidCheckedAlready_" stringByAppendingString:sessionUID];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    BOOL picturePathsDidCheckedAlready = [[defaults objectForKey:keyToCheck] boolValue];
-    
-    if (!picturePathsDidCheckedAlready) {
+    if (sessionUID) {
         
-        [self startCheckingPicturesPaths];
+        NSString *keyToCheck = [@"picturePathsDidCheckedAlready_" stringByAppendingString:sessionUID];
         
-        [defaults setObject:@YES forKey:keyToCheck];
-        [defaults synchronize];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        BOOL picturePathsDidCheckedAlready = [[defaults objectForKey:keyToCheck] boolValue];
         
+        if (!picturePathsDidCheckedAlready) {
+            
+            [self startCheckingPicturesPaths];
+            
+            [defaults setObject:@YES forKey:keyToCheck];
+            [defaults synchronize];
+            
+        }
+
     }
     
 }
@@ -417,15 +524,22 @@
             
             NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
-            if (photoData) {
+            if (photoData && photoData.length > 0) {
                 
-                [self setImagesFromData:photoData forPicture:picture];
+                [self setImagesFromData:photoData forPicture:picture andUpload:NO];
                 
             } else {
+                
+                NSString *logMessage = [NSString stringWithFormat:@"attempt to set images for picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
                 
                 [self deletePicture:picture];
                 
             }
+            
+        } else {
+            
+            [self hrefProcessingForObject:picture];
             
         }
 
@@ -448,8 +562,18 @@
         NSString *fileName = [xid stringByAppendingString:@".jpg"];
         
         NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
-
-        [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+        
+        if (photoData && photoData.length > 0) {
+            
+            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+            
+        } else {
+            
+            NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            [self deletePicture:picture];
+            
+        }
         
     }
     
@@ -476,8 +600,11 @@
     
 }
 
+//+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
+//    [self setImagesFromData:data forPicture:picture andUpload:NO];
+//}
 
-+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
++ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture andUpload:(BOOL)shouldUpload {
     
     NSData *weakData = data;
     STMPicture *weakPicture = picture;
@@ -489,7 +616,9 @@
         NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
         fileName = [xid stringByAppendingString:@".jpg"];
         
-        [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
+        if (shouldUpload) {
+            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
+        }
 
     } else if ([picture isKindOfClass:[STMPicture class]]) {
         
@@ -497,6 +626,7 @@
         
     }
     
+<<<<<<< HEAD
 #warning - sometimes get filename == nil
 // https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/555c3daff505b5ccf0e15ccd
     
@@ -507,18 +637,30 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"downloadPicture" object:weakPicture];
     });
+=======
+//#warning should check filename is not nil
+////https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/5572b38ef505b5ccf00d93eb
+>>>>>>> accuracies
     
-}
+    if (fileName) {
+        
+        [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
+        [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
+        [self setThumbnailForPicture:weakPicture fromImageData:weakData];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"downloadPicture" object:weakPicture];
+            //        NSLog(@"images set for %@", weakPicture.href);
+            
+        });
 
-+ (void)setThumbnailForPicture:(STMPicture *)picture fromImageData:(NSData *)data {
+    } else {
+        
+        CLS_LOG(@"nil filename for picture %@", picture);
+        
+    }
     
-    UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
-    NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, [self jpgQuality]);
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        picture.imageThumbnail = thumbnail;
-    });
-
 }
 
 + (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
@@ -557,19 +699,59 @@
 
 }
 
++ (void)setThumbnailForPicture:(STMPicture *)picture fromImageData:(NSData *)data {
+    
+    UIImage *imageThumbnail = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(150, 150)];
+    NSData *thumbnail = UIImageJPEGRepresentation(imageThumbnail, [self jpgQuality]);
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        picture.imageThumbnail = thumbnail;
+    });
+    
+}
+
 - (void)addOperationForObject:(NSManagedObject *)object {
     
-    NSString *href = [object valueForKey:@"href"];
-    
-//    if ([self.secondAttempt containsObject:href]) {
-        //        NSLog(@"second attempt for %@", href);
-//    }
-    
-    __weak NSManagedObject *weakObject = object;
-    
-    [self.downloadQueue addOperationWithBlock:^{
+    if ([[self instantLoadPicturesEntityNames] containsObject:NSStringFromClass([object class])]) {
         
-        [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:href] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        [self downloadConnectionForObject:object];
+        
+    } else {
+    
+        __weak NSManagedObject *weakObject = object;
+
+        [self.downloadQueue addOperationWithBlock:^{
+            [self downloadConnectionForObject:weakObject];
+        }];
+
+    }
+    
+}
+
++ (void)downloadConnectionForObject:(NSManagedObject *)object {
+    [[self sharedController] downloadConnectionForObject:object];
+}
+
+- (void)downloadConnectionForObject:(NSManagedObject *)object {
+    
+    NSString *href = [object valueForKey:@"href"];
+
+    if (href) {
+        
+        if ([object valueForKey:@"imageThumbnail"]) {
+            
+            [self.hrefDictionary removeObjectForKey:href];
+            
+        } else {
+            
+            NSURL *url = [NSURL URLWithString:href];
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+            NSURLResponse *response = nil;
+            NSError *error = nil;
+            
+            //        NSLog(@"start loading %@", url.lastPathComponent);
+            
+            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
             
             if (error) {
                 
@@ -588,8 +770,9 @@
                         
                         [self.secondAttempt addObject:href];
                         
+#warning Is it really need to dispath_async & addOperationForObject here? secondAttempt?
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(addOperationForObject:) withObject:weakObject afterDelay:0];
+                            [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
                         });
                         
                     }
@@ -606,18 +789,18 @@
 //                NSLog(@"%@ load successefully", href);
                 
                 [self.hrefDictionary removeObjectForKey:href];
-
+                
                 NSData *dataCopy = [data copy];
                 
-                [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)weakObject];
+                if ([object isKindOfClass:[STMPicture class]]) {
+                    [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
+                }
                 
-                [self.hrefDictionary removeObjectForKey:href];
-
             }
             
-        }] resume];
+        }
         
-    }];
+    }
     
 }
 
@@ -703,6 +886,8 @@
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
                             picture.href = href;
+                            
+#warning - does it needed to set deviceTs here?
                             picture.deviceTs = [NSDate date];
                             
                             __block STMSession *session = [STMSessionManager sharedManager].currentSession;

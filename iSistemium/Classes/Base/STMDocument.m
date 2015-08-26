@@ -9,10 +9,13 @@
 #import "STMDocument.h"
 #import "STMObjectsController.h"
 
+#define SAVING_QUEUE_THRESHOLD 15
+
 @interface STMDocument()
 
 @property (nonatomic, strong) NSString *dataModelName;
 @property (nonatomic) BOOL saving;
+@property (nonatomic) int savingQueue;
 
 @end
 
@@ -20,8 +23,8 @@
 @implementation STMDocument
 
 @synthesize myManagedObjectModel = _myManagedObjectModel;
-@synthesize mainContext = _mainContext;
-@synthesize privateContext = _privateContext;
+//@synthesize mainContext = _mainContext;
+//@synthesize privateContext = _privateContext;
 
 - (NSManagedObjectModel *)myManagedObjectModel {
     
@@ -50,37 +53,37 @@
     return self.myManagedObjectModel;
 }
 
-- (NSManagedObjectContext *)mainContext {
-    
-    if (!_mainContext) {
-        _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        _mainContext.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
-    }
-    return _mainContext;
-    
-}
+//- (NSManagedObjectContext *)mainContext {
+//    
+//    if (!_mainContext) {
+//        _mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+//        _mainContext.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+//    }
+//    return _mainContext;
+//    
+//}
 
-- (NSManagedObjectContext *)privateContext {
-    
-    if (!_privateContext) {
-        _privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-        _privateContext.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
-    }
-    return _privateContext;
-    
-}
+//- (NSManagedObjectContext *)privateContext {
+//    
+//    if (!_privateContext) {
+//        _privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+//        _privateContext.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+//    }
+//    return _privateContext;
+//    
+//}
 
-- (void)saveContexts {
-    
-    [self.mainContext performBlock:^{
-        if (self.mainContext.hasChanges) [self.mainContext save:nil];
-    }];
-    
-    [self.privateContext performBlock:^{
-        if (self.privateContext.hasChanges) [self.privateContext save:nil];
-    }];
-    
-}
+//- (void)saveContexts {
+//    
+//    [self.mainContext performBlock:^{
+//        if (self.mainContext.hasChanges) [self.mainContext save:nil];
+//    }];
+//    
+//    [self.privateContext performBlock:^{
+//        if (self.privateContext.hasChanges) [self.privateContext save:nil];
+//    }];
+//    
+//}
 
 - (void)saveDocument:(void (^)(BOOL success))completionHandler {
 
@@ -119,38 +122,51 @@
         }
 
     } else {
-        
-        double delayInSeconds = 1;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 
-            [self saveDocument:^(BOOL success) {
-                
-                completionHandler(success);
-                
-            }];
-            
-        });
+        completionHandler(YES);
 
+//        double delayInSeconds = 1;
+//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//
+//            [self saveDocument:^(BOOL success) {
+//                
+//                completionHandler(success);
+//                
+//            }];
+//            
+//        });
+//
     }
 
 }
 
-- (void)contextDidSaveMainContext:(NSNotification *)notification {
-    
-    @synchronized(self) {
-        [self.privateContext performBlock:^{
-            [self.privateContext mergeChangesFromContextDidSaveNotification:notification];
-        }];
-    }
-    
-}
+//- (void)contextDidSaveMainContext:(NSNotification *)notification {
+//    
+//    @synchronized(self) {
+//        [self.privateContext performBlock:^{
+//            [self.privateContext mergeChangesFromContextDidSaveNotification:notification];
+//        }];
+//    }
+//    
+//}
 
-- (void)contextDidSavePrivateContext:(NSNotification *)notification {
+//- (void)contextDidSavePrivateContext:(NSNotification *)notification {
+//    
+//    @synchronized(self) {
+//        [self.mainContext performBlock:^{
+//            [self.mainContext mergeChangesFromContextDidSaveNotification:notification];
+//        }];
+//    }
+//    
+//}
+
+- (void)downloadPicture:(NSNotification *)notification {
     
-    @synchronized(self) {
-        [self.mainContext performBlock:^{
-            [self.mainContext mergeChangesFromContextDidSaveNotification:notification];
+    if (++self.savingQueue > SAVING_QUEUE_THRESHOLD) {
+        self.savingQueue = 0;
+        [self saveDocument: ^(BOOL success) {
+            NSLog(@"STMDocument save success on downloadPicture");
         }];
     }
     
@@ -165,15 +181,23 @@
                name:UIApplicationDidEnterBackgroundNotification
              object:nil];
     
-    [nc addObserver:self
-           selector:@selector(contextDidSaveMainContext:)
-               name:NSManagedObjectContextDidSaveNotification
-             object:self.mainContext];
+//#warning - have to comment out NSManagedObjectContextDidSaveNotification?
+//https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/55688ca9f505b5ccf0fa0b11/sessions/5568725f03df0001057a643230626339
+    
+//    [nc addObserver:self
+//           selector:@selector(contextDidSaveMainContext:)
+//               name:NSManagedObjectContextDidSaveNotification
+//             object:self.mainContext];
+    
+//    [nc addObserver:self
+//           selector:@selector(contextDidSavePrivateContext:)
+//               name:NSManagedObjectContextDidSaveNotification
+//             object:self.privateContext];
     
     [nc addObserver:self
-           selector:@selector(contextDidSavePrivateContext:)
-               name:NSManagedObjectContextDidSaveNotification
-             object:self.privateContext];
+           selector: @selector(downloadPicture:)
+               name:@"downloadPicture"
+             object: nil];
     
 }
 

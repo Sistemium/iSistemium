@@ -8,15 +8,27 @@
 
 #import "STMFetchedResultsControllerTVC.h"
 #import "STMPriceType.h"
+#import "STMArticle.h"
 
 
 @interface STMCatalogDetailTVC : STMFetchedResultsControllerTVC
 
+#warning — have to use STMVariableCellsHeightTVC class?
+
 @property (nonatomic, strong) STMPriceType *selectedPriceType;
 
 - (void)refreshTable;
+
 - (void)dismissArticleInfoPopover;
+- (void)showFullscreen;
+
+- (void)dismissCatalogSettingsPopover;
+
 - (void)hideKeyboard;
 
+
+- (NSArray *)currentArticles;
+- (STMArticle *)selectPreviousArticle;
+- (STMArticle *)selectNextArticle;
 
 @end

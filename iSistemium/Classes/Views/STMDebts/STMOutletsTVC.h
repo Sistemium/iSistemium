@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMSearchableTVC.h"
 
-@interface STMOutletsTVC : STMFetchedResultsControllerTVC
+@interface STMOutletsTVC : STMSearchableTVC
 
 - (void)dissmissPopover;
 

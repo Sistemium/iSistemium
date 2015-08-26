@@ -22,14 +22,28 @@
 #import "STMFunctions.h"
 #import "STMConstants.h"
 
+#import "STMSalesmanController.h"
+
+
 @interface STMOrdersSVC : STMSplitViewController
 
+@property (nonatomic, strong) UINavigationController *masterNC;
 @property (nonatomic, strong) STMOrdersMasterPVC *masterPVC;
+@property (nonatomic, strong) UINavigationController *detailNC;
 @property (nonatomic, strong) STMOrdersDetailTVC *detailTVC;
 
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) STMOutlet *selectedOutlet;
 @property (nonatomic, strong) STMSalesman *selectedSalesman;
+@property (nonatomic, strong) STMSaleOrder *selectedOrder;
+@property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
+@property (nonatomic, strong) NSString *searchString;
 
+
+- (void)orderWillSelected;
+- (void)backButtonPressed;
+
+- (void)addFilterProcessing:(NSString *)processing;
+- (void)removeFilterProcessing:(NSString *)processing;
 
 @end

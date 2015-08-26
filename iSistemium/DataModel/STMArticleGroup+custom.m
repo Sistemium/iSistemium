@@ -13,6 +13,7 @@
 @implementation STMArticleGroup (custom)
 
 @dynamic articlesStockVolume;
+@dynamic articlesPicturesCount;
 @dynamic articlesPriceTypes;
 
 - (NSInteger)articlesCount {
@@ -21,6 +22,10 @@
 
 - (NSInteger)articlesStockVolume {
     return [[self.articles valueForKeyPath:@"@sum.stock.volume"] integerValue];
+}
+
+- (NSInteger)articlesPicturesCount {
+    return [[self.articles valueForKeyPath:@"@distinctUnionOfSets.pictures"] count];
 }
 
 - (NSSet *)articlesPriceTypes {
@@ -60,5 +65,6 @@
     return articlesPrices;
 
 }
+
 
 @end

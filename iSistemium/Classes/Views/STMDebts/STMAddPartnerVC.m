@@ -71,6 +71,8 @@
     [super viewDidAppear:animated];
     [self.nameTextField becomeFirstResponder];    
     
+    [super viewDidAppear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {

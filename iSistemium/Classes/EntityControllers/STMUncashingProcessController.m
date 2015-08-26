@@ -120,7 +120,10 @@
         picture.isFantom = @NO;
         
         CGFloat jpgQuality = [STMPicturesController jpgQuality];
-        [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:picture];
+        
+        [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
+                                      forPicture:picture
+                                       andUpload:YES];
         
         [uncashing addPicturesObject:picture];
         

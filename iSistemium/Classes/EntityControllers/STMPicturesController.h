@@ -11,7 +11,11 @@
 
 @interface STMPicturesController : STMController
 
+@property (nonatomic, strong) NSOperationQueue *downloadQueue;
+
 + (STMPicturesController *)sharedController;
+
+- (NSUInteger)nonloadedPicturesCount;
 
 + (CGFloat)jpgQuality;
 
@@ -19,7 +23,10 @@
 + (void)checkUploadedPhotos;
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
-+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
++ (void)downloadConnectionForObject:(NSManagedObject *)object;
+
+//+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
++ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture andUpload:(BOOL)shouldUpload;
 + (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data;
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture;

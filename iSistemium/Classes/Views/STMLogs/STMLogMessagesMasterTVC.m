@@ -160,12 +160,14 @@
     self.clearsSelectionOnViewWillAppear = NO;
     [self performFetch];
     
+    [super customInit];
+
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
     
 }
 

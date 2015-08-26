@@ -9,7 +9,9 @@
 #import "STMAppDelegate.h"
 
 #import <AdSupport/AdSupport.h>
+#import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import "STMAuthController.h"
 #import "STMRemoteController.h"
@@ -51,6 +53,11 @@
 
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
+//    AVSpeechSynthesizer *synthesizer = [[AVSpeechSynthesizer alloc] init];
+//    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:@"Добро пожаловать в Sistemium!"];
+//    utterance.rate = AVSpeechUtteranceMinimumSpeechRate;
+//    [synthesizer speakUtterance:utterance];
+    
     return YES;
     
 }
@@ -190,21 +197,23 @@
     __block UIBackgroundTaskIdentifier bgTask;
     
     bgTask = [application beginBackgroundTaskWithExpirationHandler: ^{
+        
         NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
         [application endBackgroundTask: bgTask];
-        handler (UIBackgroundFetchResultNewData);
+        handler(UIBackgroundFetchResultFailed);
+        
     }];
     
     NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
 
-    [self routeNotificationUserInfo:userInfo];
+    [self routeNotificationUserInfo:userInfo completionHandler:handler];
 
 //    [self showTestLocalNotification];
 
 }
 
-- (void)routeNotificationUserInfo:(NSDictionary *)userInfo {
+- (void)routeNotificationUserInfo:(NSDictionary *)userInfo completionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     UIApplication *app = [UIApplication sharedApplication];
@@ -220,7 +229,12 @@
 
     if (userInfo[@"syncer"]) {
         
-        [nc postNotificationName:@"syncerDidReceiveRemoteNotification" object:app userInfo:userInfo];
+//        [nc postNotificationName:@"syncerDidReceiveRemoteNotification" object:app userInfo:userInfo];
+
+        if ([userInfo[@"syncer"] isEqualToString:@"upload"]) {
+            [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce fetchCompletionHandler:handler];
+        }
+
         meaningfulUserInfo = YES;
         
     }
@@ -228,6 +242,7 @@
     if (!meaningfulUserInfo) {
         
         [nc postNotificationName:@"applicationDidReceiveRemoteNotification" object:app userInfo:userInfo];
+        [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler:handler];
         
     }
 
@@ -241,15 +256,19 @@
     __block UIBackgroundTaskIdentifier bgTask;
     
     bgTask = [application beginBackgroundTaskWithExpirationHandler: ^{
+        
         NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
         [application endBackgroundTask: bgTask];
-        completionHandler(UIBackgroundFetchResultNewData);
+        completionHandler(UIBackgroundFetchResultFailed);
+        
     }];
     
     NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationPerformFetchWithCompletionHandler" object:application];
+    
+    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler:completionHandler];
 
 }
 
@@ -364,7 +383,7 @@
         [defaults setObject:deviceToken forKey:@"deviceToken"];
         [defaults synchronize];
         
-        [Crashlytics setObjectValue:deviceToken forKey:@"deviceToken"];
+        [[Crashlytics sharedInstance] setObjectValue:deviceToken forKey:@"deviceToken"];
 
     }
     
@@ -402,14 +421,16 @@
 
 - (void)startCrashlytics {
     
-    [Crashlytics startWithAPIKey:@"035bda92bd5b13402aaf2c6cb5f66b8ff23f2166"];
+//    [[Crashlytics sharedInstance] setDebugMode:YES];
     
-    [Crashlytics setObjectValue:[[UIDevice currentDevice] name] forKey:@"deviceName"];
-    [Crashlytics setObjectValue:[STMFunctions devicePlatform] forKey:@"devicePlatform"];
-    [Crashlytics setObjectValue:[ASIdentifierManager sharedManager].advertisingIdentifier forKey:@"advertisingIdentifier"];
-    [Crashlytics setObjectValue:[STMAuthController authController].userID forKey:@"userID"];
-    [Crashlytics setObjectValue:[STMAuthController authController].userName forKey:@"userName"];
-    [Crashlytics setObjectValue:[STMAuthController authController].phoneNumber forKey:@"phoneNumber"];
+    [Fabric with:@[CrashlyticsKit]];
+    
+    [[Crashlytics sharedInstance] setObjectValue:[[UIDevice currentDevice] name] forKey:@"deviceName"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMFunctions devicePlatform] forKey:@"devicePlatform"];
+    [[Crashlytics sharedInstance] setObjectValue:[ASIdentifierManager sharedManager].advertisingIdentifier forKey:@"advertisingIdentifier"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userID forKey:@"userID"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userName forKey:@"userName"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].phoneNumber forKey:@"phoneNumber"];
     
 }
 

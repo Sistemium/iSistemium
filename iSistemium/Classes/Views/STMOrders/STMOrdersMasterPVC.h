@@ -11,6 +11,8 @@
 @interface STMOrdersMasterPVC : UIPageViewController
 
 - (void)updateResetFilterButtonState;
+- (void)refreshTables;
 
+- (NSArray *)defaultToolbarItemsArray;
 
 @end

@@ -22,26 +22,33 @@
 #import "STMConstants.h"
 #import "STMEntityDescription.h"
 #import "STMImagePickerController.h"
+#import "STMLocationController.h"
 
-@interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+
+@interface STMCampaignPhotoReportCVC ()  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
 @property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
-@property (nonatomic) NSUInteger currentSection;
+@property (nonatomic, strong) STMOutlet *selectedOutlet;
+
 @property (nonatomic, strong) NSArray *outlets;
 @property (nonatomic) BOOL isTakingPhoto;
 @property (nonatomic, strong) UIView *spinnerView;
 @property (nonatomic, strong) NSBlockOperation *changeOperation;
 @property (nonatomic, strong) STMCampaign *updatingCampaign;
 @property (nonatomic) BOOL isUpdating;
+@property (nonatomic) BOOL isPhotoLocationProcessing;
 @property (nonatomic, strong) NSMutableArray *waitingLocationPhotos;
 @property (nonatomic, strong) STMLocationTracker *locationTracker;
 
 @property (nonatomic, strong) STMImagePickerController *imagePickerController;
 @property (strong, nonatomic) IBOutlet UIView *cameraOverlayView;
 
-//@property (nonatomic, strong) NSMutableArray *availableSourceTypes;
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic) CGFloat shiftDistance;
+@property (nonatomic) BOOL viewFrameWasChanged;
+
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
 @end
@@ -65,17 +72,6 @@
     
 }
 
-/*
-- (NSMutableArray *)availableSourceTypes {
-
-    if (!_availableSourceTypes) {
-        _availableSourceTypes = [NSMutableArray array];
-    }
-    return _availableSourceTypes;
-    
-}
-*/
-
 - (NSFetchedResultsController *)photoReportPicturesResultsController {
     
     if (!_photoReportPicturesResultsController) {
@@ -84,15 +80,55 @@
         
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
+        request.predicate = [self campaignPredicate];
         
         _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-
-//        _photoReportPicturesResultsController.delegate = self;
+        
+        //        _photoReportPicturesResultsController.delegate = self;
         
     }
     
     return _photoReportPicturesResultsController;
+    
+}
+
+- (NSPredicate *)campaignPredicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    NSPredicate *campaignPredicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
+    
+    [subpredicates addObject:campaignPredicate];
+    
+    //    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+    //        [subpredicates addObject:[NSPredicate predicateWithFormat:@"outlet.name CONTAINS[cd] %@", self.searchBar.text]];
+    //    }
+    
+    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    return predicate;
+    
+}
+
+- (NSPredicate *)outletPredicate {
+    
+    NSMutableArray *subpredicates = [NSMutableArray array];
+    
+    NSPredicate *outletPredicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
+    
+    [subpredicates addObject:outletPredicate];
+    
+    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
+    }
+    
+    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    return predicate;
     
 }
 
@@ -117,11 +153,11 @@
         
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
+        request.predicate = [self outletPredicate];
         
         NSError *error;
         NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:&error];
-
+        
         NSMutableSet *outletsSet = [NSMutableSet setWithArray:outlets];
         
         NSMutableSet *outletsWithPhotoReports = [NSMutableSet set];
@@ -174,32 +210,12 @@
         spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
         [spinner startAnimating];
         [view addSubview:spinner];
- 
+        
         _spinnerView = view;
         
     }
     
     return _spinnerView;
-    
-}
-
-- (void)setCurrentSection:(NSUInteger)currentSection {
-    
-    if (currentSection != _currentSection) {
-        
-        NSUInteger previousSection = _currentSection;
-        
-        _currentSection = currentSection;
-
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:previousSection]];
-        [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:currentSection]];
-        
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:currentSection];
-        
-        UICollectionViewLayoutAttributes *headerAttribute = [self.collectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader atIndexPath:indexPath];
-        [self.collectionView scrollRectToVisible:headerAttribute.frame animated:YES];
-        
-    }
     
 }
 
@@ -209,7 +225,7 @@
         
         STMImagePickerController *imagePickerController = [[STMImagePickerController alloc] init];
         imagePickerController.delegate = self;
-                
+        
         imagePickerController.sourceType = self.selectedSourceType;
         
         if (imagePickerController.sourceType == UIImagePickerControllerSourceTypeCamera) {
@@ -231,7 +247,7 @@
             }
             
             imagePickerController.cameraOverlayView = self.cameraOverlayView;
-
+            
         }
         
         _imagePickerController = imagePickerController;
@@ -276,7 +292,7 @@
     spinner.center = view.center;
     [spinner startAnimating];
     [view addSubview:spinner];
-
+    
     [self.imagePickerController.cameraOverlayView addSubview:view];
     
     [self.imagePickerController takePicture];
@@ -284,7 +300,7 @@
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
-
+    
     [self imagePickerControllerDidCancel:self.imagePickerController];
     
 }
@@ -293,12 +309,12 @@
     
     [self cancelButtonPressed:sender];
     
-    STMOutlet *outlet = self.outlets[self.currentSection];
+    STMOutlet *outlet = self.selectedOutlet;
     STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
     photoReport.isFantom = @NO;
     photoReport.outlet = outlet;
     self.selectedPhotoReport = photoReport;
-
+    
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     
 }
@@ -311,8 +327,6 @@
     self.photoReportPicturesResultsController = nil;
     self.outlets = nil;
     
-    STMOutlet *selectedOutlet = self.selectedPhotoReport.outlet;
-    
     NSError *error;
     if (![self.photoReportPicturesResultsController performFetch:&error]) {
         
@@ -322,12 +336,12 @@
         
         if (!self.isUpdating) {
             
+            BOOL searchBarWasActive = [self.searchBar isFirstResponder];
+            
             [self.collectionView reloadData];
             
-            if (selectedOutlet) {
-                
-                self.currentSection = [self.outlets indexOfObject:selectedOutlet];
-                
+            if (searchBarWasActive) {
+                [self.searchBar becomeFirstResponder];
             }
             
         }
@@ -349,80 +363,45 @@
     
     STMOutlet *outlet = self.outlets[tag];
     
-    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
-    photoReport.isFantom = @NO;
-    photoReport.outlet = outlet;
-
-//    [self.document saveDocument:^(BOOL success) {
-//        if (success) {
-//                NSLog(@"create new photoReport");
-//        }
-//    }];
+    //    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
+    //    photoReport.isFantom = @NO;
+    //    photoReport.outlet = outlet;
     
-    self.selectedPhotoReport = photoReport;
-
-    self.currentSection = tag;
-
+    self.selectedOutlet = outlet;
+    
+    //    self.selectedPhotoReport = photoReport;
+    
     [(UIView *)[sender view] setBackgroundColor:ACTIVE_BLUE_COLOR];
-    
-//    [self showImagePickerSelector];
     
     BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
-
+    
     if (camera) {
         
+        self.selectedPhotoReport = [self newPhotoReport];
         [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
         
     } else if (photoLibrary) {
         
+        self.selectedPhotoReport = [self newPhotoReport];
         [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
         
     } else {
         
-        [STMObjectsController removeObject:self.selectedPhotoReport];
-
+        //        [STMObjectsController removeObject:self.selectedPhotoReport];
+        
     }
     
 }
 
-/*
-- (void)showImagePickerSelector {
-
-    self.availableSourceTypes = nil;
+- (STMPhotoReport *)newPhotoReport {
     
-    BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
-    BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
-//    BOOL savedPhotosAlbum = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
+    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
+    photoReport.isFantom = @NO;
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMAGE SOURCE", nil) message:NSLocalizedString(@"CHOOSE TYPE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:nil];
-    alert.tag = 1;
-    
-    if (photoLibrary) {
-     
-        [alert addButtonWithTitle:NSLocalizedString(@"PHOTO LIBRARY", nil)];
-        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypePhotoLibrary]];
-        
-    }
-    
-    if (camera) {
-        
-        [alert addButtonWithTitle:NSLocalizedString(@"CAMERA", nil)];
-        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeCamera]];
-
-    }
-    
-//    if (savedPhotosAlbum) {
-//        
-//        [alert addButtonWithTitle:NSLocalizedString(@"SAVED PHOTOS ALBUM", nil)];
-//        [self.availableSourceTypes addObject:[NSNumber numberWithInt:UIImagePickerControllerSourceTypeSavedPhotosAlbum]];
-//
-//    }
-    
-    [alert show];
+    return photoReport;
     
 }
-*/
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
     
@@ -433,7 +412,7 @@
         [self.splitViewController presentViewController:self.imagePickerController animated:YES completion:^{
             
             [self.splitViewController.view addSubview:self.spinnerView];
-//            NSLog(@"presentViewController:UIImagePickerController");
+            //            NSLog(@"presentViewController:UIImagePickerController");
             
         }];
         
@@ -442,21 +421,41 @@
 }
 
 - (void)saveImage:(UIImage *)image {
-
-    CGFloat jpgQuality = [STMPicturesController jpgQuality];
-    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality) forPicture:self.selectedPhotoReport];
-
-    [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
-    self.selectedPhotoReport.campaign = self.campaign;
     
-    [self.locationTracker getLocation];
+    CGFloat jpgQuality = [STMPicturesController jpgQuality];
+    
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
+                                  forPicture:self.selectedPhotoReport
+                                   andUpload:YES];
+    
+    [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+    
+    if (![self.selectedPhotoReport.managedObjectContext isEqual:self.campaign.managedObjectContext]) {
+        
+        CLS_LOG(@"photoReport and campaign are placed in a different contexts");
+        CLS_LOG(@"app will crash now");
+        CLS_LOG(@"____________ CONTEXTS ____________");
+        CLS_LOG(@"document.managedObjectContext %@", self.document.managedObjectContext);
+        CLS_LOG(@"document.managedObjectContext.parentContext %@", self.document.managedObjectContext.parentContext);
+        CLS_LOG(@"selectedPhotoReport.managedObjectContext %@", self.selectedPhotoReport.managedObjectContext);
+        CLS_LOG(@"campaign.managedObjectContext %@", self.campaign.managedObjectContext);
+        CLS_LOG(@"____________ OBJECTS ____________");
+        CLS_LOG(@"selectedPhotoReport %@", self.selectedPhotoReport);
+        CLS_LOG(@"campaign %@", self.campaign);
+        
+    }
+    
+    self.selectedPhotoReport.campaign = self.campaign;
+    self.selectedPhotoReport.outlet = self.selectedOutlet;
+    
     [self.waitingLocationPhotos addObject:self.selectedPhotoReport];
+    [self.locationTracker getLocation];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
-
+    
     [[self document] saveDocument:^(BOOL success) {
         if (success) {
-
+            
         }
     }];
     
@@ -484,21 +483,36 @@
 
 - (void)currentLocationWasUpdated:(NSNotification *)notification {
     
-    if (self.waitingLocationPhotos.count > 0) {
-    
+    if (self.waitingLocationPhotos.count > 0 && !self.isPhotoLocationProcessing) {
+        
         CLLocation *currentLocation = (notification.userInfo)[@"currentLocation"];
         NSLog(@"currentLocation %@", currentLocation);
-
-        STMLocation *location = [self.locationTracker locationObjectFromCLLocation:currentLocation];
         
-        for (STMPhoto *photo in self.waitingLocationPhotos) {
-            
-            photo.location = location;
-            
-            [self.waitingLocationPhotos removeObject:photo];
-            
-        }
+        STMLocation *location = [STMLocationController locationObjectFromCLLocation:currentLocation];
+        
+        [self setLocationForWaitingLocationPhotos:location];
+        
+    }
+    
+}
 
+- (void)setLocationForWaitingLocationPhotos:(STMLocation *)location {
+    
+    self.isPhotoLocationProcessing = YES;
+    NSArray *photos = self.waitingLocationPhotos.copy;
+    
+    for (STMPhoto *photo in photos) {
+        
+        photo.location = location;
+        
+        [self.waitingLocationPhotos removeObject:photo];
+        
+    }
+    
+    if (self.waitingLocationPhotos.count > 0) {
+        [self setLocationForWaitingLocationPhotos:location];
+    } else {
+        self.isPhotoLocationProcessing = NO;
     }
     
 }
@@ -511,18 +525,6 @@
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-
-/*
-    if (alertView.tag == 1) {
-        
-        if (buttonIndex > 0) {
-            
-            [self showImagePickerForSourceType:[self.availableSourceTypes[buttonIndex-1] intValue]];
-            
-        }
-        
-    }
-*/
     
 }
 
@@ -531,13 +533,13 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-//    NSLog(@"picker didFinishPickingMediaWithInfo");
+    //    NSLog(@"picker didFinishPickingMediaWithInfo");
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
         [self saveImage:info[UIImagePickerControllerOriginalImage]];
         self.imagePickerController = nil;
-//        NSLog(@"dismiss UIImagePickerController");
+        //        NSLog(@"dismiss UIImagePickerController");
         
     }];
     
@@ -548,17 +550,21 @@
     [picker dismissViewControllerAnimated:NO completion:^{
         
     }];
-
+    
     [self.spinnerView removeFromSuperview];
-    [STMObjectsController removeObject:self.selectedPhotoReport];
+    
+    STMPhotoReport *photoReportToRemove = self.selectedPhotoReport;
+    self.selectedPhotoReport = nil;
+    
+    [STMObjectsController removeObject:photoReportToRemove];
     self.imagePickerController = nil;
-
+    
 }
 
 #pragma mark - UICollectionViewDataSource, Delegate, DelegateFlowLayout
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-  
+    
     return self.outlets.count;
     
 }
@@ -569,7 +575,7 @@
     NSArray *photoReports = [self photoReportsInOutlet:outlet];
     
     return photoReports.count;
-
+    
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
@@ -578,17 +584,17 @@
     
     headerView.tag = indexPath.section;
     
-    if (indexPath.section == self.currentSection && self.selectedPhotoReport) {
-
-        headerView.backgroundColor = ACTIVE_BLUE_COLOR;
-
-    } else {
-     
-        headerView.backgroundColor = [UIColor whiteColor];
-
-    }
-    
     STMOutlet *outlet = self.outlets[indexPath.section];
+    
+    if (outlet == self.selectedOutlet) {
+        
+        headerView.backgroundColor = ACTIVE_BLUE_COLOR;
+        
+    } else {
+        
+        headerView.backgroundColor = [UIColor whiteColor];
+        
+    }
     
     UILabel *label;
     
@@ -598,7 +604,7 @@
             
             label = (UILabel *)view;
             
-            label.text = outlet.name;
+            label.text = [STMFunctions shortCompanyName:outlet.name];
             label.textColor = [UIColor blackColor];
             
         }
@@ -611,7 +617,7 @@
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(outletHeaderPressed:)];
     [headerView addGestureRecognizer:tap];
-
+    
     return headerView;
     
 }
@@ -645,7 +651,6 @@
     
     STMOutlet *outlet = self.outlets[indexPath.section];
     self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
-    self.currentSection = indexPath.section;
     
     [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
     
@@ -661,12 +666,12 @@
     self.isUpdating = YES;
     self.changeOperation = [[NSBlockOperation alloc] init];
     self.updatingCampaign = self.campaign;
-
+    
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
-//    NSLog(@"controllerDidChangeContent");
+    //    NSLog(@"controllerDidChangeContent");
     
     self.isUpdating = NO;
     
@@ -714,7 +719,7 @@
     
     NSLog(@"controller didChangeObject");
     //    NSLog(@"anObject %@", anObject);
-
+    
     __weak UICollectionView *collectionView = self.collectionView;
     switch (type) {
         case NSFetchedResultsChangeInsert: {
@@ -759,8 +764,117 @@
             break;
             
     }
- 
+    
 }
+
+
+#pragma mark - search & UISearchBarDelegate
+
+- (void)searchButtonPressed {
+    
+    [self.searchBar becomeFirstResponder];
+    [self.collectionView setContentOffset:CGPointZero animated:YES];
+    
+    self.parentViewController.navigationItem.rightBarButtonItem = nil;
+    
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    [self fetchPhotoReport];
+    
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = YES;
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = NO;
+    searchBar.text = nil;
+    
+    [self hideKeyboard];
+    [self fetchPhotoReport];
+    
+}
+
+
+- (void)hideKeyboard {
+    
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
+    
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    
+    [self hideKeyboard];
+    
+}
+
+
+#pragma mark - keyboard show / hide
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
+    CGFloat toolbarHeight = self.navigationController.toolbar.frame.size.height;
+    
+    self.shiftDistance = keyboardHeight - tabBarHeight - toolbarHeight;
+    
+    if (!self.viewFrameWasChanged) {
+        
+        [self changeViewFrameByDistance:self.shiftDistance];
+        self.viewFrameWasChanged = YES;
+        
+    }
+    
+}
+
+- (void)keyboardWillBeHidden:(NSNotification *)notification {
+    
+    if (self.viewFrameWasChanged) {
+        
+        [self changeViewFrameByDistance:-self.shiftDistance];
+        self.viewFrameWasChanged = NO;
+        
+    }
+    
+}
+
+- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
+    
+    CGRect keyboardRect = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
+    
+    return keyboardRect.size.height;
+    
+}
+
+- (void)changeViewFrameByDistance:(CGFloat)distance {
+    
+    const float movementDuration = 0.5f;
+    
+    [UIView beginAnimations:@"animation" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:movementDuration];
+    
+    CGFloat x = self.collectionView.frame.origin.x;
+    CGFloat y = self.collectionView.frame.origin.y;
+    CGFloat width = self.collectionView.frame.size.width;
+    CGFloat height = self.collectionView.frame.size.height;
+    
+    self.collectionView.frame = CGRectMake(x, y, width, height - distance);
+    
+    [UIView commitAnimations];
+    
+}
+
 
 #pragma mark - view lifecycle
 
@@ -786,9 +900,28 @@
 }
 
 - (void)addObservers {
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photosCountChanged) name:@"photosCountChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentLocationWasUpdated:) name:@"currentLocationWasUpdated" object:self.locationTracker];
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    //    [nc addObserver:self
+    //           selector:@selector(keyboardWillShow:)
+    //               name:UIKeyboardWillShowNotification
+    //             object:nil];
+    //
+    //    [nc addObserver:self
+    //           selector:@selector(keyboardWillBeHidden:)
+    //               name:UIKeyboardWillHideNotification
+    //             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(photosCountChanged)
+               name:@"photosCountChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(currentLocationWasUpdated:)
+               name:@"currentLocationWasUpdated"
+             object:self.locationTracker];
     
 }
 
@@ -799,7 +932,14 @@
 }
 
 - (void)customInit {
-
+    
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.collectionView.frame.size.width, 44)];
+    self.searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.searchBar.delegate = self;
+    
+    [self.view addSubview:self.searchBar];
+    self.collectionView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
+    
     [self addObservers];
     [self addSpinner];
     
@@ -831,7 +971,7 @@
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-
+    
     if ([segue.identifier isEqualToString:@"showPhotoReport"] && [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]]) {
         
         STMPhotoReportPVC *photoReportPVC = (STMPhotoReportPVC *)segue.destinationViewController;
@@ -841,7 +981,7 @@
         photoReportPVC.parentVC = self;
         
     }
-
+    
 }
 
 @end

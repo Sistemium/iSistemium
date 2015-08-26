@@ -7,11 +7,18 @@
 //
 
 #import "STMArticleInfoVC.h"
+#import "STMArticlePicturePVC.h"
+
 
 @interface STMArticleInfoVC () <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (nonatomic, strong) STMBarButtonItem *upButton;
+@property (nonatomic, strong) STMBarButtonItem *downButton;
+@property (nonatomic, strong) UIImageView *upImageView;
+@property (nonatomic, strong) UIImageView *downImageView;
 
 @property (nonatomic, strong) NSMutableArray *articleInfo;
 
@@ -30,8 +37,70 @@
     
 }
 
+
+#pragma mark - buttons
+
+- (void)upButtonPressed {
+    [self showPreviousArticle];
+}
+
+- (void)downButtonPressed {
+    [self showNextArticle];
+}
+
 - (void)closeButtonPressed {
     [self.parentVC dismissArticleInfoPopover];
+}
+
+- (void)showPreviousArticle {
+    
+    STMArticle *previousArticle = [self.parentVC selectPreviousArticle];
+    if (previousArticle) self.article = previousArticle;
+    
+}
+
+- (void)showNextArticle {
+    
+    STMArticle *nextArticle = [self.parentVC selectNextArticle];
+    if (nextArticle) self.article = nextArticle;
+    
+}
+
+- (void)showFullscreen {
+    [self.parentVC showFullscreen];
+}
+
+- (void)setArticle:(STMArticle *)article {
+    
+    if (article != _article) {
+
+        _article = article;
+        [self setupImage];
+        [self prepareInfo];
+        [self checkArticlesArray];
+        [self.tableView reloadData];
+
+    }
+    
+}
+
+#pragma mark - setup views
+
+- (void)addGestures {
+    
+    UISwipeGestureRecognizer *swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNextArticle)];
+    swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
+    
+    UISwipeGestureRecognizer *swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPreviousArticle)];
+    swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFullscreen)];
+    
+    self.view.gestureRecognizers = @[swipeUpGesture, swipeDownGesture];
+    
+    self.imageView.userInteractionEnabled = YES;
+    self.imageView.gestureRecognizers = @[tapGesture];
+    
 }
 
 - (void)setupImage {
@@ -41,8 +110,30 @@
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
         STMArticlePicture *picture = [self.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
         
-        self.imageView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
-    
+        if (picture.resizedImagePath) {
+            
+            [[self.imageView viewWithTag:555] removeFromSuperview];
+            self.imageView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.resizedImagePath]];
+
+        } else {
+            
+            UIView *view = [[UIView alloc] initWithFrame:self.imageView.bounds];
+            view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            view.backgroundColor = [UIColor whiteColor];
+            view.alpha = 0.75;
+            view.tag = 555;
+            
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            spinner.center = view.center;
+            spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+            [spinner startAnimating];
+            
+            [view addSubview:spinner];
+            
+            [self.imageView addSubview:view];
+            
+        }
+        
     } else {
         self.imageView.image = [UIImage imageNamed:@"wine_bottle-512.png"];
     }
@@ -59,17 +150,58 @@
     CGRect frame = CGRectMake(x, y, width, height);
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:frame];
     
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed)];
     
-    [toolbar setItems:@[flexibleSpace, closeButton]];
+    UIImage *upImage = [[UIImage imageNamed:@"Up4-25"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.upImageView = [[UIImageView alloc] initWithImage:upImage];
+    [self.upImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(upButtonPressed)]];
+    self.upButton = [[STMBarButtonItem alloc] initWithCustomView:self.upImageView];
+
+    UIImage *downImage = [[UIImage imageNamed:@"Down4-25"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.downImageView = [[UIImageView alloc] initWithImage:downImage];
+    [self.downImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(downButtonPressed)]];
+    self.downButton = [[STMBarButtonItem alloc] initWithCustomView:self.downImageView];
+    
+    STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(closeButtonPressed)];
+    
+    STMBarButtonItem *fixedSpace = [STMBarButtonItem fixedSpaceWithWidth:50];
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+
+    [self checkArticlesArray];
+    
+    [toolbar setItems:@[self.upButton, fixedSpace, self.downButton, flexibleSpace, closeButton]];
 
     [self.view addSubview:toolbar];
     
 }
 
+- (void)checkArticlesArray {
+    
+    NSArray *articlesArray = [self.parentVC currentArticles];
+    
+    if ([articlesArray.firstObject isEqual:self.article]) {
+        
+        self.upButton.customView.tintColor = [UIColor lightGrayColor];
+        
+    } else if ([articlesArray.lastObject isEqual:self.article]) {
+
+        self.downButton.customView.tintColor = [UIColor lightGrayColor];
+
+    } else {
+
+        self.upButton.customView.tintColor = ACTIVE_BLUE_COLOR;
+        self.downButton.customView.tintColor = ACTIVE_BLUE_COLOR;
+
+    }
+    
+}
+
 - (void)prepareInfo {
 
+    self.articleInfo = nil;
+    
     [self.articleInfo addObject:@{
                                   @"key": @"name",
                                   @"value": (self.article.name) ? self.article.name : @""
@@ -106,6 +238,11 @@
 
     NSSortDescriptor *priceDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"priceType.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
     NSArray *prices = [self.article.prices sortedArrayUsingDescriptors:@[priceDescriptor]];
+    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+    prices = [prices filteredArrayUsingPredicate:pricePredicate];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"priceType == %@", self.parentVC.selectedPriceType];
+    prices = [prices filteredArrayUsingPredicate:predicate];
     
     for (STMPrice *price in prices) {
         
@@ -174,7 +311,7 @@
 
         [self fillCell:cell forIndexPath:indexPath];
         
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
         
         [cell setNeedsLayout];
         [cell layoutIfNeeded];
@@ -236,6 +373,8 @@
     
     if ([key isEqualToString:self.parentVC.selectedPriceType.name] || [key isEqualToString:@"name"]) {
         [self boldFontForCell:cell];
+    } else {
+        [self regularFontForCell:cell];
     }
     
     if ([key isEqualToString:@"name"]) {
@@ -258,10 +397,27 @@
     
 }
 
+- (void)regularFontForCell:(STMInfoTableViewCell *)cell {
+    
+    [self regularFontForLabel:cell.textLabel];
+    [self regularFontForLabel:cell.detailTextLabel];
+    
+}
+
 - (UIFont *)boldFontForLabel:(UILabel *)label {
 
     CGFloat fontSize = label.font.pointSize;
     UIFont *font = [UIFont boldSystemFontOfSize:fontSize];
+    label.font = font;
+    
+    return font;
+
+}
+
+- (UIFont *)regularFontForLabel:(UILabel *)label {
+
+    CGFloat fontSize = label.font.pointSize;
+    UIFont *font = [UIFont systemFontOfSize:fontSize];
     label.font = font;
     
     return font;
@@ -278,12 +434,14 @@
     
 }
 
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     if (self.article) {
         
+        [self addGestures];
         [self setupImage];
         [self prepareInfo];
         [self setupTableView];
@@ -308,6 +466,10 @@
     [super viewDidAppear:animated];
     [self setupToolbar];
 
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -10,6 +10,9 @@
 #import "STMSaleOrderController.h"
 #import "STMOrderEditablesVC.h"
 
+#import "STMSalesmanController.h"
+
+
 static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
 static NSString *positionCellIdentifier = @"orderPositionCell";
 
@@ -29,6 +32,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 
 @property (nonatomic, strong) NSMutableDictionary *cachedCellsHeights;
 
+
 @end
 
 
@@ -43,6 +47,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         
         _saleOrder = saleOrder;
         
+        self.saleOrderPositions = nil;
         [self performFetch];
         
     }
@@ -80,7 +85,9 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         NSLog(@"performFetch error %@", error);
         
     } else {
-                
+        
+        [self.tableView reloadData];
+        
     }
     
 }
@@ -292,19 +299,23 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
 }
 
+- (NSInteger)numberOfOptionalRowsToShowInInfoSections {
+    
+    NSInteger counter = 0;
+    
+    counter += (self.saleOrder.commentText) ? 1 : 0;
+    counter += (self.saleOrder.processingMessage) ? 1 : 0;
+    counter += (![STMSalesmanController isItOnlyMeAmongSalesman]) ? 1 : 0;
+    
+    return counter;
+    
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     switch (section) {
         case 0:
-            
-            if (self.saleOrder.commentText && self.saleOrder.processingMessage) {
-                return 7;
-            } else if (self.saleOrder.commentText || self.saleOrder.processingMessage) {
-                return 6;
-            } else {
-                return 5;
-            }
-            
+            return 4 + [self numberOfOptionalRowsToShowInInfoSections];
             break;
             
         case 1:
@@ -391,7 +402,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
     [self fillOrderInfoCell:cell forRow:indexPath.row];
     
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
     
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
@@ -417,7 +428,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 
     [self fillOrderPositionCell:cell forRow:indexPath.row];
     
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame), CGRectGetHeight(cell.bounds));
+    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
     
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
@@ -501,26 +512,21 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     switch (row) {
         case 0:
             cell.titleLabel.text = NSLocalizedString(@"OUTLET", nil);
-            cell.detailLabel.text = self.saleOrder.outlet.name;
+            cell.detailLabel.text = [STMFunctions shortCompanyName:self.saleOrder.outlet.name];
             cell.detailLabel.textColor = (!self.saleOrder.outlet.isActive || [self.saleOrder.outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
             break;
 
         case 1:
-            cell.titleLabel.text = NSLocalizedString(@"SALESMAN", nil);
-            cell.detailLabel.text = self.saleOrder.salesman.name;
-            break;
-
-        case 2:
             cell.titleLabel.text = NSLocalizedString(@"DISPATCH DATE", nil);
             cell.detailLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.saleOrder.date];
             break;
 
-        case 3:
+        case 2:
             cell.titleLabel.text = NSLocalizedString(@"COST", nil);
             cell.detailLabel.text = [[STMFunctions currencyFormatter] stringFromNumber:self.saleOrder.totalCost];
             break;
 
-        case 4:
+        case 3:
             cell.titleLabel.text = NSLocalizedString(@"STATUS", nil);
             
             cell.detailLabel.userInteractionEnabled = YES;
@@ -535,8 +541,45 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
             }
             break;
 
+        case 4:
+
+            if (![STMSalesmanController isItOnlyMeAmongSalesman]) {
+                
+                [self fillSalesmanForCell:cell];
+                
+            } else if (self.saleOrder.commentText) {
+                
+                [self fillCommentForCell:cell];
+                
+            } else {
+                
+                [self fillProcessingMessageForCell:cell];
+                
+            }
+            break;
+
         case 5:
-            (self.saleOrder.commentText) ? [self fillCommentForCell:cell] : [self fillProcessingMessageForCell:cell];
+            
+            if (![STMSalesmanController isItOnlyMeAmongSalesman]) {
+                
+                if (self.saleOrder.commentText) {
+                    
+                    [self fillCommentForCell:cell];
+                    
+                } else {
+                    
+                    [self fillProcessingMessageForCell:cell];
+                    
+                }
+                
+            } else {
+                
+                if (self.saleOrder.commentText) {
+                    
+                    [self fillProcessingMessageForCell:cell];
+                    
+                }
+            }
             break;
 
         case 6:
@@ -552,6 +595,13 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
 }
 
+- (void)fillSalesmanForCell:(STMCustom2TVCell *)cell {
+    
+    cell.titleLabel.text = NSLocalizedString(@"SALESMAN", nil);
+    cell.detailLabel.text = self.saleOrder.salesman.name;
+
+}
+
 - (void)fillCommentForCell:(STMCustom2TVCell *)cell {
     
     cell.titleLabel.text = NSLocalizedString(@"COMMENT", nil);
@@ -563,9 +613,6 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
     cell.titleLabel.text = NSLocalizedString(@"PROCESSING MESSAGE", nil);
     cell.detailLabel.text = self.saleOrder.processingMessage;
-    
-//    NSLog(@"processingMessage %@", [cell.detailLabel.text dataUsingEncoding:NSUTF8StringEncoding]);
-    
     cell.detailLabel.textColor = [STMSaleOrderController messageColorForProcessing:self.saleOrder.processing];
 
 }
@@ -577,9 +624,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     STMSaleOrderPosition *saleOrderPosition = self.saleOrderPositions[row];
     
     cell.textLabel.text = saleOrderPosition.article.name;
-//    cell.textLabel.font = [UIFont systemFontOfSize:16];
     
-//    cell.detailTextLabel.text = [self detailedTextForSaleOrderPosition:saleOrderPosition];
     cell.detailTextLabel.attributedText = [self attributedDetailedTextForSaleOrderPosition:saleOrderPosition
                                                                                   withFont:cell.detailTextLabel.font];
     
@@ -627,7 +672,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     NSDecimalNumber *price = saleOrderPosition.price;
     NSDecimalNumber *priceDoc = saleOrderPosition.priceDoc;
     NSDecimalNumber *priceOrigin = saleOrderPosition.priceOrigin;
-
+    
     NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
     appendString = [NSString stringWithFormat:@"%@%@", saleOrderPosition.article.pieceVolume, volumeUnitString];
     [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
@@ -640,22 +685,9 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:price]];
     [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
 
-    if ([price compare:priceDoc] != NSOrderedSame) {
-        
-        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE1", nil)];
-        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
-        
-        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceDoc]];
-        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
-        
-    }
-
     if ([price compare:priceOrigin] != NSOrderedSame) {
         
-        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE ORIGIN", nil)];
-        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
-        
-        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceOrigin]];
+        appendString = [NSString stringWithFormat:@" (%@ ", [numberFormatter stringFromNumber:priceOrigin]];
         [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
         
         NSDecimalNumber *result = [price decimalNumberBySubtracting:priceOrigin];
@@ -669,23 +701,39 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
         
         NSString *discountString = [numberFormatter stringFromNumber:discount];
         
-        if ([discount compare:[NSDecimalNumber zero]] == NSOrderedAscending) {
-            
-            attributes = @{NSFontAttributeName: font,
-                           NSForegroundColorAttributeName: [UIColor redColor]};
-            
-        } else {
+        UIColor *discountColor = ([discount compare:[NSDecimalNumber zero]] == NSOrderedAscending) ? [UIColor redColor] : [UIColor purpleColor];
 
-            attributes = @{NSFontAttributeName: font,
-                           NSForegroundColorAttributeName: [UIColor purpleColor]};
-
-        }
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: discountColor};
         
-        appendString = [NSString stringWithFormat:@", %@", discountString];
+        appendString = [NSString stringWithFormat:@"%@", discountString];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: [UIColor blackColor]};
+        
+        [self appendString:@")" toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+
+    }
+
+    if ([price compare:priceDoc] != NSOrderedSame) {
+        
+        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"PRICE1", nil)];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
+        
+        numberFormatter = [STMFunctions currencyFormatter];
+        
+        appendString = [NSString stringWithFormat:@": %@", [numberFormatter stringFromNumber:priceDoc]];
         [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
         
     }
+    
+    if (saleOrderPosition.article.extraLabel) {
+     
+        appendString = [NSString stringWithFormat:@", %@", saleOrderPosition.article.extraLabel];
+        [self appendString:appendString toAttributedDetailedString:attributedDetailedString withAttributes:attributes];
 
+    }
     
     return attributedDetailedString;
     
@@ -828,17 +876,22 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 #pragma mark - view lifecycle
 
 - (void)customInit {
-
+    
+    [self.navigationItem setHidesBackButton:YES];
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:Custom2CellIdentifier];
     [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:positionCellIdentifier];
+    
     [self performFetch];
+
+    [super customInit];
 
 }
 
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
 
 }
 

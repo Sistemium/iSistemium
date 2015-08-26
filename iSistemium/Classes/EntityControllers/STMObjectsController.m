@@ -21,7 +21,6 @@
 
 #import "STMNS.h"
 
-#import <Crashlytics/Crashlytics.h>
 
 @interface STMObjectsController()
 
@@ -211,7 +210,7 @@
     NSString *nameTail = (nameExplode.count > 1) ? nameExplode[1] : name;
     NSString *capEntityName = [nameTail stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[nameTail substringToIndex:1] capitalizedString]];
 
-    NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
+    NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
     
     NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
@@ -299,11 +298,13 @@
             
             [object setValue:value forKey:key];
             
-            if ([key isEqualToString:@"href"]) [STMPicturesController hrefProcessingForObject:object];
+//            if ([key isEqualToString:@"href"]) [STMPicturesController hrefProcessingForObject:object];
             
         } else {
             
-            [object setValue:nil forKey:key];
+            if (![object isKindOfClass:[STMShippingLocationPicture class]]) {
+                [object setValue:nil forKey:key];
+            }
             
         }
         
@@ -417,31 +418,39 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 
-    if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
-        
-        if ([object isKindOfClass:[NSManagedObject class]]) {
-            
-            NSManagedObjectContext *context = [STMObjectsController document].managedObjectContext;
-            NSManagedObjectContext *parentContext = context.parentContext;
-            
-            CLS_LOG(@"context %@", context);
-            CLS_LOG(@"parentContext %@", parentContext);
-            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
-            CLS_LOG(@"object isDeleted %d", [(NSManagedObject *)object isDeleted]);
-            
-        }
-
-        CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
-        CLS_LOG(@"object %@", object);
-        CLS_LOG(@"change %@", change);
-        
-    }
+//    if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
+//        
+//        if ([object isKindOfClass:[NSManagedObject class]]) {
+//            
+//            NSManagedObjectContext *context = [STMObjectsController document].managedObjectContext;
+//            NSManagedObjectContext *parentContext = context.parentContext;
+//            
+//            CLS_LOG(@"context %@", context);
+//            CLS_LOG(@"parentContext %@", parentContext);
+//            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
+//            CLS_LOG(@"object isDeleted %d", [(NSManagedObject *)object isDeleted]);
+//            
+//        }
+//
+//        CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
+//        CLS_LOG(@"object %@", object);
+//        CLS_LOG(@"change %@", change);
+//        
+//    }
     
     [object removeObserver:self forKeyPath:keyPath];
     
     if ([object isKindOfClass:[NSManagedObject class]]) {
         
-        [(NSManagedObject *)object setValue:[change valueForKey:NSKeyValueChangeOldKey] forKey:keyPath];
+        id oldValue = [change valueForKey:NSKeyValueChangeOldKey];
+        
+        if ([oldValue isKindOfClass:[NSDate class]]) {
+            
+            [(NSManagedObject *)object setValue:oldValue forKey:keyPath];
+            
+        } else {
+            CLS_LOG(@"observeValueForKeyPath oldValue class %@ != NSDate / did crashed here earlier", [oldValue class]);
+        }
         
     }
 
@@ -519,7 +528,7 @@
     
     NSString *name = dictionary[@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
-    NSString *entityName = [@"STM" stringByAppendingString:nameExplode[1]];
+    NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:nameExplode[1]];
 
     NSDictionary *serverDataModel = [[STMEntityController stcEntities] copy];
 
@@ -527,11 +536,11 @@
         
         STMEntity *entityModel = serverDataModel[entityName];
         NSString *roleOwner = entityModel.roleOwner;
-        NSString *roleOwnerEntityName = [@"STM" stringByAppendingString:roleOwner];
+        NSString *roleOwnerEntityName = [ISISTEMIUM_PREFIX stringByAppendingString:roleOwner];
         NSString *roleName = entityModel.roleName;
         NSDictionary *ownerRelationships = [self ownObjectRelationshipsForEntityName:roleOwnerEntityName];
         NSString *destinationEntityName = ownerRelationships[roleName];
-        NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:@"STM" withString:@""];
+        NSString *destination = [destinationEntityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
         NSDictionary *properties = dictionary[@"properties"];
         NSDictionary *ownerData = properties[roleOwner];
         NSDictionary *destinationData = properties[destination];
@@ -610,36 +619,13 @@
 
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
-    BOOL isInSyncList = [[self entityNamesForSyncing] containsObject:object.entity.name];
+    BOOL isInSyncList = [[STMEntityController uploadableEntitiesNames] containsObject:object.entity.name];
 
     NSDate *lts = [object valueForKey:@"lts"];
     NSDate *deviceTs = [object valueForKey:@"deviceTs"];
     
     return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
     
-}
-
-+ (NSArray *)entityNamesForSyncing {
-    
-    NSArray *entityNamesForSyncing = @[
-                                       NSStringFromClass([STMEntity class]),
-                                       NSStringFromClass([STMPhotoReport class]),
-                                       NSStringFromClass([STMCashing class]),
-                                       NSStringFromClass([STMUncashing class]),
-                                       NSStringFromClass([STMClientData class]),
-                                       NSStringFromClass([STMRecordStatus class]),
-                                       NSStringFromClass([STMUncashingPicture class]),
-                                       NSStringFromClass([STMDebt class]),
-//                                       NSStringFromClass([STMTrack class]),
-                                       NSStringFromClass([STMOutlet class]),
-                                       NSStringFromClass([STMPartner class]),
-                                       NSStringFromClass([STMLocation class]),
-                                       NSStringFromClass([STMSaleOrder class]),
-                                       NSStringFromClass([STMLogMessage class])
-                                       ];
-    
-    return entityNamesForSyncing;
-
 }
 
 
@@ -786,9 +772,9 @@
     NSLog(@"initObjectsCache tick");
     
     [self sharedController].objectsCache = nil;
-    
+
     NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
-    
+
     NSLog(@"fetch existing objects for initObjectsCache");
     TOCK;
     
@@ -796,7 +782,7 @@
     NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
     
     [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-    
+
     NSLog(@"finish initObjectsCache");
     TOCK;
     
@@ -804,40 +790,40 @@
         completionHandler(YES);
     }];
     
-    /*
-     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-     
-     __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
-     
-     [context performBlock:^{
-     
-     __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
-     
-     NSLog(@"fetch existing objectIDs for initObjectsCache");
-     TOCK;
-     
-     dispatch_async(dispatch_get_main_queue(), ^{
-     
-     NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
-     NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
-     NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-     
-     [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-     
-     NSLog(@"finish initObjectsCache");
-     TOCK;
-     
-     [[self document] saveDocument:^(BOOL success) {
-     completionHandler(YES);
-     }];
-     
-     });
-     
-     }];
-     
-     });
-     */
+/*
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
     
+        __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
+        
+        [context performBlock:^{
+            
+            __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
+            
+            NSLog(@"fetch existing objectIDs for initObjectsCache");
+            TOCK;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
+                NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
+                NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+
+                [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+                
+                NSLog(@"finish initObjectsCache");
+                TOCK;
+                
+                [[self document] saveDocument:^(BOOL success) {
+                    completionHandler(YES);
+                }];
+                
+            });
+            
+        }];
+        
+    });
+*/
+
 }
 
 
@@ -1019,7 +1005,7 @@
             
             NSString *capFirstLetter = (name) ? [[name substringToIndex:1] capitalizedString] : nil;
             NSString *capEntityName = [name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
-            NSString *entityName = [@"STM" stringByAppendingString:capEntityName];
+            NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
             
             NSError *error;
             
@@ -1146,7 +1132,8 @@
     
 //    [self avgTimesCalc];
     
-    [self checkObjectsForFlushing];
+    [STMPicturesController checkPhotos];
+//    [self checkObjectsForFlushing];
     
 #ifdef DEBUG
     [self totalNumberOfObjects];
@@ -1164,13 +1151,16 @@
 
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
                              NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMArticlePicture class]),
                              NSStringFromClass([STMArticleGroup class]),
+                             NSStringFromClass([STMBatteryStatus class]),
                              NSStringFromClass([STMCampaign class]),
                              NSStringFromClass([STMCampaignGroup class]),
                              NSStringFromClass([STMCampaignPicture class]),
                              NSStringFromClass([STMCashing class]),
                              NSStringFromClass([STMClientData class]),
                              NSStringFromClass([STMDebt class]),
+                             NSStringFromClass([STMDriver class]),
                              NSStringFromClass([STMLocation class]),
                              NSStringFromClass([STMLogMessage class]),
                              NSStringFromClass([STMMessage class]),
@@ -1185,11 +1175,18 @@
                              NSStringFromClass([STMSaleOrderPosition class]),
                              NSStringFromClass([STMSalesman class]),
                              NSStringFromClass([STMSetting class]),
+                             NSStringFromClass([STMShipment class]),
+                             NSStringFromClass([STMShipmentPosition class]),
+                             NSStringFromClass([STMShipmentRoute class]),
+                             NSStringFromClass([STMShipmentRoutePoint class]),
+                             NSStringFromClass([STMShippingLocation class]),
+                             NSStringFromClass([STMShippingLocationPicture class]),
                              NSStringFromClass([STMStock class]),
                              NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMClientEntity class]),
                              NSStringFromClass([STMEntity class])];
     
     NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
@@ -1215,21 +1212,55 @@
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
 
+    return [self objectsForEntityName:entityName
+                              orderBy:@"id"
+                            ascending:YES
+                           fetchLimit:0
+               inManagedObjectContext:[self document].managedObjectContext
+                                error:nil];
+    
+}
+
++ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
+    
+    NSString *errorMessage = nil;
+    
+    context = (context) ? context : [self document].managedObjectContext;
+    
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
-
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-        NSError *error;
-        NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
         
-        return result;
+        STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
+        
+        if ([entity.propertiesByName.allKeys containsObject:orderBy]) {
 
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending selector:@selector(compare:)]];
+            request.fetchLimit = fetchLimit;
+            NSError *error;
+            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+            
+            return result;
+            
+        } else {
+            
+            errorMessage = [NSString stringWithFormat:@"%@: property %@ not found", entityName, orderBy];
+            
+        }
+        
     } else {
         
-        return nil;
-        
+        errorMessage = [NSString stringWithFormat:@"%@: not found in data model", entityName];
+
     }
     
+    if (errorMessage) {
+        if (error) *error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier
+                                                code:1
+                                            userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+    }
+    
+    return nil;
+
 }
 
 + (NSUInteger)numberOfObjectsForEntityName:(NSString *)entityName {
@@ -1266,12 +1297,73 @@
 
 #pragma mark - create dictionary from object
 
++ (NSArray *)jsonForObjectsWithParameters:(NSDictionary *)parameters error:(NSError *__autoreleasing *)error {
+    
+    NSString *errorMessage = nil;
+    
+    if ([parameters isKindOfClass:[NSDictionary class]]) {
+        
+        NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:parameters[@"entityName"]];
+        NSUInteger size = [parameters[@"size"] integerValue];
+        NSString *orderBy = parameters[@"orderBy"];
+        BOOL ascending = [[parameters[@"order"] lowercaseString] isEqualToString:@"asc"];
+        
+        BOOL sessionIsRunning = [[self.session status] isEqualToString:@"running"];
+        if (sessionIsRunning && self.document) {
+            
+            NSError *fetchError;
+            NSArray *objects = [self objectsForEntityName:entityName
+                                                  orderBy:orderBy
+                                                ascending:ascending
+                                               fetchLimit:size
+                                   inManagedObjectContext:[self document].managedObjectContext
+                                                    error:&fetchError];
+            
+            if (fetchError) {
+
+                errorMessage = fetchError.localizedDescription;
+                
+            } else {
+                
+                NSMutableArray *jsonObjectsArray = [NSMutableArray array];
+                
+                for (NSManagedObject *object in objects)
+                    [jsonObjectsArray addObject:[STMObjectsController dictionaryForObject:object]];
+                
+                return jsonObjectsArray;
+
+            }
+            
+        } else {
+            
+            errorMessage = [NSString stringWithFormat:@"session is not running, please try later"];
+            
+        }
+        
+    } else {
+        
+        errorMessage = [NSString stringWithFormat:@"requestObjects: parameters is not NSDictionary"];
+        
+    }
+
+    if (errorMessage) {
+        
+        if (error) *error = [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier]
+                                                code:0
+                                            userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+        
+    }
+    
+    return nil;
+    
+}
+
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object {
     
     if (object) {
         
         NSString *entityName = object.entity.name;
-        NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:@"STM" withString:@""]];
+        NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""]];
         NSData *xidData = [object valueForKey:@"xid"];
         NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
         
@@ -1297,9 +1389,11 @@
         allKeys = object.entity.attributesByName.allKeys;
     }
     
+    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail"];
+    
     for (NSString *key in allKeys) {
         
-        if (![key isEqualToString:@"xid"]) {
+        if (![notSyncableProperties containsObject:key]) {
             
             id value = [object valueForKey:key];
             
@@ -1348,6 +1442,10 @@
                     NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
                     NSString *entityName = key;
                     propertiesDictionary[key] = @{@"name": entityName, @"xid": xid};
+<<<<<<< HEAD
+=======
+//                    [propertiesDictionary setValue:@{@"name": entityName, @"xid": xid} forKey:key];
+>>>>>>> accuracies
                     
                 }
                 

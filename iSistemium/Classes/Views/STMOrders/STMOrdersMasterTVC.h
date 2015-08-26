@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMSearchableTVC.h"
 #import "STMOrdersSVC.h"
 
-@interface STMOrdersMasterTVC : STMFetchedResultsControllerTVC
+@interface STMOrdersMasterTVC : STMSearchableTVC
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
 @property (nonatomic) NSUInteger index;
@@ -17,5 +17,6 @@
 
 - (NSFetchRequest *)fetchRequest;
 - (void)resetFilter;
+- (void)refreshTable;
 
 @end

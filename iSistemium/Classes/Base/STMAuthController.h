@@ -11,14 +11,13 @@
 
 @interface STMAuthController : NSObject <STMRequestAuthenticatable>
 
-typedef enum STMAuthState {
+typedef NS_ENUM(NSUInteger, STMAuthState) {
     STMAuthEnterPhoneNumber,
     STMAuthEnterSMSCode,
     STMAuthNewSMSCode,
     STMAuthRequestRoles,
     STMAuthSuccess
-} STMAuthState;
-
+};
 
 @property (nonatomic, strong) NSString *phoneNumber;
 @property (nonatomic, strong) NSString *userName;

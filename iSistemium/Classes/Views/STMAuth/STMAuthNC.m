@@ -9,14 +9,12 @@
 #import "STMAuthNC.h"
 #import "STMAuthPhoneVC.h"
 #import "STMAuthSMSVC.h"
-#import "STMAuthSuccessVC.h"
 
 @interface STMAuthNC () <UINavigationControllerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMAuthPhoneVC *phoneVC;
 @property (nonatomic, strong) STMAuthSMSVC *smsVC;
-@property (nonatomic, strong) STMAuthSuccessVC *successVC;
-@property (nonatomic, strong) UIViewController *requestRolesVC;
+@property (nonatomic, strong) STMAuthVC *requestRolesVC;
 
 @end
 
@@ -53,22 +51,13 @@
     
 }
 
-- (UIViewController *)requestRolesVC {
+- (STMAuthVC *)requestRolesVC {
     
     if (!_requestRolesVC) {
         _requestRolesVC = [self.storyboard instantiateViewControllerWithIdentifier:@"requestRoles"];
         _requestRolesVC.title = NSLocalizedString(@"CHECK ROLES", nil);
     }
     return _requestRolesVC;
-    
-}
-
-- (STMAuthSuccessVC *)successVC {
-    
-    if (!_successVC) {
-        _successVC = [self.storyboard instantiateViewControllerWithIdentifier:@"authSuccessVC"];
-    }
-    return _successVC;
     
 }
 
@@ -92,7 +81,6 @@
             break;
             
         case STMAuthSuccess:
-            [self setViewControllers:@[self.successVC] animated:YES];
             
             break;
             

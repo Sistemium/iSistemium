@@ -57,10 +57,10 @@
                name:[NSString stringWithFormat:@"%@SettingsChanged", self.group]
              object:self.session];
     
-    [nc addObserver:self
-           selector:@selector(checkTimeForTracking)
-               name:UIApplicationDidBecomeActiveNotification
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(checkTimeForTracking)
+//               name:UIApplicationDidBecomeActiveNotification
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(checkTimeForTracking)
@@ -75,9 +75,11 @@
 }
 
 - (void)removeObservers {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sessionStatusChanged" object:self.session];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sessionStatusChanged" object:self.session];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
     
 }
 
@@ -222,7 +224,7 @@
     
     if (!_startTimer) {
         
-        if (self.trackerStartTime) {
+        if ([self isValidTimeValue:self.trackerStartTime]) {
             
             NSDate *startTime = [STMFunctions dateFromDouble:self.trackerStartTime];
             
@@ -246,7 +248,7 @@
     
     if (!_finishTimer) {
         
-        if (self.trackerFinishTime) {
+        if ([self isValidTimeValue:self.trackerFinishTime]) {
             
             NSDate *finishTime = [STMFunctions dateFromDouble:self.trackerFinishTime];
             
@@ -270,7 +272,7 @@
     
     if (self.trackerAutoStart) {
         
-        if (self.trackerStartTime && self.trackerFinishTime) {
+        if ([self isValidTimeValue:self.trackerStartTime] && [self isValidTimeValue:self.trackerFinishTime]) {
             
             [self releaseTimers];
             [self checkTimeForTracking];
@@ -290,6 +292,10 @@
         
     }
     
+}
+
+- (BOOL)isValidTimeValue:(double)timeValue {
+    return (timeValue >= 0 && timeValue <= 24);
 }
 
 - (void)checkTimeForTracking {

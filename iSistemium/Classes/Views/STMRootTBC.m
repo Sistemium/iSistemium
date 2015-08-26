@@ -17,13 +17,18 @@
 #import "STMConstants.h"
 
 #import "STMObjectsController.h"
-#import "STMTabBarViewController.h"
+#import "STMTabBarItemControllable.h"
 #import "STMClientDataController.h"
 #import "STMAuthController.h"
 #import "STMMessageController.h"
 #import "STMCampaignController.h"
 
-@interface STMRootTBC () <UITabBarControllerDelegate, UIViewControllerAnimatedTransitioning, UIAlertViewDelegate>
+#import <Crashlytics/Crashlytics.h>
+#import "STMAppDelegate.h"
+
+
+@interface STMRootTBC () <UITabBarControllerDelegate, /*UIViewControllerAnimatedTransitioning, */UIAlertViewDelegate>
+
 
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
@@ -61,7 +66,7 @@
 - (STMSpinnerView *)spinnerView {
     
     if (!_spinnerView) {
-        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame];
+        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
     }
     return _spinnerView;
     
@@ -582,9 +587,13 @@
 
 - (void)currentTabBarItemDidTapped {
     
-    if ([self.currentTappedVC conformsToProtocol:@protocol(STMTabBarViewController)]) {
+    if ([self.currentTappedVC conformsToProtocol:@protocol(STMTabBarItemControllable)]) {
         
+<<<<<<< HEAD
         [(id <STMTabBarViewController>)self.currentTappedVC showActionPopoverFromTabBarItem];
+=======
+        [(id <STMTabBarItemControllable>)self.currentTappedVC showActionSheetFromTabBarItem];
+>>>>>>> accuracies
         
     }
     
@@ -596,29 +605,38 @@
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
 
     if ([viewController isEqual:self.selectedViewController]) {
+        
         self.currentTappedVC = viewController;
-    }
-    
-//    NSString *logMessage = [NSString stringWithFormat:@"shouldSelect tab %@", viewController.tabBarItem.title];
-//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
+        [self currentTabBarItemDidTapped];
+        self.currentTappedVC = nil;
 
-    return YES;
+        return NO;
+        
+    } else {
+    
+        return YES;
+
+    }
     
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
-    if (self.currentTappedVC) {
-        
-        [self currentTabBarItemDidTapped];
-        self.currentTappedVC = nil;
-        
-    }
+//    [(STMAppDelegate *)[UIApplication sharedApplication].delegate testCrash];
     
 //    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
 //    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
 
+//    if (self.currentTappedVC) {
+//        
+//        [self currentTabBarItemDidTapped];
+//        self.currentTappedVC = nil;
+//        
+//    }
+
 }
+
+/*  *** animation transition for tab switching ***
 
 - (id <UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
     
@@ -648,6 +666,7 @@
                     }];
 
 }
+*/
 
 
 #pragma mark - alertView & delegate
@@ -780,13 +799,17 @@
 
 - (void)syncStateChanged {
 
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [STMMessageController unreadMessagesCount];
+    NSInteger badgeNumber = ([self.session.status isEqualToString:@"running"]) ? [STMMessageController unreadMessagesCount] : 0;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = badgeNumber;
+
     [self checkTimeoutAlert];
     
 }
 
 - (void)syncerInitSuccessfully {
-    [self.spinnerView removeFromSuperview];
+    
+    [self removeSpinner];
+    
 }
 
 - (void)syncerTimeoutError {
@@ -866,8 +889,8 @@
 }
 
 - (void)documentNotReady {
-    
-    [self.spinnerView removeFromSuperview];
+
+    [self removeSpinner];
 
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
                                                         message:NSLocalizedString(@"DOCUMENT_ERROR", nil)
@@ -877,6 +900,14 @@
     [alertView show];
     
 }
+
+- (void)removeSpinner {
+    
+    [self.spinnerView removeFromSuperview];
+    self.spinnerView = nil;
+
+}
+
 
 #pragma mark - notifications
 

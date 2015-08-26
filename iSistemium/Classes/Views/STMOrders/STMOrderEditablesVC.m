@@ -152,7 +152,11 @@
     [self.view addSubview:nameLabel];
     
 //    h_edge += H_SPACE + width;
+<<<<<<< HEAD
 //    v_edge = MAX((self.v_edge + V_SPACE + height), v_edge);
+=======
+    v_edge = MAX((self.v_edge + V_SPACE + height), v_edge);
+>>>>>>> accuracies
     
     // Setup textview:
     
@@ -264,6 +268,8 @@
 
     [super viewWillAppear:animated];
     [self.view setNeedsDisplay];
+    
+    [super viewWillAppear:animated];
     
 }
 

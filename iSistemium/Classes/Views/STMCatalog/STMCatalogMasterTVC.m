@@ -81,15 +81,21 @@
 - (NSCompoundPredicate *)requestPredicate {
     
     NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
-
-// filter empty articleGroups
+    
     NSPredicate *childlessPredicate = [NSPredicate predicateWithFormat:@"(articlesCount > 0) OR (ANY children.articlesCount > 0)"];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, childlessPredicate]];
-
-    if (!self.splitVC.showZeroStock) {
+    
+    if (self.splitVC.showOnlyNonZeroStock) {
         
         NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"(articlesStockVolume > 0) OR (ANY children.articlesStockVolume > 0)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
+        
+    }
+    
+    if (self.splitVC.showOnlyWithPictures) {
+        
+        NSPredicate *showOnlyWithPicturesPredicate = [NSPredicate predicateWithFormat:@"(articlesPicturesCount > 0) OR (ANY children.articlesPicturesCount > 0)"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, showOnlyWithPicturesPredicate]];
         
     }
     
@@ -104,16 +110,41 @@
     
 }
 
+- (NSCompoundPredicate *)refillParentsPredicate {
+    
+    NSCompoundPredicate *predicate = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:@[]];
+    
+    if (self.splitVC.showOnlyNonZeroStock) {
+        
+        NSPredicate *zeroStockPredicate = [NSPredicate predicateWithFormat:@"articlesStockVolume > 0"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, zeroStockPredicate]];
+        
+    }
+    
+    if (self.splitVC.showOnlyWithPictures) {
+        
+        NSPredicate *showOnlyWithPicturesPredicate = [NSPredicate predicateWithFormat:@"articlesPicturesCount > 0"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, showOnlyWithPicturesPredicate]];
+        
+    }
+    
+    if (self.splitVC.selectedPriceType) {
+        
+        NSPredicate *priceTypePredicate = [NSPredicate predicateWithFormat:@"ANY articlesPriceTypes == %@", self.splitVC.selectedPriceType];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, priceTypePredicate]];
+        
+    }
+    
+    return predicate;
+
+}
+
 - (void)performFetch {
     
     self.resultsController = nil;
-    
-    
-//TODO:[STMArticleGroupController refillParentsFor:(NSArray *)fetchResults];
-    
-    
+
 //    TICK;
-    [STMArticleGroupController refillParents];
+    [STMArticleGroupController refillParentsWithPredicate:[self refillParentsPredicate]];
 //    TOCK;
     
     
@@ -136,17 +167,16 @@
 
 - (void)filterFetchResults {
     
-    NSFetchRequest *request = self.resultsController.fetchRequest.copy;
+//    NSFetchRequest *request = self.resultsController.fetchRequest.copy;
     
     NSCompoundPredicate *predicate = [self requestPredicate];
-    if (predicate.subpredicates.count > 0) request.predicate = predicate;
+//    if (predicate.subpredicates.count > 0) request.predicate = predicate;
 
 //    [self nsLogFetchResults:self.resultsController.fetchedObjects];
     
     self.filteredFetchResults = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate];
-
+    
 //    [self nsLogFetchResults:self.filteredFetchResults];
-
 //    NSLog(@"catalogMasterTVC %@", self);
 //    NSLog(@"filteredFetchResults.count %d", self.filteredFetchResults.count);
     
@@ -293,7 +323,7 @@
         cell.detailTextLabel.text = NSLocalizedString(@"NO ARTICLES", nil);
     }
     
-    if (self.splitVC.showZeroStock) {
+    if (!self.splitVC.showOnlyNonZeroStock) {
         
         NSInteger stockVolume = articleGroup.articlesStockVolume;
         for (STMArticleGroup *child in articleGroup.children) stockVolume += child.articlesStockVolume;
@@ -391,12 +421,13 @@
     
     self.navigationItem.title = (self.splitVC.currentArticleGroup) ? self.splitVC.currentArticleGroup.name : NSLocalizedString(@"CATALOG", nil);
     
+    [super customInit];
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
 
 }
 

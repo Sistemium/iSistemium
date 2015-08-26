@@ -28,17 +28,22 @@
 
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
 + (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina;
++ (UIImage *)colorImage:(UIImage *)origImage withColor:(UIColor *)color;
++ (UIImage *)drawText:(NSString *)text withFont:(UIFont *)font color:(UIColor *)color inImage:(UIImage *)image atCenter:(BOOL)atCenter;
 
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateNumbersFormatter;
 + (NSDateFormatter *)dateShortNoTimeFormatter;
++ (NSDateFormatter *)dateShortTimeShortFormatter;
 + (NSDateFormatter *)dateMediumNoTimeFormatter;
 + (NSDateFormatter *)dateLongNoTimeFormatter;
 + (NSDateFormatter *)dateMediumTimeMediumFormatter;
 + (NSDateFormatter *)dateMediumTimeShortFormatter;
 + (NSDateFormatter *)noDateShortTimeFormatter;
++ (NSDateFormatter *)noDateShortTimeFormatterAllowZero:(BOOL)allowZero;
+
 + (void)NSLogCurrentDateWithMilliseconds;
 
 + (NSDate *)dateFromDouble:(double)time;
@@ -66,6 +71,13 @@
 + (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController;
 
 + (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic;
+
++ (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel;
+
++ (BOOL)shouldHandleMemoryWarningFromVC:(UIViewController *)vc;
++ (void)nilifyViewForVC:(UIViewController *)vc;
+
++ (NSString *)shortCompanyName:(NSString *)companyName;
 
 
 @end

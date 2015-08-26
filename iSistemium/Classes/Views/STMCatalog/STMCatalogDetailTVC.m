@@ -8,29 +8,36 @@
 
 #import "STMCatalogDetailTVC.h"
 #import "STMArticleInfoVC.h"
+#import "STMPicturesController.h"
+#import "STMArticlePicturePVC.h"
+#import "STMCatalogSettingsNC.h"
 
 
-@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
+static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
+static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
+
+
+@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate>
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
 
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *infoLabel;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeLabel;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *priceTypeSelector;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeLabel;
-@property (weak, nonatomic) IBOutlet STMBarButtonItem *stockVolumeButton;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *settingsButton;
 
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
 
 @property (nonatomic, strong) UIPopoverController *articleInfoPopover;
-@property (nonatomic) BOOL articleInfoPopoverIsVisible;
+@property (nonatomic) BOOL articleInfoPopoverWasVisible;
 
-@property (nonatomic, strong) UIActionSheet *priceTypeSelectorActionSheet;
-@property (nonatomic, strong) UIActionSheet *stockVolumeFilterActionSheet;
+@property (nonatomic, strong) UIPopoverController *catalogSettingsPopover;
 
 @property (nonatomic, strong) STMArticle *selectedArticle;
+
+@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
+
+@property (nonatomic, strong) UITableView *currentTableView;
 
 
 @end
@@ -56,6 +63,10 @@
 
 - (STMPriceType *)selectedPriceType {
     return self.splitVC.selectedPriceType;
+}
+
+- (UITableView *)currentTableView {
+    return (self.searchDisplayController.active) ? self.searchDisplayController.searchResultsTableView : self.tableView;
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -112,15 +123,22 @@
         
     }
     
-    if (!self.splitVC.showZeroStock) {
+    if (self.splitVC.showOnlyNonZeroStock) {
         
         NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.stock.volume.integerValue > 0"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
         
     }
 
-//    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
-//    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
+    if (self.splitVC.showOnlyWithPictures) {
+
+        NSPredicate *groupPredicate = [NSPredicate predicateWithFormat:@"article.pictures.@count > 0"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, groupPredicate]];
+
+    }
+    
+    NSPredicate *pricePredicate = [NSPredicate predicateWithFormat:@"price > 0"];
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, pricePredicate]];
 
     NSPredicate *fantomPredicate = [NSPredicate predicateWithFormat:@"article.isFantom == NO"];
     predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, fantomPredicate]];
@@ -169,6 +187,105 @@
     
 }
 
+- (NSArray *)currentArticles {
+    
+    NSArray *currentPrices = nil;
+    
+    if (self.searchDisplayController.active) {
+        currentPrices = self.searchResults;
+    } else {
+        currentPrices = self.resultsController.fetchedObjects;
+    }
+    
+    return [currentPrices valueForKeyPath:@"article"];
+    
+}
+
+- (STMArticle *)selectPreviousArticle {
+    
+    NSArray *currentArticles = [self currentArticles];
+    NSUInteger index = [currentArticles indexOfObject:self.selectedArticle];
+    
+    if (index > 0) {
+        
+        index--;
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [self.currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        
+        self.selectedArticle = currentArticles[index];
+        return self.selectedArticle;
+        
+    } else {
+        return nil;
+    }
+    
+}
+
+- (STMArticle *)selectNextArticle {
+
+    NSArray *currentArticles = [self currentArticles];
+    NSUInteger index = [currentArticles indexOfObject:self.selectedArticle];
+    
+    if (index < currentArticles.count-1) {
+        
+        index++;
+
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [self.currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        
+        self.selectedArticle = currentArticles[index];
+        return self.selectedArticle;
+        
+    } else {
+        return nil;
+    }
+
+}
+
+#pragma mark - search
+
+- (void)searchButtonPressed {
+    
+    self.navigationItem.rightBarButtonItem = nil;
+    [self.searchDisplayController setActive:YES animated:YES];
+    
+}
+
+- (void)showSearchButton {
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+}
+
+- (UISearchBar *)searchBar {
+    return self.searchDisplayController.searchBar;
+}
+
+- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
+    
+    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
+        
+        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
+        
+        if (_searchFieldIsScrolledAway) {
+            [self showSearchButton];
+        } else {
+            self.navigationItem.rightBarButtonItem = nil;
+        }
+        
+    }
+    
+}
+
+
+- (void)hideKeyboard {
+    
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar resignFirstResponder];
+    }
+    
+}
+
 
 #pragma mark - toolbar items
 
@@ -181,38 +298,6 @@
     [barButton setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [barButton setTitleTextAttributes:attributes forState:UIControlStateDisabled];
 
-}
-
-- (void)priceTypeLabelSetup {
-    
-    self.priceTypeLabel.title = NSLocalizedString(@"PRICE_TYPE_LABEL", nil);
-    [self setupBarButton:self.priceTypeLabel asLabelWithColor:nil];
-    
-}
-
-- (void)priceTypeSelectorSetup {
-    
-    self.priceTypeSelector.title = self.selectedPriceType.name;
-    self.priceTypeSelector.target = self;
-    self.priceTypeSelector.action = @selector(showPriceTypeSelector);
-    
-}
-
-- (void)stockVolumeLabelSetup {
-    
-    self.stockVolumeLabel.title = NSLocalizedString(@"SHOW ARTICLES", nil);
-    [self setupBarButton:self.stockVolumeLabel asLabelWithColor:nil];
-    
-}
-
-- (void)stockVolumeButtonSetup {
-    
-    NSString *title = (self.splitVC.showZeroStock) ? NSLocalizedString(@"SHOW ALL ARTICLES", nil) : NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil);
-    
-    self.stockVolumeButton.title = title;
-    self.stockVolumeButton.target = self;
-    self.stockVolumeButton.action = @selector(showStockVolumeFilter);
-    
 }
 
 - (void)infoLabelSetup {
@@ -251,6 +336,12 @@
  
 }
 
+- (IBAction)catalogSettingsButtonPressed:(id)sender {
+    
+    [self showCatalogSettingsPopover];
+    
+}
+
 
 #pragma mark - NSLogs
 
@@ -271,7 +362,7 @@
             
             BOOL zeroStock = NO;
             
-            if (!self.splitVC.showZeroStock) {
+            if (self.splitVC.showOnlyNonZeroStock) {
                 if ([article.stock.volume integerValue] <= 0) zeroStock = YES;
             }
             
@@ -338,134 +429,42 @@
 }
 
 
-#pragma mark - priceType selector
+#pragma mark - catalogSettingsPopover
 
-- (void)showPriceTypeSelector {
+- (UIPopoverController *)catalogSettingsPopover {
     
-    if (!self.priceTypeSelectorActionSheet.isVisible) {
-        [self.priceTypeSelectorActionSheet showFromBarButtonItem:self.priceTypeSelector animated:YES];
+    if (!_catalogSettingsPopover) {
+    
+        STMCatalogSettingsNC *catalogSettingsNC = [[STMCatalogSettingsNC alloc] initWithSettings:[self.splitVC catalogSettings]];
+        catalogSettingsNC.catalogSVC = self.splitVC;
+        
+        _catalogSettingsPopover = [[UIPopoverController alloc] initWithContentViewController:catalogSettingsNC];
+        _catalogSettingsPopover.delegate = self;
+        _catalogSettingsPopover.popoverContentSize = CGSizeMake(catalogSettingsNC.view.frame.size.width, catalogSettingsNC.view.frame.size.height);
+        
     }
+    return _catalogSettingsPopover;
     
 }
 
-- (UIActionSheet *)priceTypeSelectorActionSheet {
-
-    if (!_priceTypeSelectorActionSheet) {
-        
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"PRICE_TYPE_LABEL", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        
-        NSArray *priceTypes = self.splitVC.availablePriceTypes;
-        
-        for (STMPriceType *priceType in priceTypes) {
-            
-            [actionSheet addButtonWithTitle:priceType.name];
-            
-        }
-        
-        actionSheet.delegate = self;
-        
-        _priceTypeSelectorActionSheet = actionSheet;
-        
-    }
-    return _priceTypeSelectorActionSheet;
+- (void)showCatalogSettingsPopover {
     
-}
-
-
-#pragma mark - stockVolume filter
-
-- (void)showStockVolumeFilter {
-    
-    if (!self.stockVolumeFilterActionSheet.isVisible) {
-        [[self stockVolumeFilterActionSheet] showFromBarButtonItem:self.stockVolumeButton animated:YES];
-    }
-    
-}
-
-- (UIActionSheet *)stockVolumeFilterActionSheet {
-    
-    if (!_stockVolumeFilterActionSheet) {
+    if (!self.catalogSettingsPopover.isPopoverVisible) {
         
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SHOW ARTICLES", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"SHOW NONZERO STOCK ARTICLES", nil), NSLocalizedString(@"SHOW ALL ARTICLES", nil), nil];
-        
-        actionSheet.delegate = self;
-
-        _stockVolumeFilterActionSheet = actionSheet;
-        
-    }
-    return _stockVolumeFilterActionSheet;
-    
-}
-
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    if ([actionSheet.title isEqualToString:NSLocalizedString(@"PRICE_TYPE_LABEL", nil)]) {
-        
-        if (buttonIndex != -1) {
-            
-            self.splitVC.selectedPriceType = self.splitVC.availablePriceTypes[buttonIndex];
-            [self priceTypeSelectorSetup];
-            
-        }
-        
-    } else if ([actionSheet.title isEqualToString:NSLocalizedString(@"SHOW ARTICLES", nil)]) {
-        
-        if (buttonIndex != -1) {
-
-            self.splitVC.showZeroStock = [@(buttonIndex) boolValue];
-            [self stockVolumeButtonSetup];
-            
-        }
+        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+        [self.catalogSettingsPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
         
     }
     
 }
 
-#pragma mark - search
-
-- (void)searchButtonPressed {
-
-    self.navigationItem.rightBarButtonItem = nil;
-    [self.searchDisplayController setActive:YES animated:YES];
+- (void)dismissCatalogSettingsPopover {
+    
+    [self.catalogSettingsPopover dismissPopoverAnimated:YES];
+    self.catalogSettingsPopover = nil;
     
 }
 
-- (void)showSearchButton {
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
-}
-
-- (UISearchBar *)searchBar {
-    return self.searchDisplayController.searchBar;
-}
-
-- (void)setSearchFieldIsScrolledAway:(BOOL)searchFieldIsScrolledAway {
-    
-    if (_searchFieldIsScrolledAway != searchFieldIsScrolledAway) {
-        
-        _searchFieldIsScrolledAway = searchFieldIsScrolledAway;
-        
-        if (_searchFieldIsScrolledAway) {
-            [self showSearchButton];
-        } else {
-            self.navigationItem.rightBarButtonItem = nil;
-        }
-        
-    }
-    
-}
-
-
-- (void)hideKeyboard {
-    
-    if ([self.searchBar isFirstResponder]) {
-        [self.searchBar resignFirstResponder];
-    }
-
-}
 
 #pragma mark - articleInfo popover
 
@@ -487,9 +486,13 @@
 
 - (void)showArticleInfoPopover {
     
-    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-    [self.articleInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+    if (!self.articleInfoPopover.isPopoverVisible) {
 
+        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+        [self.articleInfoPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+        
+    }
+    
 }
 
 - (void)dismissArticleInfoPopover {
@@ -499,12 +502,97 @@
     
 }
 
+- (void)showFullscreen {
+    
+    [self dismissArticleInfoPopover];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"STMArticlePicturePVC" bundle:nil];
+    UIViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"articlePicturePVC"];
+    
+    if ([vc isKindOfClass:[STMArticlePicturePVC class]]) {
+        
+        [(STMArticlePicturePVC *)vc setParentVC:self];
+        [(STMArticlePicturePVC *)vc setCurrentArticle:self.selectedArticle];
+        
+    }
+    
+    [self presentViewController:vc animated:NO completion:^{
+        
+    }];
+    
+}
+
+- (void)pictureViewTapped:(id)sender {
+    
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        NSIndexPath *indexPath = [self indexPathForView:[(UITapGestureRecognizer *)sender view]];
+
+        if (indexPath) {
+            
+            [self.currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+
+            STMPrice *price = nil;
+            if (self.searchDisplayController.active) {
+                price = (self.searchResults)[indexPath.row];
+            } else {
+                price = [self.resultsController objectAtIndexPath:indexPath];
+            }
+            self.selectedArticle = price.article;
+
+        }
+        
+    }
+    
+    if (self.selectedArticle) {
+        [self showFullscreen];
+    }
+    
+}
+
+- (NSIndexPath *)indexPathForView:(UIView *)view {
+    
+    UITableViewCell *cell = [self cellForView:view];
+    NSIndexPath *indexPath = [self.currentTableView indexPathForCell:cell];
+    
+    return indexPath;
+    
+}
+
+- (UITableViewCell *)cellForView:(UIView *)view {
+    
+    UIView *parentView = view.superview;
+    
+    if ([parentView isKindOfClass:[UITableViewCell class]]) {
+        
+        return (UITableViewCell *)parentView;
+        
+    } else {
+        
+        return (parentView) ? [self cellForView:parentView] : nil;
+        
+    }
+    
+}
+
+#pragma mark - deviceOrientationDidChangeNotification
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+    self.cachedCellsHeights = nil;
+    [self.tableView reloadData];
+    
+}
+
+
+#pragma mark - rotation
+
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
-    if (self.articleInfoPopoverIsVisible) {
+    if (self.articleInfoPopoverWasVisible) {
         
         [self showArticleInfoPopover];
-        self.articleInfoPopoverIsVisible = NO;
+        self.articleInfoPopoverWasVisible = NO;
         
     }
     
@@ -514,12 +602,14 @@
     
     if (self.articleInfoPopover.popoverVisible) {
 
-        self.articleInfoPopoverIsVisible = YES;
+        self.articleInfoPopoverWasVisible = YES;
         [self dismissArticleInfoPopover];
         
     }
 
     [self hideKeyboard];
+    
+    [self dismissCatalogSettingsPopover];
     
 }
 
@@ -531,46 +621,142 @@
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    
     self.articleInfoPopover = nil;
+    self.catalogSettingsPopover = nil;
+    
 }
+
+
+#pragma mark - cell's height caching
+
+- (NSMutableDictionary *)cachedCellsHeights {
+    
+    if (!_cachedCellsHeights) {
+        _cachedCellsHeights = [NSMutableDictionary dictionary];
+    }
+    return _cachedCellsHeights;
+    
+}
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    
+    self.cachedCellsHeights[objectID] = @(height);
+    
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    
+    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
+    
+    return self.cachedCellsHeights[objectID];
+    
+}
+
 
 #pragma mark - Table view data source
 
 - (NSString *)detailedTextForArticle:(STMArticle *)article {
     
-    NSString *detailedText = @"";
-    NSString *appendString = @"";
+    NSMutableArray *textsArray = [NSMutableArray array];
     
+    switch (self.splitVC.selectedInfoShowType) {
+
+        case STMCatalogInfoShowPrice: {
+            
+            [textsArray addObject:[self pieceVolumeTextForArticle:article]];
+            [textsArray addObject:[self stockTextForArticle:article]];
+            break;
+            
+        }
+            
+        case STMCatalogInfoShowPieceVolume: {
+            
+            [textsArray addObject:[self priceTextForArticle:article]];
+            [textsArray addObject:[self stockTextForArticle:article]];
+            break;
+            
+        }
+
+        case STMCatalogInfoShowStock: {
+            
+            [textsArray addObject:[self priceTextForArticle:article]];
+            [textsArray addObject:[self pieceVolumeTextForArticle:article]];
+            break;
+            
+        }
+            
+        default: {
+            break;
+        }
+            
+    }
+        
+    if (article.extraLabel) [textsArray addObject:article.extraLabel];
+
+    NSString *detailedText = [textsArray componentsJoinedByString:@", "];
+    
+    return detailedText;
+    
+}
+
+- (NSString *)infoLabelTextForArticle:(STMArticle *)article {
+    
+    NSString *infoLabelText = nil;
+    
+    switch (self.splitVC.selectedInfoShowType) {
+        case STMCatalogInfoShowPrice: {
+            infoLabelText = [self priceTextForArticle:article];
+            break;
+        }
+        case STMCatalogInfoShowPieceVolume: {
+            infoLabelText = [self pieceVolumeTextForArticle:article];
+            break;
+        }
+        case STMCatalogInfoShowStock: {
+            infoLabelText = [self stockTextForArticle:article];
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
+    return infoLabelText;
+    
+}
+
+- (NSString *)stockTextForArticle:(STMArticle *)article {
+    
+    NSString *stockDetailedText = (article.stock.volume.integerValue <= 0) ? NSLocalizedString(@"ZERO STOCK", nil) : article.stock.displayVolume;
+    
+    return stockDetailedText;
+
+}
+
+- (NSString *)priceTextForArticle:(STMArticle *)article {
+
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"priceType = %@", self.selectedPriceType];
     
     STMPrice *price = [article.prices filteredSetUsingPredicate:predicate].allObjects.lastObject;
     
-    appendString = [NSString stringWithFormat:@"%@", [numberFormatter stringFromNumber:price.price]];
-    detailedText = [detailedText stringByAppendingString:appendString];
-    
-    if (article.stock.volume.integerValue <= 0) {
-        
-        appendString = [NSString stringWithFormat:@", %@", NSLocalizedString(@"ZERO STOCK", nil)];
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
-    } else {
-        
-        appendString = [NSString stringWithFormat:@", %@", article.stock.displayVolume];
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
-    }
+    NSString *priceDetailedText = [numberFormatter stringFromNumber:price.price];
 
-    if (article.extraLabel) {
-        
-        appendString = [NSString stringWithFormat:@", %@", article.extraLabel];
-        detailedText = [detailedText stringByAppendingString:appendString];
-        
-    }
+    return priceDetailedText;
     
-    return detailedText;
+}
+
+- (NSString *)pieceVolumeTextForArticle:(STMArticle *)article {
     
+    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
+    NSString *pieceVolumeDetailedText = [NSString stringWithFormat:@"%@ %@", article.pieceVolume, volumeUnitString];
+    
+    return pieceVolumeDetailedText;
+
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -583,45 +769,171 @@
     
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *cellIdentifier = @"catalogDetailCell";
+    static CGFloat standardCellHeight;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
+    });
     
-    STMInfoTableViewCell *cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-
-//    STMArticle *article = nil;
+    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
     
-    STMPrice *price = nil;
+}
 
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+    
+    return height;
+    
+}
 
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMPrice *price = (self.tableView == self.searchDisplayController.searchResultsTableView) ? (self.searchResults)[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+  
+    if (price.article.pictures.count > 0) {
+     
+        static STMCustom4TVCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier];
+        });
+
+<<<<<<< HEAD
 //        article = [self.searchResults objectAtIndex:indexPath.row];
         price = (self.searchResults)[indexPath.row];
+=======
+        [self fillPictureCell:cell withPrice:price];
+        
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+        
+        [cell setNeedsLayout];
+        [cell layoutIfNeeded];
+        
+        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+        
+        [self putCachedHeight:height forIndexPath:indexPath];
+        
+        return height;
+>>>>>>> accuracies
 
     } else {
         
-//        article = [self.resultsController objectAtIndexPath:indexPath];
-        price = [self.resultsController objectAtIndexPath:indexPath];
+        static STMCustom5TVCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            cell = [self.tableView dequeueReusableCellWithIdentifier:Custom5CellIdentifier];
+        });
+        
+        [self fillCell:cell withPrice:price];
+        
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+        
+        [cell setNeedsLayout];
+        [cell layoutIfNeeded];
+        
+        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+        
+        [self putCachedHeight:height forIndexPath:indexPath];
+        
+        return height;
         
     }
-    
-    cell.textLabel.text = price.article.name;
-    cell.detailTextLabel.text = [self detailedTextForArticle:price.article];
-    
-    NSString *volumeUnitString = NSLocalizedString(@"VOLUME UNIT", nil);
-    cell.infoLabel.text = [NSString stringWithFormat:@"%@%@", price.article.pieceVolume, volumeUnitString];
-    
-    if (price.article.stock.volume.integerValue <= 0) {
-        
-        UIColor *lightGrayColor = [UIColor lightGrayColor];
-        
-        cell.textLabel.textColor = lightGrayColor;
-        cell.detailTextLabel.textColor = lightGrayColor;
-        cell.infoLabel.textColor = lightGrayColor;
 
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMPrice *price = (tableView == self.searchDisplayController.searchResultsTableView) ? (self.searchResults)[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+    
+    STMTableViewCell <STMTDICell> *cell = nil;
+    
+    if (price.article.pictures.count > 0) {
+        
+        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier forIndexPath:indexPath];
+        [self fillPictureCell:(STMCustom4TVCell *)cell withPrice:price];
+        
+        [(STMCustom4TVCell *)cell pictureView].userInteractionEnabled = YES;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pictureViewTapped:)];
+        [(STMCustom4TVCell *)cell pictureView].gestureRecognizers = @[tap];
+        
+    } else {
+     
+        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom5CellIdentifier forIndexPath:indexPath];
+        [self fillCell:(STMCustom5TVCell *)cell withPrice:price];
+                
     }
     
+    UIColor *textColor = (price.article.stock.volume.integerValue <= 0) ? [UIColor lightGrayColor] : [UIColor blackColor];
+    [self setTextColor:textColor forCell:cell];
+
     return cell;
+
+}
+
+- (void)setTextColor:(UIColor *)textColor forCell:(STMTableViewCell <STMTDICell> *)cell {
+    
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
+    cell.infoLabel.textColor = textColor;
+
+}
+
+- (void)fillCell:(STMTableViewCell <STMTDICell> *)cell withPrice:(STMPrice *)price {
+
+    cell.titleLabel.text = price.article.name;
+    cell.detailLabel.text = [self detailedTextForArticle:price.article];
+    cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
+    
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+
+}
+
+- (void)fillPictureCell:(STMCustom4TVCell *)cell withPrice:(STMPrice *)price {
+    
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
+    STMArticlePicture *picture = [price.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
+
+    [[cell.pictureView viewWithTag:555] removeFromSuperview];
+
+    if (!picture.imageThumbnail) {
+        
+        cell.pictureView.image = nil;
+        [self addSpinnerToCell:cell];
+
+    } else {
+
+        cell.pictureView.image = [UIImage imageWithData:picture.imageThumbnail];
+        
+    }
+    
+    [self fillCell:cell withPrice:price];
+    
+}
+
+- (void)addSpinnerToCell:(STMCustom4TVCell *)cell {
+    
+    UIView *view = [[UIView alloc] initWithFrame:cell.pictureView.bounds];
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.backgroundColor = [UIColor whiteColor];
+    view.alpha = 0.75;
+    view.tag = 555;
+    
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.center = view.center;
+    spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    [spinner startAnimating];
+    
+    [view addSubview:spinner];
+    
+    [cell.pictureView addSubview:view];
     
 }
 
@@ -789,29 +1101,103 @@
 
 - (void)setupToolbar {
     
-    [self priceTypeLabelSetup];
-    [self priceTypeSelectorSetup];
-    [self stockVolumeLabelSetup];
-    [self stockVolumeButtonSetup];
     [self infoLabelSetup];
     
 }
 
+
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [super controllerDidChangeContent:controller];
+        
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    if ([anObject isKindOfClass:[NSManagedObject class]]) {
+        
+        NSManagedObjectID *objectID = [(NSManagedObject *)anObject objectID];
+        [self.cachedCellsHeights removeObjectForKey:objectID];
+        
+    }
+    
+    [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
+    
+}
+
+
+- (void)pictureWasDownloaded:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMArticlePicture class]]) {
+        
+        STMArticlePicture *articlePicture = (STMArticlePicture *)notification.object;
+        
+        NSSet *prices = [articlePicture.articles valueForKeyPath:@"@distinctUnionOfSets.prices"];
+        
+        for (STMPrice *price in prices) {
+            
+            NSIndexPath *indexPath = nil;
+
+            if (self.searchDisplayController.isActive) {
+                
+                NSUInteger index = [self.searchResults indexOfObject:price];
+                indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                
+            } else {
+                
+                indexPath = [self.resultsController indexPathForObject:price];
+                
+            }
+            
+            if (indexPath) [self.currentTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            
+        }
+        
+    }
+
+}
+
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(deviceOrientationDidChangeNotification:)
+               name:UIDeviceOrientationDidChangeNotification
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(pictureWasDownloaded:)
+               name:@"downloadPicture"
+             object:nil];
+    
+}
+
 - (void)customInit {
+    
+    self.clearsSelectionOnViewWillAppear = NO;
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom4TVCell" bundle:nil] forCellReuseIdentifier:Custom4CellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom5TVCell" bundle:nil] forCellReuseIdentifier:Custom5CellIdentifier];
+    
+    [self addObservers];
     
     [self setupToolbar];
     [self performFetch];
     [self setupSearchBar];
     
+    [super customInit];
     
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
+//    [self customInit];
 
 }
 

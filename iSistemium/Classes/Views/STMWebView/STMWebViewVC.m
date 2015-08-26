@@ -154,6 +154,65 @@
 }
 
 
+<<<<<<< HEAD
+=======
+#pragma mark - STMTabBarViewController
+
+- (void)showActionSheetFromTabBarItem {
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.delegate = self;
+    actionSheet.tag = 1;
+    actionSheet.title = self.title;
+    
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"RELOAD", nil)];
+    
+    if (IPAD) {
+    
+        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+        
+        [actionSheet showFromRect:rect inView:self.view animated:YES];
+
+    } else if (IPHONE) {
+
+        NSUInteger numberOfButtons = actionSheet.numberOfButtons;
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CANCEL", nil)];
+        actionSheet.cancelButtonIndex = numberOfButtons;
+        
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+        
+    }
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (actionSheet.tag) {
+        case 1:
+            
+            switch (buttonIndex) {
+                case 0:
+                    [self loadWebView];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+
+}
+
+
+>>>>>>> accuracies
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
@@ -208,6 +267,10 @@
 }
 
 - (void)didReceiveMemoryWarning {
+    
+    if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
+        [STMFunctions nilifyViewForVC:self];
+    }
 
     [super didReceiveMemoryWarning];
 

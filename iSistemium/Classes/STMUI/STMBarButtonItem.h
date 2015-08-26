@@ -11,6 +11,7 @@
 @interface STMBarButtonItem : UIBarButtonItem
 
 + (STMBarButtonItem *)flexibleSpace;
++ (STMBarButtonItem *)fixedSpaceWithWidth:(CGFloat)width;
 
 
 @end

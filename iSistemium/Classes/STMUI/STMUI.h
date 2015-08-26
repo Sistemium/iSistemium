@@ -22,11 +22,20 @@
 
 #include "STMFetchedResultsControllerTVC.h"
 
+#include "STMCustomCells.h"
 #include "STMTableViewCell.h"
 #include "STMInfoTableViewCell.h"
 #include "STMCustom1TVCell.h"
 #include "STMCustom2TVCell.h"
 #include "STMCustom3TVCell.h"
+#include "STMCustom4TVCell.h"
+#include "STMCustom5TVCell.h"
+#include "STMCustom6TVCell.h"
+#include "STMCustom7TVCell.h"
+#include "STMCustom8TVCell.h"
+#include "STMCustom9TVCell.h"
+#include "STMVolumeTVCell.h"
+#include "STMVolumeControlsTVCell.h"
 
 #include "STMSegmentedControl.h"
 

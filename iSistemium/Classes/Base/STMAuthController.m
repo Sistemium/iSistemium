@@ -7,16 +7,22 @@
 //
 
 #import "STMAuthController.h"
+
+#import <AdSupport/AdSupport.h>
+
+#import "STMDevDef.h"
 #import "STMFunctions.h"
 #import <Security/Security.h>
 #import "KeychainItemWrapper.h"
 #import "STMSessionManager.h"
 #import "STMLogger.h"
 
+
 //#define AUTH_URL @"https://sistemium.com/auth.php"
 #define AUTH_URL @"https://api.sistemium.com/pha/auth"
 
 #define ROLES_URL @"https://api.sistemium.com/pha/roles"
+//#define ROLES_URL @"https://api.sistemium.com/pha/v2/roles" // for crash testing
 
 #define TIMEOUT 15.0
 
@@ -395,26 +401,46 @@
     NSDictionary *startSettings = nil;
     
 #ifdef DEBUG
+    
+    if (GRIMAX) {
+        
+        startSettings = @{
+                          @"restServerURI"                  : self.serviceUri,
+                          @"dataModelName"                  : @"STMDataModel",
+                          //                      @"fetchLimit"               : @"50",
+                          //                      @"syncInterval"             : @"600",
+                          //                      @"uploadLog.type"           : @"",
+                          @"requiredAccuracy"               : @"100",
+                          @"desiredAccuracy"                : @"10",
+                          @"timeFilter"                     : @"60",
+                          @"distanceFilter"                 : @"60",
+                          @"backgroundDesiredAccuracy"      : @"3000",
+                          @"foregroundDesiredAccuracy"      : @"10",
+                          @"offtimeDesiredAccuracy"         : @"0",
+                          @"maxSpeedThreshold"              : @"60",
+                          @"locationTrackerAutoStart"       : @YES,
+                          @"locationTrackerStartTime"       : @"0",
+                          @"locationTrackerFinishTime"      : @"24",
+                          @"locationWaitingTimeInterval"    : @"10",
+                          @"batteryTrackerAutoStart"        : @YES,
+                          @"batteryTrackerStartTime"        : @"8.0",
+                          @"batteryTrackerFinishTime"       : @"22.0",
+                          @"enableDebtsEditing"             : @YES,
+                          @"enablePartnersEditing"          : @YES,
+                          @"http.timeout.foreground"        : @"60",
+                          @"jpgQuality"                     : @"0.0",
+                          @"blockIfNoLocationPermission"    : @YES
+                          };
+        
+    } else {
+    
+        startSettings = @{
+                          @"restServerURI"            : self.serviceUri,
+                          @"dataModelName"            : @"STMDataModel",
+                          };
 
-    startSettings = @{
-                      @"restServerURI"            : self.serviceUri,
-                      @"dataModelName"            : @"STMDataModel",
-//                      @"fetchLimit"               : @"50",
-//                      @"syncInterval"             : @"600",
-//                      @"uploadLog.type"           : @"",
-                      @"requiredAccuracy"         : @"100",
-                      @"desiredAccuracy"          : @"10",
-                      @"timeFilter"               : @"60",
-                      @"maxSpeedThreshold"        : @"60",
-                      @"locationTrackerAutoStart" : @YES,
-                      @"locationTrackerStartTime": @"8.0",
-                      @"locationTrackerFinishTime": @"22.0",
-                      @"enableDebtsEditing"       : @YES,
-                      @"enablePartnersEditing"    : @YES,
-                      @"http.timeout.foreground"  : @"60",
-                      @"jpgQuality"               : @"0.0"
-                      };
-
+    }
+    
 #else
 
     startSettings = @{
@@ -455,6 +481,8 @@
         
         resultingRequest = [request mutableCopy];
         [resultingRequest addValue:self.accessToken forHTTPHeaderField:@"Authorization"];
+        [resultingRequest setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
+
 
     }
     
@@ -785,22 +813,35 @@
 
 - (void)processingResponseJSONError {
     
-    NSString *error = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
+    if (self.controllerState == STMAuthRequestRoles) {
+
+        [self connectionErrorWhileRequestingRoles];
+        
+    } else {
     
-    if (self.controllerState == STMAuthEnterPhoneNumber) {
+        NSString *errorString = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
         
-        error = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
-        self.controllerState = STMAuthEnterPhoneNumber;
+        if (self.controllerState == STMAuthEnterPhoneNumber) {
+            
+            errorString = NSLocalizedString(@"WRONG PHONE NUMBER", nil);
+            self.controllerState = STMAuthEnterPhoneNumber;
+            
+        } else if (self.controllerState == STMAuthEnterSMSCode) {
+            
+            errorString = NSLocalizedString(@"WRONG SMS CODE", nil);
+            self.controllerState = STMAuthEnterSMSCode;
+            
+//        } else if (self.controllerState == STMAuthRequestRoles) {
+//            
+//            errorString = [NSLocalizedString(@"ROLES REQUEST ERROR", nil) stringByAppendingString:errorString];
+//            self.controllerState = STMAuthEnterPhoneNumber;
+            
+        }
         
-    } else if (self.controllerState == STMAuthEnterSMSCode) {
-        
-        error = NSLocalizedString(@"WRONG SMS CODE", nil);
-        self.controllerState = STMAuthEnterSMSCode;
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": errorString}];
+
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error}];
-
 }
 
 

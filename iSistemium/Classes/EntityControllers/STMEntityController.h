@@ -11,12 +11,16 @@
 
 @interface STMEntityController : STMController
 
++ (void)flushSelf;
+
 + (NSDictionary *)stcEntities;
 
 + (void)checkEntitiesForDuplicates;
 
 + (NSSet *)entityNamesWithLifeTime;
 + (NSArray *)entitiesWithLifeTime;
+
++ (NSArray *)uploadableEntitiesNames;
 
 + (STMEntity *)entityWithName:(NSString *)name;
 

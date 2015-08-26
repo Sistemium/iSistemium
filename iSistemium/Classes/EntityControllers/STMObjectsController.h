@@ -9,6 +9,8 @@
 #import "STMController.h"
 #import <CoreData/CoreData.h>
 #import "STMRecordStatus.h"
+#import <Crashlytics/Crashlytics.h>
+
 
 @interface STMObjectsController : STMController
 
@@ -29,6 +31,8 @@
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName;
 
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object;
++ (NSArray *)jsonForObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error;
+
 + (void)syncObject:(NSDictionary *)objectDictionary;
 
 + (void)removeObject:(NSManagedObject *)object;
@@ -38,8 +42,6 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
-
-+ (NSArray *)entityNamesForSyncing;
 
 + (NSArray *)localDataModelEntityNames;
 
