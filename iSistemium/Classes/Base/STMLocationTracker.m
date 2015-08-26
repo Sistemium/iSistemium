@@ -677,13 +677,18 @@
 - (void)updateLastSeenTimestamp {
     
     [self resetLocationWaitingTimer];
-    [self startLocationWaitingTimer];
+    
+    if ([self currentTimeIsInsideOfScheduleLimits]) {
+    
+        [self startLocationWaitingTimer];
+        
+        if (self.lastLocationObject) {
+            
+            NSLog(@"UPDATE LAST SEEN TIMESTAMP FOR LOCATION: %@", self.lastLocation);
+            self.lastLocationObject.lastSeenAt = [NSDate date];
+            
+        }
 
-    if (self.lastLocationObject) {
-        
-        NSLog(@"UPDATE LAST SEEN TIMESTAMP FOR LOCATION: %@", self.lastLocation);
-        self.lastLocationObject.lastSeenAt = [NSDate date];
-        
     }
     
 }
