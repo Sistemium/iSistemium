@@ -1442,10 +1442,6 @@
                     NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
                     NSString *entityName = key;
                     propertiesDictionary[key] = @{@"name": entityName, @"xid": xid};
-<<<<<<< HEAD
-=======
-//                    [propertiesDictionary setValue:@{@"name": entityName, @"xid": xid} forKey:key];
->>>>>>> accuracies
                     
                 }
                 

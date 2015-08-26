@@ -643,11 +643,7 @@
 + (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController {
     
     CGFloat tabBarYPosition = tabBarController.tabBar.frame.origin.y;
-<<<<<<< HEAD
-    CGRect rect = CGRectMake(0, 0, 0, 0);
-=======
     CGRect rect = CGRectZero;
->>>>>>> accuracies
     
     NSMutableArray *tabBarSubviews = [tabBarController.tabBar.subviews mutableCopy];
     

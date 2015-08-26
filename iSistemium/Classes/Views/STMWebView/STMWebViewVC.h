@@ -7,16 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-<<<<<<< HEAD
 
 @interface STMWebViewVC : UIViewController
 
 - (void)loadWebView;
-=======
-#import "STMTabBarItemControllable.h"
-
-@interface STMWebViewVC : UIViewController <STMTabBarItemControllable>
->>>>>>> accuracies
 
 
 @end

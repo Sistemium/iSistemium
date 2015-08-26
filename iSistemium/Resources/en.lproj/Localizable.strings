@@ -212,10 +212,8 @@
 "NO" = "No";
 "DOCUMENT_ERROR" = "Document error";
 "RESPONSE IS NOT A DICTIONARY" = "Response is not a dictionary";
-<<<<<<< HEAD
 "SHOW SIBLINGS" = "Show:";
 "SHOW ACTIONS" = "Action:";
-=======
 "UNLOADED PICTURES" = "Unloaded pictures";
 "WAITING FOR DOWNLOAD" = "waiting for download";
 "DOWNLOAD NOW" = "Download now";
@@ -340,4 +338,3 @@
 "SEND MESSAGE" = "Send message";
 "NEED CASHING" = "Need cashing";
 
->>>>>>> accuracies

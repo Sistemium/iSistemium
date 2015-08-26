@@ -304,13 +304,7 @@
 }
 
 - (void)fillingSumProcessing {
-    
-<<<<<<< HEAD
-    NSDecimalNumber *fillingSumm;
-=======
-//    NSDecimalNumber *fillingSumm = [NSDecimalNumber zero];
->>>>>>> accuracies
-    
+
     STMDebt *lastDebt = [self.debtsArray lastObject];
     
     if (lastDebt) {

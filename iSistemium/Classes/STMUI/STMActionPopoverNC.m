@@ -57,7 +57,7 @@
 }
 
 
-#pragma mark - STMTabBarViewController protocol
+#pragma mark - STMTabBarItemControllable protocol
 
 - (BOOL)shouldShowOwnActions {
     return NO;

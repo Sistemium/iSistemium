@@ -501,11 +501,11 @@
     
     for (UIViewController *vc in self.viewControllers) {
         
-        if ([vc conformsToProtocol:@protocol(STMTabBarViewController)]) {
+        if ([vc conformsToProtocol:@protocol(STMTabBarItemControllable)]) {
             
             NSUInteger siblingsCount = [self siblingsForViewController:vc].count;
             
-            if (siblingsCount > 1 || [(id <STMTabBarViewController>)vc shouldShowOwnActions]) {
+            if (siblingsCount > 1 || [(id <STMTabBarItemControllable>)vc shouldShowOwnActions]) {
                 
                 NSUInteger index = [self.viewControllers indexOfObject:vc];
                 UIControl *tabBarControl = tabBarControlsArray[index];
@@ -589,11 +589,7 @@
     
     if ([self.currentTappedVC conformsToProtocol:@protocol(STMTabBarItemControllable)]) {
         
-<<<<<<< HEAD
-        [(id <STMTabBarViewController>)self.currentTappedVC showActionPopoverFromTabBarItem];
-=======
-        [(id <STMTabBarItemControllable>)self.currentTappedVC showActionSheetFromTabBarItem];
->>>>>>> accuracies
+        [(id <STMTabBarItemControllable>)self.currentTappedVC showActionPopoverFromTabBarItem];
         
     }
     

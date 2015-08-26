@@ -626,21 +626,8 @@
         
     }
     
-<<<<<<< HEAD
-#warning - sometimes get filename == nil
-// https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/555c3daff505b5ccf0e15ccd
-    
-    [self setThumbnailForPicture:weakPicture fromImageData:weakData];
-    [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
-    [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"downloadPicture" object:weakPicture];
-    });
-=======
 //#warning should check filename is not nil
 ////https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/5572b38ef505b5ccf00d93eb
->>>>>>> accuracies
     
     if (fileName) {
         

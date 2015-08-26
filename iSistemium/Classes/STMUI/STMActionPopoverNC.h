@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMTabBarViewController.h"
+#import "STMTabBarItemControllable.h"
 
 
-@interface STMActionPopoverNC : UINavigationController <STMTabBarViewController>
+@interface STMActionPopoverNC : UINavigationController <STMTabBarItemControllable>
 
 @property (nonatomic, strong) NSArray *actions;
 

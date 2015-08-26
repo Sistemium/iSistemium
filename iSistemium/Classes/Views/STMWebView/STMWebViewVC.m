@@ -153,9 +153,7 @@
 
 }
 
-
-<<<<<<< HEAD
-=======
+/*
 #pragma mark - STMTabBarViewController
 
 - (void)showActionSheetFromTabBarItem {
@@ -210,9 +208,9 @@
     }
 
 }
+*/
 
 
->>>>>>> accuracies
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {

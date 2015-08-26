@@ -212,10 +212,8 @@
 "NO" = "Нет";
 "DOCUMENT_ERROR" = "Ошибка инициализации базы данных. Обратитесь в техподдержку.";
 "RESPONSE IS NOT A DICTIONARY" = "Ответ сервера не является словарём.";
-<<<<<<< HEAD
 "SHOW SIBLINGS" = "Показать:";
 "SHOW ACTIONS" = "Действия:";
-=======
 "UNLOADED PICTURES" = "Незагруженные картинки";
 "WAITING FOR DOWNLOAD" = "в ожидании загрузки";
 "DOWNLOAD NOW" = "Скачать сейчас";
@@ -340,5 +338,4 @@
 "SEND MESSAGE" = "Отправить сообщение";
 "NEED CASHING" = "Нужна инкассация";
 
->>>>>>> accuracies
 

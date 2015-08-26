@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMTabBarViewController.h"
+#import "STMTabBarItemControllable.h"
 
 
 @interface STMTabBarButtonTVC : UITableViewController
@@ -15,6 +15,6 @@
 @property (nonatomic, strong) NSArray *siblings;
 @property (nonatomic, strong) NSArray *actions;
 
-@property (nonatomic, weak) UIViewController <STMTabBarViewController> *parentVC;
+@property (nonatomic, weak) UIViewController <STMTabBarItemControllable> *parentVC;
 
 @end

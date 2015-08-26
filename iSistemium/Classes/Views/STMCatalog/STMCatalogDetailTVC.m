@@ -802,10 +802,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
             cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier];
         });
 
-<<<<<<< HEAD
-//        article = [self.searchResults objectAtIndex:indexPath.row];
-        price = (self.searchResults)[indexPath.row];
-=======
         [self fillPictureCell:cell withPrice:price];
         
         cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
@@ -819,7 +815,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         [self putCachedHeight:height forIndexPath:indexPath];
         
         return height;
->>>>>>> accuracies
 
     } else {
         
