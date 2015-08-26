@@ -28,5 +28,7 @@
 
 - (void)fillCell:(UITableViewCell <STMTDICell> *)cell withShipmentPosition:(STMShipmentPosition *)position;
 
+- (void)showDoneShippingAlert;
+
 
 @end

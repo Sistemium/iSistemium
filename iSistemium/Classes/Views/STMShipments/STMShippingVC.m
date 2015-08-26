@@ -759,8 +759,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)setupNavBar {
     
-//    self.navigationItem.title = self.shipment.ndoc;
     [self setupTitleView];
+    [self setupDoneButton];
 
 }
 
@@ -800,6 +800,19 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
 }
 
+- (void)setupDoneButton {
+    
+    STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                          target:self
+                                                                                          action:@selector(doneButtonPressed)];
+    
+    self.navigationItem.rightBarButtonItem = doneButton;
+    
+}
+
+- (void)doneButtonPressed {
+    [self.parentVC showDoneShippingAlert];
+}
 
 #pragma mark - sort settings button
 
