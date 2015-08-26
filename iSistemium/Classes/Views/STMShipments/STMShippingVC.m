@@ -37,6 +37,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *checkButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *processingButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *filterButton;
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
@@ -760,7 +761,6 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
 //    self.navigationItem.title = self.shipment.ndoc;
     [self setupTitleView];
-    [self setupSortSettingsButton];
 
 }
 
@@ -837,17 +837,11 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     }
     
     UIImage *image = [UIImage imageNamed:imageName];
-    image = [STMFunctions resizeImage:image toSize:CGSizeMake(25, 25)];
+    self.filterButton.image = [STMFunctions resizeImage:image toSize:CGSizeMake(25, 25)];
     
-    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:image
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(settingsButtonPressed)];
-    self.navigationItem.rightBarButtonItem = settingButton;
-
 }
 
-- (void)settingsButtonPressed {
+- (IBAction)settingsButtonPressed {
     [self performSegueWithIdentifier:@"showSettings" sender:self];
 }
 
@@ -857,7 +851,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 - (void)setupToolbarButtons {
     
     [self updateToolbarButtons];
-    
+    [self setupSortSettingsButton];
+
 }
 
 - (void)updateToolbarButtons {
