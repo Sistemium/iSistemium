@@ -543,6 +543,10 @@
 
 }
 
+- (void)checkTimeForTracking {
+    // prevent from super class method execute - causes to undesirable stop of tracker
+}
+
 - (BOOL)isValidTimeValue:(double)timeValue {
     return (timeValue >= 0 && timeValue <= 24);
 }
