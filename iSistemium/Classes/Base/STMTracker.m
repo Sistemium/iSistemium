@@ -62,10 +62,10 @@
 //               name:UIApplicationDidBecomeActiveNotification
 //             object:nil];
     
-    [nc addObserver:self
-           selector:@selector(checkTimeForTracking)
-               name:@"applicationPerformFetchWithCompletionHandler"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(checkTimeForTracking)
+//               name:@"applicationPerformFetchWithCompletionHandler"
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(didReceiveRemoteNotification:)

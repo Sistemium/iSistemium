@@ -92,11 +92,26 @@
             [keyPath isEqualToString:@"desiredAccuracy"] ||
             [keyPath hasSuffix:@"DesiredAccuracy"]) {
             
-            self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
+            [self updateDesiredAccuracy];
             self.locationManager.distanceFilter = self.distanceFilter;
             [self checkTrackerAutoStart];
             
         }
+        
+    }
+    
+}
+
+- (void)updateDesiredAccuracy {
+
+    CLLocationAccuracy currentAccuracy = [self currentDesiredAccuracy];
+    
+    if (self.locationManager.desiredAccuracy != currentAccuracy) {
+        
+        self.locationManager.desiredAccuracy = currentAccuracy;
+
+        NSString *logMessage = [NSString stringWithFormat:@"change desired accuracy to %f", currentAccuracy];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
         
     }
     
@@ -386,8 +401,9 @@
         _locationManager.distanceFilter = self.distanceFilter;
         _locationManager.desiredAccuracy = [self currentDesiredAccuracy];
         _locationManager.pausesLocationUpdatesAutomatically = NO;
-        
-        NSLog(@"_locationManager DF %f, DA %f", _locationManager.distanceFilter, _locationManager.desiredAccuracy);
+
+        NSString *logMessage = [NSString stringWithFormat:@"set desired accuracy to %f", _locationManager.desiredAccuracy];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
         
     }
     
@@ -532,8 +548,7 @@
     if ([self currentDesiredAccuracy] != 0) {
         
         if (!self.tracking) [self startTracking];
-        self.locationManager.desiredAccuracy = [self currentDesiredAccuracy];
-        NSLog(@"locationManager DA %f", self.locationManager.desiredAccuracy)
+        [self updateDesiredAccuracy];
 
     } else {
         
@@ -541,6 +556,10 @@
         
     }
 
+}
+
+- (void)checkTimeForTracking {
+    // prevent from super class method execute - causes to undesirable stop of tracker
 }
 
 - (BOOL)isValidTimeValue:(double)timeValue {
