@@ -16,5 +16,8 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath;
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath;
+
 
 @end

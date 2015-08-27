@@ -6,14 +6,12 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMVariableCellsHeightTVC.h"
 #import "STMPriceType.h"
 #import "STMArticle.h"
 
 
-@interface STMCatalogDetailTVC : STMFetchedResultsControllerTVC
-
-#warning — have to use STMVariableCellsHeightTVC class?
+@interface STMCatalogDetailTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMPriceType *selectedPriceType;
 
@@ -30,5 +28,6 @@
 - (NSArray *)currentArticles;
 - (STMArticle *)selectPreviousArticle;
 - (STMArticle *)selectNextArticle;
+
 
 @end

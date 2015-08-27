@@ -382,7 +382,7 @@
         
     } else {
         
-        stcTabs = [self testStcTabs];
+//        stcTabs = [self testStcTabs];
 
 //        NSLog(@"stcTabs %@", stcTabs);
         
