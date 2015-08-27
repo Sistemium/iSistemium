@@ -211,7 +211,7 @@
     
     for (NSArray *tabs in self.allTabsVCs.allValues) {
         
-        if ([tabs containsObject:vc] && tabs.count > 1) {
+        if ([tabs containsObject:vc]/* && tabs.count > 1*/) {
             siblings = [tabs mutableCopy];
         }
         
@@ -407,11 +407,11 @@
                     @"name": @"STMProfile",
                     @"title": @"Profile"
                 },
-                @{
-                    @"imageName": @"christmas_gift-128.png",
-                    @"name": @"STMCampaigns",
-                    @"title": @"Campaign"
-                },
+//                @{
+//                    @"imageName": @"christmas_gift-128.png",
+//                    @"name": @"STMCampaigns",
+//                    @"title": @"Campaign"
+//                },
                 @{
                     @"authCheck": @"localStorage.getItem('r50.accessToken')",
                     @"imageName": @"purchase_order-128.png",
@@ -456,12 +456,12 @@
                         @"imageName": @"settings3-128.png",
                         @"name": @"STMSettings",
                         @"title": @"Settings"
-                        },
-                    @{
-                        @"ifdef": @"DEBUG",
-                        @"imageName": @"archive-128.png",
-                        @"name": @"STMLogs",
-                        @"title": @"Logs"
+//                        },
+//                    @{
+//                        @"ifdef": @"DEBUG",
+//                        @"imageName": @"archive-128.png",
+//                        @"name": @"STMLogs",
+//                        @"title": @"Logs"
                         }
                 ]
             ];

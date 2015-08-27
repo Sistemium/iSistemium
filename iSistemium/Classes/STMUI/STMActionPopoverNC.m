@@ -20,6 +20,7 @@
 
 @end
 
+
 @implementation STMActionPopoverNC
 
 - (NSArray *)siblings {
@@ -31,15 +32,23 @@
     
 }
 
+- (STMTabBarButtonTVC *)buttonsTVC {
+
+    STMTabBarButtonTVC *vc = [[STMTabBarButtonTVC alloc] init];
+    
+    vc.siblings = self.siblings;
+    vc.actions = self.actions;
+    vc.parentVC = self;
+
+    return vc;
+    
+}
+
 - (UIPopoverController *)actionSheetPopover {
     
     if (!_actionSheetPopover) {
         
-        STMTabBarButtonTVC *vc = [[STMTabBarButtonTVC alloc] init];
-        
-        vc.siblings = self.siblings;
-        vc.actions = self.actions;
-        vc.parentVC = self;
+        STMTabBarButtonTVC *vc = [self buttonsTVC];
         
         UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:vc];
         popover.delegate = self;
@@ -65,30 +74,62 @@
 
 - (void)showActionPopoverFromTabBarItem {
     
-    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-    
-    [self.actionSheetPopover presentPopoverFromRect:rect
-                                             inView:self.tabBarController.view
-                           permittedArrowDirections:UIPopoverArrowDirectionAny
-                                           animated:YES];
+    if (self.siblings.count > 1 || self.actions.count > 0) {
+        
+        if (IPAD) {
+            
+            CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+            
+            [self.actionSheetPopover presentPopoverFromRect:rect
+                                                     inView:self.tabBarController.view
+                                   permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                   animated:YES];
+            
+        } else if (IPHONE) {
+            
+            STMTabBarButtonTVC *vc = [self buttonsTVC];
+            
+            [self presentViewController:vc animated:YES completion:^{
+                
+            }];
+            
+        }
+        
+    }
     
 }
 
 - (void)selectSiblingAtIndex:(NSUInteger)index {
-    
+
+    [self dismissButtonsTVC];
+
     UIViewController *vc = self.siblings[index];
     
     if (vc != self) {
         [[STMRootTBC sharedRootVC] replaceVC:self withVC:vc];
     }
-    
-    [self.actionSheetPopover dismissPopoverAnimated:YES];
-    
+
 }
 
 - (void)selectActionAtIndex:(NSUInteger)index {
     
-    [self.actionSheetPopover dismissPopoverAnimated:YES];
+    [self dismissButtonsTVC];
+    
+}
+
+- (void)dismissButtonsTVC {
+    
+    if (IPAD) {
+        
+        [self.actionSheetPopover dismissPopoverAnimated:YES];
+        
+    } else if (IPHONE) {
+        
+        [self dismissViewControllerAnimated:YES completion:^{
+            
+        }];
+        
+    }
     
 }
 
