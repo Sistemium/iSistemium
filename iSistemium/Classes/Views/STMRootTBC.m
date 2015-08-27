@@ -29,7 +29,6 @@
 
 @interface STMRootTBC () <UITabBarControllerDelegate, /*UIViewControllerAnimatedTransitioning, */UIAlertViewDelegate>
 
-
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
 @property (nonatomic, strong) UIAlertView *timeoutAlert;
@@ -46,7 +45,11 @@
 
 @property (nonatomic, strong) STMSpinnerView *spinnerView;
 
+@property (nonatomic, strong) NSMutableDictionary *orderedStcTabs;
+
+
 @end
+
 
 @implementation STMRootTBC
 
@@ -60,6 +63,25 @@
     });
     
     return _sharedRootVC;
+    
+}
+
+- (NSString *)orderedStcTabsKey {
+    return @"orderedStcTabs";
+}
+
+- (NSMutableDictionary *)orderedStcTabs {
+    
+    if (!_orderedStcTabs) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSData *data = [defaults objectForKey:[self orderedStcTabsKey]];
+        NSDictionary *orderedStcTabs = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        
+        _orderedStcTabs = (orderedStcTabs) ? orderedStcTabs.mutableCopy : [NSMutableDictionary dictionary];
+        
+    }
+    return _orderedStcTabs;
     
 }
 
@@ -225,6 +247,15 @@
     
     NSUInteger index = [self.currentTabsVCs indexOfObject:currentVC];
     
+    NSArray *siblings = [self siblingsForViewController:currentVC];
+    NSUInteger siblingIndex = [siblings indexOfObject:vc];
+    self.orderedStcTabs[@(index)] = @(siblingIndex);
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.orderedStcTabs.copy];
+    [defaults setValue:data forKey:[self orderedStcTabsKey]];
+    [defaults synchronize];
+    
     (self.currentTabsVCs)[index] = vc;
     
     [self showTabs];
@@ -263,6 +294,18 @@
                 NSMutableArray *tabs = [self.allTabsVCs[@(index)] mutableCopy];
                 [tabs addObject:vc];
                 self.allTabsVCs[@(index)] = tabs;
+                
+                if (self.orderedStcTabs[@(index)]) {
+                    
+                    NSUInteger showIndex = [self.orderedStcTabs[@(index)] integerValue];
+                    
+                    if ([tabs indexOfObject:vc] == showIndex) {
+                        
+                        (self.currentTabsVCs)[index] = vc;
+                        
+                    }
+                    
+                }
                 
             }
             
@@ -340,7 +383,7 @@
     } else {
         
         stcTabs = [self testStcTabs];
-        
+
 //        NSLog(@"stcTabs %@", stcTabs);
         
         for (id tabsItem in stcTabs) {
