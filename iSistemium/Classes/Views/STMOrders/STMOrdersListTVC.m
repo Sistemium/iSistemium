@@ -189,7 +189,7 @@
     
 }
 
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
     static STMCustom6TVCell *cell = nil;
     static dispatch_once_t onceToken;
@@ -197,22 +197,9 @@
         cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     });
     
-    [self fillCell:cell atIndexPath:indexPath];
-    
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-    
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    
-    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-    
-    [self putCachedHeight:height forIndexPath:indexPath];
-    
-    return height;
+    return cell;
     
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     

@@ -276,57 +276,33 @@
     
 }
 
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
-    if (cachedHeight) {
+    UITableViewCell *cell = nil;
+    
+    if (indexPath.section < 2) {
         
-        return cachedHeight.floatValue;
+        static UITableViewCell *shipmentTVCell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            shipmentTVCell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+        });
+        
+        cell = shipmentTVCell;
         
     } else {
-    
-        UITableViewCell *cell = nil;
         
-        if (indexPath.section < 2) {
-            
-            static UITableViewCell *shipmentTVCell = nil;
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
-                shipmentTVCell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
-            });
-            
-            cell = shipmentTVCell;
-
-        } else {
-            
-            static UITableViewCell *positionCell = nil;
-            static dispatch_once_t onceToken;
-            dispatch_once(&onceToken, ^{
-                positionCell = [self.tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier];
-            });
-            
-            cell = positionCell;
-
-        }
+        static UITableViewCell *positionCell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            positionCell = [self.tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier];
+        });
         
-        [self fillCell:cell atIndexPath:indexPath];
+        cell = positionCell;
         
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-        
-        [cell setNeedsLayout];
-        [cell layoutIfNeeded];
-        
-        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-        
-        height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
-        
-        [self putCachedHeight:height forIndexPath:indexPath];
-        
-        return height;
-
     }
+
+    return cell;
     
 }
 

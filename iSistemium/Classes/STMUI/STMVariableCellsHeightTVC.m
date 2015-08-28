@@ -96,13 +96,21 @@
     
 }
 
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
+
     static UITableViewCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     });
+
+    return cell;
+    
+}
+
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UITableViewCell *cell = [self cellForHeightCalculationForIndexPath:indexPath];
     
     [self fillCell:cell atIndexPath:indexPath];
     
@@ -114,9 +122,7 @@
     CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
     CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
     
-    if (height < [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath]) {
-        height = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
-    }
+    height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
     
     [self putCachedHeight:height forIndexPath:indexPath];
     

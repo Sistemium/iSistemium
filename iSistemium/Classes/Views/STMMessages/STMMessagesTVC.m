@@ -106,51 +106,47 @@
     
 }
 
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
+    
     static STMCustom3TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     });
-    
-    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
-    
-    [self fillCell:cell atIndexPath:nil withMessage:message];
-    
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-    
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    
-    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-    
-    if (height < [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath]) {
-        height = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
-    }
-    
-    [self putCachedHeight:height forIndexPath:indexPath];
-    
-    return height;
 
+    return cell;
+    
 }
 
 - (STMCustom3TVCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMCustom3TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
 
-    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
-
-    [self fillCell:cell atIndexPath:indexPath withMessage:message];
-    
-    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
-    
-    UIColor *textColor = ([recordStatus.isRead boolValue]) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
-    
-    cell.titleLabel.textColor = textColor;
+    [self fillCell:cell atIndexPath:indexPath];
 
     return cell;
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom3TVCell class]]) {
+        
+        STMCustom3TVCell *customCell = (STMCustom3TVCell *)cell;
+        
+        STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+        
+        [self fillCell:customCell atIndexPath:indexPath withMessage:message];
+        
+        STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
+        
+        UIColor *textColor = ([recordStatus.isRead boolValue]) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
+        
+        customCell.titleLabel.textColor = textColor;
+
+    }
+    
+    [super fillCell:cell atIndexPath:indexPath];
     
 }
 
@@ -170,9 +166,6 @@
 //    cell.detailLabel.text = MESSAGE_BODY;
     
     if (message.pictures.count > 0) [self addImageFromMessage:message toCell:cell];
-
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
 
 }
 
