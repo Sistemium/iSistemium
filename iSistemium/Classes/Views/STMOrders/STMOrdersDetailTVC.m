@@ -15,9 +15,6 @@
 #import "STMSalesmanController.h"
 
 
-static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
-
-
 @interface STMOrdersDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
@@ -534,6 +531,10 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 #pragma mark - Table view data source
 
+- (NSString *)cellIdentifier {
+    return @"STMCustom1TVCell";
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
     if (self.resultsController.sections.count > 0) {
@@ -559,7 +560,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     static STMCustom1TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     });
 
     [self fillCell:cell atIndexPath:indexPath];
@@ -580,7 +581,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier forIndexPath:indexPath];
+    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
 
     [self fillCell:cell atIndexPath:indexPath];
 
@@ -880,7 +881,7 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 - (void)customInit {
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(toolBarLayoutDone)
