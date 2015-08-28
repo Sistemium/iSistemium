@@ -13,10 +13,6 @@
 #import "STMSalesmanController.h"
 
 
-static NSString *Custom2CellIdentifier = @"STMCustom2TVCell";
-static NSString *positionCellIdentifier = @"orderPositionCell";
-
-
 @interface STMOrderInfoTVC () <UIActionSheetDelegate, UIPopoverControllerDelegate>
 
 @property (nonatomic, strong) NSArray *saleOrderPositions;
@@ -30,7 +26,8 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 @property (nonatomic, strong) UIPopoverController *editablesPopover;
 @property (nonatomic) BOOL editablesPopoverWasVisible;
 
-@property (nonatomic, strong) NSMutableDictionary *cachedCellsHeights;
+@property (nonatomic, strong) NSString *custom2CellIdentifier;
+@property (nonatomic, strong) NSString *positionCellIdentifier;
 
 
 @end
@@ -40,6 +37,13 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 
 @synthesize resultsController = _resultsController;
 
+- (NSString *)custom2CellIdentifier {
+    return @"STMCustom2TVCell";
+}
+
+- (NSString *)positionCellIdentifier {
+    return @"orderPositionCell";
+}
 
 - (void)setSaleOrder:(STMSaleOrder *)saleOrder {
     
@@ -352,27 +356,6 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
 }
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static CGFloat standardCellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-    });
-    
-    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
-    
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-        
-        NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-        CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
-        
-        return height;
-    
-}
-
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
     switch (indexPath.section) {
@@ -397,7 +380,7 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     static STMCustom2TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom2CellIdentifier];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:self.custom2CellIdentifier];
     });
     
     [self fillOrderInfoCell:cell forRow:indexPath.row];
@@ -457,13 +440,13 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
     switch (indexPath.section) {
         case 0:
-            cell = [tableView dequeueReusableCellWithIdentifier:Custom2CellIdentifier forIndexPath:indexPath];
+            cell = [tableView dequeueReusableCellWithIdentifier:self.custom2CellIdentifier forIndexPath:indexPath];
             [self fillOrderInfoCell:(STMCustom2TVCell *)cell forRow:indexPath.row];
             break;
 
         case 1:
 //            cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:positionCellIdentifier];
-            cell = [tableView dequeueReusableCellWithIdentifier:positionCellIdentifier forIndexPath:indexPath];
+            cell = [tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier forIndexPath:indexPath];
             [self fillOrderPositionCell:(STMInfoTableViewCell *)cell forRow:indexPath.row];
             break;
 
@@ -810,15 +793,6 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
 
 #pragma mark - cell's height caching
 
-- (NSMutableDictionary *)cachedCellsHeights {
-    
-    if (!_cachedCellsHeights) {
-        _cachedCellsHeights = [NSMutableDictionary dictionary];
-    }
-    return _cachedCellsHeights;
-    
-}
-
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 0) {
@@ -879,8 +853,8 @@ static NSString *positionCellIdentifier = @"orderPositionCell";
     
     [self.navigationItem setHidesBackButton:YES];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:Custom2CellIdentifier];
-    [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:positionCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.custom2CellIdentifier];
+    [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:self.positionCellIdentifier];
     
     [self performFetch];
 
