@@ -37,8 +37,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 @property (nonatomic, strong) UIPopoverController *editablesPopover;
 @property (nonatomic) BOOL editablesPopoverWasVisible;
 
-@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
-
 
 @end
 
@@ -534,34 +532,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 }
 
 
-#pragma mark - cell's height caching
-
-- (NSMutableDictionary *)cachedCellsHeights {
-    
-    if (!_cachedCellsHeights) {
-        _cachedCellsHeights = [NSMutableDictionary dictionary];
-    }
-    return _cachedCellsHeights;
-    
-}
-
-- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
-    
-    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
-    
-    self.cachedCellsHeights[objectID] = @(height);
-    
-}
-
-- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
-    
-    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
-
-    return self.cachedCellsHeights[objectID];
-    
-}
-
-
 #pragma mark - Table view data source
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -582,27 +552,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         
     }
     
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static CGFloat standardCellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-    });
-
-    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
-    
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
-    
-    return height;
-
 }
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -639,7 +588,16 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (void)fillCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom1TVCell class]]) {
+        [self fillCustomCell:(STMCustom1TVCell *)cell atIndexPath:indexPath];
+    }
+    [super fillCell:cell atIndexPath:indexPath];
+    
+}
+
+- (void)fillCustomCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
@@ -679,9 +637,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     [self setupInfoLabelForCell:cell andSaleOrder:saleOrder];
     
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
-
 }
 
 - (void)setupInfoLabelForCell:(STMCustom1TVCell *)cell andSaleOrder:(STMSaleOrder *)saleOrder {
@@ -725,19 +680,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     [super controllerDidChangeContent:controller];
     
     [self setupToolbar];
-    
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-
-    if ([anObject isKindOfClass:[NSManagedObject class]]) {
-        
-        NSManagedObjectID *objectID = [(NSManagedObject *)anObject objectID];
-        [self.cachedCellsHeights removeObjectForKey:objectID];
-        
-    }
-    
-    [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
     
 }
 
@@ -930,9 +872,9 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 #pragma mark - device orientation
 
-- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
-    
-}
+//- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+//    
+//}
 
 #pragma mark - view lifecycle
 
@@ -945,10 +887,10 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
                                                  name:@"toolBarLayoutDone"
                                                object:self.navigationController.toolbar];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deviceOrientationDidChangeNotification:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(deviceOrientationDidChangeNotification:)
+//                                                 name:UIDeviceOrientationDidChangeNotification
+//                                               object:nil];
 
     [self performFetch];
     
