@@ -24,8 +24,6 @@
 
 //#define MESSAGE_BODY @"Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб."
 
-static NSString *cellIdentifier = @"messageCell";
-
 
 @interface STMMessagesTVC () <UIActionSheetDelegate>
 
@@ -53,6 +51,10 @@ static NSString *cellIdentifier = @"messageCell";
     
     return _resultsController;
     
+}
+
+- (NSString *)cellIdentifier {
+    return @"messageCell";
 }
 
 - (void)performFetch {
@@ -104,24 +106,12 @@ static NSString *cellIdentifier = @"messageCell";
     
 }
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static CGFloat cellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        cellHeight = [[STMCustom3TVCell alloc] init].frame.size.height;
-    });
-    
-    return cellHeight + 1.0f;  // Add 1.0f for the cell separator height
-    
-}
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     static STMCustom3TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     });
     
     STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
@@ -136,13 +126,19 @@ static NSString *cellIdentifier = @"messageCell";
     CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
     CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
     
-    return height;
+    if (height < [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath]) {
+        height = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+    }
     
+    [self putCachedHeight:height forIndexPath:indexPath];
+    
+    return height;
+
 }
 
 - (STMCustom3TVCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom3TVCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    STMCustom3TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
 
     STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
 
@@ -268,6 +264,7 @@ static NSString *cellIdentifier = @"messageCell";
     
 }
 
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
@@ -287,7 +284,7 @@ static NSString *cellIdentifier = @"messageCell";
     
 //    [STMMessageController generateTestMessages];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom3TVCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom3TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
 
     [self performFetch];
     [self showUnreadCount];
