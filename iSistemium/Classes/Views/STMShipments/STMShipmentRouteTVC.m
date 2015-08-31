@@ -57,7 +57,6 @@
         
         _route = route;
         [self performFetch];
-        [self.tableView reloadData];
         [self setupNavBar];
         
     }
@@ -101,9 +100,14 @@
     NSError *error;
     
     if (![self.resultsController performFetch:&error]) {
+        
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
+        
     } else {
+        
+        [self.tableView reloadData];
         [self checkPointsLocations];
+        
     }
     
 }
@@ -428,9 +432,18 @@
     if (indexPath.section == 1) {
         
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
-        
-        [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
 
+        if ([self.splitVC isMasterNCForViewController:self]) {
+            
+            STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
+            [self.splitVC didSelectPoint:point inVC:self];
+            
+        } else {
+            
+            [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
+
+        }
+        
     } else if (indexPath.section == 0) {
         
         if (indexPath.row == 1) {

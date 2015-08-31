@@ -85,6 +85,13 @@
         
     }
 
+    if ([self isMasterNCForViewController:vc] && [self.detailNC.topViewController isKindOfClass:[STMShipmentRoutePointTVC class]]) {
+
+        STMShipmentRoutePointTVC *pointTVC = (STMShipmentRoutePointTVC *)self.detailNC.topViewController;
+        pointTVC.point = point;
+        
+    }
+
 }
 
 - (void)didSelectShipment:(STMShipment *)shipment inVC:(UIViewController *)vc {

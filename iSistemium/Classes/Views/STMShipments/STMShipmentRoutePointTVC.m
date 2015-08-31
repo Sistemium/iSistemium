@@ -79,15 +79,17 @@
     
 }
 
-//- (STMDocument *)document {
-//    
-//    if (!_document) {
-//        _document = self.session.document;
-//    }
-//    return _document;
-//    
-//}
+- (void)setPoint:(STMShipmentRoutePoint *)point {
+    
+    if (![_point isEqual:point]) {
+        
+        _point = point;
+        [self performFetch];
+        [self setupNavBar];
 
+    }
+    
+}
 
 
 - (NSString *)cellIdentifier {
@@ -139,7 +141,7 @@
     if (![self.resultsController performFetch:&error]) {
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
     } else {
-        
+        [self.tableView reloadData];
     }
     
 }
