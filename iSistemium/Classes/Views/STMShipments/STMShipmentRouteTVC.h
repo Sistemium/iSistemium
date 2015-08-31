@@ -8,6 +8,8 @@
 
 #import "STMVariableCellsHeightTVC.h"
 #import "STMDataModel.h"
+#import "STMShipmentsSVC.h"
+
 
 @interface STMShipmentRouteTVC : STMVariableCellsHeightTVC
 

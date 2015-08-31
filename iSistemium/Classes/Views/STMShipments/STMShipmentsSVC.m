@@ -8,6 +8,7 @@
 
 #import "STMShipmentsSVC.h"
 
+#import "STMDriverTVC.h"
 #import "STMShipmentRouteTVC.h"
 
 
@@ -49,6 +50,12 @@
     return [self.detailNC.viewControllers containsObject:vc];
 }
 
+- (void)backButtonPressed {
+    
+    [self.detailNC popViewControllerAnimated:YES];
+    
+}
+
 - (void)setSelectedRoute:(STMShipmentRoute *)selectedRoute {
     
     if (![_selectedRoute isEqual:selectedRoute]) {
@@ -66,6 +73,18 @@
     
 }
 
+- (void)didSelectPoint:(STMShipmentRoutePoint *)point byDetailController:(BOOL)byDC {
+    
+    self.selectedPoint = point;
+    
+    if ([self.masterNC.topViewController isKindOfClass:[STMDriverTVC class]]) {
+        
+        STMDriverTVC *driverTVC = (STMDriverTVC *)self.masterNC.topViewController;
+        [driverTVC showRouteWithSelectedRoutePoint:self.selectedPoint];
+        
+    }
+
+}
 
 #pragma mark - view lifecycle
 

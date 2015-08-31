@@ -150,17 +150,29 @@
     
 }
 
+- (void)showRouteWithSelectedRoutePoint:(STMShipmentRoutePoint *)routePoint {
+    [self performSegueWithIdentifier:@"showRoutePoints" sender:self.splitVC];
+}
 
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:@"showRoutePoints"] &&
-        [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentRouteTVC class]]) {
+
+        STMShipmentRouteTVC *routeTVC = (STMShipmentRouteTVC *)segue.destinationViewController;
         
-        STMShipmentRoute *route = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
-        [(STMShipmentRouteTVC *)segue.destinationViewController setRoute:route];
+        if ([sender isKindOfClass:[NSIndexPath class]]) {
+            
+            STMShipmentRoute *route = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+            routeTVC.route = route;
+
+        } else if ([sender isEqual:self.splitVC]) {
+
+            routeTVC.route = self.splitVC.selectedRoute;
+            
+        }
         
     }
 
@@ -181,7 +193,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

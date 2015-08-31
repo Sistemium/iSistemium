@@ -19,10 +19,15 @@
 @property (nonatomic, strong) STMShipmentsDetailNC *detailNC;
 
 @property (nonatomic, strong) STMShipmentRoute *selectedRoute;
+@property (nonatomic, strong) STMShipmentRoutePoint *selectedPoint;
 
 
 - (BOOL)isMasterNCForViewController:(UIViewController *)vc;
 - (BOOL)isDetailNCForViewController:(UIViewController *)vc;
+
+- (void)backButtonPressed;
+
+- (void)didSelectPoint:(STMShipmentRoutePoint *)point byDetailController:(BOOL)byDC;
 
 
 @end

@@ -27,10 +27,40 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="IPAD" id="2Ar-9T-oDr"/>
+                    <connections>
+                        <segue destination="b9X-XC-XoA" kind="push" identifier="showRoutePoints" id="OSp-xN-ELc"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="daK-p5-pup" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4265" y="86"/>
+        </scene>
+        <!--Shipment RouteTVC-->
+        <scene sceneID="Fnm-H9-YFf">
+            <objects>
+                <tableViewController id="b9X-XC-XoA" customClass="STMShipmentRouteTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="TkP-iD-81B">
+                        <rect key="frame" x="0.0" y="0.0" width="308" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="itY-66-z8u">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="itY-66-z8u" id="CzQ-6S-HOb">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="b9X-XC-XoA" id="mXF-0k-mfk"/>
+                            <outlet property="delegate" destination="b9X-XC-XoA" id="XeV-2R-Yll"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="ORj-FT-Ick"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="E3y-ZX-o51" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4797" y="86"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="W4w-ve-ZtF">
@@ -54,10 +84,40 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="nFu-T0-NZ0"/>
+                    <connections>
+                        <segue destination="voe-0o-u7z" kind="push" identifier="showShipments" id="Jyk-ck-Qt8"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MdB-2U-TsQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4956" y="1203"/>
+        </scene>
+        <!--Shipment Route PointTVC-->
+        <scene sceneID="Ruy-CD-o2h">
+            <objects>
+                <tableViewController id="voe-0o-u7z" customClass="STMShipmentRoutePointTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="OxG-uT-DXl">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="t6x-hX-dBb">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t6x-hX-dBb" id="if2-5x-EQE">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="voe-0o-u7z" id="eV7-3b-JFs"/>
+                            <outlet property="delegate" destination="voe-0o-u7z" id="JGN-sV-sw0"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="l2Z-cl-k69"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7mz-eJ-tn7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5949" y="1203"/>
         </scene>
         <!--Shipments DetailNC-->
         <scene sceneID="UsI-n3-ySv">

@@ -22,6 +22,8 @@
 
 @interface STMShipmentRouteTVC ()
 
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
+
 @property (nonatomic, strong) NSIndexPath *summaryIndexPath;
 
 
@@ -31,6 +33,19 @@
 @implementation STMShipmentRouteTVC
 
 @synthesize resultsController = _resultsController;
+
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSString *)cellIdentifier {
     return @"routePointCell";
@@ -428,6 +443,22 @@
     
 }
 
+- (void)highlightSelectedPoint {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedPoint];
+    
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section+1];
+    
+    if (indexPath) {
+        
+        UITableViewScrollPosition scrollPosition = ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
+
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
+        
+    }
+    
+}
+
 
 #pragma mark - height's cache
 
@@ -498,6 +529,8 @@
         STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
 
         pointTVC.point = point;
+        
+        [self.splitVC didSelectPoint:point byDetailController:[self.splitVC isDetailNCForViewController:self]];
         
     } else if ([segue.identifier isEqualToString:@"showSummary"] &&
                [segue.destinationViewController isKindOfClass:[STMShipmentRouteSummaryTVC class]]) {
@@ -583,11 +616,11 @@
 
 - (void)setupNavBar {
     
-    if ([self pointsWithLocation].count > 0) {
+    if (self.splitVC && ![self.splitVC isMasterNCForViewController:self] && [self pointsWithLocation].count > 0) {
         
         STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
         self.navigationItem.rightBarButtonItem = waypointButton;
-
+        
     } else {
         
         self.navigationItem.rightBarButtonItem = nil;
@@ -686,6 +719,19 @@
     [self reloadData];
     
     [super viewWillAppear:animated];
+    
+    if ([self.splitVC isMasterNCForViewController:self]) {
+        [self highlightSelectedPoint];
+    }
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if (![self.navigationController.viewControllers containsObject:self]) {
+        [self.splitVC backButtonPressed];
+    }
+    [super viewWillDisappear:animated];
     
 }
 

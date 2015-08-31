@@ -13,6 +13,8 @@
 
 #import <MapKit/MapKit.h>
 
+#import "STMShipmentsSVC.h"
+
 
 @interface STMShipmentRoutePointTVC : STMVariableCellsHeightTVC
 

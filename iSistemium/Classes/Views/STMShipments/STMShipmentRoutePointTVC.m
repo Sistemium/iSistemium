@@ -30,14 +30,13 @@
                                         UIAlertViewDelegate,
                                         NSFetchedResultsControllerDelegate>
 
-//@property (nonatomic, strong) NSString *cellIdentifier;
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
+
 @property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
 @property (nonatomic, strong) NSString *arrivalButtonCellIdentifier;
 
 @property (nonatomic, strong) NSIndexPath *arrivalButtonCellIndexPath;
 
-//@property (nonatomic, strong) NSFetchedResultsController *resultsController;
-//@property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMSession *session;
 
 @property (nonatomic) BOOL isWaitingLocation;
@@ -58,6 +57,18 @@
 
 @synthesize resultsController = _resultsController;
 
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (STMSession *)session {
     
@@ -1183,6 +1194,8 @@
 }
 
 - (void)customInit {
+    
+    if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
     
     UINib *custom7TVCellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];

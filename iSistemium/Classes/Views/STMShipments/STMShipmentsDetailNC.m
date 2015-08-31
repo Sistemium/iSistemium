@@ -14,9 +14,18 @@
 
 @implementation STMShipmentsDetailNC
 
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning {
