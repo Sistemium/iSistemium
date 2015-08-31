@@ -150,7 +150,7 @@
     
 }
 
-- (void)showRouteWithSelectedRoutePoint:(STMShipmentRoutePoint *)routePoint {
+- (void)showRoutePoints {
     [self performSegueWithIdentifier:@"showRoutePoints" sender:self.splitVC];
 }
 

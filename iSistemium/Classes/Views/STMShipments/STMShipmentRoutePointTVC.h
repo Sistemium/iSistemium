@@ -28,4 +28,5 @@
 
 - (void)fillCell:(UITableViewCell <STMTDCell> *)cell withShipment:(STMShipment *)shipment;
 
+
 @end

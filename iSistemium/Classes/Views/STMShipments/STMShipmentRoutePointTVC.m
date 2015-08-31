@@ -562,7 +562,7 @@
     [self flushCellBeforeUse:cell];
     [self fillCell:cell atIndexPath:indexPath];
 
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.selectionStyle = (indexPath.section == 3) ? UITableViewCellSelectionStyleDefault : UITableViewCellSelectionStyleNone;
     
     return cell;
     
@@ -888,6 +888,22 @@
     
 }
 
+- (void)highlightSelectedShipment {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedShipment];
+    
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section+3];
+    
+    if (indexPath) {
+        
+        UITableViewScrollPosition scrollPosition = ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
+        
+    }
+
+}
+
 
 #pragma mark - NSFetchedResultsController delegate
 
@@ -1011,15 +1027,24 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:@"showShipmentPositions"] &&
-        [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentTVC class]]) {
-        
+
         STMShipmentTVC *shipmentTVC = (STMShipmentTVC *)segue.destinationViewController;
-        STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
-        
-        shipmentTVC.shipment = shipment;
         shipmentTVC.point = self.point;
         shipmentTVC.parentVC = self;
+
+        if ([sender isKindOfClass:[NSIndexPath class]]) {
+            
+            STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];            
+            shipmentTVC.shipment = shipment;
+
+            [self.splitVC didSelectShipment:shipment inVC:self];
+
+        } else if ([sender isEqual:self.splitVC]) {
+            
+            shipmentTVC.shipment = self.splitVC.selectedShipment;
+            
+        }
         
     } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
@@ -1105,7 +1130,7 @@
 
 - (void)setupNavBar {
     
-    if (self.point.shippingLocation.location) {
+    if (![self.splitVC isMasterNCForViewController:self] && self.point.shippingLocation.location) {
         
         STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
         self.navigationItem.rightBarButtonItem = waypointButton;
@@ -1221,6 +1246,10 @@
     
     [super viewWillAppear:animated];
     
+    if ([self.splitVC isMasterNCForViewController:self]) {
+        [self highlightSelectedShipment];
+    }
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -1229,6 +1258,7 @@
         
 //        [self checkShipments];
         [self removeObservers];
+        [self.splitVC backButtonPressed];
         
     }
     [super viewWillDisappear:animated];

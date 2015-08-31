@@ -443,6 +443,10 @@
     
 }
 
+- (void)showShipments {
+    [self performSegueWithIdentifier:@"showShipments" sender:self.splitVC];
+}
+
 - (void)highlightSelectedPoint {
     
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedPoint];
@@ -521,16 +525,22 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:@"showShipments"] &&
-        [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentRoutePointTVC class]]) {
         
         STMShipmentRoutePointTVC *pointTVC = (STMShipmentRoutePointTVC *)segue.destinationViewController;
-        
-        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
 
-        pointTVC.point = point;
+        if ([sender isKindOfClass:[NSIndexPath class]]) {
         
-        [self.splitVC didSelectPoint:point byDetailController:[self.splitVC isDetailNCForViewController:self]];
+            STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+            pointTVC.point = point;
+            
+            [self.splitVC didSelectPoint:point inVC:self];
+
+        } else if ([sender isEqual:self.splitVC]) {
+            
+            pointTVC.point = self.splitVC.selectedPoint;
+            
+        }
         
     } else if ([segue.identifier isEqualToString:@"showSummary"] &&
                [segue.destinationViewController isKindOfClass:[STMShipmentRouteSummaryTVC class]]) {

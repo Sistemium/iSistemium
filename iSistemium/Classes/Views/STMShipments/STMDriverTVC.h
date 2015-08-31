@@ -18,7 +18,7 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route;
 
-- (void)showRouteWithSelectedRoutePoint:(STMShipmentRoutePoint *)routePoint;
+- (void)showRoutePoints;
 
 
 @end

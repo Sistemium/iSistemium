@@ -21,6 +21,8 @@
 
 @interface STMShipmentTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
+
 @property (nonatomic, strong) NSIndexPath *shippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *finishShippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
@@ -40,6 +42,18 @@
 @synthesize resultsController = _resultsController;
 @synthesize sortOrder = _sortOrder;
 
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (STMShippingProcessController *)shippingProcessController {
     return [STMShippingProcessController sharedInstance];
@@ -1111,6 +1125,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
     
     [self setupSortSettingsButton];
 

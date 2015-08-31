@@ -17,5 +17,6 @@
 
 - (NSArray *)shipmentRoutePointsSortDescriptors;
 
+- (void)showShipments;
 
 @end

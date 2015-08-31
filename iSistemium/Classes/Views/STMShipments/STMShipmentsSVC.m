@@ -10,6 +10,7 @@
 
 #import "STMDriverTVC.h"
 #import "STMShipmentRouteTVC.h"
+#import "STMShipmentRoutePointTVC.h"
 
 
 @interface STMShipmentsSVC ()
@@ -73,18 +74,32 @@
     
 }
 
-- (void)didSelectPoint:(STMShipmentRoutePoint *)point byDetailController:(BOOL)byDC {
+- (void)didSelectPoint:(STMShipmentRoutePoint *)point inVC:(UIViewController *)vc {
     
     self.selectedPoint = point;
     
-    if ([self.masterNC.topViewController isKindOfClass:[STMDriverTVC class]]) {
+    if ([self isDetailNCForViewController:vc] && [self.masterNC.topViewController isKindOfClass:[STMDriverTVC class]]) {
         
         STMDriverTVC *driverTVC = (STMDriverTVC *)self.masterNC.topViewController;
-        [driverTVC showRouteWithSelectedRoutePoint:self.selectedPoint];
+        [driverTVC showRoutePoints];
         
     }
 
 }
+
+- (void)didSelectShipment:(STMShipment *)shipment inVC:(UIViewController *)vc {
+    
+    self.selectedShipment = shipment;
+    
+    if ([self isDetailNCForViewController:vc] && [self.masterNC.topViewController isKindOfClass:[STMShipmentRouteTVC class]]) {
+        
+        STMShipmentRouteTVC *routeTVC = (STMShipmentRouteTVC *)self.masterNC.topViewController;
+        [routeTVC showShipments];
+        
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 

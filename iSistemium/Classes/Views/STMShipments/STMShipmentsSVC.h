@@ -20,6 +20,7 @@
 
 @property (nonatomic, strong) STMShipmentRoute *selectedRoute;
 @property (nonatomic, strong) STMShipmentRoutePoint *selectedPoint;
+@property (nonatomic, strong) STMShipment *selectedShipment;
 
 
 - (BOOL)isMasterNCForViewController:(UIViewController *)vc;
@@ -27,7 +28,7 @@
 
 - (void)backButtonPressed;
 
-- (void)didSelectPoint:(STMShipmentRoutePoint *)point byDetailController:(BOOL)byDC;
-
+- (void)didSelectPoint:(STMShipmentRoutePoint *)point inVC:(UIViewController *)vc;
+- (void)didSelectShipment:(STMShipment *)shipment inVC:(UIViewController *)vc;
 
 @end
