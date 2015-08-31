@@ -882,10 +882,18 @@
         
         STMShipment *shipment = self.resultsController.fetchedObjects[indexPath.row];
         
-        if (shipment.shipmentPositions.count > 0) {
-            [self performSegueWithIdentifier:@"showShipmentPositions" sender:indexPath];
-        }
+        if ([self.splitVC isMasterNCForViewController:self]) {
+            
+            [self.splitVC didSelectShipment:shipment inVC:self];
+            
+        } else {
+        
+            if (shipment.shipmentPositions.count > 0) {
+                [self performSegueWithIdentifier:@"showShipmentPositions" sender:indexPath];
+            }
 
+        }
+        
     }
     
 }

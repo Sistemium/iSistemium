@@ -11,6 +11,7 @@
 #import "STMDriverTVC.h"
 #import "STMShipmentRouteTVC.h"
 #import "STMShipmentRoutePointTVC.h"
+#import "STMShipmentTVC.h"
 
 
 @interface STMShipmentsSVC ()
@@ -104,7 +105,14 @@
         [routeTVC showShipments];
         
     }
-    
+
+    if ([self isMasterNCForViewController:vc] && [self.detailNC.topViewController isKindOfClass:[STMShipmentTVC class]]) {
+        
+        STMShipmentTVC *shipmentTVC = (STMShipmentTVC *)self.detailNC.topViewController;
+        shipmentTVC.shipment = shipment;
+        
+    }
+
 }
 
 

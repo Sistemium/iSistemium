@@ -55,6 +55,17 @@
     
 }
 
+- (void)setShipment:(STMShipment *)shipment {
+    
+    if (![_shipment isEqual:shipment]) {
+        
+        _shipment = shipment;
+        [self performFetch];
+        
+    }
+    
+}
+
 - (STMShippingProcessController *)shippingProcessController {
     return [STMShippingProcessController sharedInstance];
 }
