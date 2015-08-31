@@ -616,7 +616,7 @@
 
 - (void)setupNavBar {
     
-    if (self.splitVC && ![self.splitVC isMasterNCForViewController:self] && [self pointsWithLocation].count > 0) {
+    if (![self.splitVC isMasterNCForViewController:self] && [self pointsWithLocation].count > 0) {
         
         STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
         self.navigationItem.rightBarButtonItem = waypointButton;
@@ -695,7 +695,9 @@
 
 - (void)customInit {
     
-    self.title = @"";
+    if ([self.splitVC isDetailNCForViewController:self]) {
+        self.title = NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
+    }
     
     [self setupNavBar];
     
