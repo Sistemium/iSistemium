@@ -164,7 +164,7 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return (self.route) ? 2 : 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -648,6 +648,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    self.title = @"";
     
     [self setupNavBar];
     
