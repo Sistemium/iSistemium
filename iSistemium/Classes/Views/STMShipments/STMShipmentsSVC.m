@@ -8,9 +8,14 @@
 
 #import "STMShipmentsSVC.h"
 
+#import "STMShipmentRouteTVC.h"
+
+
 @interface STMShipmentsSVC ()
 
+
 @end
+
 
 @implementation STMShipmentsSVC
 
@@ -33,6 +38,31 @@
         }
     }
     return _detailNC;
+    
+}
+
+- (BOOL)isMasterNCForViewController:(UIViewController *)vc {
+    return [self.masterNC.viewControllers containsObject:vc];
+}
+
+- (BOOL)isDetailNCForViewController:(UIViewController *)vc {
+    return [self.detailNC.viewControllers containsObject:vc];
+}
+
+- (void)setSelectedRoute:(STMShipmentRoute *)selectedRoute {
+    
+    if (![_selectedRoute isEqual:selectedRoute]) {
+        
+        _selectedRoute = selectedRoute;
+        
+        if ([self.detailNC.topViewController isKindOfClass:[STMShipmentRouteTVC class]]) {
+            
+            STMShipmentRouteTVC *routeTVC = (STMShipmentRouteTVC *)self.detailNC.topViewController;
+            routeTVC.route = _selectedRoute;
+            
+        }
+        
+    }
     
 }
 

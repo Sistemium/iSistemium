@@ -15,6 +15,7 @@
 
 @interface STMDriverTVC ()
 
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
 @property (nonatomic, strong) NSString *cellIdentifier;
 
 
@@ -24,6 +25,19 @@
 @implementation STMDriverTVC
 
 @synthesize resultsController = _resultsController;
+
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -121,7 +135,17 @@
     STMShipmentRoute *route = [self.resultsController objectAtIndexPath:indexPath];
 
     if (route.shipmentRoutePoints.count > 0) {
-        [self performSegueWithIdentifier:@"showRoutePoints" sender:indexPath];
+        
+        if (IPHONE) {
+            
+            [self performSegueWithIdentifier:@"showRoutePoints" sender:indexPath];
+            
+        } else if (IPAD) {
+            
+            self.splitVC.selectedRoute = route;
+            
+        }
+        
     }
     
 }

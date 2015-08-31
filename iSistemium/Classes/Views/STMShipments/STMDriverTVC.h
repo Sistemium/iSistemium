@@ -9,6 +9,8 @@
 #import "STMFetchedResultsControllerTVC.h"
 #import "STMDataModel.h"
 
+#import "STMShipmentsSVC.h"
+
 
 @interface STMDriverTVC : STMFetchedResultsControllerTVC
 

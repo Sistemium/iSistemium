@@ -36,6 +36,19 @@
     return @"routePointCell";
 }
 
+- (void)setRoute:(STMShipmentRoute *)route {
+    
+    if (![_route isEqual:route]) {
+        
+        _route = route;
+        [self performFetch];
+        [self.tableView reloadData];
+        [self setupNavBar];
+        
+    }
+    
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
