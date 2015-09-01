@@ -1229,9 +1229,7 @@
 }
 
 - (void)customInit {
-    
-    if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
-    
+
     UINib *custom7TVCellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.arrivalButtonCellIdentifier];
@@ -1256,9 +1254,8 @@
     
     [super viewWillAppear:animated];
     
-    if ([self.splitVC isMasterNCForViewController:self]) {
-        [self highlightSelectedShipment];
-    }
+    if ([self.splitVC isMasterNCForViewController:self]) [self highlightSelectedShipment];
+    if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
 
 }
 

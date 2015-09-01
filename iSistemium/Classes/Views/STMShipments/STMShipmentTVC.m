@@ -1136,9 +1136,7 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
-    if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
-    
+
     [self setupSortSettingsButton];
 
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom9TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
@@ -1166,6 +1164,8 @@
 //    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
 
     [super viewWillAppear:animated];
+
+    if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
 
 }
 
