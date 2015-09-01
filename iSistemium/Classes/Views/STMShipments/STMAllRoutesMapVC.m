@@ -22,9 +22,12 @@
 
 @interface STMAllRoutesMapVC () <MKMapViewDelegate, UIAlertViewDelegate>
 
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
+
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *routesInfoLabel;
+@property (weak, nonatomic) IBOutlet UIToolbar *navBar;
 
 @property (nonatomic, strong) NSMutableArray *locationsArray;
 
@@ -47,6 +50,19 @@
 
 
 @implementation STMAllRoutesMapVC
+
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.parentVC.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.parentVC.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (UIProgressView *)progressBar {
     
@@ -492,8 +508,19 @@
         [button addSubview:imageView];
 
         STMBarButtonItem *reorderButton = [[STMBarButtonItem alloc] initWithCustomView:button];
-        self.navigationItem.rightBarButtonItem = reorderButton;
-                
+        
+        if ([self.splitVC isDetailNCForViewController:self.parentVC]) {
+            
+            STMBarButtonItem *backButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"BACK", nil) style:UIBarButtonItemStylePlain target:self action:@selector(backButtonPressed)];
+            
+            [self.navBar setItems:@[backButton, [STMBarButtonItem flexibleSpace], reorderButton] animated:NO];
+            
+        } else {
+            
+            self.navigationItem.rightBarButtonItem = reorderButton;
+            
+        }
+        
     }
     
 }
@@ -508,6 +535,13 @@
     
 }
 
+- (void)backButtonPressed {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
+}
 
 #pragma mark - view lifecycle
 
@@ -516,7 +550,7 @@
     self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
     [self.view addSubview:self.spinner];
     
-    [self setupNavBar];
+//    [self setupNavBar];
     [self prepareArrayOfCLLocations];
     [self setupMapView];
     [self updateRoutesInfoLabel];
@@ -528,6 +562,14 @@
     [super viewDidLoad];
     [self customInit];
 
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    [self setupNavBar];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
