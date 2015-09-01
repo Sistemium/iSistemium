@@ -547,8 +547,8 @@
 
 - (void)customInit {
     
-    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
-    [self.view addSubview:self.spinner];
+//    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
+//    [self.view addSubview:self.spinner];
     
 //    [self setupNavBar];
     [self prepareArrayOfCLLocations];
@@ -569,7 +569,16 @@
     [super viewWillAppear:animated];
     
     [self setupNavBar];
+
+}
+
+- (void)viewDidAppear:(BOOL)animated {
     
+    [super viewDidAppear:animated];
+    
+    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
+    [self.view addSubview:self.spinner];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
