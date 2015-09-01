@@ -154,6 +154,21 @@
     [self performSegueWithIdentifier:@"showRoutePoints" sender:self.splitVC];
 }
 
+- (void)highlightSelectedRoute {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedRoute];
+    
+    if (indexPath) {
+        
+        UITableViewScrollPosition scrollPosition = ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
+        
+    }
+    
+}
+
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -192,6 +207,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if ([self.splitVC isMasterNCForViewController:self]) [self highlightSelectedRoute];
+    
 }
 
 - (void)didReceiveMemoryWarning {
