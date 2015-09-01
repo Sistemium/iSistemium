@@ -1147,6 +1147,8 @@
         
     } else {
 
+        self.navigationItem.rightBarButtonItem = nil;
+
     }
 
 }
@@ -1249,11 +1251,11 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-
-    [self setupNavBar];
     
     [super viewWillAppear:animated];
-    
+
+    [self setupNavBar];
+
     if ([self.splitVC isMasterNCForViewController:self]) [self highlightSelectedShipment];
     if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
 
