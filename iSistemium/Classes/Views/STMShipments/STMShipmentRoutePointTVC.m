@@ -186,6 +186,7 @@
 - (void)addPhotoButtonPressed {
 
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     
 }
 

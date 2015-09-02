@@ -150,6 +150,7 @@
                         <segue destination="4Yz-sj-vW1" kind="push" identifier="showShipmentPositions" id="e2y-It-qtf"/>
                         <segue destination="Z3I-Qq-HWq" kind="modal" identifier="showRoute" id="Gpp-bm-LaC"/>
                         <segue destination="b7r-jR-Skb" kind="modal" identifier="showShippingLocationMap" id="76n-mK-RPY"/>
+                        <segue destination="spl-9Q-9ch" kind="modal" identifier="showPhotos" id="c9u-3e-j1z"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7mz-eJ-tn7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -716,6 +717,64 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="orZ-hB-Xfc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="8487" y="3527"/>
+        </scene>
+        <!--Shipping Location PicturesPVC-->
+        <scene sceneID="CoJ-He-MzY">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="spl-9Q-9ch" customClass="STMShippingLocationPicturesPVC" sceneMemberID="viewController">
+                    <nil key="simulatedTopBarMetrics"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wVC-eF-jr0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6028" y="4699"/>
+        </scene>
+        <!--Shipping Location PictureVC-->
+        <scene sceneID="IHJ-Jh-R7f">
+            <objects>
+                <viewController storyboardIdentifier="photoVC" id="g5M-HO-2Of" customClass="STMShippingLocationPictureVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="cZt-hO-yxz"/>
+                        <viewControllerLayoutGuide type="bottom" id="BtX-4T-zaN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="oSN-ON-iCb">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rpl-Li-eqB">
+                                <rect key="frame" x="20" y="64" width="728" height="940"/>
+                            </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dtn-Os-wQJ">
+                                <rect key="frame" x="4" y="20" width="760" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="yWZ-vD-QbU"/>
+                                    <barButtonItem systemItem="trash" id="b30-x8-cs3">
+                                        <connections>
+                                            <action selector="deleteButtonPressed:" destination="g5M-HO-2Of" id="pp9-vN-E9B"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="dtn-Os-wQJ" secondAttribute="trailing" constant="-16" id="2Ia-Pg-4ei"/>
+                            <constraint firstItem="dtn-Os-wQJ" firstAttribute="leading" secondItem="oSN-ON-iCb" secondAttribute="leadingMargin" constant="-16" id="4rx-UY-P56"/>
+                            <constraint firstItem="rpl-Li-eqB" firstAttribute="leading" secondItem="oSN-ON-iCb" secondAttribute="leadingMargin" id="Ht6-DR-j5H"/>
+                            <constraint firstItem="dtn-Os-wQJ" firstAttribute="top" secondItem="cZt-hO-yxz" secondAttribute="bottom" id="VfP-uO-Cuv"/>
+                            <constraint firstItem="rpl-Li-eqB" firstAttribute="top" secondItem="dtn-Os-wQJ" secondAttribute="bottom" id="WV9-Ds-Le9"/>
+                            <constraint firstItem="rpl-Li-eqB" firstAttribute="trailing" secondItem="oSN-ON-iCb" secondAttribute="trailingMargin" id="cel-fv-hEM"/>
+                            <constraint firstItem="BtX-4T-zaN" firstAttribute="top" secondItem="rpl-Li-eqB" secondAttribute="bottom" constant="20" id="moZ-h7-HYV"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="deletePhotoButton" destination="b30-x8-cs3" id="vLR-Kv-8Ah"/>
+                        <outlet property="photoView" destination="rpl-Li-eqB" id="4jd-7v-jzM"/>
+                        <outlet property="toolbar" destination="dtn-Os-wQJ" id="3uC-Ab-h2c"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UWD-5C-x6K" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6857" y="4699"/>
         </scene>
     </scenes>
     <resources>
