@@ -268,6 +268,7 @@
                         <outlet property="mapView" destination="ROL-31-86o" id="TIQ-6G-vlu"/>
                         <outlet property="routesInfoLabel" destination="fEG-D7-sJg" id="Gz1-vl-DzP"/>
                         <outlet property="toolbar" destination="b1u-jB-F1H" id="Rf6-g8-0hB"/>
+                        <segue destination="voe-0o-u7z" kind="push" identifier="showPoint" id="shW-zo-z1l"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2aI-mD-ygm" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -383,4 +384,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="shW-zo-z1l"/>
+    </inferredMetricsTieBreakers>
 </document>
