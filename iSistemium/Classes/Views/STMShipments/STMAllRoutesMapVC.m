@@ -512,9 +512,12 @@
 
         if ([self.splitVC isDetailNCForViewController:self.parentVC]) {
             
-            STMBarButtonItem *backButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(backButtonPressed)];
+            STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(closeButtonPressed)];
             
-            self.navigationItem.leftBarButtonItem = backButton;
+            self.navigationItem.leftBarButtonItem = closeButton;
             
         }
         
@@ -532,7 +535,7 @@
     
 }
 
-- (void)backButtonPressed {
+- (void)closeButtonPressed {
     
     [self dismissViewControllerAnimated:YES completion:^{
         

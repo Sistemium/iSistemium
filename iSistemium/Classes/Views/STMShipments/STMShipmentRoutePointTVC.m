@@ -1077,13 +1077,23 @@
         picturesPVC.currentIndex = [self.picturesView.subviews indexOfObject:sender];
         picturesPVC.parentVC = self;
         
-    } else if ([segue.identifier isEqualToString:@"showRoute"] &&
-               [segue.destinationViewController isKindOfClass:[STMRouteMapVC class]]) {
+    } else if ([segue.identifier isEqualToString:@"showRoute"]) {
         
-        STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
+        STMRouteMapVC *routeMapVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMRouteMapVC class]]) {
+            
+            routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
+
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMRouteMapVC class]]) {
+            
+            routeMapVC = (STMRouteMapVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            routeMapVC.splitVC = self.splitVC;
+            
+        }
 
         routeMapVC.shippingLocation = self.point.shippingLocation;
-//        routeMapVC.destinationPoint = self.geocodedLocation;
         routeMapVC.destinationPointName = self.point.shortName;
         routeMapVC.destinationPointAddress = self.point.address;
         
