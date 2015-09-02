@@ -22,6 +22,7 @@
 @interface STMShipmentTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
+@property (nonatomic, strong) UIPopoverController *settingsPopover;
 
 @property (nonatomic, strong) NSIndexPath *shippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *finishShippingButtonCellIndexPath;
@@ -111,6 +112,7 @@
     [defaults synchronize];
     
     [self setupSortSettingsButton];
+    [self performFetch];
     
 }
 
@@ -1129,9 +1131,45 @@
 }
 
 - (void)settingsButtonPressed {
-    [self performSegueWithIdentifier:@"showSettings" sender:self];
+    
+    if ([self.splitVC isDetailNCForViewController:self]) {
+        
+        [self showSettingsPopover];
+        
+    } else {
+    
+        [self performSegueWithIdentifier:@"showSettings" sender:self];
+
+    }
+    
 }
 
+- (void)showSettingsPopover {
+    
+    self.settingsPopover = nil;
+    
+    STMShippingSettingsTVC *settingsVC = (STMShippingSettingsTVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"shippingSettings"];
+    settingsVC.parentVC = self;
+    
+    self.settingsPopover = [[UIPopoverController alloc] initWithContentViewController:settingsVC];
+    
+    UIView *buttonView = [[self.navigationItem rightBarButtonItem] valueForKey:@"view"];
+    
+    [self.settingsPopover presentPopoverFromRect:buttonView.frame
+                                          inView:self.view
+                        permittedArrowDirections:UIPopoverArrowDirectionUp
+                                        animated:YES];
+    
+}
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+    [super deviceOrientationDidChangeNotification:notification];
+    
+    [self.settingsPopover dismissPopoverAnimated:NO];
+    self.settingsPopover = nil;
+    
+}
 
 #pragma mark - view lifecycle
 

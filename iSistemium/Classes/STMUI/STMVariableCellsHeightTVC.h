@@ -16,5 +16,7 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification;
+
 
 @end
