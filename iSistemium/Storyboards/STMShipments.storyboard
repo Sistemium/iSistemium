@@ -117,7 +117,7 @@
                     <navigationItem key="navigationItem" title="Root View Controller" id="nFu-T0-NZ0"/>
                     <connections>
                         <segue destination="voe-0o-u7z" kind="push" identifier="showShipments" id="Jyk-ck-Qt8"/>
-                        <segue destination="n5Z-xP-RxA" kind="modal" identifier="showAllRoutes" id="2cQ-0r-QSB"/>
+                        <segue destination="UAe-AA-dUd" kind="modal" identifier="showAllRoutes" id="2cQ-0r-QSB"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MdB-2U-TsQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -235,49 +235,59 @@
                         <viewControllerLayoutGuide type="bottom" id="vUb-fI-gaN"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="MST-Rb-5xg">
-                        <rect key="frame" x="0.0" y="64" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="960"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ROL-31-86o">
-                                <rect key="frame" x="4" y="64" width="760" height="916"/>
+                                <rect key="frame" x="4" y="0.0" width="760" height="980"/>
                             </mapView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b1u-jB-F1H">
-                                <rect key="frame" x="4" y="980" width="760" height="44"/>
+                                <rect key="frame" x="4" y="916" width="760" height="44"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="yvk-VO-LZI"/>
                                     <barButtonItem title="Routes info" id="fEG-D7-sJg"/>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="WW9-5G-YF2"/>
                                 </items>
                             </toolbar>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0y0-EV-jaH">
-                                <rect key="frame" x="4" y="20" width="760" height="44"/>
-                                <items/>
-                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="ROL-31-86o" secondAttribute="trailing" constant="-16" id="3c4-BU-3Hi"/>
-                            <constraint firstItem="b1u-jB-F1H" firstAttribute="top" secondItem="ROL-31-86o" secondAttribute="bottom" id="7FB-qq-kBx"/>
-                            <constraint firstItem="b1u-jB-F1H" firstAttribute="leading" secondItem="MST-Rb-5xg" secondAttribute="leadingMargin" constant="-16" id="BTM-rk-w6N"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="0y0-EV-jaH" secondAttribute="trailing" constant="-16" id="Gb5-qu-Ywa"/>
-                            <constraint firstItem="0y0-EV-jaH" firstAttribute="leading" secondItem="MST-Rb-5xg" secondAttribute="leadingMargin" constant="-16" id="IPk-kM-9Q0"/>
-                            <constraint firstItem="vUb-fI-gaN" firstAttribute="top" secondItem="b1u-jB-F1H" secondAttribute="bottom" id="OVU-KV-pgy"/>
-                            <constraint firstItem="ROL-31-86o" firstAttribute="leading" secondItem="MST-Rb-5xg" secondAttribute="leadingMargin" constant="-16" id="XoS-dI-xaJ"/>
-                            <constraint firstItem="0y0-EV-jaH" firstAttribute="top" secondItem="UEX-QH-jjO" secondAttribute="bottom" id="oNv-Ca-4LD"/>
-                            <constraint firstItem="ROL-31-86o" firstAttribute="top" secondItem="0y0-EV-jaH" secondAttribute="bottom" id="orR-cm-p6j"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="b1u-jB-F1H" secondAttribute="trailing" constant="-16" id="zaA-l9-0tD"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="b1u-jB-F1H" secondAttribute="trailing" constant="-16" id="8ho-Zy-aer"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ROL-31-86o" secondAttribute="trailing" constant="-16" id="O8c-Yl-Vab"/>
+                            <constraint firstItem="ROL-31-86o" firstAttribute="leading" secondItem="MST-Rb-5xg" secondAttribute="leadingMargin" constant="-16" id="QOS-oy-frV"/>
+                            <constraint firstItem="b1u-jB-F1H" firstAttribute="top" secondItem="ROL-31-86o" secondAttribute="bottom" constant="-64" id="bum-ew-6ru"/>
+                            <constraint firstItem="vUb-fI-gaN" firstAttribute="top" secondItem="b1u-jB-F1H" secondAttribute="bottom" id="mqY-EW-Zc9"/>
+                            <constraint firstItem="b1u-jB-F1H" firstAttribute="leading" secondItem="MST-Rb-5xg" secondAttribute="leadingMargin" constant="-16" id="oRE-84-0JU"/>
+                            <constraint firstItem="ROL-31-86o" firstAttribute="top" secondItem="UEX-QH-jjO" secondAttribute="bottom" id="rlp-JV-e5X"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="Cu5-gg-Ki0"/>
                     <connections>
                         <outlet property="mapView" destination="ROL-31-86o" id="TIQ-6G-vlu"/>
-                        <outlet property="navBar" destination="0y0-EV-jaH" id="KHM-i8-1BG"/>
                         <outlet property="routesInfoLabel" destination="fEG-D7-sJg" id="Gz1-vl-DzP"/>
                         <outlet property="toolbar" destination="b1u-jB-F1H" id="Rf6-g8-0hB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2aI-mD-ygm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4866" y="3527"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="7jg-VO-vP7">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="UAe-AA-dUd" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gsm-Bg-gQF">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="n5Z-xP-RxA" kind="relationship" relationship="rootViewController" id="kF3-3k-c1Q"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cas-M1-f5Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4866" y="2367"/>
         </scene>

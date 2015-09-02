@@ -560,10 +560,20 @@
         
         [(STMShipmentRouteSummaryTVC *)segue.destinationViewController setRoute:self.route];
         
-    } else if ([segue.identifier isEqualToString:@"showAllRoutes"] &&
-               [segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
+    } else if ([segue.identifier isEqualToString:@"showAllRoutes"]) {
         
-        STMAllRoutesMapVC *allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
+        STMAllRoutesMapVC *allRoutesMapVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
+            
+            allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
+            
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMAllRoutesMapVC class]]) {
+            
+            allRoutesMapVC = (STMAllRoutesMapVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            
+        }
         
         for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
             
@@ -573,9 +583,7 @@
             
         }
         
-//        allRoutesMapVC.points = [self pointsWithLocation];
         allRoutesMapVC.points = self.resultsController.fetchedObjects;
-//        allRoutesMapVC.geocodedLocations = self.geocodedLocations.copy;
         allRoutesMapVC.parentVC = self;
         
     }

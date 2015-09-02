@@ -27,7 +27,6 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *routesInfoLabel;
-@property (weak, nonatomic) IBOutlet UIToolbar *navBar;
 
 @property (nonatomic, strong) NSMutableArray *locationsArray;
 
@@ -509,15 +508,13 @@
 
         STMBarButtonItem *reorderButton = [[STMBarButtonItem alloc] initWithCustomView:button];
         
+        self.navigationItem.rightBarButtonItem = reorderButton;
+
         if ([self.splitVC isDetailNCForViewController:self.parentVC]) {
             
-            STMBarButtonItem *backButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"BACK", nil) style:UIBarButtonItemStylePlain target:self action:@selector(backButtonPressed)];
+            STMBarButtonItem *backButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(backButtonPressed)];
             
-            [self.navBar setItems:@[backButton, [STMBarButtonItem flexibleSpace], reorderButton] animated:NO];
-            
-        } else {
-            
-            self.navigationItem.rightBarButtonItem = reorderButton;
+            self.navigationItem.leftBarButtonItem = backButton;
             
         }
         
