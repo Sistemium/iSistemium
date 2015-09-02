@@ -149,6 +149,7 @@
                     <connections>
                         <segue destination="4Yz-sj-vW1" kind="push" identifier="showShipmentPositions" id="e2y-It-qtf"/>
                         <segue destination="Z3I-Qq-HWq" kind="modal" identifier="showRoute" id="Gpp-bm-LaC"/>
+                        <segue destination="b7r-jR-Skb" kind="modal" identifier="showShippingLocationMap" id="76n-mK-RPY"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7mz-eJ-tn7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -328,7 +329,7 @@
                                 </items>
                             </toolbar>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="RMA-m3-doC">
-                                <rect key="frame" x="4" y="-20" width="760" height="936"/>
+                                <rect key="frame" x="4" y="0.0" width="760" height="916"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -338,7 +339,7 @@
                             <constraint firstItem="gQu-CJ-q2d" firstAttribute="top" secondItem="roU-MA-m0o" secondAttribute="bottom" id="NhB-4s-bvj"/>
                             <constraint firstItem="roU-MA-m0o" firstAttribute="top" secondItem="RMA-m3-doC" secondAttribute="bottom" id="Z7f-et-1px"/>
                             <constraint firstAttribute="trailingMargin" secondItem="RMA-m3-doC" secondAttribute="trailing" constant="-16" id="eur-rl-eSH"/>
-                            <constraint firstItem="RMA-m3-doC" firstAttribute="top" secondItem="ghP-Lu-8gh" secondAttribute="bottom" constant="-20" id="k1N-4R-8Nt"/>
+                            <constraint firstItem="RMA-m3-doC" firstAttribute="top" secondItem="ghP-Lu-8gh" secondAttribute="bottom" id="k1N-4R-8Nt"/>
                             <constraint firstItem="RMA-m3-doC" firstAttribute="leading" secondItem="yZZ-dN-hbx" secondAttribute="leadingMargin" constant="-16" id="muX-cw-gWo"/>
                         </constraints>
                     </view>
@@ -374,6 +375,75 @@
             </objects>
             <point key="canvasLocation" x="5747" y="2367"/>
         </scene>
+        <!--Shipping Location MapVC-->
+        <scene sceneID="rwk-Gm-kBE">
+            <objects>
+                <viewController id="59D-uR-ZzB" customClass="STMShippingLocationMapVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="wdj-uH-eSo"/>
+                        <viewControllerLayoutGuide type="bottom" id="yMi-Ad-0Jt"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ctJ-yR-kF1">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="960"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Zsh-r4-CmM">
+                                <rect key="frame" x="4" y="0.0" width="760" height="960"/>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7X0-sD-D0g">
+                                <rect key="frame" x="240" y="910" width="288" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="288" id="Y5I-Vj-Y23"/>
+                                </constraints>
+                                <state key="normal" title="Location button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="locationButtonPressed:" destination="59D-uR-ZzB" eventType="touchUpInside" id="gH8-Dm-wrJ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="yMi-Ad-0Jt" firstAttribute="top" secondItem="Zsh-r4-CmM" secondAttribute="bottom" id="fPQ-fn-4f7"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Zsh-r4-CmM" secondAttribute="trailing" constant="-16" id="iVU-oT-pL7"/>
+                            <constraint firstItem="7X0-sD-D0g" firstAttribute="top" secondItem="Zsh-r4-CmM" secondAttribute="bottom" constant="-50" id="l6C-ot-YY1"/>
+                            <constraint firstItem="Zsh-r4-CmM" firstAttribute="top" secondItem="wdj-uH-eSo" secondAttribute="bottom" id="oQr-Jq-bdW"/>
+                            <constraint firstItem="Zsh-r4-CmM" firstAttribute="leading" secondItem="ctJ-yR-kF1" secondAttribute="leadingMargin" constant="-16" id="okx-Og-whV"/>
+                            <constraint firstItem="7X0-sD-D0g" firstAttribute="centerX" secondItem="Zsh-r4-CmM" secondAttribute="centerX" id="zIv-Fg-9AV"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" id="N63-1P-69Z"/>
+                    <connections>
+                        <outlet property="locationButton" destination="7X0-sD-D0g" id="i0q-TC-jPb"/>
+                        <outlet property="mapView" destination="Zsh-r4-CmM" id="5Lk-v6-8Er"/>
+                        <segue destination="E9H-Y1-s78" kind="push" identifier="showRoute" id="KyB-EE-Dfc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NKo-aI-kPV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6640" y="3527"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="6ct-N6-YF6">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="b7r-jR-Skb" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="dhp-vd-t96"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="koV-R2-R5d">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="59D-uR-ZzB" kind="relationship" relationship="rootViewController" id="okP-9R-M77"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Jp4-00-2la" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6640" y="2367"/>
+        </scene>
     </scenes>
     <resources>
         <image name="back.png" width="25" height="25"/>
@@ -386,5 +456,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="shW-zo-z1l"/>
+        <segue reference="KyB-EE-Dfc"/>
     </inferredMetricsTieBreakers>
 </document>

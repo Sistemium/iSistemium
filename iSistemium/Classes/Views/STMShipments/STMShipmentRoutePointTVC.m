@@ -1056,13 +1056,24 @@
             
         }
         
-    } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
-               [segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
+    } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"]) {
         
-        STMShippingLocationMapVC *mapVC = (STMShippingLocationMapVC *)segue.destinationViewController;
+        STMShippingLocationMapVC *mapVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
+        
+            mapVC = (STMShippingLocationMapVC *)segue.destinationViewController;
+            
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMShippingLocationMapVC class]]) {
+            
+            mapVC = (STMShippingLocationMapVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            mapVC.splitVC = self.splitVC;
+            
+        }
         
         mapVC.point = self.point;
-//        mapVC.geocodedLocation = self.geocodedLocation;
+
         
     } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
                [sender isKindOfClass:[UIView class]] &&

@@ -455,6 +455,16 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)updateNavBar {
 
+    if (self.splitVC) {
+        
+        STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                          style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(closeButtonPressed)];
+        self.navigationItem.leftBarButtonItem = closeButton;
+        
+    }
+
     self.navigationItem.rightBarButtonItem = nil;
 
     if (self.mapView.userLocation.location) {
@@ -490,6 +500,14 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)waypointButtonPressed {
     if (self.state == STMShippingLocationHaveLocation) [self performSegueWithIdentifier:@"showRoute" sender:self];
+}
+
+- (void)closeButtonPressed {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
 }
 
 
@@ -558,6 +576,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
+    [self updateNavBar];
     
 }
 
