@@ -1048,10 +1048,21 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"showShipping"] &&
-               [segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
+    if ([segue.identifier isEqualToString:@"showShipping"]) {
         
-        STMShippingVC *shippingVC = (STMShippingVC *)segue.destinationViewController;
+        STMShippingVC *shippingVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
+        
+            shippingVC = (STMShippingVC *)segue.destinationViewController;
+            
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMShippingVC class]]) {
+
+            shippingVC = (STMShippingVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+
+        }
+        
         shippingVC.shipment = self.shipment;
         shippingVC.parentVC = self;
         shippingVC.sortOrder = self.sortOrder;

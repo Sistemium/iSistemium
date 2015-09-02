@@ -178,6 +178,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="eqw-kR-fB9"/>
+                    <connections>
+                        <segue destination="DeU-Vu-xS6" kind="modal" identifier="showShipping" id="Gaq-ze-QvJ"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e5B-g8-uC0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -574,6 +577,90 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1lt-K0-Kvo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="6448" y="342"/>
+        </scene>
+        <!--ShippingVC-->
+        <scene sceneID="gDh-rq-szi">
+            <objects>
+                <viewController hidesBottomBarWhenPushed="YES" id="czx-Ws-YXR" customClass="STMShippingVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Rnj-94-APl"/>
+                        <viewControllerLayoutGuide type="bottom" id="QZ8-ZC-9l8"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="eru-ck-RWS">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="960"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="jf9-Zt-Xsy">
+                                <rect key="frame" x="4" y="0.0" width="760" height="44"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="quP-li-uR8">
+                                <rect key="frame" x="4" y="44" width="760" height="872"/>
+                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                            </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T5k-8K-1RB">
+                                <rect key="frame" x="4" y="916" width="760" height="44"/>
+                                <items>
+                                    <barButtonItem title="Chk" width="25" id="2oO-KB-xi1">
+                                        <connections>
+                                            <action selector="checkmarkPressed:" destination="czx-Ws-YXR" id="GY2-QF-QYU"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="fLX-2y-YxZ"/>
+                                    <barButtonItem title="Processing" id="u6z-Db-lUm">
+                                        <connections>
+                                            <action selector="processingButtonPressed:" destination="czx-Ws-YXR" id="utS-Nh-ctA"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="09q-rk-V0i"/>
+                                    <barButtonItem width="25" style="plain" systemItem="fixedSpace" id="CvZ-iC-3OM"/>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="T5k-8K-1RB" secondAttribute="trailing" constant="-16" id="5tV-QL-yoH"/>
+                            <constraint firstItem="jf9-Zt-Xsy" firstAttribute="leading" secondItem="eru-ck-RWS" secondAttribute="leadingMargin" constant="-16" id="RVu-gz-CUq"/>
+                            <constraint firstItem="T5k-8K-1RB" firstAttribute="top" secondItem="quP-li-uR8" secondAttribute="bottom" id="TcY-cd-XZ2"/>
+                            <constraint firstItem="quP-li-uR8" firstAttribute="top" secondItem="jf9-Zt-Xsy" secondAttribute="bottom" id="bhm-GQ-Udw"/>
+                            <constraint firstItem="T5k-8K-1RB" firstAttribute="leading" secondItem="eru-ck-RWS" secondAttribute="leadingMargin" constant="-16" id="kHe-3U-xk6"/>
+                            <constraint firstItem="quP-li-uR8" firstAttribute="leading" secondItem="eru-ck-RWS" secondAttribute="leadingMargin" constant="-16" id="rR2-KW-rd1"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="quP-li-uR8" secondAttribute="trailing" constant="-16" id="soq-eQ-Jds"/>
+                            <constraint firstItem="jf9-Zt-Xsy" firstAttribute="top" secondItem="Rnj-94-APl" secondAttribute="bottom" id="ubr-Y7-HBG"/>
+                            <constraint firstItem="QZ8-ZC-9l8" firstAttribute="top" secondItem="T5k-8K-1RB" secondAttribute="bottom" id="vin-z4-111"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="jf9-Zt-Xsy" secondAttribute="trailing" constant="-16" id="vyg-wT-St6"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" id="C0Q-2K-gbY"/>
+                    <connections>
+                        <outlet property="checkButton" destination="2oO-KB-xi1" id="lOM-cs-DPB"/>
+                        <outlet property="processingButton" destination="u6z-Db-lUm" id="Ddm-kG-bk8"/>
+                        <outlet property="searchBar" destination="jf9-Zt-Xsy" id="Hq1-rb-qmd"/>
+                        <outlet property="tableView" destination="quP-li-uR8" id="HsF-o3-AXP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TYL-Bc-UG9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7565" y="3527"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="4sq-lt-jam">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DeU-Vu-xS6" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Hzu-UM-78D">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="czx-Ws-YXR" kind="relationship" relationship="rootViewController" id="ZOa-wo-vJG"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Cm4-Le-Oyp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7565" y="2367"/>
         </scene>
     </scenes>
     <resources>
