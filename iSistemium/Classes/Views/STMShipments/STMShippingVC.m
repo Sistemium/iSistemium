@@ -38,6 +38,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *checkButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *processingButton;
 
+@property (nonatomic, strong) UIPopoverController *settingsPopover;
+
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
@@ -92,6 +94,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     self.parentVC.sortOrder = sortOrder;
     
     [self setupSortSettingsButton];
+    
+    [self performFetch];
     
 }
 
@@ -758,10 +762,27 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)setupNavBar {
     
-//    self.navigationItem.title = self.shipment.ndoc;
+    if (self.splitVC) {
+        
+        STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                          style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(closeButtonPressed)];
+        self.navigationItem.leftBarButtonItem = closeButton;
+        
+    }
+
     [self setupTitleView];
     [self setupSortSettingsButton];
 
+}
+
+- (void)closeButtonPressed {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
 }
 
 - (void)setupTitleView {
@@ -848,7 +869,42 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (void)settingsButtonPressed {
-    [self performSegueWithIdentifier:@"showSettings" sender:self];
+    
+    if (self.splitVC) {
+        
+        [self showSettingsPopover];
+        
+    } else {
+        
+        [self performSegueWithIdentifier:@"showSettings" sender:self];
+        
+    }
+    
+}
+
+- (void)showSettingsPopover {
+    
+    self.settingsPopover = nil;
+    
+    STMShippingSettingsTVC *settingsVC = (STMShippingSettingsTVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"shippingSettings"];
+    settingsVC.parentVC = self;
+    
+    self.settingsPopover = [[UIPopoverController alloc] initWithContentViewController:settingsVC];
+    
+    UIView *buttonView = [[self.navigationItem rightBarButtonItem] valueForKey:@"view"];
+    
+    [self.settingsPopover presentPopoverFromRect:buttonView.frame
+                                          inView:self.view
+                        permittedArrowDirections:UIPopoverArrowDirectionUp
+                                        animated:YES];
+    
+}
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+
+    [self.settingsPopover dismissPopoverAnimated:NO];
+    self.settingsPopover = nil;
+    
 }
 
 
@@ -1071,6 +1127,13 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     self.searchBar.delegate = self;
     
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(deviceOrientationDidChangeNotification:)
+               name:UIDeviceOrientationDidChangeNotification
+             object:nil];
+
 }
 
 - (void)viewDidLoad {

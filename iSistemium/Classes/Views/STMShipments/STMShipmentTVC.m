@@ -1060,6 +1060,7 @@
                    [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMShippingVC class]]) {
 
             shippingVC = (STMShippingVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            shippingVC.splitVC = self.splitVC;
 
         }
         
