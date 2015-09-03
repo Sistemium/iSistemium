@@ -921,7 +921,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     if (self.checkedPositions.count > 0) {
         
-        processingButtonTitle = NSLocalizedString(@"PROCESSING BUTTON TITLE", nil);
+        processingButtonTitle = NSLocalizedString(@"DONE BUTTON TITLE", nil);
         
         processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" %lu%@", (unsigned long)self.checkedPositions.count, NSLocalizedString(@"_POSITIONS", nil)]];
 
@@ -1008,7 +1008,13 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (IBAction)processingButtonPressed:(id)sender {
-    [self showProcessingActionSheet];
+    
+//    [self showProcessingActionSheet];
+    
+    self.isBunchProcessing = YES;
+    self.currentProcessingType = STMPositionProcessingTypeDone;
+    [self bunchShippingProcessing];
+
 }
 
 - (void)reloadUnprocessedSection {
