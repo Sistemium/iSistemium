@@ -614,7 +614,11 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="09q-rk-V0i"/>
-                                    <barButtonItem width="25" style="plain" systemItem="fixedSpace" id="CvZ-iC-3OM"/>
+                                    <barButtonItem title="Fltr" width="25" id="2CG-TS-Oyb">
+                                        <connections>
+                                            <action selector="settingsButtonPressed" destination="czx-Ws-YXR" id="zSY-t0-pb8"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                         </subviews>
@@ -636,6 +640,7 @@
                     <navigationItem key="navigationItem" id="C0Q-2K-gbY"/>
                     <connections>
                         <outlet property="checkButton" destination="2oO-KB-xi1" id="lOM-cs-DPB"/>
+                        <outlet property="filterButton" destination="2CG-TS-Oyb" id="A7T-kW-rIw"/>
                         <outlet property="processingButton" destination="u6z-Db-lUm" id="Ddm-kG-bk8"/>
                         <outlet property="searchBar" destination="jf9-Zt-Xsy" id="Hq1-rb-qmd"/>
                         <outlet property="tableView" destination="quP-li-uR8" id="HsF-o3-AXP"/>

@@ -898,21 +898,11 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     settingsVC.parentVC = self;
     
     self.settingsPopover = [[UIPopoverController alloc] initWithContentViewController:settingsVC];
-    
-    UIView *buttonView = [[self.navigationItem rightBarButtonItem] valueForKey:@"view"];
-    
-    [self.settingsPopover presentPopoverFromRect:buttonView.frame
-                                          inView:self.view
-                        permittedArrowDirections:UIPopoverArrowDirectionUp
-                                        animated:YES];
-    
-}
 
-- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
-
-    [self.settingsPopover dismissPopoverAnimated:NO];
-    self.settingsPopover = nil;
-
+    [self.settingsPopover presentPopoverFromBarButtonItem:self.filterButton
+                                 permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                 animated:YES];
+    
 }
 
 
@@ -1136,13 +1126,6 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     self.searchBar.delegate = self;
     
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    
-    [nc addObserver:self
-           selector:@selector(deviceOrientationDidChangeNotification:)
-               name:UIDeviceOrientationDidChangeNotification
-             object:nil];
-
 }
 
 - (void)viewDidLoad {
