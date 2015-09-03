@@ -582,7 +582,7 @@
             
             STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] initWithStyle:UITableViewStyleGrouped];
             reorderTVC.points = self.resultsController.fetchedObjects;
-//            reorderTVC.parentVC = self;
+            reorderTVC.parentVC = allRoutesMapVC;
             
             [self.splitVC.masterNC pushViewController:reorderTVC animated:YES];
 

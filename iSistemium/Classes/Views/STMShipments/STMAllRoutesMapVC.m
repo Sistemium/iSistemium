@@ -93,6 +93,23 @@
     
 }
 
+- (void)setPoints:(NSArray *)points {
+    
+    _points = points;
+    
+    [self.mapView removeAnnotations:self.mapView.annotations];
+    [self prepareArrayOfCLLocations];
+
+    self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint
+                                                          withTitle:NSLocalizedString(@"START POINT", nil)
+                                                        andSubtitle:nil];
+    
+    NSArray *pins = [self.locationsPins arrayByAddingObject:self.startPin];
+    
+    [self.mapView addAnnotations:pins];
+
+}
+
 - (void)prepareArrayOfCLLocations {
     
     self.locationsArray = nil;
@@ -143,7 +160,7 @@
         [self.mapView showAnnotations:self.locationsPins animated:YES];
         
     } else {
-        
+
         self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint
                                                               withTitle:NSLocalizedString(@"START POINT", nil)
                                                             andSubtitle:nil];
@@ -151,6 +168,7 @@
         NSArray *pins = [self.locationsPins arrayByAddingObject:self.startPin];
         
         [self.mapView showAnnotations:pins animated:YES];
+
         [self calcRoutes];
         
     }
@@ -169,6 +187,8 @@
 }
 
 - (void)calcRoutes {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"startCalcRoutes" object:self];
     
     self.progressBar.progress = 0;
     self.progressBar.center = CGPointMake(self.spinner.center.x, self.spinner.center.y + 40);
@@ -239,6 +259,8 @@
                 [self showRoutes];
             }
             
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"finishCalcRoutes" object:self];
+
         }
 
     }];
