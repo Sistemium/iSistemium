@@ -828,11 +828,17 @@
 }
 
 - (void)popToSelf {
-
-#warning - have to close shippingVC if iPad
     
     if (![self.navigationController.topViewController isEqual:self]) {
+        
         [self.navigationController popToViewController:self animated:YES];
+        
+    } else if (![self.navigationController.visibleViewController isEqual:self]) {
+        
+        [self.navigationController.visibleViewController dismissViewControllerAnimated:YES completion:^{
+            
+        }];
+        
     }
     
 }
