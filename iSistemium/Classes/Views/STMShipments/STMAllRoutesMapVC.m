@@ -249,6 +249,7 @@
         
         if (self.self.routesCalcCounter == self.locationsArray.count - 1) {
             
+            [self.spinner removeFromSuperview];
             [self.progressBar removeFromSuperview];
             
             if (self.routesCalcErrors.length > 0) {
@@ -284,8 +285,6 @@
     switch (alertView.tag) {
         case 111: {
             
-            [self.spinner removeFromSuperview];
-            
             switch (buttonIndex) {
                 case 1: {
                     [self recalcRoutes];
@@ -306,8 +305,6 @@
 }
 
 - (void)showRoutes {
-
-    [self.spinner removeFromSuperview];
     
     [self.mapView removeOverlays:self.mapView.overlays];
 
@@ -575,7 +572,6 @@
     
 //    [self setupNavBar];
     [self prepareArrayOfCLLocations];
-    [self setupMapView];
     [self updateRoutesInfoLabel];
     
 }
@@ -590,7 +586,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
     [self setupNavBar];
 
 }
@@ -601,6 +596,8 @@
     
     self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
     [self.view addSubview:self.spinner];
+
+    [self setupMapView];
 
 }
 
