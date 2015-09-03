@@ -9,6 +9,8 @@
 #import "STMVariableCellsHeightTVC.h"
 #import "STMAllRoutesMapVC.h"
 
+#import "STMShipmentsSVC.h"
+
 
 @interface STMReorderRoutePointsTVC : STMVariableCellsHeightTVC
 

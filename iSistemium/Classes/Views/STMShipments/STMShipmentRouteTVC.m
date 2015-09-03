@@ -19,6 +19,8 @@
 #import "STMLocationController.h"
 #import "STMShippingProcessController.h"
 
+#import "STMReorderRoutePointsTVC.h"
+
 
 @interface STMShipmentRouteTVC ()
 
@@ -560,21 +562,11 @@
         
         [(STMShipmentRouteSummaryTVC *)segue.destinationViewController setRoute:self.route];
         
-    } else if ([segue.identifier isEqualToString:@"showAllRoutes"]) {
+    } else if ([segue.identifier isEqualToString:@"showAllRoutes"] &&
+               [segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
         
-        STMAllRoutesMapVC *allRoutesMapVC = nil;
-        
-        if ([segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
-            
-            allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
-            
-        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
-                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMAllRoutesMapVC class]]) {
-            
-            allRoutesMapVC = (STMAllRoutesMapVC *)[(UINavigationController *)segue.destinationViewController topViewController];
-            
-        }
-        
+        STMAllRoutesMapVC *allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
+
         for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
             
             if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point]) {
@@ -585,6 +577,16 @@
         
         allRoutesMapVC.points = self.resultsController.fetchedObjects;
         allRoutesMapVC.parentVC = self;
+        
+        if ([self.splitVC isDetailNCForViewController:self]) {
+            
+            STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            reorderTVC.points = self.resultsController.fetchedObjects;
+//            reorderTVC.parentVC = self;
+            
+            [self.splitVC.masterNC pushViewController:reorderTVC animated:YES];
+
+        }
         
     }
     

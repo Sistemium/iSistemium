@@ -15,6 +15,8 @@
 
 @interface STMReorderRoutePointsTVC ()
 
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
+
 @property (nonatomic) BOOL orderWasChanged;
 
 
@@ -22,6 +24,19 @@
 
 
 @implementation STMReorderRoutePointsTVC
+
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSString *)cellIdentifier {
     return @"reorderPointCell";
@@ -212,6 +227,10 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     
+    if (![self.navigationController.viewControllers containsObject:self]) {
+        [self.splitVC backButtonPressed];
+    }
+
     if (self.orderWasChanged) [self.parentVC recalcRoutes];
     
     [super viewWillDisappear:animated];

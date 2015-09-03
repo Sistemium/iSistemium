@@ -118,7 +118,7 @@
                     <navigationItem key="navigationItem" title="Root View Controller" id="nFu-T0-NZ0"/>
                     <connections>
                         <segue destination="voe-0o-u7z" kind="push" identifier="showShipments" id="Jyk-ck-Qt8"/>
-                        <segue destination="UAe-AA-dUd" kind="modal" identifier="showAllRoutes" id="2cQ-0r-QSB"/>
+                        <segue destination="n5Z-xP-RxA" kind="push" identifier="showAllRoutes" id="XjO-jY-bCX"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MdB-2U-TsQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -280,24 +280,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2aI-mD-ygm" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4866" y="3527"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="7jg-VO-vP7">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="UAe-AA-dUd" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gsm-Bg-gQF">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="n5Z-xP-RxA" kind="relationship" relationship="rootViewController" id="kF3-3k-c1Q"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cas-M1-f5Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4866" y="2367"/>
         </scene>

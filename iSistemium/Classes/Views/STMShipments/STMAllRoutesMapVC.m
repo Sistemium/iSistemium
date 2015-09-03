@@ -485,32 +485,40 @@
 
 - (void)setupNavBar {
     
-    if (self.points.count > 0) {
+    if ([self.splitVC isDetailNCForViewController:self.parentVC]) {
         
-        CGFloat imageSize = 22;
-        CGFloat imagePadding = 0;
-        
-        UIImage *image = [[UIImage imageNamed:@"reordering"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
-        imageView.tintColor = ACTIVE_BLUE_COLOR;
-        
-        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
-        [button addTarget:self action:@selector(reorderButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        [button addSubview:imageView];
+        self.navigationItem.hidesBackButton = YES;
 
-        STMBarButtonItem *reorderButton = [[STMBarButtonItem alloc] initWithCustomView:button];
-        
-        self.navigationItem.rightBarButtonItem = reorderButton;
-
-        if ([self.splitVC isDetailNCForViewController:self.parentVC]) {
+    } else {
+     
+        if (self.points.count > 0) {
             
-            STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
-                                                                              style:UIBarButtonItemStylePlain
-                                                                             target:self
-                                                                             action:@selector(closeButtonPressed)];
+            CGFloat imageSize = 22;
+            CGFloat imagePadding = 0;
             
-            self.navigationItem.leftBarButtonItem = closeButton;
+            UIImage *image = [[UIImage imageNamed:@"reordering"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+            imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
+            imageView.tintColor = ACTIVE_BLUE_COLOR;
+            
+            UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
+            [button addTarget:self action:@selector(reorderButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+            [button addSubview:imageView];
+            
+            STMBarButtonItem *reorderButton = [[STMBarButtonItem alloc] initWithCustomView:button];
+            
+            self.navigationItem.rightBarButtonItem = reorderButton;
+            
+            //        if ([self.splitVC isDetailNCForViewController:self.parentVC]) {
+            //
+            //            STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+            //                                                                              style:UIBarButtonItemStylePlain
+            //                                                                             target:self
+            //                                                                             action:@selector(closeButtonPressed)];
+            //            
+            //            self.navigationItem.leftBarButtonItem = closeButton;
+            //            
+            //        }
             
         }
         
