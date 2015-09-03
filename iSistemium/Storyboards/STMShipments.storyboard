@@ -114,6 +114,7 @@
                             <outlet property="delegate" destination="xOh-5I-yr2" id="Hok-lI-Gic"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" title="Root View Controller" id="nFu-T0-NZ0"/>
                     <connections>
                         <segue destination="voe-0o-u7z" kind="push" identifier="showShipments" id="Jyk-ck-Qt8"/>
@@ -145,6 +146,7 @@
                             <outlet property="delegate" destination="voe-0o-u7z" id="JGN-sV-sw0"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" id="l2Z-cl-k69"/>
                     <connections>
                         <segue destination="4Yz-sj-vW1" kind="push" identifier="showShipmentPositions" id="e2y-It-qtf"/>
@@ -178,6 +180,7 @@
                             <outlet property="delegate" destination="4Yz-sj-vW1" id="8Ts-28-6EM"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" id="eqw-kR-fB9"/>
                     <connections>
                         <segue destination="DeU-Vu-xS6" kind="modal" identifier="showShipping" id="Gaq-ze-QvJ"/>
@@ -792,7 +795,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="shW-zo-z1l"/>
+        <segue reference="Jyk-ck-Qt8"/>
         <segue reference="KyB-EE-Dfc"/>
     </inferredMetricsTieBreakers>
 </document>
