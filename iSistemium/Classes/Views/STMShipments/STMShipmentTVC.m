@@ -829,6 +829,8 @@
 
 - (void)popToSelf {
 
+#warning - have to close shippingVC if iPad
+    
     if (![self.navigationController.topViewController isEqual:self]) {
         [self.navigationController popToViewController:self animated:YES];
     }

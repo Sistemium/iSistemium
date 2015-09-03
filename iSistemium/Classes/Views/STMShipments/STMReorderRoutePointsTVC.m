@@ -225,6 +225,19 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+
+    if ([self.splitVC isMasterNCForViewController:self]) {
+        
+        self.navigationController.toolbarHidden = NO;
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+
+    }
+    
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     
     if (![self.navigationController.viewControllers containsObject:self]) {
