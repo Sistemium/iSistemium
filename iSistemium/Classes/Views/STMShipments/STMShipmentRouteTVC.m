@@ -236,6 +236,24 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return ([self.splitVC isMasterNCForViewController:self]) ? CGFLOAT_MIN : SINGLE_LINE_HEADER_HEIGHT;
+            break;
+            
+        default:
+            return SINGLE_LINE_HEADER_HEIGHT;
+            break;
+    }
+
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return CGFLOAT_MIN;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [self heightForCellAtIndexPath:indexPath];
 }

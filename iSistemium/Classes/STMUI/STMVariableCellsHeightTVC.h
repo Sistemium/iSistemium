@@ -8,6 +8,8 @@
 
 #import "STMFetchedResultsControllerTVC.h"
 
+#define SINGLE_LINE_HEADER_HEIGHT 56
+
 @interface STMVariableCellsHeightTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, strong) NSString *cellIdentifier;

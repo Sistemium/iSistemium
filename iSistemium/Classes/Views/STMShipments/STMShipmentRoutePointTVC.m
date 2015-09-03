@@ -400,6 +400,29 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return ([self.splitVC isMasterNCForViewController:self]) ? CGFLOAT_MIN : SINGLE_LINE_HEADER_HEIGHT;
+            break;
+            
+        case 3:
+            return SINGLE_LINE_HEADER_HEIGHT;
+            break;
+            
+        default:
+            return ([self.splitVC isMasterNCForViewController:self]) ? CGFLOAT_MIN : 0;
+            break;
+    }
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return ([self.splitVC isMasterNCForViewController:self]) ? CGFLOAT_MIN : 0;
+}
+
+
 - (CGFloat)estimatedHeightForRow {
     
     static CGFloat standardCellHeight;
