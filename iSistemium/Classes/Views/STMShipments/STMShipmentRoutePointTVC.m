@@ -1074,7 +1074,6 @@
         }
         
         mapVC.point = self.point;
-
         
     } else if ([segue.identifier isEqualToString:@"showPhotos"] &&
                [sender isKindOfClass:[UIView class]] &&

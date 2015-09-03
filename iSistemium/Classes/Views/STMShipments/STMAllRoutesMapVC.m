@@ -103,15 +103,9 @@
         
         for (STMShipmentRoutePoint *point in self.points) {
             
-            CLLocation *location = nil;
-            
-            if (point.shippingLocation.location) {
-                location = [STMLocationController locationFromLocationObject:point.shippingLocation.location];
-            } else {
-                location = self.geocodedLocations[point.xid];
-            }
-            
-            if (location) {
+            if ((point.shippingLocation.location)) {
+
+                CLLocation *location = [STMLocationController locationFromLocationObject:point.shippingLocation.location];
 
                 [self.locationsArray addObject:location];
                 
@@ -479,7 +473,6 @@
         STMMapAnnotation *annotation = (STMMapAnnotation *)sender;
         
         STMShipmentRoutePoint *point = self.points[annotation.ord.integerValue];
-        CLLocation *geocodedLocation = self.geocodedLocations[point.xid];
         
         pointTVC.point = point;
         

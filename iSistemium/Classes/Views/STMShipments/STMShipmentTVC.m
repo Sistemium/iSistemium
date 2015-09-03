@@ -811,6 +811,8 @@
 
 - (void)doneShipping {
     
+    [self popToSelf];
+    
     [self.shippingProcessController doneShippingWithShipment:self.shipment withCompletionHandler:^(BOOL success) {
         
         if (!success) {
@@ -823,6 +825,14 @@
         
     }];
 
+}
+
+- (void)popToSelf {
+
+    if (![self.navigationController.topViewController isEqual:self]) {
+        [self.navigationController popToViewController:self animated:YES];
+    }
+    
 }
 
 - (void)showDoneShippingErrorAlert {

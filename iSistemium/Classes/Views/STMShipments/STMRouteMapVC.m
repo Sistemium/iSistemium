@@ -27,6 +27,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *routeInfoLabel;
 
+@property (nonatomic, strong) CLLocation *destinationPoint;
 
 @property (nonatomic, strong) STMMapAnnotation *startPin;
 @property (nonatomic, strong) STMMapAnnotation *destinationPin;
@@ -411,11 +412,13 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
+
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+
     [super viewWillAppear:animated];
     
     [self setupNavBar];
-    
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -429,6 +432,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+
     if (![self.navigationController.viewControllers containsObject:self]) {
         [self flushMapView];
     }

@@ -41,27 +41,27 @@
         
         for (NSDictionary *group in settingsJSON[@"defaultSettings"]) {
             
-            NSString *groupName = [group valueForKey:@"group"];
+            NSString *groupName = group[@"group"];
             
             NSMutableDictionary *settingsValuesGroup = [NSMutableDictionary dictionary];
             NSMutableArray *settingsControlsGroup = [NSMutableArray array];
             
-            for (NSDictionary *settingItem in [group valueForKey:@"data"]) {
+            for (NSDictionary *settingItem in group[@"data"]) {
                 
-                NSString *itemName = [settingItem valueForKey:@"name"];
-                id itemValue = [settingItem valueForKey:@"value"];
+                NSString *itemName = settingItem[@"name"];
+                id itemValue = settingItem[@"value"];
                 
-                itemValue = [itemValue isKindOfClass:[NSString class]] ? itemValue : [itemValue stringValue];
+                itemValue = [itemValue isKindOfClass:[NSString class]] ? itemValue : ([itemValue respondsToSelector:@selector(stringValue)]) ? [itemValue stringValue] : [NSNull null];
                 
-                [settingsValuesGroup setValue:itemValue forKey:itemName];
+                settingsValuesGroup[itemName] = itemValue;
                 
-                NSString *itemControlType = [settingItem valueForKey:@"control"];
+                NSString *itemControlType = settingItem[@"control"];
                 
                 if (itemControlType) {
                     
-                    NSString *itemMinValue = [[settingItem valueForKey:@"min"] stringValue];
-                    NSString *itemMaxValue = [[settingItem valueForKey:@"max"] stringValue];
-                    NSString *itemStepValue = [[settingItem valueForKey:@"step"] stringValue];
+                    NSString *itemMinValue = [settingItem[@"min"] stringValue];
+                    NSString *itemMaxValue = [settingItem[@"max"] stringValue];
+                    NSString *itemStepValue = [settingItem[@"step"] stringValue];
                     
                     itemMinValue = itemMinValue ? itemMinValue : @"";
                     itemMaxValue = itemMaxValue ? itemMaxValue : @"";
@@ -69,7 +69,7 @@
                     
                     [settingsControlsGroup addObject:@[itemControlType, itemMinValue, itemMaxValue, itemStepValue, itemName]];
                     
-//                    NSLog(@"%@", itemName);
+                    //                    NSLog(@"%@", itemName);
                     
                 }
                 

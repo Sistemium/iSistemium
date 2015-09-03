@@ -57,15 +57,15 @@
                name:[NSString stringWithFormat:@"%@SettingsChanged", self.group]
              object:self.session];
     
-    [nc addObserver:self
-           selector:@selector(checkTimeForTracking)
-               name:UIApplicationDidBecomeActiveNotification
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(checkTimeForTracking)
+//               name:UIApplicationDidBecomeActiveNotification
+//             object:nil];
     
-    [nc addObserver:self
-           selector:@selector(checkTimeForTracking)
-               name:@"applicationPerformFetchWithCompletionHandler"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(checkTimeForTracking)
+//               name:@"applicationPerformFetchWithCompletionHandler"
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(didReceiveRemoteNotification:)
@@ -75,9 +75,11 @@
 }
 
 - (void)removeObservers {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sessionStatusChanged" object:self.session];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sessionStatusChanged" object:self.session];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
     
 }
 

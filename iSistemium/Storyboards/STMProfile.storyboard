@@ -63,8 +63,8 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location app status" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fJy-cl-0eS">
-                                <rect key="frame" x="16" y="325" width="288" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Monitoring status" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fJy-cl-0eS">
+                                <rect key="frame" x="16" y="354" width="288" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -75,8 +75,8 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location system status" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cWu-YW-ZV1">
-                                <rect key="frame" x="9" y="354" width="295" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location tracking status" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cWu-YW-ZV1">
+                                <rect key="frame" x="9" y="325" width="295" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -127,19 +127,20 @@
                             <constraint firstItem="ua8-Yp-ngl" firstAttribute="top" secondItem="JNm-TY-eMv" secondAttribute="bottom" constant="8" id="NSo-Xr-32q"/>
                             <constraint firstItem="ofd-rh-9bV" firstAttribute="trailing" secondItem="Ff2-Mw-jie" secondAttribute="trailingMargin" id="RJF-xi-8xx"/>
                             <constraint firstItem="9gB-Hw-Ag7" firstAttribute="top" secondItem="Q2p-En-FcA" secondAttribute="bottom" constant="38" id="RJq-mA-Pvq"/>
+                            <constraint firstItem="fJy-cl-0eS" firstAttribute="top" secondItem="cWu-YW-ZV1" secondAttribute="bottom" constant="8.5" id="Saq-H3-1wR"/>
                             <constraint firstItem="7pG-nv-dah" firstAttribute="leading" secondItem="Ff2-Mw-jie" secondAttribute="leadingMargin" id="St4-MY-f5W"/>
+                            <constraint firstItem="aZw-Cl-8Ji" firstAttribute="top" secondItem="fJy-cl-0eS" secondAttribute="bottom" constant="9.5" id="SyU-IK-PsZ"/>
                             <constraint firstItem="p6i-V4-fVg" firstAttribute="leading" secondItem="7pG-nv-dah" secondAttribute="trailing" constant="7.5" id="WWI-5Z-Pp1"/>
                             <constraint firstItem="Q2p-En-FcA" firstAttribute="top" secondItem="ua8-Yp-ngl" secondAttribute="bottom" constant="22" id="YXp-Zy-zFx"/>
                             <constraint firstItem="p6i-V4-fVg" firstAttribute="top" secondItem="ofd-rh-9bV" secondAttribute="bottom" constant="8" id="aRk-vC-CIh"/>
                             <constraint firstItem="cWu-YW-ZV1" firstAttribute="leading" secondItem="Ff2-Mw-jie" secondAttribute="leadingMargin" constant="-7" id="cQb-7b-V2M"/>
                             <constraint firstItem="HgB-2D-JJ0" firstAttribute="trailing" secondItem="Ff2-Mw-jie" secondAttribute="trailingMargin" id="czf-Au-Jql"/>
-                            <constraint firstItem="aZw-Cl-8Ji" firstAttribute="top" secondItem="cWu-YW-ZV1" secondAttribute="bottom" constant="9.5" id="dTJ-XT-u59"/>
                             <constraint firstItem="HgB-2D-JJ0" firstAttribute="top" secondItem="08f-cb-ivA" secondAttribute="bottom" constant="8" id="eKo-hH-osE"/>
+                            <constraint firstItem="cWu-YW-ZV1" firstAttribute="top" secondItem="p6i-V4-fVg" secondAttribute="bottom" constant="8" id="fio-dE-I2w"/>
                             <constraint firstItem="bPd-Ru-joi" firstAttribute="trailing" secondItem="Ff2-Mw-jie" secondAttribute="trailingMargin" id="gbt-SS-afR"/>
                             <constraint firstItem="9gB-Hw-Ag7" firstAttribute="leading" secondItem="Ff2-Mw-jie" secondAttribute="leadingMargin" id="gt8-QC-M9D"/>
                             <constraint firstItem="ua8-Yp-ngl" firstAttribute="leading" secondItem="Ff2-Mw-jie" secondAttribute="leadingMargin" id="hwj-Rm-4Aa"/>
                             <constraint firstItem="08f-cb-ivA" firstAttribute="trailing" secondItem="Ff2-Mw-jie" secondAttribute="trailingMargin" id="j9s-zc-Thb"/>
-                            <constraint firstItem="cWu-YW-ZV1" firstAttribute="top" secondItem="fJy-cl-0eS" secondAttribute="bottom" constant="8" id="jg5-PL-mgV"/>
                             <constraint firstItem="fJy-cl-0eS" firstAttribute="leading" secondItem="Ff2-Mw-jie" secondAttribute="leadingMargin" id="kkB-Wn-1cK"/>
                             <constraint firstItem="ofd-rh-9bV" firstAttribute="top" secondItem="HgB-2D-JJ0" secondAttribute="bottom" constant="7" id="m4Q-Uj-by0"/>
                             <constraint firstItem="ua8-Yp-ngl" firstAttribute="trailing" secondItem="Ff2-Mw-jie" secondAttribute="trailingMargin" id="nmx-ia-KYf"/>
@@ -151,7 +152,6 @@
                             <constraint firstItem="bPd-Ru-joi" firstAttribute="top" secondItem="aZw-Cl-8Ji" secondAttribute="bottom" constant="7.5" id="s8D-cU-7DM"/>
                             <constraint firstItem="JNm-TY-eMv" firstAttribute="trailing" secondItem="Ff2-Mw-jie" secondAttribute="trailingMargin" id="wKu-7s-dyA"/>
                             <constraint firstItem="cWu-YW-ZV1" firstAttribute="trailing" secondItem="Ff2-Mw-jie" secondAttribute="trailingMargin" id="yW3-BT-r0i"/>
-                            <constraint firstItem="fJy-cl-0eS" firstAttribute="top" secondItem="p6i-V4-fVg" secondAttribute="bottom" constant="8" id="yXR-qX-OyU"/>
                             <constraint firstItem="Q2p-En-FcA" firstAttribute="leading" secondItem="Ff2-Mw-jie" secondAttribute="leadingMargin" id="ymT-1y-GwU"/>
                         </constraints>
                     </view>
@@ -162,9 +162,9 @@
                         <outlet property="downloadImageView" destination="ofd-rh-9bV" id="zxc-z2-nUZ"/>
                         <outlet property="lastLocationImageView" destination="p6i-V4-fVg" id="KHY-Cn-v5V"/>
                         <outlet property="lastLocationLabel" destination="7pG-nv-dah" id="ENS-W9-xYd"/>
-                        <outlet property="locationAppStatusLabel" destination="fJy-cl-0eS" id="urj-Qr-nUv"/>
-                        <outlet property="locationSystemStatusLabel" destination="cWu-YW-ZV1" id="n0f-aO-rwE"/>
+                        <outlet property="locationTrackingStatusLabel" destination="cWu-YW-ZV1" id="JaU-bT-z0k"/>
                         <outlet property="locationWarningLabel" destination="aZw-Cl-8Ji" id="F8g-DQ-YSx"/>
+                        <outlet property="monitoringStatusLabel" destination="fJy-cl-0eS" id="adE-e3-KSS"/>
                         <outlet property="nameLabel" destination="JNm-TY-eMv" id="ag8-lx-bVB"/>
                         <outlet property="nonloadedPicturesButton" destination="bPd-Ru-joi" id="0h5-kf-okp"/>
                         <outlet property="numberOfObjectLabel" destination="08f-cb-ivA" id="W1e-ZT-90Y"/>
