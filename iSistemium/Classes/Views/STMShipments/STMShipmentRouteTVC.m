@@ -732,7 +732,7 @@
         self.title = NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
     }
     
-    [self setupNavBar];
+//    [self setupNavBar];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
@@ -751,6 +751,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [self setupNavBar];
+    
+    if ([self isMovingToParentViewController]) {
+        self.cachedCellsHeights = nil;
+    }
+
     [self reloadData];
     
     [super viewWillAppear:animated];
@@ -763,7 +768,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    if (![self.navigationController.viewControllers containsObject:self]) {
+    if ([self isMovingFromParentViewController]) {
         [self.splitVC backButtonPressed];
     }
     [super viewWillDisappear:animated];

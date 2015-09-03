@@ -434,7 +434,7 @@
     
     [UIApplication sharedApplication].idleTimerDisabled = NO;
 
-    if (![self.navigationController.viewControllers containsObject:self]) {
+    if ([self isMovingFromParentViewController]) {
         [self flushMapView];
     }
     

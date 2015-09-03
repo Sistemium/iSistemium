@@ -1229,8 +1229,10 @@
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
     
-//    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
-
+    if ([self isMovingToParentViewController]) {
+        self.cachedCellsHeights = nil;
+    }
+    
     [super viewWillAppear:animated];
 
     if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
@@ -1238,14 +1240,12 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    
-//    self.resultsController.delegate = nil;
-    
+
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }
 
-    if (![self.navigationController.viewControllers containsObject:self]) {
+    if ([self isMovingFromParentViewController]) {
         
         if (self.point.isReached.boolValue && !self.shipment.isShipped.boolValue) {
             [self.parentVC shippingProcessWasInterrupted];

@@ -603,7 +603,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    if (![self.navigationController.viewControllers containsObject:self]) {
+    if ([self isMovingFromParentViewController]) {
         [self flushMapView];
     }
     
