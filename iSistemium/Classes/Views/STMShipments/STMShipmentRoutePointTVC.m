@@ -360,15 +360,15 @@
     
     switch (section) {
         case 0:
-            return 2;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : 2;
             break;
             
         case 1:
-            return 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : 1;
             break;
             
         case 2:
-            return (self.point.shippingLocation.location) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.shippingLocation.location) ? 2 : 1;
             break;
             
         case 3:
@@ -386,11 +386,10 @@
     
     switch (section) {
         case 0:
-            return NSLocalizedString(@"SHIPMENT ROUTE POINT", nil);
+            return ([self.splitVC isMasterNCForViewController:self]) ? nil : NSLocalizedString(@"SHIPMENT ROUTE POINT", nil);
             break;
             
         case 3:
-//            self.shipmentsIndexSet = [NSIndexSet indexSetWithIndex:section];
             return NSLocalizedString(@"SHIPMENTS", nil);
             break;
             

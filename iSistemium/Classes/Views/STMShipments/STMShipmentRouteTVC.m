@@ -205,7 +205,7 @@
     
     switch (section) {
         case 0:
-            return ([self haveProcessedShipments]) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveProcessedShipments]) ? 2 : 1;
             break;
             
         case 1:
@@ -222,11 +222,10 @@
     
     switch (section) {
         case 0:
-            return NSLocalizedString(@"SHIPMENT ROUTE", nil);
+            return ([self.splitVC isMasterNCForViewController:self]) ? nil : NSLocalizedString(@"SHIPMENT ROUTE", nil);
             break;
             
         case 1:
-//            self.routePointsIndexSet = [NSIndexSet indexSetWithIndex:section];
             return NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
             break;
             
