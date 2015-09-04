@@ -104,6 +104,16 @@
     return @"arrivalButtonCell";
 }
 
+- (NSUInteger)unprocessedShipmentsCount {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
+    NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
+
+    return unprocessedShipmentsCount;
+    
+}
+
+
 #pragma mark - resultsController
 
 - (NSFetchedResultsController *)resultsController {
@@ -364,7 +374,7 @@
             break;
             
         case 1:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.isReached.boolValue && [self unprocessedShipmentsCount] > 0) ? 2 : 1;
             break;
             
         case 2:
@@ -629,7 +639,18 @@
             break;
             
         case 1:
-            [self fillArrivalButtonCell:cell atIndexPath:indexPath];
+            switch (indexPath.row) {
+                case 0:
+                    [self fillArrivalButtonCell:cell atIndexPath:indexPath];
+                    break;
+                    
+                case 1:
+                    [self fillDoneShipmentsButtonCell:cell atIndexPath:indexPath];
+                    break;
+                    
+                default:
+                    break;
+            }
             break;
             
         case 2:
@@ -702,6 +723,23 @@
         
     }
     
+}
+
+- (void)fillDoneShipmentsButtonCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        
+        STMCustom7TVCell *buttonCell = (STMCustom7TVCell *)cell;
+        
+        buttonCell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+        buttonCell.titleLabel.text = NSLocalizedString(@"DONE ALL SHIPMENT", nil);
+        buttonCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+        buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
+        
+//        self.arrivalButtonCellIndexPath = indexPath;
+        
+    }
+
 }
 
 - (void)fillCell:(UITableViewCell *)cell withShippingLocation:(STMShippingLocation *)shippingLocation {
@@ -991,10 +1029,7 @@
     
     if (self.point.isReached.boolValue) {
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
-        NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
-        
-        if (unprocessedShipmentsCount > 0) {
+        if ([self unprocessedShipmentsCount] > 0) {
             [self showUnprocessedShipmentsAlert];
         }
         
