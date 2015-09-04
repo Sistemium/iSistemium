@@ -338,4 +338,6 @@
 "NEED CASHING" = "Need cashing";
 "BACK" = "Back";
 "DONE ALL SHIPMENT" = "Done all shipment";
+"DONE ALL SHIPMENT ALERT TITLE" = "Mark all shipment as done?";
+"DONE ALL SHIPMENT ALERT MESSAGE" = "All unprocessed position will be marked as done.";
 

@@ -92,7 +92,7 @@
 - (void)startShippingWithShipment:(STMShipment *)shipment {
     
     shipment.isShipped = @NO;
-    [self.shipments addObject:shipment];
+    if (![self.shipments containsObject:shipment]) [self.shipments addObject:shipment];
     
 }
 

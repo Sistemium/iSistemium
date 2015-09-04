@@ -19,6 +19,8 @@
 #import "STMShippingLocationPicturesPVC.h"
 #import "STMRouteMapVC.h"
 
+#import "STMShippingProcessController.h"
+
 
 #define CELL_IMAGES_SIZE 54
 #define THUMB_SIZE CGSizeMake(CELL_IMAGES_SIZE, CELL_IMAGES_SIZE)
@@ -104,11 +106,18 @@
     return @"arrivalButtonCell";
 }
 
-- (NSUInteger)unprocessedShipmentsCount {
+- (NSSet *)unprocessedShipments {
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
-    NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
+    NSSet *unprocessedShipments = [self.point.shipments filteredSetUsingPredicate:predicate];
+    
+    return unprocessedShipments;
+    
+}
 
+- (NSUInteger)unprocessedShipmentsCount {
+    
+    NSUInteger unprocessedShipmentsCount = [self unprocessedShipments].count;
     return unprocessedShipmentsCount;
     
 }
@@ -912,25 +921,26 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 1) {
-        if (!self.point.isReached.boolValue) [self showArriveConfirmationAlert];
+        switch (indexPath.row) {
+            case 0:
+                if (!self.point.isReached.boolValue) [self showArriveConfirmationAlert];
+                break;
+                
+            case 1:
+                [self showDoneAllShipmentsAlert];
+                break;
+                
+            default:
+                break;
+        }
+
     }
     
     if (indexPath.section == 2) {
         
         switch (indexPath.row) {
             case 0:
-                
-//                if (self.point.shippingLocation) {
-//                    
-                    [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
-                    
-//                } else if (!self.isWaitingLocation) {
-//                    
-//                    self.isWaitingLocation = YES;
-//                    [self.session.locationTracker getLocation];
-//                    
-//                }
-
+                [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
                 break;
                 
             default:
@@ -1013,11 +1023,24 @@
     
 }
 
+- (void)showDoneAllShipmentsAlert {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DONE ALL SHIPMENT ALERT TITLE", nil)
+                                                    message:NSLocalizedString(@"DONE ALL SHIPMENT ALERT MESSAGE", nil)
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    
+    alert.tag = 444;
+    [alert show];
+
+}
+
 - (void)shippingProcessWasInterrupted {
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED TITLE", nil)
                                                     message:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE", nil)
-                                                   delegate:nil
+                                                   delegate:self
                                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                           otherButtonTitles:nil];
     
@@ -1053,10 +1076,14 @@
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
     switch (alertView.tag) {
         case 333:
-
+            
             switch (buttonIndex) {
                 case 1:
                     [self arrivalWasConfirmed];
@@ -1068,10 +1095,23 @@
             
             break;
             
+        case 444:
+            
+            switch (buttonIndex) {
+                case 1:
+                    [self markAllShipmentsAsDone];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
         default:
             break;
     }
-    
+
 }
 
 - (void)arrivalWasConfirmed {
@@ -1089,6 +1129,25 @@
     
 }
 
+- (void)markAllShipmentsAsDone {
+    
+    NSSet *unprocessedShipments = [self unprocessedShipments];
+    
+    STMShippingProcessController *shippingController = [STMShippingProcessController sharedInstance];
+    
+    for (STMShipment *shipment in unprocessedShipments) {
+        
+        [shippingController startShippingWithShipment:shipment];
+        [shippingController markUnprocessedPositionsAsDoneForShipment:shipment];
+        [shippingController doneShippingWithShipment:shipment withCompletionHandler:^(BOOL success) {
+            
+        }];
+        
+    }
+    
+    [self.tableView reloadData];
+    
+}
 
 #pragma mark - Navigation
 
