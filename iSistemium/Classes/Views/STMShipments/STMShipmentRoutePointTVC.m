@@ -1145,6 +1145,8 @@
         
     }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"routePointAllShipmentsIsDone" object:self.point];
+    
     [self.tableView reloadData];
     
 }

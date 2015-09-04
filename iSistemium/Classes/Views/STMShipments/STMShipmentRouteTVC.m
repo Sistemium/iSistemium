@@ -741,6 +741,41 @@
 }
 
 
+#pragma mark - observers
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(routePointAllShipmentsIsDone:)
+                                                 name:@"routePointAllShipmentsIsDone"
+                                               object:nil];
+
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)routePointAllShipmentsIsDone:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMShipmentRoutePoint class]]) {
+        
+        STMShipmentRoutePoint *point = (STMShipmentRoutePoint *)notification.object;
+        
+        NSIndexPath *pointIndexPath = [self.resultsController indexPathForObject:point];
+        
+        if (pointIndexPath) {
+            
+            pointIndexPath = [NSIndexPath indexPathForRow:pointIndexPath.row inSection:pointIndexPath.section + 1];
+
+            [self.tableView reloadRowsAtIndexPaths:@[pointIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+            
+        }
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -748,13 +783,11 @@
     if ([self.splitVC isDetailNCForViewController:self]) {
         self.title = NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
     }
-    
-//    [self setupNavBar];
-    
+
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
     
-//    [self shipmentsInfo];
+    [self addObservers];
     
     [super customInit];
     
@@ -786,7 +819,10 @@
 - (void)viewWillDisappear:(BOOL)animated {
     
     if ([self isMovingFromParentViewController]) {
+        
         [self.splitVC backButtonPressed];
+        [self removeObservers];
+        
     }
     [super viewWillDisappear:animated];
     
