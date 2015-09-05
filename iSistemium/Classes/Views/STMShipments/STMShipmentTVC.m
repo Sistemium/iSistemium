@@ -1201,6 +1201,7 @@
     
 }
 
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -1248,7 +1249,19 @@
     if ([self isMovingFromParentViewController]) {
         
         if (self.point.isReached.boolValue && !self.shipment.isShipped.boolValue) {
-            [self.parentVC shippingProcessWasInterrupted];
+            
+            if ([self haveUnprocessedPositions]) {
+                
+                [self.parentVC shippingProcessWasInterrupted];
+                
+            } else {
+                
+                [[STMShippingProcessController sharedInstance] doneShippingWithShipment:self.shipment withCompletionHandler:^(BOOL success) {
+                    
+                }];
+                
+            }
+            
         }
         [self removeObservers];
         
