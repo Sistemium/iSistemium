@@ -1119,7 +1119,9 @@
     self.point.isReached = @YES;
     
     if (self.arrivalButtonCellIndexPath) {
-        [self.tableView reloadRowsAtIndexPaths:@[self.arrivalButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.arrivalButtonCellIndexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+                
     }
     
     self.isWaitingLocation = YES;
