@@ -56,6 +56,15 @@
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
+//    CGFloat h = self.tableView.frame.size.height;
+//    CGFloat c = self.points.count;
+//    
+//    h = h/c;
+//    
+//    return h;
+    
+    return self.standardCellHeight;
+    
     static UITableViewCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -187,8 +196,8 @@
     
     self.parentVC.points = self.points;
     
-    self.cachedCellsHeights = nil;
-    [self.tableView reloadData];
+//    self.cachedCellsHeights = nil;
+//    [self.tableView reloadData];
     
     self.orderWasChanged = YES;
     
@@ -231,7 +240,8 @@
     
 //    if (self.orderWasChanged) {
     
-        [self.parentVC recalcRoutes];
+    [self.parentVC recalcRoutes];
+    [self.tableView reloadData];
 //        self.orderWasChanged = NO;
     
 //    }
@@ -281,6 +291,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    self.tableView.scrollEnabled = YES;
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     self.editing = !([self.splitVC isMasterNCForViewController:self]);

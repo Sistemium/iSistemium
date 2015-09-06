@@ -42,6 +42,19 @@
     
 }
 
++ (STMMapAnnotation *)createAnnotationForPoint:(STMShipmentRoutePoint *)point {
+    
+    STMMapAnnotation *annotation = [[STMMapAnnotation alloc] init];
+    annotation.location = point.shippingLocation.location;
+    annotation.annotationTitle = point.shortName;
+    annotation.annotationSubtitle = point.address;
+    annotation.ord = point.ord;
+    annotation.point = point;
+    
+    return annotation;
+    
+}
+
 + (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation {
     return [self createAnnotationForCLLocation:clLocation withTitle:nil andSubtitle:nil];
 }

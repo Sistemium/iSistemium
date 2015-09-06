@@ -19,8 +19,14 @@
 
 #define EDGE_INSET 50
 
+typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
+    STMMapReorderingModeUnknown,
+    STMMapReorderingModeEnable,
+    STMMapReorderingModeDisable
+};
 
-@interface STMAllRoutesMapVC () <MKMapViewDelegate, UIAlertViewDelegate>
+
+@interface STMAllRoutesMapVC () <MKMapViewDelegate, UIAlertViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
@@ -44,6 +50,13 @@
 
 @property (nonatomic, strong) UIProgressView *progressBar;
 
+@property (nonatomic, strong) UIPickerView *ordPicker;
+//@property (nonatomic, strong) STMShipmentRoutePoint *selectedPoint;
+@property (nonatomic, strong) STMMapAnnotation *selectedPin;
+
+@property (nonatomic, strong) STMBarButtonItem *reorderButton;
+@property (nonatomic) STMMapReorderingMode reorderingMode;
+
 
 @end
 
@@ -60,6 +73,31 @@
         
     }
     return _splitVC;
+    
+}
+
+- (STMBarButtonItem *)reorderButton {
+    
+    if (!_reorderButton) {
+        
+        CGFloat imageSize = 22;
+        CGFloat imagePadding = 0;
+        
+        UIImage *image = [[UIImage imageNamed:@"reordering"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
+        imageView.tintColor = ACTIVE_BLUE_COLOR;
+        
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
+        [button addTarget:self action:@selector(reorderButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        [button addSubview:imageView];
+        
+        STMBarButtonItem *reorderButton = [[STMBarButtonItem alloc] initWithCustomView:button];
+
+        _reorderButton = reorderButton;
+        
+    }
+    return _reorderButton;
     
 }
 
@@ -110,6 +148,35 @@
 
 }
 
+- (void)setReorderingMode:(STMMapReorderingMode)reorderingMode {
+    
+    if (self.reorderingMode != reorderingMode) {
+        
+        if (reorderingMode == STMMapReorderingModeEnable) {
+            
+            [self showOrdPickerView];
+            
+            STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(reorderDoneButtonPressed)];
+            self.navigationItem.rightBarButtonItem = doneButton;
+
+        } else if (reorderingMode == STMMapReorderingModeDisable) {
+            
+            [self hideOrdPicker];
+            self.navigationItem.rightBarButtonItem = self.reorderButton;
+            self.selectedPin = nil;
+            
+#warning - do not recalculate routes if no changes
+            
+            [self recalcRoutes];
+
+        }
+        
+        _reorderingMode = reorderingMode;
+        
+    }
+    
+}
+
 - (void)prepareArrayOfCLLocations {
     
     self.locationsArray = nil;
@@ -126,10 +193,13 @@
 
                 [self.locationsArray addObject:location];
                 
-                STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
-                                                                              withTitle:[STMFunctions shortCompanyName:point.shortName]
-                                                                            andSubtitle:point.address
-                                                                                 andOrd:point.ord];
+//                STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
+//                                                                              withTitle:[STMFunctions shortCompanyName:point.shortName]
+//                                                                            andSubtitle:point.address
+//                                                                                 andOrd:point.ord];
+
+                STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForPoint:point];
+
                 [pins addObject:pin];
 
             }
@@ -192,6 +262,7 @@
     
     self.progressBar.progress = 0;
     self.progressBar.center = CGPointMake(self.spinner.center.x, self.spinner.center.y + 40);
+    [self.spinner removeFromSuperview];
     [self.spinner addSubview:self.progressBar];
     
     self.routes = nil;
@@ -427,10 +498,21 @@
             
             if (myAnnotation.ord) {
                 
+                UIImage *circleImage = nil;
+                
+                if ([myAnnotation.point isEqual:self.selectedPin.point]) {
+                    
+                    circleImage = [UIImage imageNamed:@"circle_colored_red"];
+                    self.selectedPin = myAnnotation;
+                    
+                } else {
+                    circleImage = [UIImage imageNamed:@"circle_colored_blue"];
+                }
+                
                 UIImage *image = [STMFunctions drawText:@(myAnnotation.ord.integerValue + 1).stringValue
                                                withFont:[UIFont systemFontOfSize:10]
                                                   color:[UIColor whiteColor]
-                                                inImage:[UIImage imageNamed:@"circle_colored_blue"]
+                                                inImage:circleImage
                                                atCenter:YES];
                 
                 annotationView.image = image;
@@ -478,6 +560,65 @@
     [self performSegueWithIdentifier:@"showPoint" sender:view.annotation];
 }
 
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    
+    if ([view.annotation isKindOfClass:[STMMapAnnotation class]] && ![view.annotation isEqual:self.selectedPin] && self.reorderingMode == STMMapReorderingModeEnable) {
+        
+        STMMapAnnotation *selectedPin = (STMMapAnnotation *)view.annotation;
+        STMShipmentRoutePoint *point = selectedPin.point;
+        
+        [self.mapView removeAnnotation:selectedPin];
+        
+        if (self.selectedPin) {
+            
+            [self.mapView removeAnnotation:self.selectedPin];
+            
+        }
+        
+        BOOL wasSelectedPin = (self.selectedPin) ? YES : NO;
+        
+        STMMapAnnotation *previousPin = self.selectedPin;
+        
+        self.selectedPin = selectedPin;
+        
+        if (!wasSelectedPin) [self.ordPicker reloadAllComponents];
+
+        [self.mapView addAnnotation:selectedPin];
+        if (previousPin) [self.mapView addAnnotation:previousPin];
+        
+        [self.ordPicker selectRow:point.ord.integerValue inComponent:0 animated:YES];
+
+    }
+    
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    NSInteger fromIndex = self.selectedPin.ord.integerValue;
+    NSInteger toIndex = row;
+    
+    NSUInteger minIndex = MIN(fromIndex, toIndex);
+    NSUInteger loc = (minIndex == fromIndex) ? minIndex + 1 : minIndex;
+    
+    NSRange affectedPointsRange = NSMakeRange(loc, labs(fromIndex - toIndex));
+    
+    NSArray *affectedPoints = [self.points subarrayWithRange:affectedPointsRange];
+    
+    for (STMShipmentRoutePoint *point in affectedPoints) {
+        point.ord = (minIndex == fromIndex) ? @(point.ord.integerValue - 1) : @(point.ord.integerValue + 1);
+    }
+    
+//    STMShipmentRoutePoint *movedPoint = self.points[fromIndex];
+//    movedPoint.ord = @(toIndex);
+
+    self.selectedPin.point.ord = @(row);
+    
+    self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
+
+    NSLog(@"row %d", row);
+    
+}
+
 
 #pragma mark - Navigation
  
@@ -512,21 +653,7 @@
      
         if (self.points.count > 0) {
             
-            CGFloat imageSize = 22;
-            CGFloat imagePadding = 0;
-            
-            UIImage *image = [[UIImage imageNamed:@"reordering"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-            imageView.frame = CGRectMake(imagePadding, imagePadding, imageSize, imageSize);
-            imageView.tintColor = ACTIVE_BLUE_COLOR;
-            
-            UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageSize + imagePadding * 2, imageSize + imagePadding * 2)];
-            [button addTarget:self action:@selector(reorderButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-            [button addSubview:imageView];
-            
-            STMBarButtonItem *reorderButton = [[STMBarButtonItem alloc] initWithCustomView:button];
-            
-            self.navigationItem.rightBarButtonItem = reorderButton;
+            self.navigationItem.rightBarButtonItem = self.reorderButton;
             
             //        if ([self.splitVC isDetailNCForViewController:self.parentVC]) {
             //
@@ -546,12 +673,30 @@
 }
 
 - (void)reorderButtonPressed {
+
+    if (IPAD) {
+        
+        STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] initWithStyle:UITableViewStylePlain];
+        reorderTVC.points = self.points;
+        reorderTVC.parentVC = self;
+        
+        reorderTVC.edgesForExtendedLayout=UIRectEdgeNone;
+        reorderTVC.extendedLayoutIncludesOpaqueBars=NO;
+        reorderTVC.automaticallyAdjustsScrollViewInsets=NO;
+        
+        [self.navigationController pushViewController:reorderTVC animated:YES];
+
+    } else {
+        
+        self.reorderingMode = STMMapReorderingModeEnable;
+        
+    }
     
-    STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    reorderTVC.points = self.points;
-    reorderTVC.parentVC = self;
+}
+
+- (void)reorderDoneButtonPressed {
     
-    [self.navigationController pushViewController:reorderTVC animated:YES];
+    self.reorderingMode = STMMapReorderingModeDisable;
     
 }
 
@@ -563,9 +708,67 @@
     
 }
 
+
+- (void)showOrdPickerView {
+    
+    self.ordPicker = (self.ordPicker) ? self.ordPicker : [[UIPickerView alloc] init];
+    
+    self.ordPicker.backgroundColor = [UIColor whiteColor];
+    
+//    [[UIPickerView appearance] setBackgroundColor:[UIColor whiteColor]];
+    
+    self.ordPicker.dataSource = self;
+    self.ordPicker.delegate = self;
+    
+    [self.view addSubview:self.ordPicker];
+    
+    CGRect mapFrame = self.mapView.frame;
+    CGFloat y = mapFrame.origin.y + self.ordPicker.frame.size.height;
+    CGFloat height = mapFrame.size.height - self.ordPicker.frame.size.height;
+    
+    self.mapView.frame = CGRectMake(mapFrame.origin.x, y, mapFrame.size.width, height);
+    
+//    [self.mapView showAnnotations:self.mapView.annotations animated:YES];
+
+}
+
+- (void)hideOrdPicker {
+
+    CGRect mapFrame = self.mapView.frame;
+    CGFloat y = mapFrame.origin.y - self.ordPicker.frame.size.height;
+    CGFloat height = mapFrame.size.height + self.ordPicker.frame.size.height;
+    
+    self.mapView.frame = CGRectMake(mapFrame.origin.x, y, mapFrame.size.width, height);
+    
+//    [self.mapView showAnnotations:self.mapView.annotations animated:YES];
+
+    [self.ordPicker removeFromSuperview];
+    
+}
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return (self.selectedPin) ? self.points.count : 1;
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    
+    return (self.selectedPin) ? @(row+1).stringValue : @"Выберите точку";
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    if (![self.splitVC isDetailNCForViewController:self]) {
+        self.reorderingMode = STMMapReorderingModeDisable;
+    } else {
+        self.reorderingMode = STMMapReorderingModeUnknown;
+    }
     
 //    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
 //    [self.view addSubview:self.spinner];
@@ -585,6 +788,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+
     [super viewWillAppear:animated];
     [self setupNavBar];
 
@@ -592,17 +799,27 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     
+    if ([self isMovingToParentViewController]) {
+        
+        self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
+        [self.view addSubview:self.spinner];
+
+        [self setupMapView];
+
+    }
+    
+//    [self showUIPickerView];
+    
     [super viewDidAppear:animated];
     
-    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
-    [self.view addSubview:self.spinner];
-
-    [self setupMapView];
-
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    }
+
     if ([self isMovingFromParentViewController]) {
         [self flushMapView];
     }
