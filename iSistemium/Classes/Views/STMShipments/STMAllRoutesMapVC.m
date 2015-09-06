@@ -523,12 +523,16 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
                 
             }
             
-            UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-            CGSize size = infoButton.frame.size;
-            infoButton.frame = CGRectMake(0, 0, size.width + 10, size.height);
-            infoButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
-            
-            annotationView.rightCalloutAccessoryView = infoButton;
+            if (![self.splitVC isDetailNCForViewController:self]) {
+
+                UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+                CGSize size = infoButton.frame.size;
+                infoButton.frame = CGRectMake(0, 0, size.width + 10, size.height);
+                infoButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+                
+                annotationView.rightCalloutAccessoryView = infoButton;
+
+            }
 
         }
         
