@@ -21,7 +21,10 @@
     
     entityName = [NSString stringWithFormat:@"%@", entityName];
     
-    return (STMFetchRequest *)[super fetchRequestWithEntityName:entityName];
+    STMFetchRequest *request = (STMFetchRequest *)[super fetchRequestWithEntityName:entityName];
+    request.predicate = nil;
+    
+    return request;
     
 }
 
