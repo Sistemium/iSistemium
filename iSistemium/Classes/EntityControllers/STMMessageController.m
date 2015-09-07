@@ -81,6 +81,7 @@
     self.fullscreenPictures = nil;
     self.shownPictures = nil;
     self.messagesResultsController = nil;
+    self.readMessagesResultsController = nil;
     
 }
 
@@ -130,15 +131,10 @@
     if (!_readMessagesResultsController) {
         
         NSString *entityName = NSStringFromClass([STMRecordStatus class]);
-        STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[STMMessageController document].managedObjectContext];
         
-        STMFetchRequest *request = [[STMFetchRequest alloc] init];
-        request.entity = entity;
+        STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:entityName];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
         request.predicate = [NSPredicate predicateWithFormat:@"(objectXid IN %@) && (isRead == YES)", [self.messagesResultsController.fetchedObjects valueForKeyPath:@"xid"]];
-//        request.resultType = NSDictionaryResultType;
-//        request.returnsDistinctResults = YES;
-//        request.propertiesToFetch = @[entity.propertiesByName[@"objectXid"]];
         
         NSFetchedResultsController *resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                                             managedObjectContext:[STMMessageController document].managedObjectContext

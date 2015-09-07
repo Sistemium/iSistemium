@@ -464,11 +464,11 @@
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMCampaignPicture class])]) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaignPicture" object:nil];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaignPicture" object:nil];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMCampaign class])]) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaign" object:nil];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaign" object:nil];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMRecordStatus class])]) {
         

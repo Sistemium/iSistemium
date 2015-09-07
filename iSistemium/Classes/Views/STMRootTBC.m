@@ -727,18 +727,23 @@
 
     [nc addObserver:self
            selector:@selector(showUnreadCampaignCount)
-               name:@"gotNewCampaignPicture"
-             object:nil];
-
-    [nc addObserver:self
-           selector:@selector(showUnreadCampaignCount)
-               name:@"gotNewCampaign"
+               name:@"readCampaignsCountIsChanged"
              object:nil];
     
-    [nc addObserver:self
-           selector:@selector(showUnreadCampaignCount)
-               name:@"campaignPictureIsRead"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(showUnreadCampaignCount)
+//               name:@"gotNewCampaignPicture"
+//             object:nil];
+
+//    [nc addObserver:self
+//           selector:@selector(showUnreadCampaignCount)
+//               name:@"gotNewCampaign"
+//             object:nil];
+    
+//    [nc addObserver:self
+//           selector:@selector(showUnreadCampaignCount)
+//               name:@"campaignPictureIsRead"
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(newAppVersionAvailable:)
