@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     STMShippingLocationHaveLocation,
     STMShippingLocationNoLocation,
     STMShippingLocationConfirm,
+    STMShippingLocationConfirmByUser,
     STMShippingLocationSet
 };
 
@@ -53,6 +54,9 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 @property (nonatomic) CGFloat currentAccuracy;
 
 @property (nonatomic, strong) STMSpinnerView *spinner;
+
+@property (nonatomic, strong) STMMapAnnotation *userPin;
+
 
 @end
 
@@ -131,7 +135,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
             [self centeringMapOnUserLocation];
             break;
         }
-        case STMShippingLocationConfirm: {
+        case STMShippingLocationConfirm:
+        case STMShippingLocationConfirmByUser: {
             [self centeringMapOnConfirm];
             break;
         }
@@ -157,22 +162,11 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 - (void)centeringMapOnSettedLocation {
-    
-    CLLocation *location = nil;
-    
+        
     if (self.location) {
     
-        CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
-        location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
+        CLLocation *location = [STMLocationController locationFromLocationObject:self.location];
 
-    } else if (self.geocodedLocation) {
-        
-        location = self.geocodedLocation;
-        
-    }
-    
-    if (location) {
-        
         self.locationPin = [STMMapAnnotation createAnnotationForCLLocation:location
                                                                  withTitle:[STMFunctions shortCompanyName:self.point.shortName]
                                                                andSubtitle:self.point.address];
@@ -239,14 +233,15 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)centeringMapOnConfirm {
     
-    self.confirmingLocation = self.mapView.userLocation.location;
+//    self.confirmingLocation = self.mapView.userLocation.location;
     self.confirmingPin = [STMMapAnnotation createAnnotationForCLLocation:self.confirmingLocation];
     [self.mapView addAnnotation:self.confirmingPin];
     
     [self.mapView setUserTrackingMode:MKUserTrackingModeNone animated:NO];
 
     CLLocationDistance distance = 100;
-    CLLocationCoordinate2D locationCoordinate = self.mapView.userLocation.location.coordinate;
+//    CLLocationCoordinate2D locationCoordinate = self.mapView.userLocation.location.coordinate;
+    CLLocationCoordinate2D locationCoordinate = self.confirmingLocation.coordinate;
     
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(locationCoordinate, distance, distance);
     
@@ -304,11 +299,11 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
             break;
         }
             
-        case STMShippingLocationConfirm: {
+        case STMShippingLocationConfirm:
+        case STMShippingLocationConfirmByUser: {
             title = NSLocalizedString(@"CONFIRM SET LOCATION", nil);
             break;
         }
-            
         case STMShippingLocationSet: {
             break;
         }
@@ -331,11 +326,12 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
             break;
         }
         case STMShippingLocationNoLocation: {
+            self.confirmingLocation = self.mapView.userLocation.location;
             self.state = STMShippingLocationConfirm;
             break;
         }
-        case STMShippingLocationConfirm: {
-            self.state = STMShippingLocationSet;
+        case STMShippingLocationConfirm:
+        case STMShippingLocationConfirmByUser: {
             [self setShippingLocation];
             break;
         }
@@ -352,10 +348,17 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)setShippingLocation {
     
-    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.locationButton.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
-    [self.locationButton addSubview:self.spinner];
+//    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.locationButton.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
+//    [self.locationButton addSubview:self.spinner];
     
-    [self.point updateShippingLocationWithConfirmedLocation:self.confirmingLocation];
+    if (self.state == STMShippingLocationConfirm) {
+        [self.point updateShippingLocationWithConfirmedLocation:self.confirmingLocation];
+    } else if (self.state == STMShippingLocationConfirmByUser) {
+        [self.point updateShippingLocationWithUserLocation:self.confirmingLocation];
+    }
+    
+
+    self.state = STMShippingLocationSet;
 
     self.confirmingLocation = nil;
     
@@ -363,7 +366,20 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         self.state = STMShippingLocationHaveLocation;
     }];
     
+    if (IPHONE) {
+
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    } else {
+
+        [self.navigationController dismissViewControllerAnimated:YES completion:^{
+            
+        }];
+
+    }
+    
 }
+
 
 #pragma mark - MKMapViewDelegate
 
@@ -424,7 +440,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
                 
                 break;
             }
-            case STMShippingLocationConfirm: {
+            case STMShippingLocationConfirm:
+            case STMShippingLocationConfirmByUser: {
                 annotationView.pinColor = MKPinAnnotationColorPurple;
                 break;
             }
@@ -436,6 +453,17 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
                 annotationView.pinColor = MKPinAnnotationColorGreen;
                 break;
             }
+        }
+        
+        if ([myAnnotation isEqual:self.userPin]) {
+            
+            UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+            CGSize size = infoButton.frame.size;
+            infoButton.frame = CGRectMake(0, 0, size.width + 10, size.height);
+            infoButton.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin;
+            
+            annotationView.rightCalloutAccessoryView = infoButton;
+
         }
         
         annotationView.canShowCallout = YES;
@@ -450,16 +478,39 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
 }
 
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+
+    CLLocationCoordinate2D coordinate = [(STMMapAnnotation *)view.annotation coordinate];
+    
+    [self.mapView removeAnnotation:self.userPin];
+    self.userPin = nil;
+    
+    self.confirmingLocation = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
+    self.state = STMShippingLocationConfirmByUser;
+//    [self setShippingLocation];
+
+}
+
 
 #pragma mark - navBar
 
 - (void)updateNavBar {
 
+    if (self.splitVC) {
+        
+        STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                          style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(closeButtonPressed)];
+        self.navigationItem.leftBarButtonItem = closeButton;
+        
+    }
+
     self.navigationItem.rightBarButtonItem = nil;
 
     if (self.mapView.userLocation.location) {
         
-        if (self.shippingLocation || self.geocodedLocation) {
+        if (self.shippingLocation) {
             
             STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
             self.navigationItem.rightBarButtonItem = waypointButton;
@@ -492,6 +543,14 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     if (self.state == STMShippingLocationHaveLocation) [self performSegueWithIdentifier:@"showRoute" sender:self];
 }
 
+- (void)closeButtonPressed {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
+}
+
 
 #pragma mark - Navigation
  
@@ -502,22 +561,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         
         STMRouteMapVC *mapVC = (STMRouteMapVC *)segue.destinationViewController;
         
-        mapVC.shippingLocation = self.shippingLocation;
-        
-        CLLocation *location = nil;
-        
-        if (self.location) {
-            
-            CLLocationCoordinate2D locationCoordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
-            location = [[CLLocation alloc] initWithLatitude:locationCoordinate.latitude longitude:locationCoordinate.longitude];
-            
-        } else if (self.geocodedLocation) {
-            
-            location = self.geocodedLocation;
-            
-        }
-        
-        mapVC.destinationPoint = location;
+        mapVC.shippingLocation = self.shippingLocation;        
         mapVC.destinationPointName = self.point.name;
         mapVC.destinationPointAddress = self.point.address;
         
@@ -526,11 +570,46 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 
+#pragma mark - long press gesture
+
+- (void)addLongPressGesture {
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPress:)];
+    self.mapView.userInteractionEnabled = YES;
+    [self.mapView addGestureRecognizer:longPress];
+    
+}
+
+- (void)didLongPress:(UILongPressGestureRecognizer *)longPress {
+    
+    if (longPress.state == UIGestureRecognizerStateBegan) {
+    
+        CGPoint point = [longPress locationInView:longPress.view];
+        
+        CLLocationCoordinate2D coordinate = [self.mapView convertPoint:point toCoordinateFromView:longPress.view];
+
+        if (self.userPin) [self.mapView removeAnnotation:self.userPin];
+        
+        CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
+        
+        STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
+                                                                      withTitle:NSLocalizedString(@"ADD POSITION?", nil)
+                                                                    andSubtitle:nil];
+        self.userPin = pin;
+
+        [self.mapView addAnnotation:pin];
+        
+        [self.mapView selectAnnotation:pin animated:YES];
+        
+    }
+
+}
+
 #pragma mark - view lifecycle
 
 - (void)initState {
     
-    self.state = (self.location || self.geocodedLocation) ? STMShippingLocationHaveLocation : STMShippingLocationNoLocation;
+    self.state = (self.location) ? STMShippingLocationHaveLocation : STMShippingLocationNoLocation;
     
 }
 
@@ -543,6 +622,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         self.mapView.delegate = self;
         self.mapView.showsUserLocation = YES;
         [self centeringMap];
+        [self addLongPressGesture];
 
     }
     
@@ -559,6 +639,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
     [super viewWillAppear:animated];
     
+    [self updateNavBar];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -570,7 +652,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    if (![self.navigationController.viewControllers containsObject:self]) {
+    if ([self isMovingFromParentViewController]) {
         [self flushMapView];
     }
     

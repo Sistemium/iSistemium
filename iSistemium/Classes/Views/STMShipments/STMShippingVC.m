@@ -37,6 +37,9 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *checkButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *processingButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *filterButton;
+
+@property (nonatomic, strong) UIPopoverController *settingsPopover;
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
@@ -92,6 +95,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     self.parentVC.sortOrder = sortOrder;
     
     [self setupSortSettingsButton];
+    
+    [self performFetch];
     
 }
 
@@ -758,10 +763,27 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)setupNavBar {
     
-//    self.navigationItem.title = self.shipment.ndoc;
-    [self setupTitleView];
-    [self setupSortSettingsButton];
+    if (self.splitVC) {
+        
+        STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                          style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(closeButtonPressed)];
+        self.navigationItem.leftBarButtonItem = closeButton;
+        
+    }
 
+    [self setupTitleView];
+    [self setupDoneButton];
+
+}
+
+- (void)closeButtonPressed {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
 }
 
 - (void)setupTitleView {
@@ -800,6 +822,19 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
 }
 
+- (void)setupDoneButton {
+    
+    STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                          target:self
+                                                                                          action:@selector(doneButtonPressed)];
+    
+    self.navigationItem.rightBarButtonItem = doneButton;
+    
+}
+
+- (void)doneButtonPressed {
+    [self.parentVC showDoneShippingAlert];
+}
 
 #pragma mark - sort settings button
 
@@ -837,18 +872,37 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     }
     
     UIImage *image = [UIImage imageNamed:imageName];
-    image = [STMFunctions resizeImage:image toSize:CGSizeMake(25, 25)];
+    self.filterButton.image = [STMFunctions resizeImage:image toSize:CGSizeMake(25, 25)];
     
-    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:image
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(settingsButtonPressed)];
-    self.navigationItem.rightBarButtonItem = settingButton;
-
 }
 
-- (void)settingsButtonPressed {
-    [self performSegueWithIdentifier:@"showSettings" sender:self];
+- (IBAction)settingsButtonPressed {
+    
+    if (self.splitVC) {
+        
+        [self showSettingsPopover];
+        
+    } else {
+        
+        [self performSegueWithIdentifier:@"showSettings" sender:self];
+        
+    }
+    
+}
+
+- (void)showSettingsPopover {
+    
+    self.settingsPopover = nil;
+    
+    STMShippingSettingsTVC *settingsVC = (STMShippingSettingsTVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"shippingSettings"];
+    settingsVC.parentVC = self;
+    
+    self.settingsPopover = [[UIPopoverController alloc] initWithContentViewController:settingsVC];
+
+    [self.settingsPopover presentPopoverFromBarButtonItem:self.filterButton
+                                 permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                 animated:YES];
+    
 }
 
 
@@ -857,7 +911,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 - (void)setupToolbarButtons {
     
     [self updateToolbarButtons];
-    
+    [self setupSortSettingsButton];
+
 }
 
 - (void)updateToolbarButtons {
@@ -866,7 +921,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     if (self.checkedPositions.count > 0) {
         
-        processingButtonTitle = NSLocalizedString(@"PROCESSING BUTTON TITLE", nil);
+        processingButtonTitle = NSLocalizedString(@"DONE BUTTON TITLE", nil);
         
         processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" %lu%@", (unsigned long)self.checkedPositions.count, NSLocalizedString(@"_POSITIONS", nil)]];
 
@@ -953,7 +1008,13 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (IBAction)processingButtonPressed:(id)sender {
-    [self showProcessingActionSheet];
+    
+//    [self showProcessingActionSheet];
+    
+    self.isBunchProcessing = YES;
+    self.currentProcessingType = STMPositionProcessingTypeDone;
+    [self bunchShippingProcessing];
+
 }
 
 - (void)reloadUnprocessedSection {

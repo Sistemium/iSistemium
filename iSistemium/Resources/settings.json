@@ -78,23 +78,23 @@
         },
        {
            "name": "backgroundDesiredAccuracy",
-           "value": 10,
+           "value": null,
            "control": "slider",
            "min": 0,
            "max": 5,
            "step": 1
        },
        {
-           "name": "foregroundDesiredAccuacy",
-           "value": 10,
+           "name": "foregroundDesiredAccuracy",
+           "value": null,
            "control": "slider",
            "min": 0,
            "max": 5,
            "step": 1
        },
        {
-           "name": "offtimeDesiredAccuacy",
-           "value": 10,
+           "name": "offtimeDesiredAccuracy",
+           "value": 0,
            "control": "slider",
            "min": 0,
            "max": 5,
@@ -131,6 +131,14 @@
           "min": 1,
           "max": 60,
           "step": 5
+        },
+        {
+            "name": "locationWaitingTimeInterval",
+            "value": 180,
+            "control": "slider",
+            "min": 1,
+            "max": 300,
+            "step": 30
         },
         {
           "name": "trackDetectionTime",

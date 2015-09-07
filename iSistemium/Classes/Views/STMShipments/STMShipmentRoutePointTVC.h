@@ -13,6 +13,8 @@
 
 #import <MapKit/MapKit.h>
 
+#import "STMShipmentsSVC.h"
+
 
 @interface STMShipmentRoutePointTVC : STMVariableCellsHeightTVC
 
@@ -25,5 +27,6 @@
 - (void)photoWasDeleted:(STMShippingLocationPicture *)photo;
 
 - (void)fillCell:(UITableViewCell <STMTDCell> *)cell withShipment:(STMShipment *)shipment;
+
 
 @end

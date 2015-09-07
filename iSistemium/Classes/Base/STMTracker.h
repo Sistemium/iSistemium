@@ -27,6 +27,6 @@
 - (void)startTracking;
 - (void)stopTracking;
 - (void)prepareToDestroy;
-- (void)didReceiveRemoteNotification:(NSNotification *) notification;
+- (void)didReceiveRemoteNotification:(NSNotification *)notification;
 
 @end

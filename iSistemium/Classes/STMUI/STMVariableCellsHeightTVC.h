@@ -8,6 +8,8 @@
 
 #import "STMFetchedResultsControllerTVC.h"
 
+#define SINGLE_LINE_HEADER_HEIGHT 56
+
 @interface STMVariableCellsHeightTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, strong) NSString *cellIdentifier;
@@ -15,6 +17,8 @@
 @property (nonatomic) CGFloat standardCellHeight;
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification;
 
 
 @end
