@@ -590,8 +590,11 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
         if (self.userPin) [self.mapView removeAnnotation:self.userPin];
         
-        STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:[[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude] withTitle:@"Установить геометку?" andSubtitle:nil];
+        CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
         
+        STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
+                                                                      withTitle:NSLocalizedString(@"ADD POSITION?", nil)
+                                                                    andSubtitle:nil];
         self.userPin = pin;
 
         [self.mapView addAnnotation:pin];

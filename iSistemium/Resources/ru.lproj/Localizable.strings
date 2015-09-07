@@ -340,5 +340,7 @@
 "DONE ALL SHIPMENT" = "Отгрузить всё";
 "DONE ALL SHIPMENT ALERT TITLE" = "Отгрузить все накладные?";
 "DONE ALL SHIPMENT ALERT MESSAGE" = "Все необработанные позиции будут отмечены как отгруженные.";
+"SELECT POINT" = "Выберите точку";
+"ADD POSITION?" = "Установить геометку?";
 
 

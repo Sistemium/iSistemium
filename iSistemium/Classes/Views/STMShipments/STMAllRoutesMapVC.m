@@ -760,7 +760,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     
-    return (self.selectedPin) ? @(row+1).stringValue : @"Выберите точку";
+    return (self.selectedPin) ? @(row+1).stringValue : NSLocalizedString(@"SELECT POINT", nil);
     
 }
 
