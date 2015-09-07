@@ -569,8 +569,8 @@
 
 - (void)syncStateChanged {
 
-    NSInteger badgeNumber = ([self.session.status isEqualToString:@"running"]) ? [STMMessageController unreadMessagesCount] : 0;
-    [UIApplication sharedApplication].applicationIconBadgeNumber = badgeNumber;
+//    NSInteger badgeNumber = ([self.session.status isEqualToString:@"running"]) ? [STMMessageController unreadMessagesCount] : 0;
+//    [UIApplication sharedApplication].applicationIconBadgeNumber = badgeNumber;
 
     [self checkTimeoutAlert];
     

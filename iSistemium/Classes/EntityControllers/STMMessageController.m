@@ -198,8 +198,10 @@
             if ([controller isEqual:self.messagesResultsController]) {
                 self.readMessagesResultsController = nil;
             } else if ([controller isEqual:self.readMessagesResultsController]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"readMessageCountIsChanged" object:self];
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"readMessageCountIsChanged" object:self];
             }
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"readMessageCountIsChanged" object:self];
 
             break;
         }
