@@ -238,6 +238,16 @@ static NSString *cellIdentifier = @"messageCell";
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+//    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+//
+//    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
+//    
+//    recordStatus.isRead = @(!recordStatus.isRead.boolValue);
+
+}
+
 - (void)showUnreadCount {
     
     NSInteger unreadCount = [STMMessageController unreadMessagesCount];
@@ -248,7 +258,7 @@ static NSString *cellIdentifier = @"messageCell";
     
 }
 
-- (void)messageIsRead {
+- (void)readMessageCountIsChanged {
     
     [self showUnreadCount];
     [self.tableView reloadData];
@@ -272,8 +282,22 @@ static NSString *cellIdentifier = @"messageCell";
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageIsRead) name:@"messageIsRead" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadPicture:) name:@"downloadPicture" object:nil];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(readMessageCountIsChanged)
+               name:@"readMessageCountIsChanged"
+             object:nil];
+    
+//    [nc addObserver:self
+//           selector:@selector(messageIsRead)
+//               name:@"messageIsRead"
+//             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(downloadPicture:)
+               name:@"downloadPicture"
+             object:nil];
     
 }
 

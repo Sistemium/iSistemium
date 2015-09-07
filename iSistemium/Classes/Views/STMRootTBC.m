@@ -710,14 +710,19 @@
                name:@"Syncer init successfully"
              object:self.session.syncer];
     
-    [nc addObserver:self
-           selector:@selector(showUnreadMessageCount)
-               name:@"gotNewMessage"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(showUnreadMessageCount)
+//               name:@"gotNewMessage"
+//             object:nil];
+//
+//    [nc addObserver:self
+//           selector:@selector(showUnreadMessageCount)
+//               name:@"messageIsRead"
+//             object:nil];
 
     [nc addObserver:self
            selector:@selector(showUnreadMessageCount)
-               name:@"messageIsRead"
+               name:@"unreadMessageCountChange"
              object:nil];
 
     [nc addObserver:self

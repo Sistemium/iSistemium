@@ -460,7 +460,7 @@
     
     if ([entityName isEqualToString:NSStringFromClass([STMMessage class])]) {
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMCampaignPicture class])]) {
         
@@ -478,7 +478,7 @@
         
         if (affectedObject) {
             
-            if ([recordStatus.isRead boolValue]) [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+//            if ([recordStatus.isRead boolValue]) [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
             if ([recordStatus.isRemoved boolValue]) [self removeObject:affectedObject];
             
         }
