@@ -125,28 +125,14 @@
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    switch (type) {
-        case NSFetchedResultsChangeInsert:
-        case NSFetchedResultsChangeDelete: {
-            
-            if ([controller isEqual:self.campaignsResultController]) {
-                self.readCampaignPicturesResultController = nil;
-            } else if ([controller isEqual:self.readCampaignPicturesResultController]) {
 
-            }
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"readCampaignsCountIsChanged" object:self];
-            
-            break;
-        }
-        case NSFetchedResultsChangeMove:
-        case NSFetchedResultsChangeUpdate:
-        default: {
-            break;
-        }
+    if ([controller isEqual:self.campaignsResultController]) {
+        self.readCampaignPicturesResultController = nil;
+    } else if ([controller isEqual:self.readCampaignPicturesResultController]) {
+        
     }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"readCampaignsCountIsChanged" object:self];
     
 }
 
