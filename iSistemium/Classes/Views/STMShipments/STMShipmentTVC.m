@@ -827,6 +827,10 @@
 
 }
 
+- (void)shippingDidDone {
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+}
+
 - (void)popToSelf {
     
     if (![self.navigationController.topViewController isEqual:self]) {

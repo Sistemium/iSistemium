@@ -895,8 +895,41 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (void)doneButtonPressed {
-    [self.parentVC showDoneShippingAlert];
+    [self showDoneShippingAlert];
 }
+
+- (void)showDoneShippingAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIAlertView *alert = nil;
+        
+        if ([self haveUnprocessedPositions]) {
+            
+            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS TITLE", nil)
+                                               message:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS MESSAGE", nil)
+                                              delegate:self
+                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            alert.tag = 555;
+            
+        } else {
+            
+            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
+                                               message:@""
+                                              delegate:self
+                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            alert.tag = 444;
+            
+        }
+        
+        if (alert) [alert show];
+        
+    }];
+    
+}
+
 
 #pragma mark - sort settings button
 
@@ -1133,6 +1166,65 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         }
     }
     
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 444:
+            switch (buttonIndex) {
+                case 1:
+                    [self doneShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case 555:
+            switch (buttonIndex) {
+                case 1:
+                    self.resultsController.delegate = nil;
+                    for (STMShipment *shipment in self.shipments) {
+                        [self.shippingProcessController markUnprocessedPositionsAsDoneForShipment:shipment];
+                    }
+                    [self doneShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+- (void)doneShipping {
+    
+    for (STMShipment *shipment in self.shipments) {
+        
+        [self.shippingProcessController doneShippingWithShipment:shipment withCompletionHandler:^(BOOL success) {
+        }];
+
+    }
+
+    [self.parentVC shippingDidDone];
+    
+    if (IPHONE) {
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    } else {
+
+        [self dismissViewControllerAnimated:YES completion:^{            
+        }];
+
+    }
+
 }
 
 
