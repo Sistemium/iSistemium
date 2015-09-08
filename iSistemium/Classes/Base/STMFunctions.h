@@ -76,6 +76,7 @@
 
 + (BOOL)shouldHandleMemoryWarningFromVC:(UIViewController *)vc;
 + (void)nilifyViewForVC:(UIViewController *)vc;
++ (void)logMemoryStat;
 
 + (NSString *)shortCompanyName:(NSString *)companyName;
 

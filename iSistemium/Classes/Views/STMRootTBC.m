@@ -838,8 +838,8 @@
 
 - (void)syncStateChanged {
 
-    NSInteger badgeNumber = ([self.session.status isEqualToString:@"running"]) ? [STMMessageController unreadMessagesCount] : 0;
-    [UIApplication sharedApplication].applicationIconBadgeNumber = badgeNumber;
+//    NSInteger badgeNumber = ([self.session.status isEqualToString:@"running"]) ? [STMMessageController unreadMessagesCount] : 0;
+//    [UIApplication sharedApplication].applicationIconBadgeNumber = badgeNumber;
 
     [self checkTimeoutAlert];
     
@@ -979,30 +979,40 @@
                name:@"Syncer init successfully"
              object:self.session.syncer];
     
-    [nc addObserver:self
-           selector:@selector(showUnreadMessageCount)
-               name:@"gotNewMessage"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(showUnreadMessageCount)
+//               name:@"gotNewMessage"
+//             object:nil];
+//
+//    [nc addObserver:self
+//           selector:@selector(showUnreadMessageCount)
+//               name:@"messageIsRead"
+//             object:nil];
 
     [nc addObserver:self
            selector:@selector(showUnreadMessageCount)
-               name:@"messageIsRead"
+               name:@"unreadMessageCountChange"
              object:nil];
 
     [nc addObserver:self
            selector:@selector(showUnreadCampaignCount)
-               name:@"gotNewCampaignPicture"
-             object:nil];
-
-    [nc addObserver:self
-           selector:@selector(showUnreadCampaignCount)
-               name:@"gotNewCampaign"
+               name:@"readCampaignsCountIsChanged"
              object:nil];
     
-    [nc addObserver:self
-           selector:@selector(showUnreadCampaignCount)
-               name:@"campaignPictureIsRead"
-             object:nil];
+//    [nc addObserver:self
+//           selector:@selector(showUnreadCampaignCount)
+//               name:@"gotNewCampaignPicture"
+//             object:nil];
+
+//    [nc addObserver:self
+//           selector:@selector(showUnreadCampaignCount)
+//               name:@"gotNewCampaign"
+//             object:nil];
+    
+//    [nc addObserver:self
+//           selector:@selector(showUnreadCampaignCount)
+//               name:@"campaignPictureIsRead"
+//             object:nil];
     
     [nc addObserver:self
            selector:@selector(newAppVersionAvailable:)

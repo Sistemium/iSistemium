@@ -10,9 +10,14 @@
 #import <MapKit/MapKit.h>
 #import "STMDataModel.h"
 
+#import "STMShipmentsSVC.h"
+
 
 @interface STMShippingLocationMapVC : UIViewController
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
+
+@property (nonatomic ,strong) STMShipmentsSVC *splitVC;
+
 
 @end

@@ -12,13 +12,18 @@
 
 #import "STMShipmentPositionSortable.h"
 
+#import "STMShipmentsSVC.h"
+
 
 @interface STMShippingVC : UIViewController <STMShipmentPositionSortable>
 
-@property (nonatomic, strong) STMShipment *shipment;
+@property (nonatomic, strong) NSArray *shipments;
+//@property (nonatomic, strong) STMShipment *shipment;
 @property (nonatomic, weak) STMShipmentTVC *parentVC;
 @property (nonatomic) STMShipmentPositionSort sortOrder;
 @property (nonatomic, strong) NSDictionary *cachedHeights;
+
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
 
 @end

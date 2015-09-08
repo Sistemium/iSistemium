@@ -15,6 +15,9 @@
 
 @interface STMReorderRoutePointsTVC ()
 
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
+@property (nonatomic, strong) STMBarButtonItem *toolbarButton;
+
 @property (nonatomic) BOOL orderWasChanged;
 
 
@@ -22,6 +25,19 @@
 
 
 @implementation STMReorderRoutePointsTVC
+
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSString *)cellIdentifier {
     return @"reorderPointCell";
@@ -38,8 +54,22 @@
     return self.points.count;
 }
 
+<<<<<<< HEAD
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
 
+=======
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    
+//    CGFloat h = self.tableView.frame.size.height;
+//    CGFloat c = self.points.count;
+//    
+//    h = h/c;
+//    
+//    return h;
+    
+    return self.standardCellHeight;
+    
+>>>>>>> iPadShipments
     static UITableViewCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -153,8 +183,10 @@
     
     self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC.parentVC shipmentRoutePointsSortDescriptors]];
     
-    self.cachedCellsHeights = nil;
-    [self.tableView reloadData];
+    self.parentVC.points = self.points;
+    
+//    self.cachedCellsHeights = nil;
+//    [self.tableView reloadData];
     
     self.orderWasChanged = YES;
     
@@ -176,12 +208,83 @@
 }
 
 
+#pragma mark - toolbar
+
+- (void)setupToolbar {
+    
+    self.toolbarButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CALC ROUTES", nil)
+                                                           style:UIBarButtonItemStylePlain
+                                                          target:self
+                                                          action:@selector(toolbarButtonPressed)];
+    self.toolbarButton.enabled = NO;
+    
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+    NSArray *toolbarItems = @[flexibleSpace, self.toolbarButton, flexibleSpace];
+    
+    [self.navigationController.toolbar setItems:toolbarItems];
+    
+}
+
+- (void)toolbarButtonPressed {
+    
+//    if (self.orderWasChanged) {
+    
+    [self.parentVC recalcRoutes];
+    [self.tableView reloadData];
+//        self.orderWasChanged = NO;
+    
+//    }
+    
+}
+
+
+#pragma mark - observers
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(routesCalculationDidStart)
+               name:@"startCalcRoutes"
+             object:self.parentVC];
+    
+    [nc addObserver:self
+           selector:@selector(routesCalculationDidFinish)
+               name:@"finishCalcRoutes"
+             object:self.parentVC];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
+- (void)routesCalculationDidStart {
+    
+    self.editing = NO;
+    self.toolbarButton.enabled = NO;
+    
+}
+
+- (void)routesCalculationDidFinish {
+    
+    self.editing = YES;
+    self.toolbarButton.enabled = YES;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    self.tableView.scrollEnabled = YES;
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
-    self.editing = YES;
+    self.editing = !([self.splitVC isMasterNCForViewController:self]);
     
     [super customInit];
     
@@ -194,10 +297,42 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if ([self.splitVC isMasterNCForViewController:self]) {
+        
+        self.navigationController.toolbarHidden = NO;
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+
+        [self addObservers];
+        
+    }
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+    
+    if ([self.splitVC isMasterNCForViewController:self]) [self setupToolbar];
+
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     
+    if ([self isMovingFromParentViewController]) {
+
+        self.navigationController.toolbarHidden = YES;
+        [self.splitVC backButtonPressed];
+        
+    }
+
     if (self.orderWasChanged) [self.parentVC recalcRoutes];
     
+    [self removeObservers];
+
     [super viewWillDisappear:animated];
     
 }

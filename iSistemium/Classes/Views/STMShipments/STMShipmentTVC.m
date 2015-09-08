@@ -21,6 +21,9 @@
 
 @interface STMShipmentTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
+@property (nonatomic, strong) UIPopoverController *settingsPopover;
+
 @property (nonatomic, strong) NSIndexPath *shippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *finishShippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
@@ -40,6 +43,29 @@
 @synthesize resultsController = _resultsController;
 @synthesize sortOrder = _sortOrder;
 
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
+
+- (void)setShipment:(STMShipment *)shipment {
+    
+    if (![_shipment isEqual:shipment]) {
+        
+        _shipment = shipment;
+        [self performFetch];
+        
+    }
+    
+}
 
 - (STMShippingProcessController *)shippingProcessController {
     return [STMShippingProcessController sharedInstance];
@@ -86,6 +112,7 @@
     [defaults synchronize];
     
     [self setupSortSettingsButton];
+    [self performFetch];
     
 }
 
@@ -776,10 +803,22 @@
 
 }
 
-- (void)popToSelf {
+- (void)shippingDidDone {
+    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+}
 
+- (void)popToSelf {
+    
     if (![self.navigationController.topViewController isEqual:self]) {
+        
         [self.navigationController popToViewController:self animated:YES];
+        
+    } else if (![self.navigationController.visibleViewController isEqual:self]) {
+        
+        [self.navigationController.visibleViewController dismissViewControllerAnimated:YES completion:^{
+            
+        }];
+        
     }
     
 }
@@ -1007,14 +1046,27 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"showShipping"] &&
-               [segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
+    if ([segue.identifier isEqualToString:@"showShipping"]) {
         
-        STMShippingVC *shippingVC = (STMShippingVC *)segue.destinationViewController;
-        shippingVC.shipment = self.shipment;
+        STMShippingVC *shippingVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
+        
+            shippingVC = (STMShippingVC *)segue.destinationViewController;
+            shippingVC.cachedHeights = self.cachedCellsHeights;
+            
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMShippingVC class]]) {
+
+            shippingVC = (STMShippingVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            shippingVC.splitVC = self.splitVC;
+
+        }
+        
+//        shippingVC.shipment = self.shipment;
+        shippingVC.shipments = @[self.shipment];
         shippingVC.parentVC = self;
         shippingVC.sortOrder = self.sortOrder;
-        shippingVC.cachedHeights = self.cachedCellsHeights;
         
     } else if ([segue.identifier isEqualToString:@"showSettings"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingSettingsTVC class]]) {
@@ -1090,14 +1142,51 @@
 }
 
 - (void)settingsButtonPressed {
-    [self performSegueWithIdentifier:@"showSettings" sender:self];
+    
+    if ([self.splitVC isDetailNCForViewController:self]) {
+        
+        [self showSettingsPopover];
+        
+    } else {
+    
+        [self performSegueWithIdentifier:@"showSettings" sender:self];
+
+    }
+    
+}
+
+- (void)showSettingsPopover {
+    
+    self.settingsPopover = nil;
+    
+    STMShippingSettingsTVC *settingsVC = (STMShippingSettingsTVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"shippingSettings"];
+    settingsVC.parentVC = self;
+    
+    self.settingsPopover = [[UIPopoverController alloc] initWithContentViewController:settingsVC];
+    
+    UIView *buttonView = [[self.navigationItem rightBarButtonItem] valueForKey:@"view"];
+    
+    [self.settingsPopover presentPopoverFromRect:buttonView.frame
+                                          inView:self.view
+                        permittedArrowDirections:UIPopoverArrowDirectionUp
+                                        animated:YES];
+    
+}
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    
+    [super deviceOrientationDidChangeNotification:notification];
+    
+    [self.settingsPopover dismissPopoverAnimated:NO];
+    self.settingsPopover = nil;
+    
 }
 
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
+
     [self setupSortSettingsButton];
 
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom9TVCell" bundle:nil] forCellReuseIdentifier:self.positionCellIdentifier];
@@ -1122,24 +1211,38 @@
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
     
-//    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
-
+    if ([self isMovingToParentViewController]) {
+        self.cachedCellsHeights = nil;
+    }
+    
     [super viewWillAppear:animated];
+
+    if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
 
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    
-//    self.resultsController.delegate = nil;
-    
+
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }
 
-    if (![self.navigationController.viewControllers containsObject:self]) {
+    if ([self isMovingFromParentViewController]) {
         
         if (self.point.isReached.boolValue && !self.shipment.isShipped.boolValue) {
-            [self.parentVC shippingProcessWasInterrupted];
+            
+            if ([self haveUnprocessedPositions]) {
+                
+                [self.parentVC shippingProcessWasInterrupted];
+                
+            } else {
+                
+                [[STMShippingProcessController sharedInstance] doneShippingWithShipment:self.shipment withCompletionHandler:^(BOOL success) {
+                    
+                }];
+                
+            }
+            
         }
         [self removeObservers];
         

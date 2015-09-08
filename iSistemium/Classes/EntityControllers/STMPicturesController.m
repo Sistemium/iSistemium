@@ -623,7 +623,10 @@
     } else if ([picture isKindOfClass:[STMPicture class]]) {
         
         fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
-        
+
+        // https://github.com/Sistemium/iSistemium/issues/323
+#warning - have to use xid for filename like STMPhoto class
+
     }
     
 //#warning should check filename is not nil

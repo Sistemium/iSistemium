@@ -18,6 +18,9 @@
 #import "STMShippingLocationMapVC.h"
 #import "STMShippingLocationPicturesPVC.h"
 #import "STMRouteMapVC.h"
+#import "STMShippingVC.h"
+
+#import "STMShippingProcessController.h"
 
 
 #define CELL_IMAGES_SIZE 54
@@ -30,14 +33,13 @@
                                         UIAlertViewDelegate,
                                         NSFetchedResultsControllerDelegate>
 
-//@property (nonatomic, strong) NSString *cellIdentifier;
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
+
 @property (nonatomic, strong) NSString *shippingLocationCellIdentifier;
 @property (nonatomic, strong) NSString *arrivalButtonCellIdentifier;
 
 @property (nonatomic, strong) NSIndexPath *arrivalButtonCellIndexPath;
 
-//@property (nonatomic, strong) NSFetchedResultsController *resultsController;
-//@property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMSession *session;
 
 @property (nonatomic) BOOL isWaitingLocation;
@@ -50,6 +52,8 @@
 
 @property (nonatomic, strong) UIView *picturesView;
 
+@property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
+
 
 @end
 
@@ -58,6 +62,18 @@
 
 @synthesize resultsController = _resultsController;
 
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (STMSession *)session {
     
@@ -68,15 +84,17 @@
     
 }
 
-//- (STMDocument *)document {
-//    
-//    if (!_document) {
-//        _document = self.session.document;
-//    }
-//    return _document;
-//    
-//}
+- (void)setPoint:(STMShipmentRoutePoint *)point {
+    
+    if (![_point isEqual:point]) {
+        
+        _point = point;
+        [self performFetch];
+        [self setupNavBar];
 
+    }
+    
+}
 
 
 - (NSString *)cellIdentifier {
@@ -90,6 +108,23 @@
 - (NSString *)arrivalButtonCellIdentifier {
     return @"arrivalButtonCell";
 }
+
+- (NSSet *)unprocessedShipments {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
+    NSSet *unprocessedShipments = [self.point.shipments filteredSetUsingPredicate:predicate];
+    
+    return unprocessedShipments;
+    
+}
+
+- (NSUInteger)unprocessedShipmentsCount {
+    
+    NSUInteger unprocessedShipmentsCount = [self unprocessedShipments].count;
+    return unprocessedShipmentsCount;
+    
+}
+
 
 #pragma mark - resultsController
 
@@ -128,7 +163,7 @@
     if (![self.resultsController performFetch:&error]) {
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
     } else {
-        
+        [self.tableView reloadData];
     }
     
 }
@@ -173,6 +208,7 @@
 - (void)addPhotoButtonPressed {
 
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     
 }
 
@@ -346,15 +382,15 @@
     
     switch (section) {
         case 0:
-            return 2;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : 2;
             break;
             
         case 1:
-            return 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.isReached.boolValue && [self unprocessedShipmentsCount] > 0) ? 3 : 1;
             break;
             
         case 2:
-            return (self.point.shippingLocation.location) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.shippingLocation.location) ? 2 : 1;
             break;
             
         case 3:
@@ -372,11 +408,10 @@
     
     switch (section) {
         case 0:
-            return NSLocalizedString(@"SHIPMENT ROUTE POINT", nil);
+            return ([self.splitVC isMasterNCForViewController:self]) ? nil : NSLocalizedString(@"SHIPMENT ROUTE POINT", nil);
             break;
             
         case 3:
-//            self.shipmentsIndexSet = [NSIndexSet indexSetWithIndex:section];
             return NSLocalizedString(@"SHIPMENTS", nil);
             break;
             
@@ -386,6 +421,29 @@
     }
     
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return ([self.splitVC isMasterNCForViewController:self]) ? CGFLOAT_MIN : SINGLE_LINE_HEADER_HEIGHT;
+            break;
+            
+        case 3:
+            return SINGLE_LINE_HEADER_HEIGHT;
+            break;
+            
+        default:
+            return ([self.splitVC isMasterNCForViewController:self]) ? CGFLOAT_MIN : 0;
+            break;
+    }
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return ([self.splitVC isMasterNCForViewController:self]) ? CGFLOAT_MIN : 0;
+}
+
 
 - (CGFloat)estimatedHeightForRow {
     
@@ -551,7 +609,7 @@
     [self flushCellBeforeUse:cell];
     [self fillCell:cell atIndexPath:indexPath];
 
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.selectionStyle = (indexPath.section == 3) ? UITableViewCellSelectionStyleDefault : UITableViewCellSelectionStyleNone;
     
     return cell;
     
@@ -593,7 +651,22 @@
             break;
             
         case 1:
-            [self fillArrivalButtonCell:cell atIndexPath:indexPath];
+            switch (indexPath.row) {
+                case 0:
+                    [self fillArrivalButtonCell:cell atIndexPath:indexPath];
+                    break;
+                    
+                case 1:
+                    [self fillProcessingShipmentsButtonCell:cell atIndexPath:indexPath];
+                    break;
+
+                case 2:
+                    [self fillDoneShipmentsButtonCell:cell atIndexPath:indexPath];
+                    break;
+
+                default:
+                    break;
+            }
             break;
             
         case 2:
@@ -666,6 +739,38 @@
         
     }
     
+}
+
+- (void)fillProcessingShipmentsButtonCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        
+        STMCustom7TVCell *buttonCell = (STMCustom7TVCell *)cell;
+        
+        buttonCell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+        buttonCell.titleLabel.text = NSLocalizedString(@"PROCESSING ALL SHIPMENT", nil);
+        buttonCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+        buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
+        
+        buttonCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+    }
+
+}
+
+- (void)fillDoneShipmentsButtonCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        
+        STMCustom7TVCell *buttonCell = (STMCustom7TVCell *)cell;
+        
+        buttonCell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+        buttonCell.titleLabel.text = NSLocalizedString(@"DONE ALL SHIPMENT", nil);
+        buttonCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+        buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
+
+    }
+
 }
 
 - (void)fillCell:(UITableViewCell *)cell withShippingLocation:(STMShippingLocation *)shippingLocation {
@@ -838,25 +943,30 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 1) {
-        if (!self.point.isReached.boolValue) [self showArriveConfirmationAlert];
+        switch (indexPath.row) {
+            case 0:
+                if (!self.point.isReached.boolValue) [self showArriveConfirmationAlert];
+                break;
+                
+            case 1:
+                [self startAllShipmentsProcessing];
+                break;
+
+            case 2:
+                [self showDoneAllShipmentsAlert];
+                break;
+
+            default:
+                break;
+        }
+
     }
     
     if (indexPath.section == 2) {
         
         switch (indexPath.row) {
             case 0:
-                
-//                if (self.point.shippingLocation) {
-//                    
-                    [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
-                    
-//                } else if (!self.isWaitingLocation) {
-//                    
-//                    self.isWaitingLocation = YES;
-//                    [self.session.locationTracker getLocation];
-//                    
-//                }
-
+                [self performSegueWithIdentifier:@"showShippingLocationMap" sender:self.point.shippingLocation];
                 break;
                 
             default:
@@ -869,12 +979,36 @@
         
         STMShipment *shipment = self.resultsController.fetchedObjects[indexPath.row];
         
-        if (shipment.shipmentPositions.count > 0) {
-            [self performSegueWithIdentifier:@"showShipmentPositions" sender:indexPath];
-        }
+        if ([self.splitVC isMasterNCForViewController:self]) {
+            
+            [self.splitVC didSelectShipment:shipment inVC:self];
+            
+        } else {
+        
+            if (shipment.shipmentPositions.count > 0) {
+                [self performSegueWithIdentifier:@"showShipmentPositions" sender:indexPath];
+            }
 
+        }
+        
     }
     
+}
+
+- (void)highlightSelectedShipment {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedShipment];
+    
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section+3];
+    
+    if (indexPath) {
+        
+        UITableViewScrollPosition scrollPosition = ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
+        
+    }
+
 }
 
 
@@ -915,11 +1049,24 @@
     
 }
 
+- (void)showDoneAllShipmentsAlert {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DONE ALL SHIPMENT ALERT TITLE", nil)
+                                                    message:NSLocalizedString(@"DONE ALL SHIPMENT ALERT MESSAGE", nil)
+                                                   delegate:self
+                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+    
+    alert.tag = 444;
+    [alert show];
+
+}
+
 - (void)shippingProcessWasInterrupted {
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED TITLE", nil)
                                                     message:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE", nil)
-                                                   delegate:nil
+                                                   delegate:self
                                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                           otherButtonTitles:nil];
     
@@ -931,10 +1078,7 @@
     
     if (self.point.isReached.boolValue) {
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
-        NSUInteger unprocessedShipmentsCount = [self.point.shipments filteredSetUsingPredicate:predicate].count;
-        
-        if (unprocessedShipmentsCount > 0) {
+        if ([self unprocessedShipmentsCount] > 0) {
             [self showUnprocessedShipmentsAlert];
         }
         
@@ -958,10 +1102,14 @@
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
     switch (alertView.tag) {
         case 333:
-
+            
             switch (buttonIndex) {
                 case 1:
                     [self arrivalWasConfirmed];
@@ -973,10 +1121,23 @@
             
             break;
             
+        case 444:
+            
+            switch (buttonIndex) {
+                case 1:
+                    [self markAllShipmentsAsDone];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
         default:
             break;
     }
-    
+
 }
 
 - (void)arrivalWasConfirmed {
@@ -984,7 +1145,9 @@
     self.point.isReached = @YES;
     
     if (self.arrivalButtonCellIndexPath) {
-        [self.tableView reloadRowsAtIndexPaths:@[self.arrivalButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.arrivalButtonCellIndexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+                
     }
     
     self.isWaitingLocation = YES;
@@ -994,26 +1157,79 @@
     
 }
 
+- (void)markAllShipmentsAsDone {
+    
+    NSSet *unprocessedShipments = [self unprocessedShipments];
+    
+    STMShippingProcessController *shippingController = [STMShippingProcessController sharedInstance];
+    
+    for (STMShipment *shipment in unprocessedShipments) {
+        
+        [shippingController startShippingWithShipment:shipment];
+        [shippingController markUnprocessedPositionsAsDoneForShipment:shipment];
+        [shippingController doneShippingWithShipment:shipment withCompletionHandler:^(BOOL success) {
+            
+        }];
+        
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"routePointAllShipmentsIsDone" object:self.point];
+    
+    [self.tableView reloadData];
+    
+}
+
+
+- (void)startAllShipmentsProcessing {
+    
+    for (STMShipment *shipment in self.resultsController.fetchedObjects) {
+        [[STMShippingProcessController sharedInstance] startShippingWithShipment:shipment];
+    }
+    
+    [self performSegueWithIdentifier:@"showShipping" sender:self];
+    
+}
+
 
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:@"showShipmentPositions"] &&
-        [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentTVC class]]) {
-        
+
         STMShipmentTVC *shipmentTVC = (STMShipmentTVC *)segue.destinationViewController;
-        STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];
-        
-        shipmentTVC.shipment = shipment;
         shipmentTVC.point = self.point;
         shipmentTVC.parentVC = self;
+
+        if ([sender isKindOfClass:[NSIndexPath class]]) {
+            
+            STMShipment *shipment = self.resultsController.fetchedObjects[[(NSIndexPath *)sender row]];            
+            shipmentTVC.shipment = shipment;
+
+            [self.splitVC didSelectShipment:shipment inVC:self];
+
+        } else if ([sender isEqual:self.splitVC]) {
+            
+            shipmentTVC.shipment = self.splitVC.selectedShipment;
+            
+        }
         
-    } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"] &&
-               [segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
+    } else if ([segue.identifier isEqualToString:@"showShippingLocationMap"]) {
         
-        STMShippingLocationMapVC *mapVC = (STMShippingLocationMapVC *)segue.destinationViewController;
+        STMShippingLocationMapVC *mapVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMShippingLocationMapVC class]]) {
+        
+            mapVC = (STMShippingLocationMapVC *)segue.destinationViewController;
+            
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMShippingLocationMapVC class]]) {
+            
+            mapVC = (STMShippingLocationMapVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            mapVC.splitVC = self.splitVC;
+            
+        }
         
         mapVC.point = self.point;
         
@@ -1030,14 +1246,47 @@
         picturesPVC.currentIndex = [self.picturesView.subviews indexOfObject:sender];
         picturesPVC.parentVC = self;
         
-    } else if ([segue.identifier isEqualToString:@"showRoute"] &&
-               [segue.destinationViewController isKindOfClass:[STMRouteMapVC class]]) {
+    } else if ([segue.identifier isEqualToString:@"showRoute"]) {
         
-        STMRouteMapVC *routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
+        STMRouteMapVC *routeMapVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMRouteMapVC class]]) {
+            
+            routeMapVC = (STMRouteMapVC *)segue.destinationViewController;
+
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMRouteMapVC class]]) {
+            
+            routeMapVC = (STMRouteMapVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            routeMapVC.splitVC = self.splitVC;
+            
+        }
 
         routeMapVC.shippingLocation = self.point.shippingLocation;
         routeMapVC.destinationPointName = self.point.shortName;
         routeMapVC.destinationPointAddress = self.point.address;
+        
+    } else if ([segue.identifier isEqualToString:@"showShipping"]) {
+        
+        STMShippingVC *shippingVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
+            
+            shippingVC = (STMShippingVC *)segue.destinationViewController;
+            
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMShippingVC class]]) {
+            
+            shippingVC = (STMShippingVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            shippingVC.splitVC = self.splitVC;
+            
+        }
+        
+//        shippingVC.shipment = self.shipment;
+        shippingVC.shipments = self.resultsController.fetchedObjects;
+        
+        self.shipmentTVC = [[STMShipmentTVC alloc] init];
+        shippingVC.parentVC = self.shipmentTVC;
         
     }
     
@@ -1092,12 +1341,14 @@
 
 - (void)setupNavBar {
     
-    if (self.point.shippingLocation.location) {
+    if (![self.splitVC isMasterNCForViewController:self] && self.point.shippingLocation.location) {
         
         STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
         self.navigationItem.rightBarButtonItem = waypointButton;
         
     } else {
+
+        self.navigationItem.rightBarButtonItem = nil;
 
     }
 
@@ -1181,7 +1432,7 @@
 }
 
 - (void)customInit {
-    
+
     UINib *custom7TVCellNib = [UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.arrivalButtonCellIdentifier];
@@ -1201,19 +1452,23 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-
-    [self setupNavBar];
     
     [super viewWillAppear:animated];
-    
+
+    [self setupNavBar];
+
+    if ([self.splitVC isMasterNCForViewController:self]) [self highlightSelectedShipment];
+    if ([self.splitVC isDetailNCForViewController:self]) [self.navigationItem setHidesBackButton:YES animated:NO];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    if (![self.navigationController.viewControllers containsObject:self]) {
+    if ([self isMovingFromParentViewController]) {
         
 //        [self checkShipments];
         [self removeObservers];
+        [self.splitVC backButtonPressed];
         
     }
     [super viewWillDisappear:animated];

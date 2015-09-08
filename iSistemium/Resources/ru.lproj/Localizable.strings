@@ -330,6 +330,7 @@
 "CALC ROUTES" = "Расчёт маршрутов";
 "PROCESSING BUTTON TITLE" = "Обработать";
 "PROCESSING ACTION SHEET TITLE" = "обработать как";
+"DONE BUTTON TITLE" = "Отгрузить";
 "UNCHECK ALL POSITION" = "Снять отметки со всех позиций";
 "CHECK ALL POSITION" = "Отметить все позиции";
 "RECALC" = "Пересчитать";
@@ -337,5 +338,12 @@
 "SEND EMAIL" = "Отправить e-mail";
 "SEND MESSAGE" = "Отправить сообщение";
 "NEED CASHING" = "Нужна инкассация";
+"BACK" = "Назад";
+"DONE ALL SHIPMENT" = "Отгрузить всё";
+"DONE ALL SHIPMENT ALERT TITLE" = "Отгрузить все накладные?";
+"DONE ALL SHIPMENT ALERT MESSAGE" = "Все необработанные позиции будут отмечены как отгруженные.";
+"SELECT POINT" = "Выберите точку";
+"ADD POSITION?" = "Установить геометку?";
+"PROCESSING ALL SHIPMENT" = "Обработать накладные";
 
 

@@ -42,9 +42,12 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
-        //        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"xid" cacheName:nil];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]];
+
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:@"xid"
+                                                                            cacheName:nil];
         _resultsController.delegate = self;
         
     }
@@ -160,7 +163,7 @@
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
     
-    cell.titleLabel.text = [dateFormatter stringFromDate:message.deviceCts];
+    cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
     
     cell.detailLabel.text = message.body;
 //    cell.detailLabel.text = MESSAGE_BODY;
@@ -227,6 +230,16 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+//    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+//
+//    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
+//    
+//    recordStatus.isRead = @(!recordStatus.isRead.boolValue);
+
+}
+
 - (void)showUnreadCount {
     
     NSInteger unreadCount = [STMMessageController unreadMessagesCount];
@@ -237,10 +250,10 @@
     
 }
 
-- (void)messageIsRead {
+- (void)readMessageCountIsChanged {
     
     [self showUnreadCount];
-    [self.tableView reloadData];
+//    [self.tableView reloadData];
     
 }
 
@@ -262,8 +275,22 @@
 
 - (void)addObservers {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(messageIsRead) name:@"messageIsRead" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadPicture:) name:@"downloadPicture" object:nil];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(readMessageCountIsChanged)
+               name:@"readMessageCountIsChanged"
+             object:nil];
+    
+//    [nc addObserver:self
+//           selector:@selector(messageIsRead)
+//               name:@"messageIsRead"
+//             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(downloadPicture:)
+               name:@"downloadPicture"
+             object:nil];
     
 }
 

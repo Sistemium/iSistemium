@@ -26,7 +26,12 @@
 - (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
     
     self.cachedCellsHeights = nil;
+    
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+    
     [self.tableView reloadData];
+    
+    if (selectedIndexPath) [self.tableView selectRowAtIndexPath:selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     
 }
 

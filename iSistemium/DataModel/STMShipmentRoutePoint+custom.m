@@ -57,6 +57,10 @@
     [self updateShippingLocationWithLocation:location confirmed:NO source:@"geocoder"];
 }
 
+- (void)updateShippingLocationWithUserLocation:(CLLocation *)location {
+    [self updateShippingLocationWithLocation:location confirmed:NO source:@"user"];
+}
+
 - (void)updateShippingLocationWithConfirmedLocation:(CLLocation *)location {
     [self updateShippingLocationWithLocation:location confirmed:YES source:nil];
 }

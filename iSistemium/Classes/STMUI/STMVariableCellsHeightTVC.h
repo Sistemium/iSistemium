@@ -8,6 +8,8 @@
 
 #import "STMFetchedResultsControllerTVC.h"
 
+#define SINGLE_LINE_HEADER_HEIGHT 56
+
 @interface STMVariableCellsHeightTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, strong) NSString *cellIdentifier;
@@ -16,11 +18,15 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
+<<<<<<< HEAD
 - (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath;
 - (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath;
 
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath;
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath;
+=======
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification;
+>>>>>>> iPadShipments
 
 
 @end

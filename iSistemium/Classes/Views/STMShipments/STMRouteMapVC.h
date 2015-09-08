@@ -10,6 +10,8 @@
 #import <MapKit/MapKit.h>
 #import "STMDataModel.h"
 
+#import "STMShipmentsSVC.h"
+
 
 @interface STMRouteMapVC : UIViewController
 
@@ -17,6 +19,8 @@
 @property (nonatomic, strong) CLLocation *startPoint;
 @property (nonatomic, strong) NSString *destinationPointName;
 @property (nonatomic, strong) NSString *destinationPointAddress;
+
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
 
 @end
