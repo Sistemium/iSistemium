@@ -54,22 +54,8 @@
     return self.points.count;
 }
 
-<<<<<<< HEAD
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
 
-=======
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-    
-//    CGFloat h = self.tableView.frame.size.height;
-//    CGFloat c = self.points.count;
-//    
-//    h = h/c;
-//    
-//    return h;
-    
-    return self.standardCellHeight;
-    
->>>>>>> iPadShipments
     static UITableViewCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
