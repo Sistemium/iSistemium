@@ -342,3 +342,5 @@
 "DONE ALL SHIPMENT ALERT MESSAGE" = "All unprocessed position will be marked as done.";
 "SELECT POINT" = "Select point";
 "ADD POSITION?" = "Add position?";
+"PROCESSING ALL SHIPMENT" = "Processing all shipments";
+

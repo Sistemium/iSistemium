@@ -153,6 +153,7 @@
                         <segue destination="Z3I-Qq-HWq" kind="modal" identifier="showRoute" id="Gpp-bm-LaC"/>
                         <segue destination="b7r-jR-Skb" kind="modal" identifier="showShippingLocationMap" id="76n-mK-RPY"/>
                         <segue destination="spl-9Q-9ch" kind="modal" identifier="showPhotos" id="c9u-3e-j1z"/>
+                        <segue destination="DeU-Vu-xS6" kind="modal" identifier="showShipping" id="zBm-q8-jMn"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7mz-eJ-tn7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -641,6 +642,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DeU-Vu-xS6" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="TWz-AS-UBj"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Hzu-UM-78D">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -777,6 +779,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="zBm-q8-jMn"/>
         <segue reference="Jyk-ck-Qt8"/>
         <segue reference="KyB-EE-Dfc"/>
     </inferredMetricsTieBreakers>

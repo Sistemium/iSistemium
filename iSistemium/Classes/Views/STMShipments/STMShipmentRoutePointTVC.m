@@ -18,6 +18,7 @@
 #import "STMShippingLocationMapVC.h"
 #import "STMShippingLocationPicturesPVC.h"
 #import "STMRouteMapVC.h"
+#import "STMShippingVC.h"
 
 #import "STMShippingProcessController.h"
 
@@ -383,7 +384,7 @@
             break;
             
         case 1:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.isReached.boolValue && [self unprocessedShipmentsCount] > 0) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.isReached.boolValue && [self unprocessedShipmentsCount] > 0) ? 3 : 1;
             break;
             
         case 2:
@@ -654,9 +655,13 @@
                     break;
                     
                 case 1:
+                    [self fillProcessingShipmentsButtonCell:cell atIndexPath:indexPath];
+                    break;
+
+                case 2:
                     [self fillDoneShipmentsButtonCell:cell atIndexPath:indexPath];
                     break;
-                    
+
                 default:
                     break;
             }
@@ -734,6 +739,23 @@
     
 }
 
+- (void)fillProcessingShipmentsButtonCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+        
+        STMCustom7TVCell *buttonCell = (STMCustom7TVCell *)cell;
+        
+        buttonCell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+        buttonCell.titleLabel.text = NSLocalizedString(@"PROCESSING ALL SHIPMENT", nil);
+        buttonCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+        buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
+        
+        buttonCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+    }
+
+}
+
 - (void)fillDoneShipmentsButtonCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
@@ -744,9 +766,7 @@
         buttonCell.titleLabel.text = NSLocalizedString(@"DONE ALL SHIPMENT", nil);
         buttonCell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
         buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
-        
-//        self.arrivalButtonCellIndexPath = indexPath;
-        
+
     }
 
 }
@@ -927,9 +947,13 @@
                 break;
                 
             case 1:
+                [self startAllShipmentsProcessing];
+                break;
+
+            case 2:
                 [self showDoneAllShipmentsAlert];
                 break;
-                
+
             default:
                 break;
         }
@@ -1153,6 +1177,12 @@
     
 }
 
+
+- (void)startAllShipmentsProcessing {
+    [self performSegueWithIdentifier:@"showShipping" sender:self];
+}
+
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -1227,6 +1257,27 @@
         routeMapVC.shippingLocation = self.point.shippingLocation;
         routeMapVC.destinationPointName = self.point.shortName;
         routeMapVC.destinationPointAddress = self.point.address;
+        
+    } else if ([segue.identifier isEqualToString:@"showShipping"]) {
+        
+        STMShippingVC *shippingVC = nil;
+        
+        if ([segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
+            
+            shippingVC = (STMShippingVC *)segue.destinationViewController;
+            
+        } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
+                   [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMShippingVC class]]) {
+            
+            shippingVC = (STMShippingVC *)[(UINavigationController *)segue.destinationViewController topViewController];
+            shippingVC.splitVC = self.splitVC;
+            
+        }
+        
+//        shippingVC.shipment = self.shipment;
+//        shippingVC.parentVC = self;
+//        shippingVC.sortOrder = self.sortOrder;
+//        shippingVC.cachedHeights = self.cachedCellsHeights;
         
     }
     
