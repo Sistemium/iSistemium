@@ -155,7 +155,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         
         NSMutableArray *subpredicates = [NSMutableArray array];
         
-        [subpredicates addObject:[NSPredicate predicateWithFormat:@"shipment == %@", self.shipment]];
+//        [subpredicates addObject:[NSPredicate predicateWithFormat:@"shipment == %@", self.shipment]];
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"shipment IN %@", self.shipments]];
         
         if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
             
@@ -197,23 +198,74 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (BOOL)haveProcessedPositions {
-    return [self.shippingProcessController haveProcessedPositionsAtShipment:self.shipment];
+    
+    BOOL result = NO;
+    
+    for (STMShipment *shipment in self.shipments) {
+        
+        result |= [self.shippingProcessController haveProcessedPositionsAtShipment:shipment];
+        
+        if (result) return result;
+        
+    }
+    return result;
+//    return [self.shippingProcessController haveProcessedPositionsAtShipment:self.shipment];
+    
 }
 
 - (BOOL)haveUnprocessedPositions {
-    return [self.shippingProcessController haveUnprocessedPositionsAtShipment:self.shipment];
+    
+    BOOL result = NO;
+    
+    for (STMShipment *shipment in self.shipments) {
+        
+        result |= [self.shippingProcessController haveUnprocessedPositionsAtShipment:shipment];
+        
+        if (result) return result;
+        
+    }
+    return result;
+//    return [self.shippingProcessController haveUnprocessedPositionsAtShipment:self.shipment];
+    
 }
 
 - (BOOL)shippingProcessIsRunning {
-    return [self.shippingProcessController shippingProcessIsRunningWithShipment:self.shipment];
+
+    BOOL result = YES;
+    
+    for (STMShipment *shipment in self.shipments) {
+        
+        result &= [self.shippingProcessController shippingProcessIsRunningWithShipment:shipment];
+        
+        if (!result) return result;
+        
+    }
+    return result;
+//    return [self.shippingProcessController shippingProcessIsRunningWithShipment:self.shipment];
+    
 }
 
 - (NSUInteger)unprocessedPositionsCount {
-    return [self.shippingProcessController unprocessedPositionsCountForShipment:self.shipment];
+    
+    NSUInteger count = 0;
+    
+    for (STMShipment *shipment in self.shipments) {
+        count += [self.shippingProcessController unprocessedPositionsCountForShipment:shipment];
+    }
+    return count;
+//    return [self.shippingProcessController unprocessedPositionsCountForShipment:self.shipment];
+    
 }
 
 - (NSSet *)unprocessedPositions {
-    return [self.shippingProcessController unprocessedPositionsForShipment:self.shipment];
+    
+    NSMutableSet *result = [NSMutableSet set];
+    
+    for (STMShipment *shipment in self.shipments) {
+        [result unionSet:[self.shippingProcessController unprocessedPositionsForShipment:shipment]];
+    }
+    return result;
+//    return [self.shippingProcessController unprocessedPositionsForShipment:self.shipment];
 }
 
 - (NSArray *)currentUnprocessedPositions {
@@ -790,12 +842,22 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     UIButton *titleLabelButton = [UIButton buttonWithType:UIButtonTypeCustom];
     titleLabelButton.titleLabel.font = [UIFont boldSystemFontOfSize:titleLabelButton.titleLabel.font.pointSize];
-    [titleLabelButton setTitle:self.shipment.ndoc forState:UIControlStateNormal];
+//    [titleLabelButton setTitle:self.shipment.ndoc forState:UIControlStateNormal];
+    [titleLabelButton setTitle:[self ndocTitle] forState:UIControlStateNormal];
     [titleLabelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [titleLabelButton addTarget:self action:@selector(titleViewTapped:) forControlEvents:UIControlEventTouchUpInside];
 
     self.navigationItem.titleView = titleLabelButton;
 
+}
+
+- (NSString *)ndocTitle {
+    
+    NSArray *ndocs = [self.shipments valueForKeyPath:@"ndoc"];
+    NSString *title = [ndocs componentsJoinedByString:@" / "];
+
+    return title;
+    
 }
 
 - (void)titleViewTapped:(id)sender {

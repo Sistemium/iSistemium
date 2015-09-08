@@ -1073,6 +1073,7 @@
         if ([segue.destinationViewController isKindOfClass:[STMShippingVC class]]) {
         
             shippingVC = (STMShippingVC *)segue.destinationViewController;
+            shippingVC.cachedHeights = self.cachedCellsHeights;
             
         } else if ([segue.destinationViewController isKindOfClass:[UINavigationController class]] &&
                    [[(UINavigationController *)segue.destinationViewController topViewController] isKindOfClass:[STMShippingVC class]]) {
@@ -1082,10 +1083,10 @@
 
         }
         
-        shippingVC.shipment = self.shipment;
+//        shippingVC.shipment = self.shipment;
+        shippingVC.shipments = @[self.shipment];
         shippingVC.parentVC = self;
         shippingVC.sortOrder = self.sortOrder;
-        shippingVC.cachedHeights = self.cachedCellsHeights;
         
     } else if ([segue.identifier isEqualToString:@"showSettings"] &&
                [segue.destinationViewController isKindOfClass:[STMShippingSettingsTVC class]]) {

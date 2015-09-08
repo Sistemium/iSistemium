@@ -52,6 +52,8 @@
 
 @property (nonatomic, strong) UIView *picturesView;
 
+@property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
+
 
 @end
 
@@ -1179,7 +1181,13 @@
 
 
 - (void)startAllShipmentsProcessing {
+    
+    for (STMShipment *shipment in self.resultsController.fetchedObjects) {
+        [[STMShippingProcessController sharedInstance] startShippingWithShipment:shipment];
+    }
+    
     [self performSegueWithIdentifier:@"showShipping" sender:self];
+    
 }
 
 
@@ -1275,9 +1283,10 @@
         }
         
 //        shippingVC.shipment = self.shipment;
-//        shippingVC.parentVC = self;
-//        shippingVC.sortOrder = self.sortOrder;
-//        shippingVC.cachedHeights = self.cachedCellsHeights;
+        shippingVC.shipments = self.resultsController.fetchedObjects;
+        
+        self.shipmentTVC = [[STMShipmentTVC alloc] init];
+        shippingVC.parentVC = self.shipmentTVC;
         
     }
     
