@@ -44,9 +44,12 @@ static NSString *cellIdentifier = @"messageCell";
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
-        //        request.predicate = [NSPredicate predicateWithFormat:@"ANY debts.summ != 0"];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"xid" cacheName:nil];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]];
+
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:@"xid"
+                                                                            cacheName:nil];
         _resultsController.delegate = self;
         
     }
@@ -168,7 +171,7 @@ static NSString *cellIdentifier = @"messageCell";
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
     
-    cell.titleLabel.text = [dateFormatter stringFromDate:message.deviceCts];
+    cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
     
     cell.detailLabel.text = message.body;
 //    cell.detailLabel.text = MESSAGE_BODY;
@@ -261,7 +264,7 @@ static NSString *cellIdentifier = @"messageCell";
 - (void)readMessageCountIsChanged {
     
     [self showUnreadCount];
-    [self.tableView reloadData];
+//    [self.tableView reloadData];
     
 }
 

@@ -310,18 +310,23 @@
 + (void)markMessageAsRead:(STMMessage *)message {
     
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
-    recordStatus.isRead = @YES;
     
-    [self.document saveDocument:^(BOOL success) {
+    if (recordStatus.isRead.boolValue != YES) {
         
-        if (success) {
+        recordStatus.isRead = @YES;
+        
+        [self.document saveDocument:^(BOOL success) {
             
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-             self.syncer.syncerState = STMSyncerSendDataOnce;
+            if (success) {
+                
+                //            [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+                self.syncer.syncerState = STMSyncerSendDataOnce;
+                
+            }
+            
+        }];
 
-        }
-        
-    }];
+    }
     
 }
 
