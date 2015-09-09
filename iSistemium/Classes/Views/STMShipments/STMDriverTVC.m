@@ -15,6 +15,7 @@
 
 @interface STMDriverTVC ()
 
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
 @property (nonatomic, strong) NSString *cellIdentifier;
 
 
@@ -24,6 +25,19 @@
 @implementation STMDriverTVC
 
 @synthesize resultsController = _resultsController;
+
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -121,7 +135,35 @@
     STMShipmentRoute *route = [self.resultsController objectAtIndexPath:indexPath];
 
     if (route.shipmentRoutePoints.count > 0) {
-        [self performSegueWithIdentifier:@"showRoutePoints" sender:indexPath];
+        
+        if (IPHONE) {
+            
+            [self performSegueWithIdentifier:@"showRoutePoints" sender:indexPath];
+            
+        } else if (IPAD) {
+            
+            self.splitVC.selectedRoute = route;
+            
+        }
+        
+    }
+    
+}
+
+- (void)showRoutePoints {
+    [self performSegueWithIdentifier:@"showRoutePoints" sender:self.splitVC];
+}
+
+- (void)highlightSelectedRoute {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedRoute];
+    
+    if (indexPath) {
+        
+        UITableViewScrollPosition scrollPosition = ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
+        
     }
     
 }
@@ -132,11 +174,20 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:@"showRoutePoints"] &&
-        [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentRouteTVC class]]) {
+
+        STMShipmentRouteTVC *routeTVC = (STMShipmentRouteTVC *)segue.destinationViewController;
         
-        STMShipmentRoute *route = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
-        [(STMShipmentRouteTVC *)segue.destinationViewController setRoute:route];
+        if ([sender isKindOfClass:[NSIndexPath class]]) {
+            
+            STMShipmentRoute *route = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+            routeTVC.route = route;
+
+        } else if ([sender isEqual:self.splitVC]) {
+
+            routeTVC.route = self.splitVC.selectedRoute;
+            
+        }
         
     }
 
@@ -158,6 +209,13 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if ([self.splitVC isMasterNCForViewController:self]) [self highlightSelectedRoute];
+    
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

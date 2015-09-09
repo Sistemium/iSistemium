@@ -37,6 +37,9 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *checkButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *processingButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *filterButton;
+
+@property (nonatomic, strong) UIPopoverController *settingsPopover;
 
 @property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
@@ -92,6 +95,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     self.parentVC.sortOrder = sortOrder;
     
     [self setupSortSettingsButton];
+    
+    [self performFetch];
     
 }
 
@@ -150,7 +155,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         
         NSMutableArray *subpredicates = [NSMutableArray array];
         
-        [subpredicates addObject:[NSPredicate predicateWithFormat:@"shipment == %@", self.shipment]];
+//        [subpredicates addObject:[NSPredicate predicateWithFormat:@"shipment == %@", self.shipment]];
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"shipment IN %@", self.shipments]];
         
         if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
             
@@ -192,23 +198,74 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (BOOL)haveProcessedPositions {
-    return [self.shippingProcessController haveProcessedPositionsAtShipment:self.shipment];
+    
+    BOOL result = NO;
+    
+    for (STMShipment *shipment in self.shipments) {
+        
+        result |= [self.shippingProcessController haveProcessedPositionsAtShipment:shipment];
+        
+        if (result) return result;
+        
+    }
+    return result;
+//    return [self.shippingProcessController haveProcessedPositionsAtShipment:self.shipment];
+    
 }
 
 - (BOOL)haveUnprocessedPositions {
-    return [self.shippingProcessController haveUnprocessedPositionsAtShipment:self.shipment];
+    
+    BOOL result = NO;
+    
+    for (STMShipment *shipment in self.shipments) {
+        
+        result |= [self.shippingProcessController haveUnprocessedPositionsAtShipment:shipment];
+        
+        if (result) return result;
+        
+    }
+    return result;
+//    return [self.shippingProcessController haveUnprocessedPositionsAtShipment:self.shipment];
+    
 }
 
 - (BOOL)shippingProcessIsRunning {
-    return [self.shippingProcessController shippingProcessIsRunningWithShipment:self.shipment];
+
+    BOOL result = YES;
+    
+    for (STMShipment *shipment in self.shipments) {
+        
+        result &= [self.shippingProcessController shippingProcessIsRunningWithShipment:shipment];
+        
+        if (!result) return result;
+        
+    }
+    return result;
+//    return [self.shippingProcessController shippingProcessIsRunningWithShipment:self.shipment];
+    
 }
 
 - (NSUInteger)unprocessedPositionsCount {
-    return [self.shippingProcessController unprocessedPositionsCountForShipment:self.shipment];
+    
+    NSUInteger count = 0;
+    
+    for (STMShipment *shipment in self.shipments) {
+        count += [self.shippingProcessController unprocessedPositionsCountForShipment:shipment];
+    }
+    return count;
+//    return [self.shippingProcessController unprocessedPositionsCountForShipment:self.shipment];
+    
 }
 
 - (NSSet *)unprocessedPositions {
-    return [self.shippingProcessController unprocessedPositionsForShipment:self.shipment];
+    
+    NSMutableSet *result = [NSMutableSet set];
+    
+    for (STMShipment *shipment in self.shipments) {
+        [result unionSet:[self.shippingProcessController unprocessedPositionsForShipment:shipment]];
+    }
+    return result;
+//    return [self.shippingProcessController unprocessedPositionsForShipment:self.shipment];
 }
 
 - (NSArray *)currentUnprocessedPositions {
@@ -758,22 +815,49 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
 - (void)setupNavBar {
     
-//    self.navigationItem.title = self.shipment.ndoc;
-    [self setupTitleView];
-    [self setupSortSettingsButton];
+    if (self.splitVC) {
+        
+        STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                          style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(closeButtonPressed)];
+        self.navigationItem.leftBarButtonItem = closeButton;
+        
+    }
 
+    [self setupTitleView];
+    [self setupDoneButton];
+
+}
+
+- (void)closeButtonPressed {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
 }
 
 - (void)setupTitleView {
     
     UIButton *titleLabelButton = [UIButton buttonWithType:UIButtonTypeCustom];
     titleLabelButton.titleLabel.font = [UIFont boldSystemFontOfSize:titleLabelButton.titleLabel.font.pointSize];
-    [titleLabelButton setTitle:self.shipment.ndoc forState:UIControlStateNormal];
+//    [titleLabelButton setTitle:self.shipment.ndoc forState:UIControlStateNormal];
+    [titleLabelButton setTitle:[self ndocTitle] forState:UIControlStateNormal];
     [titleLabelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [titleLabelButton addTarget:self action:@selector(titleViewTapped:) forControlEvents:UIControlEventTouchUpInside];
 
     self.navigationItem.titleView = titleLabelButton;
 
+}
+
+- (NSString *)ndocTitle {
+    
+    NSArray *ndocs = [self.shipments valueForKeyPath:@"ndoc"];
+    NSString *title = [ndocs componentsJoinedByString:@" / "];
+
+    return title;
+    
 }
 
 - (void)titleViewTapped:(id)sender {
@@ -797,6 +881,52 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
                                       animated:YES];
 
     }
+    
+}
+
+- (void)setupDoneButton {
+    
+    STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                          target:self
+                                                                                          action:@selector(doneButtonPressed)];
+    
+    self.navigationItem.rightBarButtonItem = doneButton;
+    
+}
+
+- (void)doneButtonPressed {
+    [self showDoneShippingAlert];
+}
+
+- (void)showDoneShippingAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIAlertView *alert = nil;
+        
+        if ([self haveUnprocessedPositions]) {
+            
+            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS TITLE", nil)
+                                               message:NSLocalizedString(@"HAVE UNPROCESSED POSITIONS MESSAGE", nil)
+                                              delegate:self
+                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            alert.tag = 555;
+            
+        } else {
+            
+            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
+                                               message:@""
+                                              delegate:self
+                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            alert.tag = 444;
+            
+        }
+        
+        if (alert) [alert show];
+        
+    }];
     
 }
 
@@ -837,18 +967,37 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     }
     
     UIImage *image = [UIImage imageNamed:imageName];
-    image = [STMFunctions resizeImage:image toSize:CGSizeMake(25, 25)];
+    self.filterButton.image = [STMFunctions resizeImage:image toSize:CGSizeMake(25, 25)];
     
-    STMBarButtonItem *settingButton = [[STMBarButtonItem alloc] initWithImage:image
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(settingsButtonPressed)];
-    self.navigationItem.rightBarButtonItem = settingButton;
-
 }
 
-- (void)settingsButtonPressed {
-    [self performSegueWithIdentifier:@"showSettings" sender:self];
+- (IBAction)settingsButtonPressed {
+    
+    if (self.splitVC) {
+        
+        [self showSettingsPopover];
+        
+    } else {
+        
+        [self performSegueWithIdentifier:@"showSettings" sender:self];
+        
+    }
+    
+}
+
+- (void)showSettingsPopover {
+    
+    self.settingsPopover = nil;
+    
+    STMShippingSettingsTVC *settingsVC = (STMShippingSettingsTVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"shippingSettings"];
+    settingsVC.parentVC = self;
+    
+    self.settingsPopover = [[UIPopoverController alloc] initWithContentViewController:settingsVC];
+
+    [self.settingsPopover presentPopoverFromBarButtonItem:self.filterButton
+                                 permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                 animated:YES];
+    
 }
 
 
@@ -857,7 +1006,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 - (void)setupToolbarButtons {
     
     [self updateToolbarButtons];
-    
+    [self setupSortSettingsButton];
+
 }
 
 - (void)updateToolbarButtons {
@@ -866,7 +1016,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     if (self.checkedPositions.count > 0) {
         
-        processingButtonTitle = NSLocalizedString(@"PROCESSING BUTTON TITLE", nil);
+        processingButtonTitle = NSLocalizedString(@"DONE BUTTON TITLE", nil);
         
         processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" %lu%@", (unsigned long)self.checkedPositions.count, NSLocalizedString(@"_POSITIONS", nil)]];
 
@@ -953,7 +1103,13 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (IBAction)processingButtonPressed:(id)sender {
-    [self showProcessingActionSheet];
+    
+//    [self showProcessingActionSheet];
+    
+    self.isBunchProcessing = YES;
+    self.currentProcessingType = STMPositionProcessingTypeDone;
+    [self bunchShippingProcessing];
+
 }
 
 - (void)reloadUnprocessedSection {
@@ -1010,6 +1166,65 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         }
     }
     
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 444:
+            switch (buttonIndex) {
+                case 1:
+                    [self doneShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case 555:
+            switch (buttonIndex) {
+                case 1:
+                    self.resultsController.delegate = nil;
+                    for (STMShipment *shipment in self.shipments) {
+                        [self.shippingProcessController markUnprocessedPositionsAsDoneForShipment:shipment];
+                    }
+                    [self doneShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+- (void)doneShipping {
+    
+    for (STMShipment *shipment in self.shipments) {
+        
+        [self.shippingProcessController doneShippingWithShipment:shipment withCompletionHandler:^(BOOL success) {
+        }];
+
+    }
+
+    [self.parentVC shippingDidDone];
+    
+    if (IPHONE) {
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    } else {
+
+        [self dismissViewControllerAnimated:YES completion:^{            
+        }];
+
+    }
+
 }
 
 

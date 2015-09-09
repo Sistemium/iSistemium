@@ -14,6 +14,8 @@
 
 @interface STMMapAnnotation : NSObject <MKAnnotation>
 
++ (STMMapAnnotation *)createAnnotationForPoint:(STMShipmentRoutePoint *)point;
+
 + (STMMapAnnotation *)createAnnotationForLocation:(STMLocation *)location;
 + (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation;
 
@@ -24,6 +26,6 @@
 + (STMMapAnnotation *)createAnnotationForCLLocation:(CLLocation *)clLocation withTitle:(NSString *)title andSubtitle:(NSString *)subtitle andOrd:(NSNumber *)ord;
 
 @property (nonatomic ,strong) NSNumber *ord;
-
+@property (nonatomic, strong) STMShipmentRoutePoint *point;
 
 @end

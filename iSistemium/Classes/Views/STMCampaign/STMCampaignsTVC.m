@@ -269,7 +269,7 @@
     if ([STMCampaignController hasUnreadPicturesInCampaign:campaign]) {
         textColor = ACTIVE_BLUE_COLOR;
     }
-        
+
     cell.textLabel.textColor = textColor;
     cell.detailTextLabel.textColor = textColor;
 

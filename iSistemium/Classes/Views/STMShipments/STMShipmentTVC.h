@@ -13,6 +13,8 @@
 #import "STMShipmentRoutePointTVC.h"
 #import "STMShipmentPositionSortable.h"
 
+#import "STMShipmentsSVC.h"
+
 
 @interface STMShipmentTVC : STMVariableCellsHeightTVC <STMShipmentPositionSortable>
 
@@ -28,5 +30,7 @@
 
 - (void)fillCell:(UITableViewCell <STMTDICell> *)cell withShipmentPosition:(STMShipmentPosition *)position;
 
+- (void)showDoneShippingAlert;
+- (void)shippingDidDone;
 
 @end

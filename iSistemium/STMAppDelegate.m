@@ -176,7 +176,10 @@
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+    
     [[STMLogger sharedLogger] saveLogMessageWithText:@"applicationDidReceiveMemoryWarning" type:@"important"];
+    [STMFunctions logMemoryStat];
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

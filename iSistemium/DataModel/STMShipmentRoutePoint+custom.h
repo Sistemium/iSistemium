@@ -15,6 +15,7 @@
 - (NSString *)shortInfo;
 - (void)updateShippingLocationWithGeocodedLocation:(CLLocation *)location;
 - (void)updateShippingLocationWithConfirmedLocation:(CLLocation *)location;
+- (void)updateShippingLocationWithUserLocation:(CLLocation *)location;
 
 
 @end

@@ -19,8 +19,12 @@
 #import "STMLocationController.h"
 #import "STMShippingProcessController.h"
 
+#import "STMReorderRoutePointsTVC.h"
+
 
 @interface STMShipmentRouteTVC ()
+
+@property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
 @property (nonatomic, strong) NSIndexPath *summaryIndexPath;
 
@@ -32,8 +36,33 @@
 
 @synthesize resultsController = _resultsController;
 
+- (STMShipmentsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMShipmentsSVC class]]) {
+            _splitVC = (STMShipmentsSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
+
 - (NSString *)cellIdentifier {
     return @"routePointCell";
+}
+
+- (void)setRoute:(STMShipmentRoute *)route {
+    
+    if (![_route isEqual:route]) {
+        
+        _route = route;
+        [self performFetch];
+        [self setupNavBar];
+        
+    }
+    
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -73,9 +102,14 @@
     NSError *error;
     
     if (![self.resultsController performFetch:&error]) {
+        
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
+        
     } else {
+        
+        [self.tableView reloadData];
         [self checkPointsLocations];
+        
     }
     
 }
@@ -164,14 +198,14 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return (self.route) ? 2 : 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     switch (section) {
         case 0:
-            return ([self haveProcessedShipments]) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveProcessedShipments]) ? 2 : 1;
             break;
             
         case 1:
@@ -188,11 +222,10 @@
     
     switch (section) {
         case 0:
-            return NSLocalizedString(@"SHIPMENT ROUTE", nil);
+            return ([self.splitVC isMasterNCForViewController:self]) ? nil : NSLocalizedString(@"SHIPMENT ROUTE", nil);
             break;
             
         case 1:
-//            self.routePointsIndexSet = [NSIndexSet indexSetWithIndex:section];
             return NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
             break;
             
@@ -201,6 +234,24 @@
             break;
     }
     
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 0:
+            return ([self.splitVC isMasterNCForViewController:self]) ? CGFLOAT_MIN : SINGLE_LINE_HEADER_HEIGHT;
+            break;
+            
+        default:
+            return SINGLE_LINE_HEADER_HEIGHT;
+            break;
+    }
+
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return CGFLOAT_MIN;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -400,9 +451,18 @@
     if (indexPath.section == 1) {
         
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
-        
-        [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
 
+        if ([self.splitVC isMasterNCForViewController:self]) {
+            
+            STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
+            [self.splitVC didSelectPoint:point inVC:self];
+            
+        } else {
+            
+            [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
+
+        }
+        
     } else if (indexPath.section == 0) {
         
         if (indexPath.row == 1) {
@@ -410,6 +470,26 @@
             [self performSegueWithIdentifier:@"showSummary" sender:self];
             
         }
+        
+    }
+    
+}
+
+- (void)showShipments {
+    [self performSegueWithIdentifier:@"showShipments" sender:self.splitVC];
+}
+
+- (void)highlightSelectedPoint {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedPoint];
+    
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section+1];
+    
+    if (indexPath) {
+        
+        UITableViewScrollPosition scrollPosition = ([[self.tableView indexPathsForVisibleRows] containsObject:indexPath]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
+
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
         
     }
     
@@ -477,14 +557,22 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:@"showShipments"] &&
-        [sender isKindOfClass:[NSIndexPath class]] &&
         [segue.destinationViewController isKindOfClass:[STMShipmentRoutePointTVC class]]) {
         
         STMShipmentRoutePointTVC *pointTVC = (STMShipmentRoutePointTVC *)segue.destinationViewController;
-        
-        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
 
-        pointTVC.point = point;
+        if ([sender isKindOfClass:[NSIndexPath class]]) {
+        
+            STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+            pointTVC.point = point;
+            
+            [self.splitVC didSelectPoint:point inVC:self];
+
+        } else if ([sender isEqual:self.splitVC]) {
+            
+            pointTVC.point = self.splitVC.selectedPoint;
+            
+        }
         
     } else if ([segue.identifier isEqualToString:@"showSummary"] &&
                [segue.destinationViewController isKindOfClass:[STMShipmentRouteSummaryTVC class]]) {
@@ -495,7 +583,7 @@
                [segue.destinationViewController isKindOfClass:[STMAllRoutesMapVC class]]) {
         
         STMAllRoutesMapVC *allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
-        
+
         for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
             
             if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point]) {
@@ -504,10 +592,18 @@
             
         }
         
-//        allRoutesMapVC.points = [self pointsWithLocation];
         allRoutesMapVC.points = self.resultsController.fetchedObjects;
-//        allRoutesMapVC.geocodedLocations = self.geocodedLocations.copy;
         allRoutesMapVC.parentVC = self;
+        
+        if ([self.splitVC isDetailNCForViewController:self]) {
+            
+            STMReorderRoutePointsTVC *reorderTVC = [[STMReorderRoutePointsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            reorderTVC.points = self.resultsController.fetchedObjects;
+            reorderTVC.parentVC = allRoutesMapVC;
+            
+            [self.splitVC.masterNC pushViewController:reorderTVC animated:YES];
+
+        }
         
     }
     
@@ -570,11 +666,11 @@
 
 - (void)setupNavBar {
     
-    if ([self pointsWithLocation].count > 0) {
+    if (![self.splitVC isMasterNCForViewController:self] && [self pointsWithLocation].count > 0) {
         
         STMBarButtonItem *waypointButton = [[STMBarButtonItem alloc] initWithCustomView:[self waypointView]];
         self.navigationItem.rightBarButtonItem = waypointButton;
-
+        
     } else {
         
         self.navigationItem.rightBarButtonItem = nil;
@@ -645,16 +741,53 @@
 }
 
 
+#pragma mark - observers
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(routePointAllShipmentsIsDone:)
+                                                 name:@"routePointAllShipmentsIsDone"
+                                               object:nil];
+
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)routePointAllShipmentsIsDone:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[STMShipmentRoutePoint class]]) {
+        
+        STMShipmentRoutePoint *point = (STMShipmentRoutePoint *)notification.object;
+        
+        NSIndexPath *pointIndexPath = [self.resultsController indexPathForObject:point];
+        
+        if (pointIndexPath) {
+            
+            pointIndexPath = [NSIndexPath indexPathForRow:pointIndexPath.row inSection:pointIndexPath.section + 1];
+
+            [self.tableView reloadRowsAtIndexPaths:@[pointIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+            
+        }
+        
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    [self setupNavBar];
-    
+    if ([self.splitVC isDetailNCForViewController:self]) {
+        self.title = NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
+    }
+
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     [self performFetch];
     
-//    [self shipmentsInfo];
+    [self addObservers];
     
     [super customInit];
     
@@ -668,9 +801,30 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [self setupNavBar];
+    
+    if ([self isMovingToParentViewController]) {
+        self.cachedCellsHeights = nil;
+    }
+
     [self reloadData];
     
     [super viewWillAppear:animated];
+    
+    if ([self.splitVC isMasterNCForViewController:self]) {
+        [self highlightSelectedPoint];
+    }
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self isMovingFromParentViewController]) {
+        
+        [self.splitVC backButtonPressed];
+        [self removeObservers];
+        
+    }
+    [super viewWillDisappear:animated];
     
 }
 

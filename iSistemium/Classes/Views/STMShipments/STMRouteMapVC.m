@@ -27,6 +27,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *routeInfoLabel;
 
+@property (nonatomic, strong) CLLocation *destinationPoint;
 
 @property (nonatomic, strong) STMMapAnnotation *startPin;
 @property (nonatomic, strong) STMMapAnnotation *destinationPin;
@@ -249,6 +250,29 @@
 
 }
 
+- (void)setupNavBar {
+        
+    if (self.splitVC) {
+        
+        STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                          style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(closeButtonPressed)];
+        self.navigationItem.leftBarButtonItem = closeButton;
+        
+    }
+    
+}
+
+- (void)closeButtonPressed {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+    
+}
+
+
 #pragma mark - actions
 
 - (IBAction)backButtonPressed:(id)sender {
@@ -372,9 +396,6 @@
 
 - (void)customInit {
     
-    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
-    [self.view addSubview:self.spinner];
-
     [self updateToolbar];
     [self setupMapView];
     
@@ -390,9 +411,30 @@
 
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+
+    [super viewWillAppear:animated];
+    
+    [self setupNavBar];
+
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.mapView.frame];
+    [self.view addSubview:self.spinner];
+
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     
-    if (![self.navigationController.viewControllers containsObject:self]) {
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+
+    if ([self isMovingFromParentViewController]) {
         [self flushMapView];
     }
     

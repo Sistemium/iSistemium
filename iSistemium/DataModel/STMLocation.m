@@ -2,7 +2,7 @@
 //  STMLocation.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 21/08/15.
+//  Created by Maxim Grigoriev on 23/08/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -23,7 +23,7 @@
 @dynamic speed;
 @dynamic timestamp;
 @dynamic verticalAccuracy;
-@dynamic source;
+@dynamic lastSeenAt;
 @dynamic photos;
 @dynamic shipmentRoutePoint;
 @dynamic shippings;
