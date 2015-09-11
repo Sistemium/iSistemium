@@ -895,7 +895,9 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (void)doneButtonPressed {
+    
     [self showDoneShippingAlert];
+    
 }
 
 - (void)showDoneShippingAlert {
@@ -914,13 +916,15 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
             alert.tag = 555;
             
         } else {
+
+            [self doneShipping];
             
-            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
-                                               message:@""
-                                              delegate:self
-                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-            alert.tag = 444;
+//            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
+//                                               message:@""
+//                                              delegate:self
+//                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
+//                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+//            alert.tag = 444;
             
         }
         
