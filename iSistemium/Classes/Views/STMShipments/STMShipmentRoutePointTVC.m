@@ -1282,11 +1282,11 @@
             
         }
         
-//        shippingVC.shipment = self.shipment;
         shippingVC.shipments = self.resultsController.fetchedObjects;
         
         self.shipmentTVC = [[STMShipmentTVC alloc] init];
         shippingVC.parentVC = self.shipmentTVC;
+        shippingVC.sortOrder = self.shipmentTVC.sortOrder;
         
     }
     
