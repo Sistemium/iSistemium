@@ -759,18 +759,20 @@
 - (void)routePointAllShipmentsIsDone:(NSNotification *)notification {
     
     if ([notification.object isKindOfClass:[STMShipmentRoutePoint class]]) {
-        
-        STMShipmentRoutePoint *point = (STMShipmentRoutePoint *)notification.object;
-        
-        NSIndexPath *pointIndexPath = [self.resultsController indexPathForObject:point];
-        
-        if (pointIndexPath) {
-            
-            pointIndexPath = [NSIndexPath indexPathForRow:pointIndexPath.row inSection:pointIndexPath.section + 1];
 
-            [self.tableView reloadRowsAtIndexPaths:@[pointIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-            
-        }
+        [self.tableView reloadData];
+        
+//        STMShipmentRoutePoint *point = (STMShipmentRoutePoint *)notification.object;
+//        
+//        NSIndexPath *pointIndexPath = [self.resultsController indexPathForObject:point];
+//        
+//        if (pointIndexPath) {
+//            
+//            pointIndexPath = [NSIndexPath indexPathForRow:pointIndexPath.row inSection:pointIndexPath.section + 1];
+//
+//            [self.tableView reloadRowsAtIndexPaths:@[pointIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+//            
+//        }
         
     }
     
