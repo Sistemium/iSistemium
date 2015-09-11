@@ -61,7 +61,21 @@
 #pragma mark - Table view data source & delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     self.sortOrder = (STMShipmentPositionSort)indexPath.row;
+    
+    if (IPHONE) {
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    } else {
+        
+        [self dismissViewControllerAnimated:YES completion:^{
+            
+        }];
+        
+    }
+    
 }
 
 
