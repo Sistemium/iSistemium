@@ -510,25 +510,29 @@
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         self.selectedDebt = [self.resultsController objectAtIndexPath:indexPath];
         
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@""
-                                                                 delegate:self
-                                                        cancelButtonTitle:nil
-                                                   destructiveButtonTitle:nil
-                                                        otherButtonTitles:nil];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-        [actionSheet addButtonWithTitle:COPY_TITLE];
+            UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@""
+                                                                     delegate:self
+                                                            cancelButtonTitle:nil
+                                                       destructiveButtonTitle:nil
+                                                            otherButtonTitles:nil];
 
-        if ([MFMailComposeViewController canSendMail]) {
-            [actionSheet addButtonWithTitle:EMAIL_TITLE];
-        }
+            [actionSheet addButtonWithTitle:COPY_TITLE];
 
-        if ([MFMessageComposeViewController canSendText]) {
-            [actionSheet addButtonWithTitle:MESSAGE_TITLE];
-        }
+            if ([MFMailComposeViewController canSendMail]) {
+                [actionSheet addButtonWithTitle:EMAIL_TITLE];
+            }
 
-        actionSheet.tag = 111;
-        
-        [actionSheet showFromRect:cell.frame inView:self.tableView animated:YES];
+            if ([MFMessageComposeViewController canSendText]) {
+                [actionSheet addButtonWithTitle:MESSAGE_TITLE];
+            }
+
+            actionSheet.tag = 111;
+            
+            [actionSheet showFromRect:cell.frame inView:self.tableView animated:YES];
+            
+        }];
         
     }
     

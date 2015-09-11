@@ -167,13 +167,17 @@
                 
             } else {
                 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
-                                                                message:checkingInfo
-                                                               delegate:self
-                                                      cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                                      otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                alert.tag = 111;
-                [alert show];
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                                    message:checkingInfo
+                                                                   delegate:self
+                                                          cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                          otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    alert.tag = 111;
+                    [alert show];
+                    
+                }];
                 
             }
             
@@ -183,12 +187,16 @@
         
     } else {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"EMPTY POSITION VOLUMES TITLE", nil)
-                                                        message:NSLocalizedString(@"EMPTY POSITION VOLUMES MESSAGE", nil)
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                              otherButtonTitles:nil];
-        [alert show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"EMPTY POSITION VOLUMES TITLE", nil)
+                                                            message:NSLocalizedString(@"EMPTY POSITION VOLUMES MESSAGE", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
         
     }
 

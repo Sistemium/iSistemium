@@ -161,9 +161,13 @@
                 
             } else {
             
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ATTENTION", nil) message:NSLocalizedString(@"BANK CHECK PHOTO", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                alert.tag = 2;
-                [alert show];
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ATTENTION", nil) message:NSLocalizedString(@"BANK CHECK PHOTO", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                    alert.tag = 2;
+                    [alert show];
+                    
+                }];
 
             }
             
@@ -337,10 +341,14 @@
             
             if (self.uncashingPlaces.count == 0) {
 
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
-                alert.delegate = self;
-                alert.tag = 1;
-                [alert show];
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"NO CASH DESK", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
+                    alert.delegate = self;
+                    alert.tag = 1;
+                    [alert show];
+                    
+                }];
 
             } else {
                 
@@ -374,18 +382,22 @@
         
     } else if (self.uncashingPlaces.count > 1) {
     
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT UNCASHING PLACE", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-        
-        for (STMUncashingPlace *place in self.uncashingPlaces) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT UNCASHING PLACE", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
             
-            [actionSheet addButtonWithTitle:place.name];
+            for (STMUncashingPlace *place in self.uncashingPlaces) {
+                
+                [actionSheet addButtonWithTitle:place.name];
+                
+            }
             
-        }
-        
-        actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
-        actionSheet.tag = 1;
-        //    [actionSheet showInView:self.splitVC.view];
-        [actionSheet showFromRect:self.uncashingPlaceButton.frame inView:self.view animated:YES];
+            actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
+            actionSheet.tag = 1;
+            //    [actionSheet showInView:self.splitVC.view];
+            [actionSheet showFromRect:self.uncashingPlaceButton.frame inView:self.view animated:YES];
+            
+        }];
 
     }
     

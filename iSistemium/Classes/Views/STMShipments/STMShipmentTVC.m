@@ -684,20 +684,24 @@
     
     NSString *title = [NSString stringWithFormat:@"%@ — %@", self.selectedPosition.article.name, [self.selectedPosition volumeText]];
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
-                                                             delegate:self
-                                                    cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:nil];
-    
-    actionSheet.tag = 666;
-    
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"DONE VOLUME BUTTON", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"SHORTAGE VOLUME BUTTON", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"EXCESS VOLUME BUTTON", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"BAD VOLUME BUTTON", nil)];
-    
-    [actionSheet showInView:self.view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
+                                                                 delegate:self
+                                                        cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:nil];
+        
+        actionSheet.tag = 666;
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DONE VOLUME BUTTON", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"SHORTAGE VOLUME BUTTON", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"EXCESS VOLUME BUTTON", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"BAD VOLUME BUTTON", nil)];
+        
+        [actionSheet showInView:self.view];
+        
+    }];
     
 }
 

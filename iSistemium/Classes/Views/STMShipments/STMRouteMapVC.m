@@ -123,12 +123,16 @@
         
              [self.spinner removeFromSuperview];
              
-             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                             message:error.localizedDescription
-                                                            delegate:nil
-                                                   cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                   otherButtonTitles:nil];
-             [alert show];
+             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                                 message:error.localizedDescription
+                                                                delegate:nil
+                                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                       otherButtonTitles:nil];
+                 [alert show];
+                 
+             }];
              
          }
 
@@ -317,12 +321,16 @@
 
     }
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:route.name
-                                                    message:message
-                                                   delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                          otherButtonTitles:nil];
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:route.name
+                                                        message:message
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+    }];
     
 }
 

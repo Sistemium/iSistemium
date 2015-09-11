@@ -83,13 +83,17 @@
 
 - (void)backButtonPressed {
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil)
-                                                        message:NSLocalizedString(@"R U SURE TO LOGOUT", nil)
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                              otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-    alertView.tag = 1;
-    [alertView show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LOGOUT", nil)
+                                                            message:NSLocalizedString(@"R U SURE TO LOGOUT", nil)
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        alertView.tag = 1;
+        [alertView show];
+        
+    }];
     
 }
 
@@ -438,25 +442,29 @@
 
 - (IBAction)nonloadedPicturesButtonPressed:(id)sender {
 
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-    actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
-    actionSheet.delegate = self;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-    if ([STMPicturesController sharedController].downloadQueue.suspended) {
-    
-        actionSheet.tag = 1;
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+        actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
+        actionSheet.delegate = self;
 
-    } else {
+        if ([STMPicturesController sharedController].downloadQueue.suspended) {
+        
+            actionSheet.tag = 1;
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
 
-        actionSheet.tag = 2;
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
+        } else {
 
-    }
+            actionSheet.tag = 2;
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
 
-    [actionSheet showInView:self.view];
+        }
+
+        [actionSheet showInView:self.view];
+        
+    }];
 
 }
 
@@ -511,13 +519,17 @@
         NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
         NSString *title = [NSString stringWithFormat:@"%lu %@ %@. %@", (unsigned long)unloadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR DOWNLOAD", nil), NSLocalizedString(@"DOWNLOAD IT NOW?", nil)];
 
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNLOADED PICTURES", nil)
-                                                        message:title
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-        alert.tag = 2;
-        [alert show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNLOADED PICTURES", nil)
+                                                            message:title
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            alert.tag = 2;
+            [alert show];
+        
+        }];
         
         self.downloadAlertWasShown = YES;
 
@@ -527,26 +539,34 @@
 
 - (void)showWWANAlert {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNLOADED PICTURES", nil)
-                                                    message:NSLocalizedString(@"NO WIFI MESSAGE", nil)
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-    alert.tag = 3;
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNLOADED PICTURES", nil)
+                                                        message:NSLocalizedString(@"NO WIFI MESSAGE", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        alert.tag = 3;
+        [alert show];
+        
+    }];
     
 }
 
 - (void)showEnableWWANActionSheet {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-    actionSheet.delegate = self;
-    actionSheet.tag = 3;
-    actionSheet.title = NSLocalizedString(@"ENABLE WWAN MESSAGE", nil);
-    
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"ENABLE WWAN ALWAYS", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"ENABLE WWAN ONCE", nil)];
-    [actionSheet showInView:self.view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+        actionSheet.delegate = self;
+        actionSheet.tag = 3;
+        actionSheet.title = NSLocalizedString(@"ENABLE WWAN MESSAGE", nil);
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"ENABLE WWAN ALWAYS", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"ENABLE WWAN ONCE", nil)];
+        [actionSheet showInView:self.view];
+        
+    }];
     
 }
 
@@ -758,13 +778,17 @@
     
     if ([self blockIfNoLocationPermission] && !self.locationDisabledAlertIsShown) {
         
-        self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK TITLE", nil)
-                                                                message:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK MESSAGE", nil)
-                                                               delegate:nil
-                                                      cancelButtonTitle:nil
-                                                      otherButtonTitles:nil];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            self.locationDisabledAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK TITLE", nil)
+                                                                    message:NSLocalizedString(@"NO LOCATION PERMISSION BLOCK MESSAGE", nil)
+                                                                   delegate:nil
+                                                          cancelButtonTitle:nil
+                                                          otherButtonTitles:nil];
+            [self.locationDisabledAlert show];
+            
+        }];
         
-        [self.locationDisabledAlert show];
         self.locationDisabledAlertIsShown = YES;
 
     } else if (![self blockIfNoLocationPermission] && self.locationDisabledAlertIsShown) {
