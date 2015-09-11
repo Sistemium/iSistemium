@@ -1108,9 +1108,13 @@
 
 - (void)addObservers {
     
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    if (self.shipment) {
     
-    [nc addObserver:self selector:@selector(routePointIsReached) name:@"routePointIsReached" object:self.parentVC];
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        
+        [nc addObserver:self selector:@selector(routePointIsReached) name:@"routePointIsReached" object:self.parentVC];
+
+    }
     
 }
 
