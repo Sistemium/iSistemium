@@ -1174,6 +1174,8 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (void)customInit {
     
+    self.settingsButton.image = [STMFunctions resizeImage:[UIImage imageNamed:@"settings"] toSize:CGSizeMake(25, 25)];
+    
     self.clearsSelectionOnViewWillAppear = NO;
     
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom4TVCell" bundle:nil] forCellReuseIdentifier:Custom4CellIdentifier];
