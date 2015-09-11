@@ -154,26 +154,30 @@
     
     [self.fullscreenPictures removeObject:picture];
     
-    STMMessage *message = picture.message;
-    
-    if (![STMMessageController messageIsRead:message]) {
+    if (picture.xid) {
         
-        NSMutableArray *shownPicturesArray = self.shownPictures[message.xid];
-        if (!shownPicturesArray) shownPicturesArray = [@[] mutableCopy];
-        [shownPicturesArray addObject:picture.xid];
-        self.shownPictures[message.xid] = shownPicturesArray;
+        STMMessage *message = picture.message;
         
-        NSSet *picturesXids = [message valueForKeyPath:@"pictures.xid"];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (self IN %@)", shownPicturesArray];
-        NSUInteger unshownPicturesCount = [picturesXids.allObjects filteredArrayUsingPredicate:predicate].count;
-        
-        if (unshownPicturesCount == 0) {
+        if (![STMMessageController messageIsRead:message]) {
             
-            [STMMessageController markMessageAsRead:message];
-            [self.shownPictures removeObjectForKey:message.xid];
+            NSMutableArray *shownPicturesArray = self.shownPictures[message.xid];
+            if (!shownPicturesArray) shownPicturesArray = @[].mutableCopy;
+            [shownPicturesArray addObject:picture.xid];
+            self.shownPictures[message.xid] = shownPicturesArray;
+            
+            NSSet *picturesXids = [message valueForKeyPath:@"pictures.xid"];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (self IN %@)", shownPicturesArray];
+            NSUInteger unshownPicturesCount = [picturesXids.allObjects filteredArrayUsingPredicate:predicate].count;
+            
+            if (unshownPicturesCount == 0) {
+                
+                [STMMessageController markMessageAsRead:message];
+                [self.shownPictures removeObjectForKey:message.xid];
+                
+            }
             
         }
-        
+
     }
     
 }
