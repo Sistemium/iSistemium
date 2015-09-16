@@ -341,14 +341,18 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
 - (void)showRoutesCalcErrors {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                    message:self.routesCalcErrors
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                          otherButtonTitles:NSLocalizedString(@"RECALC", nil), nil];
-    alert.tag = 111;
-    [alert show];
-    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                        message:self.routesCalcErrors
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:NSLocalizedString(@"RECALC", nil), nil];
+        alert.tag = 111;
+        [alert show];
+
+    }];
+
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {

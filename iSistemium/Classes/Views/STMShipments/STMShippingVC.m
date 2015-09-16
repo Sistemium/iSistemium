@@ -895,7 +895,9 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (void)doneButtonPressed {
+    
     [self showDoneShippingAlert];
+    
 }
 
 - (void)showDoneShippingAlert {
@@ -914,13 +916,15 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
             alert.tag = 555;
             
         } else {
+
+            [self doneShipping];
             
-            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
-                                               message:@""
-                                              delegate:self
-                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-            alert.tag = 444;
+//            alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"STOP SHIPPING?", nil)
+//                                               message:@""
+//                                              delegate:self
+//                                     cancelButtonTitle:NSLocalizedString(@"NO", nil)
+//                                     otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+//            alert.tag = 444;
             
         }
         
@@ -1126,13 +1130,17 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
     NSString *message = [NSString stringWithFormat:@"%@?", NSLocalizedString(@"UNCHECK ALL POSITION", nil)];
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                    message:message
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-    alert.tag = 111;
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        alert.tag = 111;
+        [alert show];
+        
+    }];
     
 }
 
@@ -1140,13 +1148,17 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
     NSString *message = [NSString stringWithFormat:@"%@?", NSLocalizedString(@"CHECK ALL POSITION", nil)];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                    message:message
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-    alert.tag = 222;
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        alert.tag = 222;
+        [alert show];
+        
+    }];
 
 }
 
@@ -1212,7 +1224,9 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 
     }
 
-    [self.parentVC shippingDidDone];
+    if (self.parentVC.shipment) {
+        [self.parentVC shippingDidDone];
+    }
     
     if (IPHONE) {
         
@@ -1247,15 +1261,19 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     title = [title stringByAppendingString:@"\n"];
     title = [title stringByAppendingString:NSLocalizedString(@"PROCESSING ACTION SHEET TITLE", nil)];
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"DONE VOLUME LABEL", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"BAD VOLUME LABEL", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"REGRADE VOLUME LABEL", nil)];
-    
-    [actionSheet showFromBarButtonItem:self.processingButton animated:YES];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
+
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DONE VOLUME LABEL", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"BAD VOLUME LABEL", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"REGRADE VOLUME LABEL", nil)];
+        
+        [actionSheet showFromBarButtonItem:self.processingButton animated:YES];
+        
+    }];
     
 }
 

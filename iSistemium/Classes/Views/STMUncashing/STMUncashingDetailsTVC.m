@@ -195,12 +195,16 @@
 
 - (void)addButtonPressed {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"ADD", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"ETC", nil)];
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"DEDUCTION", nil)];
-    
-    [actionSheet showFromBarButtonItem:self.addButton animated:YES];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"ADD", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"ETC", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"DEDUCTION", nil)];
+        
+        [actionSheet showFromBarButtonItem:self.addButton animated:YES];
+        
+    }];
     
     self.addButton.enabled = NO;
     

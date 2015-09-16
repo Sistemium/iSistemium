@@ -158,29 +158,33 @@
 
 - (void)showActionSheetFromTabBarItem {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-    actionSheet.delegate = self;
-    actionSheet.tag = 1;
-    actionSheet.title = self.title;
-    
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"RELOAD", nil)];
-    
-    if (IPAD) {
-    
-        CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-        
-        [actionSheet showFromRect:rect inView:self.view animated:YES];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-    } else if (IPHONE) {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+        actionSheet.delegate = self;
+        actionSheet.tag = 1;
+        actionSheet.title = self.title;
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"RELOAD", nil)];
+        
+        if (IPAD) {
+        
+            CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+            
+            [actionSheet showFromRect:rect inView:self.view animated:YES];
 
-        NSUInteger numberOfButtons = actionSheet.numberOfButtons;
+        } else if (IPHONE) {
+
+            NSUInteger numberOfButtons = actionSheet.numberOfButtons;
+            
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"CANCEL", nil)];
+            actionSheet.cancelButtonIndex = numberOfButtons;
+            
+            [actionSheet showFromTabBar:self.tabBarController.tabBar];
+            
+        }
         
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"CANCEL", nil)];
-        actionSheet.cancelButtonIndex = numberOfButtons;
-        
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
-        
-    }
+    }];
     
 }
 

@@ -189,7 +189,13 @@
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:4 inSection:0];
         STMCustom2TVCell *cell = (STMCustom2TVCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         
-        if (cell) [self.routesActionSheet showFromRect:cell.detailLabel.frame inView:cell.contentView animated:YES];
+        if (cell) {
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [self.routesActionSheet showFromRect:cell.detailLabel.frame inView:cell.contentView animated:YES];
+            }];
+
+        }
         
     }
     

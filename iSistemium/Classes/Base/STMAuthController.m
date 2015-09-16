@@ -660,12 +660,16 @@
     
     if (self.controllerState == STMAuthRequestRoles) {
         
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                            message:NSLocalizedString(@"U R NOT AUTH", nil)
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                  otherButtonTitles:nil];
-        [alertView show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                                message:NSLocalizedString(@"U R NOT AUTH", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            
+        }];
         
     }
     
@@ -681,13 +685,17 @@
         
     } else {
         
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                            message:NSLocalizedString(@"CAN NOT GET ROLES", nil)
-                                                           delegate:self
-                                                  cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                                  otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-        alertView.tag = 1;
-        [alertView show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                                message:NSLocalizedString(@"CAN NOT GET ROLES", nil)
+                                                               delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                                      otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+            alertView.tag = 1;
+            [alertView show];
+            
+        }];
         
     }
     

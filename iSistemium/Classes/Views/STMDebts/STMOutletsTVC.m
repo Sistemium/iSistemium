@@ -44,11 +44,19 @@
 
 - (IBAction)addButtonPressed:(id)sender {
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"ADD", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"addPARTNER", nil), NSLocalizedString(@"addOUTLET", nil), nil];
-    
-    actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
-    actionSheet.tag = 1;
-    [actionSheet showFromBarButtonItem:self.addButton animated:YES];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"ADD", nil)
+                                                                 delegate:self
+                                                        cancelButtonTitle:nil
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:NSLocalizedString(@"addPARTNER", nil), NSLocalizedString(@"addOUTLET", nil), nil];
+        
+        actionSheet.actionSheetStyle = UIBarStyleBlackTranslucent;
+        actionSheet.tag = 1;
+        [actionSheet showFromBarButtonItem:self.addButton animated:YES];
+        
+    }];
     
 }
 
@@ -448,9 +456,13 @@
         
         NSString *alertMessage = [NSString stringWithFormat:@"%@ %@?", NSLocalizedString(@"DELETE OUTLET", nil), self.outletToDelete.shortName];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ATTENTION" message:alertMessage delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-        alert.tag = 1;
-        [alert show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ATTENTION" message:alertMessage delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+            alert.tag = 1;
+            [alert show];
+            
+        }];
         
     }
     

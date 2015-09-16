@@ -704,12 +704,17 @@
 
 - (void)showNotEnoughLocationsAlert {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ROUTING ERROR", nil)
-                                                    message:NSLocalizedString(@"NOT ENOUGH LOCATIONS", nil)
-                                                   delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                          otherButtonTitles:nil];
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ROUTING ERROR", nil)
+                                                        message:NSLocalizedString(@"NOT ENOUGH LOCATIONS", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+    }];
+    
 }
 
 
@@ -731,18 +736,20 @@
 - (void)routePointAllShipmentsIsDone:(NSNotification *)notification {
     
     if ([notification.object isKindOfClass:[STMShipmentRoutePoint class]]) {
-        
-        STMShipmentRoutePoint *point = (STMShipmentRoutePoint *)notification.object;
-        
-        NSIndexPath *pointIndexPath = [self.resultsController indexPathForObject:point];
-        
-        if (pointIndexPath) {
-            
-            pointIndexPath = [NSIndexPath indexPathForRow:pointIndexPath.row inSection:pointIndexPath.section + 1];
 
-            [self.tableView reloadRowsAtIndexPaths:@[pointIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-            
-        }
+        [self.tableView reloadData];
+        
+//        STMShipmentRoutePoint *point = (STMShipmentRoutePoint *)notification.object;
+//        
+//        NSIndexPath *pointIndexPath = [self.resultsController indexPathForObject:point];
+//        
+//        if (pointIndexPath) {
+//            
+//            pointIndexPath = [NSIndexPath indexPathForRow:pointIndexPath.row inSection:pointIndexPath.section + 1];
+//
+//            [self.tableView reloadRowsAtIndexPaths:@[pointIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+//            
+//        }
         
     }
     

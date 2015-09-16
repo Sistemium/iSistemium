@@ -219,6 +219,7 @@
 		2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528FA19576894008605D9 /* STMLogMessage.m */; };
 		2C65291619576895008605D9 /* STMArticlePicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65291519576895008605D9 /* STMArticlePicture.m */; };
 		2C65292219576895008605D9 /* STMTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C65292119576895008605D9 /* STMTrack.m */; };
+		2C68B6501BA30F9C009F0B9B /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C68B64F1BA30F9C009F0B9B /* settings.png */; };
 		2C734B7E19B4E5C400EE33FA /* STMLogs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C734B7D19B4E5C400EE33FA /* STMLogs.storyboard */; };
 		2C734B8219B4E6FD00EE33FA /* archive-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C734B8119B4E6FD00EE33FA /* archive-128.png */; };
 		2C73A9241AF8F59F00FB7662 /* iphoneTabs.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C73A9231AF8F59F00FB7662 /* iphoneTabs.json */; };
@@ -787,6 +788,7 @@
 		2C65291519576895008605D9 /* STMArticlePicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMArticlePicture.m; sourceTree = "<group>"; };
 		2C65292019576895008605D9 /* STMTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMTrack.h; sourceTree = "<group>"; };
 		2C65292119576895008605D9 /* STMTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMTrack.m; sourceTree = "<group>"; };
+		2C68B64F1BA30F9C009F0B9B /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings.png; sourceTree = "<group>"; };
 		2C734B7D19B4E5C400EE33FA /* STMLogs.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMLogs.storyboard; sourceTree = "<group>"; };
 		2C734B8119B4E6FD00EE33FA /* archive-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "archive-128.png"; sourceTree = "<group>"; };
 		2C73A9231AF8F59F00FB7662 /* iphoneTabs.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = iphoneTabs.json; sourceTree = "<group>"; };
@@ -1807,6 +1809,7 @@
 				2C761BAE1B008185001DA33E /* Picture-100.png */,
 				2C2957981B400FD600A2D163 /* plus.png */,
 				2C5797F11A43608300EEFBA7 /* purchase_order-128.png */,
+				2C68B64F1BA30F9C009F0B9B /* settings.png */,
 				2C42ECBE1B15996100B5C91A /* Settings-25.png */,
 				2CF365AD19EE8C0100F078BD /* settings3-128.png */,
 				2C3771B41B5E7038003493FB /* Sync With Cloud.png */,
@@ -2054,6 +2057,7 @@
 				2C1AB2FA1B70AE4400BF5C50 /* 7_circle_filled.png in Resources */,
 				2C42ECBC1B13893F00B5C91A /* STMArticlePicturePVC.storyboard in Resources */,
 				2C16CC411AF3940200A2EC2D /* Download From Cloud-100.png in Resources */,
+				2C68B6501BA30F9C009F0B9B /* settings.png in Resources */,
 				2C1AB28C1B6E556000BF5C50 /* forward.png in Resources */,
 				2CEAC15C1B3BF64C00AD068E /* STMShipments_iphone.storyboard in Resources */,
 				2C3771B51B5E7038003493FB /* Sync With Cloud.png in Resources */,

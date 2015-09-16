@@ -206,45 +206,61 @@
         
     if (self.cashingDictionary.allValues.count == 0) {
 
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                        message:NSLocalizedString(@"U SHOULD SELECT AT LEAST ONE CASHING", nil)
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                              otherButtonTitles:nil];
-        [alert show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"U SHOULD SELECT AT LEAST ONE CASHING", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
 
         return NO;
         
     } else if (!self.uncashingType) {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                        message:NSLocalizedString(@"NO UNCASHING TYPE", nil)
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                              otherButtonTitles:nil];
-        [alert show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"NO UNCASHING TYPE", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
         
         return NO;
         
     } else if ([self.uncashingType isEqualToString:BANK_OFFICE_TYPE] && !self.pictureImage) {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                        message:NSLocalizedString(@"NO CHECK IMAGE", nil)
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                              otherButtonTitles:nil];
-        [alert show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"NO CHECK IMAGE", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
         
         return NO;
         
     } else if ([self.uncashingType isEqualToString:CASH_DESK_TYPE] && !self.currentUncashingPlace) {
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                        message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil)
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                              otherButtonTitles:nil];
-        [alert show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"NO CASH DESK CHOOSEN", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
         
         return NO;
         

@@ -1038,40 +1038,52 @@
 
 - (void)showArriveConfirmationAlert {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CONFIRM ARRIVAL?", nil)
-                                                    message:nil
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-    
-    alert.tag = 333;
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CONFIRM ARRIVAL?", nil)
+                                                        message:nil
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        
+        alert.tag = 333;
+        [alert show];
+        
+    }];
     
 }
 
 - (void)showDoneAllShipmentsAlert {
+
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DONE ALL SHIPMENT ALERT TITLE", nil)
-                                                    message:NSLocalizedString(@"DONE ALL SHIPMENT ALERT MESSAGE", nil)
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"NO", nil)
-                                          otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
-    
-    alert.tag = 444;
-    [alert show];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DONE ALL SHIPMENT ALERT TITLE", nil)
+                                                        message:NSLocalizedString(@"DONE ALL SHIPMENT ALERT MESSAGE", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+
+        alert.tag = 444;
+        [alert show];
+        
+    }];
 
 }
 
 - (void)shippingProcessWasInterrupted {
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED TITLE", nil)
-                                                    message:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE", nil)
-                                                   delegate:self
-                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                          otherButtonTitles:nil];
-    
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED TITLE", nil)
+                                                        message:NSLocalizedString(@"SHIPMENT PROCESS WAS INTERRUPTED MESSAGE", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        
+        [alert show];
+
+    }];
+    
 }
 
 - (void)checkShipments {
@@ -1088,13 +1100,17 @@
 
 - (void)showUnprocessedShipmentsAlert {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNPROCESSED SHIPMENTS ALERT TITLE", nil)
-                                                    message:nil
-                                                   delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                          otherButtonTitles:nil];
-    
-    [alert show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UNPROCESSED SHIPMENTS ALERT TITLE", nil)
+                                                        message:nil
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        
+        [alert show];
+        
+    }];
     
 }
 
@@ -1282,11 +1298,11 @@
             
         }
         
-//        shippingVC.shipment = self.shipment;
         shippingVC.shipments = self.resultsController.fetchedObjects;
         
         self.shipmentTVC = [[STMShipmentTVC alloc] init];
         shippingVC.parentVC = self.shipmentTVC;
+        shippingVC.sortOrder = self.shipmentTVC.sortOrder;
         
     }
     

@@ -728,8 +728,12 @@
 - (void)showAuthAlert {
     
     if (!self.authAlert.visible && [STMAuthController authController].controllerState != STMAuthEnterPhoneNumber) {
-        [self.authAlert show];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self.authAlert show];
+        }];
         [self showTabWithName:@"STMAuthTVC"];
+        
     }
     
 }
@@ -756,7 +760,11 @@
 - (void)showTimeoutAlert {
     
     if (!self.timeoutAlert.visible) {
-        [self.timeoutAlert show];
+
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self.timeoutAlert show];
+        }];
+        
     }
     
 }
@@ -794,16 +802,6 @@
     
 }
 
-//- (void)authControllerError:(NSNotification *)notification {
-//        
-//    NSString *error = [notification userInfo][@"error"];
-//    
-//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil) message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//    alertView.tag = 0;
-//    [alertView show];
-//    
-//}
-
 - (void)stateChanged {
     
     [self authStateChanged];
@@ -812,9 +810,7 @@
 }
 
 - (void)authStateChanged {
-    
-//    [STMAuthController authController].controllerState != STMAuthSuccess ? [self initAuthTab] : [self initAllTabs];
-    
+
     if ([STMAuthController authController].controllerState == STMAuthEnterPhoneNumber) {
         
         [self initAuthTab];
@@ -900,21 +896,25 @@
         NSNumber *appVersion = [defaults objectForKey:@"availableVersion"];
         self.appDownloadUrl = [defaults objectForKey:@"appDownloadUrl"];
         
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UPDATE AVAILABLE", nil)
-                                                            message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"VERSION", nil), appVersion]
-                                                           delegate:self
-                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                                  otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
-        
-        alertView.tag = 1;
-        
-//        UIViewController *vc = (self.tabs)[@"STMAuthTVC"];
-        UIViewController *vc = [self.authVCs lastObject];
-        vc.tabBarItem.badgeValue = @"!";
-        
-        self.updateAlertIsShowing = YES;
-        
-        [alertView show];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"UPDATE AVAILABLE", nil)
+                                                                message:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"VERSION", nil), appVersion]
+                                                               delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                      otherButtonTitles:NSLocalizedString(@"UPDATE", nil), nil];
+            
+            alertView.tag = 1;
+            
+    //        UIViewController *vc = (self.tabs)[@"STMAuthTVC"];
+            UIViewController *vc = [self.authVCs lastObject];
+            vc.tabBarItem.badgeValue = @"!";
+            
+            self.updateAlertIsShowing = YES;
+            
+            [alertView show];
+            
+        }];
 
     }
 
@@ -931,12 +931,16 @@
 
     [self removeSpinner];
 
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                        message:NSLocalizedString(@"DOCUMENT_ERROR", nil)
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                              otherButtonTitles:nil];
-    [alertView show];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"DOCUMENT_ERROR", nil)
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+        [alertView show];
+        
+    }];
     
 }
 

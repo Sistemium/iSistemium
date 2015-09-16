@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "STMShipmentPositionSortable.h"
+#import "STMConstants.h"
 
 
 @interface STMShippingSettingsTVC : UITableViewController
