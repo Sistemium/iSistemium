@@ -1929,7 +1929,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = STM;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Sistemium UAB";
 				TargetAttributes = {
 					2C8EF59A1940859F0021D202 = {
