@@ -10,13 +10,14 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMMessage;
+@class STMEntity, STMMessage;
 
 @interface STMWorkflow : STMComment
 
 @property (nonatomic, retain) NSString * code;
 @property (nonatomic, retain) NSString * workflow;
 @property (nonatomic, retain) NSSet *messages;
+@property (nonatomic, retain) NSSet *entities;
 @end
 
 @interface STMWorkflow (CoreDataGeneratedAccessors)
@@ -25,5 +26,10 @@
 - (void)removeMessagesObject:(STMMessage *)value;
 - (void)addMessages:(NSSet *)values;
 - (void)removeMessages:(NSSet *)values;
+
+- (void)addEntitiesObject:(STMEntity *)value;
+- (void)removeEntitiesObject:(STMEntity *)value;
+- (void)addEntities:(NSSet *)values;
+- (void)removeEntities:(NSSet *)values;
 
 @end

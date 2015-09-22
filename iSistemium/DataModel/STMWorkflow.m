@@ -7,6 +7,7 @@
 //
 
 #import "STMWorkflow.h"
+#import "STMEntity.h"
 #import "STMMessage.h"
 
 
@@ -15,5 +16,6 @@
 @dynamic code;
 @dynamic workflow;
 @dynamic messages;
+@dynamic entities;
 
 @end
