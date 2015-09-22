@@ -10,5 +10,7 @@
 
 @interface STMMessagesTVC : STMVariableCellsHeightTVC
 
+- (void)markAllMessagesAsRead;
+
 
 @end

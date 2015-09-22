@@ -7,12 +7,15 @@
 //
 
 #import "STMMessagesNC.h"
-#import "STMMessageVC.h"
+#import "STMMessagesTVC.h"
+#import "STMMessageController.h"
+
+//#import "STMMessageVC.h"
 
 
 @interface STMMessagesNC () <UIActionSheetDelegate>
 
-@property (nonatomic, strong) STMMessageVC *messageVC;
+//@property (nonatomic, strong) STMMessageVC *messageVC;
 
 @end
 
@@ -34,12 +37,23 @@
     
     if ([action isEqualToString:NSLocalizedString(@"MARK ALL AS READ", nil)]) {
 
-        NSLog(@"MARK ALL AS READ");
+        if ([self.topViewController isKindOfClass:[STMMessagesTVC class]]) {
+            [(STMMessagesTVC *)self.topViewController markAllMessagesAsRead];
+        }
         
     }
     
 }
 
+- (void)showActionPopoverFromTabBarItem {
+    
+//    NSUInteger unreadMessageCount = [STMMessageController unreadMessagesCount];
+//    
+//    self.actions = (unreadMessageCount > 0) ? @[NSLocalizedString(@"MARK ALL AS READ", nil)] : nil;
+    
+    [super showActionPopoverFromTabBarItem];
+    
+}
 
 #pragma mark - view lifecycle
 

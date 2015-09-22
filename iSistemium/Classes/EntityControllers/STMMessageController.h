@@ -19,6 +19,7 @@
 + (void)pictureDidShown:(STMMessagePicture *)picture;
 
 + (void)markMessageAsRead:(STMMessage *)message;
++ (void)markAllMessageAsRead;
 
 + (NSUInteger)unreadMessagesCount;
 

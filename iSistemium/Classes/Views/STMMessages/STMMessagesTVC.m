@@ -232,12 +232,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
-//
+    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+    
 //    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
-//    
 //    recordStatus.isRead = @(!recordStatus.isRead.boolValue);
 
+    STMWorkflow *workflow = message.workflow;
+    
+    NSLog(@"workflow %@", workflow);
+    
 }
 
 - (void)showUnreadCount {
@@ -267,6 +270,13 @@
         if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
     }
+    
+}
+
+- (void)markAllMessagesAsRead {
+    
+    [STMMessageController markAllMessageAsRead];
+    [self.tableView reloadData];
     
 }
 
