@@ -852,7 +852,7 @@
                 photoRequest.body = data;
                 photoRequest.contentLength = @((int)data.length);
                 
-                [[transferManager putObject:photoRequest] continueWithBlock:^id(BFTask *task) {
+                [[transferManager putObject:photoRequest] continueWithBlock:^id(AWSTask *task) {
                     
                     if (task.error) {
                         
