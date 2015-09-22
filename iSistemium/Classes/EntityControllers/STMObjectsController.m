@@ -1186,6 +1186,7 @@
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMWorkflow class]),
                              NSStringFromClass([STMClientEntity class]),
                              NSStringFromClass([STMEntity class])];
     

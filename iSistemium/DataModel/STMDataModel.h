@@ -69,5 +69,7 @@
 #include "STMUncashingPicture.h"
 #include "STMUncashingPlace.h"
 
+#include "STMWorkflow.h"
+
 
 #endif

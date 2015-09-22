@@ -2,7 +2,7 @@
 //  STMMessage.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 04/04/15.
+//  Created by Maxim Grigoriev on 22/09/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -10,16 +10,18 @@
 #import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMMessagePicture;
+@class STMMessagePicture, STMWorkflow;
 
 @interface STMMessage : STMComment
 
 @property (nonatomic, retain) NSString * body;
 @property (nonatomic, retain) NSDate * cts;
 @property (nonatomic, retain) NSString * schedule;
-@property (nonatomic, retain) NSString * subject;
 @property (nonatomic, retain) NSNumber * showOnEnterForeground;
+@property (nonatomic, retain) NSString * subject;
+@property (nonatomic, retain) NSString * processing;
 @property (nonatomic, retain) NSSet *pictures;
+@property (nonatomic, retain) STMWorkflow *workflow;
 @end
 
 @interface STMMessage (CoreDataGeneratedAccessors)
