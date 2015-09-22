@@ -20,10 +20,31 @@
 @implementation STMMessagesNC
 
 
+#pragma mark - STMTabBarItemControllable protocol
+
+- (BOOL)shouldShowOwnActions {
+    return YES;
+}
+
+- (void)selectActionAtIndex:(NSUInteger)index {
+    
+    [super selectActionAtIndex:index];
+    
+    NSString *action = self.actions[index];
+    
+    if ([action isEqualToString:NSLocalizedString(@"MARK ALL AS READ", nil)]) {
+
+        NSLog(@"MARK ALL AS READ");
+        
+    }
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
-
+    self.actions = @[NSLocalizedString(@"MARK ALL AS READ", nil)];
 }
 
 - (void)viewDidLoad {
@@ -38,14 +59,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
