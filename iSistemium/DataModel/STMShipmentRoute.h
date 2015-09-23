@@ -2,7 +2,7 @@
 //  STMShipmentRoute.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
+//  Created by Maxim Grigoriev on 23/09/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -15,6 +15,8 @@
 @interface STMShipmentRoute : STMComment
 
 @property (nonatomic, retain) NSDate * date;
+@property (nonatomic, retain) NSString * processing;
+@property (nonatomic, retain) NSString * processingMessage;
 @property (nonatomic, retain) STMDriver *driver;
 @property (nonatomic, retain) NSSet *shipmentRoutePoints;
 @end

@@ -2,7 +2,7 @@
 //  STMShipmentRoute.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
+//  Created by Maxim Grigoriev on 23/09/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
@@ -14,6 +14,8 @@
 @implementation STMShipmentRoute
 
 @dynamic date;
+@dynamic processing;
+@dynamic processingMessage;
 @dynamic driver;
 @dynamic shipmentRoutePoints;
 
