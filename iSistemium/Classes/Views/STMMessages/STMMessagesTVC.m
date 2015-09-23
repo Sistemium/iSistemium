@@ -15,6 +15,7 @@
 #import "STMMessageController.h"
 #import "STMRecordStatusController.h"
 #import "STMPicturesController.h"
+#import "STMWorkflowController.h"
 
 #import "STMConstants.h"
 
@@ -239,7 +240,16 @@
 
     STMWorkflow *workflow = message.workflow;
     
-    NSLog(@"workflow %@", workflow);
+    if (workflow) {
+        
+        UIActionSheet *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:message.processing inWorkflow:workflow.workflow];
+        
+        [workflowActionSheet showInView:self.view];
+        
+        NSLog(@"processing %@", message.processing);
+        NSLog(@"workflow %@", workflow.workflow);
+
+    }
     
 }
 

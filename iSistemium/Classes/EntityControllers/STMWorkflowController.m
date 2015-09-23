@@ -1,0 +1,117 @@
+//
+//  STMWorkflowController.m
+//  iSistemium
+//
+//  Created by Maxim Grigoriev on 23/09/15.
+//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//
+
+#import "STMWorkflowController.h"
+
+@implementation STMWorkflowController
+
++ (UIActionSheet *)workflowActionSheetForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    
+    NSString *title = [self descriptionForProcessing:processing inWorkflow:workflow];
+        
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.title = title;
+    
+    NSArray *processingRoutes = [self availableRoutesForProcessing:processing inWorkflow:workflow];
+    
+    if (processingRoutes.count > 0) {
+        
+        for (NSString *processing in processingRoutes) {
+            [actionSheet addButtonWithTitle:[self labelForProcessing:processing inWorkflow:workflow]];
+        }
+        
+    } else {
+        
+        [actionSheet addButtonWithTitle:@""];
+        
+    }
+
+    return actionSheet;
+    
+}
+
++ (NSDictionary *)workflowDicFromWorkflow:(NSString *)workflow {
+    
+    NSData *workflowData = [workflow dataUsingEncoding:NSUTF8StringEncoding];
+    
+    if (workflowData) {
+        
+        NSError *error;
+        NSDictionary *workflowJSON = [NSJSONSerialization JSONObjectWithData:workflowData options:NSJSONReadingMutableContainers error:&error];
+        
+        return workflowJSON;
+        
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
+
++ (NSDictionary *)dictionaryForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    
+    NSDictionary *workflowDic = [self workflowDicFromWorkflow:workflow];
+    NSDictionary *dictionaryForProcessing = workflowDic[processing];
+
+    return dictionaryForProcessing;
+    
+}
+
++ (NSString *)descriptionForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    
+    NSDictionary *dictionaryForProcessing = [self dictionaryForProcessing:processing inWorkflow:workflow];
+    return dictionaryForProcessing[@"desc"];
+    
+}
+
++ (NSString *)labelForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    
+    NSDictionary *dictionaryForProcessing = [self dictionaryForProcessing:processing inWorkflow:workflow];
+    return dictionaryForProcessing[@"label"];
+    
+}
+
++ (NSArray *)availableRoutesForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    
+    NSDictionary *workflowDic = [self workflowDicFromWorkflow:workflow];
+    
+    NSMutableArray *routes = [NSMutableArray array];
+    
+    for (NSString *key in workflowDic.allKeys) {
+        
+        NSArray *fromArray = workflowDic[key][@"from"];
+        
+        if ([fromArray containsObject:processing]) {
+            [routes addObject:key];
+        }
+        
+    }
+    
+    return routes;
+    
+}
+
+//+ (NSString *)processingForLabel:(NSString *)label inWorkflow:(NSString *)workflow {
+//    
+//    NSDictionary *workflowDic = [self workflowDicFromWorkflow:workflow];
+//    
+//    for (NSString *key in workflowDic.allKeys) {
+//        
+//        if ([label isEqualToString:workflowDic[key][@"label"]]) {
+//            return key;
+//        }
+//        
+//    }
+//    
+//    return nil;
+//    
+//}
+
+
+@end
