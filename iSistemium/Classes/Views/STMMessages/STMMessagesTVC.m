@@ -172,7 +172,7 @@
     cell.detailLabel.text = message.body;
 //    cell.detailLabel.text = MESSAGE_BODY;
     
-    if (message.pictures.count > 0) [self addImageFromMessage:message toCell:cell];
+    [self addImageFromMessage:message toCell:cell];
     
     UIColor *processingColor = [STMWorkflowController colorForProcessing:message.processing inWorkflow:message.workflow.workflow];
     cell.detailLabel.textColor = (processingColor) ? processingColor : [UIColor blackColor];
@@ -181,19 +181,31 @@
 
 - (void)addImageFromMessage:(STMMessage *)message toCell:(STMCustom3TVCell *)cell {
     
-    NSArray *picturesArray = [STMMessageController sortedPicturesArrayForMessage:message];
+    if (message.pictures.count > 0) {
     
-    STMMessagePicture *picture = picturesArray.lastObject;
-    
-    if (!picture.imageThumbnail && picture.href) {
+        NSArray *picturesArray = [STMMessageController sortedPicturesArrayForMessage:message];
         
-        [STMPicturesController hrefProcessingForObject:picture];
-        [self addSpinnerToCell:cell];
+        STMMessagePicture *picture = picturesArray.lastObject;
         
+        if (!picture.imageThumbnail && picture.href) {
+            
+            [STMPicturesController hrefProcessingForObject:picture];
+            [self addSpinnerToCell:cell];
+            
+        } else {
+            
+            UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
+            [[cell.pictureView viewWithTag:555] removeFromSuperview];
+            cell.pictureView.image = image;
+            
+        }
+
     } else {
-    
-        UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
+        
         [[cell.pictureView viewWithTag:555] removeFromSuperview];
+
+        NSString *imageName = ([message.processing isEqualToString:@"question"]) ? @"help" : @"message-128";
+        UIImage *image = [UIImage imageNamed:imageName];
         cell.pictureView.image = image;
 
     }

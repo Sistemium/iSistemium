@@ -32,6 +32,13 @@
         [actionSheet addButtonWithTitle:@""];
         
     }
+    
+    if (IPHONE) {
+
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CANCEL", nil)];
+        actionSheet.cancelButtonIndex = actionSheet.numberOfButtons - 1;
+
+    }
 
     actionSheet.delegate = delegate;
     actionSheet.workflow = workflow;
