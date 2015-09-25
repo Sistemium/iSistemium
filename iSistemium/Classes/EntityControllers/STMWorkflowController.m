@@ -152,5 +152,18 @@
 //    
 //}
 
++ (UIColor *)colorForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    return [self colorForType:@"cls" andProcessing:processing inWorkflow:workflow];
+}
+
++ (UIColor *)colorForType:(NSString *)type andProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    
+    NSDictionary *dictionaryForProcessing = [self dictionaryForProcessing:processing inWorkflow:workflow];
+    NSString *colorString = dictionaryForProcessing[type];
+    
+    return (colorString) ? [STMFunctions colorForColorString:colorString] : nil;
+    
+}
+
 
 @end

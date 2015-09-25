@@ -173,6 +173,9 @@
 //    cell.detailLabel.text = MESSAGE_BODY;
     
     if (message.pictures.count > 0) [self addImageFromMessage:message toCell:cell];
+    
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:message.processing inWorkflow:message.workflow.workflow];
+    cell.detailLabel.textColor = (processingColor) ? processingColor : [UIColor blackColor];
 
 }
 
@@ -311,7 +314,18 @@
                                                                       didSelectButtonWithIndex:buttonIndex
                                                                                     inWorkflow:workflowAS.workflow];
         
-        if (selectedProcessing) self.workflowSelectedMessage.processing = selectedProcessing;
+        if (selectedProcessing) {
+            
+            self.workflowSelectedMessage.processing = selectedProcessing;
+            
+            [self.document saveDocument:^(BOOL success) {
+                if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+            }];
+            
+            NSIndexPath *messageIndexPath = [self.resultsController indexPathForObject:self.workflowSelectedMessage];
+            if (messageIndexPath) [self.tableView reloadRowsAtIndexPaths:@[messageIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            
+        }
         
     }
 

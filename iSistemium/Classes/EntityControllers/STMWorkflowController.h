@@ -16,5 +16,6 @@
 
 + (NSString *)workflowActionSheetForProcessing:(NSString *)processing didSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow;
 
++ (UIColor *)colorForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow;
 
 @end
