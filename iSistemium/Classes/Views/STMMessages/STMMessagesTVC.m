@@ -169,7 +169,17 @@
     
     cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
     
-    cell.detailLabel.text = message.body;
+    NSString *detailText = message.body;
+    
+    if (message.processing) {
+        
+        NSString *processingDescription = [STMWorkflowController descriptionForProcessing:message.processing inWorkflow:message.workflow.workflow];
+        detailText = [detailText stringByAppendingString:@"\n"];
+        detailText = [detailText stringByAppendingString:processingDescription];
+        
+    }
+    
+    cell.detailLabel.text = detailText;
 //    cell.detailLabel.text = MESSAGE_BODY;
     
     [self addImageFromMessage:message toCell:cell];
