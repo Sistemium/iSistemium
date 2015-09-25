@@ -649,7 +649,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
             }
                 
             default: {
-                [self.tableView reloadData];
+                //[self.tableView reloadData];
                 break;
             }
                 
