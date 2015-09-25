@@ -28,6 +28,9 @@
 
 @interface STMMessagesTVC () <UIActionSheetDelegate>
 
+@property (nonatomic, weak) STMMessage *workflowSelectedMessage;
+
+
 @end
 
 
@@ -242,9 +245,14 @@
     
     if (workflow) {
         
-        UIActionSheet *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:message.processing inWorkflow:workflow.workflow];
+        self.workflowSelectedMessage = message;
         
-        [workflowActionSheet showInView:self.view];
+        STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:message.processing
+                                                                                          inWorkflow:workflow.workflow
+                                                                                        withDelegate:self];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [workflowActionSheet showInView:self.view];
+        }];
         
         NSLog(@"processing %@", message.processing);
         NSLog(@"workflow %@", workflow.workflow);
@@ -290,6 +298,16 @@
     
 }
 
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet isKindOfClass:[STMWorkflowAS class]]) {
+        [STMWorkflowController workflowActionSheetDidSelectButtonWithIndex:buttonIndex inWorkflow:[(STMWorkflowAS *)actionSheet workflow]];
+    }
+
+}
 
 #pragma mark - view lifecycle
 

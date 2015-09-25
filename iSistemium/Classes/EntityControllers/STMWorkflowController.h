@@ -7,10 +7,14 @@
 //
 
 #import "STMController.h"
+#import "STMUI.h"
+
 
 @interface STMWorkflowController : STMController
 
-+ (UIActionSheet *)workflowActionSheetForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow;
++ (STMWorkflowAS *)workflowActionSheetForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow withDelegate:(id <UIActionSheetDelegate>)delegate;
+
++ (void)workflowActionSheetDidSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow;
 
 
 @end

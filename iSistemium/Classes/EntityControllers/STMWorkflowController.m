@@ -10,11 +10,13 @@
 
 @implementation STMWorkflowController
 
-+ (UIActionSheet *)workflowActionSheetForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+#pragma mark - workflow action sheet
+
++ (STMWorkflowAS *)workflowActionSheetForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow withDelegate:(id <UIActionSheetDelegate>)delegate {
     
     NSString *title = [self descriptionForProcessing:processing inWorkflow:workflow];
         
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    STMWorkflowAS *actionSheet = [[STMWorkflowAS alloc] init];
     actionSheet.title = title;
     
     NSArray *processingRoutes = [self availableRoutesForProcessing:processing inWorkflow:workflow];
@@ -31,9 +33,41 @@
         
     }
 
+    actionSheet.delegate = delegate;
+    actionSheet.workflow = workflow;
+    
     return actionSheet;
     
 }
+
++ (void)workflowActionSheetDidSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow {
+    
+//    NSArray *processingRoutes = [self availableRoutesForProcessing:processing inWorkflow:workflow];
+//
+//    if (buttonIndex >= 0 && buttonIndex < processingRoutes.count) {
+//        
+//        NSString *nextProcessing = processingRoutes[buttonIndex];
+    
+//        self.editableProperties = [STMSaleOrderController editablesPropertiesForProcessing:nextProcessing];
+//        
+//        if (self.editableProperties) {
+//            
+//            [self hideRoutesActionSheet];
+//            
+//            [self performSelector:@selector(showEditablesPopover) withObject:nil afterDelay:0];
+//            
+//        } else {
+//            
+//            [STMSaleOrderController setProcessing:nextProcessing forSaleOrder:self.processingOrder];
+//            
+//        }
+        
+//    }
+
+}
+
+
+#pragma mark - handling workflow
 
 + (NSDictionary *)workflowDicFromWorkflow:(NSString *)workflow {
     

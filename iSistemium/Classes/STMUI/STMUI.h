@@ -44,5 +44,7 @@
 
 #include "UIToolbar+custom.h"
 
+#include "STMWorkflowAS.h"
+
 
 #endif
