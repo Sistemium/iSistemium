@@ -11,6 +11,7 @@
 @interface STMWorkflowAS : UIActionSheet
 
 @property (nonatomic, strong) NSString *workflow;
+@property (nonatomic, strong) NSString *processing;
 
 
 @end

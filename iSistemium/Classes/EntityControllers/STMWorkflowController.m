@@ -35,19 +35,22 @@
 
     actionSheet.delegate = delegate;
     actionSheet.workflow = workflow;
+    actionSheet.processing = processing;
     
     return actionSheet;
     
 }
 
-+ (void)workflowActionSheetDidSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow {
++ (NSString *)workflowActionSheetForProcessing:(NSString *)processing didSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow {
     
-//    NSArray *processingRoutes = [self availableRoutesForProcessing:processing inWorkflow:workflow];
-//
-//    if (buttonIndex >= 0 && buttonIndex < processingRoutes.count) {
-//        
-//        NSString *nextProcessing = processingRoutes[buttonIndex];
+    NSArray *processingRoutes = [self availableRoutesForProcessing:processing inWorkflow:workflow];
+
+    if (buttonIndex >= 0 && buttonIndex < processingRoutes.count) {
+        
+        NSString *nextProcessing = processingRoutes[buttonIndex];
     
+        return nextProcessing;
+        
 //        self.editableProperties = [STMSaleOrderController editablesPropertiesForProcessing:nextProcessing];
 //        
 //        if (self.editableProperties) {
@@ -62,7 +65,9 @@
 //            
 //        }
         
-//    }
+    } else {
+        return nil;
+    }
 
 }
 

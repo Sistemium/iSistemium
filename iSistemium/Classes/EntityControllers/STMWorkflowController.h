@@ -14,7 +14,7 @@
 
 + (STMWorkflowAS *)workflowActionSheetForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow withDelegate:(id <UIActionSheetDelegate>)delegate;
 
-+ (void)workflowActionSheetDidSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow;
++ (NSString *)workflowActionSheetForProcessing:(NSString *)processing didSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow;
 
 
 @end

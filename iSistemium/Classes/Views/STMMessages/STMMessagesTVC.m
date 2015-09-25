@@ -304,7 +304,15 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     if ([actionSheet isKindOfClass:[STMWorkflowAS class]]) {
-        [STMWorkflowController workflowActionSheetDidSelectButtonWithIndex:buttonIndex inWorkflow:[(STMWorkflowAS *)actionSheet workflow]];
+        
+        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
+
+        NSString *selectedProcessing = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                                      didSelectButtonWithIndex:buttonIndex
+                                                                                    inWorkflow:workflowAS.workflow];
+        
+        if (selectedProcessing) self.workflowSelectedMessage.processing = selectedProcessing;
+        
     }
 
 }
