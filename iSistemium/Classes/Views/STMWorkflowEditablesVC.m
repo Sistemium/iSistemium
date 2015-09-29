@@ -243,6 +243,8 @@
         
     }
     
+    [self.parent takeEditableValues:editableValues];
+    
     [self dismissViewControllerAnimated:YES completion:^{
         
     }];

@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMWorkflowable.h"
+
 
 @interface STMWorkflowEditablesVC : UIViewController
 
@@ -14,6 +16,8 @@
 @property (nonatomic, strong) NSString *toProcessing;
 
 @property (nonatomic, strong) NSArray *editableFields;
+
+@property (nonatomic, weak) id <STMWorkflowable> parent;
 
 
 @end

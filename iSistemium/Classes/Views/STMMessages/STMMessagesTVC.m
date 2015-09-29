@@ -212,12 +212,11 @@
             
         }
 
-    } else {
+    } else if (message.workflow) {
         
         [[cell.pictureView viewWithTag:555] removeFromSuperview];
 
-        NSString *imageName = ([message.processing isEqualToString:@"question"]) ? @"help" : @"message-128";
-        UIImage *image = [UIImage imageNamed:imageName];
+        UIImage *image = [UIImage imageNamed:@"help"];
         cell.pictureView.image = image;
 
     }
@@ -346,15 +345,12 @@
         
         if (editableProperties) {
             
-            editableProperties = [editableProperties arrayByAddingObjectsFromArray:editableProperties];
-            editableProperties = [editableProperties arrayByAddingObjectsFromArray:editableProperties];
-            editableProperties = [editableProperties arrayByAddingObjectsFromArray:editableProperties];
-            
             STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
             
             editablesVC.workflow = workflowAS.workflow;
             editablesVC.toProcessing = selectedProcessing;
             editablesVC.editableFields = editableProperties;
+            editablesVC.parent = self;
             
             [self presentViewController:editablesVC animated:YES completion:^{
                 
@@ -362,18 +358,41 @@
             
         } else {
             
-            [self.document saveDocument:^(BOOL success) {
-                if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
-            }];
-            
-            NSIndexPath *messageIndexPath = [self.resultsController indexPathForObject:self.workflowSelectedMessage];
-            if (messageIndexPath) [self.tableView reloadRowsAtIndexPaths:@[messageIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self syncAndReloadWorkflowSelectedMessage];
 
         }
         
     }
 
 }
+
+- (void)takeEditableValues:(NSDictionary *)editableValues {
+    
+    NSLog(@"editableValues %@", editableValues);
+    
+    for (NSString *field in editableValues.allKeys) {
+        
+        if ([self.workflowSelectedMessage.entity.propertiesByName.allKeys containsObject:field]) {
+            [self.workflowSelectedMessage setValue:editableValues[field] forKey:field];
+        }
+        
+    }
+
+    [self syncAndReloadWorkflowSelectedMessage];
+    
+}
+
+- (void)syncAndReloadWorkflowSelectedMessage {
+
+    [self.document saveDocument:^(BOOL success) {
+        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+    }];
+
+    NSIndexPath *messageIndexPath = [self.resultsController indexPathForObject:self.workflowSelectedMessage];
+    if (messageIndexPath) [self.tableView reloadRowsAtIndexPaths:@[messageIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+}
+
 
 #pragma mark - view lifecycle
 

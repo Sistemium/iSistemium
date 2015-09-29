@@ -7,8 +7,10 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import "STMWorkflowable.h"
 
-@interface STMMessagesTVC : STMVariableCellsHeightTVC
+
+@interface STMMessagesTVC : STMVariableCellsHeightTVC <STMWorkflowable>
 
 - (void)markAllMessagesAsRead;
 
