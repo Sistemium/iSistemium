@@ -346,6 +346,10 @@
         
         if (editableProperties) {
             
+            editableProperties = [editableProperties arrayByAddingObjectsFromArray:editableProperties];
+            editableProperties = [editableProperties arrayByAddingObjectsFromArray:editableProperties];
+            editableProperties = [editableProperties arrayByAddingObjectsFromArray:editableProperties];
+            
             STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
             
             editablesVC.workflow = workflowAS.workflow;

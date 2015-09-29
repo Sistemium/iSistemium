@@ -11,7 +11,7 @@
 
 #define H_SPACE 20
 #define V_SPACE 20
-#define TEXT_VIEW_WIDTH 350
+//#define TEXT_VIEW_WIDTH 350
 #define TEXT_VIEW_HEIGHT 50
 #define TOOLBAR_HEIGHT 44;
 
@@ -21,9 +21,11 @@
 @property (nonatomic) CGFloat h_edge;
 @property (nonatomic) CGFloat v_edge;
 
-@property (nonatomic) CGFloat textView_h_start;
+//@property (nonatomic) CGFloat textView_h_start;
 
 @property (nonatomic, strong) NSMutableDictionary *fields;
+
+@property (nonatomic, strong) UIScrollView *scrollView;
 
 
 @end
@@ -62,7 +64,7 @@
     toLabel.text = text;
     toLabel.textColor = [STMWorkflowController colorForProcessing:self.toProcessing inWorkflow:self.workflow];
     
-    [self.view addSubview:toLabel];
+    [self.scrollView addSubview:toLabel];
     
     h_edge += H_SPACE + width;
     v_edge = MAX((V_SPACE + height), v_edge);
@@ -88,7 +90,8 @@
         
         self.fields[@"labels"] = labels;
         
-        self.textView_h_start = [self maxWidthForLabels:labels] + H_SPACE;
+//        self.textView_h_start = [self maxWidthForLabels:labels] + H_SPACE;
+//        self.textView_h_start = H_SPACE;
         
         NSArray *textViews = @[];
         
@@ -154,22 +157,25 @@
     nameLabel.text = text;
     nameLabel.textColor = [UIColor grayColor];
     
-    [self.view addSubview:nameLabel];
+    [self.scrollView addSubview:nameLabel];
     
     // Setup textview:
     
     UITextView *tv = [[UITextView alloc] init];
-    width = TEXT_VIEW_WIDTH;
+//    width = TEXT_VIEW_WIDTH;
+    width = self.scrollView.frame.size.width - 2 * H_SPACE;
     height = TEXT_VIEW_HEIGHT;
     
-    tv.frame = CGRectMake(self.textView_h_start + H_SPACE, self.v_edge + V_SPACE, width, height);
+    tv.frame = CGRectMake(H_SPACE, self.v_edge + V_SPACE + nameLabel.frame.size.height, width, height);
     tv.layer.borderColor = [[UIColor grayColor] CGColor];
     tv.layer.borderWidth = 1.0f;
     
-    [self.view addSubview:tv];
+    tv.returnKeyType = UIReturnKeyDone;
     
-    h_edge = self.textView_h_start + H_SPACE + width;
-    v_edge = MAX((self.v_edge + V_SPACE + height), v_edge);
+    [self.scrollView addSubview:tv];
+    
+    h_edge = H_SPACE + width;
+    v_edge = MAX((self.v_edge + V_SPACE + nameLabel.frame.size.height + height), v_edge);
     
     
     self.h_edge = MAX(self.h_edge, h_edge);
@@ -184,11 +190,11 @@
     CGFloat height = TOOLBAR_HEIGHT;
     
     UIToolbar *toolbar = [[UIToolbar alloc] init];
-    toolbar.frame = CGRectMake(0, self.v_edge + V_SPACE, self.h_edge + H_SPACE, height);
+    toolbar.frame = CGRectMake(0, self.view.frame.size.height - height, self.view.frame.size.width, height);
     
-    STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                                target:self
-                                                                                                action:@selector(cancelButtonPressed)];
+//    STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+//                                                                                                target:self
+//                                                                                                action:@selector(cancelButtonPressed)];
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
@@ -196,7 +202,7 @@
                                                                                           target:self
                                                                                           action:@selector(doneButtonPressed)];
     
-    [toolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
+    [toolbar setItems:@[flexibleSpace, doneButton]];
     
     [self.view addSubview:toolbar];
     
@@ -208,6 +214,10 @@
 #pragma mark - buttons
 
 - (void)cancelButtonPressed {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
     
 //    [self.popover dismissPopoverAnimated:YES];
 //    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
@@ -233,6 +243,10 @@
         
     }
     
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+
 //    [STMSaleOrderController setProcessing:self.toProcessing forSaleOrder:self.saleOrder withFields:editableValues];
 //    
 //    [self.popover dismissPopoverAnimated:YES];
@@ -248,11 +262,29 @@
     self.h_edge = 0;
     self.v_edge = 0;
     
+    CGRect frame = self.view.bounds;
+    
+    UIApplication *app = [UIApplication sharedApplication];
+    
+    if(!app.statusBarHidden) {
+        
+        CGFloat statusBarHeight = app.statusBarFrame.size.height;
+        CGFloat toolbarHeight = TOOLBAR_HEIGHT;
+        
+        frame = CGRectMake(0, statusBarHeight, frame.size.width, frame.size.height - statusBarHeight - toolbarHeight);
+        
+    }
+
+    self.scrollView = [[UIScrollView alloc] initWithFrame:frame];
+    
+    [self.view addSubview:self.scrollView];
+
     [self setupHeader];
     [self setupFields];
     [self setupButtons];
-
-    self.view.frame = CGRectMake(0, 0, self.h_edge + H_SPACE, self.v_edge);
+    
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.v_edge);
+    
     self.view.backgroundColor = [UIColor whiteColor];
     
 }
@@ -266,10 +298,14 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+//    [self.view setNeedsDisplay];
     [super viewWillAppear:animated];
-    [self.view setNeedsDisplay];
     
-    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
     
 }
 
