@@ -26,6 +26,9 @@
 @property (nonatomic, strong) NSMutableDictionary *fields;
 
 @property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIToolbar *toolbar;
+@property (nonatomic) CGFloat shiftDistance;
+@property (nonatomic) BOOL viewFrameWasChanged;
 
 
 @end
@@ -170,8 +173,6 @@
     tv.layer.borderColor = [[UIColor grayColor] CGColor];
     tv.layer.borderWidth = 1.0f;
     
-    tv.returnKeyType = UIReturnKeyDone;
-    
     [self.scrollView addSubview:tv];
     
     h_edge = H_SPACE + width;
@@ -189,12 +190,8 @@
     
     CGFloat height = TOOLBAR_HEIGHT;
     
-    UIToolbar *toolbar = [[UIToolbar alloc] init];
-    toolbar.frame = CGRectMake(0, self.view.frame.size.height - height, self.view.frame.size.width, height);
-    
-//    STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-//                                                                                                target:self
-//                                                                                                action:@selector(cancelButtonPressed)];
+    self.toolbar = [[UIToolbar alloc] init];
+    self.toolbar.frame = CGRectMake(0, self.view.frame.size.height - height, self.view.frame.size.width, height);
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
@@ -202,9 +199,9 @@
                                                                                           target:self
                                                                                           action:@selector(doneButtonPressed)];
     
-    [toolbar setItems:@[flexibleSpace, doneButton]];
+    [self.toolbar setItems:@[flexibleSpace, doneButton]];
     
-    [self.view addSubview:toolbar];
+    [self.view addSubview:self.toolbar];
     
     self.v_edge += height + V_SPACE;
     
@@ -218,10 +215,7 @@
     [self dismissViewControllerAnimated:YES completion:^{
         
     }];
-    
-//    [self.popover dismissPopoverAnimated:YES];
-//    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
-    
+
 }
 
 - (void)doneButtonPressed {
@@ -248,16 +242,91 @@
     [self dismissViewControllerAnimated:YES completion:^{
         
     }];
+    
+}
 
-//    [STMSaleOrderController setProcessing:self.toProcessing forSaleOrder:self.saleOrder withFields:editableValues];
-//    
-//    [self.popover dismissPopoverAnimated:YES];
-//    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
+
+#pragma mark - keyboard show / hide
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    CGFloat keyboardHeight = [self keyboardHeightFrom:[notification userInfo]];
+
+    self.shiftDistance = keyboardHeight;
+    
+    if (!self.viewFrameWasChanged) {
+        
+        [self changeViewFrameByDistance:self.shiftDistance];
+        self.viewFrameWasChanged = YES;
+        
+    }
+    
+}
+
+- (void)keyboardWillBeHidden:(NSNotification *)notification {
+    
+    if (self.viewFrameWasChanged) {
+        
+        [self changeViewFrameByDistance:-self.shiftDistance];
+        self.viewFrameWasChanged = NO;
+        
+    }
+    
+}
+
+- (CGFloat)keyboardHeightFrom:(NSDictionary *)info {
+    
+    CGRect keyboardRect = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    keyboardRect = [[[UIApplication sharedApplication].delegate window] convertRect:keyboardRect fromView:self.view];
+    
+    return keyboardRect.size.height;
+    
+}
+
+- (void)changeViewFrameByDistance:(CGFloat)distance {
+    
+    const float movementDuration = 0.0f;
+    
+    [UIView beginAnimations:@"animation" context:nil];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDuration:movementDuration];
+    
+    CGFloat x = self.scrollView.frame.origin.x;
+    CGFloat y = self.scrollView.frame.origin.y;
+    CGFloat width = self.scrollView.frame.size.width;
+    CGFloat height = self.scrollView.frame.size.height;
+    
+    self.scrollView.frame = CGRectMake(x, y, width, height - distance);
+
+    x = self.toolbar.frame.origin.x;
+    y = self.toolbar.frame.origin.y;
+    width = self.toolbar.frame.size.width;
+    height = self.toolbar.frame.size.height;
+    
+    self.toolbar.frame = CGRectMake(x, y - distance, width, height);
+    
+    [UIView commitAnimations];
     
 }
 
 
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(keyboardWillShow:)
+               name:UIKeyboardWillShowNotification
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(keyboardWillBeHidden:)
+               name:UIKeyboardWillHideNotification
+             object:nil];
+
+}
 
 - (void)customInit {
     
@@ -289,6 +358,8 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
+    [self addObservers];
+
 }
 
 - (void)viewDidLoad {
@@ -299,16 +370,11 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
-//    [self.view setNeedsDisplay];
     [super viewWillAppear:animated];
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    
     [super viewDidAppear:animated];
-    
 }
 
 - (void)didReceiveMemoryWarning {
