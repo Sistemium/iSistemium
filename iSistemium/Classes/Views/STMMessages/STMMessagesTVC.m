@@ -17,6 +17,8 @@
 #import "STMPicturesController.h"
 #import "STMWorkflowController.h"
 
+#import "STMWorkflowEditablesVC.h"
+
 #import "STMConstants.h"
 
 #import "STMSyncer.h"
@@ -178,7 +180,7 @@
         detailText = [detailText stringByAppendingString:processingDescription];
         
     }
-    
+
     cell.detailLabel.text = detailText;
 //    cell.detailLabel.text = MESSAGE_BODY;
     
@@ -332,13 +334,29 @@
         
         STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
 
-        NSString *selectedProcessing = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
-                                                                      didSelectButtonWithIndex:buttonIndex
-                                                                                    inWorkflow:workflowAS.workflow];
+        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                              didSelectButtonWithIndex:buttonIndex
+                                                                            inWorkflow:workflowAS.workflow];
         
-        if (selectedProcessing) {
+        NSString *selectedProcessing = result[@"nextProcessing"];
+        
+        if (selectedProcessing) self.workflowSelectedMessage.processing = selectedProcessing;
+        
+        NSArray *editableProperties = result[@"editableProperties"];
+        
+        if (editableProperties) {
             
-            self.workflowSelectedMessage.processing = selectedProcessing;
+            STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+            
+            editablesVC.workflow = workflowAS.workflow;
+            editablesVC.toProcessing = selectedProcessing;
+            editablesVC.editableFields = editableProperties;
+            
+            [self presentViewController:editablesVC animated:YES completion:^{
+                
+            }];
+            
+        } else {
             
             [self.document saveDocument:^(BOOL success) {
                 if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
@@ -346,7 +364,7 @@
             
             NSIndexPath *messageIndexPath = [self.resultsController indexPathForObject:self.workflowSelectedMessage];
             if (messageIndexPath) [self.tableView reloadRowsAtIndexPaths:@[messageIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            
+
         }
         
     }

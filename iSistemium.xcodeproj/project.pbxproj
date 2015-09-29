@@ -219,6 +219,7 @@
 		2C587AA51BB2D1AF00546A62 /* STMWorkflowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C587AA41BB2D1AF00546A62 /* STMWorkflowController.m */; };
 		2C587AA81BB2DAFD00546A62 /* STMWorkflowAS.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C587AA71BB2DAFD00546A62 /* STMWorkflowAS.m */; };
 		2C587AAB1BB5917500546A62 /* help.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C587AAA1BB5917500546A62 /* help.png */; };
+		2C587AAE1BBA851600546A62 /* STMWorkflowEditablesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C587AAD1BBA851600546A62 /* STMWorkflowEditablesVC.m */; };
 		2C6528F219576894008605D9 /* STMPartner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F119576894008605D9 /* STMPartner.m */; };
 		2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F419576894008605D9 /* STMCampaignPicture.m */; };
 		2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528FA19576894008605D9 /* STMLogMessage.m */; };
@@ -791,6 +792,8 @@
 		2C587AA61BB2DAFD00546A62 /* STMWorkflowAS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWorkflowAS.h; sourceTree = "<group>"; };
 		2C587AA71BB2DAFD00546A62 /* STMWorkflowAS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWorkflowAS.m; sourceTree = "<group>"; };
 		2C587AAA1BB5917500546A62 /* help.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help.png; sourceTree = "<group>"; };
+		2C587AAC1BBA851600546A62 /* STMWorkflowEditablesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWorkflowEditablesVC.h; sourceTree = "<group>"; };
+		2C587AAD1BBA851600546A62 /* STMWorkflowEditablesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWorkflowEditablesVC.m; sourceTree = "<group>"; };
 		2C6528F019576894008605D9 /* STMPartner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPartner.h; sourceTree = "<group>"; };
 		2C6528F119576894008605D9 /* STMPartner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPartner.m; sourceTree = "<group>"; };
 		2C6528F319576894008605D9 /* STMCampaignPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPicture.h; sourceTree = "<group>"; };
@@ -1261,6 +1264,8 @@
 				2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */,
 				2C42ECAC1B0B1A3300B5C91A /* STMTabBarButtonTVC.h */,
 				2C42ECAD1B0B1A3300B5C91A /* STMTabBarButtonTVC.m */,
+				2C587AAC1BBA851600546A62 /* STMWorkflowEditablesVC.h */,
+				2C587AAD1BBA851600546A62 /* STMWorkflowEditablesVC.m */,
 				2C5763D51AA5DF7500B9FD2C /* STMAuth */,
 				2C5763D81AA5E0B300B9FD2C /* STMCampaign */,
 				2C5764291AA5E2EE00B9FD2C /* STMCatalog */,
@@ -2237,6 +2242,7 @@
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,
 				2C29579C1B40333600A2D163 /* STMShippingLocationPicturesPVC.m in Sources */,
 				2C46206C1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.m in Sources */,
+				2C587AAE1BBA851600546A62 /* STMWorkflowEditablesVC.m in Sources */,
 				2C5764931AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.m in Sources */,
 				2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */,
 				2C587A991BB29B1F00546A62 /* STMShipmentRoutePoint.m in Sources */,

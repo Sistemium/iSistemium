@@ -1,12 +1,13 @@
 //
-//  STMOrderEditablesVC.m
+//  STMWorkflowEditablesVC.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/03/15.
+//  Created by Maxim Grigoriev on 29/09/15.
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMOrderEditablesVC.h"
+#import "STMWorkflowEditablesVC.h"
+#import "STMWorkflowController.h"
 
 #define H_SPACE 20
 #define V_SPACE 20
@@ -14,18 +15,21 @@
 #define TEXT_VIEW_HEIGHT 50
 #define TOOLBAR_HEIGHT 44;
 
-@interface STMOrderEditablesVC ()
+
+@interface STMWorkflowEditablesVC ()
 
 @property (nonatomic) CGFloat h_edge;
 @property (nonatomic) CGFloat v_edge;
+
 @property (nonatomic) CGFloat textView_h_start;
 
 @property (nonatomic, strong) NSMutableDictionary *fields;
 
+
 @end
 
 
-@implementation STMOrderEditablesVC
+@implementation STMWorkflowEditablesVC
 
 - (NSMutableDictionary *)fields {
     
@@ -35,6 +39,7 @@
     return _fields;
     
 }
+
 
 - (void)setupHeader {
     
@@ -48,20 +53,20 @@
     
     UILabel *toLabel = [[UILabel alloc] init];
     attributes = @{NSFontAttributeName:toLabel.font};
-    text = [STMSaleOrderController labelForProcessing:self.toProcessing];
+    text = [STMWorkflowController labelForProcessing:self.toProcessing inWorkflow:self.workflow];
     size = [text sizeWithAttributes:attributes];
     width = ceil(size.width);
     height = ceil(size.height);
-
+    
     toLabel.frame = CGRectMake(h_edge + H_SPACE, V_SPACE, width, height);
     toLabel.text = text;
-    toLabel.textColor = [STMSaleOrderController colorForProcessing:self.toProcessing];
+    toLabel.textColor = [STMWorkflowController colorForProcessing:self.toProcessing inWorkflow:self.workflow];
     
     [self.view addSubview:toLabel];
     
     h_edge += H_SPACE + width;
     v_edge = MAX((V_SPACE + height), v_edge);
-
+    
     self.h_edge = MAX(self.h_edge, h_edge);
     self.v_edge = MAX(self.v_edge, v_edge);
     
@@ -77,7 +82,7 @@
         
         for (NSString *field in self.editableFields) {
             
-            labels = [labels arrayByAddingObjectsFromArray:@[[STMSaleOrderController labelForEditableProperty:field]]];
+            labels = [labels arrayByAddingObjectsFromArray:@[[STMWorkflowController labelForEditableProperty:field]]];
             
         }
         
@@ -98,7 +103,7 @@
         if (textViews.count > 0) {
             [textViews[0] becomeFirstResponder];
         }
-
+        
     }
     
 }
@@ -112,7 +117,7 @@
         
         CGSize size = [name sizeWithAttributes:attributes];
         width = MAX(ceil(size.width), width);
-
+        
     }
     
     return width;
@@ -120,10 +125,10 @@
 }
 
 - (UIFont *)labelFont {
-
+    
     UILabel *label = [[UILabel alloc] init];
     return label.font;
-
+    
 }
 
 - (UITextView *)setupEditableFieldWithName:(NSString *)name {
@@ -150,7 +155,7 @@
     nameLabel.textColor = [UIColor grayColor];
     
     [self.view addSubview:nameLabel];
-
+    
     // Setup textview:
     
     UITextView *tv = [[UITextView alloc] init];
@@ -171,13 +176,13 @@
     self.v_edge = MAX(self.v_edge, v_edge);
     
     return tv;
-
+    
 }
 
 - (void)setupButtons {
-
+    
     CGFloat height = TOOLBAR_HEIGHT;
-
+    
     UIToolbar *toolbar = [[UIToolbar alloc] init];
     toolbar.frame = CGRectMake(0, self.v_edge + V_SPACE, self.h_edge + H_SPACE, height);
     
@@ -190,7 +195,7 @@
     STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                           target:self
                                                                                           action:@selector(doneButtonPressed)];
-
+    
     [toolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
     
     [self.view addSubview:toolbar];
@@ -203,9 +208,9 @@
 #pragma mark - buttons
 
 - (void)cancelButtonPressed {
-
-    [self.popover dismissPopoverAnimated:YES];
-    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
+    
+//    [self.popover dismissPopoverAnimated:YES];
+//    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
     
 }
 
@@ -218,7 +223,7 @@
     for (UITextView *tv in textViews) {
         
         if (tv.text && ![[tv.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
-
+            
             NSUInteger index = [textViews indexOfObject:tv];
             NSString *editableField = self.fields[@"fields"][index];
             
@@ -228,11 +233,11 @@
         
     }
     
-    [STMSaleOrderController setProcessing:self.toProcessing forSaleOrder:self.saleOrder withFields:editableValues];
+//    [STMSaleOrderController setProcessing:self.toProcessing forSaleOrder:self.saleOrder withFields:editableValues];
+//    
+//    [self.popover dismissPopoverAnimated:YES];
+//    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
     
-    [self.popover dismissPopoverAnimated:YES];
-    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
-
 }
 
 
@@ -246,20 +251,21 @@
     [self setupHeader];
     [self setupFields];
     [self setupButtons];
-    
-    self.view.frame = CGRectMake(0, 0, self.h_edge + H_SPACE, self.v_edge);
 
+    self.view.frame = CGRectMake(0, 0, self.h_edge + H_SPACE, self.v_edge);
+    self.view.backgroundColor = [UIColor whiteColor];
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     [self customInit];
-
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-
+    
     [super viewWillAppear:animated];
     [self.view setNeedsDisplay];
     
@@ -272,14 +278,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

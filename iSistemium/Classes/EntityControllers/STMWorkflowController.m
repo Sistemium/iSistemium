@@ -48,16 +48,26 @@
     
 }
 
-+ (NSString *)workflowActionSheetForProcessing:(NSString *)processing didSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow {
++ (NSDictionary *)workflowActionSheetForProcessing:(NSString *)processing didSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow {
     
     NSArray *processingRoutes = [self availableRoutesForProcessing:processing inWorkflow:workflow];
 
     if (buttonIndex >= 0 && buttonIndex < processingRoutes.count) {
         
-        NSString *nextProcessing = processingRoutes[buttonIndex];
-    
-        return nextProcessing;
+        NSMutableDictionary *result = [NSMutableDictionary dictionary];
         
+        NSString *nextProcessing = processingRoutes[buttonIndex];
+
+        if (nextProcessing) result[@"nextProcessing"] = nextProcessing;
+        
+        NSArray *editableProperties = [self editablesPropertiesForProcessing:nextProcessing inWorkflow:workflow];
+        
+        if (editableProperties) result[@"editableProperties"] = editableProperties;
+        
+        return result;
+        
+//        return nextProcessing;
+//        
 //        self.editableProperties = [STMSaleOrderController editablesPropertiesForProcessing:nextProcessing];
 //        
 //        if (self.editableProperties) {
@@ -123,6 +133,10 @@
     
 }
 
++ (NSString *)labelForEditableProperty:(NSString *)editableProperty {
+    return ([editableProperty isEqualToString:@"processingMessage"]) ? NSLocalizedString(@"PROCESSING MESSAGE", nil) : editableProperty;
+}
+
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
     
     NSDictionary *workflowDic = [self workflowDicFromWorkflow:workflow];
@@ -142,6 +156,14 @@
     return routes;
     
 }
+
++ (NSArray *)editablesPropertiesForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    
+    NSDictionary *dictionaryForProcessing = [self dictionaryForProcessing:processing inWorkflow:workflow];
+    return dictionaryForProcessing[@"editables"];
+    
+}
+
 
 //+ (NSString *)processingForLabel:(NSString *)label inWorkflow:(NSString *)workflow {
 //    
