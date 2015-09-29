@@ -168,27 +168,56 @@
     cell.pictureView.image = nil;
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
-    
     cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
-    
-    NSString *detailText = message.body;
-    
-    if (message.processing) {
-        
-        NSString *processingDescription = [STMWorkflowController descriptionForProcessing:message.processing inWorkflow:message.workflow.workflow];
-        detailText = [detailText stringByAppendingString:@"\n"];
-        detailText = [detailText stringByAppendingString:processingDescription];
-        
-    }
 
-    cell.detailLabel.text = detailText;
+    [self fillDetailLabel:cell.detailLabel forMessage:message];
+    
 //    cell.detailLabel.text = MESSAGE_BODY;
     
     [self addImageFromMessage:message toCell:cell];
-    
-    UIColor *processingColor = [STMWorkflowController colorForProcessing:message.processing inWorkflow:message.workflow.workflow];
-    cell.detailLabel.textColor = (processingColor) ? processingColor : [UIColor blackColor];
 
+}
+
+- (void)fillDetailLabel:(STMLabel *)detailLabel forMessage:(STMMessage *)message {
+    
+    NSDictionary *attributes = @{NSFontAttributeName: detailLabel.font,
+                                 NSForegroundColorAttributeName: detailLabel.textColor};
+
+    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:message.body attributes:attributes];
+    
+    if (message.processing) {
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+
+        UIColor *processingColor = [STMWorkflowController colorForProcessing:message.processing inWorkflow:message.workflow.workflow];
+        UIColor *textColor = (processingColor) ? processingColor : [UIColor blackColor];
+        
+        UIFont *font = [UIFont systemFontOfSize:detailLabel.font.pointSize - 2];
+        
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: textColor};
+        
+        NSString *processingDescription = [STMWorkflowController descriptionForProcessing:message.processing inWorkflow:message.workflow.workflow];
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:processingDescription attributes:attributes]];
+
+    }
+    
+    if (message.commentText) {
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        
+        UIFont *font = [UIFont systemFontOfSize:detailLabel.font.pointSize - 4];
+        
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: detailLabel.textColor};
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:message.commentText attributes:attributes]];
+
+    }
+
+    detailLabel.attributedText = detailText;
+    
 }
 
 - (void)addImageFromMessage:(STMMessage *)message toCell:(STMCustom3TVCell *)cell {
