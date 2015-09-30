@@ -44,15 +44,17 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+
+    NSInteger numberOfSections = (IPHONE) ? 1 : 0;
     
     if (self.hasSiblings && self.hasActions) {
-        return 2;
+        numberOfSections += 2;
     } else if (self.hasSiblings || self.hasActions) {
-        return 1;
-    } else {
-        return 0;
+        numberOfSections += 1;
     }
 
+    return numberOfSections;
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -66,6 +68,9 @@
             case 1:
                 return self.actions.count;
                 break;
+            case 2:
+                return 1;
+                break;
                 
             default:
                 return 0;
@@ -74,11 +79,22 @@
         
     } else if (self.hasSiblings || self.hasActions) {
 
-        return MAX(self.siblings.count, self.actions.count);
+        switch (section) {
+            case 0:
+                return MAX(self.siblings.count, self.actions.count);
+                break;
+            case 1:
+                return 1;
+                break;
+                
+            default:
+                return 0;
+                break;
+        }
     
     } else {
         
-        return 0;
+        return 1;
         
     }
 
@@ -111,7 +127,7 @@
         
     } else {
         
-        return 0;
+        return nil;
         
     }
 
@@ -134,19 +150,41 @@
             case 1:
                 [self fillActionCell:cell forIndex:indexPath.row];
                 break;
+            case 2:
+                [self fillCloseCell:cell];
+                break;
                 
             default:
-                return 0;
                 break;
         }
         
     } else if (self.hasSiblings) {
         
-        [self fillSiblingCell:cell forIndex:indexPath.row];
+        switch (indexPath.section) {
+            case 0:
+                [self fillSiblingCell:cell forIndex:indexPath.row];
+                break;
+            case 1:
+                [self fillCloseCell:cell];
+                break;
+                
+            default:
+                break;
+        }
         
     } else if (self.hasActions) {
-        
-        [self fillActionCell:cell forIndex:indexPath.row];
+
+        switch (indexPath.section) {
+            case 0:
+                [self fillActionCell:cell forIndex:indexPath.row];
+                break;
+            case 1:
+                [self fillCloseCell:cell];
+                break;
+                
+            default:
+                break;
+        }
         
     } else {
 
@@ -179,6 +217,14 @@
     
 }
 
+- (void)fillCloseCell:(UITableViewCell *)cell {
+    
+    cell.textLabel.text = NSLocalizedString(@"CLOSE", nil);
+    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    cell.textLabel.textColor = [UIColor redColor];
+    
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (self.hasSiblings && self.hasActions) {
@@ -191,15 +237,41 @@
             
             [self.parentVC selectActionAtIndex:indexPath.row];
             
+        } else if (indexPath.section == 2) {
+            
+            [self dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+
         }
         
     } else if (self.hasSiblings) {
-        
-        [self.parentVC selectSiblingAtIndex:indexPath.row];
+
+        if (indexPath.section == 0) {
+            
+            [self.parentVC selectSiblingAtIndex:indexPath.row];
+            
+        } else if (indexPath.section == 1) {
+            
+            [self dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+            
+        }
         
     } else if (self.hasActions) {
 
-        [self.parentVC selectActionAtIndex:indexPath.row];
+        if (indexPath.section == 0) {
+            
+            [self.parentVC selectActionAtIndex:indexPath.row];
+            
+        } else if (indexPath.section == 1) {
+            
+            [self dismissViewControllerAnimated:YES completion:^{
+                
+            }];
+            
+        }
 
     } else {
         
