@@ -127,6 +127,16 @@
         
     } else {
         
+        for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
+            
+            NSUInteger ord = [self.resultsController.fetchedObjects indexOfObject:point] + 1;
+            
+            if (!point.ord || point.ord.integerValue != ord) {
+                point.ord = @(ord);
+            }
+
+        }
+        
         [self.tableView reloadData];
         [self checkPointsLocations];
         
@@ -709,8 +719,8 @@
 
         for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
             
-            if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point]) {
-                point.ord = @([self.resultsController.fetchedObjects indexOfObject:point]);
+            if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point] + 1) {
+                point.ord = @([self.resultsController.fetchedObjects indexOfObject:point] + 1);
             }
             
         }
@@ -809,13 +819,13 @@
 
     NSArray *result = [pointsWithLocation sortedArrayUsingDescriptors:[self shipmentRoutePointsSortDescriptors]];
     
-    for (STMShipmentRoutePoint *point in result) {
-        
-        if (point.ord.integerValue != [result indexOfObject:point]) {
-            point.ord = @([result indexOfObject:point]);
-        }
-        
-    }
+//    for (STMShipmentRoutePoint *point in result) {
+//        
+//        if (point.ord.integerValue != [result indexOfObject:point] + 1) {
+//            point.ord = @([result indexOfObject:point] + 1);
+//        }
+//        
+//    }
 
     return result;
     

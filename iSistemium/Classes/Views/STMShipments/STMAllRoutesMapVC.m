@@ -594,7 +594,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
         [self.mapView addAnnotation:selectedPin];
         if (previousPin) [self.mapView addAnnotation:previousPin];
         
-        [self.ordPicker selectRow:point.ord.integerValue inComponent:0 animated:YES];
+        [self.ordPicker selectRow:(point.ord.integerValue - 1) inComponent:0 animated:YES];
 
     }
     
@@ -619,7 +619,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 //    STMShipmentRoutePoint *movedPoint = self.points[fromIndex];
 //    movedPoint.ord = @(toIndex);
 
-    self.selectedPin.point.ord = @(row);
+    self.selectedPin.point.ord = @(row + 1);
     
     self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
 

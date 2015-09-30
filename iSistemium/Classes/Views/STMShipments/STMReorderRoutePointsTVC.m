@@ -123,7 +123,7 @@
         
         customCell.detailLabel.attributedText = detailString;
         
-        customCell.infoLabel.text = @(point.ord.integerValue + 1).stringValue;
+        customCell.infoLabel.text = point.ord.stringValue;
         customCell.infoLabel.textColor = textColor;
         
         customCell.accessoryType = UITableViewCellAccessoryNone;
@@ -165,7 +165,7 @@
     }
     
     STMShipmentRoutePoint *movedPoint = self.points[fromIndex];
-    movedPoint.ord = @(toIndex);
+    movedPoint.ord = @(toIndex + 1);
     
     self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC.parentVC shipmentRoutePointsSortDescriptors]];
     
