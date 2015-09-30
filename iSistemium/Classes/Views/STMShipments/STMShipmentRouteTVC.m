@@ -326,6 +326,11 @@
 
 - (void)fillRouteCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
+    UIColor *textColor = [UIColor blackColor];
+    
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
+
     switch (indexPath.row) {
         case 0:
 
@@ -344,12 +349,7 @@
         default:
             break;
     }
-    
-    UIColor *textColor = [UIColor blackColor];
 
-    cell.titleLabel.textColor = textColor;
-    cell.detailLabel.textColor = textColor;
-    
 }
 
 - (NSAttributedString *)detailTextForLabel:(STMLabel *)detailLabel {
