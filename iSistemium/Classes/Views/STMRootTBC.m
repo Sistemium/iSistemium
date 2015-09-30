@@ -557,7 +557,7 @@
             }
             
         } else {
-            NSLog(@"%@ is not conforms to protocol <STMTabBarViewController>", vc);
+            NSLog(@"%@ is not conforms to protocol <STMTabBarItemControllable>", vc);
         }
         
     }

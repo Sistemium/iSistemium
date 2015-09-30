@@ -15,7 +15,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shipmentRouteCell" textLabel="Yi7-7j-H7m" detailTextLabel="kMK-oB-Ja1" style="IBUITableViewCellStyleSubtitle" id="NMw-SB-Axw">
-                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NMw-SB-Axw" id="0Tj-p8-0hQ">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -61,7 +61,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="routePointCell" id="sWQ-m9-Ntt">
-                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sWQ-m9-Ntt" id="Pwo-xl-JnJ">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -271,7 +271,7 @@
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="summaryCell" id="ZAK-sY-S8S">
-                                <rect key="frame" x="0.0" y="49.5" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZAK-sY-S8S" id="tHP-b5-Tvk">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -1088,10 +1088,10 @@
             </objects>
             <point key="canvasLocation" x="2617" y="1035"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--ShipmentsNC-->
         <scene sceneID="Akm-4Y-yc2">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Sc9-6E-xTM" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Sc9-6E-xTM" customClass="STMShipmentsNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="VDo-wd-wbj">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
