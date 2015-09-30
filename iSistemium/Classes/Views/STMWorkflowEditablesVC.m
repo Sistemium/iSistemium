@@ -226,7 +226,10 @@
     
     for (UITextView *tv in textViews) {
         
-        if (tv.text && ![[tv.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        NSString *normalizeString = [tv.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+        normalizeString = [normalizeString stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+        
+        if (tv.text && ![normalizeString isEqualToString:@""]) {
             
             NSUInteger index = [textViews indexOfObject:tv];
             NSString *editableField = self.fields[@"fields"][index];
