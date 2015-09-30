@@ -187,20 +187,24 @@
     
     if (message.processing) {
         
-        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
-
-        UIColor *processingColor = [STMWorkflowController colorForProcessing:message.processing inWorkflow:message.workflow.workflow];
-        UIColor *textColor = (processingColor) ? processingColor : [UIColor blackColor];
-        
-        UIFont *font = [UIFont systemFontOfSize:detailLabel.font.pointSize - 2];
-        
-        attributes = @{NSFontAttributeName: font,
-                       NSForegroundColorAttributeName: textColor};
-        
         NSString *processingDescription = [STMWorkflowController descriptionForProcessing:message.processing inWorkflow:message.workflow.workflow];
-        
-        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:processingDescription attributes:attributes]];
 
+        if (processingDescription) {
+            
+            [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+            
+            UIColor *processingColor = [STMWorkflowController colorForProcessing:message.processing inWorkflow:message.workflow.workflow];
+            UIColor *textColor = (processingColor) ? processingColor : [UIColor blackColor];
+            
+            UIFont *font = [UIFont systemFontOfSize:detailLabel.font.pointSize - 2];
+            
+            attributes = @{NSFontAttributeName: font,
+                           NSForegroundColorAttributeName: textColor};
+            
+            [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:processingDescription attributes:attributes]];
+
+        }
+        
     }
     
     if (message.commentText) {
@@ -309,8 +313,8 @@
             [workflowActionSheet showInView:self.view];
         }];
         
-        NSLog(@"processing %@", message.processing);
-        NSLog(@"workflow %@", workflow.workflow);
+//        NSLog(@"processing %@", message.processing);
+//        NSLog(@"workflow %@", workflow.workflow);
 
     }
     

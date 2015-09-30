@@ -22,9 +22,10 @@
 #import "STMEntityController.h"
 
 #import "STMReorderRoutePointsTVC.h"
+#import "STMWorkflowEditablesVC.h"
 
 
-@interface STMShipmentRouteTVC ()
+@interface STMShipmentRouteTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
@@ -361,19 +362,23 @@
     
     if (self.route.processing) {
         
-        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
-
-        UIColor *processingColor = [STMWorkflowController colorForProcessing:self.route.processing inWorkflow:self.routeWorkflow];
-        UIColor *textColor = (processingColor) ? processingColor : [UIColor blackColor];
-        
-        UIFont *font = detailLabel.font;
-        
-        attributes = @{NSFontAttributeName: font,
-                       NSForegroundColorAttributeName: textColor};
-        
         NSString *processingDescription = [STMWorkflowController descriptionForProcessing:self.route.processing inWorkflow:self.routeWorkflow];
         
-        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:processingDescription attributes:attributes]];
+        if (processingDescription) {
+
+            [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+            
+            UIColor *processingColor = [STMWorkflowController colorForProcessing:self.route.processing inWorkflow:self.routeWorkflow];
+            UIColor *textColor = (processingColor) ? processingColor : [UIColor blackColor];
+            
+            UIFont *font = detailLabel.font;
+            
+            attributes = @{NSFontAttributeName: font,
+                           NSForegroundColorAttributeName: textColor};
+
+            [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:processingDescription attributes:attributes]];
+            
+        }
         
     }
     
@@ -498,7 +503,23 @@
         
     } else if (indexPath.section == 0) {
         
-        if (indexPath.row == 1) {
+        if (indexPath.row == 0) {
+            
+            if (self.routeWorkflow) {
+                
+                STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:self.route.processing
+                                                                                                  inWorkflow:self.routeWorkflow
+                                                                                                withDelegate:self];
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    [workflowActionSheet showInView:self.view];
+                }];
+                
+                NSLog(@"processing %@", self.route.processing);
+                NSLog(@"workflow %@", self.routeWorkflow);
+                
+            }
+            
+        } else if (indexPath.row == 1) {
             
             [self performSegueWithIdentifier:@"showSummary" sender:self];
             
@@ -525,6 +546,75 @@
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
         
     }
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet isKindOfClass:[STMWorkflowAS class]]) {
+        
+        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
+        
+        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                              didSelectButtonWithIndex:buttonIndex
+                                                                            inWorkflow:workflowAS.workflow];
+        
+        NSString *selectedProcessing = result[@"nextProcessing"];
+        
+        if (selectedProcessing) self.route.processing = selectedProcessing;
+        
+        NSArray *editableProperties = result[@"editableProperties"];
+        
+        if (editableProperties) {
+            
+            STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+            
+            editablesVC.workflow = workflowAS.workflow;
+            editablesVC.toProcessing = selectedProcessing;
+            editablesVC.editableFields = editableProperties;
+            editablesVC.parent = self;
+            
+            [self presentViewController:editablesVC animated:YES completion:^{
+                
+            }];
+            
+        } else {
+            
+            [self syncAndReloadRootCell];
+            
+        }
+        
+    }
+    
+}
+
+- (void)takeEditableValues:(NSDictionary *)editableValues {
+    
+    NSLog(@"editableValues %@", editableValues);
+    
+    for (NSString *field in editableValues.allKeys) {
+        
+        if ([self.route.entity.propertiesByName.allKeys containsObject:field]) {
+            [self.route setValue:editableValues[field] forKey:field];
+        }
+        
+    }
+    
+    [self syncAndReloadRootCell];
+    
+}
+
+- (void)syncAndReloadRootCell {
+    
+    [self.document saveDocument:^(BOOL success) {
+        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+    }];
+    
+    NSIndexPath *routeIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    if (routeIndexPath) [self.tableView reloadRowsAtIndexPaths:@[routeIndexPath] withRowAnimation:UITableViewRowAnimationFade];
     
 }
 

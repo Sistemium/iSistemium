@@ -10,8 +10,10 @@
 #import "STMDataModel.h"
 #import "STMShipmentsSVC.h"
 
+#import "STMWorkflowable.h"
 
-@interface STMShipmentRouteTVC : STMVariableCellsHeightTVC
+
+@interface STMShipmentRouteTVC : STMVariableCellsHeightTVC <STMWorkflowable>
 
 @property (nonatomic, strong) STMShipmentRoute *route;
 
