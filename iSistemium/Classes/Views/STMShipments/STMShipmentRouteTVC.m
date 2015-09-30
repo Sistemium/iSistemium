@@ -18,6 +18,8 @@
 #import "STMObjectsController.h"
 #import "STMLocationController.h"
 #import "STMShippingProcessController.h"
+#import "STMWorkflowController.h"
+#import "STMEntityController.h"
 
 #import "STMReorderRoutePointsTVC.h"
 
@@ -27,6 +29,7 @@
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
 @property (nonatomic, strong) NSIndexPath *summaryIndexPath;
+@property (nonatomic, strong) NSString *routeWorkflow;
 
 
 @end
@@ -46,6 +49,22 @@
         
     }
     return _splitVC;
+    
+}
+
+- (NSString *)routeWorkflow {
+
+    if (!_routeWorkflow) {
+        
+        NSString *entityName = NSStringFromClass([STMShipmentRoute class]);
+        entityName = [entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
+        
+        STMEntity *shipmentRouteEntity = [STMEntityController entityWithName:entityName];
+        
+        _routeWorkflow = shipmentRouteEntity.workflow;
+
+    }
+    return _routeWorkflow;
     
 }
 
@@ -311,7 +330,7 @@
         case 0:
 
             cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
-            cell.detailLabel.text = @"";
+            cell.detailLabel.attributedText = [self detailTextForLabel:cell.detailLabel];
             cell.accessoryType = UITableViewCellAccessoryNone;
         break;
             
@@ -330,6 +349,48 @@
 
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
+    
+}
+
+- (NSAttributedString *)detailTextForLabel:(STMLabel *)detailLabel {
+    
+    NSDictionary *attributes = @{NSFontAttributeName: detailLabel.font,
+                                 NSForegroundColorAttributeName: detailLabel.textColor};
+    
+    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:@"" attributes:attributes];
+    
+    if (self.route.processing) {
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+
+        UIColor *processingColor = [STMWorkflowController colorForProcessing:self.route.processing inWorkflow:self.routeWorkflow];
+        UIColor *textColor = (processingColor) ? processingColor : [UIColor blackColor];
+        
+        UIFont *font = detailLabel.font;
+        
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: textColor};
+        
+        NSString *processingDescription = [STMWorkflowController descriptionForProcessing:self.route.processing inWorkflow:self.routeWorkflow];
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:processingDescription attributes:attributes]];
+        
+    }
+    
+    if (self.route.commentText) {
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        
+        UIFont *font = [UIFont systemFontOfSize:detailLabel.font.pointSize - 2];
+        
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: detailLabel.textColor};
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:self.route.commentText attributes:attributes]];
+        
+    }
+    
+    return detailText;
     
 }
 
