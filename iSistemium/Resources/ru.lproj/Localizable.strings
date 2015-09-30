@@ -346,5 +346,6 @@
 "ADD POSITION?" = "Установить геометку?";
 "PROCESSING ALL SHIPMENT" = "Обработать накладные";
 "MARK ALL AS READ" = "Отметить всё прочитанным";
+"POINT NUMBER" = "Номер в маршруте:";
 
 

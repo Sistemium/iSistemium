@@ -382,7 +382,7 @@
     
     switch (section) {
         case 0:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : 2;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (IPHONE) ? 3 : 2;
             break;
             
         case 1:
@@ -573,7 +573,11 @@
                 case 1:
                     cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
                     break;
-                    
+
+                case 2:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+                    break;
+
                 default:
                     break;
             }
@@ -644,7 +648,11 @@
                 case 1:
                     [self fillCell:cell withRoutePoint:self.point];
                     break;
-                    
+
+                case 2:
+                    [self fillPointNumberCell:cell];
+                    break;
+
                 default:
                     break;
             }
@@ -711,6 +719,26 @@
     
     cell.detailTextLabel.text = [point shortInfo];
 
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
+}
+
+- (void)fillPointNumberCell:(UITableViewCell *)cell {
+    
+    NSDictionary *attributes = @{NSFontAttributeName: cell.textLabel.font,
+                                 NSForegroundColorAttributeName: cell.textLabel.textColor};
+    
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"POINT NUMBER", nil) attributes:attributes];
+
+    [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+
+    attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize],
+                   NSForegroundColorAttributeName: cell.textLabel.textColor};
+
+    [text appendAttributedString:[[NSAttributedString alloc] initWithString:self.point.ord.stringValue attributes:attributes]];
+
+    cell.textLabel.attributedText = text;
+    
     cell.accessoryType = UITableViewCellAccessoryNone;
     
 }
