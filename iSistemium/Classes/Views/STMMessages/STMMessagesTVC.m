@@ -362,7 +362,7 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
-    if ([actionSheet isKindOfClass:[STMWorkflowAS class]]) {
+    if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
         
         STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
 
