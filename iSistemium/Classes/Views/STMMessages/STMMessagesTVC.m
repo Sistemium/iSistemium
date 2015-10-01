@@ -374,34 +374,32 @@
         
         if (selectedProcessing) self.workflowSelectedMessage.processing = selectedProcessing;
         
-        NSArray *editableProperties = result[@"editableProperties"];
-        
-        if (editableProperties) {
+        if ([result[@"editableProperties"] isKindOfClass:[NSArray class]]) {
             
             STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
             
             editablesVC.workflow = workflowAS.workflow;
             editablesVC.toProcessing = selectedProcessing;
-            editablesVC.editableFields = editableProperties;
+            editablesVC.editableFields = result[@"editableProperties"];
             editablesVC.parent = self;
             
             [self presentViewController:editablesVC animated:YES completion:^{
                 
             }];
-            
+
         } else {
-            
+        
             [self syncAndReloadWorkflowSelectedMessage];
 
         }
-        
+
     }
 
 }
 
 - (void)takeEditableValues:(NSDictionary *)editableValues {
     
-    NSLog(@"editableValues %@", editableValues);
+//    NSLog(@"editableValues %@", editableValues);
     
     for (NSString *field in editableValues.allKeys) {
         
