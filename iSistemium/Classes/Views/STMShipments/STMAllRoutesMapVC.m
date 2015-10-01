@@ -723,8 +723,6 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     
     self.ordPicker.backgroundColor = [UIColor whiteColor];
     
-//    [[UIPickerView appearance] setBackgroundColor:[UIColor whiteColor]];
-    
     self.ordPicker.dataSource = self;
     self.ordPicker.delegate = self;
     
@@ -736,8 +734,6 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     
     self.mapView.frame = CGRectMake(mapFrame.origin.x, y, mapFrame.size.width, height);
     
-//    [self.mapView showAnnotations:self.mapView.annotations animated:YES];
-
 }
 
 - (void)hideOrdPicker {

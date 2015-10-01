@@ -35,5 +35,6 @@
 
 #define MAGIC_NUMBER_FOR_CELL_WIDTH 16
 
+#define TOOLBAR_HEIGHT 44
 
 #endif

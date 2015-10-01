@@ -31,7 +31,9 @@
 @interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate,
                                         UIImagePickerControllerDelegate,
                                         UIAlertViewDelegate,
-                                        NSFetchedResultsControllerDelegate>
+                                        NSFetchedResultsControllerDelegate,
+                                        UIPickerViewDataSource,
+                                        UIPickerViewDelegate>
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
@@ -54,6 +56,9 @@
 
 @property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
 
+@property (nonatomic, strong) NSIndexPath *pointNumberCellIndexPath;
+@property (nonatomic, strong) UIPickerView *ordPicker;
+@property (nonatomic, strong) UIToolbar *pickerToolbar;
 
 @end
 
@@ -650,6 +655,7 @@
                     break;
 
                 case 2:
+                    self.pointNumberCellIndexPath = indexPath;
                     [self fillPointNumberCell:cell];
                     break;
 
@@ -970,6 +976,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    if ([indexPath compare:self.pointNumberCellIndexPath] == NSOrderedSame) {
+        [self showOrdPickerView];
+    }
+    
     if (indexPath.section == 1) {
         switch (indexPath.row) {
             case 0:
@@ -1061,6 +1071,88 @@
     
 }
 
+
+#pragma mark - point number picker
+
+- (void)showOrdPickerView {
+    
+    if (!self.ordPicker) {
+        
+        CGRect sectionFrame = [self.tableView rectForSection:0];
+        CGRect headerFrame = [self.tableView rectForHeaderInSection:0];
+        CGRect footerFrame = [self.tableView rectForFooterInSection:0];
+        
+        CGFloat height = footerFrame.origin.y - headerFrame.size.height;
+
+        CGRect pickerFrame = CGRectMake(0, headerFrame.size.height, sectionFrame.size.width, height);
+        
+        self.ordPicker = [[UIPickerView alloc] initWithFrame:pickerFrame];
+
+        self.ordPicker.backgroundColor = [UIColor whiteColor];
+        
+        self.ordPicker.dataSource = self;
+        self.ordPicker.delegate = self;
+
+        
+    }
+    
+    [self.ordPicker selectRow:(self.point.ord.integerValue - 1) inComponent:0 animated:NO];
+    
+    [self.view addSubview:self.ordPicker];
+    
+    if (!self.pickerToolbar) {
+    
+        CGRect sectionFrame = [self.tableView rectForSection:0];
+        CGFloat originY = sectionFrame.size.height - TOOLBAR_HEIGHT;
+        CGRect toolbarFrame = CGRectMake(0, originY, sectionFrame.size.width, TOOLBAR_HEIGHT);
+
+        self.pickerToolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
+        
+        STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                                    target:self
+                                                                                                    action:@selector(pickerCancel)];
+        STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+        
+        STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                              target:self
+                                                                                              action:@selector(pickerDone)];
+        [self.pickerToolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
+
+    }
+    
+    [self.view addSubview:self.pickerToolbar];
+
+}
+
+- (void)hideOrdPicker {
+
+    [self.pickerToolbar removeFromSuperview];
+    [self.ordPicker removeFromSuperview];
+    
+}
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return self.point.shipmentRoute.shipmentRoutePoints.count;
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    return @(row+1).stringValue;
+}
+
+- (void)pickerCancel {
+    [self hideOrdPicker];
+}
+
+- (void)pickerDone {
+    
+    NSLogMethodName;
+    [self hideOrdPicker];
+    
+}
 
 #pragma mark - alerts
 
