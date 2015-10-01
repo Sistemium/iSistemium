@@ -134,7 +134,19 @@
 }
 
 + (NSString *)labelForEditableProperty:(NSString *)editableProperty {
-    return ([editableProperty isEqualToString:@"processingMessage"]) ? NSLocalizedString(@"PROCESSING MESSAGE", nil) : editableProperty;
+    
+    NSString *label = editableProperty;
+    
+    if ([editableProperty isEqualToString:@"processingMessage"]) {
+        label = NSLocalizedString(@"PROCESSING MESSAGE", nil);
+    }
+
+    if ([editableProperty isEqualToString:@"commentText"]) {
+        label = NSLocalizedString(@"COMMENT TEXT", nil);
+    }
+
+    return label;
+    
 }
 
 + (NSArray *)availableRoutesForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {

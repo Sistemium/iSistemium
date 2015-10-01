@@ -13,7 +13,6 @@
 #define V_SPACE 20
 //#define TEXT_VIEW_WIDTH 350
 #define TEXT_VIEW_HEIGHT 50
-#define TOOLBAR_HEIGHT 44;
 
 
 @interface STMWorkflowEditablesVC ()
