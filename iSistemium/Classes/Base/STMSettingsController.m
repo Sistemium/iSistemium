@@ -84,7 +84,8 @@
                                 @"enablePartnersEditing",
                                 @"enableDownloadViaWWAN",
                                 @"getLocationsWithNegativeSpeed",
-                                @"blockIfNoLocationPermission"];
+                                @"blockIfNoLocationPermission",
+                                @"enableAggregateShipment"];
         
         NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
         

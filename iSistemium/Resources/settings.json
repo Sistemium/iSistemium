@@ -61,6 +61,11 @@
                     "name": "blockIfNoLocationPermission",
                     "value": false,
                     "control": "switch",
+                },
+                {
+                    "name": "enableAggregateShipment",
+                    "value": true,
+                    "control": "switch",
                 }
             ]
        },

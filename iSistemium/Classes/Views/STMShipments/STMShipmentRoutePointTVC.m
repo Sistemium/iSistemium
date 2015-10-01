@@ -130,6 +130,14 @@
     
 }
 
+- (BOOL)enableAggregateShipment {
+    
+    NSDictionary *appSettings = [self.session.settingsController currentSettingsForGroup:@"appSettings"];
+    
+    return [appSettings[@"enableAggregateShipment"] boolValue];
+    
+}
+
 
 #pragma mark - resultsController
 
@@ -391,7 +399,7 @@
             break;
             
         case 1:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.isReached.boolValue && [self unprocessedShipmentsCount] > 0) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.isReached.boolValue && [self unprocessedShipmentsCount] > 0 && [self enableAggregateShipment]) ? 2 : 1;
             break;
             
         case 2:
