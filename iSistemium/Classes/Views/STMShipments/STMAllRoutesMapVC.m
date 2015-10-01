@@ -602,7 +602,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     
-    NSInteger fromIndex = self.selectedPin.ord.integerValue;
+    NSInteger fromIndex = self.selectedPin.ord.integerValue - 1;
     NSInteger toIndex = row;
     
     NSUInteger minIndex = MIN(fromIndex, toIndex);
@@ -623,7 +623,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     
     self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
 
-    NSLog(@"row %d", row);
+//    NSLog(@"row %d", row);
     
 }
 

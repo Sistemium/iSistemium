@@ -1149,7 +1149,33 @@
 
 - (void)pickerDone {
     
-    NSLogMethodName;
+    NSInteger fromIndex = self.point.ord.integerValue - 1;
+    NSInteger toIndex = [self.ordPicker selectedRowInComponent:0];
+    
+    NSUInteger minIndex = MIN(fromIndex, toIndex);
+    NSUInteger loc = (minIndex == fromIndex) ? minIndex + 1 : minIndex;
+    
+    NSRange affectedPointsRange = NSMakeRange(loc, labs(fromIndex - toIndex));
+    
+    NSArray *points = [self.point.shipmentRoute.shipmentRoutePoints allObjects];
+    
+    NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+
+    points = [points sortedArrayUsingDescriptors:@[ordDescriptor, nameDescriptor]];
+    
+    NSArray *affectedPoints = [points subarrayWithRange:affectedPointsRange];
+    
+    for (STMShipmentRoutePoint *point in affectedPoints) {
+        point.ord = (minIndex == fromIndex) ? @(point.ord.integerValue - 1) : @(point.ord.integerValue + 1);
+    }
+    
+    self.point.ord = @(toIndex + 1);
+    
+    if (self.pointNumberCellIndexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[self.pointNumberCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    
     [self hideOrdPicker];
     
 }
