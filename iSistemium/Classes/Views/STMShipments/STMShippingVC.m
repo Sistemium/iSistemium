@@ -1025,8 +1025,13 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" %lu%@", (unsigned long)self.checkedPositions.count, NSLocalizedString(@"_POSITIONS", nil)]];
 
         NSNumber *bottlesCount = [self.checkedPositions valueForKeyPath:@"@sum.volume"];
+        
+        NSDictionary *appSettings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+        BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+        
+        NSString *bottleString = (enableShowBottles) ? NSLocalizedString(@"_BOTTLES", nil) : NSLocalizedString(@"_PIECES", nil);
 
-        processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@"/%@%@", bottlesCount, NSLocalizedString(@"_BOTTLES", nil)]];
+        processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@"/%@%@", bottlesCount, bottleString]];
 
         self.processingButton.enabled = YES;
 

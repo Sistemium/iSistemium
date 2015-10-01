@@ -173,6 +173,7 @@
 "PROCESSING MESSAGE" = "Сообщение:";
 "VOLUME UNIT1" = "к.";
 "VOLUME UNIT2" = "б.";
+"VOLUME UNIT3" = "шт.";
 "RESET FILTER" = "Сбросить фильтр";
 "SEND DATE" = "Данные отправлены: ";
 "RECEIVE DATE" = "Данные получены: ";
@@ -315,6 +316,7 @@
 "_POSITIONS" = "п";
 "_BOXES" = "к";
 "_BOTTLES" = "б";
+"_PIECES" = "шт";
 "DISTANCE_KM" = "км";
 "DISTANCE_M" = "м";
 "TIME_H" = "ч";

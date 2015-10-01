@@ -85,7 +85,8 @@
                                 @"enableDownloadViaWWAN",
                                 @"getLocationsWithNegativeSpeed",
                                 @"blockIfNoLocationPermission",
-                                @"enableAggregateShipment"];
+                                @"enableAggregateShipment",
+                                @"enableShowBottles"];
         
         NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
         

@@ -621,7 +621,10 @@
     
     int volume = [saleOrderPosition.volume intValue];
     int packageRel = [saleOrderPosition.article.packageRel intValue];
-    
+        
+    NSDictionary *appSettings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+
     if (packageRel != 0 && volume >= packageRel) {
 
         int package = floor(volume / packageRel);
@@ -633,7 +636,7 @@
         
         if (bottle > 0) {
             
-            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+            volumeUnitString = (enableShowBottles) ? NSLocalizedString(@"VOLUME UNIT2", nil) : NSLocalizedString(@"VOLUME UNIT3", nil);
             NSString *bottleString = [NSString stringWithFormat:@" %d %@", bottle, volumeUnitString];
             
             packageString = [packageString stringByAppendingString:bottleString];
@@ -644,7 +647,7 @@
         
     } else {
      
-        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+        volumeUnitString = (enableShowBottles) ? NSLocalizedString(@"VOLUME UNIT2", nil) : NSLocalizedString(@"VOLUME UNIT3", nil);
         cell.infoLabel.text = [NSString stringWithFormat:@"%@ %@", saleOrderPosition.volume, volumeUnitString];
 
     }

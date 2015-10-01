@@ -66,6 +66,11 @@
                     "name": "enableAggregateShipment",
                     "value": true,
                     "control": "switch",
+                },
+                {
+                    "name": "enableShowBottles",
+                    "value": true,
+                    "control": "switch",
                 }
             ]
        },

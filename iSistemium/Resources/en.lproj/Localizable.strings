@@ -173,6 +173,7 @@
 "PROCESSING MESSAGE" = "Message";
 "VOLUME UNIT1" = "p.";
 "VOLUME UNIT2" = "b.";
+"VOLUME UNIT3" = "pc.";
 "RESET FILTER" = "Reset filter";
 "SEND DATE" = "Send date: ";
 "RECEIVE DATE" = "Receive date: ";
@@ -315,6 +316,7 @@
 "_POSITIONS" = "p";
 "_BOXES" = "bx";
 "_BOTTLES" = "bt";
+"_PIECES" = "pc";
 "DISTANCE_KM" = "km";
 "DISTANCE_M" = "m";
 "TIME_H" = "h";
