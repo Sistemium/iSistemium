@@ -118,7 +118,13 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     [self centeringMap];
     
     if (_state == STMShippingLocationNoLocation) {
+        
         [self showSearchBar];
+        
+    } else if (_state == STMShippingLocationSet) {
+        
+        [self hideSearchBar];
+        
     }
     
 }
@@ -353,9 +359,6 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)setShippingLocation {
     
-//    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.locationButton.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
-//    [self.locationButton addSubview:self.spinner];
-    
     if (self.state == STMShippingLocationConfirm) {
         [self.point updateShippingLocationWithConfirmedLocation:self.confirmingLocation];
     } else if (self.state == STMShippingLocationConfirmByUser) {
@@ -492,7 +495,6 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
     self.confirmingLocation = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
     self.state = STMShippingLocationConfirmByUser;
-//    [self setShippingLocation];
 
 }
 
@@ -635,7 +637,10 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 - (void)hideSearchBar {
+    
     [self.searchBar removeFromSuperview];
+    self.searchBar = nil;
+    
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
