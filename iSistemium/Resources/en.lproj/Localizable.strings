@@ -354,4 +354,5 @@
 "MARK ALL AS READ" = "Mark all as read";
 "POINT NUMBER" = "Point number:";
 "COMMENT TEXT" = "Comment";
+"ADDRESS GEOCODING FAILED" = "Address geocoding failed";
 

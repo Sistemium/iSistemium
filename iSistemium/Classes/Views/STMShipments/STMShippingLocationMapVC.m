@@ -633,6 +633,38 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     [self.searchBar removeFromSuperview];
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    
+    __block STMSpinnerView *spinner = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
+    [self.view addSubview:spinner];
+
+    [[[CLGeocoder alloc] init] geocodeAddressString:searchBar.text completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        [spinner removeFromSuperview];
+        
+        if (!error) {
+            
+            CLPlacemark *placemark = placemarks.firstObject;
+            
+        } else {
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                                message:NSLocalizedString(@"ADDRESS GEOCODING FAILED", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+                [alert show];
+                
+            }];
+            
+        }
+        
+    }];
+
+}
+
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     [self.searchBar resignFirstResponder];
 }

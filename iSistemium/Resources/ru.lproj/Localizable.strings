@@ -354,5 +354,6 @@
 "MARK ALL AS READ" = "Отметить всё прочитанным";
 "POINT NUMBER" = "Номер в маршруте:";
 "COMMENT TEXT" = "Комментарий";
+"ADDRESS GEOCODING FAILED" = "Не могу получить координаты по данному адресу";
 
 
