@@ -592,21 +592,26 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         CGPoint point = [longPress locationInView:longPress.view];
         
         CLLocationCoordinate2D coordinate = [self.mapView convertPoint:point toCoordinateFromView:longPress.view];
-
-        if (self.userPin) [self.mapView removeAnnotation:self.userPin];
         
         CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
-        
-        STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
-                                                                      withTitle:NSLocalizedString(@"ADD POSITION?", nil)
-                                                                    andSubtitle:nil];
-        self.userPin = pin;
-
-        [self.mapView addAnnotation:pin];
-        
-        [self.mapView selectAnnotation:pin animated:YES];
+        [self addUserPinAtLocation:location];
         
     }
+
+}
+
+- (void)addUserPinAtLocation:(CLLocation *)location {
+    
+    if (self.userPin) [self.mapView removeAnnotation:self.userPin];
+
+    STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
+                                                                  withTitle:NSLocalizedString(@"ADD POSITION?", nil)
+                                                                andSubtitle:nil];
+    self.userPin = pin;
+    
+    [self.mapView addAnnotation:self.userPin];
+    
+    [self.mapView selectAnnotation:pin animated:YES];
 
 }
 
@@ -644,7 +649,11 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         
         if (!error) {
             
+            [self.searchBar resignFirstResponder];
+            
             CLPlacemark *placemark = placemarks.firstObject;
+            [self addUserPinAtLocation:placemark.location];
+            [self.mapView showAnnotations:@[self.userPin] animated:YES];
             
         } else {
             
