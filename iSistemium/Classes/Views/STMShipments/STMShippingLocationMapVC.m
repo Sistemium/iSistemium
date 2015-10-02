@@ -30,7 +30,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 };
 
 
-@interface STMShippingLocationMapVC () <MKMapViewDelegate>
+@interface STMShippingLocationMapVC () <MKMapViewDelegate, UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *locationButton;
@@ -56,6 +56,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 @property (nonatomic, strong) STMSpinnerView *spinner;
 
 @property (nonatomic, strong) STMMapAnnotation *userPin;
+@property (nonatomic, strong) UISearchBar *searchBar;
 
 
 @end
@@ -115,6 +116,10 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
     [self updateLocationButton];
     [self centeringMap];
+    
+    if (_state == STMShippingLocationNoLocation) {
+        [self showSearchBar];
+    }
     
 }
 
@@ -604,6 +609,48 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     }
 
 }
+
+
+#pragma mark - searchBar
+
+- (void)showSearchBar {
+
+    if (!self.searchBar) {
+        
+        CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, TOOLBAR_HEIGHT);
+        
+        self.searchBar = [[UISearchBar alloc] initWithFrame:frame];
+        self.searchBar.text = self.point.address;
+        self.searchBar.delegate = self;
+        
+        [self.view addSubview:self.searchBar];
+        
+    }
+    
+}
+
+- (void)hideSearchBar {
+    [self.searchBar removeFromSuperview];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [self.searchBar resignFirstResponder];
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = YES;
+    return YES;
+    
+}
+
+- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = NO;
+    return YES;
+    
+}
+
 
 #pragma mark - view lifecycle
 
