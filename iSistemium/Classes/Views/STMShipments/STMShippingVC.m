@@ -1259,7 +1259,11 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     count = [self.checkedPositions valueForKeyPath:@"@sum.volume"];
     pluralType = [STMFunctions pluralTypeForCount:count.integerValue];
-    countString = [NSString stringWithFormat:@"%@BOTTLES", pluralType];
+    
+    NSDictionary *appSettings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+
+    countString = (enableShowBottles) ? [NSString stringWithFormat:@"%@BOTTLES", pluralType] : [NSString stringWithFormat:@"%@PIECES", pluralType];
     
     title = [title stringByAppendingString:@"\n"];
     title = [title stringByAppendingString:[NSString stringWithFormat:@"%@ %@", count, NSLocalizedString(countString, nil)]];

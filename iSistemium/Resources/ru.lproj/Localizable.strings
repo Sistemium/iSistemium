@@ -311,6 +311,10 @@
 "1BOTTLES" = "бутылка";
 "2BOTTLES" = "бутылки";
 "5BOTTLES" = "бутылок";
+"0PIECES" = "ничего нет";
+"1PIECES" = "штука";
+"2PIECES" = "штуки";
+"5PIECES" = "штук";
 "_SHIPMENTS" = "н";
 "_NEED_CASHING" = "и";
 "_POSITIONS" = "п";

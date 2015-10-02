@@ -9,6 +9,7 @@
 #import "STMShipment+custom.h"
 #import "STMDataModel.h"
 #import "STMFunctions.h"
+#import "STMSessionManager.h"
 
 
 @implementation STMShipment (custom)
@@ -75,18 +76,22 @@
 
 - (NSString *)bottleCountString {
     
+    NSDictionary *appSettings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+
     if (self.shipmentPositions.count > 0) {
         
         NSUInteger bottleCount = [self bottleCount];
         
         NSString *pluralType = [STMFunctions pluralTypeForCount:bottleCount];
-        NSString *bottleString = [NSString stringWithFormat:@"%@BOTTLES", pluralType];
+        
+        NSString *bottleString = (enableShowBottles) ? [NSString stringWithFormat:@"%@BOTTLES", pluralType] : [NSString stringWithFormat:@"%@PIECES", pluralType];
         NSString *bottles = [NSString stringWithFormat:@"%lu %@", (unsigned long)bottleCount, NSLocalizedString(bottleString, nil)];
 
         return bottles;
         
     } else {
-        return NSLocalizedString(@"0BOTTLES", nil);
+        return (enableShowBottles) ? NSLocalizedString(@"0BOTTLES", nil) : NSLocalizedString(@"0PIECES", nil);
     }
 
 }

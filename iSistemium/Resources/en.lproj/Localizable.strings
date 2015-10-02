@@ -311,6 +311,10 @@
 "1BOTTLES" = "bottle";
 "2BOTTLES" = "bottles";
 "5BOTTLES" = "bottles";
+"0PIECES" = "no pieces";
+"1PIECES" = "piece";
+"2PIECES" = "pieces";
+"5PIECES" = "pieces";
 "_SHIPMENTS" = "s";
 "_NEED_CASHING" = "c";
 "_POSITIONS" = "p";
