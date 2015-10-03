@@ -370,7 +370,7 @@
     CLLocation *lastLocation = self.locationManager.location;
     NSTimeInterval locationAge = -[lastLocation.timestamp timeIntervalSinceNow];
 
-    if (self.tracking && locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL) {
+    if (lastLocation && self.tracking && locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"currentLocationWasUpdated" object:self userInfo:@{@"currentLocation":lastLocation}];
         
