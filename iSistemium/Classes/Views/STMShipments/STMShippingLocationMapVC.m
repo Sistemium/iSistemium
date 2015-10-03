@@ -627,6 +627,9 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, TOOLBAR_HEIGHT);
         
         self.searchBar = [[UISearchBar alloc] initWithFrame:frame];
+        
+        self.searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin;
+        
         self.searchBar.text = self.point.address;
         self.searchBar.delegate = self;
         
@@ -700,7 +703,29 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    [self.searchBar resignFirstResponder];
+}
+
+
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    if (IPAD) {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(deviceOrientationDidChangeNotification:)
+                                                     name:UIDeviceOrientationDidChangeNotification
+                                                   object:nil];
+
+    }
+
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)initState {
     
@@ -712,6 +737,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
     if (self.point) {
         
+        [self addObservers];
         [self initState];
         [self setupLocationButton];
         self.mapView.delegate = self;
@@ -748,7 +774,10 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 - (void)viewWillDisappear:(BOOL)animated {
     
     if ([self isMovingFromParentViewController]) {
+        
         [self flushMapView];
+        [self removeObservers];
+        
     }
     
     [super viewWillDisappear:animated];
