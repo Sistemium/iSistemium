@@ -461,6 +461,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         if ([self.checkedPositions containsObject:position]) {
         
             STMLabel *checkLabel = [[STMLabel alloc] initWithFrame:customCell.checkboxView.bounds];
+            checkLabel.adjustsFontSizeToFitWidth = YES;
             checkLabel.text = @"✓";
             checkLabel.textColor = ACTIVE_BLUE_COLOR;
             checkLabel.textAlignment = NSTextAlignmentLeft;
