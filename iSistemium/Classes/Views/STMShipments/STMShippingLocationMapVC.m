@@ -686,6 +686,8 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     
     searchBar.showsCancelButton = YES;
+    [searchBar layoutIfNeeded];
+    
     return YES;
     
 }
