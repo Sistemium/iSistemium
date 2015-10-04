@@ -43,7 +43,7 @@
     
     if (IPHONE) {
 
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"CANCEL", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
         actionSheet.cancelButtonIndex = actionSheet.numberOfButtons - 1;
 
     }
