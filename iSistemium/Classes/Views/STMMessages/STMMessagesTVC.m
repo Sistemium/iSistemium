@@ -31,6 +31,7 @@
 @interface STMMessagesTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, weak) STMMessage *workflowSelectedMessage;
+@property (nonatomic, strong) NSString *nextProcessing;
 
 
 @end
@@ -370,26 +371,28 @@
                                                               didSelectButtonWithIndex:buttonIndex
                                                                             inWorkflow:workflowAS.workflow];
         
-        NSString *selectedProcessing = result[@"nextProcessing"];
+        self.nextProcessing = result[@"nextProcessing"];
         
-        if (selectedProcessing) self.workflowSelectedMessage.processing = selectedProcessing;
-        
-        if ([result[@"editableProperties"] isKindOfClass:[NSArray class]]) {
-            
-            STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
-            
-            editablesVC.workflow = workflowAS.workflow;
-            editablesVC.toProcessing = selectedProcessing;
-            editablesVC.editableFields = result[@"editableProperties"];
-            editablesVC.parent = self;
-            
-            [self presentViewController:editablesVC animated:YES completion:^{
-                
-            }];
+        if (self.nextProcessing) {
 
-        } else {
-        
-            [self syncAndReloadWorkflowSelectedMessage];
+            if ([result[@"editableProperties"] isKindOfClass:[NSArray class]]) {
+                
+                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+                
+                editablesVC.workflow = workflowAS.workflow;
+                editablesVC.toProcessing = self.nextProcessing;
+                editablesVC.editableFields = result[@"editableProperties"];
+                editablesVC.parent = self;
+                
+                [self presentViewController:editablesVC animated:YES completion:^{
+                    
+                }];
+                
+            } else {
+                
+                [self updateAndSyncAndReloadWorkflowSelectedMessage];
+                
+            }
 
         }
 
@@ -409,12 +412,14 @@
         
     }
 
-    [self syncAndReloadWorkflowSelectedMessage];
+    [self updateAndSyncAndReloadWorkflowSelectedMessage];
     
 }
 
-- (void)syncAndReloadWorkflowSelectedMessage {
+- (void)updateAndSyncAndReloadWorkflowSelectedMessage {
 
+    if (self.nextProcessing) self.workflowSelectedMessage.processing = self.nextProcessing;
+    
     [self.document saveDocument:^(BOOL success) {
         if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     }];

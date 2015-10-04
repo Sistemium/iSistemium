@@ -29,7 +29,7 @@
         
     } else {
         
-        [actionSheet addButtonWithTitle:@""];
+//        [actionSheet addButtonWithTitle:@""];
         
     }
     

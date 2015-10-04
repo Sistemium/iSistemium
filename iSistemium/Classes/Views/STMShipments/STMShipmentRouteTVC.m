@@ -31,6 +31,7 @@
 
 @property (nonatomic, strong) NSIndexPath *summaryIndexPath;
 @property (nonatomic, strong) NSString *routeWorkflow;
+@property (nonatomic, strong) NSString *nextProcessing;
 
 
 @end
@@ -524,8 +525,8 @@
                     [workflowActionSheet showInView:self.view];
                 }];
                 
-                NSLog(@"processing %@", self.route.processing);
-                NSLog(@"workflow %@", self.routeWorkflow);
+//                NSLog(@"processing %@", self.route.processing);
+//                NSLog(@"workflow %@", self.routeWorkflow);
                 
             }
             
@@ -572,29 +573,31 @@
                                                               didSelectButtonWithIndex:buttonIndex
                                                                             inWorkflow:workflowAS.workflow];
         
-        NSString *selectedProcessing = result[@"nextProcessing"];
+        self.nextProcessing = result[@"nextProcessing"];
         
-        if (selectedProcessing) self.route.processing = selectedProcessing;
-        
-        NSArray *editableProperties = result[@"editableProperties"];
-        
-        if (editableProperties) {
+        if (self.nextProcessing) {
             
-            STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+            NSArray *editableProperties = result[@"editableProperties"];
             
-            editablesVC.workflow = workflowAS.workflow;
-            editablesVC.toProcessing = selectedProcessing;
-            editablesVC.editableFields = editableProperties;
-            editablesVC.parent = self;
-            
-            [self presentViewController:editablesVC animated:YES completion:^{
+            if (editableProperties) {
                 
-            }];
-            
-        } else {
-            
-            [self syncAndReloadRootCell];
-            
+                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+                
+                editablesVC.workflow = workflowAS.workflow;
+                editablesVC.toProcessing = self.nextProcessing;
+                editablesVC.editableFields = editableProperties;
+                editablesVC.parent = self;
+                
+                [self presentViewController:editablesVC animated:YES completion:^{
+                    
+                }];
+                
+            } else {
+                
+                [self updateAndSyncAndReloadRootCell];
+                
+            }
+
         }
         
     }
@@ -613,11 +616,13 @@
         
     }
     
-    [self syncAndReloadRootCell];
+    [self updateAndSyncAndReloadRootCell];
     
 }
 
-- (void)syncAndReloadRootCell {
+- (void)updateAndSyncAndReloadRootCell {
+    
+    if (self.nextProcessing) self.route.processing = self.nextProcessing;
     
     [self.document saveDocument:^(BOOL success) {
         if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
