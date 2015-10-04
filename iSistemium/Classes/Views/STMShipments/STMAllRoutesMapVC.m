@@ -318,7 +318,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
             [self.routesCalcErrors appendFormat:@"%lu. %@\n\n", (unsigned long)self.routesCalcCounter, error.localizedDescription];
         }
         
-        if (self.self.routesCalcCounter == self.locationsArray.count - 1) {
+        if (self.routesCalcCounter == self.locationsArray.count - 1) {
             
             [self.spinner removeFromSuperview];
             [self.progressBar removeFromSuperview];
@@ -513,7 +513,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
                     circleImage = [UIImage imageNamed:@"circle_colored_blue"];
                 }
                 
-                UIImage *image = [STMFunctions drawText:@(myAnnotation.ord.integerValue + 1).stringValue
+                UIImage *image = [STMFunctions drawText:myAnnotation.ord.stringValue
                                                withFont:[UIFont systemFontOfSize:10]
                                                   color:[UIColor whiteColor]
                                                 inImage:circleImage
@@ -640,7 +640,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
         
         STMMapAnnotation *annotation = (STMMapAnnotation *)sender;
         
-        STMShipmentRoutePoint *point = self.points[annotation.ord.integerValue];
+        STMShipmentRoutePoint *point = self.points[annotation.ord.integerValue - 1];
         
         pointTVC.point = point;
         
