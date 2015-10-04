@@ -24,7 +24,15 @@
     if (processingRoutes.count > 0) {
         
         for (NSString *processing in processingRoutes) {
-            [actionSheet addButtonWithTitle:[self labelForProcessing:processing inWorkflow:workflow]];
+            
+            NSString *buttonTitle = [self labelForProcessing:processing inWorkflow:workflow];
+            
+            if ([self editablesPropertiesForProcessing:processing inWorkflow:workflow]) {
+                buttonTitle = [buttonTitle stringByAppendingString:@" …"];
+            }
+            
+            [actionSheet addButtonWithTitle:buttonTitle];
+            
         }
         
     } else {
