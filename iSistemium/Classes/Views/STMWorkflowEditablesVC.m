@@ -192,13 +192,17 @@
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, self.view.frame.size.height - height, self.view.frame.size.width, height);
     
+    STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                                target:self
+                                                                                                action:@selector(cancelButtonPressed)];
+    
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
     STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                           target:self
                                                                                           action:@selector(doneButtonPressed)];
     
-    [self.toolbar setItems:@[flexibleSpace, doneButton]];
+    [self.toolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
     
     [self.view addSubview:self.toolbar];
     
