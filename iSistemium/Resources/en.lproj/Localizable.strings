@@ -288,6 +288,7 @@
 "BAD VOLUME LABEL" = "Bad";
 "DISCREPANCY VOLUME LABEL" = "Discrepancy";
 "REGRADE VOLUME LABEL" = "Regrade";
+"BROKEN VOLUME LABEL" = "Broken";
 "ALL VOLUME BUTTON" = "All";
 "HAVE UNPROCESSED POSITIONS TITLE" = "Have unprocessed positions";
 "HAVE UNPROCESSED POSITIONS MESSAGE" = "Mark it as done?";
@@ -307,6 +308,7 @@
 "2_VOLUME_TYPE" = "Excess";
 "3_VOLUME_TYPE" = "Shortage";
 "4_VOLUME_TYPE" = "Regrade";
+"5_VOLUME_TYPE" = "Broken";
 "0BOTTLES" = "no bottles";
 "1BOTTLES" = "bottle";
 "2BOTTLES" = "bottles";

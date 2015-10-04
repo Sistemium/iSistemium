@@ -39,13 +39,15 @@ typedef NS_ENUM(NSInteger, STMShippingProcessState) {
                             badVolume:(NSInteger)badVolume
                          excessVolume:(NSInteger)excessVolume
                        shortageVolume:(NSInteger)shortageVolume
-                        regradeVolume:(NSInteger)regradeVolume;
+                        regradeVolume:(NSInteger)regradeVolume
+                         brokenVolume:(NSInteger)brokenVolume;
 
 - (NSString *)volumesStringWithDoneVolume:(NSInteger)doneVolume
                                 badVolume:(NSInteger)badVolume
                              excessVolume:(NSInteger)excessVolume
                            shortageVolume:(NSInteger)shortageVolume
                             regradeVolume:(NSInteger)regradeVolume
+                             brokenVolume:(NSInteger)brokenVolume
                                packageRel:(NSInteger)packageRel;
 
 - (NSAttributedString *)volumesAttributedStringWithAttributes:(NSDictionary *)attributes
@@ -54,6 +56,7 @@ typedef NS_ENUM(NSInteger, STMShippingProcessState) {
                                                  excessVolume:(NSInteger)excessVolume
                                                shortageVolume:(NSInteger)shortageVolume
                                                 regradeVolume:(NSInteger)regradeVolume
+                                                 brokenVolume:(NSInteger)brokenVolume
                                                    packageRel:(NSInteger)packageRel;
 
 - (void)shippingPosition:(STMShipmentPosition *)position
@@ -72,11 +75,15 @@ typedef NS_ENUM(NSInteger, STMShippingProcessState) {
        withRegradeVolume:(NSInteger)regradeVolume;
 
 - (void)shippingPosition:(STMShipmentPosition *)position
+        withBrokenVolume:(NSInteger)brokenVolume;
+
+- (void)shippingPosition:(STMShipmentPosition *)position
           withDoneVolume:(NSInteger)doneVolume
                badVolume:(NSInteger)badVolume
             excessVolume:(NSInteger)excessVolume
           shortageVolume:(NSInteger)shortageVolume
-           regradeVolume:(NSInteger)regradeVolume;
+           regradeVolume:(NSInteger)regradeVolume
+            brokenVolume:(NSInteger)brokenVolume;
 
 - (BOOL)haveProcessedPositionsAtShipment:(STMShipment *)shipment;
 - (BOOL)haveUnprocessedPositionsAtShipment:(STMShipment *)shipment;

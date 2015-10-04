@@ -601,6 +601,7 @@
                                                                                                excessVolume:position.excessVolume.integerValue
                                                                                              shortageVolume:position.shortageVolume.integerValue
                                                                                               regradeVolume:position.regradeVolume.integerValue
+                                                                                               brokenVolume:position.brokenVolume.integerValue
                                                                                                  packageRel:position.article.packageRel.integerValue];
         cell.detailLabel.attributedText = volumes;
         

@@ -20,7 +20,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     STMPositionProcessingTypeBad = 1,
     STMPositionProcessingTypeExcess = 2,
     STMPositionProcessingTypeShortage = 3,
-    STMPositionProcessingTypeRegrade = 4
+    STMPositionProcessingTypeRegrade = 4,
+    STMPositionProcessingTypeBroken = 5
 };
 
 
@@ -794,6 +795,11 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
                 [self.shippingProcessController shippingPosition:position withRegradeVolume:position.volume.integerValue];
                 break;
             }
+            case STMPositionProcessingTypeBroken: {
+                [self.shippingProcessController shippingPosition:position withBrokenVolume:position.volume.integerValue];
+            }
+                break;
+                
             default: {
                 break;
             }
@@ -1280,6 +1286,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         [actionSheet addButtonWithTitle:NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
         [actionSheet addButtonWithTitle:NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
         [actionSheet addButtonWithTitle:NSLocalizedString(@"REGRADE VOLUME LABEL", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"BROKEN VOLUME LABEL", nil)];
         
         [actionSheet showFromBarButtonItem:self.processingButton animated:YES];
         

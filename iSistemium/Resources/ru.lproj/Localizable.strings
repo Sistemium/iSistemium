@@ -288,6 +288,7 @@
 "BAD VOLUME LABEL" = "Брак";
 "DISCREPANCY VOLUME LABEL" = "Расхождение";
 "REGRADE VOLUME LABEL" = "Пересортица";
+"BROKEN VOLUME LABEL" = "Бой";
 "ALL VOLUME BUTTON" = "Целиком";
 "HAVE UNPROCESSED POSITIONS TITLE" = "Остались необработанные позиции";
 "HAVE UNPROCESSED POSITIONS MESSAGE" = "Отметить их как отгруженные?";
@@ -307,6 +308,7 @@
 "2_VOLUME_TYPE" = "Излишек";
 "3_VOLUME_TYPE" = "Недостача";
 "4_VOLUME_TYPE" = "Пересортица";
+"5_VOLUME_TYPE" = "Бой";
 "0BOTTLES" = "нет бутылок";
 "1BOTTLES" = "бутылка";
 "2BOTTLES" = "бутылки";

@@ -18,7 +18,8 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     STMSummaryTypeBad,
     STMSummaryTypeExcess,
     STMSummaryTypeShortage,
-    STMSummaryTypeRegrade
+    STMSummaryTypeRegrade,
+    STMSummaryTypeBroken
 };
 
 
@@ -66,7 +67,8 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     return @[@(STMSummaryTypeBad),
              @(STMSummaryTypeExcess),
              @(STMSummaryTypeShortage),
-             @(STMSummaryTypeRegrade)];
+             @(STMSummaryTypeRegrade),
+             @(STMSummaryTypeBroken)];
     
 }
 
@@ -131,6 +133,10 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
             volumeType = @"regradeVolume";
             break;
         }
+        case STMSummaryTypeBroken: {
+            volumeType = @"brokenVolume";
+            break;
+        }
         default: {
             break;
         }
@@ -187,6 +193,10 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
                 
             case STMSummaryTypeRegrade:
                 return NSLocalizedString(@"REGRADE VOLUME LABEL", nil);
+                break;
+
+            case STMSummaryTypeBroken:
+                return NSLocalizedString(@"BROKEN VOLUME LABEL", nil);
                 break;
 
             default:
