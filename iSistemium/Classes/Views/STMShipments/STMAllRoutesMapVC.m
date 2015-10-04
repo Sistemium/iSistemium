@@ -217,8 +217,8 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     self.mapView.delegate = self;
     self.mapView.showsUserLocation = YES;
 
-    [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
-//    [self updateMapView];
+//    [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
+    [self updateMapView];
 
 }
 
@@ -253,8 +253,8 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
     
     [self prepareArrayOfCLLocations];
-    [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
-//    [self updateMapView];
+//    [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
+    [self updateMapView];
     
 }
 
@@ -459,8 +459,8 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     if (!self.startPoint) {
         
         self.startPoint = userLocation.location;
-        [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
-//        [self updateMapView];
+//        [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
+        [self updateMapView];
         
     }
     
