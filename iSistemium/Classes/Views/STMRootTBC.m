@@ -551,8 +551,13 @@
             if (siblingsCount > 1 || [(id <STMTabBarItemControllable>)vc shouldShowOwnActions]) {
                 
                 NSUInteger index = [self.viewControllers indexOfObject:vc];
-                UIControl *tabBarControl = tabBarControlsArray[index];
-                [self addMoreMarkLabelToControl:tabBarControl];
+                
+                if (tabBarControlsArray.count > index) {
+                    
+                    UIControl *tabBarControl = tabBarControlsArray[index];
+                    [self addMoreMarkLabelToControl:tabBarControl];
+
+                }
                 
             }
             
