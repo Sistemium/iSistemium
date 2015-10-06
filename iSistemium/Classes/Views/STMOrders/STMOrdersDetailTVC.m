@@ -245,17 +245,23 @@
     
     NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:processing];
     
-    STMSegmentedControl *filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
-    filterProcessedSegmentedControl.selectedSegmentIndex = 0;
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonPressed:)];
-    [filterProcessedSegmentedControl addGestureRecognizer:tap];
-    
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonLongPressed:)];
-    [filterProcessedSegmentedControl addGestureRecognizer:longPress];
-    
-    STMBarButtonItem *filterButton = [[STMBarButtonItem alloc] initWithCustomView:filterProcessedSegmentedControl];
-    return filterButton;
+    if (filterProcessedLabel) {
+        
+        STMSegmentedControl *filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
+        filterProcessedSegmentedControl.selectedSegmentIndex = 0;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonPressed:)];
+        [filterProcessedSegmentedControl addGestureRecognizer:tap];
+        
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonLongPressed:)];
+        [filterProcessedSegmentedControl addGestureRecognizer:longPress];
+        
+        STMBarButtonItem *filterButton = [[STMBarButtonItem alloc] initWithCustomView:filterProcessedSegmentedControl];
+        return filterButton;
+
+    } else {
+        return nil;
+    }
     
 }
 
@@ -763,11 +769,11 @@
         if (!button) {
             
             button = [self filterButtonForProcessing:processingName];
-            (self.filterButtons)[processingName] = button;
+            if (button) self.filterButtons[processingName] = button;
             
         }
         
-        [toolbarItems addObject:button];
+        if (button) [toolbarItems addObject:button];
         
     }
 //// ------------------- TESTING DUBLICATE
