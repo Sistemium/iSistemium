@@ -244,6 +244,8 @@
 - (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
     
     NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:processing];
+
+    filterProcessedLabel = (filterProcessedLabel) ? filterProcessedLabel : processing;
     
     if (filterProcessedLabel) {
         
@@ -644,7 +646,7 @@
 
     NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
     
-    cell.infoLabel.text = processingLabel;
+    cell.infoLabel.text = (processingLabel) ? processingLabel : saleOrder.processing;
     
     for (UIGestureRecognizer *gestures in cell.infoLabel.gestureRecognizers) {
         [cell.infoLabel removeGestureRecognizer:gestures];
