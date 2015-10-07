@@ -21,6 +21,7 @@
 @interface STMLocationTracker() <CLLocationManagerDelegate>
 
 @property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, strong) CLLocationManager *requestManager;
 
 @property (nonatomic) CLLocationAccuracy desiredAccuracy;
 @property (nonatomic) CLLocationAccuracy foregroundDesiredAccuracy;
@@ -42,6 +43,8 @@
 
 @property (nonatomic, strong) NSTimer *startTimer;
 @property (nonatomic, strong) NSTimer *finishTimer;
+
+@property (nonatomic, strong) NSString *requestLocationServiceAuthorization;
 
 
 @end
@@ -76,10 +79,23 @@
                name:UIApplicationDidEnterBackgroundNotification
              object:nil];
     
+    [nc addObserver:self
+           selector:@selector(appSettingsChanged:)
+               name:@"appSettingsSettingsChanged"
+             object:self.session];
+    
 }
 
 - (void)appStateDidChange {
     [self checkTrackerAutoStart];
+}
+
+- (void)appSettingsChanged:(NSNotification *)notification {
+
+    if ([[notification.userInfo allKeys] containsObject:@"requestLocationServiceAuthorization"]) {
+        self.requestLocationServiceAuthorization = nil;
+    }
+
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -119,6 +135,20 @@
 
 
 #pragma mark - locationTracker settings
+
+- (NSString *)requestLocationServiceAuthorization {
+    
+    if (!_requestLocationServiceAuthorization) {
+        
+        NSDictionary *appSettings = [[self.session settingsController] currentSettingsForGroup:@"appSettings"];
+        NSString *requestLocationServiceAuthorization = [appSettings valueForKey:@"requestLocationServiceAuthorization"];
+
+        _requestLocationServiceAuthorization = requestLocationServiceAuthorization;
+        
+    }
+    return _requestLocationServiceAuthorization;
+
+}
 
 - (CLLocationAccuracy)currentDesiredAccuracy {
     
@@ -302,7 +332,7 @@
 #pragma mark - tracking
 
 - (void)startTracking {
-    
+
     [super startTracking];
     
     if (self.tracking) {
@@ -342,9 +372,56 @@
             [self startUpdatingLocation];
             
         }
-
+        
     }
+
+}
+
+- (void)requestAuthorization:(void (^)(BOOL success))completionHandler {
+
+    CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
     
+        if (status == kCLAuthorizationStatusRestricted || status == kCLAuthorizationStatusDenied) {
+            
+            [[self.session logger] saveLogMessageWithText:@"location tracking is not permitted" type:@"error"];
+            
+            completionHandler(NO);
+            
+        } else if (status == kCLAuthorizationStatusNotDetermined) {
+            
+            float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+
+            if (systemVersion >= 8.0) {
+
+                if ([self.requestLocationServiceAuthorization isEqualToString:@"requestWhenInUseAuthorization"]) {
+                    
+                    [self.requestManager requestWhenInUseAuthorization];
+                    
+                } else if ([self.requestLocationServiceAuthorization isEqualToString:@"requestAlwaysAuthorization"]) {
+                    
+                    [self.requestManager requestAlwaysAuthorization];
+                    
+                } else {
+                    
+                    NSString *logMessage = [NSString stringWithFormat:@"requestLocationServiceAuthorization wrong value: %@", self.requestLocationServiceAuthorization];
+                    [[self.session logger] saveLogMessageWithText:logMessage type:@"error"];
+                    
+                }
+                
+            } else if (systemVersion >= 2.0 && systemVersion < 8.0) {
+                
+                [self.requestManager startUpdatingLocation];
+                
+            }
+            
+            completionHandler(NO);
+
+        } else {
+
+            completionHandler(YES);
+            
+        }
+
 }
 
 - (void)stopTracking {
@@ -390,6 +467,7 @@
 
 }
 
+
 #pragma mark - CLLocationManager
 
 - (CLLocationManager *)locationManager {
@@ -411,7 +489,26 @@
     
 }
 
+- (CLLocationManager *)requestManager {
+    
+    if (!_requestManager) {
+
+        _requestManager = [[CLLocationManager alloc] init];
+        _requestManager.delegate = self;
+
+    }
+    return _requestManager;
+    
+}
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    
+    if ([manager isEqual:self.requestManager]) {
+        
+        [self.requestManager stopUpdatingLocation];
+        return;
+        
+    }
     
     CLLocation *newLocation = [locations lastObject];
     
@@ -478,17 +575,25 @@
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     
-    [STMClientDataController checkClientData];
+    if ([manager isEqual:self.requestManager]) {
+        
+        if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) [self checkTrackerAutoStart];
+        
+    } else {
     
-    if (status == kCLAuthorizationStatusAuthorizedAlways && self.tracking) {
+        [STMClientDataController checkClientData];
         
-        if ([CLLocationManager locationServicesEnabled]) {
-            [self startUpdatingLocation];
-        } else {
-            [[self.session logger] saveLogMessageWithText:@"location tracking disabled" type:@"error"];
-            [super stopTracking];
+        if ((status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) && self.tracking) {
+            
+            if ([CLLocationManager locationServicesEnabled]) {
+                [self startUpdatingLocation];
+            } else {
+                [[self.session logger] saveLogMessageWithText:@"location tracking disabled" type:@"error"];
+                [super stopTracking];
+            }
+            
         }
-        
+
     }
     
 }
@@ -543,16 +648,28 @@
 
 - (void)checkTrackerAutoStart {
     
-    [self initTimers];
-
-    if ([self currentDesiredAccuracy] != 0) {
+    if (![self.requestLocationServiceAuthorization isEqualToString:@"noRequest"]) {
         
-        if (!self.tracking) [self startTracking];
-        [self updateDesiredAccuracy];
+        [self requestAuthorization:^(BOOL success) {
+            
+            if (success) {
+                
+                [self initTimers];
+                
+                if ([self currentDesiredAccuracy] != 0) {
+                    
+                    if (!self.tracking) [self startTracking];
+                    [self updateDesiredAccuracy];
+                    
+                } else {
+                    
+                    [self stopTracking];
+                    
+                }
 
-    } else {
-        
-        [self stopTracking];
+            }
+            
+        }];
         
     }
 
