@@ -71,6 +71,11 @@
                     "name": "enableShowBottles",
                     "value": true,
                     "control": "switch",
+                },
+                {
+                    "name": "requestLocationServiceAuthorization",
+                    "value": "noRequest",
+                    "control": "segmentedContol"
                 }
             ]
        },
