@@ -61,6 +61,21 @@
                     "name": "blockIfNoLocationPermission",
                     "value": false,
                     "control": "switch",
+                },
+                {
+                    "name": "enableAggregateShipment",
+                    "value": true,
+                    "control": "switch",
+                },
+                {
+                    "name": "enableShowBottles",
+                    "value": true,
+                    "control": "switch",
+                },
+                {
+                    "name": "requestLocationServiceAuthorization",
+                    "value": "noRequest",
+                    "control": "segmentedContol"
                 }
             ]
        },
@@ -70,7 +85,7 @@
       [
         {
           "name": "desiredAccuracy",
-          "value": 10,
+          "value": 0,
           "control": "slider",
           "min": 0,
           "max": 5,
@@ -78,7 +93,7 @@
         },
        {
            "name": "backgroundDesiredAccuracy",
-           "value": null,
+           "value": 0,
            "control": "slider",
            "min": 0,
            "max": 5,
@@ -86,7 +101,7 @@
        },
        {
            "name": "foregroundDesiredAccuracy",
-           "value": null,
+           "value": 0,
            "control": "slider",
            "min": 0,
            "max": 5,

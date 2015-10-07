@@ -84,7 +84,9 @@
                                 @"enablePartnersEditing",
                                 @"enableDownloadViaWWAN",
                                 @"getLocationsWithNegativeSpeed",
-                                @"blockIfNoLocationPermission"];
+                                @"blockIfNoLocationPermission",
+                                @"enableAggregateShipment",
+                                @"enableShowBottles"];
         
         NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
         
@@ -150,16 +152,6 @@
         } else if ([stringValue containsObject:key]) {
             return value;
             
-        } else if ([key isEqualToString:@"catalogue.cell.right"]) {
-            
-            NSArray *availableValues = @[@"price", @"pieceVolume", @"stock"];
-            
-            if ([availableValues containsObject:value]) {
-                return value;
-            } else {
-                return @"price";
-            }
-            
         } else if ([logicValue containsObject:key]) {
             
             NSString *orValue = @"OR";
@@ -171,6 +163,26 @@
                 return [(NSString *)value uppercaseString];
             } else {
                 return andValue;
+            }
+            
+        } else if ([key isEqualToString:@"catalogue.cell.right"]) {
+            
+            NSArray *availableValues = @[@"price", @"pieceVolume", @"stock"];
+            
+            if ([availableValues containsObject:value]) {
+                return value;
+            } else {
+                return @"price";
+            }
+            
+        } else if ([key isEqualToString:@"requestLocationServiceAuthorization"]) {
+            
+            NSArray *availableValues = @[@"noRequest", @"requestAlwaysAuthorization", @"requestWhenInUseAuthorization"];
+            
+            if ([availableValues containsObject:value]) {
+                return value;
+            } else {
+                return @"noRequest";
             }
             
         }

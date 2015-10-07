@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="13F34" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="I1j-S3-XI3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="I1j-S3-XI3">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
     <scenes>
         <!--Setting ControlsTVC-->
@@ -50,10 +50,10 @@
             </objects>
             <point key="canvasLocation" x="1093" y="-360"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--SettingsNC-->
         <scene sceneID="Ko4-ej-5QM">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="I1j-S3-XI3" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="I1j-S3-XI3" customClass="STMSettingsNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="3VQ-lt-IcG">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>

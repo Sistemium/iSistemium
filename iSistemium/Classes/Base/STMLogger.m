@@ -217,7 +217,7 @@
 }
 
 - (void)saveLogMessageWithText:(NSString *)text {
-    [self saveLogMessageWithText:text type:nil];
+    [self saveLogMessageWithText:text type:@"info"];
 }
 
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type {

@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "STMTabBarItemControllable.h"
 
-@interface STMSplitViewController : UISplitViewController
+@interface STMSplitViewController : UISplitViewController <STMTabBarItemControllable>
+
+@property (nonatomic, strong) NSArray *actions;
+
 
 @end

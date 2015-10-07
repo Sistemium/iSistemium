@@ -41,8 +41,13 @@
         NSString *boxCountString = [NSString stringWithFormat:@"%@%@ ", approximateBoxCount, NSLocalizedString(@"_BOXES", nil)];
         detailText = [detailText stringByAppendingString:boxCountString];
         
+        NSDictionary *appSettings = [[STMObjectsController session].settingsController currentSettingsForGroup:@"appSettings"];
+        BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+
+        NSString *bottleString = (enableShowBottles) ? NSLocalizedString(@"_BOTTLES", nil) : NSLocalizedString(@"_PIECES", nil);
+        
         NSNumber *bottleCount = [self.shipments valueForKeyPath:@"@sum.bottleCount"];
-        NSString *bottleCountString = [NSString stringWithFormat:@"%@%@", bottleCount, NSLocalizedString(@"_BOTTLES", nil)];
+        NSString *bottleCountString = [NSString stringWithFormat:@"%@%@", bottleCount, bottleString];
         detailText = [detailText stringByAppendingString:bottleCountString];
         
     } else {        

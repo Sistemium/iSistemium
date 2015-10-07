@@ -217,6 +217,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     self.mapView.delegate = self;
     self.mapView.showsUserLocation = YES;
 
+//    [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
     [self updateMapView];
 
 }
@@ -252,6 +253,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
     
     [self prepareArrayOfCLLocations];
+//    [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
     [self updateMapView];
     
 }
@@ -318,7 +320,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
             [self.routesCalcErrors appendFormat:@"%lu. %@\n\n", (unsigned long)self.routesCalcCounter, error.localizedDescription];
         }
         
-        if (self.self.routesCalcCounter == self.locationsArray.count - 1) {
+        if (self.routesCalcCounter == self.locationsArray.count - 1) {
             
             [self.spinner removeFromSuperview];
             [self.progressBar removeFromSuperview];
@@ -457,6 +459,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     if (!self.startPoint) {
         
         self.startPoint = userLocation.location;
+//        [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
         [self updateMapView];
         
     }
@@ -513,7 +516,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
                     circleImage = [UIImage imageNamed:@"circle_colored_blue"];
                 }
                 
-                UIImage *image = [STMFunctions drawText:@(myAnnotation.ord.integerValue + 1).stringValue
+                UIImage *image = [STMFunctions drawText:myAnnotation.ord.stringValue
                                                withFont:[UIFont systemFontOfSize:10]
                                                   color:[UIColor whiteColor]
                                                 inImage:circleImage
@@ -594,7 +597,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
         [self.mapView addAnnotation:selectedPin];
         if (previousPin) [self.mapView addAnnotation:previousPin];
         
-        [self.ordPicker selectRow:point.ord.integerValue inComponent:0 animated:YES];
+        [self.ordPicker selectRow:(point.ord.integerValue - 1) inComponent:0 animated:YES];
 
     }
     
@@ -602,7 +605,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     
-    NSInteger fromIndex = self.selectedPin.ord.integerValue;
+    NSInteger fromIndex = self.selectedPin.ord.integerValue - 1;
     NSInteger toIndex = row;
     
     NSUInteger minIndex = MIN(fromIndex, toIndex);
@@ -619,11 +622,11 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 //    STMShipmentRoutePoint *movedPoint = self.points[fromIndex];
 //    movedPoint.ord = @(toIndex);
 
-    self.selectedPin.point.ord = @(row);
+    self.selectedPin.point.ord = @(row + 1);
     
     self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
 
-    NSLog(@"row %d", row);
+//    NSLog(@"row %d", row);
     
 }
 
@@ -640,7 +643,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
         
         STMMapAnnotation *annotation = (STMMapAnnotation *)sender;
         
-        STMShipmentRoutePoint *point = self.points[annotation.ord.integerValue];
+        STMShipmentRoutePoint *point = self.points[annotation.ord.integerValue - 1];
         
         pointTVC.point = point;
         
@@ -723,8 +726,6 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     
     self.ordPicker.backgroundColor = [UIColor whiteColor];
     
-//    [[UIPickerView appearance] setBackgroundColor:[UIColor whiteColor]];
-    
     self.ordPicker.dataSource = self;
     self.ordPicker.delegate = self;
     
@@ -736,8 +737,6 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     
     self.mapView.frame = CGRectMake(mapFrame.origin.x, y, mapFrame.size.width, height);
     
-//    [self.mapView showAnnotations:self.mapView.annotations animated:YES];
-
 }
 
 - (void)hideOrdPicker {

@@ -14,6 +14,7 @@
 #include "STMBarButtonItem.h"
 
 #include "STMSplitViewController.h"
+#include "STMActionPopoverNC.h"
 
 #include "STMImagePickerController.h"
 
@@ -42,6 +43,8 @@
 #include "STMInsetLabel.h"
 
 #include "UIToolbar+custom.h"
+
+#include "STMWorkflowAS.h"
 
 
 #endif

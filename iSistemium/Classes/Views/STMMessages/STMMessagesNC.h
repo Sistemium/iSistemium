@@ -7,11 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMTabBarItemControllable.h"
+#import "STMUI.h"
 
-@interface STMMessagesNC : UINavigationController <STMTabBarItemControllable>
-
-- (void)showActionSheetFromTabBarItem;
+@interface STMMessagesNC : STMActionPopoverNC
 
 
 @end

@@ -18,15 +18,20 @@
 #import "STMObjectsController.h"
 #import "STMLocationController.h"
 #import "STMShippingProcessController.h"
+#import "STMWorkflowController.h"
+#import "STMEntityController.h"
 
 #import "STMReorderRoutePointsTVC.h"
+#import "STMWorkflowEditablesVC.h"
 
 
-@interface STMShipmentRouteTVC ()
+@interface STMShipmentRouteTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
 @property (nonatomic, strong) NSIndexPath *summaryIndexPath;
+@property (nonatomic, strong) NSString *routeWorkflow;
+@property (nonatomic, strong) NSString *nextProcessing;
 
 
 @end
@@ -46,6 +51,22 @@
         
     }
     return _splitVC;
+    
+}
+
+- (NSString *)routeWorkflow {
+
+    if (!_routeWorkflow) {
+        
+        NSString *entityName = NSStringFromClass([STMShipmentRoute class]);
+        entityName = [entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
+        
+        STMEntity *shipmentRouteEntity = [STMEntityController entityWithName:entityName];
+        
+        _routeWorkflow = shipmentRouteEntity.workflow;
+
+    }
+    return _routeWorkflow;
     
 }
 
@@ -106,6 +127,16 @@
         NSLog(@"shipmentRoutePoints fetch error %@", error.localizedDescription);
         
     } else {
+        
+        for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
+            
+            NSUInteger ord = [self.resultsController.fetchedObjects indexOfObject:point] + 1;
+            
+            if (!point.ord || point.ord.integerValue != ord) {
+                point.ord = @(ord);
+            }
+
+        }
         
         [self.tableView reloadData];
         [self checkPointsLocations];
@@ -195,6 +226,16 @@
 
 }
 
+- (NSNumber *)brokenVolumeSummary {
+    
+    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSNumber *volume = [positions valueForKeyPath:@"@sum.brokenVolume"];
+    
+    return volume;
+    
+}
+
+
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -258,43 +299,15 @@
     return [self heightForCellAtIndexPath:indexPath];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self heightForCellAtIndexPath:indexPath];
-}
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
+    
+    static UITableViewCell *cell = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+    });
 
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    
-    if (cachedHeight) {
-        
-        return cachedHeight.floatValue;
-        
-    } else {
-        
-        static UITableViewCell *cell = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
-        });
-        
-        [self fillCell:cell atIndexPath:indexPath];
-        
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-        
-        [cell setNeedsLayout];
-        [cell layoutIfNeeded];
-        
-        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-        
-        height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
-        
-        [self putCachedHeight:height forIndexPath:indexPath];
-        
-        return height;
-        
-    }
+    return cell;
     
 }
 
@@ -335,11 +348,16 @@
 
 - (void)fillRouteCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
+    UIColor *textColor = [UIColor blackColor];
+    
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
+
     switch (indexPath.row) {
         case 0:
 
             cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
-            cell.detailLabel.text = @"";
+            cell.detailLabel.attributedText = [self detailTextForLabel:cell.detailLabel];
             cell.accessoryType = UITableViewCellAccessoryNone;
         break;
             
@@ -353,11 +371,52 @@
         default:
             break;
     }
-    
-    UIColor *textColor = [UIColor blackColor];
 
-    cell.titleLabel.textColor = textColor;
-    cell.detailLabel.textColor = textColor;
+}
+
+- (NSAttributedString *)detailTextForLabel:(STMLabel *)detailLabel {
+    
+    NSDictionary *attributes = @{NSFontAttributeName: detailLabel.font,
+                                 NSForegroundColorAttributeName: detailLabel.textColor};
+    
+    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:@"" attributes:attributes];
+    
+    if (self.route.processing) {
+        
+        NSString *processingDescription = [STMWorkflowController descriptionForProcessing:self.route.processing inWorkflow:self.routeWorkflow];
+        
+        if (processingDescription) {
+
+            [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+            
+            UIColor *processingColor = [STMWorkflowController colorForProcessing:self.route.processing inWorkflow:self.routeWorkflow];
+            UIColor *textColor = (processingColor) ? processingColor : [UIColor blackColor];
+            
+            UIFont *font = detailLabel.font;
+            
+            attributes = @{NSFontAttributeName: font,
+                           NSForegroundColorAttributeName: textColor};
+
+            [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:processingDescription attributes:attributes]];
+            
+        }
+        
+    }
+    
+    if (self.route.commentText) {
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        
+        UIFont *font = [UIFont systemFontOfSize:detailLabel.font.pointSize - 2];
+        
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: detailLabel.textColor};
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:self.route.commentText attributes:attributes]];
+        
+    }
+    
+    return detailText;
     
 }
 
@@ -376,12 +435,14 @@
     NSNumber *shortageVolume = [self shortageVolumeSummary];
     NSNumber *excessVolume = [self excessVolumeSummary];
     NSNumber *regradeVolume = [self regradeVolumeSummary];
+    NSNumber *brokenVolume = [self brokenVolumeSummary];
     
     NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:0
                                                                                                badVolume:badVolume.integerValue
                                                                                             excessVolume:excessVolume.integerValue
                                                                                           shortageVolume:shortageVolume.integerValue
                                                                                            regradeVolume:regradeVolume.integerValue
+                                                                                            brokenVolume:brokenVolume.integerValue
                                                                                               packageRel:0];
     
     return (volumesString) ? [@"\n" stringByAppendingString:volumesString] : @"";
@@ -465,7 +526,23 @@
         
     } else if (indexPath.section == 0) {
         
-        if (indexPath.row == 1) {
+        if (indexPath.row == 0) {
+            
+            if (self.routeWorkflow) {
+                
+                STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:self.route.processing
+                                                                                                  inWorkflow:self.routeWorkflow
+                                                                                                withDelegate:self];
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    [workflowActionSheet showInView:self.view];
+                }];
+                
+//                NSLog(@"processing %@", self.route.processing);
+//                NSLog(@"workflow %@", self.routeWorkflow);
+                
+            }
+            
+        } else if (indexPath.row == 1) {
             
             [self performSegueWithIdentifier:@"showSummary" sender:self];
             
@@ -492,6 +569,79 @@
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
         
     }
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
+        
+        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
+        
+        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                              didSelectButtonWithIndex:buttonIndex
+                                                                            inWorkflow:workflowAS.workflow];
+        
+        self.nextProcessing = result[@"nextProcessing"];
+        
+        if (self.nextProcessing) {
+            
+            NSArray *editableProperties = result[@"editableProperties"];
+            
+            if (editableProperties) {
+                
+                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+                
+                editablesVC.workflow = workflowAS.workflow;
+                editablesVC.toProcessing = self.nextProcessing;
+                editablesVC.editableFields = editableProperties;
+                editablesVC.parent = self;
+                
+                [self presentViewController:editablesVC animated:YES completion:^{
+                    
+                }];
+                
+            } else {
+                
+                [self updateAndSyncAndReloadRootCell];
+                
+            }
+
+        }
+        
+    }
+    
+}
+
+- (void)takeEditableValues:(NSDictionary *)editableValues {
+    
+    NSLog(@"editableValues %@", editableValues);
+    
+    for (NSString *field in editableValues.allKeys) {
+        
+        if ([self.route.entity.propertiesByName.allKeys containsObject:field]) {
+            [self.route setValue:editableValues[field] forKey:field];
+        }
+        
+    }
+    
+    [self updateAndSyncAndReloadRootCell];
+    
+}
+
+- (void)updateAndSyncAndReloadRootCell {
+    
+    if (self.nextProcessing) self.route.processing = self.nextProcessing;
+    
+    [self.document saveDocument:^(BOOL success) {
+        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+    }];
+    
+    NSIndexPath *routeIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    if (routeIndexPath) [self.tableView reloadRowsAtIndexPaths:@[routeIndexPath] withRowAnimation:UITableViewRowAnimationFade];
     
 }
 
@@ -586,8 +736,8 @@
 
         for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
             
-            if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point]) {
-                point.ord = @([self.resultsController.fetchedObjects indexOfObject:point]);
+            if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point] + 1) {
+                point.ord = @([self.resultsController.fetchedObjects indexOfObject:point] + 1);
             }
             
         }
@@ -686,13 +836,13 @@
 
     NSArray *result = [pointsWithLocation sortedArrayUsingDescriptors:[self shipmentRoutePointsSortDescriptors]];
     
-    for (STMShipmentRoutePoint *point in result) {
-        
-        if (point.ord.integerValue != [result indexOfObject:point]) {
-            point.ord = @([result indexOfObject:point]);
-        }
-        
-    }
+//    for (STMShipmentRoutePoint *point in result) {
+//        
+//        if (point.ord.integerValue != [result indexOfObject:point] + 1) {
+//            point.ord = @([result indexOfObject:point] + 1);
+//        }
+//        
+//    }
 
     return result;
     

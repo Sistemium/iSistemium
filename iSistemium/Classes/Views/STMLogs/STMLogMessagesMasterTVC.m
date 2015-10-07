@@ -157,6 +157,7 @@
 
 - (void)customInit {
     
+    self.clearsSelectionOnViewWillAppear = NO;
     [self performFetch];
     
     [super customInit];

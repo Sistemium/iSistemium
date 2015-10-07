@@ -1120,6 +1120,10 @@
             NSString *eTag = clientEntity.eTag;
             eTag = eTag ? eTag : @"*";
             
+//            if (!self.fullSyncWasDone && [entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
+//                eTag = @"*";
+//            }
+
             NSURL *requestURL = [NSURL URLWithString:url];
             
             [self startReceiveDataFromURL:requestURL withETag:eTag];

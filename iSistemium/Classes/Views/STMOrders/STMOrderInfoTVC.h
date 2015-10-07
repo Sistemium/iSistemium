@@ -6,13 +6,11 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMVariableCellsHeightTVC.h"
 #import "STMOrdersSVC.h"
 
 
-@interface STMOrderInfoTVC : STMFetchedResultsControllerTVC
-
-#warning — have to use STMVariableCellsHeightTVC class?
+@interface STMOrderInfoTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMSaleOrder *saleOrder;
 

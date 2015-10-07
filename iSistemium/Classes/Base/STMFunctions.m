@@ -8,6 +8,7 @@
 
 #import "STMFunctions.h"
 
+#import "STMSessionManager.h"
 #import "STMLogger.h"
 
 #import <CommonCrypto/CommonDigest.h>
@@ -766,6 +767,9 @@
     NSString *volumeUnitString = nil;
     NSString *infoText = nil;
     
+    NSDictionary *appSettings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+
     if (packageRel != 0 && volume >= packageRel) {
         
         NSInteger package = floor(volume / packageRel);
@@ -777,7 +781,7 @@
         
         if (bottle > 0) {
             
-            volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+            volumeUnitString = (enableShowBottles) ? NSLocalizedString(@"VOLUME UNIT2", nil) : NSLocalizedString(@"VOLUME UNIT3", nil);
             NSString *bottleString = [NSString stringWithFormat:@" %ld %@", (long)bottle, volumeUnitString];
             
             packageString = [packageString stringByAppendingString:bottleString];
@@ -788,7 +792,7 @@
         
     } else {
         
-        volumeUnitString = NSLocalizedString(@"VOLUME UNIT2", nil);
+        volumeUnitString = (enableShowBottles) ? NSLocalizedString(@"VOLUME UNIT2", nil) : NSLocalizedString(@"VOLUME UNIT3", nil);
         infoText = [NSString stringWithFormat:@"%ld %@", (long)volume, volumeUnitString];
         
     }

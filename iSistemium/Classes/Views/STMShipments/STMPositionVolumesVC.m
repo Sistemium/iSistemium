@@ -33,6 +33,7 @@
 @property (nonatomic, strong) STMVolumeTVCell *excessVolumeCell;
 @property (nonatomic, strong) STMVolumeTVCell *shortageVolumeCell;
 @property (nonatomic, strong) STMVolumeTVCell *regradeVolumeCell;
+@property (nonatomic, strong) STMVolumeTVCell *brokenVolumeCell;
 //@property (nonatomic, strong) STMVolumeTVCell *discrepancyVolumeCell;
 @property (nonatomic, strong) NSArray *volumeCells;
 
@@ -101,7 +102,8 @@
              self.badVolumeCell,
              self.excessVolumeCell,
              self.shortageVolumeCell,
-             self.regradeVolumeCell];
+             self.regradeVolumeCell,
+             self.brokenVolumeCell];
     
 }
 
@@ -159,7 +161,8 @@
                                                                                                   badVolume:[self.volumeValues[@(STMVolumeTypeBad)] integerValue]
                                                                                                excessVolume:[self.volumeValues[@(STMVolumeTypeExcess)] integerValue]
                                                                                              shortageVolume:[self.volumeValues[@(STMVolumeTypeShortage)] integerValue]
-                                                                                              regradeVolume:[self.volumeValues[@(STMVolumeTypeRegrade)] integerValue]];
+                                                                                              regradeVolume:[self.volumeValues[@(STMVolumeTypeRegrade)] integerValue]
+                                                                                               brokenVolume:[self.volumeValues[@(STMVolumeTypeBroken)] integerValue]];
             
             if (!checkingInfo) {
                 
@@ -234,7 +237,8 @@
                                                           badVolume:[self.volumeValues[@(STMVolumeTypeBad)] integerValue]
                                                        excessVolume:[self.volumeValues[@(STMVolumeTypeExcess)] integerValue]
                                                      shortageVolume:[self.volumeValues[@(STMVolumeTypeShortage)] integerValue]
-                                                      regradeVolume:[self.volumeValues[@(STMVolumeTypeRegrade)] integerValue]];
+                                                      regradeVolume:[self.volumeValues[@(STMVolumeTypeRegrade)] integerValue]
+                                                       brokenVolume:[self.volumeValues[@(STMVolumeTypeBroken)] integerValue]];
     [self dismissSelf];
     
 }
@@ -247,7 +251,7 @@
 #pragma mark - tableView dataSource & delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 6;
+    return 7;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -521,6 +525,11 @@
             cell.volume = (volume) ? volume.integerValue : self.position.regradeVolume.integerValue;
             break;
 
+        case 6:
+            self.brokenVolumeCell = cell;
+            cell.volume = (volume) ? volume.integerValue : self.position.brokenVolume   .integerValue;
+            break;
+
         default:
             break;
     }
@@ -562,7 +571,12 @@
             cell.volumeCell = self.regradeVolumeCell;
             cell.volume = (volume) ? volume.integerValue : self.position.regradeVolume.integerValue;
             break;
-            
+
+        case 6:
+            cell.volumeCell = self.brokenVolumeCell;
+            cell.volume = (volume) ? volume.integerValue : self.position.brokenVolume.integerValue;
+            break;
+
         default:
             break;
     }
@@ -696,7 +710,7 @@
         
         if (![cell isEqual:self.doneVolumeCell]) {
             
-            NSInteger notDoneVolume = self.badVolumeCell.volume + self.excessVolumeCell.volume + self.shortageVolumeCell.volume + self.regradeVolumeCell.volume;
+            NSInteger notDoneVolume = self.badVolumeCell.volume + self.excessVolumeCell.volume + self.shortageVolumeCell.volume + self.regradeVolumeCell.volume + self.brokenVolumeCell.volume;
             NSInteger doneVolume = self.position.volume.integerValue - notDoneVolume;
             
             self.doneVolumeCell.volume = (doneVolume > 0) ? doneVolume : 0;

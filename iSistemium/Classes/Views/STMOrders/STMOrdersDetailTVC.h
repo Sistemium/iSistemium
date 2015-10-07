@@ -6,11 +6,9 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMVariableCellsHeightTVC.h"
 
-@interface STMOrdersDetailTVC : STMFetchedResultsControllerTVC
-
-#warning — have to use STMVariableCellsHeightTVC class?
+@interface STMOrdersDetailTVC : STMVariableCellsHeightTVC
 
 - (void)refreshTable;
 

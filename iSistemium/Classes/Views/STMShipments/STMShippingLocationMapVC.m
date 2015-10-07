@@ -30,7 +30,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 };
 
 
-@interface STMShippingLocationMapVC () <MKMapViewDelegate>
+@interface STMShippingLocationMapVC () <MKMapViewDelegate, UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *locationButton;
@@ -56,6 +56,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 @property (nonatomic, strong) STMSpinnerView *spinner;
 
 @property (nonatomic, strong) STMMapAnnotation *userPin;
+@property (nonatomic, strong) UISearchBar *searchBar;
 
 
 @end
@@ -115,6 +116,16 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
     [self updateLocationButton];
     [self centeringMap];
+    
+    if (_state == STMShippingLocationNoLocation) {
+        
+        [self showSearchBar];
+        
+    } else if (_state == STMShippingLocationSet) {
+        
+        [self hideSearchBar];
+        
+    }
     
 }
 
@@ -348,9 +359,6 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)setShippingLocation {
     
-//    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.locationButton.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
-//    [self.locationButton addSubview:self.spinner];
-    
     if (self.state == STMShippingLocationConfirm) {
         [self.point updateShippingLocationWithConfirmedLocation:self.confirmingLocation];
     } else if (self.state == STMShippingLocationConfirmByUser) {
@@ -487,7 +495,6 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
     self.confirmingLocation = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
     self.state = STMShippingLocationConfirmByUser;
-//    [self setShippingLocation];
 
 }
 
@@ -587,25 +594,138 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
         CGPoint point = [longPress locationInView:longPress.view];
         
         CLLocationCoordinate2D coordinate = [self.mapView convertPoint:point toCoordinateFromView:longPress.view];
-
-        if (self.userPin) [self.mapView removeAnnotation:self.userPin];
         
         CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
-        
-        STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
-                                                                      withTitle:NSLocalizedString(@"ADD POSITION?", nil)
-                                                                    andSubtitle:nil];
-        self.userPin = pin;
-
-        [self.mapView addAnnotation:pin];
-        
-        [self.mapView selectAnnotation:pin animated:YES];
+        [self addUserPinAtLocation:location];
         
     }
 
 }
 
+- (void)addUserPinAtLocation:(CLLocation *)location {
+    
+    if (self.userPin) [self.mapView removeAnnotation:self.userPin];
+
+    STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForCLLocation:location
+                                                                  withTitle:NSLocalizedString(@"ADD POSITION?", nil)
+                                                                andSubtitle:nil];
+    self.userPin = pin;
+    
+    [self.mapView addAnnotation:self.userPin];
+    
+    [self.mapView selectAnnotation:pin animated:YES];
+
+}
+
+
+#pragma mark - searchBar
+
+- (void)showSearchBar {
+
+    if (!self.searchBar) {
+        
+        CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, TOOLBAR_HEIGHT);
+        
+        self.searchBar = [[UISearchBar alloc] initWithFrame:frame];
+        
+        self.searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin;
+        
+        self.searchBar.text = self.point.address;
+        self.searchBar.delegate = self;
+        
+        [self.view addSubview:self.searchBar];
+        
+    }
+    
+}
+
+- (void)hideSearchBar {
+    
+    [self.searchBar removeFromSuperview];
+    self.searchBar = nil;
+    
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    
+    __block STMSpinnerView *spinner = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
+    [self.view addSubview:spinner];
+
+    [[[CLGeocoder alloc] init] geocodeAddressString:searchBar.text completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        [spinner removeFromSuperview];
+        
+        if (!error) {
+            
+            [self.searchBar resignFirstResponder];
+            
+            CLPlacemark *placemark = placemarks.firstObject;
+            [self addUserPinAtLocation:placemark.location];
+            [self.mapView showAnnotations:@[self.userPin] animated:YES];
+            
+        } else {
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                                message:NSLocalizedString(@"ADDRESS GEOCODING FAILED", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+                [alert show];
+                
+            }];
+            
+        }
+        
+    }];
+
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [self.searchBar resignFirstResponder];
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = YES;
+    [searchBar layoutIfNeeded];
+    
+    return YES;
+    
+}
+
+- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar {
+    
+    searchBar.showsCancelButton = NO;
+    return YES;
+    
+}
+
+
+- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+    [self.searchBar resignFirstResponder];
+}
+
+
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    if (IPAD) {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(deviceOrientationDidChangeNotification:)
+                                                     name:UIDeviceOrientationDidChangeNotification
+                                                   object:nil];
+
+    }
+
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)initState {
     
@@ -617,6 +737,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
     if (self.point) {
         
+        [self addObservers];
         [self initState];
         [self setupLocationButton];
         self.mapView.delegate = self;
@@ -653,7 +774,10 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 - (void)viewWillDisappear:(BOOL)animated {
     
     if ([self isMovingFromParentViewController]) {
+        
         [self flushMapView];
+        [self removeObservers];
+        
     }
     
     [super viewWillDisappear:animated];

@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMTabBarItemControllable.h"
 
-@interface STMWebViewVC : UIViewController <STMTabBarItemControllable>
+@interface STMWebViewVC : UIViewController
 
-- (void)showActionSheetFromTabBarItem;
+- (void)loadWebView;
+
 
 @end

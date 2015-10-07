@@ -15,6 +15,9 @@
 #import "STMMessageController.h"
 #import "STMRecordStatusController.h"
 #import "STMPicturesController.h"
+#import "STMWorkflowController.h"
+
+#import "STMWorkflowEditablesVC.h"
 
 #import "STMConstants.h"
 
@@ -24,10 +27,12 @@
 
 //#define MESSAGE_BODY @"Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб. Главная задача месяца это РСП Шелфтокер с ценой 185 руб."
 
-static NSString *cellIdentifier = @"messageCell";
-
 
 @interface STMMessagesTVC () <UIActionSheetDelegate>
+
+@property (nonatomic, weak) STMMessage *workflowSelectedMessage;
+@property (nonatomic, strong) NSString *nextProcessing;
+
 
 @end
 
@@ -56,6 +61,10 @@ static NSString *cellIdentifier = @"messageCell";
     
     return _resultsController;
     
+}
+
+- (NSString *)cellIdentifier {
+    return @"messageCell";
 }
 
 - (void)performFetch {
@@ -107,57 +116,47 @@ static NSString *cellIdentifier = @"messageCell";
     
 }
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static CGFloat cellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        cellHeight = [[STMCustom3TVCell alloc] init].frame.size.height;
-    });
-    
-    return cellHeight + 1.0f;  // Add 1.0f for the cell separator height
-    
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
     static STMCustom3TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     });
-    
-    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
-    
-    [self fillCell:cell atIndexPath:nil withMessage:message];
-    
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-    
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    
-    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-    
-    return height;
+
+    return cell;
     
 }
 
 - (STMCustom3TVCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom3TVCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    STMCustom3TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
 
-    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
-
-    [self fillCell:cell atIndexPath:indexPath withMessage:message];
-    
-    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
-    
-    UIColor *textColor = ([recordStatus.isRead boolValue]) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
-    
-    cell.titleLabel.textColor = textColor;
+    [self fillCell:cell atIndexPath:indexPath];
 
     return cell;
+    
+}
+
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom3TVCell class]]) {
+        
+        STMCustom3TVCell *customCell = (STMCustom3TVCell *)cell;
+        
+        STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+        
+        [self fillCell:customCell atIndexPath:indexPath withMessage:message];
+        
+        STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
+        
+        UIColor *textColor = ([recordStatus.isRead boolValue]) ? [UIColor blackColor] : ACTIVE_BLUE_COLOR;
+        
+        customCell.titleLabel.textColor = textColor;
+
+    }
+    
+    [super fillCell:cell atIndexPath:indexPath];
     
 }
 
@@ -170,34 +169,88 @@ static NSString *cellIdentifier = @"messageCell";
     cell.pictureView.image = nil;
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
-    
     cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
+
+    [self fillDetailLabel:cell.detailLabel forMessage:message];
     
-    cell.detailLabel.text = message.body;
 //    cell.detailLabel.text = MESSAGE_BODY;
     
-    if (message.pictures.count > 0) [self addImageFromMessage:message toCell:cell];
+    [self addImageFromMessage:message toCell:cell];
 
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+}
 
+- (void)fillDetailLabel:(STMLabel *)detailLabel forMessage:(STMMessage *)message {
+    
+    NSDictionary *attributes = @{NSFontAttributeName: detailLabel.font,
+                                 NSForegroundColorAttributeName: detailLabel.textColor};
+
+    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:message.body attributes:attributes];
+    
+    if (message.processing) {
+        
+        NSString *processingDescription = [STMWorkflowController descriptionForProcessing:message.processing inWorkflow:message.workflow.workflow];
+
+        if (processingDescription) {
+            
+            [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+            
+            UIColor *processingColor = [STMWorkflowController colorForProcessing:message.processing inWorkflow:message.workflow.workflow];
+            UIColor *textColor = (processingColor) ? processingColor : [UIColor blackColor];
+            
+            UIFont *font = [UIFont systemFontOfSize:detailLabel.font.pointSize - 2];
+            
+            attributes = @{NSFontAttributeName: font,
+                           NSForegroundColorAttributeName: textColor};
+            
+            [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:processingDescription attributes:attributes]];
+
+        }
+        
+    }
+    
+    if (message.commentText) {
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        
+        UIFont *font = [UIFont systemFontOfSize:detailLabel.font.pointSize - 4];
+        
+        attributes = @{NSFontAttributeName: font,
+                       NSForegroundColorAttributeName: detailLabel.textColor};
+        
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:message.commentText attributes:attributes]];
+
+    }
+
+    detailLabel.attributedText = detailText;
+    
 }
 
 - (void)addImageFromMessage:(STMMessage *)message toCell:(STMCustom3TVCell *)cell {
     
-    NSArray *picturesArray = [STMMessageController sortedPicturesArrayForMessage:message];
+    if (message.pictures.count > 0) {
     
-    STMMessagePicture *picture = picturesArray.lastObject;
-    
-    if (!picture.imageThumbnail && picture.href) {
+        NSArray *picturesArray = [STMMessageController sortedPicturesArrayForMessage:message];
         
-        [STMPicturesController hrefProcessingForObject:picture];
-        [self addSpinnerToCell:cell];
+        STMMessagePicture *picture = picturesArray.lastObject;
         
-    } else {
-    
-        UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
+        if (!picture.imageThumbnail && picture.href) {
+            
+            [STMPicturesController hrefProcessingForObject:picture];
+            [self addSpinnerToCell:cell];
+            
+        } else {
+            
+            UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
+            [[cell.pictureView viewWithTag:555] removeFromSuperview];
+            cell.pictureView.image = image;
+            
+        }
+
+    } else if (message.workflow) {
+        
         [[cell.pictureView viewWithTag:555] removeFromSuperview];
+
+        UIImage *image = [UIImage imageNamed:@"help"];
         cell.pictureView.image = image;
 
     }
@@ -243,12 +296,29 @@ static NSString *cellIdentifier = @"messageCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
-//
+    STMMessage *message = [self.resultsController objectAtIndexPath:indexPath];
+    
 //    STMRecordStatus *recordStatus = [STMRecordStatusController existingRecordStatusForXid:message.xid];
-//    
 //    recordStatus.isRead = @(!recordStatus.isRead.boolValue);
 
+    STMWorkflow *workflow = message.workflow;
+    
+    if (workflow) {
+        
+        self.workflowSelectedMessage = message;
+        
+        STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:message.processing
+                                                                                          inWorkflow:workflow.workflow
+                                                                                        withDelegate:self];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [workflowActionSheet showInView:self.view];
+        }];
+        
+//        NSLog(@"processing %@", message.processing);
+//        NSLog(@"workflow %@", workflow.workflow);
+
+    }
+    
 }
 
 - (void)showUnreadCount {
@@ -280,6 +350,85 @@ static NSString *cellIdentifier = @"messageCell";
     }
     
 }
+
+- (void)markAllMessagesAsRead {
+    
+    [STMMessageController markAllMessageAsRead];
+    [self.tableView reloadData];
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
+        
+        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
+
+        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                              didSelectButtonWithIndex:buttonIndex
+                                                                            inWorkflow:workflowAS.workflow];
+        
+        self.nextProcessing = result[@"nextProcessing"];
+        
+        if (self.nextProcessing) {
+
+            if ([result[@"editableProperties"] isKindOfClass:[NSArray class]]) {
+                
+                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+                
+                editablesVC.workflow = workflowAS.workflow;
+                editablesVC.toProcessing = self.nextProcessing;
+                editablesVC.editableFields = result[@"editableProperties"];
+                editablesVC.parent = self;
+                
+                [self presentViewController:editablesVC animated:YES completion:^{
+                    
+                }];
+                
+            } else {
+                
+                [self updateAndSyncAndReloadWorkflowSelectedMessage];
+                
+            }
+
+        }
+
+    }
+
+}
+
+- (void)takeEditableValues:(NSDictionary *)editableValues {
+    
+//    NSLog(@"editableValues %@", editableValues);
+    
+    for (NSString *field in editableValues.allKeys) {
+        
+        if ([self.workflowSelectedMessage.entity.propertiesByName.allKeys containsObject:field]) {
+            [self.workflowSelectedMessage setValue:editableValues[field] forKey:field];
+        }
+        
+    }
+
+    [self updateAndSyncAndReloadWorkflowSelectedMessage];
+    
+}
+
+- (void)updateAndSyncAndReloadWorkflowSelectedMessage {
+
+    if (self.nextProcessing) self.workflowSelectedMessage.processing = self.nextProcessing;
+    
+    [self.document saveDocument:^(BOOL success) {
+        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+    }];
+
+    NSIndexPath *messageIndexPath = [self.resultsController indexPathForObject:self.workflowSelectedMessage];
+    if (messageIndexPath) [self.tableView reloadRowsAtIndexPaths:@[messageIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+}
+
 
 #pragma mark - view lifecycle
 
@@ -314,7 +463,7 @@ static NSString *cellIdentifier = @"messageCell";
     
 //    [STMMessageController generateTestMessages];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom3TVCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom3TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
 
     [self performFetch];
     [self showUnreadCount];

@@ -173,6 +173,7 @@
 "PROCESSING MESSAGE" = "Сообщение:";
 "VOLUME UNIT1" = "к.";
 "VOLUME UNIT2" = "б.";
+"VOLUME UNIT3" = "шт.";
 "RESET FILTER" = "Сбросить фильтр";
 "SEND DATE" = "Данные отправлены: ";
 "RECEIVE DATE" = "Данные получены: ";
@@ -212,6 +213,8 @@
 "NO" = "Нет";
 "DOCUMENT_ERROR" = "Ошибка инициализации базы данных. Обратитесь в техподдержку.";
 "RESPONSE IS NOT A DICTIONARY" = "Ответ сервера не является словарём.";
+"SHOW SIBLINGS" = "Показать:";
+"SHOW ACTIONS" = "Действия:";
 "UNLOADED PICTURES" = "Незагруженные картинки";
 "WAITING FOR DOWNLOAD" = "в ожидании загрузки";
 "DOWNLOAD NOW" = "Скачать сейчас";
@@ -285,6 +288,7 @@
 "BAD VOLUME LABEL" = "Брак";
 "DISCREPANCY VOLUME LABEL" = "Расхождение";
 "REGRADE VOLUME LABEL" = "Пересортица";
+"BROKEN VOLUME LABEL" = "Бой";
 "ALL VOLUME BUTTON" = "Целиком";
 "HAVE UNPROCESSED POSITIONS TITLE" = "Остались необработанные позиции";
 "HAVE UNPROCESSED POSITIONS MESSAGE" = "Отметить их как отгруженные?";
@@ -304,15 +308,21 @@
 "2_VOLUME_TYPE" = "Излишек";
 "3_VOLUME_TYPE" = "Недостача";
 "4_VOLUME_TYPE" = "Пересортица";
+"5_VOLUME_TYPE" = "Бой";
 "0BOTTLES" = "нет бутылок";
 "1BOTTLES" = "бутылка";
 "2BOTTLES" = "бутылки";
 "5BOTTLES" = "бутылок";
+"0PIECES" = "ничего нет";
+"1PIECES" = "штука";
+"2PIECES" = "штуки";
+"5PIECES" = "штук";
 "_SHIPMENTS" = "н";
 "_NEED_CASHING" = "и";
 "_POSITIONS" = "п";
 "_BOXES" = "к";
 "_BOTTLES" = "б";
+"_PIECES" = "шт";
 "DISTANCE_KM" = "км";
 "DISTANCE_M" = "м";
 "TIME_H" = "ч";
@@ -343,5 +353,9 @@
 "SELECT POINT" = "Выберите точку";
 "ADD POSITION?" = "Установить геометку?";
 "PROCESSING ALL SHIPMENT" = "Обработать накладные";
+"MARK ALL AS READ" = "Отметить всё прочитанным";
+"POINT NUMBER" = "Номер в маршруте:";
+"COMMENT TEXT" = "Комментарий";
+"ADDRESS GEOCODING FAILED" = "Не могу получить координаты по данному адресу";
 
 

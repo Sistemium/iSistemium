@@ -31,7 +31,9 @@
 @interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate,
                                         UIImagePickerControllerDelegate,
                                         UIAlertViewDelegate,
-                                        NSFetchedResultsControllerDelegate>
+                                        NSFetchedResultsControllerDelegate,
+                                        UIPickerViewDataSource,
+                                        UIPickerViewDelegate>
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
@@ -54,6 +56,9 @@
 
 @property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
 
+@property (nonatomic, strong) NSIndexPath *pointNumberCellIndexPath;
+@property (nonatomic, strong) UIPickerView *ordPicker;
+@property (nonatomic, strong) UIToolbar *pickerToolbar;
 
 @end
 
@@ -122,6 +127,14 @@
     
     NSUInteger unprocessedShipmentsCount = [self unprocessedShipments].count;
     return unprocessedShipmentsCount;
+    
+}
+
+- (BOOL)enableAggregateShipment {
+    
+    NSDictionary *appSettings = [self.session.settingsController currentSettingsForGroup:@"appSettings"];
+    
+    return [appSettings[@"enableAggregateShipment"] boolValue];
     
 }
 
@@ -382,11 +395,11 @@
     
     switch (section) {
         case 0:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : 2;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (IPHONE) ? 3 : 2;
             break;
             
         case 1:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.isReached.boolValue && [self unprocessedShipmentsCount] > 0) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : (self.point.isReached.boolValue && [self unprocessedShipmentsCount] > 0 && [self enableAggregateShipment]) ? 2 : 1;
             break;
             
         case 2:
@@ -573,7 +586,11 @@
                 case 1:
                     cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
                     break;
-                    
+
+                case 2:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+                    break;
+
                 default:
                     break;
             }
@@ -644,7 +661,12 @@
                 case 1:
                     [self fillCell:cell withRoutePoint:self.point];
                     break;
-                    
+
+                case 2:
+                    self.pointNumberCellIndexPath = indexPath;
+                    [self fillPointNumberCell:cell];
+                    break;
+
                 default:
                     break;
             }
@@ -711,6 +733,26 @@
     
     cell.detailTextLabel.text = [point shortInfo];
 
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
+}
+
+- (void)fillPointNumberCell:(UITableViewCell *)cell {
+    
+    NSDictionary *attributes = @{NSFontAttributeName: cell.textLabel.font,
+                                 NSForegroundColorAttributeName: cell.textLabel.textColor};
+    
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"POINT NUMBER", nil) attributes:attributes];
+
+    [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+
+    attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize],
+                   NSForegroundColorAttributeName: cell.textLabel.textColor};
+
+    [text appendAttributedString:[[NSAttributedString alloc] initWithString:self.point.ord.stringValue attributes:attributes]];
+
+    cell.textLabel.attributedText = text;
+    
     cell.accessoryType = UITableViewCellAccessoryNone;
     
 }
@@ -942,6 +984,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    if ([indexPath compare:self.pointNumberCellIndexPath] == NSOrderedSame) {
+        [self showOrdPickerView];
+    }
+    
     if (indexPath.section == 1) {
         switch (indexPath.row) {
             case 0:
@@ -1033,6 +1079,114 @@
     
 }
 
+
+#pragma mark - point number picker
+
+- (void)showOrdPickerView {
+    
+    if (!self.ordPicker) {
+        
+        CGRect sectionFrame = [self.tableView rectForSection:0];
+        CGRect headerFrame = [self.tableView rectForHeaderInSection:0];
+        CGRect footerFrame = [self.tableView rectForFooterInSection:0];
+        
+        CGFloat height = footerFrame.origin.y - headerFrame.size.height;
+
+        CGRect pickerFrame = CGRectMake(0, headerFrame.size.height, sectionFrame.size.width, height);
+        
+        self.ordPicker = [[UIPickerView alloc] initWithFrame:pickerFrame];
+
+        self.ordPicker.backgroundColor = [UIColor whiteColor];
+        
+        self.ordPicker.dataSource = self;
+        self.ordPicker.delegate = self;
+
+        
+    }
+    
+    [self.ordPicker selectRow:(self.point.ord.integerValue - 1) inComponent:0 animated:NO];
+    
+    [self.view addSubview:self.ordPicker];
+    
+    if (!self.pickerToolbar) {
+    
+        CGRect sectionFrame = [self.tableView rectForSection:0];
+        CGFloat originY = sectionFrame.size.height - TOOLBAR_HEIGHT;
+        CGRect toolbarFrame = CGRectMake(0, originY, sectionFrame.size.width, TOOLBAR_HEIGHT);
+
+        self.pickerToolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
+        
+        STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                                    target:self
+                                                                                                    action:@selector(pickerCancel)];
+        STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+        
+        STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                              target:self
+                                                                                              action:@selector(pickerDone)];
+        [self.pickerToolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
+
+    }
+    
+    [self.view addSubview:self.pickerToolbar];
+
+}
+
+- (void)hideOrdPicker {
+
+    [self.pickerToolbar removeFromSuperview];
+    [self.ordPicker removeFromSuperview];
+    
+}
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return self.point.shipmentRoute.shipmentRoutePoints.count;
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    return @(row+1).stringValue;
+}
+
+- (void)pickerCancel {
+    [self hideOrdPicker];
+}
+
+- (void)pickerDone {
+    
+    NSInteger fromIndex = self.point.ord.integerValue - 1;
+    NSInteger toIndex = [self.ordPicker selectedRowInComponent:0];
+    
+    NSUInteger minIndex = MIN(fromIndex, toIndex);
+    NSUInteger loc = (minIndex == fromIndex) ? minIndex + 1 : minIndex;
+    
+    NSRange affectedPointsRange = NSMakeRange(loc, labs(fromIndex - toIndex));
+    
+    NSArray *points = [self.point.shipmentRoute.shipmentRoutePoints allObjects];
+    
+    NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+    NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+
+    points = [points sortedArrayUsingDescriptors:@[ordDescriptor, nameDescriptor]];
+    
+    NSArray *affectedPoints = [points subarrayWithRange:affectedPointsRange];
+    
+    for (STMShipmentRoutePoint *point in affectedPoints) {
+        point.ord = (minIndex == fromIndex) ? @(point.ord.integerValue - 1) : @(point.ord.integerValue + 1);
+    }
+    
+    self.point.ord = @(toIndex + 1);
+    
+    if (self.pointNumberCellIndexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[self.pointNumberCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    
+    [self hideOrdPicker];
+    
+}
 
 #pragma mark - alerts
 

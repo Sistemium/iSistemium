@@ -311,7 +311,7 @@
     [[self sharedInstance] pictureDidShown:picture];
 }
 
-+ (void)markMessageAsRead:(STMMessage *)message {
++ (void)markMessageAsRead:(STMMessage *)message andSync:(BOOL)shouldSync {
     
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:message];
     
@@ -319,15 +319,44 @@
         
         recordStatus.isRead = @YES;
         
+        if (shouldSync) {
+            
+            [self.document saveDocument:^(BOOL success) {
+                
+                if (success) {
+                    
+                    //            [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+                    self.syncer.syncerState = STMSyncerSendDataOnce;
+                    
+                }
+                
+            }];
+
+        }
+        
+    }
+
+}
+
++ (void)markMessageAsRead:(STMMessage *)message {
+    [self markMessageAsRead:message andSync:YES];
+}
+
++ (void)markAllMessageAsRead {
+    
+    NSMutableArray *messageArray = [self sharedInstance].messagesResultsController.fetchedObjects.mutableCopy;
+    NSArray *readMessageArray = [self sharedInstance].readMessagesResultsController.fetchedObjects.copy;
+
+    [messageArray removeObjectsInArray:readMessageArray];
+    
+    if (messageArray.count > 0) {
+        
+        for (STMMessage *message in messageArray) {
+            [self markMessageAsRead:message andSync:NO];
+        }
+        
         [self.document saveDocument:^(BOOL success) {
-            
-            if (success) {
-                
-                //            [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-                self.syncer.syncerState = STMSyncerSendDataOnce;
-                
-            }
-            
+            if (success) self.syncer.syncerState = STMSyncerSendDataOnce;
         }];
 
     }
@@ -354,37 +383,6 @@
     NSArray *readMessageArray = [self sharedInstance].readMessagesResultsController.fetchedObjects;
     
     return messageArray.count - readMessageArray.count;
-    
-//    if (!context) context = [self document].managedObjectContext;
-//    
-//    NSString *entityName = NSStringFromClass([STMMessage class]);
-//    
-//    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
-//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-//    
-//    NSError *error;
-//    NSArray *result = [context executeFetchRequest:request error:&error];
-//    
-//    NSArray *messageXids = [result valueForKeyPath:@"xid"];
-//    
-//    entityName = NSStringFromClass([STMRecordStatus class]);
-//    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
-//
-//    request.entity = entity;
-//    request.predicate = [NSPredicate predicateWithFormat:@"(objectXid IN %@) && (isRead == YES)", messageXids];
-//    request.resultType = NSDictionaryResultType;
-//    request.returnsDistinctResults = YES;
-//    request.propertiesToFetch = @[entity.propertiesByName[@"objectXid"]];
-//    
-//    result = [context executeFetchRequest:request error:&error];
-//    
-//    NSUInteger recordStatusesCount = result.count;
-//    
-//    NSInteger unreadMessageCount = messageXids.count - recordStatusesCount;
-//    
-//    if (unreadMessageCount <= 0) unreadMessageCount = 0;
-//    
-//    return (NSUInteger)unreadMessageCount;
 
 }
 

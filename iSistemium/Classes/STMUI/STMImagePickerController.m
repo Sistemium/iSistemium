@@ -26,7 +26,7 @@
 
 #pragma mark - orientation fix
 
-- (NSUInteger)supportedInterfaceOrientations{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
 
     if (IPHONE) {
         return UIInterfaceOrientationMaskPortrait;

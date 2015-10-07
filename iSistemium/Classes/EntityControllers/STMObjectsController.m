@@ -1186,6 +1186,7 @@
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMUncashingPicture class]),
                              NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMWorkflow class]),
                              NSStringFromClass([STMClientEntity class]),
                              NSStringFromClass([STMEntity class])];
     
@@ -1417,7 +1418,7 @@
                     
                 }
                 
-                [propertiesDictionary setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
+                propertiesDictionary[key] = [NSString stringWithFormat:@"%@", value];
                 
             }
             
@@ -1442,7 +1443,6 @@
                     NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
                     NSString *entityName = key;
                     propertiesDictionary[key] = @{@"name": entityName, @"xid": xid};
-//                    [propertiesDictionary setValue:@{@"name": entityName, @"xid": xid} forKey:key];
                     
                 }
                 

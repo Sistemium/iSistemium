@@ -7,14 +7,15 @@
 //
 
 #import "STMMessagesNC.h"
-#import "STMMessageVC.h"
+#import "STMMessagesTVC.h"
+#import "STMMessageController.h"
 
-#import "STMFunctions.h"
+//#import "STMMessageVC.h"
 
 
 @interface STMMessagesNC () <UIActionSheetDelegate>
 
-@property (nonatomic, strong) STMMessageVC *messageVC;
+//@property (nonatomic, strong) STMMessageVC *messageVC;
 
 @end
 
@@ -22,31 +23,42 @@
 @implementation STMMessagesNC
 
 
-#pragma mark - STMTabBarViewController
+#pragma mark - STMTabBarItemControllable protocol
 
-- (void)showActionSheetFromTabBarItem {
+- (BOOL)shouldShowOwnActions {
+    return YES;
+}
+
+- (void)selectActionAtIndex:(NSUInteger)index {
     
-//    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"TITLE" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"DO SMTHNG", nil];
-//    
-//    CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-//    
-//    [actionSheet showFromRect:rect inView:self.view animated:YES];
+    [super selectActionAtIndex:index];
+    
+    NSString *action = self.actions[index];
+    
+    if ([action isEqualToString:NSLocalizedString(@"MARK ALL AS READ", nil)]) {
+
+        if ([self.topViewController isKindOfClass:[STMMessagesTVC class]]) {
+            [(STMMessagesTVC *)self.topViewController markAllMessagesAsRead];
+        }
+        
+    }
     
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)showActionPopoverFromTabBarItem {
     
-//    if (buttonIndex != -1) {
-//
-//    }
+//    NSUInteger unreadMessageCount = [STMMessageController unreadMessagesCount];
+//    
+//    self.actions = (unreadMessageCount > 0) ? @[NSLocalizedString(@"MARK ALL AS READ", nil)] : nil;
+    
+    [super showActionPopoverFromTabBarItem];
     
 }
-
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
-
+    self.actions = @[NSLocalizedString(@"MARK ALL AS READ", nil)];
 }
 
 - (void)viewDidLoad {
@@ -61,14 +73,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

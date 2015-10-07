@@ -15,7 +15,7 @@
 
 #import "STMFunctions.h"
 
-@interface STMWebViewVC () <UIWebViewDelegate, UIActionSheetDelegate>
+@interface STMWebViewVC () <UIWebViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic) BOOL isAuthorizing;
@@ -153,7 +153,7 @@
 
 }
 
-
+/*
 #pragma mark - STMTabBarViewController
 
 - (void)showActionSheetFromTabBarItem {
@@ -212,6 +212,7 @@
     }
 
 }
+*/
 
 
 #pragma mark - UIWebViewDelegate

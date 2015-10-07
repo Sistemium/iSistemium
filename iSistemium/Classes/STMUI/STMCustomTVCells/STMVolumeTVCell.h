@@ -13,7 +13,8 @@ typedef NS_ENUM(NSUInteger, STMVolumeType) {
     STMVolumeTypeBad = 1,
     STMVolumeTypeExcess = 2,
     STMVolumeTypeShortage = 3,
-    STMVolumeTypeRegrade = 4
+    STMVolumeTypeRegrade = 4,
+    STMVolumeTypeBroken = 5
 };
 
 

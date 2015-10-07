@@ -20,7 +20,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     STMPositionProcessingTypeBad = 1,
     STMPositionProcessingTypeExcess = 2,
     STMPositionProcessingTypeShortage = 3,
-    STMPositionProcessingTypeRegrade = 4
+    STMPositionProcessingTypeRegrade = 4,
+    STMPositionProcessingTypeBroken = 5
 };
 
 
@@ -461,6 +462,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         if ([self.checkedPositions containsObject:position]) {
         
             STMLabel *checkLabel = [[STMLabel alloc] initWithFrame:customCell.checkboxView.bounds];
+            checkLabel.adjustsFontSizeToFitWidth = YES;
             checkLabel.text = @"✓";
             checkLabel.textColor = ACTIVE_BLUE_COLOR;
             checkLabel.textAlignment = NSTextAlignmentLeft;
@@ -793,6 +795,11 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
                 [self.shippingProcessController shippingPosition:position withRegradeVolume:position.volume.integerValue];
                 break;
             }
+            case STMPositionProcessingTypeBroken: {
+                [self.shippingProcessController shippingPosition:position withBrokenVolume:position.volume.integerValue];
+            }
+                break;
+                
             default: {
                 break;
             }
@@ -1025,8 +1032,13 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@" %lu%@", (unsigned long)self.checkedPositions.count, NSLocalizedString(@"_POSITIONS", nil)]];
 
         NSNumber *bottlesCount = [self.checkedPositions valueForKeyPath:@"@sum.volume"];
+        
+        NSDictionary *appSettings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+        BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+        
+        NSString *bottleString = (enableShowBottles) ? NSLocalizedString(@"_BOTTLES", nil) : NSLocalizedString(@"_PIECES", nil);
 
-        processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@"/%@%@", bottlesCount, NSLocalizedString(@"_BOTTLES", nil)]];
+        processingButtonTitle = [processingButtonTitle stringByAppendingString:[NSString stringWithFormat:@"/%@%@", bottlesCount, bottleString]];
 
         self.processingButton.enabled = YES;
 
@@ -1254,7 +1266,11 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     count = [self.checkedPositions valueForKeyPath:@"@sum.volume"];
     pluralType = [STMFunctions pluralTypeForCount:count.integerValue];
-    countString = [NSString stringWithFormat:@"%@BOTTLES", pluralType];
+    
+    NSDictionary *appSettings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+
+    countString = (enableShowBottles) ? [NSString stringWithFormat:@"%@BOTTLES", pluralType] : [NSString stringWithFormat:@"%@PIECES", pluralType];
     
     title = [title stringByAppendingString:@"\n"];
     title = [title stringByAppendingString:[NSString stringWithFormat:@"%@ %@", count, NSLocalizedString(countString, nil)]];
@@ -1270,6 +1286,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         [actionSheet addButtonWithTitle:NSLocalizedString(@"EXCESS VOLUME LABEL", nil)];
         [actionSheet addButtonWithTitle:NSLocalizedString(@"SHORTAGE VOLUME LABEL", nil)];
         [actionSheet addButtonWithTitle:NSLocalizedString(@"REGRADE VOLUME LABEL", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"BROKEN VOLUME LABEL", nil)];
         
         [actionSheet showFromBarButtonItem:self.processingButton animated:YES];
         

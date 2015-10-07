@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="dnw-9A-HDz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="X9k-Nf-FBT">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
@@ -25,18 +25,37 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="xbw-HF-9Gq" firstAttribute="top" secondItem="huz-8c-9WV" secondAttribute="bottom" id="0Ze-jO-Opa"/>
-                            <constraint firstItem="huz-8c-9WV" firstAttribute="leading" secondItem="LPu-Tg-YEG" secondAttribute="leadingMargin" constant="-16" id="ezM-HV-dzM"/>
-                            <constraint firstItem="huz-8c-9WV" firstAttribute="top" secondItem="5gG-xR-htI" secondAttribute="bottom" id="h1X-k4-Mad"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="huz-8c-9WV" secondAttribute="trailing" constant="-16" id="kKe-vk-cp3"/>
+                            <constraint firstItem="huz-8c-9WV" firstAttribute="top" secondItem="5gG-xR-htI" secondAttribute="bottom" id="27U-ue-Yn0"/>
+                            <constraint firstItem="huz-8c-9WV" firstAttribute="bottom" secondItem="xbw-HF-9Gq" secondAttribute="top" id="5bx-df-CwV"/>
+                            <constraint firstItem="huz-8c-9WV" firstAttribute="leading" secondItem="LPu-Tg-YEG" secondAttribute="leadingMargin" constant="-16" id="pZc-3c-byV"/>
+                            <constraint firstItem="huz-8c-9WV" firstAttribute="centerX" secondItem="LPu-Tg-YEG" secondAttribute="centerX" id="zuC-NF-Vvh"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
+                    <navigationItem key="navigationItem" id="3co-cI-72S"/>
                     <connections>
                         <outlet property="webView" destination="huz-8c-9WV" id="tJe-h0-GVE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lyO-fd-KSa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1408" y="81"/>
+        </scene>
+        <!--Web ViewNC-->
+        <scene sceneID="GoJ-Kc-L7q">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="X9k-Nf-FBT" customClass="STMWebViewNC" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="oey-vH-19C">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="dnw-9A-HDz" kind="relationship" relationship="rootViewController" id="MuR-3Q-WH4"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tV4-KB-Qap" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="428" y="81"/>
         </scene>

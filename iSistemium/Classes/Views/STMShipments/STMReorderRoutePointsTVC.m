@@ -54,40 +54,15 @@
     return self.points.count;
 }
 
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-    
-//    CGFloat h = self.tableView.frame.size.height;
-//    CGFloat c = self.points.count;
-//    
-//    h = h/c;
-//    
-//    return h;
-    
-    return self.standardCellHeight;
-    
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
+
     static UITableViewCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     });
-    
-    [self fillCell:cell atIndexPath:indexPath];
-    
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_REORDER_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-    
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    
-    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-    
-    if (height < [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath]) {
-        height = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
-    }
-    
-    [self putCachedHeight:height forIndexPath:indexPath];
-    
-    return height;
+
+    return cell;
     
 }
 
@@ -148,7 +123,7 @@
         
         customCell.detailLabel.attributedText = detailString;
         
-        customCell.infoLabel.text = @(point.ord.integerValue + 1).stringValue;
+        customCell.infoLabel.text = point.ord.stringValue;
         customCell.infoLabel.textColor = textColor;
         
         customCell.accessoryType = UITableViewCellAccessoryNone;
@@ -190,7 +165,7 @@
     }
     
     STMShipmentRoutePoint *movedPoint = self.points[fromIndex];
-    movedPoint.ord = @(toIndex);
+    movedPoint.ord = @(toIndex + 1);
     
     self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC.parentVC shipmentRoutePointsSortDescriptors]];
     

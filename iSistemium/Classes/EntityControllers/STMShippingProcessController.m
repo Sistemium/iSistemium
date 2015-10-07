@@ -140,6 +140,7 @@
     position.badVolume = nil;
     position.excessVolume = nil;
     position.shortageVolume = nil;
+    position.brokenVolume = nil;
     position.isProcessed = nil;
     
     [[STMShippingProcessController document] saveDocument:^(BOOL success) {
@@ -162,7 +163,7 @@
     
 }
 
-- (NSString *)checkingInfoForPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume {
+- (NSString *)checkingInfoForPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume brokenVolume:(NSInteger)brokenVolume {
     
     NSString *beginningString = NSLocalizedString(@"SHIPPING POSITION ALERT BEGINNING STRING", nil);
     NSString *positionTitle = [NSString stringWithFormat:@"%@: %@", position.article.name, [position volumeText]];
@@ -175,6 +176,7 @@
                                                       excessVolume:excessVolume
                                                     shortageVolume:shortageVolume
                                                      regradeVolume:regradeVolume
+                                                      brokenVolume:brokenVolume
                                                         packageRel:packageRel];
 
     NSString *endString = @"?";
@@ -185,7 +187,7 @@
     
 }
 
-- (NSString *)volumesStringWithDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume packageRel:(NSInteger)packageRel {
+- (NSString *)volumesStringWithDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume brokenVolume:(NSInteger)brokenVolume packageRel:(NSInteger)packageRel {
     
     NSString *parametersString = nil;
     
@@ -234,11 +236,20 @@
         
     }
     
+    if (brokenVolume > 0) {
+        
+        NSString *brokenVolumeString = [STMFunctions volumeStringWithVolume:brokenVolume andPackageRel:packageRel];
+        NSString *brokenString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BROKEN VOLUME LABEL", nil), brokenVolumeString];
+        
+        parametersString = [NSString stringWithFormat:@"%@%@\n", (parametersString) ? parametersString : @"", brokenString];
+        
+    }
+
     return parametersString;
     
 }
 
-- (NSAttributedString *)volumesAttributedStringWithAttributes:(NSDictionary *)attributes doneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume packageRel:(NSInteger)packageRel {
+- (NSAttributedString *)volumesAttributedStringWithAttributes:(NSDictionary *)attributes doneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume brokenVolume:(NSInteger)brokenVolume packageRel:(NSInteger)packageRel {
     
     NSMutableAttributedString *parametersString = [[NSMutableAttributedString alloc] initWithString:@"\n" attributes:attributes];
     
@@ -291,38 +302,51 @@
         
     }
     
+    if (brokenVolume > 0) {
+        
+        NSString *brokenVolumeString = [STMFunctions volumeStringWithVolume:brokenVolume andPackageRel:packageRel];
+        NSString *brokenString = [NSString stringWithFormat:@"%@: %@\n", NSLocalizedString(@"BROKEN VOLUME LABEL", nil), brokenVolumeString];
+        
+        [parametersString appendAttributedString:[[NSAttributedString alloc] initWithString:brokenString attributes:redColorAttributes]];
+        
+    }
+    
     return parametersString;
 
 }
 
 - (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume {
-    [self shippingPosition:position withDoneVolume:doneVolume badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:0];
+    [self shippingPosition:position withDoneVolume:doneVolume badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:0 brokenVolume:0];
 }
 
 - (void)shippingPosition:(STMShipmentPosition *)position withBadVolume:(NSInteger)badVolume {
-    [self shippingPosition:position withDoneVolume:0 badVolume:badVolume excessVolume:0 shortageVolume:0 regradeVolume:0];
+    [self shippingPosition:position withDoneVolume:0 badVolume:badVolume excessVolume:0 shortageVolume:0 regradeVolume:0 brokenVolume:0];
 }
 
 - (void)shippingPosition:(STMShipmentPosition *)position withExcessVolume:(NSInteger)excessVolume {
-    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:excessVolume shortageVolume:0 regradeVolume:0];
+    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:excessVolume shortageVolume:0 regradeVolume:0 brokenVolume:0];
 }
 
 - (void)shippingPosition:(STMShipmentPosition *)position withShortageVolume:(NSInteger)shortageVolume {
-    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:0 shortageVolume:shortageVolume regradeVolume:0];
+    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:0 shortageVolume:shortageVolume regradeVolume:0 brokenVolume:0];
 }
 
 - (void)shippingPosition:(STMShipmentPosition *)position withRegradeVolume:(NSInteger)regradeVolume {
-    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:regradeVolume];
+    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:regradeVolume brokenVolume:0];
 }
 
+- (void)shippingPosition:(STMShipmentPosition *)position withBrokenVolume:(NSInteger)brokenVolume {
+    [self shippingPosition:position withDoneVolume:0 badVolume:0 excessVolume:0 shortageVolume:0 regradeVolume:0 brokenVolume:brokenVolume];
+}
 
-- (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume {
+- (void)shippingPosition:(STMShipmentPosition *)position withDoneVolume:(NSInteger)doneVolume badVolume:(NSInteger)badVolume excessVolume:(NSInteger)excessVolume shortageVolume:(NSInteger)shortageVolume regradeVolume:(NSInteger)regradeVolume brokenVolume:(NSInteger)brokenVolume {
     
     position.doneVolume = (doneVolume > 0) ? @(doneVolume) : nil;
     position.badVolume = (badVolume > 0) ? @(badVolume) : nil;
     position.excessVolume = (excessVolume > 0) ? @(excessVolume) : nil;
     position.shortageVolume = (shortageVolume > 0) ? @(shortageVolume) : nil;
     position.regradeVolume = (regradeVolume > 0) ? @(regradeVolume) : nil;
+    position.brokenVolume = (brokenVolume > 0) ? @(brokenVolume) : nil;
     position.isProcessed = @YES;
     
     [[STMShippingProcessController document] saveDocument:^(BOOL success) {

@@ -10,6 +10,7 @@
 #import "STMLogMessagesMasterTVC.h"
 #import "STMLogMessagesDetailTVC.h"
 
+
 @interface STMLogMessagesSVC : STMSplitViewController
 
 @property (nonatomic, strong) STMLogMessagesMasterTVC *masterTVC;

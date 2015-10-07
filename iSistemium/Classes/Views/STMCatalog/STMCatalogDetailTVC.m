@@ -35,8 +35,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 @property (nonatomic, strong) STMArticle *selectedArticle;
 
-@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
-
 @property (nonatomic, strong) UITableView *currentTableView;
 
 
@@ -242,6 +240,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     }
 
 }
+
 
 #pragma mark - search
 
@@ -575,15 +574,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
 }
 
-#pragma mark - deviceOrientationDidChangeNotification
-
-- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
-    
-    self.cachedCellsHeights = nil;
-    [self.tableView reloadData];
-    
-}
-
 
 #pragma mark - rotation
 
@@ -624,34 +614,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     self.articleInfoPopover = nil;
     self.catalogSettingsPopover = nil;
-    
-}
-
-
-#pragma mark - cell's height caching
-
-- (NSMutableDictionary *)cachedCellsHeights {
-    
-    if (!_cachedCellsHeights) {
-        _cachedCellsHeights = [NSMutableDictionary dictionary];
-    }
-    return _cachedCellsHeights;
-    
-}
-
-- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
-    
-    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
-    
-    self.cachedCellsHeights[objectID] = @(height);
-    
-}
-
-- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
-    
-    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
-    
-    return self.cachedCellsHeights[objectID];
     
 }
 
@@ -766,27 +728,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     [self updateInfoLabelWithArticleCount:count];
     
     return count;
-    
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static CGFloat standardCellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-    });
-    
-    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
-    
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
-    
-    return height;
     
 }
 
@@ -1101,28 +1042,6 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 }
 
 
-#pragma mark - NSFetchedResultsController delegate
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    
-    [super controllerDidChangeContent:controller];
-        
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    if ([anObject isKindOfClass:[NSManagedObject class]]) {
-        
-        NSManagedObjectID *objectID = [(NSManagedObject *)anObject objectID];
-        [self.cachedCellsHeights removeObjectForKey:objectID];
-        
-    }
-    
-    [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
-    
-}
-
-
 - (void)pictureWasDownloaded:(NSNotification *)notification {
     
     if ([notification.object isKindOfClass:[STMArticlePicture class]]) {
@@ -1154,16 +1073,12 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 }
 
+
 #pragma mark - view lifecycle
 
 - (void)addObservers {
 
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    
-    [nc addObserver:self
-           selector:@selector(deviceOrientationDidChangeNotification:)
-               name:UIDeviceOrientationDidChangeNotification
-             object:nil];
     
     [nc addObserver:self
            selector:@selector(pictureWasDownloaded:)

@@ -15,9 +15,6 @@
 #import "STMSalesmanController.h"
 
 
-static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
-
-
 @interface STMOrdersDetailTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, weak) STMOrdersSVC *splitVC;
@@ -36,8 +33,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 @property (nonatomic, strong) NSArray *editableProperties;
 @property (nonatomic, strong) UIPopoverController *editablesPopover;
 @property (nonatomic) BOOL editablesPopoverWasVisible;
-
-@property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 
 
 @end
@@ -249,18 +244,26 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 - (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
     
     NSString *filterProcessedLabel = [STMSaleOrderController labelForProcessing:processing];
+
+    filterProcessedLabel = (filterProcessedLabel) ? filterProcessedLabel : processing;
     
-    STMSegmentedControl *filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
-    filterProcessedSegmentedControl.selectedSegmentIndex = 0;
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonPressed:)];
-    [filterProcessedSegmentedControl addGestureRecognizer:tap];
-    
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonLongPressed:)];
-    [filterProcessedSegmentedControl addGestureRecognizer:longPress];
-    
-    STMBarButtonItem *filterButton = [[STMBarButtonItem alloc] initWithCustomView:filterProcessedSegmentedControl];
-    return filterButton;
+    if (filterProcessedLabel) {
+        
+        STMSegmentedControl *filterProcessedSegmentedControl = [[STMSegmentedControl alloc] initWithItems:@[filterProcessedLabel]];
+        filterProcessedSegmentedControl.selectedSegmentIndex = 0;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonPressed:)];
+        [filterProcessedSegmentedControl addGestureRecognizer:tap];
+        
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(filterButtonLongPressed:)];
+        [filterProcessedSegmentedControl addGestureRecognizer:longPress];
+        
+        STMBarButtonItem *filterButton = [[STMBarButtonItem alloc] initWithCustomView:filterProcessedSegmentedControl];
+        return filterButton;
+
+    } else {
+        return nil;
+    }
     
 }
 
@@ -540,35 +543,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 }
 
 
-#pragma mark - cell's height caching
-
-- (NSMutableDictionary *)cachedCellsHeights {
-    
-    if (!_cachedCellsHeights) {
-        _cachedCellsHeights = [NSMutableDictionary dictionary];
-    }
-    return _cachedCellsHeights;
-    
-}
-
-- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
-    
-    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
-    
-    self.cachedCellsHeights[objectID] = @(height);
-    
-}
-
-- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
-    
-    NSManagedObjectID *objectID = [[self.resultsController objectAtIndexPath:indexPath] objectID];
-
-    return self.cachedCellsHeights[objectID];
-    
-}
-
-
 #pragma mark - Table view data source
+
+- (NSString *)cellIdentifier {
+    return @"STMCustom1TVCell";
+}
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
@@ -590,54 +569,21 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static CGFloat standardCellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-    });
-
-    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
-    
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
-    
-    return height;
-
-}
-
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
     static STMCustom1TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        cell = [self.tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     });
-
-    [self fillCell:cell atIndexPath:indexPath];
     
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-    
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    
-    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-
-    [self putCachedHeight:height forIndexPath:indexPath];
-    
-    return height;
+    return cell;
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:Custom1CellIdentifier forIndexPath:indexPath];
+    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
 
     [self fillCell:cell atIndexPath:indexPath];
 
@@ -645,7 +591,16 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
 }
 
-- (void)fillCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell isKindOfClass:[STMCustom1TVCell class]]) {
+        [self fillCustomCell:(STMCustom1TVCell *)cell atIndexPath:indexPath];
+    }
+    [super fillCell:cell atIndexPath:indexPath];
+    
+}
+
+- (void)fillCustomCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMSaleOrder *saleOrder = [self.resultsController objectAtIndexPath:indexPath];
     
@@ -685,16 +640,13 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     
     [self setupInfoLabelForCell:cell andSaleOrder:saleOrder];
     
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
-
 }
 
 - (void)setupInfoLabelForCell:(STMCustom1TVCell *)cell andSaleOrder:(STMSaleOrder *)saleOrder {
 
     NSString *processingLabel = [STMSaleOrderController labelForProcessing:saleOrder.processing];
     
-    cell.infoLabel.text = processingLabel;
+    cell.infoLabel.text = (processingLabel) ? processingLabel : saleOrder.processing;
     
     for (UIGestureRecognizer *gestures in cell.infoLabel.gestureRecognizers) {
         [cell.infoLabel removeGestureRecognizer:gestures];
@@ -731,19 +683,6 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
     [super controllerDidChangeContent:controller];
     
     [self setupToolbar];
-    
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-
-    if ([anObject isKindOfClass:[NSManagedObject class]]) {
-        
-        NSManagedObjectID *objectID = [(NSManagedObject *)anObject objectID];
-        [self.cachedCellsHeights removeObjectForKey:objectID];
-        
-    }
-    
-    [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
     
 }
 
@@ -832,11 +771,11 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
         if (!button) {
             
             button = [self filterButtonForProcessing:processingName];
-            (self.filterButtons)[processingName] = button;
+            if (button) self.filterButtons[processingName] = button;
             
         }
         
-        [toolbarItems addObject:button];
+        if (button) [toolbarItems addObject:button];
         
     }
 //// ------------------- TESTING DUBLICATE
@@ -936,25 +875,25 @@ static NSString *Custom1CellIdentifier = @"STMCustom1TVCell";
 
 #pragma mark - device orientation
 
-- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
-    
-}
+//- (void)deviceOrientationDidChangeNotification:(NSNotification *)notification {
+//    
+//}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:Custom1CellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom1TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(toolBarLayoutDone)
                                                  name:@"toolBarLayoutDone"
                                                object:self.navigationController.toolbar];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deviceOrientationDidChangeNotification:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(deviceOrientationDidChangeNotification:)
+//                                                 name:UIDeviceOrientationDidChangeNotification
+//                                               object:nil];
 
     [self performFetch];
     
