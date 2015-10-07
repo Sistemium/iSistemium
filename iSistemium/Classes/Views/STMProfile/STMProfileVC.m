@@ -63,6 +63,8 @@
 @property (nonatomic, strong) UIAlertView *locationDisabledAlert;
 @property (nonatomic) BOOL locationDisabledAlertIsShown;
 
+@property (nonatomic, strong) NSString *requestLocationServiceAuthorization;
+
 
 @end
 
@@ -79,6 +81,20 @@
 
 - (STMSettingsController *)settingsController {
     return [[STMSessionManager sharedManager].currentSession settingsController];
+}
+
+- (NSString *)requestLocationServiceAuthorization {
+    
+    if (!_requestLocationServiceAuthorization) {
+        
+        NSDictionary *appSettings = [self.settingsController currentSettingsForGroup:@"appSettings"];
+        NSString *requestLocationServiceAuthorization = [appSettings valueForKey:@"requestLocationServiceAuthorization"];
+        
+        _requestLocationServiceAuthorization = requestLocationServiceAuthorization;
+        
+    }
+    return _requestLocationServiceAuthorization;
+    
 }
 
 - (void)backButtonPressed {
@@ -651,7 +667,9 @@
 
 - (void)settingsChanged:(NSNotification *)notification {
     
-    if ([@[@"locationTrackerAutoStart", @"blockIfNoLocationPermission"] containsObject:notification.userInfo.allKeys.firstObject]) {
+    if ([@[@"locationTrackerAutoStart", @"blockIfNoLocationPermission", @"requestLocationServiceAuthorization"] containsObject:notification.userInfo.allKeys.firstObject]) {
+        
+        self.requestLocationServiceAuthorization = nil;
         
         [self setupLabels];
         [self checkLocationDisabled];
@@ -682,14 +700,24 @@
     self.monitoringStatusLabel.text = @"";
     self.locationTrackingStatusLabel.text = @"";
     self.locationWarningLabel.text = @"";
+    self.lastLocationImageView.hidden = YES;
     
 }
 
 - (void)setupLocationLabels {
-    
-    [self setupLastLocationLabel];
-    [self setupLocationTrackingStatusLabel];
-    [self setupMonitoringStatusLabel];
+
+    if (![self.requestLocationServiceAuthorization isEqualToString:@"noRequest"]) {
+
+        self.lastLocationImageView.hidden = NO;
+        [self setupLastLocationLabel];
+        [self setupLocationTrackingStatusLabel];
+        [self setupMonitoringStatusLabel];
+
+    } else {
+        
+        [self hideLocationLabels];
+        
+    }
     
 }
 
@@ -756,20 +784,24 @@
 
 - (void)checkLocationDisabled {
     
-    if ([CLLocationManager locationServicesEnabled]) {
+    if (![self.requestLocationServiceAuthorization isEqualToString:@"noRequest"]) {
         
-        switch ([CLLocationManager authorizationStatus]) {
-            case kCLAuthorizationStatusAuthorizedAlways:
-                [self hideLocationDisabledAlert];
-                break;
-                
-            default:
-                [self showLocationDisabledAlert];
-                break;
+        if ([CLLocationManager locationServicesEnabled]) {
+            
+            switch ([CLLocationManager authorizationStatus]) {
+                case kCLAuthorizationStatusAuthorizedAlways:
+                    [self hideLocationDisabledAlert];
+                    break;
+                    
+                default:
+                    [self showLocationDisabledAlert];
+                    break;
+            }
+            
+        } else {
+            [self showLocationDisabledAlert];
         }
-        
-    } else {
-        [self showLocationDisabledAlert];
+
     }
 
 }
@@ -849,19 +881,23 @@
 
 - (void)currentAccuracyUpdated:(NSNotification *)notification {
     
-    BOOL isAccuracySufficient = [notification.userInfo[@"isAccuracySufficient"] boolValue];
-    
-    if (isAccuracySufficient) {
+    if (![self.requestLocationServiceAuthorization isEqualToString:@"noRequest"]) {
         
-        self.locationWarningLabel.text = @"";
+        BOOL isAccuracySufficient = [notification.userInfo[@"isAccuracySufficient"] boolValue];
         
-    } else {
-        
-        self.locationWarningLabel.textColor = [UIColor brownColor];
-        self.locationWarningLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
-        
+        if (isAccuracySufficient) {
+            
+            self.locationWarningLabel.text = @"";
+            
+        } else {
+            
+            self.locationWarningLabel.textColor = [UIColor brownColor];
+            self.locationWarningLabel.text = NSLocalizedString(@"ACCURACY IS NOT SUFFICIENT", nil);
+            
+        }
+
     }
-    
+
 }
 
 - (void)locationTrackerStatusChanged {
