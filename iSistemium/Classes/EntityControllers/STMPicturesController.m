@@ -609,12 +609,15 @@
     NSData *weakData = data;
     STMPicture *weakPicture = picture;
     
-    NSString *fileName = nil;
+    NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
+    NSString *fileName = [xid stringByAppendingString:@".jpg"];
+
+//    NSString *fileName = nil;
     
     if ([picture isKindOfClass:[STMPhoto class]]) {
         
-        NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
-        fileName = [xid stringByAppendingString:@".jpg"];
+//        NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
+//        fileName = [xid stringByAppendingString:@".jpg"];
         
         if (shouldUpload) {
             [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
@@ -622,10 +625,10 @@
 
     } else if ([picture isKindOfClass:[STMPicture class]]) {
         
-        fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
+//        fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
 
-        // https://github.com/Sistemium/iSistemium/issues/323
-#warning - have to use xid for filename like STMPhoto class
+// https://github.com/Sistemium/iSistemium/issues/323
+//#warning - have to use xid for filename like STMPhoto class
 
     }
     
