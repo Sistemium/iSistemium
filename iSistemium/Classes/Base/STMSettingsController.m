@@ -372,7 +372,7 @@
                 id nValue = [self normalizeValue:settingValue forKey:settingName];
                 newSetting.value = ([nValue isKindOfClass:[NSString class]]) ? nValue : nil;
                 
-                [newSetting addObserver:self forKeyPath:@"value" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
+//                [newSetting addObserver:self forKeyPath:@"value" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:nil];
                 
             } else {
                 
