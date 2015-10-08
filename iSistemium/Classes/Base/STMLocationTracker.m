@@ -93,7 +93,11 @@
 - (void)appSettingsChanged:(NSNotification *)notification {
 
     if ([[notification.userInfo allKeys] containsObject:@"requestLocationServiceAuthorization"]) {
+        
         self.requestLocationServiceAuthorization = nil;
+        
+        [self checkTrackerAutoStart];
+        
     }
 
 }
@@ -663,13 +667,17 @@
                     
                 } else {
                     
-                    [self stopTracking];
+                    if (self.tracking) [self stopTracking];
                     
                 }
 
             }
             
         }];
+        
+    } else {
+        
+        if (self.tracking) [self stopTracking];
         
     }
 
