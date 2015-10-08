@@ -129,13 +129,7 @@
     } else {
         
         for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
-            
-            NSUInteger ord = [self.resultsController.fetchedObjects indexOfObject:point] + 1;
-            
-            if (!point.ord || point.ord.integerValue != ord) {
-                point.ord = @(ord);
-            }
-
+            [self orderingPoint:point];
         }
         
         [self.tableView reloadData];
@@ -143,6 +137,16 @@
         
     }
     
+}
+
+- (void)orderingPoint:(STMShipmentRoutePoint *)point {
+
+    NSUInteger ord = [self.resultsController.fetchedObjects indexOfObject:point] + 1;
+    
+    if (!point.ord || point.ord.integerValue != ord) {
+        point.ord = @(ord);
+    }
+
 }
 
 - (void)checkPointsLocations {
@@ -687,6 +691,9 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
+    for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
+        [self orderingPoint:point];
+    }
     [self checkPointsLocations];
     [self reloadData];
     
@@ -698,7 +705,7 @@
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
+
 }
 
 
@@ -714,6 +721,8 @@
         if ([sender isKindOfClass:[NSIndexPath class]]) {
         
             STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+            [self orderingPoint:point];
+            
             pointTVC.point = point;
             
             [self.splitVC didSelectPoint:point inVC:self];
@@ -735,11 +744,7 @@
         STMAllRoutesMapVC *allRoutesMapVC = (STMAllRoutesMapVC *)segue.destinationViewController;
 
         for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
-            
-            if (!point.ord || point.ord.integerValue != [self.resultsController.fetchedObjects indexOfObject:point] + 1) {
-                point.ord = @([self.resultsController.fetchedObjects indexOfObject:point] + 1);
-            }
-            
+            [self orderingPoint:point];
         }
         
         allRoutesMapVC.points = self.resultsController.fetchedObjects;

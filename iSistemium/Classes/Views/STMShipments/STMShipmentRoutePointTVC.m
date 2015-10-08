@@ -749,7 +749,9 @@
     attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize],
                    NSForegroundColorAttributeName: cell.textLabel.textColor};
 
-    [text appendAttributedString:[[NSAttributedString alloc] initWithString:self.point.ord.stringValue attributes:attributes]];
+    NSString *ordString = self.point.ord.stringValue;
+    
+    [text appendAttributedString:[[NSAttributedString alloc] initWithString:ordString attributes:attributes]];
 
     cell.textLabel.attributedText = text;
     
