@@ -24,6 +24,7 @@
 
 
 #define CELL_IMAGES_SIZE 54
+#define ORD_PICKER_CELL_HEIGHT 88
 #define THUMB_SIZE CGSizeMake(CELL_IMAGES_SIZE, CELL_IMAGES_SIZE)
 #define IMAGE_PADDING 6
 #define LIMIT_COUNT 4
@@ -57,8 +58,12 @@
 @property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
 
 @property (nonatomic, strong) NSIndexPath *pointNumberCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *ordPickerCellIndexPath;
 @property (nonatomic, strong) UIPickerView *ordPicker;
 @property (nonatomic, strong) UIToolbar *pickerToolbar;
+@property (nonatomic) UIEdgeInsets originSeparatorInset;
+
+@property (nonatomic) BOOL showOrdPicker;
 
 @end
 
@@ -87,6 +92,49 @@
     }
     return _session;
     
+}
+
+- (UIPickerView *)ordPicker {
+    
+    if (!_ordPicker) {
+        
+        CGRect pickerFrame = CGRectMake(0, 0, self.view.frame.size.width, 162); // UIPicker height may be 162, 180 and 216 only
+        
+        _ordPicker = [[UIPickerView alloc] initWithFrame:pickerFrame];
+        
+        _ordPicker.dataSource = self;
+        _ordPicker.delegate = self;
+            
+    }
+    return _ordPicker;
+    
+}
+
+- (UIToolbar *)pickerToolbar {
+    
+    if (!_pickerToolbar) {
+
+        CGRect toolbarFrame = CGRectMake(0, 0, self.view.frame.size.width, TOOLBAR_HEIGHT);
+
+        _pickerToolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
+
+        STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                                    target:self
+                                                                                                    action:@selector(pickerCancel)];
+        STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+
+        STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                              target:self
+                                                                                              action:@selector(pickerDone)];
+        [_pickerToolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
+
+        _pickerToolbar.backgroundColor = [UIColor whiteColor];
+        _pickerToolbar.tintColor = [UIColor whiteColor];
+        _pickerToolbar.barTintColor = [UIColor whiteColor];
+        
+    }
+    return _pickerToolbar;
+
 }
 
 - (void)setPoint:(STMShipmentRoutePoint *)point {
@@ -459,15 +507,7 @@
 
 
 - (CGFloat)estimatedHeightForRow {
-    
-    static CGFloat standardCellHeight;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        standardCellHeight = [[UITableViewCell alloc] init].frame.size.height;
-    });
-    
-    return standardCellHeight + 1.0f;  // Add 1.0f for the cell separator height
-
+    return self.standardCellHeight;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -480,7 +520,7 @@
         case 0:
             switch (indexPath.row) {
                 case 1:
-                    return [self heightForRoutePointCell];
+                    return (self.showOrdPicker) ? ORD_PICKER_CELL_HEIGHT : [self heightForRoutePointCell];
                     break;
                     
                 default:
@@ -578,22 +618,7 @@
 
     switch (indexPath.section) {
         case 0:
-            switch (indexPath.row) {
-                case 0:
-                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
-                    break;
-                    
-                case 1:
-                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
-                    break;
-
-                case 2:
-                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
-                    break;
-
-                default:
-                    break;
-            }
+            cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
             break;
             
         case 1:
@@ -635,18 +660,25 @@
 - (void)flushCellBeforeUse:(UITableViewCell *)cell {
     
     cell.textLabel.text = nil;
+    cell.textLabel.textAlignment = NSTextAlignmentLeft;
     cell.detailTextLabel.text = nil;
+    cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.imageView.image = nil;
     
     if ([cell conformsToProtocol:@protocol(STMTDCell)]) {
         
         UITableViewCell <STMTDCell> *customCell = (UITableViewCell <STMTDCell> *)cell;
+        
         customCell.titleLabel.text = nil;
+        customCell.titleLabel.attributedText = nil;
+        customCell.titleLabel.textAlignment = NSTextAlignmentLeft;
         customCell.detailLabel.text = nil;
+        customCell.detailLabel.attributedText = nil;
+        customCell.detailLabel.textAlignment = NSTextAlignmentLeft;
         
     }
-    
+
 }
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -655,16 +687,17 @@
         case 0:
             switch (indexPath.row) {
                 case 0:
-                    [self fillCell:cell withRoute:self.point.shipmentRoute];
+                    (self.showOrdPicker) ? [self fillChangePointNumberTitleCell:cell] : [self fillCell:cell withRoute:self.point.shipmentRoute];
                     break;
                     
                 case 1:
-                    [self fillCell:cell withRoutePoint:self.point];
+                    self.pointNumberCellIndexPath = (self.showOrdPicker) ? indexPath : nil;
+                    (self.showOrdPicker) ? [self fillOrdPickerCell:cell] : [self fillCell:cell withRoutePoint:self.point];
                     break;
 
                 case 2:
-                    self.pointNumberCellIndexPath = indexPath;
-                    [self fillPointNumberCell:cell];
+                    self.pointNumberCellIndexPath = (self.showOrdPicker) ? nil : indexPath;
+                    (self.showOrdPicker) ? [self fillPickerToolbarCell:cell] : [self fillPointNumberCell:cell];
                     break;
 
                 default:
@@ -722,8 +755,15 @@
     cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
     cell.detailTextLabel.text = @"";
 
-    cell.accessoryType = UITableViewCellAccessoryNone;
+}
 
+- (void)fillChangePointNumberTitleCell:(UITableViewCell *)cell {
+    
+    cell.textLabel.text = NSLocalizedString(@"PICK A NEW POINT NUMBER", nil);
+    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    
+    cell.detailTextLabel.text = @"";
+    
 }
 
 - (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
@@ -733,7 +773,14 @@
     
     cell.detailTextLabel.text = [point shortInfo];
 
-    cell.accessoryType = UITableViewCellAccessoryNone;
+}
+
+- (void)fillOrdPickerCell:(UITableViewCell *)cell {
+
+//    cell.contentView.clipsToBounds = YES;
+
+    self.ordPicker.center = cell.contentView.center;
+    [cell.contentView addSubview:self.ordPicker];
     
 }
 
@@ -756,8 +803,12 @@
     [text appendAttributedString:[[NSAttributedString alloc] initWithString:ordString attributes:attributes]];
 
     cell.textLabel.attributedText = text;
+
+}
+
+- (void)fillPickerToolbarCell:(UITableViewCell *)cell {
     
-    cell.accessoryType = UITableViewCellAccessoryNone;
+    [cell.contentView addSubview:self.pickerToolbar];
     
 }
 
@@ -986,10 +1037,18 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    cell.contentView.clipsToBounds = (self.showOrdPicker && indexPath.section == 0);
+    
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if ([indexPath compare:self.pointNumberCellIndexPath] == NSOrderedSame) {
+        
         [self showOrdPickerView];
+        
     }
     
     if (indexPath.section == 1) {
@@ -1088,58 +1147,22 @@
 
 - (void)showOrdPickerView {
     
-    if (!self.ordPicker) {
-        
-        CGRect sectionFrame = [self.tableView rectForSection:0];
-        CGRect headerFrame = [self.tableView rectForHeaderInSection:0];
-        CGRect footerFrame = [self.tableView rectForFooterInSection:0];
-        
-        CGFloat height = footerFrame.origin.y - headerFrame.size.height;
-
-        CGRect pickerFrame = CGRectMake(0, headerFrame.size.height, sectionFrame.size.width, height);
-        
-        self.ordPicker = [[UIPickerView alloc] initWithFrame:pickerFrame];
-
-        self.ordPicker.backgroundColor = [UIColor whiteColor];
-        
-        self.ordPicker.dataSource = self;
-        self.ordPicker.delegate = self;
-
-        
-    }
-    
     [self.ordPicker selectRow:(self.point.ord.integerValue - 1) inComponent:0 animated:NO];
-    
-    [self.view addSubview:self.ordPicker];
-    
-    if (!self.pickerToolbar) {
-    
-        CGRect sectionFrame = [self.tableView rectForSection:0];
-        CGFloat originY = sectionFrame.size.height - TOOLBAR_HEIGHT;
-        CGRect toolbarFrame = CGRectMake(0, originY, sectionFrame.size.width, TOOLBAR_HEIGHT);
 
-        self.pickerToolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
-        
-        STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                                    target:self
-                                                                                                    action:@selector(pickerCancel)];
-        STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
-        
-        STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                              target:self
-                                                                                              action:@selector(pickerDone)];
-        [self.pickerToolbar setItems:@[cancelButton, flexibleSpace, doneButton]];
+    self.showOrdPicker = YES;
 
-    }
-    
-    [self.view addSubview:self.pickerToolbar];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 
 }
 
 - (void)hideOrdPicker {
 
+    self.showOrdPicker = NO;
+
     [self.pickerToolbar removeFromSuperview];
     [self.ordPicker removeFromSuperview];
+
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     
 }
 
