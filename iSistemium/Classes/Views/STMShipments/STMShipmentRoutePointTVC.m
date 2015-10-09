@@ -739,17 +739,19 @@
 
 - (void)fillPointNumberCell:(UITableViewCell *)cell {
     
+    UIColor *textColor = ACTIVE_BLUE_COLOR; //cell.textLabel.textColor
+    
     NSDictionary *attributes = @{NSFontAttributeName: cell.textLabel.font,
-                                 NSForegroundColorAttributeName: cell.textLabel.textColor};
+                                 NSForegroundColorAttributeName: textColor};
     
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"POINT NUMBER", nil) attributes:attributes];
 
     [text appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
 
     attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize],
-                   NSForegroundColorAttributeName: cell.textLabel.textColor};
+                   NSForegroundColorAttributeName: textColor};
 
-    NSString *ordString = self.point.ord.stringValue;
+    NSString *ordString = (self.point.ord) ? self.point.ord.stringValue : @"N/A";
     
     [text appendAttributedString:[[NSAttributedString alloc] initWithString:ordString attributes:attributes]];
 
