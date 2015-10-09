@@ -18,6 +18,7 @@
 
 
 #define EDGE_INSET 50
+#define PICKER_SUPERVIEW_HEIGHT 88
 
 typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
     STMMapReorderingModeUnknown,
@@ -51,6 +52,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 @property (nonatomic, strong) UIProgressView *progressBar;
 
 @property (nonatomic, strong) UIPickerView *ordPicker;
+@property (nonatomic, strong) UIView *pickerSuperview;
 //@property (nonatomic, strong) STMShipmentRoutePoint *selectedPoint;
 @property (nonatomic, strong) STMMapAnnotation *selectedPin;
 
@@ -98,6 +100,40 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
         
     }
     return _reorderButton;
+    
+}
+
+- (UIPickerView *)ordPicker {
+
+    if (!_ordPicker) {
+        
+        CGRect pickerFrame = CGRectMake(0, 0, self.view.frame.size.width, 162); // UIPicker height may be 162, 180 and 216 only
+        
+        _ordPicker = [[UIPickerView alloc] initWithFrame:pickerFrame];
+        
+        _ordPicker.dataSource = self;
+        _ordPicker.delegate = self;
+
+    }
+    return _ordPicker;
+    
+}
+
+- (UIView *)pickerSuperview {
+
+    if (!_pickerSuperview) {
+        
+        CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, PICKER_SUPERVIEW_HEIGHT);
+        
+        _pickerSuperview = [[UIView alloc] initWithFrame:frame];
+        _pickerSuperview.clipsToBounds = YES;
+        _pickerSuperview.backgroundColor = [UIColor whiteColor];
+        self.ordPicker.center = _pickerSuperview.center;
+        
+        [_pickerSuperview addSubview:self.ordPicker];
+        
+    }
+    return _pickerSuperview;
     
 }
 
@@ -735,36 +771,30 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
 
 - (void)showOrdPickerView {
+
+    [self.view addSubview:self.pickerSuperview];
     
-    self.ordPicker = (self.ordPicker) ? self.ordPicker : [[UIPickerView alloc] init];
-    
-    self.ordPicker.backgroundColor = [UIColor whiteColor];
-    
-    self.ordPicker.dataSource = self;
-    self.ordPicker.delegate = self;
-    
-    [self.view addSubview:self.ordPicker];
-    
-    CGRect mapFrame = self.mapView.frame;
-    CGFloat y = mapFrame.origin.y + self.ordPicker.frame.size.height;
-    CGFloat height = mapFrame.size.height - self.ordPicker.frame.size.height;
-    
-    self.mapView.frame = CGRectMake(mapFrame.origin.x, y, mapFrame.size.width, height);
-    
+    [self changeMapViewFrameWithPickerPresent:YES];
+
 }
 
 - (void)hideOrdPicker {
 
+    [self changeMapViewFrameWithPickerPresent:NO];
+    
+    [self.pickerSuperview removeFromSuperview];
+    
+}
+
+- (void)changeMapViewFrameWithPickerPresent:(BOOL)pickerPresent {
+
     CGRect mapFrame = self.mapView.frame;
-    CGFloat y = mapFrame.origin.y - self.ordPicker.frame.size.height;
-    CGFloat height = mapFrame.size.height + self.ordPicker.frame.size.height;
+    CGFloat shift = (pickerPresent) ? self.pickerSuperview.frame.size.height : - self.pickerSuperview.frame.size.height;
+    CGFloat y = mapFrame.origin.y + shift;
+    CGFloat height = mapFrame.size.height - shift;
     
     self.mapView.frame = CGRectMake(mapFrame.origin.x, y, mapFrame.size.width, height);
-    
-//    [self.mapView showAnnotations:self.mapView.annotations animated:YES];
 
-    [self.ordPicker removeFromSuperview];
-    
 }
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
