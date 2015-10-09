@@ -772,8 +772,8 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
 - (void)showOrdPickerView {
 
+    [self.ordPicker reloadAllComponents];
     [self.view addSubview:self.pickerSuperview];
-    
     [self changeMapViewFrameWithPickerPresent:YES];
 
 }
@@ -781,7 +781,6 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 - (void)hideOrdPicker {
 
     [self changeMapViewFrameWithPickerPresent:NO];
-    
     [self.pickerSuperview removeFromSuperview];
     
 }
