@@ -216,15 +216,19 @@
 
 - (void)setCashingSum:(NSDecimalNumber *)cashingSum forDebt:(STMDebt *)debt {
     
-    (self.debtsDictionary)[debt.xid] = @[debt, cashingSum];
-    
-    if ([self.cashingSummLimit doubleValue] > 0) {
-        self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+    if (cashingSum && debt && debt.xid) {
+        
+        (self.debtsDictionary)[debt.xid] = @[debt, cashingSum];
+        
+        if ([self.cashingSummLimit doubleValue] > 0) {
+            self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingSumChanged"
+                                                            object:self
+                                                          userInfo:@{@"debt": debt, @"cashingSum": cashingSum}];
+
     }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingSumChanged"
-                                                        object:self
-                                                      userInfo:@{@"debt": debt, @"cashingSum": cashingSum}];
     
 }
 
