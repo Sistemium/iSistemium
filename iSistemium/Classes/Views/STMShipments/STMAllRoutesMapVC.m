@@ -224,26 +224,40 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
 - (void)updateMapView {
 
-    [self.mapView removeAnnotations:self.mapView.annotations];
+    [self.mapView performSelector:@selector(removeAnnotations:) withObject:self.mapView.annotations afterDelay:0];
     
-    if (!self.startPoint) {
-        
-        [self.mapView showAnnotations:self.locationsPins animated:YES];
-        
-    } else {
+//    [self.mapView removeAnnotations:self.mapView.annotations];
+    
+//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-        self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint
-                                                              withTitle:NSLocalizedString(@"START POINT", nil)
-                                                            andSubtitle:nil];
-        
-        NSArray *pins = [self.locationsPins arrayByAddingObject:self.startPin];
-        
-        [self.mapView showAnnotations:pins animated:YES];
+        if (!self.startPoint) {
+            
+            [self performSelector:@selector(showAnnotationsWithAnimation:) withObject:self.locationsPins afterDelay:0];
+            
+//            [self.mapView showAnnotations:self.locationsPins animated:YES];
+            
+        } else {
 
-        [self calcRoutes];
-        
-    }
+            self.startPin = [STMMapAnnotation createAnnotationForCLLocation:self.startPoint
+                                                                  withTitle:NSLocalizedString(@"START POINT", nil)
+                                                                andSubtitle:nil];
+            
+            NSArray *pins = [self.locationsPins arrayByAddingObject:self.startPin];
+            
+            [self performSelector:@selector(showAnnotationsWithAnimation:) withObject:pins afterDelay:0];
 
+//            [self.mapView showAnnotations:pins animated:YES];
+
+            [self calcRoutes];
+            
+        }
+        
+//    }];
+
+}
+
+- (void)showAnnotationsWithAnimation:(NSArray *)annotations {
+    [self.mapView showAnnotations:annotations animated:YES];
 }
 
 - (void)recalcRoutes {
