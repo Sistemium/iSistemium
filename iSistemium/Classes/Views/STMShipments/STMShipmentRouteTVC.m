@@ -33,6 +33,8 @@
 @property (nonatomic, strong) NSString *routeWorkflow;
 @property (nonatomic, strong) NSString *nextProcessing;
 
+@property (nonatomic, strong) NSString *routePointCellIdentifier;
+
 
 @end
 
@@ -71,6 +73,10 @@
 }
 
 - (NSString *)cellIdentifier {
+    return @"routeCell";
+}
+
+- (NSString *)routePointCellIdentifier {
     return @"routePointCell";
 }
 
@@ -305,19 +311,49 @@
 
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
-    static UITableViewCell *cell = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
-    });
+    if (indexPath.section == 0) {
+        
+        static UITableViewCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+        });
+        
+        return cell;
 
-    return cell;
+    } else if (indexPath.section == 1) {
+
+        static UITableViewCell *cell = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            cell = [self.tableView dequeueReusableCellWithIdentifier:self.routePointCellIdentifier];
+        });
+        
+        return cell;
+
+    } else {
+        
+        return nil;
+        
+    }
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell;
+    
+    switch (indexPath.section) {
+        case 0:
+            cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+            break;
+        case 1:
+            cell = [tableView dequeueReusableCellWithIdentifier:self.routePointCellIdentifier forIndexPath:indexPath];
+            break;
+            
+        default:
+            break;
+    }
     
     [self fillCell:cell atIndexPath:indexPath];
     
@@ -327,23 +363,21 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
-        
-        STMCustom7TVCell *customCell = (STMCustom7TVCell *)cell;
-        
-        switch (indexPath.section) {
-            case 0:
-                [self fillRouteCell:customCell atIndexPath:indexPath];
-                break;
-                
-            case 1:
-                [self fillRoutePointCell:customCell atIndex:indexPath.row];
-                break;
-                
-            default:
-                break;
-        }
-        
+    switch (indexPath.section) {
+        case 0:
+            if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
+                [self fillRouteCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
+            }
+            break;
+            
+        case 1:
+            if ([cell isKindOfClass:[STMCustom9TVCell class]]) {
+                [self fillRoutePointCell:(STMCustom9TVCell *)cell atIndex:indexPath.row];
+            }
+            break;
+            
+        default:
+            break;
     }
     
     [super fillCell:cell atIndexPath:indexPath];
@@ -453,10 +487,12 @@
     
 }
 
-- (void)fillRoutePointCell:(STMCustom7TVCell *)cell atIndex:(NSUInteger)index {
+- (void)fillRoutePointCell:(STMCustom9TVCell *)cell atIndex:(NSUInteger)index {
     
     STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 
+    cell.infoLabel.text = point.ord.stringValue;
+    
     cell.titleLabel.text = [STMFunctions shortCompanyName:point.name];
 
     UIColor *textColor = [UIColor blackColor];
@@ -947,6 +983,7 @@
     }
 
     [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom9TVCell" bundle:nil] forCellReuseIdentifier:self.routePointCellIdentifier];
     [self performFetch];
     
     [self addObservers];
