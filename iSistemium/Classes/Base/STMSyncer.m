@@ -27,6 +27,8 @@
 #import "STMLocation.h"
 #import "STMEntity.h"
 
+#import "STMWebSocketController.h"
+
 
 #define SEND_DATA_CONNECTION @"SEND_DATA"
 
@@ -377,6 +379,8 @@
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
                         
                         [self performFetch];
+                        
+                        [STMWebSocketController startSocket];
 
                     } else {
                         NSLog(@"checkStcEntities fail");
@@ -458,6 +462,8 @@
 - (void)stopSyncer {
     
     if (self.running) {
+        
+        [STMWebSocketController closeSocket];
         
         [self.session.logger saveLogMessageWithText:@"Syncer stop" type:@""];
         self.syncing = NO;
