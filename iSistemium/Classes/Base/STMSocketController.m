@@ -18,8 +18,8 @@
 
 @interface STMSocketController()
 
-
 @property (nonatomic, strong) SocketIOClient* socket;
+@property (nonatomic, strong) NSMutableArray *queuedEvents;
 
 
 @end
@@ -51,6 +51,10 @@
             return @"status:change";
             break;
         }
+        case STMSocketEventInfo: {
+            return @"info";
+            break;
+        }
         default: {
             return nil;
             break;
@@ -64,7 +68,7 @@
     if (!_socket) {
         
         SocketIOClient* socket = [[SocketIOClient alloc] initWithSocketURL:SOCKET_URL opts:nil];
-
+        
         [socket onAny:^(SocketAnyEvent *event) {
             
             NSLog(@"SocketIOClient ___ event %@", event.event);
@@ -72,7 +76,18 @@
             NSLog(@"SocketIOClient ___ items %@", event.items);
             
         }];
+
+        NSString *connectEvent = [[self class] stringValueForEvent:STMSocketEventConnect];
         
+        [socket on:connectEvent callback:^(NSArray* data, SocketAckEmitter* ack) {
+            
+            NSLog(@"data %@", data);
+            NSLog(@"ack %@", ack);
+            
+            [self checkQueuedEvent];
+            
+        }];
+
         _socket = socket;
         
     }
@@ -80,33 +95,68 @@
     
 }
 
-//- (void)startSocket {
-//    
-//    [self.socket connect];
-//    
-//
-//    NSString *accessToken = [STMAuthController authController].accessToken;
-//    
-//    if (accessToken) {
-//        
-//        NSURL *url = [NSURL URLWithString:SOCKET_URL];
-//        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-//        [request addValue:accessToken forHTTPHeaderField:@"Authorization"];
-//
-//        [self sharedInstance].socketRequest = request.copy;
-//        
-//        [[self sharedInstance].webSocket open];
-//
-//    } else {
-//        
-//        [self sharedInstance].webSocket = nil;
-//        
-//    }
-//
-//}
+- (NSMutableArray *)queuedEvents {
+    
+    if (!_queuedEvents) {
+        _queuedEvents = @[].mutableCopy;
+    }
+    return _queuedEvents;
+    
+}
+
+- (void)checkQueuedEvent {
+    
+    if (self.queuedEvents.count > 1) {
+        
+        NSArray *queuedEvents = self.queuedEvents.copy;
+        
+        for (NSDictionary *event in queuedEvents) {
+            
+            for (NSString *eventStringValue in event.allKeys) {
+                
+                NSData *data = event[eventStringValue];
+                
+                [self.socket emit:eventStringValue withItems:@[data]];
+                
+                [self.queuedEvents removeObject:event];
+                
+            }
+            
+        }
+        
+    }
+
+}
 
 + (void)startSocket {
-    [[self sharedInstance].socket connect];
+    
+    switch ([self sharedInstance].socket.status) {
+            
+        case SocketIOClientStatusNotConnected: {
+            [[self sharedInstance].socket connect];
+                        break;
+        }
+        case SocketIOClientStatusClosed: {
+            [[self sharedInstance].socket connect];
+            break;
+        }
+        case SocketIOClientStatusConnecting: {
+            
+            break;
+        }
+        case SocketIOClientStatusConnected: {
+            
+            break;
+        }
+        case SocketIOClientStatusReconnecting: {
+            
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+
 }
 
 + (void)closeSocket {
@@ -119,7 +169,8 @@
 
 - (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
     
-    NSString *eventStringValue = [[self class] stringValueForEvent:event];
+    NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
+    NSString *infoEvent = [STMSocketController stringValueForEvent:STMSocketEventInfo];
     
     NSDictionary *dataDic = @{@"userId"     : [STMAuthController authController].userID,
                               @"token"      : [STMAuthController authController].accessToken,
@@ -128,19 +179,35 @@
     dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
     
     if (dataDic) {
-        
+
         NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDic
                                                            options:0
                                                              error:nil];
 
-        [self.socket emit:eventStringValue withItems:@[JSONData]];
+        if (self.socket.status != SocketIOClientStatusConnected) {
+            
+            [self.queuedEvents addObject:@{eventStringValue : dataDic}];
+            
+        } else {
+            
+//            [self.socket emitWithAck:eventStringValue withItems:@[JSONData]](0, ^(NSArray* data) {
+//                NSLog(@"emitWithAck data: %@", data);
+//            });
+
+//            [self.socket emitWithAck:infoEvent withItems:@[JSONData]](0, ^(NSArray* data) {
+//                NSLog(@"emitWithAck data: %@", data);
+//            });
+            
+            [self.socket emit:eventStringValue withItems:@[JSONData]];
+            [self.socket emit:infoEvent withItems:@[JSONData]];
+
+        }
 
     } else {
-        NSLog(@"no dataDic to send via socket");
+        NSLog(@"no dataDic to send via socket for event: %@", eventStringValue);
     }
-    
-}
 
+}
 
 
 @end

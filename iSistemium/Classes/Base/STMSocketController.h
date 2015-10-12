@@ -10,7 +10,8 @@
 
 typedef NS_ENUM(NSInteger, STMSocketEvent) {
     STMSocketEventConnect,
-    STMSocketEventStatusChange
+    STMSocketEventStatusChange,
+    STMSocketEventInfo
 };
 
 
@@ -18,8 +19,6 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 + (void)startSocket;
 + (void)closeSocket;
-
-//+ (void)sendData:(id)data;
 
 + (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue;
 
