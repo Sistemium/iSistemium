@@ -24,7 +24,7 @@
 
 #import "STMAuthNC.h"
 
-#import "STMWebSocketController.h"
+#import "STMSocketController.h"
 
 
 @implementation STMAppDelegate
@@ -136,7 +136,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillResignActive"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-    [STMWebSocketController sendData:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
     
 }
 
@@ -155,7 +155,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-    [STMWebSocketController sendData:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
 
 //    [self showTestLocalNotification];
     
@@ -166,7 +166,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillEnterForeground"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-    [STMWebSocketController sendData:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
 
 }
 
@@ -182,7 +182,7 @@
         [STMMessageController showMessageVCsIfNeeded];
     }
     
-    [STMWebSocketController sendData:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
 
 }
 

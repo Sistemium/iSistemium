@@ -16,8 +16,8 @@
 #import "STMUncashingPicture.h"
 #import "STMPhoto.h"
 
-#import <AWSCore.h>
-#import <AWSS3.h>
+#import <AWSCore/AWSCore.h>
+#import <AWSS3/AWSS3.h>
 #import <objc/runtime.h>
 
 #import <Security/Security.h>

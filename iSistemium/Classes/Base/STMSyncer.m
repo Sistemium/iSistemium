@@ -27,7 +27,7 @@
 #import "STMLocation.h"
 #import "STMEntity.h"
 
-#import "STMWebSocketController.h"
+#import "STMSocketController.h"
 
 
 #define SEND_DATA_CONNECTION @"SEND_DATA"
@@ -380,7 +380,7 @@
                         
                         [self performFetch];
                         
-                        [STMWebSocketController startSocket];
+                        [STMSocketController startSocket];
 
                     } else {
                         NSLog(@"checkStcEntities fail");
@@ -463,7 +463,7 @@
     
     if (self.running) {
         
-        [STMWebSocketController closeSocket];
+        [STMSocketController closeSocket];
         
         [self.session.logger saveLogMessageWithText:@"Syncer stop" type:@""];
         self.syncing = NO;

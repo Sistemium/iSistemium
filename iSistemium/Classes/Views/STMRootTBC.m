@@ -26,7 +26,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import "STMAppDelegate.h"
 
-#import "STMWebSocketController.h"
+#import "STMSocketController.h"
 
 
 @interface STMRootTBC () <UITabBarControllerDelegate, /*UIViewControllerAnimatedTransitioning, */UIAlertViewDelegate>
@@ -669,7 +669,7 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
 
     NSString *logMessage = [NSString stringWithFormat:@"tabBarController didSelectViewController: %@", NSStringFromClass([viewController class])];
-    [STMWebSocketController sendData:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
 
     
 //    [(STMAppDelegate *)[UIApplication sharedApplication].delegate testCrash];

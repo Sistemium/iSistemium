@@ -256,7 +256,7 @@
 		2C7E7DBA1ABEEA0600A26185 /* STMStock.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DB91ABEEA0600A26185 /* STMStock.m */; };
 		2C7E7DBD1ABEEA0600A26185 /* STMPriceType.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DBC1ABEEA0600A26185 /* STMPriceType.m */; };
 		2C7E7DC31ABEF13400A26185 /* STMSaleOrderPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DC21ABEF13400A26185 /* STMSaleOrderPosition.m */; };
-		2C802A6C1BC95B3E006F55CA /* STMWebSocketController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C802A6B1BC95B3E006F55CA /* STMWebSocketController.m */; };
+		2C802A6C1BC95B3E006F55CA /* STMSocketController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C802A6B1BC95B3E006F55CA /* STMSocketController.m */; };
 		2C8047161A0E381400FEFEFF /* STMUncashingInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8047151A0E381400FEFEFF /* STMUncashingInfoVC.m */; };
 		2C8047231A12352F00FEFEFF /* STMUncashingPhotoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8047221A12352F00FEFEFF /* STMUncashingPhotoVC.m */; };
 		2C80C7E5198904170044ADE4 /* STMPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C80C7E4198904170044ADE4 /* STMPhoto.m */; };
@@ -291,6 +291,22 @@
 		2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8EF5F21940872E0021D202 /* STMAppDelegate.m */; };
 		2C8EF5F7194089E10021D202 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8EF5F6194089E10021D202 /* Security.framework */; };
 		2C8F9E431B188CEF00E0475A /* STMOrdersListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8F9E421B188CEF00E0475A /* STMOrdersListTVC.m */; };
+		2C90CB091BCBDD70002DC1AE /* SocketAckEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CAF91BCBDD70002DC1AE /* SocketAckEmitter.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB0A1BCBDD70002DC1AE /* SocketAckManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CAFA1BCBDD70002DC1AE /* SocketAckManager.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB0B1BCBDD70002DC1AE /* SocketAnyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CAFB1BCBDD70002DC1AE /* SocketAnyEvent.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB0C1BCBDD70002DC1AE /* SocketEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CAFC1BCBDD70002DC1AE /* SocketEngine.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB0D1BCBDD70002DC1AE /* SocketEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CAFD1BCBDD70002DC1AE /* SocketEngineClient.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB0E1BCBDD70002DC1AE /* SocketEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CAFE1BCBDD70002DC1AE /* SocketEventHandler.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB0F1BCBDD70002DC1AE /* SocketFixUTF8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CAFF1BCBDD70002DC1AE /* SocketFixUTF8.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB101BCBDD70002DC1AE /* SocketIOClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB001BCBDD70002DC1AE /* SocketIOClient.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB111BCBDD70002DC1AE /* SocketIOClientStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB011BCBDD70002DC1AE /* SocketIOClientStatus.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB121BCBDD70002DC1AE /* SocketLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB021BCBDD70002DC1AE /* SocketLogger.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB131BCBDD70002DC1AE /* SocketPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB031BCBDD70002DC1AE /* SocketPacket.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB141BCBDD70002DC1AE /* SocketParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB041BCBDD70002DC1AE /* SocketParser.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB151BCBDD70002DC1AE /* SocketStringReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB051BCBDD70002DC1AE /* SocketStringReader.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB161BCBDD70002DC1AE /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB061BCBDD70002DC1AE /* SocketTypes.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB171BCBDD70002DC1AE /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB071BCBDD70002DC1AE /* SwiftRegex.swift */; settings = {ASSET_TAGS = (); }; };
+		2C90CB181BCBDD70002DC1AE /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C90CB081BCBDD70002DC1AE /* WebSocket.swift */; settings = {ASSET_TAGS = (); }; };
 		2C92B6D71B9CAC5C00BF77EB /* circle_colored_red.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C92B6D61B9CAC5C00BF77EB /* circle_colored_red.png */; };
 		2C98A1F51B83547300AFEF2D /* STMShippingLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C98A1F41B83547300AFEF2D /* STMShippingLocation.m */; };
 		2C9D04B61ADBC01800D0421D /* STMRemoteController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C9D04B51ADBC01800D0421D /* STMRemoteController.m */; };
@@ -354,11 +370,11 @@
 		2CFF9A8A1A67DE8A002B6392 /* STMClientDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A891A67DE8A002B6392 /* STMClientDataController.m */; };
 		2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8C1A67DF2B002B6392 /* STMController.m */; };
 		2CFF9A901A67F2ED002B6392 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */; };
-		CEAB4F59717C484083629622 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6311C3BED44E4D598636BF2C /* libPods.a */; };
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
 		D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */; };
 		D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC56B198BC6A300D8CD63 /* password2-128.png */; };
 		D9527F6D1A3A504D0098885D /* STMSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9527F6C1A3A504D0098885D /* STMSplitViewController.m */; };
+		F358249143836A3DE71986B3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 85E24A798D258E2910066983 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -855,8 +871,8 @@
 		2C7E7DBC1ABEEA0600A26185 /* STMPriceType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPriceType.m; sourceTree = "<group>"; };
 		2C7E7DC11ABEF13400A26185 /* STMSaleOrderPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSaleOrderPosition.h; sourceTree = "<group>"; };
 		2C7E7DC21ABEF13400A26185 /* STMSaleOrderPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSaleOrderPosition.m; sourceTree = "<group>"; };
-		2C802A6A1BC95B3E006F55CA /* STMWebSocketController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWebSocketController.h; sourceTree = "<group>"; };
-		2C802A6B1BC95B3E006F55CA /* STMWebSocketController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWebSocketController.m; sourceTree = "<group>"; };
+		2C802A6A1BC95B3E006F55CA /* STMSocketController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSocketController.h; sourceTree = "<group>"; };
+		2C802A6B1BC95B3E006F55CA /* STMSocketController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSocketController.m; sourceTree = "<group>"; };
 		2C8047141A0E381400FEFEFF /* STMUncashingInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingInfoVC.h; sourceTree = "<group>"; };
 		2C8047151A0E381400FEFEFF /* STMUncashingInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingInfoVC.m; sourceTree = "<group>"; };
 		2C8047211A12352F00FEFEFF /* STMUncashingPhotoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingPhotoVC.h; sourceTree = "<group>"; };
@@ -913,6 +929,23 @@
 		2C8EF5F6194089E10021D202 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		2C8F9E411B188CEF00E0475A /* STMOrdersListTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMOrdersListTVC.h; sourceTree = "<group>"; };
 		2C8F9E421B188CEF00E0475A /* STMOrdersListTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMOrdersListTVC.m; sourceTree = "<group>"; };
+		2C90CAD51BCBDC19002DC1AE /* iSistemium-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iSistemium-Bridging-Header.h"; sourceTree = "<group>"; };
+		2C90CAF91BCBDD70002DC1AE /* SocketAckEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckEmitter.swift; sourceTree = "<group>"; };
+		2C90CAFA1BCBDD70002DC1AE /* SocketAckManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckManager.swift; sourceTree = "<group>"; };
+		2C90CAFB1BCBDD70002DC1AE /* SocketAnyEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAnyEvent.swift; sourceTree = "<group>"; };
+		2C90CAFC1BCBDD70002DC1AE /* SocketEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketEngine.swift; sourceTree = "<group>"; };
+		2C90CAFD1BCBDD70002DC1AE /* SocketEngineClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketEngineClient.swift; sourceTree = "<group>"; };
+		2C90CAFE1BCBDD70002DC1AE /* SocketEventHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketEventHandler.swift; sourceTree = "<group>"; };
+		2C90CAFF1BCBDD70002DC1AE /* SocketFixUTF8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketFixUTF8.swift; sourceTree = "<group>"; };
+		2C90CB001BCBDD70002DC1AE /* SocketIOClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketIOClient.swift; sourceTree = "<group>"; };
+		2C90CB011BCBDD70002DC1AE /* SocketIOClientStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketIOClientStatus.swift; sourceTree = "<group>"; };
+		2C90CB021BCBDD70002DC1AE /* SocketLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketLogger.swift; sourceTree = "<group>"; };
+		2C90CB031BCBDD70002DC1AE /* SocketPacket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketPacket.swift; sourceTree = "<group>"; };
+		2C90CB041BCBDD70002DC1AE /* SocketParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketParser.swift; sourceTree = "<group>"; };
+		2C90CB051BCBDD70002DC1AE /* SocketStringReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketStringReader.swift; sourceTree = "<group>"; };
+		2C90CB061BCBDD70002DC1AE /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
+		2C90CB071BCBDD70002DC1AE /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
+		2C90CB081BCBDD70002DC1AE /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
 		2C92B6D61B9CAC5C00BF77EB /* circle_colored_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle_colored_red.png; sourceTree = "<group>"; };
 		2C98A1F21B83515000AFEF2D /* STMDataModel 61.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 61.xcdatamodel"; sourceTree = "<group>"; };
 		2C98A1F31B83547300AFEF2D /* STMShippingLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingLocation.h; sourceTree = "<group>"; };
@@ -1021,7 +1054,7 @@
 		2CFF9A8C1A67DF2B002B6392 /* STMController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMController.m; sourceTree = "<group>"; };
 		2CFF9A8E1A67F2ED002B6392 /* STMObjectsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMObjectsController.h; sourceTree = "<group>"; };
 		2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMObjectsController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		6311C3BED44E4D598636BF2C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		85E24A798D258E2910066983 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2CCBEEC9AB2F5CD81CE0373 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
 		D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "christmas_gift-128.png"; sourceTree = "<group>"; };
@@ -1045,7 +1078,7 @@
 				2C8EF5A31940859F0021D202 /* UIKit.framework in Frameworks */,
 				2C8EF59F1940859F0021D202 /* Foundation.framework in Frameworks */,
 				2C9D04B91ADE549400D0421D /* Crashlytics.framework in Frameworks */,
-				CEAB4F59717C484083629622 /* libPods.a in Frameworks */,
+				F358249143836A3DE71986B3 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1091,8 +1124,8 @@
 				2C53B89D19409E71002298A5 /* STMSettingsController.m */,
 				2C53B8E91941C147002298A5 /* STMSyncer.h */,
 				2C53B8EA1941C147002298A5 /* STMSyncer.m */,
-				2C802A6A1BC95B3E006F55CA /* STMWebSocketController.h */,
-				2C802A6B1BC95B3E006F55CA /* STMWebSocketController.m */,
+				2C802A6A1BC95B3E006F55CA /* STMSocketController.h */,
+				2C802A6B1BC95B3E006F55CA /* STMSocketController.m */,
 				2C8EF5D91940860A0021D202 /* STMAuthController.h */,
 				2C8EF5DA1940860A0021D202 /* STMAuthController.m */,
 				2C8EF5DB1940860A0021D202 /* STMFunctions.h */,
@@ -1705,7 +1738,7 @@
 				2C8EF5A01940859F0021D202 /* CoreGraphics.framework */,
 				2C8EF5A21940859F0021D202 /* UIKit.framework */,
 				2C8EF5BD1940859F0021D202 /* XCTest.framework */,
-				6311C3BED44E4D598636BF2C /* libPods.a */,
+				85E24A798D258E2910066983 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1722,6 +1755,7 @@
 				2C8EF5F21940872E0021D202 /* STMAppDelegate.m */,
 				2C8EF5B61940859F0021D202 /* Images.xcassets */,
 				2C8EF5A51940859F0021D202 /* Supporting Files */,
+				2C90CAD51BCBDC19002DC1AE /* iSistemium-Bridging-Header.h */,
 			);
 			path = iSistemium;
 			sourceTree = "<group>";
@@ -1780,9 +1814,33 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		2C90CAF81BCBDD58002DC1AE /* SocketIOClientSwift */ = {
+			isa = PBXGroup;
+			children = (
+				2C90CAF91BCBDD70002DC1AE /* SocketAckEmitter.swift */,
+				2C90CAFA1BCBDD70002DC1AE /* SocketAckManager.swift */,
+				2C90CAFB1BCBDD70002DC1AE /* SocketAnyEvent.swift */,
+				2C90CAFC1BCBDD70002DC1AE /* SocketEngine.swift */,
+				2C90CAFD1BCBDD70002DC1AE /* SocketEngineClient.swift */,
+				2C90CAFE1BCBDD70002DC1AE /* SocketEventHandler.swift */,
+				2C90CAFF1BCBDD70002DC1AE /* SocketFixUTF8.swift */,
+				2C90CB001BCBDD70002DC1AE /* SocketIOClient.swift */,
+				2C90CB011BCBDD70002DC1AE /* SocketIOClientStatus.swift */,
+				2C90CB021BCBDD70002DC1AE /* SocketLogger.swift */,
+				2C90CB031BCBDD70002DC1AE /* SocketPacket.swift */,
+				2C90CB041BCBDD70002DC1AE /* SocketParser.swift */,
+				2C90CB051BCBDD70002DC1AE /* SocketStringReader.swift */,
+				2C90CB061BCBDD70002DC1AE /* SocketTypes.swift */,
+				2C90CB071BCBDD70002DC1AE /* SwiftRegex.swift */,
+				2C90CB081BCBDD70002DC1AE /* WebSocket.swift */,
+			);
+			name = SocketIOClientSwift;
+			sourceTree = "<group>";
+		};
 		2CD4311A1A85098A00AFB5DE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C90CAF81BCBDD58002DC1AE /* SocketIOClientSwift */,
 				2CD4311E1A850A5E00AFB5DE /* KeychainItemWrapper */,
 			);
 			path = Frameworks;
@@ -1986,6 +2044,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = STM;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Sistemium UAB";
 				TargetAttributes = {
@@ -2233,7 +2292,7 @@
 				2C4BA3CC1A41AE9A007F1D0A /* STMPartnerController.m in Sources */,
 				2C42ECC21B159AD100B5C91A /* STMCatalogSettingsTVC.m in Sources */,
 				2C2968F919A0C3950038B122 /* STMUncashingDetailsTVC.m in Sources */,
-				2C802A6C1BC95B3E006F55CA /* STMWebSocketController.m in Sources */,
+				2C802A6C1BC95B3E006F55CA /* STMSocketController.m in Sources */,
 				2C29691919B1CFAB0038B122 /* STMMessagesTVC.m in Sources */,
 				2C1AB31D1B70E7B700BF5C50 /* STMCustom8TVCell.m in Sources */,
 				2C5763F61AA5E13600B9FD2C /* STMCampaignsSVC.m in Sources */,
@@ -2244,6 +2303,8 @@
 				2C7E7DBD1ABEEA0600A26185 /* STMPriceType.m in Sources */,
 				2CEAC1621B3BF9AA00AD068E /* STMDriverTVC.m in Sources */,
 				2CFDD88E1A308B4C003515C5 /* STMSingleton.m in Sources */,
+				2C90CB111BCBDD70002DC1AE /* SocketIOClientStatus.swift in Sources */,
+				2C90CB0F1BCBDD70002DC1AE /* SocketFixUTF8.swift in Sources */,
 				2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */,
 				2C5297F91ACFFCAD008496AE /* STMMessagePicture.m in Sources */,
 				2C1D72E71AB9BCFE00C97599 /* STMInsetLabel.m in Sources */,
@@ -2251,6 +2312,7 @@
 				2CEAC16C1B3C313000AD068E /* STMShipmentRoutePointTVC.m in Sources */,
 				2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */,
 				2C5763F51AA5E13600B9FD2C /* STMCampaignPictureVC.m in Sources */,
+				2C90CB121BCBDD70002DC1AE /* SocketLogger.swift in Sources */,
 				2C81AD531AD0227D00246666 /* STMCustom3TVCell.m in Sources */,
 				2CFDD7291A29AF42003515C5 /* STMPicturesController.m in Sources */,
 				2C02F2BA1A8A45EC00E0E890 /* STMAuthNC.m in Sources */,
@@ -2261,6 +2323,7 @@
 				2C5764931AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.m in Sources */,
 				2C2968DD199F8F220038B122 /* STMCashing+dayAsString.m in Sources */,
 				2C587A991BB29B1F00546A62 /* STMShipmentRoutePoint.m in Sources */,
+				2C90CB101BCBDD70002DC1AE /* SocketIOClient.swift in Sources */,
 				2C5763F41AA5E13600B9FD2C /* STMCampaignPicturePVC.m in Sources */,
 				2CEAC1651B3C031F00AD068E /* STMShipmentRouteTVC.m in Sources */,
 				2C57641F1AA5E1E500B9FD2C /* STMDebtsDetailsVC.m in Sources */,
@@ -2268,6 +2331,7 @@
 				2CCD06EC1B5BCFC9002591C4 /* STMArticle.m in Sources */,
 				2C6528F219576894008605D9 /* STMPartner.m in Sources */,
 				2C2968F619A0C37E0038B122 /* STMUncashingMasterTVC.m in Sources */,
+				2C90CB141BCBDD70002DC1AE /* SocketParser.swift in Sources */,
 				2C98A1F51B83547300AFEF2D /* STMShippingLocation.m in Sources */,
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
 				2C57641B1AA5E1E500B9FD2C /* STMAddPopoverVC.m in Sources */,
@@ -2303,10 +2367,12 @@
 				2C1AB2961B6F937B00BF5C50 /* STMReorderRoutePointsTVC.m in Sources */,
 				2CF126321B74F5210059701F /* STMShippingVC.m in Sources */,
 				2C53B8A019409E71002298A5 /* STMDocument.m in Sources */,
+				2C90CB0C1BCBDD70002DC1AE /* SocketEngine.swift in Sources */,
 				2C57645D1AAB138600B9FD2C /* STMOrdersMasterPVC.m in Sources */,
 				2C8047231A12352F00FEFEFF /* STMUncashingPhotoVC.m in Sources */,
 				2C559F681AC040BB00E25831 /* STMArticleGroup.m in Sources */,
 				2C16CC501AF7668E00A2EC2D /* STMProfileNC.m in Sources */,
+				2C90CB0D1BCBDD70002DC1AE /* SocketEngineClient.swift in Sources */,
 				2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */,
 				2C4620571B67B349007FD646 /* STMVolumeTVCell.m in Sources */,
 				2C57642F1AA5EA6800B9FD2C /* STMInfoTableViewCell.m in Sources */,
@@ -2321,6 +2387,7 @@
 				2C73A9271AF9E0BC00FB7662 /* STMStoryboard.m in Sources */,
 				2C5764961AB3189E00B9FD2C /* STMSegmentedControl.m in Sources */,
 				2C53B8A619409E71002298A5 /* STMSettingsController.m in Sources */,
+				2C90CB151BCBDD70002DC1AE /* SocketStringReader.swift in Sources */,
 				2C559F6B1AC0420000E25831 /* STMUncashingPicture.m in Sources */,
 				2CA452E319649C5E00D93CA2 /* STMSetting.m in Sources */,
 				2C14D43B1A3B396300747844 /* STMImagePickerController.m in Sources */,
@@ -2334,10 +2401,13 @@
 				2C1D72EA1AB9D48400C97599 /* STMLabel.m in Sources */,
 				2C5764231AA5E1E500B9FD2C /* STMOutletsTVC.m in Sources */,
 				2C14D4411A3B73A000747844 /* STMLogMessagesMasterTVC.m in Sources */,
+				2C90CB091BCBDD70002DC1AE /* SocketAckEmitter.swift in Sources */,
 				2C16CC3D1AF2051900A2EC2D /* STMCampaignController.m in Sources */,
 				2C140AC61A18D398002C5C17 /* STMUncashing.m in Sources */,
 				2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */,
+				2C90CB181BCBDD70002DC1AE /* WebSocket.swift in Sources */,
 				2C5764821AAF270800B9FD2C /* STMEntity+custom.m in Sources */,
+				2C90CB0A1BCBDD70002DC1AE /* SocketAckManager.swift in Sources */,
 				2CFDD8851A2F6270003515C5 /* STMDebtsController.m in Sources */,
 				2C02F2C01A8A989000E0E890 /* STMAuthVC.m in Sources */,
 				2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */,
@@ -2351,6 +2421,7 @@
 				2C587A9C1BB29B2000546A62 /* STMMessage.m in Sources */,
 				2C5764A31AB8718700B9FD2C /* STMDatum.m in Sources */,
 				2C587A961BB185A100546A62 /* STMWorkflow.m in Sources */,
+				2C90CB161BCBDD70002DC1AE /* SocketTypes.swift in Sources */,
 				2CCD06F91B5CDD5B002591C4 /* STMBatteryStatus.m in Sources */,
 				2C1727E61B89BB0A00C82ACB /* STMLocation.m in Sources */,
 				2C81AD591AD1154C00246666 /* STMMessageController.m in Sources */,
@@ -2360,6 +2431,7 @@
 				2C42ECAB1B0A591E00B5C91A /* STMSettingsNC.m in Sources */,
 				2C46205A1B68F813007FD646 /* STMPositionVolumesVC.m in Sources */,
 				2CCD06EF1B5BCFCA002591C4 /* STMShipment.m in Sources */,
+				2C90CB0B1BCBDD70002DC1AE /* SocketAnyEvent.swift in Sources */,
 				2C5764761AAC421E00B9FD2C /* STMSaleOrderController.m in Sources */,
 				2C5763C71AA4769200B9FD2C /* STMCatalogDetailTVC.m in Sources */,
 				2C1727FE1B944A9400C82ACB /* STMShipmentsMasterNC.m in Sources */,
@@ -2383,6 +2455,7 @@
 				2CD657A61AC17E3D00EAB4FF /* STMArticleGroup+custom.m in Sources */,
 				2C5763EF1AA5E13600B9FD2C /* STMCampaignDescriptionVC.m in Sources */,
 				2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */,
+				2C90CB171BCBDD70002DC1AE /* SwiftRegex.swift in Sources */,
 				2C88F1CB1B1ED00400E30418 /* STMCustom7TVCell.m in Sources */,
 				2CC47BD11AE63D0C008F5250 /* UIToolbar+custom.m in Sources */,
 				2C57646F1AAB272400B9FD2C /* STMOrdersSalesmanTVC.m in Sources */,
@@ -2408,6 +2481,7 @@
 				2C16CC3A1AF1FE9100A2EC2D /* STMCampaignGroup+custom.m in Sources */,
 				2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */,
 				2C42ECC81B15F37000B5C91A /* STMCatalogParametersTVC.m in Sources */,
+				2C90CB131BCBDD70002DC1AE /* SocketPacket.swift in Sources */,
 				2C5763F31AA5E13600B9FD2C /* STMCampaignPictureCVC.m in Sources */,
 				2C4620721B6CBADF007FD646 /* STMShipmentRoutePoint+custom.m in Sources */,
 				2C53B8A119409E71002298A5 /* STMLogger.m in Sources */,
@@ -2418,6 +2492,7 @@
 				2C8F9E431B188CEF00E0475A /* STMOrdersListTVC.m in Sources */,
 				2C5764211AA5E1E500B9FD2C /* STMOutletCashingVC.m in Sources */,
 				2C5763F01AA5E13600B9FD2C /* STMCampaignDetailsPVC.m in Sources */,
+				2C90CB0E1BCBDD70002DC1AE /* SocketEventHandler.swift in Sources */,
 				2C57648F1AB1B1EE00B9FD2C /* STMFetchRequest.m in Sources */,
 				2C761BAD1AFCE43C001DA33E /* STMClientEntityController.m in Sources */,
 				2C5764201AA5E1E500B9FD2C /* STMDebtsSVC.m in Sources */,
@@ -2500,6 +2575,9 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2514,7 +2592,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "4DFABC9F-CB92-44F4-8D04-B5A3A8474A79";
 				SDKROOT = iphoneos;
@@ -2541,6 +2619,8 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2549,7 +2629,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PROVISIONING_PROFILE = "4DFABC9F-CB92-44F4-8D04-B5A3A8474A79";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -2563,6 +2644,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2574,8 +2657,13 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sistemium.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "iSistemium/iSistemium-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2587,6 +2675,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2597,8 +2687,12 @@
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sistemium.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "iSistemium/iSistemium-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2620,6 +2714,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "iSistemiumTests/iSistemiumTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sistemium.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -2638,6 +2733,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iSistemium/iSistemium-Prefix.pch";
 				INFOPLIST_FILE = "iSistemiumTests/iSistemiumTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sistemium.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
