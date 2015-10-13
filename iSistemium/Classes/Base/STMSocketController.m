@@ -193,13 +193,15 @@
 //            [self.socket emitWithAck:eventStringValue withItems:@[JSONData]](0, ^(NSArray* data) {
 //                NSLog(@"emitWithAck data: %@", data);
 //            });
-
-//            [self.socket emitWithAck:infoEvent withItems:@[JSONData]](0, ^(NSArray* data) {
-//                NSLog(@"emitWithAck data: %@", data);
-//            });
             
+
             [self.socket emit:eventStringValue withItems:@[dataDic]];
-            [self.socket emit:infoEvent withItems:@[dataDic]];
+            
+//            [self.socket emit:infoEvent withItems:@[dataDic]];
+            [self.socket emitWithAck:infoEvent withItems:@[dataDic]](0, ^(NSArray* data) {
+                NSLog(@"emitWithAck data: %@", data);
+            });
+
 
         }
 
