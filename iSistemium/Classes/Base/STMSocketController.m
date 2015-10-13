@@ -186,7 +186,7 @@
 
         if (self.socket.status != SocketIOClientStatusConnected) {
             
-            [self.queuedEvents addObject:@{eventStringValue : dataDic}];
+//            [self.queuedEvents addObject:@{eventStringValue : dataDic}];
             
         } else {
             
