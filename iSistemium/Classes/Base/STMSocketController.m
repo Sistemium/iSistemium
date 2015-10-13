@@ -8,6 +8,9 @@
 
 #import "STMSocketController.h"
 #import "STMAuthController.h"
+#import "STMClientDataController.h"
+#import "STMObjectsController.h"
+
 #import "STMFunctions.h"
 
 #import "iSistemium-Swift.h"
@@ -55,6 +58,10 @@
             return @"info";
             break;
         }
+        case STMSocketEventAuthorization: {
+            return @"authorization";
+            break;
+        }
         default: {
             return nil;
             break;
@@ -81,10 +88,18 @@
         
         [socket on:connectEvent callback:^(NSArray* data, SocketAckEmitter* ack) {
             
-            NSLog(@"data %@", data);
-            NSLog(@"ack %@", ack);
+//            [self checkQueuedEvent];
             
-            [self checkQueuedEvent];
+            STMClientData *clientData = [STMClientDataController clientData];
+            NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
+            NSDictionary *authDic = @{@"userId"         : [STMAuthController authController].userID,
+                                      @"accessToken"    : [STMAuthController authController].accessToken};
+            
+            [dataDic addEntriesFromDictionary:authDic];
+
+            [self.socket emitWithAck:[STMSocketController stringValueForEvent:STMSocketEventAuthorization] withItems:@[dataDic]](0, ^(NSArray* data) {
+                NSLog(@"receive Ack with data: ", data);
+            });
             
         }];
 
@@ -133,11 +148,13 @@
     switch ([self sharedInstance].socket.status) {
             
         case SocketIOClientStatusNotConnected: {
-            [[self sharedInstance].socket connect];
-                        break;
+//            [[self sharedInstance].socket connect];
+            [self connectSocket];
+            break;
         }
         case SocketIOClientStatusClosed: {
-            [[self sharedInstance].socket connect];
+//            [[self sharedInstance].socket connect];
+            [self connectSocket];
             break;
         }
         case SocketIOClientStatusConnecting: {
@@ -159,6 +176,10 @@
 
 }
 
++ (void)connectSocket {    
+    [[self sharedInstance].socket connect];
+}
+
 + (void)closeSocket {
     [[self sharedInstance].socket disconnect];
 }
@@ -172,9 +193,9 @@
     NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
     NSString *infoEvent = [STMSocketController stringValueForEvent:STMSocketEventInfo];
     
-    NSDictionary *dataDic = @{@"userId"     : [STMAuthController authController].userID,
-                              @"token"      : [STMAuthController authController].accessToken,
-                              @"url"        : stringValue};
+    NSDictionary *dataDic = @{@"userId"         : [STMAuthController authController].userID,
+                              @"accessToken"    : [STMAuthController authController].accessToken,
+                              @"url"            : stringValue};
     
     dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
     

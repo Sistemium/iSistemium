@@ -12,5 +12,6 @@
 
 + (void)checkClientData;
 + (void)checkAppVersion;
++ (STMClientData *)clientData;
 
 @end
