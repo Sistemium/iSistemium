@@ -21,7 +21,7 @@
 
 @interface STMSocketController()
 
-@property (nonatomic, strong) SocketIOClient* socket;
+@property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSMutableArray *queuedEvents;
 
 
@@ -79,7 +79,6 @@
         [socket onAny:^(SocketAnyEvent *event) {
             
             NSLog(@"SocketIOClient ___ event %@", event.event);
-//            NSLog(@"SocketIOClient ___ description %@", event.description);
             NSLog(@"SocketIOClient ___ items %@", event.items);
             
         }];
@@ -96,9 +95,11 @@
                                       @"accessToken"    : [STMAuthController authController].accessToken};
             
             [dataDic addEntriesFromDictionary:authDic];
-
-            [self.socket emitWithAck:[STMSocketController stringValueForEvent:STMSocketEventAuthorization] withItems:@[dataDic]](0, ^(NSArray* data) {
-                NSLog(@"receive Ack with data: ", data);
+            
+            NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
+            
+            [self.socket emitWithAck:event withItems:@[dataDic]](0, ^(NSArray *data) {
+                [self receiveAckWithData:data forEvent:event];
             });
             
         }];
@@ -147,13 +148,8 @@
     
     switch ([self sharedInstance].socket.status) {
             
-        case SocketIOClientStatusNotConnected: {
-//            [[self sharedInstance].socket connect];
-            [self connectSocket];
-            break;
-        }
+        case SocketIOClientStatusNotConnected:
         case SocketIOClientStatusClosed: {
-//            [[self sharedInstance].socket connect];
             [self connectSocket];
             break;
         }
@@ -191,45 +187,40 @@
 - (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
     
     NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
-    NSString *infoEvent = [STMSocketController stringValueForEvent:STMSocketEventInfo];
+//    NSString *infoEvent = [STMSocketController stringValueForEvent:STMSocketEventInfo];
     
-    NSDictionary *dataDic = @{@"userId"         : [STMAuthController authController].userID,
-                              @"accessToken"    : [STMAuthController authController].accessToken,
-                              @"url"            : stringValue};
+    NSDictionary *dataDic = @{@"url" : stringValue};
     
     dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
     
     if (dataDic) {
-
-//        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDic
-//                                                           options:0
-//                                                             error:nil];
 
         if (self.socket.status != SocketIOClientStatusConnected) {
             
 //            [self.queuedEvents addObject:@{eventStringValue : dataDic}];
             
         } else {
-            
-//            [self.socket emitWithAck:eventStringValue withItems:@[JSONData]](0, ^(NSArray* data) {
-//                NSLog(@"emitWithAck data: %@", data);
-//            });
-            
 
-            [self.socket emit:eventStringValue withItems:@[dataDic]];
+            [self.socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+                [self receiveAckWithData:data forEvent:eventStringValue];
+            });
             
 //            [self.socket emit:infoEvent withItems:@[dataDic]];
-            [self.socket emitWithAck:infoEvent withItems:@[dataDic]](0, ^(NSArray* data) {
-                NSLog(@"emitWithAck data: %@", data);
-            });
+//            [self.socket emitWithAck:infoEvent withItems:@[dataDic]](0, ^(NSArray* data) {
+//                [self receiveAckWithData:data forEvent:infoEvent];
+//            });
 
 
         }
 
     } else {
-        NSLog(@"no dataDic to send via socket for event: %@", eventStringValue);
+        NSLog(@"SocketIOClient ___ no dataDic to send via socket for event: %@", eventStringValue);
     }
 
+}
+
+- (void)receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
+    NSLog(@"SocketIOClient ___ receive Ack, event: %@, data: %@", event, data);
 }
 
 
