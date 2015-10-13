@@ -10,6 +10,7 @@
 #import "STMAuthController.h"
 #import "STMClientDataController.h"
 #import "STMObjectsController.h"
+#import "STMRemoteController.h"
 
 #import "STMFunctions.h"
 
@@ -67,10 +68,32 @@
             return @"authorization";
             break;
         }
+        case STMSocketEventRemoteCommands: {
+            return @"remoteCommands";
+            break;
+        }
         default: {
             return nil;
             break;
         }
+    }
+    
+}
+
++ (STMSocketEvent)eventForString:(NSString *)stringValue {
+    
+    if ([stringValue isEqualToString:@"connect"]) {
+        return STMSocketEventConnect;
+    } else if ([stringValue isEqualToString:@"status:change"]) {
+        return STMSocketEventStatusChange;
+    } else if ([stringValue isEqualToString:@"info"]) {
+        return STMSocketEventInfo;
+    } else if ([stringValue isEqualToString:@"authorization"]) {
+        return STMSocketEventAuthorization;
+    } else if ([stringValue isEqualToString:@"remoteCommands"]) {
+        return STMSocketEventRemoteCommands;
+    } else {
+        return STMSocketEventInfo;
     }
     
 }
@@ -173,33 +196,7 @@
         
         SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:self.socketUrl opts:nil];
 
-        [socket onAny:^(SocketAnyEvent *event) {
-            
-            NSLog(@"SocketIOClient ___ event %@", event.event);
-            NSLog(@"SocketIOClient ___ items %@", event.items);
-            
-        }];
-
-        NSString *connectEvent = [[self class] stringValueForEvent:STMSocketEventConnect];
-        
-        [socket on:connectEvent callback:^(NSArray* data, SocketAckEmitter* ack) {
-
-//            [self checkQueuedEvent];
-            
-            STMClientData *clientData = [STMClientDataController clientData];
-            NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
-            NSDictionary *authDic = @{@"userId"         : [STMAuthController authController].userID,
-                                      @"accessToken"    : [STMAuthController authController].accessToken};
-            
-            [dataDic addEntriesFromDictionary:authDic];
-            
-            NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
-            
-            [self.socket emitWithAck:event withItems:@[dataDic]](0, ^(NSArray *data) {
-                [self receiveAckWithData:data forEvent:event];
-            });
-            
-        }];
+        [self addEventObserversToSocket:socket];
         
         if (self.shouldStarted) {
             [socket connect];
@@ -209,6 +206,52 @@
         
     }
     return _socket;
+    
+}
+
+- (void)addEventObserversToSocket:(SocketIOClient *)socket {
+    
+    [socket onAny:^(SocketAnyEvent *event) {
+        
+        NSLog(@"SocketIOClient ___ event %@", event.event);
+        NSLog(@"SocketIOClient ___ items %@", event.items);
+        
+    }];
+    
+    NSString *connectEvent = [STMSocketController stringValueForEvent:STMSocketEventConnect];
+    
+    [socket on:connectEvent callback:^(NSArray* data, SocketAckEmitter* ack) {
+        
+        //            [self checkQueuedEvent];
+        
+        STMClientData *clientData = [STMClientDataController clientData];
+        NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
+        
+        NSDictionary *authDic = @{@"userId"         : [STMAuthController authController].userID,
+                                  @"accessToken"    : [STMAuthController authController].accessToken};
+        
+        [dataDic addEntriesFromDictionary:authDic];
+        
+        NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
+        
+        [socket emitWithAck:event withItems:@[dataDic]](0, ^(NSArray *data) {
+            [self receiveAckWithData:data forEvent:event];
+        });
+        
+    }];
+    
+    
+    NSString *remoteCommandsEvent = [STMSocketController stringValueForEvent:STMSocketEventRemoteCommands];
+
+    [socket on:remoteCommandsEvent callback:^(NSArray *data, SocketAckEmitter *ack) {
+
+        if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
+            
+            [STMRemoteController receiveRemoteCommands:data.firstObject];
+            
+        }
+        
+    }];
     
 }
 
