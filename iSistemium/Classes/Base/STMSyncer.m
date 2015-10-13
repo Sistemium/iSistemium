@@ -477,6 +477,10 @@
 }
 
 - (void)upload {
+    [self setSyncerState:STMSyncerSendDataOnce];
+}
+
+- (void)fullSync {
     [self setSyncerState:STMSyncerSendData];
 }
 
