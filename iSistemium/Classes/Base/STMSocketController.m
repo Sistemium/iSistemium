@@ -23,12 +23,17 @@
 
 @property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSMutableArray *queuedEvents;
+@property (nonatomic, strong) NSString *socketUrl;
+@property (nonatomic) BOOL shouldStarted;
 
 
 @end
 
 
 @implementation STMSocketController
+
+
+#pragma mark - class methods
 
 + (STMSocketController *)sharedInstance {
     
@@ -70,12 +75,104 @@
     
 }
 
++ (void)startSocket {
+    
+    [self sharedInstance].shouldStarted = YES;
+    
+    switch ([self sharedInstance].socket.status) {
+            
+        case SocketIOClientStatusNotConnected:
+        case SocketIOClientStatusClosed: {
+            [[self sharedInstance].socket connect];
+            break;
+        }
+        case SocketIOClientStatusConnecting: {
+            
+            break;
+        }
+        case SocketIOClientStatusConnected: {
+            
+            break;
+        }
+        case SocketIOClientStatusReconnecting: {
+            
+            break;
+        }
+        default: {
+            break;
+        }
+            
+    }
+
+}
+
++ (void)closeSocket {
+    
+    [self sharedInstance].shouldStarted = NO;
+    [[self sharedInstance].socket disconnect];
+    
+}
+
++ (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
+    [[self sharedInstance] sendEvent:event withStringValue:stringValue];
+}
+
+
+#pragma mark - instance methods
+
+- (instancetype)init {
+    
+    self = [super init];
+    if (self) {
+        [self addObservers];
+    }
+    return self;
+
+}
+
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appSettingsChanged:)
+                                                 name:@"appSettingsSettingsChanged"
+                                               object:nil];
+    
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)appSettingsChanged:(NSNotification *)notification {
+    
+    if ([notification.userInfo.allKeys containsObject:@"socketUrl"]) {
+        
+        [self.socket disconnect];
+        self.socket = nil;
+        
+        if (self.shouldStarted) [self.socket connect];
+        
+    }
+    
+}
+
+- (NSString *)socketUrl {
+    
+    if (!_socketUrl) {
+    
+        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl" forGroup:@"appSettings"];
+        
+    }
+    return _socketUrl;
+    
+}
+
 - (SocketIOClient *)socket {
     
-    if (!_socket) {
+    if (!_socket && self.socketUrl) {
         
-        SocketIOClient* socket = [[SocketIOClient alloc] initWithSocketURL:SOCKET_URL opts:nil];
-        
+        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:self.socketUrl opts:nil];
+
         [socket onAny:^(SocketAnyEvent *event) {
             
             NSLog(@"SocketIOClient ___ event %@", event.event);
@@ -86,7 +183,7 @@
         NSString *connectEvent = [[self class] stringValueForEvent:STMSocketEventConnect];
         
         [socket on:connectEvent callback:^(NSArray* data, SocketAckEmitter* ack) {
-            
+
 //            [self checkQueuedEvent];
             
             STMClientData *clientData = [STMClientDataController clientData];
@@ -103,6 +200,10 @@
             });
             
         }];
+        
+        if (self.shouldStarted) {
+            [socket connect];
+        }
 
         _socket = socket;
         
@@ -142,46 +243,6 @@
         
     }
 
-}
-
-+ (void)startSocket {
-    
-    switch ([self sharedInstance].socket.status) {
-            
-        case SocketIOClientStatusNotConnected:
-        case SocketIOClientStatusClosed: {
-            [self connectSocket];
-            break;
-        }
-        case SocketIOClientStatusConnecting: {
-            
-            break;
-        }
-        case SocketIOClientStatusConnected: {
-            
-            break;
-        }
-        case SocketIOClientStatusReconnecting: {
-            
-            break;
-        }
-        default: {
-            break;
-        }
-    }
-
-}
-
-+ (void)connectSocket {    
-    [[self sharedInstance].socket connect];
-}
-
-+ (void)closeSocket {
-    [[self sharedInstance].socket disconnect];
-}
-
-+ (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
-    [[self sharedInstance] sendEvent:event withStringValue:stringValue];
 }
 
 - (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {

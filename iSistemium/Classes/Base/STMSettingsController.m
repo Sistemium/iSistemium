@@ -11,12 +11,16 @@
 #import "STMSettingsData.h"
 #import "STMEntityDescription.h"
 #import "STMObjectsController.h"
+#import "STMSessionManager.h"
+
 
 @interface STMSettingsController() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedSettingsResultController;
 
+
 @end
+
 
 @implementation STMSettingsController
 
@@ -94,7 +98,8 @@
                                @"xmlNamespace",
                                @"recieveDataServerURI",
                                @"sendDataServerURI",
-                               @"API.url"];
+                               @"API.url",
+                               @"socketUrl"];
         
         NSArray *timeValues = @[];
         NSArray *timeValueSuffixes = @[@"TrackerStartTime",
@@ -298,6 +303,19 @@
 //    NSLog(@"settings for %@: %@", group, settingsDictionary);
     
     return settingsDictionary;
+    
+}
+
++ (NSString *)stringValueForSettings:(NSString *)settingsName forGroup:(NSString *)group {
+    
+    STMSession *currentSession = [STMSessionManager sharedManager].currentSession;
+    STMSettingsController *currentController = currentSession.settingsController;
+    
+    NSDictionary *settingsGroup = [currentController currentSettingsForGroup:group];
+    
+    NSString *value = settingsGroup[settingsName];
+    
+    return value;
     
 }
 

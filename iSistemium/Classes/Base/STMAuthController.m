@@ -393,14 +393,10 @@
     self.accessToken = nil;
     self.stcTabs = nil;
     [self.keychainItem resetKeychainItem];
-    
-    [STMSocketController closeSocket];
 
 }
 
 - (void)startSession {
-    
-    [STMSocketController startSocket];
 
     NSArray *trackers = @[@"battery", @"location"];
     

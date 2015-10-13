@@ -380,7 +380,7 @@
                         
                         [self performFetch];
                         
-//                        [STMSocketController startSocket];
+                        [STMSocketController startSocket];
 
                     } else {
                         NSLog(@"checkStcEntities fail");
@@ -463,7 +463,7 @@
     
     if (self.running) {
         
-//        [STMSocketController closeSocket];
+        [STMSocketController closeSocket];
         
         [self.session.logger saveLogMessageWithText:@"Syncer stop" type:@""];
         self.syncing = NO;
