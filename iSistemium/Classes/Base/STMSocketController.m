@@ -180,9 +180,9 @@
     
     if (dataDic) {
 
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDic
-                                                           options:0
-                                                             error:nil];
+//        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDic
+//                                                           options:0
+//                                                             error:nil];
 
         if (self.socket.status != SocketIOClientStatusConnected) {
             
@@ -198,8 +198,8 @@
 //                NSLog(@"emitWithAck data: %@", data);
 //            });
             
-            [self.socket emit:eventStringValue withItems:@[JSONData]];
-            [self.socket emit:infoEvent withItems:@[JSONData]];
+            [self.socket emit:eventStringValue withItems:@[dataDic]];
+            [self.socket emit:infoEvent withItems:@[dataDic]];
 
         }
 
