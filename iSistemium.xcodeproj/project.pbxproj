@@ -238,6 +238,7 @@
 		2C646F6B1BCE69C00099F034 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5B1BCE69C00099F034 /* SocketTypes.swift */; settings = {ASSET_TAGS = (); }; };
 		2C646F6C1BCE69C00099F034 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5C1BCE69C00099F034 /* SwiftRegex.swift */; settings = {ASSET_TAGS = (); }; };
 		2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5D1BCE69C00099F034 /* WebSocket.swift */; settings = {ASSET_TAGS = (); }; };
+		2C646F701BCE96020099F034 /* STMShipmentRouteController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F6F1BCE96020099F034 /* STMShipmentRouteController.m */; settings = {ASSET_TAGS = (); }; };
 		2C6528F219576894008605D9 /* STMPartner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F119576894008605D9 /* STMPartner.m */; };
 		2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F419576894008605D9 /* STMCampaignPicture.m */; };
 		2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528FA19576894008605D9 /* STMLogMessage.m */; };
@@ -834,6 +835,8 @@
 		2C646F5B1BCE69C00099F034 /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		2C646F5C1BCE69C00099F034 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		2C646F5D1BCE69C00099F034 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		2C646F6E1BCE96020099F034 /* STMShipmentRouteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRouteController.h; sourceTree = "<group>"; };
+		2C646F6F1BCE96020099F034 /* STMShipmentRouteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRouteController.m; sourceTree = "<group>"; };
 		2C6528F019576894008605D9 /* STMPartner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPartner.h; sourceTree = "<group>"; };
 		2C6528F119576894008605D9 /* STMPartner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPartner.m; sourceTree = "<group>"; };
 		2C6528F319576894008605D9 /* STMCampaignPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPicture.h; sourceTree = "<group>"; };
@@ -1226,6 +1229,8 @@
 				2CCD06D21B4EC1CE002591C4 /* STMShippingProcessController.m */,
 				2C587AA31BB2D1AF00546A62 /* STMWorkflowController.h */,
 				2C587AA41BB2D1AF00546A62 /* STMWorkflowController.m */,
+				2C646F6E1BCE96020099F034 /* STMShipmentRouteController.h */,
+				2C646F6F1BCE96020099F034 /* STMShipmentRouteController.m */,
 			);
 			path = EntityControllers;
 			sourceTree = "<group>";
@@ -2376,6 +2381,7 @@
 				2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */,
 				2C4620571B67B349007FD646 /* STMVolumeTVCell.m in Sources */,
 				2C57642F1AA5EA6800B9FD2C /* STMInfoTableViewCell.m in Sources */,
+				2C646F701BCE96020099F034 /* STMShipmentRouteController.m in Sources */,
 				2C5764241AA5E1E500B9FD2C /* STMSelectPartnerTVC.m in Sources */,
 				2CFDD88A1A308B1C003515C5 /* STMCashingProcessController.m in Sources */,
 				2C57641D1AA5E1E500B9FD2C /* STMDebtsCombineVC.m in Sources */,

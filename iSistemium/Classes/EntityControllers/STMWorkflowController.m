@@ -7,8 +7,20 @@
 //
 
 #import "STMWorkflowController.h"
+#import "STMEntityController.h"
+
 
 @implementation STMWorkflowController
+
++ (NSString *)workflowForEntityName:(NSString *)entityName {
+    
+    entityName = [entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
+    
+    STMEntity *entity = [STMEntityController entityWithName:entityName];
+    
+    return entity.workflow;
+
+}
 
 #pragma mark - workflow action sheet
 

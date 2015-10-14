@@ -20,6 +20,7 @@
 #import "STMShippingProcessController.h"
 #import "STMWorkflowController.h"
 #import "STMEntityController.h"
+#import "STMShipmentRouteController.h"
 
 #import "STMReorderRoutePointsTVC.h"
 #import "STMWorkflowEditablesVC.h"
@@ -619,42 +620,62 @@
     
     if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
         
-        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
-        
-        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
-                                                              didSelectButtonWithIndex:buttonIndex
-                                                                            inWorkflow:workflowAS.workflow];
-        
-        self.nextProcessing = result[@"nextProcessing"];
-        
-        if (self.nextProcessing) {
-            
-            NSArray *editableProperties = result[@"editableProperties"];
-            
-            if (editableProperties) {
-                
-                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
-                
-                editablesVC.workflow = workflowAS.workflow;
-                editablesVC.toProcessing = self.nextProcessing;
-                editablesVC.editableFields = editableProperties;
-                editablesVC.parent = self;
-                
-                [self presentViewController:editablesVC animated:YES completion:^{
-                    
-                }];
-                
-            } else {
-                
-                [self updateAndSyncAndReloadRootCell];
-                
-            }
-
-        }
+        [self workflowAS:(STMWorkflowAS *)actionSheet didDismissWithButtonIndex:buttonIndex];
         
     }
     
 }
+
+- (void)workflowAS:(STMWorkflowAS *)workflowAS didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                          didSelectButtonWithIndex:buttonIndex
+                                                                        inWorkflow:workflowAS.workflow];
+    
+    self.nextProcessing = result[@"nextProcessing"];
+    
+    if (self.nextProcessing) {
+        
+        NSString *startedProcessing = @"started";
+        
+        if ([self.nextProcessing isEqualToString:startedProcessing]) {
+            
+            NSArray *startedRoutes = [STMShipmentRouteController routesWithProcessing:startedProcessing];
+            
+            if (startedRoutes.count > 0) {
+
+                [self showUnfinishedRoutesAlert];
+                return;
+                
+            }
+            
+        }
+        
+        NSArray *editableProperties = result[@"editableProperties"];
+        
+        if (editableProperties) {
+            
+            STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+            
+            editablesVC.workflow = workflowAS.workflow;
+            editablesVC.toProcessing = self.nextProcessing;
+            editablesVC.editableFields = editableProperties;
+            editablesVC.parent = self;
+            
+            [self presentViewController:editablesVC animated:YES completion:^{
+                
+            }];
+            
+        } else {
+            
+            [self updateAndSyncAndReloadRootCell];
+            
+        }
+        
+    }
+
+}
+
 
 - (void)takeEditableValues:(NSDictionary *)editableValues {
     
@@ -682,6 +703,22 @@
     
     NSIndexPath *routeIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     if (routeIndexPath) [self.tableView reloadRowsAtIndexPaths:@[routeIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+    
+}
+
+- (void)showUnfinishedRoutesAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                        message:NSLocalizedString(@"UNFINISHED ROUTES ALERT MESSAGE", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:nil];
+
+        [alert show];
+        
+    }];
     
 }
 

@@ -12,6 +12,8 @@
 
 @interface STMWorkflowController : STMController
 
++ (NSString *)workflowForEntityName:(NSString *)entityName;
+
 + (STMWorkflowAS *)workflowActionSheetForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow withDelegate:(id <UIActionSheetDelegate>)delegate;
 
 + (NSDictionary *)workflowActionSheetForProcessing:(NSString *)processing didSelectButtonWithIndex:(NSInteger)buttonIndex inWorkflow:(NSString *)workflow;
