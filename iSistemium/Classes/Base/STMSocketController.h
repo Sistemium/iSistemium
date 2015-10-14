@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 + (void)startSocket;
 + (void)closeSocket;
++ (void)reconnectSocket;
 
 + (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue;
 
