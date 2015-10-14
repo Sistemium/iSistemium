@@ -16,6 +16,7 @@
 
 + (STMSettingsController *)initWithSettings:(NSDictionary *)startSettings;
 
++ (NSString *)stringValueForSettings:(NSString *)settingsName forGroup:(NSString *)group;
 
 - (NSDictionary *)defaultSettings;
 - (NSArray *)currentSettings;

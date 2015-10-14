@@ -70,7 +70,10 @@
 
 + (CGRect)frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)tabBarController;
 
+// - JSON representation
+
 + (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic;
++ (NSDictionary *)validJSONDictionaryFromDictionary:(NSDictionary *)dictionary;
 
 + (NSString *)volumeStringWithVolume:(NSInteger)volume andPackageRel:(NSInteger)packageRel;
 
@@ -79,6 +82,8 @@
 + (void)logMemoryStat;
 
 + (NSString *)shortCompanyName:(NSString *)companyName;
+
++ (NSString *)appStateString;
 
 
 @end

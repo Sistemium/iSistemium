@@ -17,6 +17,12 @@
            "data":
            [
                 {
+                    "name": "socketUrl",
+                    "value": "",
+                    "control": "textField"
+                },
+
+                {
                     "name": "enableDebtsEditing",
                     "value": false,
                     "control": "switch"

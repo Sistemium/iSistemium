@@ -26,6 +26,8 @@
 #import <Crashlytics/Crashlytics.h>
 #import "STMAppDelegate.h"
 
+#import "STMSocketController.h"
+
 
 @interface STMRootTBC () <UITabBarControllerDelegate, /*UIViewControllerAnimatedTransitioning, */UIAlertViewDelegate>
 
@@ -665,52 +667,11 @@
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
-    
-//    [(STMAppDelegate *)[UIApplication sharedApplication].delegate testCrash];
-    
-//    NSString *logMessage = [NSString stringWithFormat:@"didSelect tab %@", viewController.tabBarItem.title];
-//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"debug"];
 
-//    if (self.currentTappedVC) {
-//        
-//        [self currentTabBarItemDidTapped];
-//        self.currentTappedVC = nil;
-//        
-//    }
+    NSString *logMessage = [NSString stringWithFormat:@"didSelectViewController: %@", NSStringFromClass([viewController class])];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
 
 }
-
-/*  *** animation transition for tab switching ***
-
-- (id <UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
-    
-    return self;
-    
-}
-
-- (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    
-    return 0.5;
-    
-}
-
-- (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
-    
-    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    toViewController.view.frame = [transitionContext finalFrameForViewController:toViewController];
-    
-    [UIView transitionFromView:fromViewController.view
-                        toView:toViewController.view
-                      duration:[self transitionDuration:transitionContext]
-                       options:UIViewAnimationOptionTransitionFlipFromLeft
-                    completion:^(BOOL finished) {
-                        [transitionContext completeTransition:YES];
-                        [toViewController.view layoutIfNeeded];
-                    }];
-
-}
-*/
 
 
 #pragma mark - alertView & delegate

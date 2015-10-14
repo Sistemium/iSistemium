@@ -27,6 +27,8 @@
 #import "STMLocation.h"
 #import "STMEntity.h"
 
+#import "STMSocketController.h"
+
 
 #define SEND_DATA_CONNECTION @"SEND_DATA"
 
@@ -377,6 +379,8 @@
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
                         
                         [self performFetch];
+                        
+                        [STMSocketController startSocket];
 
                     } else {
                         NSLog(@"checkStcEntities fail");
@@ -459,6 +463,8 @@
     
     if (self.running) {
         
+        [STMSocketController closeSocket];
+        
         [self.session.logger saveLogMessageWithText:@"Syncer stop" type:@""];
         self.syncing = NO;
         self.syncerState = STMSyncerIdle;
@@ -471,6 +477,10 @@
 }
 
 - (void)upload {
+    [self setSyncerState:STMSyncerSendDataOnce];
+}
+
+- (void)fullSync {
     [self setSyncerState:STMSyncerSendData];
 }
 

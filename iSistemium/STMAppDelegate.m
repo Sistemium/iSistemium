@@ -24,6 +24,9 @@
 
 #import "STMAuthNC.h"
 
+#import "STMSocketController.h"
+
+
 @implementation STMAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -133,6 +136,8 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillResignActive"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+    
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -150,6 +155,8 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+
 //    [self showTestLocalNotification];
     
 }
@@ -159,6 +166,8 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillEnterForeground"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -173,6 +182,8 @@
         [STMMessageController showMessageVCsIfNeeded];
     }
     
+    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {

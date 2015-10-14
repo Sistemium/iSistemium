@@ -681,6 +681,34 @@
     
 }
 
++ (NSString *)appStateString {
+    
+    UIApplicationState appState = [UIApplication sharedApplication].applicationState;
+    
+    NSString *appStateString = nil;
+    
+    switch (appState) {
+        case UIApplicationStateActive: {
+            appStateString = @"UIApplicationStateActive";
+            break;
+        }
+        case UIApplicationStateInactive: {
+            appStateString = @"UIApplicationStateInactive";
+            break;
+        }
+        case UIApplicationStateBackground: {
+            appStateString = @"UIApplicationStateBackground";
+            break;
+        }
+        default: {
+            break;
+        }
+
+    }
+    return appStateString;
+    
+}
+
 
 #pragma mark - JSON representation
 
