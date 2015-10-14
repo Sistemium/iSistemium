@@ -83,5 +83,7 @@
 
 + (NSString *)shortCompanyName:(NSString *)companyName;
 
++ (NSString *)appStateString;
+
 
 @end

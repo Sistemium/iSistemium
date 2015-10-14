@@ -12,6 +12,8 @@
 #import "STMObjectsController.h"
 #import "STMRemoteController.h"
 
+#import "STMRootTBC.h"
+
 #import "STMFunctions.h"
 
 #import "iSistemium-Swift.h"
@@ -141,7 +143,7 @@
 }
 
 + (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
-    [[self sharedInstance] sendEvent:event withStringValue:stringValue];
+    [self socket:[self sharedInstance].socket sendEvent:event withStringValue:stringValue];
 }
 
 
@@ -219,16 +221,19 @@
     
 }
 
+
+#pragma mark - socket events
+
 - (void)addEventObserversToSocket:(SocketIOClient *)socket {
     
-    [self addOnAnyEventToSocket:socket];
+    [STMSocketController addOnAnyEventToSocket:socket];
 
-    [self addEvent:STMSocketEventConnect toSocket:socket];
-    [self addEvent:STMSocketEventRemoteCommands toSocket:socket];
+    [STMSocketController addEvent:STMSocketEventConnect toSocket:socket];
+    [STMSocketController addEvent:STMSocketEventRemoteCommands toSocket:socket];
     
 }
 
-- (void)addOnAnyEventToSocket:(SocketIOClient *)socket {
++ (void)addOnAnyEventToSocket:(SocketIOClient *)socket {
     
     [socket onAny:^(SocketAnyEvent *event) {
         
@@ -239,7 +244,7 @@
 
 }
 
-- (void)addEvent:(STMSocketEvent)event toSocket:(SocketIOClient *)socket {
++ (void)addEvent:(STMSocketEvent)event toSocket:(SocketIOClient *)socket {
     
     NSString *eventString = [STMSocketController stringValueForEvent:event];
     
@@ -275,7 +280,7 @@
     
 }
 
-- (void)connectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
++ (void)connectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
     
     //            [self checkQueuedEvent];
     
@@ -288,14 +293,22 @@
     [dataDic addEntriesFromDictionary:authDic];
     
     NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
-    
     [socket emitWithAck:event withItems:@[dataDic]](0, ^(NSArray *data) {
         [self receiveAckWithData:data forEvent:event];
     });
+    
+    [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
+    
+    if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
+        
+        NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass([[STMRootTBC sharedRootVC].selectedViewController class])];
+        [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
+        
+    }
 
 }
 
-- (void)remoteCommandsCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
++ (void)remoteCommandsCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
     
     if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
         
@@ -304,6 +317,43 @@
     }
 
 }
+
+
++ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
+    
+    NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
+    
+    NSDictionary *dataDic = @{@"url" : stringValue};
+    
+    dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
+    
+    if (dataDic) {
+        
+        if (socket.status != SocketIOClientStatusConnected) {
+            
+        } else {
+            
+            NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
+            
+            [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+                [self receiveAckWithData:data forEvent:eventStringValue];
+            });
+            
+        }
+        
+    } else {
+        NSLog(@"%@ ___ no dataDic to send via socket for event: %@", socket, eventStringValue);
+    }
+    
+}
+
++ (void)receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
+    NSLog(@"%@ ___ receive Ack, event: %@, data: %@", [self sharedInstance].socket, event, data);
+}
+
+
+
+#pragma mark - queue
 
 - (NSMutableArray *)queuedEvents {
     
@@ -336,45 +386,6 @@
         
     }
 
-}
-
-- (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
-    
-    NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
-//    NSString *infoEvent = [STMSocketController stringValueForEvent:STMSocketEventInfo];
-    
-    NSDictionary *dataDic = @{@"url" : stringValue};
-    
-    dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
-    
-    if (dataDic) {
-
-        if (self.socket.status != SocketIOClientStatusConnected) {
-            
-//            [self.queuedEvents addObject:@{eventStringValue : dataDic}];
-            
-        } else {
-
-            [self.socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-                [self receiveAckWithData:data forEvent:eventStringValue];
-            });
-            
-//            [self.socket emit:infoEvent withItems:@[dataDic]];
-//            [self.socket emitWithAck:infoEvent withItems:@[dataDic]](0, ^(NSArray* data) {
-//                [self receiveAckWithData:data forEvent:infoEvent];
-//            });
-
-
-        }
-
-    } else {
-        NSLog(@"%@ ___ no dataDic to send via socket for event: %@", self.socket, eventStringValue);
-    }
-
-}
-
-- (void)receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
-    NSLog(@"%@ ___ receive Ack, event: %@, data: %@", self.socket, event, data);
 }
 
 
