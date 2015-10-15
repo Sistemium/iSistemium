@@ -37,6 +37,8 @@
 @property (nonatomic) CLLocationDistance trackSeparationDistance;
 @property (nonatomic) CLLocationSpeed maxSpeedThreshold;
 
+@property (nonatomic, strong) NSString *geotrackerControl;
+
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
 @property (nonatomic, strong) NSTimer *locationWaitingTimer;
@@ -233,6 +235,10 @@
 
 - (BOOL)getLocationsWithNegativeSpeed {
     return [self.settings[@"getLocationsWithNegativeSpeed"] boolValue];
+}
+
+- (NSString *)geotrackerControl {
+    return self.settings[@"geotrackerControl"];
 }
 
 - (STMLocation *)lastLocationObject {
@@ -657,28 +663,34 @@
         [self requestAuthorization:^(BOOL success) {
             
             if (success) {
-                
-                [self initTimers];
-                
-                if ([self currentDesiredAccuracy] != 0) {
+
+                if ([self.geotrackerControl isEqualToString:@"ShipmentRoute"]) {
                     
-                    if (!self.tracking) [self startTracking];
-                    [self updateDesiredAccuracy];
+                    // implement shipmentRoute tracking
                     
                 } else {
+                
+                    [self initTimers];
                     
-                    if (self.tracking) [self stopTracking];
-                    
-                }
+                    if ([self currentDesiredAccuracy] != 0) {
+                        
+                        if (!self.tracking) [self startTracking];
+                        [self updateDesiredAccuracy];
+                        
+                    } else {
+                        
+                        if (self.tracking) [self stopTracking];
+                        
+                    }
 
+                }
+                
             }
             
         }];
         
     } else {
-        
         if (self.tracking) [self stopTracking];
-        
     }
 
 }
