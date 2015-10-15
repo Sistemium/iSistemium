@@ -335,9 +335,11 @@
             
             NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
             
-            [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-                [self receiveAckWithData:data forEvent:eventStringValue];
-            });
+            [socket emit:eventStringValue withItems:@[dataDic]];
+            
+//            [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+//                [self receiveAckWithData:data forEvent:eventStringValue];
+//            });
             
         }
         
