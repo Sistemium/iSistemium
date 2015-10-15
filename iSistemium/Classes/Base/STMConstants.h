@@ -37,4 +37,7 @@
 
 #define TOOLBAR_HEIGHT 44
 
+#define GEOTRACKER_CONTROL_SHIPMENT_ROUTE @"ShipmentRoute"
+
+
 #endif

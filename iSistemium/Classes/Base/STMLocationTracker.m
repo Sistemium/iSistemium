@@ -65,6 +65,7 @@
     [super customInit];
     
     [self initAppStateObservers];
+    [self shipmentRoutesObservers];
     
 }
 
@@ -681,7 +682,7 @@
             
             if (success) {
 
-                if ([self.geotrackerControl isEqualToString:@"ShipmentRoute"]) {
+                if ([self.geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE]) {
                     
                     NSUInteger startedRoutesCount = [STMShipmentRouteController routesWithProcessing:@"started"].count;
                     

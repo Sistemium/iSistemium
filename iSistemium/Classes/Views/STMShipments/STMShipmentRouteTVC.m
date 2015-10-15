@@ -695,6 +695,18 @@
 
 - (void)updateAndSyncAndReloadRootCell {
     
+    NSString *geotrackerControl = [STMSettingsController stringValueForSettings:@"geotrackerControl" forGroup:@"location"];
+    
+    if ([geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE]) {
+        
+        if ([@[self.route.processing, self.nextProcessing] containsObject:@"started"]) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"shipmentRouteProcessingChanged" object:self];
+            
+        }
+        
+    }
+    
     if (self.nextProcessing) self.route.processing = self.nextProcessing;
     
     [self.document saveDocument:^(BOOL success) {
