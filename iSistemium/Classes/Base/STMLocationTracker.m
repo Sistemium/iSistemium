@@ -12,6 +12,8 @@
 #import "STMClientDataController.h"
 #import "STMObjectsController.h"
 #import "STMLocationController.h"
+#import "STMShipmentRouteController.h"
+
 
 #define ACTUAL_LOCATION_CHECK_TIME_INTERVAL 5.0
 
@@ -86,6 +88,21 @@
                name:@"appSettingsSettingsChanged"
              object:self.session];
     
+}
+
+- (void)shipmentRoutesObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver:self
+           selector:@selector(shipmentRouteProcessingChanged)
+               name:@"shipmentRouteProcessingChanged"
+             object:nil];
+    
+}
+
+- (void)shipmentRouteProcessingChanged {
+    [self checkTrackerAutoStart];
 }
 
 - (void)appStateDidChange {
@@ -666,22 +683,22 @@
 
                 if ([self.geotrackerControl isEqualToString:@"ShipmentRoute"]) {
                     
-                    // implement shipmentRoute tracking
+                    NSUInteger startedRoutesCount = [STMShipmentRouteController routesWithProcessing:@"started"].count;
                     
-                } else {
-                
-                    [self initTimers];
-                    
-                    if ([self currentDesiredAccuracy] != 0) {
+                    if (startedRoutesCount > 0) {
                         
-                        if (!self.tracking) [self startTracking];
-                        [self updateDesiredAccuracy];
+                        [self checkAccuracyToStartTracking];
                         
                     } else {
                         
                         if (self.tracking) [self stopTracking];
                         
                     }
+                    
+                } else {
+                
+                    [self initTimers];
+                    [self checkAccuracyToStartTracking];
 
                 }
                 
@@ -691,6 +708,21 @@
         
     } else {
         if (self.tracking) [self stopTracking];
+    }
+
+}
+
+- (void)checkAccuracyToStartTracking {
+    
+    if ([self currentDesiredAccuracy] != 0) {
+        
+        if (!self.tracking) [self startTracking];
+        [self updateDesiredAccuracy];
+        
+    } else {
+        
+        if (self.tracking) [self stopTracking];
+        
     }
 
 }
