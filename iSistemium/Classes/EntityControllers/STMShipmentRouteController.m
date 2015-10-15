@@ -56,6 +56,8 @@
         request.predicate = [STMPredicate predicateWithNoFantoms];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[STMShipmentRouteController document].managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
+        [_resultsController performFetch:nil];
 
     }
     return _resultsController;

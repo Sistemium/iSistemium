@@ -708,10 +708,17 @@
 
     if (![self.requestLocationServiceAuthorization isEqualToString:@"noRequest"]) {
 
+        BOOL isDriver = [[STMSettingsController stringValueForSettings:@"geotrackerControl" forGroup:@"location"] isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE];
+        
         self.lastLocationImageView.hidden = NO;
         [self setupLastLocationLabel];
         [self setupLocationTrackingStatusLabel];
-        [self setupMonitoringStatusLabel];
+        
+        if (isDriver) {
+            self.monitoringStatusLabel.text = @"";
+        } else {
+            [self setupMonitoringStatusLabel];
+        }
 
     } else {
         
@@ -753,7 +760,7 @@
         
         switch ([CLLocationManager authorizationStatus]) {
             case kCLAuthorizationStatusAuthorizedAlways:
-                color = [UIColor greenColor];
+                color = ([self locationTracker].tracking) ? [UIColor greenColor] : [UIColor lightGrayColor];
                 text = ([self locationTracker].tracking) ? NSLocalizedString(@"LOCATION IS TRACKING", nil) : NSLocalizedString(@"LOCATION IS NOT TRACKING", nil);
                 break;
                 

@@ -695,19 +695,10 @@
 
 - (void)updateAndSyncAndReloadRootCell {
     
-    NSString *geotrackerControl = [STMSettingsController stringValueForSettings:@"geotrackerControl" forGroup:@"location"];
+    NSString *from = self.route.processing;
+    NSString *to = self.nextProcessing;
     
-    if ([geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE]) {
-        
-        if ([@[self.route.processing, self.nextProcessing] containsObject:@"started"]) {
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"shipmentRouteProcessingChanged" object:self];
-            
-        }
-        
-    }
-    
-    if (self.nextProcessing) self.route.processing = self.nextProcessing;
+    if (to) self.route.processing = to;
     
     [self.document saveDocument:^(BOOL success) {
         if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
@@ -716,6 +707,18 @@
     NSIndexPath *routeIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     if (routeIndexPath) [self.tableView reloadRowsAtIndexPaths:@[routeIndexPath] withRowAnimation:UITableViewRowAnimationFade];
     
+    NSString *geotrackerControl = [STMSettingsController stringValueForSettings:@"geotrackerControl" forGroup:@"location"];
+    
+    if ([geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE]) {
+        
+        if ([@[from, to] containsObject:@"started"]) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"shipmentRouteProcessingChanged" object:self];
+            
+        }
+        
+    }
+
 }
 
 - (void)showUnfinishedRoutesAlert {
