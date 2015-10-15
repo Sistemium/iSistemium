@@ -106,7 +106,8 @@
                                        @"TrackerFinishTime"];
         
         NSArray *stringValue = @[@"uploadLog.type",
-                                 @"genericPriceType"];
+                                 @"genericPriceType",
+                                 @"geotrackerControl"];
         
         NSArray *logicValue = @[@"timeDistanceLogic"];
         
