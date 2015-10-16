@@ -171,13 +171,13 @@
     for (NSManagedObject *unsyncedObject in unsyncedObjectsArray) {
         
         if ([unsyncedObject isKindOfClass:[STMLocation class]]) {
-            [self sendEvent:STMSocketEventData withValue:[STMObjectsController dictionaryForObject:unsyncedObject]];
+            [self sendEvent:STMSocketEventData withValue:@[[STMObjectsController dictionaryForObject:unsyncedObject]]];
         }
 
     }
     
     if (![unsyncedObjectsArray containsObject:object]) {
-        [self sendEvent:STMSocketEventData withValue:[STMObjectsController dictionaryForObject:object]];
+        [self sendEvent:STMSocketEventData withValue:@[[STMObjectsController dictionaryForObject:object]]];
     }
     
 }
@@ -411,11 +411,11 @@
                         
                     });
                     
-                } else if (event == STMSocketEventInfo) {
-                
-                    [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-                        [self receiveAckWithData:data forEvent:eventStringValue];
-                    });
+//                } else if (event == STMSocketEventInfo) {
+//                
+//                    [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+//                        [self receiveAckWithData:data forEvent:eventStringValue];
+//                    });
                     
                 } else {
                     
