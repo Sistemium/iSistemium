@@ -400,7 +400,7 @@
                 
             } else {
                 
-                NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
+//                NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
                 
                 if (event == STMSocketEventData) {
                     
@@ -476,9 +476,8 @@
             
             
     }
-
     
-    NSLog(@"receiveEventDataAckWithData %@", data);
+//    NSLog(@"receiveEventDataAckWithData %@", data);
     
 }
 
