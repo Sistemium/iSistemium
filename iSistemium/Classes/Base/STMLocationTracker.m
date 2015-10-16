@@ -879,6 +879,9 @@
             NSLog(@"UPDATE LAST SEEN TIMESTAMP FOR LOCATION: %@", self.lastLocation);
             self.lastLocationObject.lastSeenAt = [NSDate date];
             
+            [self.document saveDocument:^(BOOL success) {
+            }];
+
         }
 
     }
