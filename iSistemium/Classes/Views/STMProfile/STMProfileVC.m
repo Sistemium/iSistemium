@@ -960,7 +960,7 @@
     
     [nc addObserver:self
            selector:@selector(getBunchOfObjects:)
-               name:@"getBunchOfObjects"
+               name:SYNCER_GET_BUNCH_OF_OBJECTS
              object:syncer];
     
     [nc addObserver:self

@@ -45,13 +45,7 @@
 - (NSString *)shipmentRoutesWorkflow {
     
     if (!_shipmentRoutesWorkflow) {
-        
         _shipmentRoutesWorkflow = [STMWorkflowController workflowForEntityName:NSStringFromClass([STMShipmentRoute class])];
-        
-#warning - have to handle changing of entity.workflow
-// easy — make route.workflow — link to STMWorkflow — always get actual workflow
-// hard — some observers to trace STMEntity.workflow changing
-        
     }
     return _shipmentRoutesWorkflow;
     
@@ -206,11 +200,37 @@
 }
 
 
+#pragma mark - observers
+
+- (void)syncerGetBunchOfObjects:(NSNotification *)notification {
+    
+    if ([notification.userInfo[@"entityName"] isEqualToString:NSStringFromClass([STMEntity class])]) {
+        self.shipmentRoutesWorkflow = nil;
+    }
+
+}
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(syncerGetBunchOfObjects:)
+               name:SYNCER_GET_BUNCH_OF_OBJECTS
+             object:[(STMSession *)[STMSessionManager sharedManager].currentSession syncer]];
+    
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [super customInit];
+    [self addObservers];
     [self performFetch];
     self.navigationItem.title = NSLocalizedString(@"SHIPMENT ROUTES", nil);
     

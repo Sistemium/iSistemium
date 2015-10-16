@@ -1455,7 +1455,10 @@
 
                     }
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"getBunchOfObjects" object:self userInfo:@{@"count":@(dataArray.count)}];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:SYNCER_GET_BUNCH_OF_OBJECTS
+                                                                        object:self
+                                                                      userInfo:@{@"count"         :@(dataArray.count),
+                                                                                 @"entityName"    :connectionEntityName}];
                     
                 } else {
                     self.errorOccured = YES;

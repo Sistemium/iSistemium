@@ -40,4 +40,9 @@
 #define GEOTRACKER_CONTROL_SHIPMENT_ROUTE @"ShipmentRoute"
 
 
+// Notification's names
+
+#define SYNCER_GET_BUNCH_OF_OBJECTS @"syncerGetBunchOfObjects"
+
+
 #endif
