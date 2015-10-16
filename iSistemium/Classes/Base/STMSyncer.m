@@ -882,7 +882,7 @@
 
 }
 
-- (NSUInteger)numbersOfUnsyncedObjects {
+- (NSArray *)unsyncedObjects {
     
     if (self.document.managedObjectContext) {
         
@@ -897,12 +897,16 @@
         predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
         unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
         
-        return unsyncedObjects.count;
-
+        return unsyncedObjects;
+        
     } else {
-        return 0;
+        return nil;
     }
-    
+
+}
+
+- (NSUInteger)numbersOfUnsyncedObjects {
+    return [self unsyncedObjects].count;
 }
 
 - (void)startConnectionForSendData:(NSData *)sendData {

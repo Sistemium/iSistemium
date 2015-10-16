@@ -30,6 +30,7 @@
 
 - (void)afterSendFurcation;
 
+- (NSArray *)unsyncedObjects;
 - (NSUInteger)numbersOfUnsyncedObjects;
 
 

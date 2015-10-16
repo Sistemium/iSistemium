@@ -12,6 +12,8 @@
 #import "STMObjectsController.h"
 #import "STMRemoteController.h"
 
+#import "STMSessionManager.h"
+
 #import "STMRootTBC.h"
 
 #import "STMFunctions.h"
@@ -157,7 +159,27 @@
 }
 
 + (void)sendObject:(id)object {
-    [self sendEvent:STMSocketEventData withValue:[STMObjectsController dictionaryForObject:object]];
+    [self checkUnsyncedObjectsBeforeSending:object];
+}
+
++ (void)checkUnsyncedObjectsBeforeSending:(NSManagedObject *)object {
+    
+    STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
+    
+    NSArray *unsyncedObjectsArray = [syncer unsyncedObjects];
+
+    for (NSManagedObject *unsyncedObject in unsyncedObjectsArray) {
+        
+        if ([unsyncedObject isKindOfClass:[STMLocation class]]) {
+            [self sendEvent:STMSocketEventData withValue:[STMObjectsController dictionaryForObject:unsyncedObject]];
+        }
+
+    }
+    
+    if (![unsyncedObjectsArray containsObject:object]) {
+        [self sendEvent:STMSocketEventData withValue:[STMObjectsController dictionaryForObject:object]];
+    }
+    
 }
 
 #pragma mark - instance methods
