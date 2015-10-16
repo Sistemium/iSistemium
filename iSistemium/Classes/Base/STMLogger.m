@@ -163,14 +163,7 @@
         
         _document = document;
         self.resultsController = nil;
-        
-        if (_document) {
-            
-            NSError *error;
-            if (![self.resultsController performFetch:&error]) NSLog(@"performFetch error %@", error);
 
-        }
-        
     }
     
 }
@@ -305,9 +298,18 @@
     if (!_resultsController) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMLogMessage class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:NO selector:@selector(compare:)]];
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:@"dayAsString" cacheName:nil];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
+                                                                  ascending:NO
+                                                                   selector:@selector(compare:)]];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:@"dayAsString"
+                                                                            cacheName:nil];
         _resultsController.delegate = self;
+        
+        NSError *error;
+        if (![_resultsController performFetch:&error]) NSLog(@"performFetch error %@", error);
         
     }
     
