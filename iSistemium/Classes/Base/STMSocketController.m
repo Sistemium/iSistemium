@@ -168,19 +168,42 @@
     
     NSArray *unsyncedObjectsArray = [syncer unsyncedObjects];
 
+    NSMutableArray *syncDataArray = [NSMutableArray array];
+
     for (NSManagedObject *unsyncedObject in unsyncedObjectsArray) {
         
         if ([unsyncedObject isKindOfClass:[STMLocation class]]) {
-            [self sendEvent:STMSocketEventData withValue:@[[STMObjectsController dictionaryForObject:unsyncedObject]]];
+            [self addObject:unsyncedObject toSyncDataArray:syncDataArray];
+        }
+
+        if (syncDataArray.count >= 100) {
+            
+            NSLog(@"Syncer JSONFrom break");
+            break;
+            
         }
 
     }
     
     if (![unsyncedObjectsArray containsObject:object]) {
-        [self sendEvent:STMSocketEventData withValue:@[[STMObjectsController dictionaryForObject:object]]];
+        [self addObject:object toSyncDataArray:syncDataArray];
     }
-    
+
+    [self sendEvent:STMSocketEventData withValue:syncDataArray];
+
 }
+
++ (void)addObject:(NSManagedObject *)object toSyncDataArray:(NSMutableArray *)syncDataArray {
+    
+    NSDate *currentDate = [NSDate date];
+    [object setPrimitiveValue:currentDate forKey:@"sts"];
+    
+    NSDictionary *objectDictionary = [STMObjectsController dictionaryForObject:object];
+    
+    [syncDataArray addObject:objectDictionary];
+
+}
+
 
 #pragma mark - instance methods
 
