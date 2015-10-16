@@ -74,6 +74,10 @@
             return @"remoteCommands";
             break;
         }
+        case STMSocketEventData: {
+            return @"data:v1";
+            break;
+        }
         default: {
             return nil;
             break;
@@ -94,6 +98,8 @@
         return STMSocketEventAuthorization;
     } else if ([stringValue isEqualToString:@"remoteCommands"]) {
         return STMSocketEventRemoteCommands;
+    } else if ([stringValue isEqualToString:@"data:v1"]) {
+        return STMSocketEventData;
     } else {
         return STMSocketEventInfo;
     }
@@ -277,6 +283,9 @@
                 [self remoteCommandsCallbackWithData:data ack:ack socket:socket];
                 break;
             }
+            case STMSocketEventData: {
+                [self dataCallbackWithData:data ack:ack socket:socket];
+            }
             default: {
                 break;
             }
@@ -324,6 +333,10 @@
 
 }
 
++ (void)dataCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
+    NSLog(@"data %@", data);
+}
+
 
 + (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
     
@@ -341,11 +354,17 @@
             
             NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
             
-            [socket emit:eventStringValue withItems:@[dataDic]];
+            if (event == STMSocketEventData) {
             
-//            [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-//                [self receiveAckWithData:data forEvent:eventStringValue];
-//            });
+                [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+                    [self receiveAckWithData:data forEvent:eventStringValue];
+                });
+
+            } else {
+            
+                [socket emit:eventStringValue withItems:@[dataDic]];
+
+            }
             
         }
         
