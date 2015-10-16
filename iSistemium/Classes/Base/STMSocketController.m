@@ -175,9 +175,15 @@
 - (void)appSettingsChanged:(NSNotification *)notification {
     
     if ([notification.userInfo.allKeys containsObject:@"socketUrl"]) {
-        [self reconectSocket];
+        
+        self.socketUrl = nil;
+        
+        if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
+            [self reconectSocket];
+        }
+
     }
-    
+
 }
 
 - (void)reconectSocket {
