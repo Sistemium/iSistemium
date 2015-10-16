@@ -376,6 +376,7 @@
         case STMSocketEventInfo:
         case STMSocketEventAuthorization:
         case STMSocketEventRemoteCommands:
+            break;
         case STMSocketEventData: {
             primaryKey = @"data";
             break;
@@ -404,6 +405,15 @@
                 if (event == STMSocketEventData) {
                     
                     [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+                        
+                        [self receiveEventDataAckWithData:data];
+//                        [self receiveAckWithData:data forEvent:eventStringValue];
+                        
+                    });
+                    
+                } else if (event == STMSocketEventInfo) {
+                
+                    [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
                         [self receiveAckWithData:data forEvent:eventStringValue];
                     });
                     
@@ -431,6 +441,46 @@
     NSLog(@"%@ ___ receive Ack, event: %@, data: %@", [self sharedInstance].socket, event, data);
 }
 
++ (void)receiveEventDataAckWithData:(NSArray *)data {
+    
+    NSDictionary *response = data.firstObject;
+    
+    NSString *errorString = nil;
+    
+    if ([response isKindOfClass:[NSDictionary class]]) {
+        
+        errorString = response[@"error"];
+        
+    } else {
+        
+        errorString = @"response not a dictionary";
+        [self sendEvent:STMSocketEventInfo withStringValue:errorString];
+        
+    }
+    
+    if (!errorString) {
+    
+        NSArray *dataArray = response[@"data"];
+
+        for (NSDictionary *datum in dataArray) {
+            [STMObjectsController syncObject:datum];
+        }
+
+    } else {
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
+        
+        if ([errorString isEqualToString:@"Not authorized"]) {
+            [self reconnectSocket];
+        }
+            
+            
+    }
+
+    
+    NSLog(@"receiveEventDataAckWithData %@", data);
+    
+}
 
 
 #pragma mark - queue
