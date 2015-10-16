@@ -1332,6 +1332,11 @@
 
         [self entityCountDecrease];
         
+    }  else if (statusCode == 401) {
+        
+        NSLog(@"%@: 401 Unauthorized", entityName);
+        [self notAuthorized];
+        
     }  else if (statusCode == 204) {
         
         NSLog(@"%@: 204 No Content", entityName);

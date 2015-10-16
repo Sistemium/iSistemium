@@ -338,18 +338,9 @@
     
     NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
     [socket emitWithAck:event withItems:@[dataDic]](0, ^(NSArray *data) {
-        [self receiveAckWithData:data forEvent:event];
+        [self socket:socket receiveAckWithData:data forEvent:event];
     });
     
-    [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
-    
-    if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
-        
-        NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass([[STMRootTBC sharedRootVC].selectedViewController class])];
-        [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
-        
-    }
-
 }
 
 + (void)remoteCommandsCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
@@ -437,8 +428,44 @@
     [self socket:socket sendEvent:event withValue:stringValue];
 }
 
-+ (void)receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
++ (void)socket:(SocketIOClient *)socket receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
+    
+    STMSocketEvent socketEvent = [self eventForString:event];
+    
+    if (socketEvent == STMSocketEventAuthorization) {
+        
+        if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
+            
+            NSDictionary *dataDic = data.firstObject;
+            BOOL isAuthorized = [dataDic[@"isAuthorized"] boolValue];
+            
+            if (isAuthorized) {
+                
+                [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
+                
+                if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
+                    
+                    NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass([[STMRootTBC sharedRootVC].selectedViewController class])];
+                    [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
+                    
+                }
+                
+            } else {
+                
+                [[STMAuthController authController] logout];
+
+            }
+            
+        } else {
+            
+            [[STMAuthController authController] logout];
+
+        }
+        
+    }
+    
     NSLog(@"%@ ___ receive Ack, event: %@, data: %@", [self sharedInstance].socket, event, data);
+    
 }
 
 + (void)receiveEventDataAckWithData:(NSArray *)data {
@@ -471,9 +498,8 @@
         [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
         
         if ([errorString isEqualToString:@"Not authorized"]) {
-            [self reconnectSocket];
+//            [[STMAuthController authController] logout];
         }
-            
             
     }
     
