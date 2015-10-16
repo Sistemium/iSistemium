@@ -152,6 +152,13 @@
     [self socket:[self sharedInstance].socket sendEvent:event withStringValue:stringValue];
 }
 
++ (void)sendEvent:(STMSocketEvent)event withValue:(id)value {
+    [self socket:[self sharedInstance].socket sendEvent:event withValue:value];
+}
+
++ (void)sendObject:(id)object {
+    [self sendEvent:STMSocketEventData withValue:[STMObjectsController dictionaryForObject:object]];
+}
 
 #pragma mark - instance methods
 
@@ -337,41 +344,65 @@
     NSLog(@"data %@", data);
 }
 
++ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
+    
+    NSString *primaryKey = @"url";
+    
+    switch (event) {
+        case STMSocketEventConnect:
+        case STMSocketEventStatusChange:
+        case STMSocketEventInfo:
+        case STMSocketEventAuthorization:
+        case STMSocketEventRemoteCommands:
+        case STMSocketEventData: {
+            primaryKey = @"data";
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 
-+ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
-    
-    NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
-    
-    NSDictionary *dataDic = @{@"url" : stringValue};
-    
-    dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
-    
-    if (dataDic) {
+    if (value && primaryKey) {
+
+        NSDictionary *dataDic = @{primaryKey : value};
         
-        if (socket.status != SocketIOClientStatusConnected) {
+        dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
+        
+        NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
+        
+        if (dataDic) {
             
-        } else {
-            
-            NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
-            
-            if (event == STMSocketEventData) {
-            
-                [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-                    [self receiveAckWithData:data forEvent:eventStringValue];
-                });
-
+            if (socket.status != SocketIOClientStatusConnected) {
+                
             } else {
-            
-                [socket emit:eventStringValue withItems:@[dataDic]];
-
+                
+                NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
+                
+                if (event == STMSocketEventData) {
+                    
+                    [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+                        [self receiveAckWithData:data forEvent:eventStringValue];
+                    });
+                    
+                } else {
+                    
+                    [socket emit:eventStringValue withItems:@[dataDic]];
+                    
+                }
+                
             }
             
+        } else {
+            NSLog(@"%@ ___ no dataDic to send via socket for event: %@", socket, eventStringValue);
         }
-        
-    } else {
-        NSLog(@"%@ ___ no dataDic to send via socket for event: %@", socket, eventStringValue);
+
     }
     
+}
+
++ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
+    [self socket:socket sendEvent:event withValue:stringValue];
 }
 
 + (void)receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {

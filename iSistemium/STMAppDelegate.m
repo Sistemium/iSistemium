@@ -136,7 +136,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillResignActive"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
     
 }
 
@@ -155,7 +155,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
 
 //    [self showTestLocalNotification];
     
@@ -166,7 +166,7 @@
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillEnterForeground"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
     
-    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
 
 }
 
@@ -182,7 +182,7 @@
         [STMMessageController showMessageVCsIfNeeded];
     }
     
-    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
 
 }
 

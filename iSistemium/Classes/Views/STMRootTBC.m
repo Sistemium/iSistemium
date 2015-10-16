@@ -669,7 +669,7 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
 
     NSString *logMessage = [NSString stringWithFormat:@"didSelectViewController: %@", NSStringFromClass([viewController class])];
-    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
 
 }
 

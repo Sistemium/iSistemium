@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+
 
 typedef NS_ENUM(NSInteger, STMSocketEvent) {
     STMSocketEventConnect,
@@ -24,7 +26,8 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 + (void)closeSocket;
 + (void)reconnectSocket;
 
-+ (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue;
++ (void)sendEvent:(STMSocketEvent)event withValue:(id)value;
++ (void)sendObject:(NSManagedObject *)object;
 
 
 @end

@@ -13,6 +13,7 @@
 #import "STMObjectsController.h"
 #import "STMLocationController.h"
 #import "STMShipmentRouteController.h"
+#import "STMSocketController.h"
 
 
 #define ACTUAL_LOCATION_CHECK_TIME_INTERVAL 5.0
@@ -848,6 +849,8 @@
     STMLocation *locationObject = [STMLocationController locationObjectFromCLLocation:location];
     locationObject.lastSeenAt = locationObject.timestamp;
     
+    [STMSocketController sendObject:locationObject];
+    
     self.lastLocation = location;
     self.lastLocationObject = locationObject;
     
@@ -856,7 +859,7 @@
     [self.document saveDocument:^(BOOL success) {
         
         if (success) {
-            //            NSLog(@"save newLocation success");
+        
         }
         
     }];
