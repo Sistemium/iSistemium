@@ -299,8 +299,12 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 - (void)recalcRoutes {
     
     [self.view addSubview:self.spinner];
-
-    self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
+    
+    NSArray *sortDescriptors = [self.parentVC shipmentRoutePointsSortDescriptors];
+    
+    if (sortDescriptors) {
+        self.points = [self.points sortedArrayUsingDescriptors:(NSArray * _Nonnull)sortDescriptors];
+    }
     
     [self prepareArrayOfCLLocations];
 //    [self performSelector:@selector(updateMapView) withObject:nil afterDelay:0];
@@ -365,7 +369,7 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
         [self.progressBar setProgress:progress animated:YES];
 
         if (!error) {
-            [self.routes addObject:response.routes.firstObject];
+            if (response.routes.firstObject) [self.routes addObject:(id _Nonnull)response.routes.firstObject];
         } else {
             [self.routesCalcErrors appendFormat:@"%lu. %@\n\n", (unsigned long)self.routesCalcCounter, error.localizedDescription];
         }
@@ -674,7 +678,11 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
     self.selectedPin.point.ord = @(row + 1);
     
-    self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC shipmentRoutePointsSortDescriptors]];
+    NSArray *sortDescriptors = [self.parentVC shipmentRoutePointsSortDescriptors];
+    
+    if (sortDescriptors) {
+        self.points = [self.points sortedArrayUsingDescriptors:(NSArray * _Nonnull)sortDescriptors];
+    }
 
 //    NSLog(@"row %d", row);
     

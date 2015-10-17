@@ -871,15 +871,19 @@
 
 - (void)addObject:(NSManagedObject *)object toSyncDataArray:(NSMutableArray *)syncDataArray {
     
-    NSDate *currentDate = [NSDate date];
-    [object setPrimitiveValue:currentDate forKey:@"sts"];
-    
-    NSDictionary *objectDictionary = [STMObjectsController dictionaryForObject:object];
+    if (object.entity.name) {
+        
+        NSDate *currentDate = [NSDate date];
+        [object setPrimitiveValue:currentDate forKey:@"sts"];
+        
+        NSDictionary *objectDictionary = [STMObjectsController dictionaryForObject:object];
+        
+        [syncDataArray addObject:objectDictionary];
+        
+        [self.sendedEntities addObject:(NSString * _Nonnull)object.entity.name];
 
-    [syncDataArray addObject:objectDictionary];
+    }
     
-    [self.sendedEntities addObject:object.entity.name];
-
 }
 
 - (NSArray *)unsyncedObjects {
@@ -1244,7 +1248,7 @@
         
     } else {
         
-        [self.entitySyncNames removeObject:self.entitySyncNames.firstObject];
+        if (self.entitySyncNames.firstObject) [self.entitySyncNames removeObject:(id _Nonnull)self.entitySyncNames.firstObject];
 
         if (self.entitySyncNames.firstObject) {
             
@@ -1517,10 +1521,19 @@
         } else {
 
 #ifdef DEBUG
-            NSString *requestBody = [[NSString alloc] initWithData:connection.originalRequest.HTTPBody encoding:NSUTF8StringEncoding];
+            
             NSLog(@"originalRequest %@", connection.originalRequest);
-            NSLog(@"requestBody %@", requestBody);
             NSLog(@"responseJSON %@", responseJSON);
+
+            NSData *body = connection.originalRequest.HTTPBody;
+            
+            if (body) {
+                
+                NSString *requestBody = [[NSString alloc] initWithData:(NSData * _Nonnull)body encoding:NSUTF8StringEncoding];
+                NSLog(@"requestBody %@", requestBody);
+                
+            }
+            
 #endif
             [self entityCountDecrease];
 

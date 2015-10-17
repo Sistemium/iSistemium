@@ -148,9 +148,13 @@
     
     if (indexPath) {
         
-        NSIndexPath *lastIndexPath = [self.resultsController indexPathForObject:self.resultsController.fetchedObjects.lastObject];
+        if (self.resultsController.fetchedObjects.lastObject) {
+            
+            NSIndexPath *lastIndexPath = [self.resultsController indexPathForObject:(id _Nonnull)self.resultsController.fetchedObjects.lastObject];
+            [self.tableView selectRowAtIndexPath:lastIndexPath animated:NO scrollPosition:UITableViewScrollPositionBottom];
 
-        [self.tableView selectRowAtIndexPath:lastIndexPath animated:NO scrollPosition:UITableViewScrollPositionBottom];
+        }
+        
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
         
     } else {

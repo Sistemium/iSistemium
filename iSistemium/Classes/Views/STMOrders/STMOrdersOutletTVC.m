@@ -217,7 +217,7 @@
     
     if (self.splitVC.selectedOutlet) {
         
-        NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedOutlet];
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:(STMOutlet * _Nonnull)self.splitVC.selectedOutlet];
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
     }

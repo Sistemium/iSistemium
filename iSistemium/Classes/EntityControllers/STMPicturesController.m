@@ -133,8 +133,12 @@
     
     if (!_s3keychainItem) {
         
-        NSString *bundleIdentifier = [@"S3." stringByAppendingString:[[NSBundle mainBundle] bundleIdentifier]];
-        _s3keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
+        if ([NSBundle mainBundle].bundleIdentifier) {
+        
+            NSString *bundleIdentifier = [@"S3." stringByAppendingString:(NSString * _Nonnull)[NSBundle mainBundle].bundleIdentifier];
+            _s3keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
+
+        }
         
     }
     

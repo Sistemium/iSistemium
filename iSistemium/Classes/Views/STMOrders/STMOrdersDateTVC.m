@@ -212,7 +212,7 @@
     
     if (self.splitVC.selectedDate) {
         
-        NSUInteger index = [self.saleOrdersDates indexOfObject:self.splitVC.selectedDate];
+        NSUInteger index = [self.saleOrdersDates indexOfObject:(NSDate * _Nonnull)self.splitVC.selectedDate];
         [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
         
     }

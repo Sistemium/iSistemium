@@ -364,10 +364,14 @@
     
     for (NSDictionary *stcTab in stcTabs) {
         
-        NSMutableDictionary *tab = [stcTab mutableCopy];
-        tab[@"name"] = iPhoneTabsJSON[stcTab[@"name"]];
-        [iPhoneStcTabs addObject:tab];
-        
+        if (stcTab[@"name"]) {
+            
+            NSMutableDictionary *tab = [stcTab mutableCopy];
+            tab[@"name"] = iPhoneTabsJSON[(id _Nonnull)stcTab[@"name"]];
+            [iPhoneStcTabs addObject:tab];
+
+        }
+
     }
     
     return iPhoneStcTabs;

@@ -128,7 +128,7 @@
 
 - (void)trackerSettingsChanged:(NSNotification *)notification {
     
-    if (notification.object == self.session) [self.settings addEntriesFromDictionary:notification.userInfo];
+    if (notification.object == self.session && notification.userInfo) [self.settings addEntriesFromDictionary:(NSDictionary * _Nonnull)notification.userInfo];
 
 }
 

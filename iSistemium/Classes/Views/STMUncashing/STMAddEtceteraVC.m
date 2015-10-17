@@ -233,9 +233,9 @@
     
     NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoMinTwoDigitFormatter];
     
-    if ([textField isEqual:self.sumTextField]) {
+    if ([textField isEqual:self.sumTextField] && textField.text) {
         
-        NSNumber *number = [numberFormatter numberFromString:textField.text];
+        NSNumber *number = [numberFormatter numberFromString:(NSString * _Nonnull)textField.text];
         textField.text = [numberFormatter stringFromNumber:number];
         
         numberFormatter.numberStyle = NSNumberFormatterNoStyle;
@@ -359,10 +359,18 @@
 
 - (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
     
-    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
-    NSNumber *number = [numberFormatter numberFromString:textField.text];
-    
-    return [number boolValue];
+    if (textField.text) {
+        
+        NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+        NSNumber *number = [numberFormatter numberFromString:(NSString * _Nonnull)textField.text];
+        
+        return [number boolValue];
+
+    } else {
+        
+        return NO;
+        
+    }
     
 }
 

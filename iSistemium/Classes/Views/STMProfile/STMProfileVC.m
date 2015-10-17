@@ -667,7 +667,10 @@
 
 - (void)settingsChanged:(NSNotification *)notification {
     
-    if ([@[@"locationTrackerAutoStart", @"blockIfNoLocationPermission", @"requestLocationServiceAuthorization"] containsObject:notification.userInfo.allKeys.firstObject]) {
+    id firstKey = notification.userInfo.allKeys.firstObject;
+    NSArray *observedSettings = @[@"locationTrackerAutoStart", @"blockIfNoLocationPermission", @"requestLocationServiceAuthorization"];
+    
+    if (firstKey && [observedSettings containsObject:firstKey]) {
         
         self.requestLocationServiceAuthorization = nil;
         

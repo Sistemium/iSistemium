@@ -12,7 +12,6 @@
 #define V_SPACE 20
 #define TEXT_VIEW_WIDTH 350
 #define TEXT_VIEW_HEIGHT 50
-#define TOOLBAR_HEIGHT 44;
 
 @interface STMOrderEditablesVC ()
 
@@ -204,8 +203,12 @@
 
 - (void)cancelButtonPressed {
 
-    [self.popover dismissPopoverAnimated:YES];
-    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
+    if (self.popover) {
+        
+        [self.popover dismissPopoverAnimated:YES];
+        [self.popover.delegate popoverControllerDidDismissPopover:(UIPopoverController * _Nonnull)self.popover];
+
+    }
     
 }
 
@@ -230,8 +233,12 @@
     
     [STMSaleOrderController setProcessing:self.toProcessing forSaleOrder:self.saleOrder withFields:editableValues];
     
-    [self.popover dismissPopoverAnimated:YES];
-    [self.popover.delegate popoverControllerDidDismissPopover:self.popover];
+    if (self.popover) {
+        
+        [self.popover dismissPopoverAnimated:YES];
+        [self.popover.delegate popoverControllerDidDismissPopover:(UIPopoverController * _Nonnull)self.popover];
+        
+    }
 
 }
 

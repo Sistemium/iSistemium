@@ -232,7 +232,10 @@
     // Convert the NSString to NSData to meet the requirements for the value type kSecValueData.
     // This is where to store sensitive data that should be encrypted.
     NSString *passwordString = [dictionaryToConvert objectForKey:(__bridge id)kSecValueData];
-    [returnDictionary setObject:[passwordString dataUsingEncoding:NSUTF8StringEncoding] forKey:(__bridge id)kSecValueData];
+    
+    if ([passwordString dataUsingEncoding:NSUTF8StringEncoding]) {
+        [returnDictionary setObject:(NSData * _Nonnull)[passwordString dataUsingEncoding:NSUTF8StringEncoding] forKey:(__bridge id)kSecValueData];
+    }
     
     return returnDictionary;
 }
@@ -282,7 +285,9 @@
         // First we need the attributes from the Keychain.
         updateItem = [NSMutableDictionary dictionaryWithDictionary:(__bridge NSDictionary *)attributes];
         // Second we need to add the appropriate search key/values.
-        [updateItem setObject:[genericPasswordQuery objectForKey:(__bridge id)kSecClass] forKey:(__bridge id)kSecClass];
+        if ([genericPasswordQuery objectForKey:(__bridge id)kSecClass]) {
+            [updateItem setObject:(id _Nonnull)[genericPasswordQuery objectForKey:(__bridge id)kSecClass] forKey:(__bridge id)kSecClass];
+        }
         
         // Lastly, we need to set up the updated attribute list being careful to remove the class.
         NSMutableDictionary *tempCheck = [self dictionaryToSecItemFormat:keychainItemData];
