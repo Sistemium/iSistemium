@@ -508,6 +508,7 @@
         _locationManager.distanceFilter = self.distanceFilter;
         _locationManager.desiredAccuracy = [self currentDesiredAccuracy];
         _locationManager.pausesLocationUpdatesAutomatically = NO;
+        _locationManager.allowsBackgroundLocationUpdates = YES;
 
         NSString *logMessage = [NSString stringWithFormat:@"set desired accuracy to %f", _locationManager.desiredAccuracy];
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
