@@ -853,8 +853,6 @@
     STMLocation *locationObject = [STMLocationController locationObjectFromCLLocation:location];
     locationObject.lastSeenAt = locationObject.timestamp;
     
-    [STMSocketController sendObject:locationObject];
-    
     self.lastLocation = location;
     self.lastLocationObject = locationObject;
     
@@ -862,6 +860,8 @@
     
     [self.document saveDocument:^(BOOL success) {
         
+        [STMSocketController sendObject:locationObject];
+
         if (success) {
         
         }
