@@ -286,7 +286,7 @@
 }
 
 
-#pragma mark - socket events
+#pragma mark - socket events receiveing
 
 - (void)addEventObserversToSocket:(SocketIOClient *)socket {
     
@@ -377,8 +377,13 @@
 }
 
 + (void)dataCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
+    
     NSLog(@"data %@", data);
+    
 }
+
+
+#pragma mark - socket events sending
 
 + (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
     
