@@ -263,10 +263,12 @@
                 
             case STMSyncerSendDataOnce:
                 
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                [STMClientDataController checkClientData];
-                self.syncing = YES;
-                [self sendingRoute];
+//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+//                [STMClientDataController checkClientData];
+//                self.syncing = YES;
+//                [self sendingRoute];
+                
+                [self nothingToSend];
                 
                 break;
 
@@ -293,7 +295,9 @@
                 self.entitySyncNames = nil;
                 if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
                 if (self.fetchCompletionHandler) self.fetchCompletionHandler(self.fetchResult);
-                
+
+                [STMSocketController sendUnsyncedObjects:self];
+
                 break;
                 
                 
@@ -306,15 +310,15 @@
     
 }
 
-- (void)sendingRoute {
-    
-    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
-        [STMSocketController sendUnsyncedObjects:self];
-    } else {
-        [self sendData];
-    }
-
-}
+//- (void)sendingRoute {
+//    
+//    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
+//        [STMSocketController sendUnsyncedObjects:self];
+//    } else {
+//        [self sendData];
+//    }
+//
+//}
 
 - (void)setEntityCount:(NSUInteger)entityCount {
     
@@ -748,9 +752,9 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
     
-    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
-        self.syncerState = STMSyncerSendDataOnce;
-    }
+//    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
+//        self.syncerState = STMSyncerSendDataOnce;
+//    }
     
 }
 
@@ -791,7 +795,7 @@
 
 - (void)nothingToSend {
     
-    [self.session.logger saveLogMessageWithText:@"Syncer nothing to send" type:@""];
+//    [self.session.logger saveLogMessageWithText:@"Syncer nothing to send" type:@""];
 
     self.syncing = NO;
     

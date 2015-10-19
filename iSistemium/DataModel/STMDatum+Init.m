@@ -103,8 +103,14 @@
 //
 //            }
             
-            [self setPrimitiveValue:newDeviceTs forKey:@"deviceTs"];
+//            if ([self isKindOfClass:[STMLocation class]]) {
+//                
+//                NSLog(@"self.changedValues %@", self.changedValues);
+//                
+//            }
             
+            [self setPrimitiveValue:newDeviceTs forKey:@"deviceTs"];
+
             NSDate *lts = [self primitiveValueForKey:@"lts"];
             NSDate *deviceTs = [self primitiveValueForKey:@"deviceTs"];
             NSDate *deviceCts = [self primitiveValueForKey:@"deviceCts"];

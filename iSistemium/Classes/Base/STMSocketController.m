@@ -11,6 +11,7 @@
 #import "STMClientDataController.h"
 #import "STMObjectsController.h"
 #import "STMRemoteController.h"
+#import "STMEntityController.h"
 
 #import "STMSessionManager.h"
 
@@ -22,13 +23,14 @@
 #define SOCKET_URL @"https://socket.sistemium.com/socket.io-client"
 
 
-@interface STMSocketController()
+@interface STMSocketController() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) SocketIOClient *socket;
-@property (nonatomic, strong) NSMutableArray *queuedEvents;
 @property (nonatomic, strong) NSString *socketUrl;
 @property (nonatomic) BOOL shouldStarted;
-@property (nonatomic) BOOL isSyncerWaiting;
+//@property (nonatomic) BOOL isSyncerWaiting;
+@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+@property (nonatomic) BOOL isAuthorized;
 
 
 @end
@@ -111,6 +113,10 @@
     return [[STMSessionManager sharedManager].currentSession syncer];
 }
 
++ (STMDocument *)document {
+    return [[STMSessionManager sharedManager].currentSession document];
+}
+
 + (SocketIOClientStatus)currentSocketStatus {
     return [self sharedInstance].socket.status;
 }
@@ -171,7 +177,7 @@
 
 + (void)checkUnsyncedObjectsBeforeSending:(NSManagedObject *)object {
     
-    NSArray *unsyncedObjectsArray = [self unsyncedObjectsArray];
+    NSArray *unsyncedObjectsArray = [[self sharedInstance] unsyncedObjectsArray];
 
     NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
 
@@ -184,16 +190,16 @@
 }
 
 + (void)sendUnsyncedObjects:(id)sender {
-    
-    if ([sender isEqual:[self syncer]]) {
-        [self sharedInstance].isSyncerWaiting = YES;
-    }
-    
-    NSArray *unsyncedObjectsArray = [self unsyncedObjectsArray];
-    NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
-    
-    if (syncDataArray.count > 0) {
-        [self sendEvent:STMSocketEventData withValue:syncDataArray];
+
+    if ([STMSocketController syncer].syncerState != STMSyncerReceiveData && [self sharedInstance].socket.status == SocketIOClientStatusConnected) {
+        
+        NSArray *unsyncedObjectsArray = [[self sharedInstance] unsyncedObjectsArray];
+        NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
+        
+        if (syncDataArray.count > 0) {
+            [self sendEvent:STMSocketEventData withValue:syncDataArray];
+        }
+
     }
 
 }
@@ -221,10 +227,6 @@
 
 }
 
-+ (NSArray *)unsyncedObjectsArray {
-    return [[self syncer] unsyncedObjects];
-}
-
 + (void)addObject:(NSManagedObject *)object toSyncDataArray:(NSMutableArray *)syncDataArray {
     
     NSDate *currentDate = [NSDate date];
@@ -234,87 +236,6 @@
     
     [syncDataArray addObject:objectDictionary];
 
-}
-
-
-#pragma mark - instance methods
-
-- (instancetype)init {
-    
-    self = [super init];
-    if (self) {
-        [self addObservers];
-    }
-    return self;
-
-}
-
-- (void)addObservers {
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appSettingsChanged:)
-                                                 name:@"appSettingsSettingsChanged"
-                                               object:nil];
-    
-}
-
-- (void)removeObservers {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)appSettingsChanged:(NSNotification *)notification {
-    
-    if ([notification.userInfo.allKeys containsObject:@"socketUrl"]) {
-        
-        self.socketUrl = nil;
-        
-        if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
-            [self reconectSocket];
-        }
-
-    }
-
-}
-
-- (void)reconectSocket {
-
-    [self.socket disconnect];
-    
-    self.socketUrl = nil;
-    self.socket = nil;
-    
-    [self socket];
-
-}
-
-- (NSString *)socketUrl {
-    
-    if (!_socketUrl) {
-    
-        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl" forGroup:@"appSettings"];
-        
-    }
-    return _socketUrl;
-    
-}
-
-- (SocketIOClient *)socket {
-    
-    if (!_socket && self.socketUrl) {
-        
-        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:self.socketUrl opts:nil];
-
-        [self addEventObserversToSocket:socket];
-        
-        if (self.shouldStarted) {
-            [socket connect];
-        }
-
-        _socket = socket;
-        
-    }
-    return _socket;
-    
 }
 
 
@@ -501,6 +422,8 @@
             
             if (isAuthorized) {
                 
+                [self sharedInstance].isAuthorized = YES;
+                
                 [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
                 
                 if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
@@ -511,11 +434,12 @@
                         
                         NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass(rootVCClass)];
                         [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
-                        [self sendUnsyncedObjects:self];
 
                     }
                     
                 }
+                
+                [self sendUnsyncedObjects:self];
                 
             } else {
                 
@@ -580,13 +504,13 @@
 //            
 //        } else {
         
-            if ([self sharedInstance].isSyncerWaiting) {
-                
-                [self sharedInstance].isSyncerWaiting = NO;
-                [[self syncer] sendFinished:self];
-                
-            }
-            
+//            if ([self sharedInstance].isSyncerWaiting) {
+//                
+//                [self sharedInstance].isSyncerWaiting = NO;
+//                [[self syncer] sendFinished:self];
+//                
+//            }
+        
 //        }
 
     }];
@@ -594,39 +518,239 @@
 }
 
 
-#pragma mark - queue
+#pragma mark - instance methods
 
-- (NSMutableArray *)queuedEvents {
+- (instancetype)init {
     
-    if (!_queuedEvents) {
-        _queuedEvents = @[].mutableCopy;
+    self = [super init];
+    if (self) {
+        [self addObservers];
     }
-    return _queuedEvents;
+    return self;
     
 }
 
-- (void)checkQueuedEvent {
+- (void)addObservers {
     
-    if (self.queuedEvents.count > 1) {
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(appSettingsChanged:)
+               name:@"appSettingsSettingsChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(sessionStatusChanged:)
+               name:@"sessionStatusChanged"
+             object:nil];
+
+    
+    [nc addObserver:self
+           selector:@selector(objectContextDidSave:)
+               name:NSManagedObjectContextDidSaveNotification
+             object:nil];
+
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)appSettingsChanged:(NSNotification *)notification {
+    
+    if ([notification.userInfo.allKeys containsObject:@"socketUrl"]) {
         
-        NSArray *queuedEvents = self.queuedEvents.copy;
+        self.socketUrl = nil;
         
-        for (NSDictionary *event in queuedEvents) {
+        if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
+            [self reconectSocket];
+        }
+        
+    }
+    
+}
+
+- (void)sessionStatusChanged:(NSNotification *)notification {
+    
+    STMSession *session = [STMSessionManager sharedManager].currentSession;
+    
+    if (notification.object == session) {
+        
+        if ([session.status isEqualToString:@"running"]) {
             
-            for (NSString *eventStringValue in event.allKeys) {
-                
-                NSData *data = event[eventStringValue];
-                
-                [self.socket emit:eventStringValue withItems:@[data]];
-                
-                [self.queuedEvents removeObject:event];
-                
-            }
+            [self.resultsController performFetch:nil];
+            
+        } else {
+            
+            self.resultsController = nil;
             
         }
         
     }
+    
+}
 
+- (void)objectContextDidSave:(NSNotification *)notification {
+    [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+}
+
+- (void)sendUnsyncedObjects {
+    [STMSocketController sendUnsyncedObjects:self];
+}
+
+#pragma mark - NSFetchedResultsController
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+        request.includesSubentities = YES;
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:[STMSocketController document].managedObjectContext
+                                                                   sectionNameKeyPath:nil
+                                                                            cacheName:nil];
+        _resultsController.delegate = self;
+//        [_resultsController performFetch:nil];
+        
+    }
+    
+    return _resultsController;
+    
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+//    NSLog(@"%@ ____ controllerDidChangeContent", self);
+//    
+//    if ([STMSocketController syncer].syncerState != STMSyncerReceiveData) {
+//        
+//    }
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+//    
+//    switch (type) {
+//        case NSFetchedResultsChangeInsert: {
+//            NSLog(@"NSFetchedResultsChangeInsert");
+//            break;
+//        }
+//        case NSFetchedResultsChangeDelete: {
+//            NSLog(@"NSFetchedResultsChangeDelete");
+//            break;
+//        }
+//        case NSFetchedResultsChangeMove: {
+//            NSLog(@"NSFetchedResultsChangeMove");
+//            break;
+//        }
+//        case NSFetchedResultsChangeUpdate: {
+//            NSLog(@"NSFetchedResultsChangeUpdate");
+//            break;
+//        }
+//        default: {
+//            break;
+//        }
+//    }
+//    
+//    NSLog(@"%@, %@", NSStringFromClass([anObject class]), [anObject valueForKey:@"xid"]);
+//    
+//    NSDate *deviceTs = [anObject valueForKey:@"deviceTs"];
+//    
+//    if (deviceTs) {
+//        
+//        NSLog(@"deviceTs %@", [[STMFunctions dateFormatter] stringFromDate:deviceTs]);
+//
+//    } else {
+//        
+//        NSLog(@"deviceTs is nil");
+//        
+//    }
+    
+//    NSLog(@"indexPath %@, newIndexPath %@", indexPath, newIndexPath);
+    
+}
+
+- (NSString *)uploadLogType {
+        NSString *uploadLogType = [STMSettingsController stringValueForSettings:@"uploadLog.type" forGroup:@"syncer"];
+    return uploadLogType;
+}
+
+- (NSArray *)unsyncedObjectsArray {
+    
+    if (self.isAuthorized && [STMSocketController document].managedObjectContext) {
+        
+        NSLog(@"fetchedObjects.count %d", self.resultsController.fetchedObjects.count);
+//        NSLog(@"entity.name %@", [self.resultsController.fetchedObjects valueForKeyPath:@"@distinctUnionOfObjects.entity.name"]);
+        
+        NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
+        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
+        
+        NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
+        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+        
+        STMLogger *logger = [[STMSessionManager sharedManager].currentSession logger];
+        
+        NSArray *logMessageSyncTypes = [logger syncingTypesForSettingType:[self uploadLogType]];
+        
+        predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
+        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+        
+        return unsyncedObjects;
+        
+    } else {
+        return nil;
+    }
+    
+}
+
+
+#pragma mark - socket
+
+- (SocketIOClient *)socket {
+    
+    if (!_socket && self.socketUrl) {
+        
+        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:self.socketUrl opts:nil];
+        
+        [self addEventObserversToSocket:socket];
+        
+        if (self.shouldStarted) {
+            [socket connect];
+        }
+        
+        _socket = socket;
+        
+    }
+    return _socket;
+    
+}
+
+- (void)reconectSocket {
+    
+    [self.socket disconnect];
+    
+    self.socketUrl = nil;
+    self.socket = nil;
+    
+    [self socket];
+    
+}
+
+- (NSString *)socketUrl {
+    
+    if (!_socketUrl) {
+        
+        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl" forGroup:@"appSettings"];
+        
+    }
+    return _socketUrl;
+    
 }
 
 

@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 + (void)reconnectSocket;
 
 + (void)sendEvent:(STMSocketEvent)event withValue:(id)value;
-+ (void)sendObject:(NSManagedObject *)object;
+//+ (void)sendObject:(NSManagedObject *)object;
 + (void)sendUnsyncedObjects:(id)sender;
 
 + (SocketIOClientStatus)currentSocketStatus;
