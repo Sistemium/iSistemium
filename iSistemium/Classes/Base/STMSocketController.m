@@ -18,8 +18,6 @@
 
 #import "STMFunctions.h"
 
-#import "iSistemium-Swift.h"
-
 
 #define SOCKET_URL @"https://socket.sistemium.com/socket.io-client"
 
@@ -30,6 +28,7 @@
 @property (nonatomic, strong) NSMutableArray *queuedEvents;
 @property (nonatomic, strong) NSString *socketUrl;
 @property (nonatomic) BOOL shouldStarted;
+@property (nonatomic) BOOL isSyncerWaiting;
 
 
 @end
@@ -108,6 +107,14 @@
     
 }
 
++ (STMSyncer *)syncer {
+    return [[STMSessionManager sharedManager].currentSession syncer];
+}
+
++ (SocketIOClientStatus)currentSocketStatus {
+    return [self sharedInstance].socket.status;
+}
+
 + (void)startSocket {
     
     [self sharedInstance].shouldStarted = YES;
@@ -164,33 +171,58 @@
 
 + (void)checkUnsyncedObjectsBeforeSending:(NSManagedObject *)object {
     
-    STMSyncer *syncer = [[STMSessionManager sharedManager].currentSession syncer];
+    NSArray *unsyncedObjectsArray = [self unsyncedObjectsArray];
+
+    NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
+
+    if (object && ![unsyncedObjectsArray containsObject:object]) {
+        [self addObject:object toSyncDataArray:syncDataArray];
+    }
+
+    [self sendEvent:STMSocketEventData withValue:syncDataArray];
+
+}
+
++ (void)sendUnsyncedObjects:(id)sender {
     
-    NSArray *unsyncedObjectsArray = [syncer unsyncedObjects];
+    if ([sender isEqual:[self syncer]]) {
+        [self sharedInstance].isSyncerWaiting = YES;
+    }
+    
+    NSArray *unsyncedObjectsArray = [self unsyncedObjectsArray];
+    NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
+    
+    if (syncDataArray.count > 0) {
+        [self sendEvent:STMSocketEventData withValue:syncDataArray];
+    }
 
+}
+
++ (NSMutableArray *)syncDataArrayFromUnsyncedObjects:(NSArray *)unsyncedObjectsArray {
+    
     NSMutableArray *syncDataArray = [NSMutableArray array];
-
+    
     for (NSManagedObject *unsyncedObject in unsyncedObjectsArray) {
         
-        if ([unsyncedObject isKindOfClass:[STMLocation class]]) {
+//        if ([unsyncedObject isKindOfClass:[STMLocation class]]) {
             [self addObject:unsyncedObject toSyncDataArray:syncDataArray];
-        }
-
+//        }
+        
         if (syncDataArray.count >= 100) {
             
             NSLog(@"Syncer JSONFrom break");
             break;
             
         }
-
+        
     }
     
-    if (![unsyncedObjectsArray containsObject:object]) {
-        [self addObject:object toSyncDataArray:syncDataArray];
-    }
+    return syncDataArray;
 
-    [self sendEvent:STMSocketEventData withValue:syncDataArray];
+}
 
++ (NSArray *)unsyncedObjectsArray {
+    return [[self syncer] unsyncedObjects];
 }
 
 + (void)addObject:(NSManagedObject *)object toSyncDataArray:(NSMutableArray *)syncDataArray {
@@ -479,6 +511,7 @@
                         
                         NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass(rootVCClass)];
                         [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
+                        [self sendUnsyncedObjects:self];
 
                     }
                     
@@ -538,6 +571,25 @@
     }
     
 //    NSLog(@"receiveEventDataAckWithData %@", data);
+
+    [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
+    
+//        if ([self unsyncedObjectsArray].count > 0) {
+//            
+//            [self sendUnsyncedObjects:nil];
+//            
+//        } else {
+        
+            if ([self sharedInstance].isSyncerWaiting) {
+                
+                [self sharedInstance].isSyncerWaiting = NO;
+                [[self syncer] sendFinished:self];
+                
+            }
+            
+//        }
+
+    }];
     
 }
 

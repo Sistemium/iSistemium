@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+#import "iSistemium-Swift.h"
+
 
 typedef NS_ENUM(NSInteger, STMSocketEvent) {
     STMSocketEventConnect,
@@ -28,6 +30,8 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 + (void)sendEvent:(STMSocketEvent)event withValue:(id)value;
 + (void)sendObject:(NSManagedObject *)object;
++ (void)sendUnsyncedObjects:(id)sender;
 
++ (SocketIOClientStatus)currentSocketStatus;
 
 @end

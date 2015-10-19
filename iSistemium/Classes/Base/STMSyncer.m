@@ -253,12 +253,12 @@
                 
             case STMSyncerSendData:
                 
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                [STMClientDataController checkClientData];
-                self.syncing = YES;
-                [self sendData];
-                
-                break;
+//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+//                [STMClientDataController checkClientData];
+//                self.syncing = YES;
+//                [self sendData];
+//                
+//                break;
 
                 
             case STMSyncerSendDataOnce:
@@ -266,7 +266,7 @@
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 [STMClientDataController checkClientData];
                 self.syncing = YES;
-                [self sendData];
+                [self sendingRoute];
                 
                 break;
 
@@ -304,6 +304,16 @@
         
     }
     
+}
+
+- (void)sendingRoute {
+    
+    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
+        [STMSocketController sendUnsyncedObjects:self];
+    } else {
+        [self sendData];
+    }
+
 }
 
 - (void)setEntityCount:(NSUInteger)entityCount {
@@ -373,7 +383,7 @@
                         
                         [self checkUploadableEntities];
                         
-                        [self initTimer];
+//                        [self initTimer];
                         [self addObservers];
                         
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
@@ -735,7 +745,13 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
+    
+    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
+        self.syncerState = STMSyncerSendDataOnce;
+    }
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
@@ -1485,28 +1501,12 @@
             for (NSDictionary *datum in dataArray) {
                 [STMObjectsController syncObject:datum];
             }
-
-            [self saveSendDate];
             
-            self.syncing = NO;
+            [self sendFinished:self];
 
-//            [self.sendedEntities removeObjectsInArray:@[
-//                                                        NSStringFromClass([STMClientEntity class]),
-//                                                        NSStringFromClass([STMEntity class]),
-//                                                        NSStringFromClass([STMLogMessage class]),
-//                                                        NSStringFromClass([STMLocation class]),
-//                                                        NSStringFromClass([STMBatteryStatus class])
-//                                                        ]];
-//            
-//            BOOL onlyStcEntitiesWasSend = (self.sendedEntities.count == 0);
-//            
-//            if (self.syncerState == STMSyncerSendData && (!onlyStcEntitiesWasSend || !self.fullSyncWasDone)) {
-//                self.syncerState = STMSyncerReceiveData;
-//            } else /*if (self.syncerState == STMSyncerSendDataOnce)*/ {
-//                self.syncerState = STMSyncerIdle;
-//            }
-
-            self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
+//            [self saveSendDate];
+//            self.syncing = NO;
+//            self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
 
         }
         
@@ -1558,6 +1558,27 @@
     [self fillETagWithTemporaryValueForEntityName:entityName];
     [self checkConditionForReceivingEntityWithName:entityName];
     
+}
+
+- (void)sendFinished:(id)sender {
+    
+    [self.document saveDocument:^(BOOL success) {
+        
+        [self saveSendDate];
+        
+//        if ([self numbersOfUnsyncedObjects] > 0) {
+//            
+//            [self sendingRoute];
+//            
+//        } else {
+//        
+            self.syncing = NO;
+            self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
+//
+//        }
+        
+    }];
+
 }
 
 - (void)saveSendDate {

@@ -860,7 +860,7 @@
     
     [self.document saveDocument:^(BOOL success) {
         
-        [STMSocketController sendObject:locationObject];
+//        [STMSocketController sendObject:locationObject];
 
         if (success) {
         

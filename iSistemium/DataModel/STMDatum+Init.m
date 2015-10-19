@@ -110,8 +110,12 @@
             NSDate *deviceCts = [self primitiveValueForKey:@"deviceCts"];
             NSDate *sqts = lts ? deviceTs : deviceCts;
             
+//            [self willChangeValueForKey:@"sqts"];
             [self setPrimitiveValue:sqts forKey:@"sqts"];
+//            [self didChangeValueForKey:@"sqts"];
             
+//            [self setPrimitiveValue:sqts forKey:@"sqts"];
+
         }
 
     }

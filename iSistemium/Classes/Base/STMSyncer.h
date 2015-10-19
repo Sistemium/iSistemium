@@ -27,6 +27,7 @@
 - (void)fullSync;
 - (void)receiveEntities:(NSArray *)entitiesNames;
 - (void)sendObjects:(NSDictionary *)parameters;
+- (void)sendFinished:(id)sender;
 
 - (void)afterSendFurcation;
 
