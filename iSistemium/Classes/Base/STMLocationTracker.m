@@ -177,7 +177,7 @@
 
 - (CLLocationAccuracy)currentDesiredAccuracy {
     
-    if ([self currentTimeIsInsideOfScheduleLimits]) {
+    if ([self.geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE] || [self currentTimeIsInsideOfScheduleLimits]) {
         
         UIApplicationState appState = [UIApplication sharedApplication].applicationState;
         
@@ -860,7 +860,11 @@
     
     [self.document saveDocument:^(BOOL success) {
         
+<<<<<<< HEAD
 //        [STMSocketController sendObject:locationObject];
+=======
+        [STMSocketController sendObject:locationObject];
+>>>>>>> driverMonitoring
 
         if (success) {
         
