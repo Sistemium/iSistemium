@@ -860,11 +860,7 @@
     
     [self.document saveDocument:^(BOOL success) {
         
-<<<<<<< HEAD
 //        [STMSocketController sendObject:locationObject];
-=======
-        [STMSocketController sendObject:locationObject];
->>>>>>> driverMonitoring
 
         if (success) {
         
