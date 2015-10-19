@@ -1399,6 +1399,7 @@
     if ([entityName isEqualToString:@"STMEntity"]) {
         
         [STMEntityController flushSelf];
+        [STMSocketController reloadResultsControllers];
         
         self.stcEntities = nil;
         NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];

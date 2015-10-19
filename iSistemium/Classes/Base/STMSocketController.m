@@ -28,8 +28,8 @@
 @property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSString *socketUrl;
 @property (nonatomic) BOOL shouldStarted;
-//@property (nonatomic) BOOL isSyncerWaiting;
-@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+@property (nonatomic, strong) NSMutableArray *resultsControllers;
+@property (nonatomic) BOOL controllersDidChangeContent;
 @property (nonatomic) BOOL isAuthorized;
 
 
@@ -236,6 +236,10 @@
     
     [syncDataArray addObject:objectDictionary];
 
+}
+
++ (void)reloadResultsControllers {
+    [[self sharedInstance] reloadResultsControllers];
 }
 
 
@@ -578,11 +582,11 @@
         
         if ([session.status isEqualToString:@"running"]) {
             
-            [self.resultsController performFetch:nil];
+            [self performFetches];
             
         } else {
             
-            self.resultsController = nil;
+            self.resultsControllers = nil;
             
         }
         
@@ -591,37 +595,99 @@
 }
 
 - (void)objectContextDidSave:(NSNotification *)notification {
-    [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+    
+    if (self.controllersDidChangeContent) {
+        
+        self.controllersDidChangeContent = NO;
+        [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+        
+    }
+    
 }
 
 - (void)sendUnsyncedObjects {
     [STMSocketController sendUnsyncedObjects:self];
 }
 
-#pragma mark - NSFetchedResultsController
+- (void)performFetches {
 
-- (NSFetchedResultsController *)resultsController {
+    NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
+
+    self.resultsControllers = @[].mutableCopy;
     
-    if (!_resultsController) {
+    for (NSString *entityName in entityNamesForSending) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-        request.includesSubentities = YES;
-        
-        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
-        
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                 managedObjectContext:[STMSocketController document].managedObjectContext
-                                                                   sectionNameKeyPath:nil
-                                                                            cacheName:nil];
-        _resultsController.delegate = self;
-//        [_resultsController performFetch:nil];
-        
+        NSFetchedResultsController *rc = [self resultsControllerForEntityName:entityName];
+        [self.resultsControllers addObject:rc];
+        [rc performFetch:nil];
+
     }
     
-    return _resultsController;
+}
+
+- (void)reloadResultsControllers {
+    
+    self.resultsControllers = nil;
+    [self performFetches];
     
 }
+
+
+#pragma mark - NSFetchedResultsController
+
+- (NSFetchedResultsController *)resultsControllerForEntityName:(NSString *)entityName {
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    request.includesSubentities = YES;
+
+    NSMutableArray *subpredicates = @[].mutableCopy;
+    
+    if ([entityName isEqualToString:NSStringFromClass([STMLogMessage class])]) {
+        
+        STMLogger *logger = [[STMSessionManager sharedManager].currentSession logger];
+        
+        NSArray *logMessageSyncTypes = [logger syncingTypesForSettingType:[self uploadLogType]];
+        
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"type IN %@", logMessageSyncTypes]];
+
+    }
+
+    [subpredicates addObject:[NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil]];
+
+    request.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    NSFetchedResultsController *rc = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                         managedObjectContext:[STMSocketController document].managedObjectContext
+                                                                           sectionNameKeyPath:nil
+                                                                                    cacheName:nil];
+    rc.delegate = self;
+    
+    return rc;
+
+}
+
+//- (NSFetchedResultsController *)resultsController {
+//    
+//    if (!_resultsController) {
+//        
+//        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+//        request.includesSubentities = YES;
+//        
+//        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil]];
+//        
+//        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+//                                                                 managedObjectContext:[STMSocketController document].managedObjectContext
+//                                                                   sectionNameKeyPath:nil
+//                                                                            cacheName:nil];
+//        _resultsController.delegate = self;
+//        
+//    }
+//    
+//    return _resultsController;
+//    
+//}
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
@@ -630,6 +696,8 @@
 //    if ([STMSocketController syncer].syncerState != STMSyncerReceiveData) {
 //        
 //    }
+    
+    self.controllersDidChangeContent = YES;
     
 }
 
@@ -685,21 +753,19 @@
     
     if (self.isAuthorized && [STMSocketController document].managedObjectContext) {
         
-        NSLog(@"fetchedObjects.count %d", self.resultsController.fetchedObjects.count);
-//        NSLog(@"entity.name %@", [self.resultsController.fetchedObjects valueForKeyPath:@"@distinctUnionOfObjects.entity.name"]);
+        NSArray *unsyncedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
         
-        NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
-        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
-        
-        NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
-        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
-        
-        STMLogger *logger = [[STMSessionManager sharedManager].currentSession logger];
-        
-        NSArray *logMessageSyncTypes = [logger syncingTypesForSettingType:[self uploadLogType]];
-        
-        predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
-        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+//        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
+//        
+//        NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
+//        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+//        
+//        STMLogger *logger = [[STMSessionManager sharedManager].currentSession logger];
+//        
+//        NSArray *logMessageSyncTypes = [logger syncingTypesForSettingType:[self uploadLogType]];
+//        
+//        predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
+//        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
         
         return unsyncedObjects;
         
