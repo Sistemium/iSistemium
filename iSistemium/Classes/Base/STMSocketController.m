@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSMutableArray *resultsControllers;
 @property (nonatomic) BOOL controllersDidChangeContent;
 @property (nonatomic) BOOL isAuthorized;
+@property (nonatomic) BOOL isSendingData;
 
 
 @end
@@ -121,6 +122,10 @@
     return [self sharedInstance].socket.status;
 }
 
++ (BOOL)socketIsAuthorized {
+    return [self sharedInstance].isAuthorized;
+}
+
 + (void)startSocket {
     
     [self sharedInstance].shouldStarted = YES;
@@ -171,27 +176,29 @@
     [self socket:[self sharedInstance].socket sendEvent:event withValue:value];
 }
 
-+ (void)sendObject:(id)object {
-    [self checkUnsyncedObjectsBeforeSending:object];
-}
-
-+ (void)checkUnsyncedObjectsBeforeSending:(NSManagedObject *)object {
-    
-    NSArray *unsyncedObjectsArray = [[self sharedInstance] unsyncedObjectsArray];
-
-    NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
-
-    if (object && ![unsyncedObjectsArray containsObject:object]) {
-        [self addObject:object toSyncDataArray:syncDataArray];
-    }
-
-    [self sendEvent:STMSocketEventData withValue:syncDataArray];
-
-}
+//+ (void)sendObject:(id)object {
+//    [self checkUnsyncedObjectsBeforeSending:object];
+//}
+//
+//+ (void)checkUnsyncedObjectsBeforeSending:(NSManagedObject *)object {
+//    
+//    NSArray *unsyncedObjectsArray = [[self sharedInstance] unsyncedObjectsArray];
+//
+//    NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
+//
+//    if (object && ![unsyncedObjectsArray containsObject:object]) {
+//        [self addObject:object toSyncDataArray:syncDataArray];
+//    }
+//
+//    [self sendEvent:STMSocketEventData withValue:syncDataArray];
+//
+//}
 
 + (void)sendUnsyncedObjects:(id)sender {
 
-    if ([STMSocketController syncer].syncerState != STMSyncerReceiveData && [self sharedInstance].socket.status == SocketIOClientStatusConnected) {
+    if ([STMSocketController syncer].syncerState != STMSyncerReceiveData &&
+        [self sharedInstance].socket.status == SocketIOClientStatusConnected &&
+        ![self sharedInstance].isSendingData) {
         
         NSArray *unsyncedObjectsArray = [[self sharedInstance] unsyncedObjectsArray];
         NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
@@ -380,6 +387,8 @@
                 
                 if (event == STMSocketEventData) {
                     
+                    [self sharedInstance].isSendingData = YES;
+                    
                     [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
                         
                         [self receiveEventDataAckWithData:data];
@@ -517,6 +526,8 @@
         
 //        }
 
+        [self sharedInstance].isSendingData = NO;
+
     }];
     
 }
@@ -596,10 +607,16 @@
 
 - (void)objectContextDidSave:(NSNotification *)notification {
     
-    if (self.controllersDidChangeContent) {
+    if (self.controllersDidChangeContent && [notification.object isKindOfClass:[NSManagedObjectContext class]]) {
         
-        self.controllersDidChangeContent = NO;
-        [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+        NSManagedObjectContext *context = (NSManagedObjectContext *)notification.object;
+        
+        if ([context isEqual:[STMSocketController document].managedObjectContext]) {
+            
+            self.controllersDidChangeContent = NO;
+            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+
+        }
         
     }
     

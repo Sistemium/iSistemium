@@ -230,7 +230,7 @@
 
 
 - (void)setSyncerState:(STMSyncerState)syncerState {
-    
+
     self.sendOnce = (syncerState != STMSyncerIdle) && ((self.sendOnce) || (self.syncing && syncerState == STMSyncerSendDataOnce))? YES : NO;
     
     if (!self.syncing && syncerState != _syncerState) {
@@ -263,12 +263,13 @@
                 
             case STMSyncerSendDataOnce:
                 
-//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-//                [STMClientDataController checkClientData];
-//                self.syncing = YES;
-//                [self sendingRoute];
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                [STMClientDataController checkClientData];
+                self.syncing = YES;
+                [self sendingRoute];
                 
-                [self nothingToSend];
+//                [self sendData];
+//                [self nothingToSend];
                 
                 break;
 
@@ -289,15 +290,20 @@
                 self.sendOnce = NO;
                 self.checkSending = NO;
 
-                [STMObjectsController dataLoadingFinished];
+//                [STMObjectsController dataLoadingFinished];
 //                [STMPicturesController checkUploadedPhotos];
                 
                 self.entitySyncNames = nil;
                 if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
                 if (self.fetchCompletionHandler) self.fetchCompletionHandler(self.fetchResult);
 
-                [STMSocketController sendUnsyncedObjects:self];
-
+//                if (previousState == STMSyncerReceiveData) {
+//                    
+//                    [STMObjectsController dataLoadingFinished];
+//                    [STMSocketController sendUnsyncedObjects:self];
+//
+//                }
+                
                 break;
                 
                 
@@ -310,15 +316,15 @@
     
 }
 
-//- (void)sendingRoute {
-//    
-//    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
-//        [STMSocketController sendUnsyncedObjects:self];
-//    } else {
-//        [self sendData];
-//    }
-//
-//}
+- (void)sendingRoute {
+
+    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected && [STMSocketController socketIsAuthorized]) {
+        [self nothingToSend];
+    } else {
+        [self sendData];
+    }
+
+}
 
 - (void)setEntityCount:(NSUInteger)entityCount {
     
@@ -387,7 +393,7 @@
                         
                         [self checkUploadableEntities];
                         
-//                        [self initTimer];
+                        [self initTimer];
                         [self addObservers];
                         
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
@@ -1294,8 +1300,12 @@
     [self.document saveDocument:^(BOOL success) {
         
         if (success) {
+            
             self.syncing = NO;
             self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
+            
+            [STMObjectsController dataLoadingFinished];
+
         }
         
     }];

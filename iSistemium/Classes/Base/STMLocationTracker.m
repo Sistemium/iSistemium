@@ -859,13 +859,7 @@
     NSLog(@"location %@", self.lastLocation);
     
     [self.document saveDocument:^(BOOL success) {
-        
-//        [STMSocketController sendObject:locationObject];
-
-        if (success) {
-        
-        }
-        
+        [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
 }
