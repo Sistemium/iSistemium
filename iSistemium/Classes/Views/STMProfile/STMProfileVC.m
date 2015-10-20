@@ -159,11 +159,17 @@
         }
         
     }
+
+    [self updateSyncInfo];
+    
+}
+
+- (void)updateSyncInfo {
     
     [self updateSyncDatesLabels];
     [self updateCloudImages];
     [self updateNonloadedPicturesInfo];
-    
+
 }
 
 
@@ -944,6 +950,11 @@
     [nc addObserver:self
            selector:@selector(syncerStatusChanged:)
                name:@"syncStatusChanged"
+             object:syncer];
+    
+    [nc addObserver:self
+           selector:@selector(updateSyncInfo)
+               name:@"sendFinished"
              object:syncer];
     
     [nc addObserver:self

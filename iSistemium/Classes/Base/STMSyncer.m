@@ -1059,6 +1059,7 @@
     } else {
         
         [self receiveData];
+        [STMSocketController startSocket];
         
     }
     
@@ -1097,7 +1098,6 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerNewsHaveObjects" object:self userInfo:@{@"totalNumberOfObjects": [objectsCount valueForKeyPath:@"@sum.integerValue"]}];
             
-//            [self receiveData];
             [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
 
         } else {
@@ -1297,7 +1297,7 @@
     
     [self saveReceiveDate];
     
-    if (!self.fullSyncWasDone) [STMSocketController startSocket];
+//    if (!self.fullSyncWasDone) [STMSocketController startSocket];
     
     self.fullSyncWasDone = YES;
     self.isFirstSyncCycleIteration = NO;
@@ -1306,11 +1306,11 @@
         
         if (success) {
             
+            [STMObjectsController dataLoadingFinished];
+
             self.syncing = NO;
             self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendData;
             
-            [STMObjectsController dataLoadingFinished];
-
         }
         
     }];
@@ -1524,10 +1524,6 @@
             
             [self sendFinished:self];
 
-//            [self saveSendDate];
-//            self.syncing = NO;
-//            self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
-
         }
         
     } else {
@@ -1586,12 +1582,11 @@
         
         [self saveSendDate];
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"sendFinished" object:self];
+        
         if (![STMSocketController socketIsAvailable]) {
             
-            self.syncing = NO;
-            
-//            NSLog(@"self.isFirstSyncCycleIteration %d, self.syncerState %d", self.isFirstSyncCycleIteration, self.syncerState);
-            
+            self.syncing = NO;            
             self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
 
         }

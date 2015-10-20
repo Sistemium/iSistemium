@@ -511,21 +511,7 @@
 
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
     
-//        if ([self unsyncedObjectsArray].count > 0) {
-//            
-//            [self sendUnsyncedObjects:nil];
-//            
-//        } else {
-        
-//            if ([self sharedInstance].isSyncerWaiting) {
-//                
-//                [self sharedInstance].isSyncerWaiting = NO;
-                [[self syncer] sendFinished:self];
-//
-//            }
-        
-//        }
-
+        [[self syncer] sendFinished:self];
         [self sharedInstance].isSendingData = NO;
 
     }];
