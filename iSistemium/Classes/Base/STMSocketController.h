@@ -35,6 +35,6 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 + (void)sendUnsyncedObjects:(id)sender;
 
 + (SocketIOClientStatus)currentSocketStatus;
-+ (BOOL)socketIsAuthorized;
++ (BOOL)socketIsAvailable;
 
 @end

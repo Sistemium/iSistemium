@@ -235,7 +235,7 @@
     
     if (!self.syncing && syncerState != _syncerState) {
         
-        syncerState = (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
+        syncerState = (_syncerState == STMSyncerSendData && !self.fullSyncWasDone) ? STMSyncerReceiveData : (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
 
         STMSyncerState previousState = _syncerState;
         
@@ -318,8 +318,11 @@
 
 - (void)sendingRoute {
 
-    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected && [STMSocketController socketIsAuthorized]) {
+    if ([STMSocketController socketIsAvailable]) {
+        
+        NSLog(@"sending will be done via Socket");
         [self nothingToSend];
+        
     } else {
         [self sendData];
     }
@@ -400,7 +403,7 @@
                         
                         [self performFetch];
                         
-                        [STMSocketController startSocket];
+//                        [STMSocketController startSocket];
 
                     } else {
                         NSLog(@"checkStcEntities fail");
@@ -1294,6 +1297,8 @@
     
     [self saveReceiveDate];
     
+    if (!self.fullSyncWasDone) [STMSocketController startSocket];
+    
     self.fullSyncWasDone = YES;
     self.isFirstSyncCycleIteration = NO;
     
@@ -1581,17 +1586,16 @@
         
         [self saveSendDate];
         
-//        if ([self numbersOfUnsyncedObjects] > 0) {
-//            
-//            [self sendingRoute];
-//            
-//        } else {
-//        
+        if (![STMSocketController socketIsAvailable]) {
+            
             self.syncing = NO;
+            
+//            NSLog(@"self.isFirstSyncCycleIteration %d, self.syncerState %d", self.isFirstSyncCycleIteration, self.syncerState);
+            
             self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
-//
-//        }
-        
+
+        }
+
     }];
 
 }

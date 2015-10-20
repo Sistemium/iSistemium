@@ -122,8 +122,8 @@
     return [self sharedInstance].socket.status;
 }
 
-+ (BOOL)socketIsAuthorized {
-    return [self sharedInstance].isAuthorized;
++ (BOOL)socketIsAvailable {
+    return ([self currentSocketStatus] == SocketIOClientStatusConnected && [self sharedInstance].isAuthorized);
 }
 
 + (void)startSocket {
@@ -197,7 +197,7 @@
 + (void)sendUnsyncedObjects:(id)sender {
 
     if ([STMSocketController syncer].syncerState != STMSyncerReceiveData &&
-        [self sharedInstance].socket.status == SocketIOClientStatusConnected &&
+        [self socketIsAvailable] &&
         ![self sharedInstance].isSendingData) {
         
         NSArray *unsyncedObjectsArray = [[self sharedInstance] unsyncedObjectsArray];
@@ -501,8 +501,8 @@
         
         [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
         
-        if ([errorString isEqualToString:@"Not authorized"]) {
-//            [[STMAuthController authController] logout];
+        if ([[errorString.lowercaseString stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@"notauthorized"]) {
+            [[STMAuthController authController] logout];
         }
             
     }
@@ -520,8 +520,8 @@
 //            if ([self sharedInstance].isSyncerWaiting) {
 //                
 //                [self sharedInstance].isSyncerWaiting = NO;
-//                [[self syncer] sendFinished:self];
-//                
+                [[self syncer] sendFinished:self];
+//
 //            }
         
 //        }
@@ -713,6 +713,8 @@
 //    if ([STMSocketController syncer].syncerState != STMSyncerReceiveData) {
 //        
 //    }
+    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
     
     self.controllersDidChangeContent = YES;
     
