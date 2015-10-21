@@ -208,6 +208,18 @@
             NSLog(@"%d objects to send via Socket", syncDataArray.count);
             [self sendEvent:STMSocketEventData withValue:syncDataArray];
             
+        } else {
+            
+            if ([sender isEqual:[self syncer]]) {
+                [[self syncer] nothingToSend];
+            }
+            
+        }
+
+    } else {
+        
+        if ([sender isEqual:[self syncer]]) {
+            [[self syncer] nothingToSend];
         }
 
     }
@@ -513,14 +525,17 @@
 //    NSLog(@"receiveEventDataAckWithData %@", data);
 
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-    
-        [[self syncer] sendFinished:self];
-        [self sharedInstance].isSendingData = NO;
-
+        [self sendFinished];
     }];
     
 }
 
++ (void)sendFinished {
+    
+    [[self syncer] sendFinished:self];
+    [self sharedInstance].isSendingData = NO;
+
+}
 
 #pragma mark - instance methods
 

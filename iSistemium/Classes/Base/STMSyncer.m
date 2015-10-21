@@ -321,7 +321,7 @@
     if ([STMSocketController socketIsAvailable]) {
         
         [STMSocketController sendUnsyncedObjects:self];
-        [self nothingToSend];
+//        [self nothingToSend];
         
     } else {
         [self sendData];
@@ -1584,12 +1584,12 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"sendFinished" object:self];
         
-        if (![STMSocketController socketIsAvailable]) {
-            
+//        if (![STMSocketController socketIsAvailable]) {
+        
             self.syncing = NO;            
             self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
 
-        }
+//        }
 
     }];
 
