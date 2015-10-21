@@ -42,7 +42,8 @@
 
 // Notification's names
 
-#define SYNCER_GET_BUNCH_OF_OBJECTS @"syncerGetBunchOfObjects"
+#define NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS @"syncerGetBunchOfObjects"
+#define NOTIFICATION_SESSION_STATUS_CHANGED @"sessionStatusChanged"
 
 
 #endif

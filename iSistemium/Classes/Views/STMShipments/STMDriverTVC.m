@@ -216,7 +216,7 @@
     
     [nc addObserver:self
            selector:@selector(syncerGetBunchOfObjects:)
-               name:SYNCER_GET_BUNCH_OF_OBJECTS
+               name:NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS
              object:[(STMSession *)[STMSessionManager sharedManager].currentSession syncer]];
     
 }

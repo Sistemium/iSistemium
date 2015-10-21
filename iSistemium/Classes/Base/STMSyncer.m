@@ -596,7 +596,7 @@
     
     [nc addObserver:self
            selector:@selector(sessionStatusChanged:)
-               name:@"sessionStatusChanged"
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:self.session];
     
     [nc addObserver:self
@@ -1504,7 +1504,7 @@
 
                     }
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:SYNCER_GET_BUNCH_OF_OBJECTS
+                    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS
                                                                         object:self
                                                                       userInfo:@{@"count"         :@(dataArray.count),
                                                                                  @"entityName"    :connectionEntityName}];

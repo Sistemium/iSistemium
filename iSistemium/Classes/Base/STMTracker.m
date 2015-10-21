@@ -49,7 +49,7 @@
     
     [nc addObserver:self
            selector:@selector(sessionStatusChanged:)
-               name:@"sessionStatusChanged"
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:self.session];
     
     [nc addObserver:self
@@ -78,7 +78,7 @@
 
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sessionStatusChanged" object:self.session];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_SESSION_STATUS_CHANGED object:self.session];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
     
 }
