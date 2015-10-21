@@ -424,6 +424,10 @@
     
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
     
+    if (!self.selectedPhotoReport.managedObjectContext) {
+        self.selectedPhotoReport = [self newPhotoReport];
+    }
+    
     [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
                                   forPicture:self.selectedPhotoReport
                                    andUpload:YES];
