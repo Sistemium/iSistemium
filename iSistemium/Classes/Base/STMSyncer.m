@@ -320,7 +320,6 @@
 
     if ([STMSocketController socketIsAvailable]) {
         
-        NSLog(@"sending will be done via Socket");
         [STMSocketController sendUnsyncedObjects:self];
         [self nothingToSend];
         

@@ -204,7 +204,10 @@
         NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
         
         if (syncDataArray.count > 0) {
+            
+            NSLog(@"%d objects to send via Socket", syncDataArray.count);
             [self sendEvent:STMSocketEventData withValue:syncDataArray];
+            
         }
 
     }
