@@ -14,15 +14,6 @@
 #import "STMRouteSummaryArticleInfoTVC.h"
 
 
-typedef NS_ENUM(NSInteger, STMSummaryType) {
-    STMSummaryTypeBad,
-    STMSummaryTypeExcess,
-    STMSummaryTypeShortage,
-    STMSummaryTypeRegrade,
-    STMSummaryTypeBroken
-};
-
-
 @interface STMShipmentRouteSummaryTVC ()
 
 @property (nonatomic, strong) NSMutableArray *tableData;
@@ -112,7 +103,7 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
     
 }
 
-- (NSString *)stringVolumePropertyForType:(STMSummaryType)type {
++ (NSString *)stringVolumePropertyForType:(STMSummaryType)type {
     
     NSString *volumeType = nil;
     
@@ -141,9 +132,12 @@ typedef NS_ENUM(NSInteger, STMSummaryType) {
             break;
         }
     }
-
     return volumeType;
-    
+
+}
+
+- (NSString *)stringVolumePropertyForType:(STMSummaryType)type {
+    return [[self class] stringVolumePropertyForType:type];
 }
 
 

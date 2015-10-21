@@ -201,6 +201,38 @@
     return ([self shippedShipments].count > 0);
 }
 
+- (BOOL)haveIssuesInProcessedShipments {
+    
+    NSArray *shippedShipments = [self shippedShipments];
+    
+    NSArray *positions = [shippedShipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    
+    NSArray *availableTypes = @[@(STMSummaryTypeBad),
+                                @(STMSummaryTypeExcess),
+                                @(STMSummaryTypeShortage),
+                                @(STMSummaryTypeRegrade),
+                                @(STMSummaryTypeBroken)];
+    
+    NSUInteger issuesCount = 0;
+    
+    for (NSNumber *typeNumber in availableTypes) {
+        
+        STMSummaryType type = typeNumber.integerValue;
+        NSString *typeString = [STMShipmentRouteSummaryTVC stringVolumePropertyForType:type];
+        
+        NSString *predicateFormat = [typeString stringByAppendingString:@".integerValue > 0"];
+        NSPredicate *volumePredicate = [NSPredicate predicateWithFormat:predicateFormat];
+        
+        NSArray *filteredPositions = [positions filteredArrayUsingPredicate:volumePredicate];
+        
+        if (filteredPositions.count > 0) issuesCount++;
+        
+    }
+
+    return (issuesCount > 0);
+    
+}
+
 - (NSNumber *)badVolumeSummary {
     
     NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
@@ -257,7 +289,7 @@
     
     switch (section) {
         case 0:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveProcessedShipments]) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveIssuesInProcessedShipments]) ? 2 : 1;
             break;
             
         case 1:

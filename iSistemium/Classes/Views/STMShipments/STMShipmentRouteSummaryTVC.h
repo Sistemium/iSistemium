@@ -10,9 +10,20 @@
 #import "STMDataModel.h"
 
 
+typedef NS_ENUM(NSInteger, STMSummaryType) {
+    STMSummaryTypeBad,
+    STMSummaryTypeExcess,
+    STMSummaryTypeShortage,
+    STMSummaryTypeRegrade,
+    STMSummaryTypeBroken
+};
+
+
 @interface STMShipmentRouteSummaryTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMShipmentRoute *route;
+
++ (NSString *)stringVolumePropertyForType:(STMSummaryType)type;
 
 
 @end
