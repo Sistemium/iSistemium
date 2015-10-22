@@ -216,16 +216,8 @@
         [self socketIsAvailable] &&
         ![self sharedInstance].isSendingData) {
         
-        NSArray *unsyncedObjectsArray = [self unsyncedObjects];
-        NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
-        
-        if (syncDataArray.count > 0) {
-            
-            NSLog(@"%d objects to send via Socket", syncDataArray.count);
-            [self sendEvent:STMSocketEventData withValue:syncDataArray];
-            
-        } else {
-            
+        if (![self haveToSyncObjects]) {
+
             if ([sender isEqual:[self syncer]]) {
                 [[self syncer] nothingToSend];
             }
@@ -242,6 +234,27 @@
 
 }
 
++ (BOOL)haveToSyncObjects {
+    
+    NSArray *unsyncedObjectsArray = [self unsyncedObjects];
+    
+    if (unsyncedObjectsArray.count > 0) {
+        
+        NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
+        
+        NSLog(@"%d objects to send via Socket", syncDataArray.count);
+        [self sendEvent:STMSocketEventData withValue:syncDataArray];
+        
+        return YES;
+        
+    } else {
+        
+        return NO;
+        
+    }
+    
+}
+
 + (NSMutableArray *)syncDataArrayFromUnsyncedObjects:(NSArray *)unsyncedObjectsArray {
     
     NSMutableArray *syncDataArray = [NSMutableArray array];
@@ -254,7 +267,7 @@
         
         if (syncDataArray.count >= 100) {
             
-            NSLog(@"Syncer JSONFrom break");
+            NSLog(@"syncDataArray is full");
             break;
             
         }
@@ -467,6 +480,7 @@
             if (isAuthorized) {
                 
                 [self sharedInstance].isAuthorized = YES;
+                [self sharedInstance].isSendingData = NO;
                 [[self syncer] socketReceiveAuthorization];
                 
                 [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
@@ -544,16 +558,20 @@
 //    NSLog(@"receiveEventDataAckWithData %@", data);
 
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-        [self sendFinished];
+        [self performSelector:@selector(sendFinished) withObject:nil afterDelay:0];
     }];
     
 }
 
 + (void)sendFinished {
     
-    [self sharedInstance].isSendingData = NO;
-    [[self syncer] sendFinished:self];
-
+    if (![self haveToSyncObjects]) {
+        
+        [self sharedInstance].isSendingData = NO;
+        [[self syncer] sendFinished:self];
+        
+    }
+    
 }
 
 #pragma mark - instance methods
