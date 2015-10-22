@@ -194,23 +194,13 @@
     [self socket:[self sharedInstance].socket sendEvent:event withValue:value];
 }
 
-//+ (void)sendObject:(id)object {
-//    [self checkUnsyncedObjectsBeforeSending:object];
-//}
-//
-//+ (void)checkUnsyncedObjectsBeforeSending:(NSManagedObject *)object {
-//    
-//    NSArray *unsyncedObjectsArray = [[self sharedInstance] unsyncedObjectsArray];
-//
-//    NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
-//
-//    if (object && ![unsyncedObjectsArray containsObject:object]) {
-//        [self addObject:object toSyncDataArray:syncDataArray];
-//    }
-//
-//    [self sendEvent:STMSocketEventData withValue:syncDataArray];
-//
-//}
++ (NSArray *)unsyncedObjects {
+    return [[self sharedInstance] unsyncedObjectsArray];
+}
+
++ (NSUInteger)numbersOfUnsyncedObjects {
+    return [self unsyncedObjects].count;
+}
 
 + (void)sendUnsyncedObjects:(id)sender {
 
@@ -218,7 +208,7 @@
         [self socketIsAvailable] &&
         ![self sharedInstance].isSendingData) {
         
-        NSArray *unsyncedObjectsArray = [[self sharedInstance] unsyncedObjectsArray];
+        NSArray *unsyncedObjectsArray = [self unsyncedObjects];
         NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
         
         if (syncDataArray.count > 0) {
@@ -739,7 +729,7 @@
 //        
 //    }
     
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
     
     self.controllersDidChangeContent = YES;
     
@@ -796,23 +786,7 @@
 - (NSArray *)unsyncedObjectsArray {
     
     if (self.isAuthorized && [STMSocketController document].managedObjectContext) {
-        
-        NSArray *unsyncedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
-        
-//        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
-//        
-//        NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
-//        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
-//        
-//        STMLogger *logger = [[STMSessionManager sharedManager].currentSession logger];
-//        
-//        NSArray *logMessageSyncTypes = [logger syncingTypesForSettingType:[self uploadLogType]];
-//        
-//        predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
-//        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
-        
-        return unsyncedObjects;
-        
+        return [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
     } else {
         return nil;
     }

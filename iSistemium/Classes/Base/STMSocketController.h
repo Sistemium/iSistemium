@@ -30,8 +30,10 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 + (void)reloadResultsControllers;
 
++ (NSArray *)unsyncedObjects;
++ (NSUInteger)numbersOfUnsyncedObjects;
+
 + (void)sendEvent:(STMSocketEvent)event withValue:(id)value;
-//+ (void)sendObject:(NSManagedObject *)object;
 + (void)sendUnsyncedObjects:(id)sender;
 
 + (SocketIOClientStatus)currentSocketStatus;
