@@ -72,7 +72,7 @@
     if (self) {
         
         [self addObservers];
-        [self performFetch];
+//        [self performFetch];
         
     }
     return self;
@@ -300,6 +300,8 @@
                                                                                        sectionNameKeyPath:nil
                                                                                                 cacheName:nil];
             _nonloadedPicturesResultsController.delegate = self;
+            
+            [_nonloadedPicturesResultsController performFetch:nil];
 
         } else {
             
@@ -312,14 +314,14 @@
     
 }
 
-- (void)performFetch {
-    
-    NSError *error;
-    if (![self.nonloadedPicturesResultsController performFetch:&error]) {
-        NSLog(@"unloadedPicturesResultsController fetch error: ", error.localizedDescription);
-    }
-
-}
+//- (void)performFetch {
+//    
+//    NSError *error;
+//    if (![self.nonloadedPicturesResultsController performFetch:&error]) {
+//        NSLog(@"unloadedPicturesResultsController fetch error: ", error.localizedDescription);
+//    }
+//
+//}
 
 - (NSArray *)photoEntitiesNames {
     
