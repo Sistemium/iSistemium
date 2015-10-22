@@ -33,7 +33,7 @@
 #define SEND_DATA_CONNECTION @"SEND_DATA"
 
 
-@interface STMSyncer() <NSFetchedResultsControllerDelegate>
+@interface STMSyncer() //<NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
 
@@ -49,7 +49,7 @@
 @property (nonatomic, strong) NSTimer *syncTimer;
 @property (nonatomic) BOOL timerTicked;
 
-@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+//@property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
 @property (nonatomic) BOOL running;
 @property (nonatomic) BOOL syncing;
@@ -459,7 +459,7 @@
                         
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"Syncer init successfully" object:self];
                         
-                        [self performFetch];
+//                        [self performFetch];
                         
                         [STMSocketController startSocket];
 
@@ -531,18 +531,18 @@
 
 }
 
-- (void)performFetch {
-    
-    NSError *error;
-    if (![self.resultsController performFetch:&error]) {
-        
-        NSLog(@"fetch error %@", error);
-        
-    } else {
-        
-    }
-
-}
+//- (void)performFetch {
+//    
+//    NSError *error;
+//    if (![self.resultsController performFetch:&error]) {
+//        
+//        NSLog(@"fetch error %@", error);
+//        
+//    } else {
+//        
+//    }
+//
+//}
 
 - (void)stopSyncer {
     
@@ -554,7 +554,7 @@
         self.syncing = NO;
         self.syncerState = STMSyncerIdle;
         [self releaseTimer];
-        self.resultsController = nil;
+//        self.resultsController = nil;
         self.settings = nil;
         self.running = NO;
         
@@ -801,42 +801,42 @@
     
 }
 
-
-#pragma mark - NSFetchedResultsController
-
-- (NSFetchedResultsController *)resultsController {
-    
-    if (!_resultsController) {
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
-        request.includesSubentities = YES;
-        
-        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
-        
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-        _resultsController.delegate = self;
-        
-    }
-    
-    return _resultsController;
-    
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
-    
-//    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
-//        self.syncerState = STMSyncerSendDataOnce;
+//
+//#pragma mark - NSFetchedResultsController
+//
+//- (NSFetchedResultsController *)resultsController {
+//    
+//    if (!_resultsController) {
+//        
+//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
+//        request.includesSubentities = YES;
+//        
+//        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
+//        
+//        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+//        _resultsController.delegate = self;
+//        
 //    }
-    
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    
-}
+//    
+//    return _resultsController;
+//    
+//}
+//
+//- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+//    
+////    [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
+//    
+////    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
+////        self.syncerState = STMSyncerSendDataOnce;
+////    }
+//    
+//}
+//
+//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+//    
+//    
+//}
 
 #pragma mark - syncing
 #pragma mark - send
@@ -845,24 +845,24 @@
         
     if (self.syncerState == STMSyncerSendData || self.syncerState == STMSyncerSendDataOnce) {
         
-        if (self.resultsController.fetchedObjects.count > 0) {
-            
-            self.sendedEntities = nil;
-            
-            NSData *sendData = [self JSONFrom:self.resultsController.fetchedObjects];
-
-            if (sendData) {
-                
-                self.checkSending = (self.syncerState == STMSyncerSendData);
-                [self startConnectionForSendData:sendData];
-                
-            } else {
-                [self nothingToSend];
-            }
-
-        } else {
-            [self nothingToSend];
-        }
+//        if (self.resultsController.fetchedObjects.count > 0) {
+//            
+//            self.sendedEntities = nil;
+//            
+//            NSData *sendData = [self JSONFrom:self.resultsController.fetchedObjects];
+//
+//            if (sendData) {
+//                
+//                self.checkSending = (self.syncerState == STMSyncerSendData);
+//                [self startConnectionForSendData:sendData];
+//                
+//            } else {
+//                [self nothingToSend];
+//            }
+//
+//        } else {
+//            [self nothingToSend];
+//        }
         
     }
     
@@ -955,7 +955,7 @@
         
     } else {
         
-        [self numbersOfUnsyncedObjects];
+//        [self numbersOfUnsyncedObjects];
         
         NSString *logMessage = [NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count];
         NSLog(logMessage);
@@ -993,25 +993,27 @@
 }
 
 - (NSArray *)unsyncedObjects {
+
+    return [STMSocketController unsyncedObjects];
     
-    if (self.document.managedObjectContext) {
-        
-        NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
-        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
-        
-        NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
-        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
-        
-        NSArray *logMessageSyncTypes = [(STMLogger *)self.session.logger syncingTypesForSettingType:self.uploadLogType];
-        
-        predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
-        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
-        
-        return unsyncedObjects;
-        
-    } else {
-        return nil;
-    }
+//    if (self.document.managedObjectContext) {
+//        
+//        NSArray *unsyncedObjects = self.resultsController.fetchedObjects;
+//        NSArray *entityNamesForSending = [STMEntityController uploadableEntitiesNames];
+//        
+//        NSPredicate *predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"entity.name IN %@", entityNamesForSending]];
+//        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+//        
+//        NSArray *logMessageSyncTypes = [(STMLogger *)self.session.logger syncingTypesForSettingType:self.uploadLogType];
+//        
+//        predicate = [NSPredicate predicateWithFormat:@"(entity.name != %@) OR (type IN %@)", NSStringFromClass([STMLogMessage class]), logMessageSyncTypes];
+//        unsyncedObjects = [unsyncedObjects filteredArrayUsingPredicate:predicate];
+//        
+//        return unsyncedObjects;
+//        
+//    } else {
+//        return nil;
+//    }
 
 }
 
