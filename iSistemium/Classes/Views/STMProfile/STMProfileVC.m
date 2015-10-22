@@ -980,7 +980,7 @@
     [nc addObserver:self
            selector:@selector(syncerDidChangeContent:)
                name:@"syncerDidChangeContent"
-             object:syncer];
+             object:nil];
     
     [nc addObserver:self
            selector:@selector(newAppVersionAvailable:)
