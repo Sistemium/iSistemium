@@ -27,7 +27,6 @@
 
 @property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSString *socketUrl;
-//@property (nonatomic) BOOL shouldStarted;
 @property (nonatomic) BOOL isRunning;
 @property (nonatomic, strong) NSMutableArray *resultsControllers;
 @property (nonatomic) BOOL controllersDidChangeContent;
@@ -134,32 +133,41 @@
 
 + (void)startSocket {
     
-//    [self sharedInstance].shouldStarted = YES;
+    STMSocketController *sc = [self sharedInstance];
     
-    [self sharedInstance].isRunning = YES;
-    switch ([self sharedInstance].socket.status) {
-            
-        case SocketIOClientStatusNotConnected:
-        case SocketIOClientStatusClosed: {
-            [[self sharedInstance].socket connect];
-            break;
+    if (sc.socketUrl) {
+
+        sc.isRunning = YES;
+
+        switch (sc.socket.status) {
+                
+            case SocketIOClientStatusNotConnected:
+            case SocketIOClientStatusClosed: {
+                [sc.socket connect];
+                break;
+            }
+            case SocketIOClientStatusConnecting: {
+                
+                break;
+            }
+            case SocketIOClientStatusConnected: {
+                
+                break;
+            }
+            case SocketIOClientStatusReconnecting: {
+                
+                break;
+            }
+            default: {
+                break;
+            }
+                
         }
-        case SocketIOClientStatusConnecting: {
-            
-            break;
-        }
-        case SocketIOClientStatusConnected: {
-            
-            break;
-        }
-        case SocketIOClientStatusReconnecting: {
-            
-            break;
-        }
-        default: {
-            break;
-        }
-            
+
+    } else {
+        
+        [[self syncer] setSyncerState:STMSyncerReceiveData];
+        
     }
 
 }
@@ -803,11 +811,7 @@
         SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:self.socketUrl opts:nil];
         
         [self addEventObserversToSocket:socket];
-        
-//        if (self.shouldStarted) {
-//            [socket connect];
-//        }
-        
+
         _socket = socket;
         
     }
@@ -817,16 +821,11 @@
 
 - (void)reconnectSocket {
 
-    [STMSocketController closeSocket];
-    
-//    [self.socket disconnect];
-//    
-//    self.socketUrl = nil;
-//    self.socket = nil;
+    if (self.isRunning) {
+        [STMSocketController closeSocket];
+    }
     
     [STMSocketController startSocket];
-    
-//    [self socket];
     
 }
 

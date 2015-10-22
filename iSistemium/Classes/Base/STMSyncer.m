@@ -289,88 +289,88 @@
     return;
     
 
-    self.sendOnce = (syncerState != STMSyncerIdle) && ((self.sendOnce) || (self.syncing && syncerState == STMSyncerSendDataOnce))? YES : NO;
-    
-    if (!self.syncing && syncerState != _syncerState) {
-        
-        syncerState = (_syncerState == STMSyncerSendData && !self.fullSyncWasDone) ? STMSyncerReceiveData : (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
-
-        STMSyncerState previousState = _syncerState;
-        
-        _syncerState = syncerState;
-        
-        NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self userInfo:@{@"from":@(previousState), @"to":@(syncerState)}];
-        
-        NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
-        NSLog(logMessage);
-        
-        self.isFirstSyncCycleIteration = (previousState == STMSyncerIdle);
-        
-        switch (syncerState) {
-                
-            case STMSyncerSendData:
-                
+//    self.sendOnce = (syncerState != STMSyncerIdle) && ((self.sendOnce) || (self.syncing && syncerState == STMSyncerSendDataOnce))? YES : NO;
+//    
+//    if (!self.syncing && syncerState != _syncerState) {
+//        
+//        syncerState = (_syncerState == STMSyncerSendData && !self.fullSyncWasDone) ? STMSyncerReceiveData : (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
+//
+//        STMSyncerState previousState = _syncerState;
+//        
+//        _syncerState = syncerState;
+//        
+//        NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self userInfo:@{@"from":@(previousState), @"to":@(syncerState)}];
+//        
+//        NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
+//        NSLog(logMessage);
+//        
+//        self.isFirstSyncCycleIteration = (previousState == STMSyncerIdle);
+//        
+//        switch (syncerState) {
+//                
+//            case STMSyncerSendData:
+//                
+////                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+////                [STMClientDataController checkClientData];
+////                self.syncing = YES;
+////                [self sendData];
+////                
+////                break;
+//
+//                
+//            case STMSyncerSendDataOnce:
+//                
 //                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 //                [STMClientDataController checkClientData];
 //                self.syncing = YES;
-//                [self sendData];
+//                [self sendingRoute];
+//                
+////                [self sendData];
+////                [self nothingToSend];
 //                
 //                break;
-
-                
-            case STMSyncerSendDataOnce:
-                
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                [STMClientDataController checkClientData];
-                self.syncing = YES;
-                [self sendingRoute];
-                
-//                [self sendData];
-//                [self nothingToSend];
-                
-                break;
-
-                
-            case STMSyncerReceiveData:
-                
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                self.syncing = YES;
-                [self checkNews];
-                
-                break;
-                
-                
-            case STMSyncerIdle:
-                
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                self.syncing = NO;
-                self.sendOnce = NO;
-                self.checkSending = NO;
-
-//                [STMObjectsController dataLoadingFinished];
-//                [STMPicturesController checkUploadedPhotos];
-                
-                self.entitySyncNames = nil;
-                if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
-                if (self.fetchCompletionHandler) self.fetchCompletionHandler(self.fetchResult);
-
-//                if (previousState == STMSyncerReceiveData) {
-//                    
-//                    [STMObjectsController dataLoadingFinished];
-//                    [STMSocketController sendUnsyncedObjects:self];
 //
-//                }
-                
-                break;
-                
-                
-            default:
-                break;
-                
-        }
-        
-    }
+//                
+//            case STMSyncerReceiveData:
+//                
+//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+//                self.syncing = YES;
+//                [self checkNews];
+//                
+//                break;
+//                
+//                
+//            case STMSyncerIdle:
+//                
+//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+//                self.syncing = NO;
+//                self.sendOnce = NO;
+//                self.checkSending = NO;
+//
+////                [STMObjectsController dataLoadingFinished];
+////                [STMPicturesController checkUploadedPhotos];
+//                
+//                self.entitySyncNames = nil;
+//                if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
+//                if (self.fetchCompletionHandler) self.fetchCompletionHandler(self.fetchResult);
+//
+////                if (previousState == STMSyncerReceiveData) {
+////                    
+////                    [STMObjectsController dataLoadingFinished];
+////                    [STMSocketController sendUnsyncedObjects:self];
+////
+////                }
+//                
+//                break;
+//                
+//                
+//            default:
+//                break;
+//                
+//        }
+//        
+//    }
     
 }
 
@@ -870,7 +870,7 @@
 
 - (void)nothingToSend {
     
-//    [self.session.logger saveLogMessageWithText:@"Syncer nothing to send" type:@""];
+    [self.session.logger saveLogMessageWithText:@"Syncer nothing to send" type:@""];
 
     self.syncing = NO;
     
@@ -1388,6 +1388,7 @@
             [STMObjectsController dataLoadingFinished];
 
             self.syncing = NO;
+            
             self.syncerState = (self.errorOccured) ? STMSyncerIdle : STMSyncerSendDataOnce;
             
         }
