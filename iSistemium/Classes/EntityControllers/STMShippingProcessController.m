@@ -121,9 +121,9 @@
         
         [[STMShippingProcessController document] saveDocument:^(BOOL success) {
             
-            if (success) {
-                [[STMShippingProcessController syncer] setSyncerState:STMSyncerSendDataOnce];
-            }
+//            if (success) {
+//                [[STMShippingProcessController syncer] setSyncerState:STMSyncerSendDataOnce];
+//            }
             
         }];
 

@@ -99,7 +99,7 @@
     }
     
     [self.document saveDocument:^(BOOL success) {
-        if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+//        if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
 }
@@ -124,7 +124,7 @@
     }
 
     [self.document saveDocument:^(BOOL success) {
-        if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+//        if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
 
 }
@@ -140,7 +140,7 @@
         [self saveLogMessageWithText:JSONString type:@"important"];
 
         [self.document saveDocument:^(BOOL success) {
-            if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+//            if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
         }];
 
     }

@@ -286,12 +286,12 @@
     }
     
     [[STMController document] saveDocument:^(BOOL success) {
-        if (success) {
-            
-            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
-            syncer.syncerState = STMSyncerSendDataOnce;
-            
-        }
+//        if (success) {
+//            
+//            STMSyncer *syncer = [STMSessionManager sharedManager].currentSession.syncer;
+//            syncer.syncerState = STMSyncerSendDataOnce;
+//            
+//        }
     }];
     
     

@@ -41,7 +41,7 @@
     debt.calculatedSum = [debt cashingCalculatedSum];
     
     [[self document] saveDocument:^(BOOL success) {
-        if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+//        if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
 //    NSLog(@"cashing %@", cashing);

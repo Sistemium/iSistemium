@@ -976,7 +976,7 @@
     [self removeObject:object];
     
     [self.document saveDocument:^(BOOL success) {
-        if (success) [self syncer].syncerState = STMSyncerSendDataOnce;
+//        if (success) [self syncer].syncerState = STMSyncerSendDataOnce;
     }];
 
     return recordStatus;

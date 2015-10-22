@@ -295,8 +295,8 @@
 
 - (void)downloadCloudTapped {
     
-    [[self syncer] afterSendFurcation];
-//    [self syncer].syncerState = STMSyncerReceiveData;
+//    [[self syncer] afterSendFurcation];
+    [self syncer].syncerState = STMSyncerReceiveData;
     
 }
 
@@ -551,10 +551,10 @@
             alert.tag = 2;
             [alert show];
         
+            self.downloadAlertWasShown = YES;
+
         }];
         
-        self.downloadAlertWasShown = YES;
-
     }
     
 }
@@ -974,7 +974,7 @@
     
     [nc addObserver:self
            selector:@selector(getBunchOfObjects:)
-               name:SYNCER_GET_BUNCH_OF_OBJECTS
+               name:NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS
              object:syncer];
     
     [nc addObserver:self
@@ -1036,6 +1036,26 @@
            selector:@selector(settingsChanged:)
                name:@"locationSettingsChanged"
              object:nil];
+
+    [nc addObserver:self
+           selector:@selector(sessionStatusChanged)
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
+             object:nil];
+    
+}
+
+- (void)sessionStatusChanged {
+    
+    
+    if ([[[STMSessionManager sharedManager].currentSession status] isEqualToString:@"running"]) {
+    
+        [self updateCloudImages];
+        [self updateSyncDatesLabels];
+        [self setupNonloadedPicturesButton];
+        [self updateNonloadedPicturesInfo];
+
+//        self.downloadAlertWasShown = NO;
+    }
 
 }
 

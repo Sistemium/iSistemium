@@ -36,5 +36,6 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 + (SocketIOClientStatus)currentSocketStatus;
 + (BOOL)socketIsAvailable;
++ (BOOL)isSendingData;
 
 @end

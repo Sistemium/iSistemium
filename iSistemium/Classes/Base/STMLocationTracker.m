@@ -859,7 +859,7 @@
     NSLog(@"location %@", self.lastLocation);
     
     [self.document saveDocument:^(BOOL success) {
-        [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
+//        [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
 }

@@ -139,7 +139,7 @@
     uncashing.commentText = comment;
     
     [[STMController document] saveDocument:^(BOOL success) {
-        if (success) [[[[STMSessionManager sharedManager] currentSession] syncer] setSyncerState:STMSyncerSendDataOnce];
+//        if (success) [[[[STMSessionManager sharedManager] currentSession] syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
 
     self.state = STMUncashingProcessIdle;

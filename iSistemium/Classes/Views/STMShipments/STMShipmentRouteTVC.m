@@ -733,7 +733,7 @@
     if (to) self.route.processing = to;
     
     [self.document saveDocument:^(BOOL success) {
-        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+//        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
     NSIndexPath *routeIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];

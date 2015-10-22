@@ -27,11 +27,13 @@
 
 @property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSString *socketUrl;
-@property (nonatomic) BOOL shouldStarted;
+//@property (nonatomic) BOOL shouldStarted;
+@property (nonatomic) BOOL isRunning;
 @property (nonatomic, strong) NSMutableArray *resultsControllers;
 @property (nonatomic) BOOL controllersDidChangeContent;
 @property (nonatomic) BOOL isAuthorized;
 @property (nonatomic) BOOL isSendingData;
+@property (nonatomic) BOOL shouldSendData;
 
 
 @end
@@ -126,10 +128,15 @@
     return ([self currentSocketStatus] == SocketIOClientStatusConnected && [self sharedInstance].isAuthorized);
 }
 
++ (BOOL)isSendingData {
+    return [self sharedInstance].isSendingData;
+}
+
 + (void)startSocket {
     
-    [self sharedInstance].shouldStarted = YES;
+//    [self sharedInstance].shouldStarted = YES;
     
+    [self sharedInstance].isRunning = YES;
     switch ([self sharedInstance].socket.status) {
             
         case SocketIOClientStatusNotConnected:
@@ -159,13 +166,24 @@
 
 + (void)closeSocket {
     
-    [self sharedInstance].shouldStarted = NO;
-    [[self sharedInstance].socket disconnect];
+    STMSocketController *sc = [self sharedInstance];
     
+    if (sc.isRunning) {
+        
+        //    [self sharedInstance].shouldStarted = NO;
+        [sc.socket disconnect];
+        sc.socketUrl = nil;
+        sc.socket = nil;
+        sc.isSendingData = NO;
+        sc.isAuthorized = NO;
+        sc.isRunning = NO;
+
+    }
+
 }
 
 + (void)reconnectSocket {
-    [[self sharedInstance] reconectSocket];
+    [[self sharedInstance] reconnectSocket];
 }
 
 + (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
@@ -451,6 +469,7 @@
             if (isAuthorized) {
                 
                 [self sharedInstance].isAuthorized = YES;
+                [[self syncer] socketReceiveAuthorization];
                 
                 [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
                 
@@ -467,16 +486,18 @@
                     
                 }
                 
-                [self sendUnsyncedObjects:self];
+//                [self sendUnsyncedObjects:self];
                 
             } else {
                 
+                [self sharedInstance].isAuthorized = NO;
                 [[STMAuthController authController] logout];
 
             }
             
         } else {
             
+            [self sharedInstance].isAuthorized = NO;
             [[STMAuthController authController] logout];
 
         }
@@ -532,8 +553,8 @@
 
 + (void)sendFinished {
     
-    [[self syncer] sendFinished:self];
     [self sharedInstance].isSendingData = NO;
+    [[self syncer] sendFinished:self];
 
 }
 
@@ -560,7 +581,7 @@
     
     [nc addObserver:self
            selector:@selector(sessionStatusChanged:)
-               name:@"sessionStatusChanged"
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:nil];
 
     
@@ -582,7 +603,7 @@
         self.socketUrl = nil;
         
         if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
-            [self reconectSocket];
+            [self reconnectSocket];
         }
         
     }
@@ -809,9 +830,9 @@
         
         [self addEventObserversToSocket:socket];
         
-        if (self.shouldStarted) {
-            [socket connect];
-        }
+//        if (self.shouldStarted) {
+//            [socket connect];
+//        }
         
         _socket = socket;
         
@@ -820,14 +841,18 @@
     
 }
 
-- (void)reconectSocket {
+- (void)reconnectSocket {
+
+    [STMSocketController closeSocket];
     
-    [self.socket disconnect];
+//    [self.socket disconnect];
+//    
+//    self.socketUrl = nil;
+//    self.socket = nil;
     
-    self.socketUrl = nil;
-    self.socket = nil;
+    [STMSocketController startSocket];
     
-    [self socket];
+//    [self socket];
     
 }
 

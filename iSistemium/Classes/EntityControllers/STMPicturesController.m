@@ -890,7 +890,7 @@
                             __block STMSession *session = [STMSessionManager sharedManager].currentSession;
                             
                             [session.document saveDocument:^(BOOL success) {
-                                if (success) [session.syncer setSyncerState:STMSyncerSendDataOnce];
+//                                if (success) [session.syncer setSyncerState:STMSyncerSendDataOnce];
                             }];
                             
                         });

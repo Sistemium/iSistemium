@@ -241,7 +241,7 @@
             [STMSaleOrderController sharedInstance].processingDidChanged = NO;
             
             [[self document] saveDocument:^(BOOL success) {
-                if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+//                if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
             }];
             
         }];

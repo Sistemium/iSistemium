@@ -192,7 +192,10 @@
     if (self.wasChanged) {
 
         self.wasChanged = NO;
-        [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendDataOnce;
+        
+        [self.document saveDocument:^(BOOL success) {
+//            [STMSessionManager sharedManager].currentSession.syncer.syncerState = STMSyncerSendDataOnce;    
+        }];
         
     }
     

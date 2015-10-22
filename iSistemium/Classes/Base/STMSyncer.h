@@ -30,10 +30,12 @@
 - (void)nothingToSend;
 - (void)sendFinished:(id)sender;
 
-- (void)afterSendFurcation;
+//- (void)afterSendFurcation;
 
 - (NSArray *)unsyncedObjects;
 - (NSUInteger)numbersOfUnsyncedObjects;
+
+- (void)socketReceiveAuthorization;
 
 
 @end

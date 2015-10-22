@@ -323,12 +323,12 @@
             
             [self.document saveDocument:^(BOOL success) {
                 
-                if (success) {
-                    
-                    //            [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-                    self.syncer.syncerState = STMSyncerSendDataOnce;
-                    
-                }
+//                if (success) {
+//                    
+//                    //            [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+//                    self.syncer.syncerState = STMSyncerSendDataOnce;
+//                    
+//                }
                 
             }];
 
@@ -356,7 +356,7 @@
         }
         
         [self.document saveDocument:^(BOOL success) {
-            if (success) self.syncer.syncerState = STMSyncerSendDataOnce;
+//            if (success) self.syncer.syncerState = STMSyncerSendDataOnce;
         }];
 
     }
