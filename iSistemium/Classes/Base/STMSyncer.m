@@ -1656,6 +1656,21 @@
     
 }
 
+- (void)sendFinishedWithError:(NSString *)errorString {
+    
+    if (errorString) {
+        
+        self.syncing = NO;
+        self.syncerState = STMSyncerIdle;
+        
+    } else {
+        
+        [self sendFinished:self];
+        
+    }
+    
+}
+
 - (void)sendFinished:(id)sender {
     
     [self.document saveDocument:^(BOOL success) {
@@ -1676,6 +1691,13 @@
 
     }];
 
+}
+
+- (void)bunchOfObjectsSended {
+    
+    [self saveSendDate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"bunchOfObjectsSended" object:self];
+    
 }
 
 - (void)saveSendDate {

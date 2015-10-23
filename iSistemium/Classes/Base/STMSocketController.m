@@ -537,41 +537,53 @@
         
     }
     
-    if (!errorString) {
+    if (errorString) {
     
-        NSArray *dataArray = response[@"data"];
-
-        for (NSDictionary *datum in dataArray) {
-            [STMObjectsController syncObject:datum];
-        }
-
-    } else {
-        
         [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
         
         if ([[errorString.lowercaseString stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@"notauthorized"]) {
             [[STMAuthController authController] logout];
         }
-            
+
+    } else {
+
+        NSArray *dataArray = response[@"data"];
+        
+        for (NSDictionary *datum in dataArray) {
+            [STMObjectsController syncObject:datum];
+        }
+
     }
     
 //    NSLog(@"receiveEventDataAckWithData %@", data);
 
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-        [self performSelector:@selector(sendFinished) withObject:nil afterDelay:0];
+        [self performSelector:@selector(sendFinishedWithError:) withObject:errorString afterDelay:0];
     }];
     
 }
 
-+ (void)sendFinished {
++ (void)sendFinishedWithError:(NSString *)errorString {
     
-    if (![self haveToSyncObjects]) {
+    if (errorString) {
         
-        [self sharedInstance].isSendingData = NO;
-        [[self syncer] sendFinished:self];
-        
+        [[self syncer] sendFinishedWithError:errorString];
+
+    } else {
+
+        if ([self haveToSyncObjects]) {
+            
+            [[self syncer] bunchOfObjectsSended];
+            
+        } else {
+            
+            [self sharedInstance].isSendingData = NO;
+            [[self syncer] sendFinishedWithError:nil];
+
+        }
+
     }
-    
+
 }
 
 #pragma mark - instance methods

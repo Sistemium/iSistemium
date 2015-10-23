@@ -508,9 +508,12 @@
         _locationManager.distanceFilter = self.distanceFilter;
         _locationManager.desiredAccuracy = [self currentDesiredAccuracy];
         _locationManager.pausesLocationUpdatesAutomatically = NO;
-        if ([_locationManager respondsToSelector: @selector(allowsBackgroundLocationUpdates)]) {
+        
+        if ([_locationManager respondsToSelector:@selector(allowsBackgroundLocationUpdates)]) {
+            
             _locationManager.allowsBackgroundLocationUpdates = YES;
             NSLog(@"locationManager allowsBackgroundLocationUpdates set");
+            
         }
 
         NSString *logMessage = [NSString stringWithFormat:@"set desired accuracy to %f", _locationManager.desiredAccuracy];
@@ -552,6 +555,8 @@
     
     if (locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL &&
         self.currentAccuracy > 0) {
+        
+#warning - have to check [self currentTimeIsInsideOfScheduleLimits] method
         
         if ([self isAccuracySufficient] && [self currentTimeIsInsideOfScheduleLimits]) {
             

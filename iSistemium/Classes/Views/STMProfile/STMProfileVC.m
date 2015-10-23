@@ -956,7 +956,12 @@
            selector:@selector(updateSyncInfo)
                name:@"sendFinished"
              object:syncer];
-    
+
+    [nc addObserver:self
+           selector:@selector(updateSyncInfo)
+               name:@"bunchOfObjectsSended"
+             object:syncer];
+
     [nc addObserver:self
            selector:@selector(entityCountdownChange:)
                name:@"entityCountdownChange"
