@@ -555,10 +555,10 @@
     
     if (locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL &&
         self.currentAccuracy > 0) {
+
+        BOOL shouldSaveLocation = ([self.geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE] || [self currentTimeIsInsideOfScheduleLimits]);
         
-#warning - have to check [self currentTimeIsInsideOfScheduleLimits] method
-        
-        if ([self isAccuracySufficient] && [self currentTimeIsInsideOfScheduleLimits]) {
+        if ([self isAccuracySufficient] && shouldSaveLocation) {
             
             if (!self.getLocationsWithNegativeSpeed && newLocation.speed < 0) {
                 

@@ -177,21 +177,15 @@
 #pragma mark - tracker settings
 
 - (BOOL)trackerAutoStart {
-    
     return [[self.settings valueForKey:[NSString stringWithFormat:@"%@TrackerAutoStart", self.group]] boolValue];
-    
 }
 
 - (double)trackerStartTime {
-    
     return [[self.settings valueForKey:[NSString stringWithFormat:@"%@TrackerStartTime", self.group]] doubleValue];
-    
 }
 
 - (double)trackerFinishTime {
-    
     return [[self.settings valueForKey:[NSString stringWithFormat:@"%@TrackerFinishTime", self.group]] doubleValue];
-    
 }
 
 #pragma mark - timers
