@@ -260,6 +260,9 @@
     
     (self.currentTabsVCs)[index] = vc;
     
+    NSString *logMessage = [NSString stringWithFormat:@"didSelectViewController: %@", NSStringFromClass([vc class])];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
+
     [self showTabs];
     
 }
