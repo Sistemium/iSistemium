@@ -559,31 +559,39 @@
     
     NSMutableAttributedString *attributedText = nil;
     
-    if (position.articleFact) {
+    if (position.articleFact.name) {
         
-        attributedText = [[NSMutableAttributedString alloc] initWithString:[position.articleFact.name stringByAppendingString:@"\n"] attributes:attributes];
+        attributedText = [[NSMutableAttributedString alloc] initWithString:[(NSString * _Nonnull)position.articleFact.name stringByAppendingString:@"\n"]
+                                                                attributes:attributes];
         
-        font = [UIFont systemFontOfSize:font.pointSize - 4];
+        if (position.article.name) {
         
-        NSDictionary *attributes = @{NSForegroundColorAttributeName     : [UIColor blackColor],
-                                     NSStrikethroughStyleAttributeName  : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
-                                     NSFontAttributeName                : font};
-        
-        NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:position.article.name attributes:attributes];
-        
-        [attributedText appendAttributedString:appendString];
+            font = [UIFont systemFontOfSize:font.pointSize - 4];
+            
+            NSDictionary *attributes = @{NSForegroundColorAttributeName     : [UIColor blackColor],
+                                         NSStrikethroughStyleAttributeName  : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
+                                         NSFontAttributeName                : font};
+
+            NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:(NSString * _Nonnull)position.article.name
+                                                                               attributes:attributes];
+            
+            [attributedText appendAttributedString:appendString];
+
+        }
         
     } else {
         
         if (position.article.name) {
             
-            attributedText = [[NSMutableAttributedString alloc] initWithString:position.article.name attributes:attributes];
+            attributedText = [[NSMutableAttributedString alloc] initWithString:(NSString * _Nonnull)position.article.name
+                                                                    attributes:attributes];
             
         } else {
             
             attributes[NSForegroundColorAttributeName] = [UIColor redColor];
             
-            attributedText = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"UNKNOWN ARTICLE", nil) attributes:attributes];
+            attributedText = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"UNKNOWN ARTICLE", nil)
+                                                                    attributes:attributes];
             
         }
         

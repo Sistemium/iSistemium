@@ -656,7 +656,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
             
     }
         
-    if (article.extraLabel) [textsArray addObject:article.extraLabel];
+    if (article.extraLabel) [textsArray addObject:(NSString * _Nonnull)article.extraLabel];
 
     NSString *detailedText = [textsArray componentsJoinedByString:@", "];
     
@@ -1018,7 +1018,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     NSMutableArray *volumes = [NSMutableArray array];
     
     for (STMArticle *article in self.resultsController.fetchedObjects) {
-        [volumes addObject:article.pieceVolume];
+        if (article.pieceVolume) [volumes addObject:(NSDecimalNumber * _Nonnull)article.pieceVolume];
     }
     
     NSSet *volumesSet = [NSSet setWithArray:volumes];
