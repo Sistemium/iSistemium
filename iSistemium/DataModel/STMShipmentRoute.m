@@ -152,10 +152,16 @@
     NSString *bottlesString = (enableShowBottles) ? NSLocalizedString(@"_BOTTLES", nil) : NSLocalizedString(@"_PIECES", nil);
     
     NSString *bottlesCountString = [NSString stringWithFormat:@"%lu%@", (unsigned long)bottlesCount, bottlesString];
+
+    NSMutableArray *stringsArray = @[pointsString, shipmentsString, positionsString, boxesCountString, bottlesCountString].mutableCopy;
+
+    if (weight > 0) {
     
-    NSString *weightString = [NSString stringWithFormat:@"%.0f%@", weight, NSLocalizedString(@"_KG", nil)];
-    
-    NSArray *stringsArray = @[pointsString, shipmentsString, positionsString, boxesCountString, bottlesCountString, weightString];
+        NSString *weightString = [NSString stringWithFormat:@"%.0f%@", weight, NSLocalizedString(@"_KG", nil)];
+        [stringsArray addObject:weightString];
+
+    }
+
     NSString *planSummaryString = [stringsArray componentsJoinedByString:@" "];
     
     return planSummaryString;
