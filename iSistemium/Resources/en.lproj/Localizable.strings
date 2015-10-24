@@ -298,6 +298,8 @@
 "EMPTY POSITION VOLUMES MESSAGE" = "make shipping";
 "SHIPPING" = "Shipping";
 "SUMMARY CELL TITLE" = "Summary";
+"PLAN SUMMARY CELL TITLE" = "Plan summary";
+"DONE SUMMARY CELL TITLE" = "Done summary";
 "0BOXES" = "no boxes";
 "1BOXES" = "box";
 "2BOXES" = "boxes";

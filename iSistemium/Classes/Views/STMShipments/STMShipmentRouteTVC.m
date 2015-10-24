@@ -289,7 +289,7 @@
     
     switch (section) {
         case 0:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveIssuesInProcessedShipments]) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveProcessedShipments]) ? 3 : 2;
             break;
             
         case 1:
@@ -423,22 +423,28 @@
     
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
+    cell.accessoryType = UITableViewCellAccessoryNone;
 
     switch (indexPath.row) {
         case 0:
 
             cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
             cell.detailLabel.attributedText = [self detailTextForLabel:cell.detailLabel];
-            cell.accessoryType = UITableViewCellAccessoryNone;
         break;
             
         case 1:
-            cell.titleLabel.text = [self summaryCellTitle];
-            cell.detailLabel.text = [self summaryCellDetails];
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            self.summaryIndexPath = indexPath;
+            cell.titleLabel.text = [self planSummaryCellTitle];
+            cell.detailLabel.text = [self planSummaryCellDetails];
             break;
-            
+
+        case 2:
+            cell.titleLabel.text = [self doneSummaryCellTitle];
+            cell.detailLabel.text = [self doneSummaryCellDetails];
+            self.summaryIndexPath = indexPath;
+            if ([self haveIssuesInProcessedShipments])
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;
+
         default:
             break;
     }
@@ -491,16 +497,32 @@
     
 }
 
-- (NSString *)summaryCellTitle {
+- (NSString *)planSummaryCellTitle {
+    return [NSString stringWithFormat:@"%@", NSLocalizedString(@"PLAN SUMMARY CELL TITLE", nil)];
+}
+
+- (NSString *)planSummaryCellDetails {
+    
+//    0SRPOINTS
+    
+    NSString *pluralString = [STMFunctions pluralTypeForCount:self.route.shipmentRoutePoints.count];
+    NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SRPOINTS"], nil);
+    
+    
+    return [NSString stringWithFormat:@"%lu %@", (unsigned long)self.route.shipmentRoutePoints.count, pointsString];
+    
+}
+
+- (NSString *)doneSummaryCellTitle {
     
     NSString *pluralString = [STMFunctions pluralTypeForCount:[self shippedShipments].count];
     NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SHIPMENTS"], nil);
     
-    return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"SUMMARY CELL TITLE", nil), (unsigned long)[self shippedShipments].count, pointsString];
+    return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"DONE SUMMARY CELL TITLE", nil), (unsigned long)[self shippedShipments].count, pointsString];
     
 }
 
-- (NSString *)summaryCellDetails {
+- (NSString *)doneSummaryCellDetails {
     
     NSNumber *badVolume = [self badVolumeSummary];
     NSNumber *shortageVolume = [self shortageVolumeSummary];
@@ -519,6 +541,7 @@
     return (volumesString) ? [@"\n" stringByAppendingString:volumesString] : @"";
     
 }
+
 
 - (void)fillRoutePointCell:(STMCustom9TVCell *)cell atIndex:(NSUInteger)index {
     
