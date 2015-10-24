@@ -30,7 +30,7 @@
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
-@property (nonatomic, strong) NSIndexPath *summaryIndexPath;
+@property (nonatomic, strong) NSIndexPath *doneSummaryIndexPath;
 @property (nonatomic, strong) NSString *routeWorkflow;
 @property (nonatomic, strong) NSString *nextProcessing;
 
@@ -351,7 +351,7 @@
         case 2:
             cell.titleLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"DONE SUMMARY CELL TITLE", nil)];
             cell.detailLabel.text = [self.route doneSummary];
-            self.summaryIndexPath = indexPath;
+            self.doneSummaryIndexPath = indexPath;
             if ([self.route haveIssuesInProcessedShipments])
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
@@ -503,12 +503,12 @@
                 
             }
             
-        } else if (indexPath.row == 1) {
-            
-            [self performSegueWithIdentifier:@"showSummary" sender:self];
-            
         }
         
+    }
+    
+    if ([indexPath compare:self.doneSummaryIndexPath] == NSOrderedSame) {
+        [self performSegueWithIdentifier:@"showSummary" sender:self];
     }
     
 }
@@ -818,7 +818,7 @@
 
 - (void)reloadData {
     
-    if (self.summaryIndexPath) [self.cachedCellsHeights removeObjectForKey:self.summaryIndexPath];
+    if (self.doneSummaryIndexPath) [self.cachedCellsHeights removeObjectForKey:self.doneSummaryIndexPath];
 
     [self.tableView reloadData];
 

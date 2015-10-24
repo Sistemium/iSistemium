@@ -319,6 +319,7 @@
 "1PIECES" = "штука";
 "2PIECES" = "штуки";
 "5PIECES" = "штук";
+"_POINTS" = "т";
 "_SHIPMENTS" = "н";
 "_NEED_CASHING" = "и";
 "_POSITIONS" = "п";

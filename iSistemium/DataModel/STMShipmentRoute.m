@@ -13,6 +13,7 @@
 #import "STMFunctions.h"
 #import "STMNS.h"
 
+#import "STMObjectsController.h"
 #import "STMShippingProcessController.h"
 #import "STMShipmentRouteSummaryTVC.h"
 
@@ -21,31 +22,67 @@
 
 - (NSString *)planSummary {
     
-    NSString *pointsString = [self pointsCountStringForCount:self.shipmentRoutePoints.count];
-    NSString *shipmentsString = [self shipmentsCountStringForCount:0];
+    NSUInteger pointsCount = self.shipmentRoutePoints.count;
     
-    return @"";
+    if (pointsCount > 0) {
+    
+        NSSet *shipments = [self.shipmentRoutePoints valueForKeyPath:@"@distinctUnionOfSets.shipments"];
+        NSUInteger shipmentsCount = shipments.count;
+        
+        NSSet *positions = [shipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+        NSUInteger positionsCount = positions.count;
 
+        NSNumber *boxes = [shipments valueForKeyPath:@"@sum.approximateBoxCount"];
+        NSUInteger boxesCount = boxes.integerValue;
+        
+        NSNumber *bottles = [shipments valueForKeyPath:@"@sum.bottleCount"];
+        NSUInteger bottlesCount = bottles.integerValue;
+
+        return [self summaryForPointsCount:pointsCount
+                            shipmentsCount:shipmentsCount
+                            positionsCount:positionsCount
+                                boxesCount:boxesCount
+                              bottlesCount:bottlesCount];
+        
+    } else {
+        
+        return NSLocalizedString(@"0SRPOINTS", nil);
+        
+    }
+    
 }
 
 - (NSString *)doneSummary {
     
-    NSNumber *badVolume = [self badVolumeSummary];
-    NSNumber *shortageVolume = [self shortageVolumeSummary];
-    NSNumber *excessVolume = [self excessVolumeSummary];
-    NSNumber *regradeVolume = [self regradeVolumeSummary];
-    NSNumber *brokenVolume = [self brokenVolumeSummary];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ALL shipments.isShipped.boolValue == YES"];
     
-    NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:0
-                                                                                               badVolume:badVolume.integerValue
-                                                                                            excessVolume:excessVolume.integerValue
-                                                                                          shortageVolume:shortageVolume.integerValue
-                                                                                           regradeVolume:regradeVolume.integerValue
-                                                                                            brokenVolume:brokenVolume.integerValue
-                                                                                              packageRel:0];
+    NSSet *donePoints = [self.shipmentRoutePoints filteredSetUsingPredicate:predicate];
+    NSUInteger pointsCount = donePoints.count;
     
-    return (volumesString) ? [@"\n" stringByAppendingString:volumesString] : @"";
+    NSSet *shipments = [NSSet setWithArray:[self shippedShipments]];
+    NSUInteger shipmentsCount = shipments.count;
+    
+    NSSet *positions = [shipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    NSUInteger positionsCount = positions.count;
+    
+    NSNumber *boxes = [shipments valueForKeyPath:@"@sum.approximateBoxCount"];
+    NSUInteger boxesCount = boxes.integerValue;
+    
+    NSNumber *bottles = [shipments valueForKeyPath:@"@sum.bottleCount"];
+    NSUInteger bottlesCount = bottles.integerValue;
 
+    NSString *doneSummary = [self summaryForPointsCount:pointsCount
+                                         shipmentsCount:shipmentsCount
+                                         positionsCount:positionsCount
+                                             boxesCount:boxesCount
+                                           bottlesCount:bottlesCount];
+
+    if ([self haveIssuesInProcessedShipments]) {
+        doneSummary = [doneSummary stringByAppendingString:[self issuesSummary]];
+    }
+    
+    return doneSummary;
+    
 }
 
 - (NSArray *)shippedShipments {
@@ -91,6 +128,50 @@
     
 }
 
+- (NSString *)summaryForPointsCount:(NSUInteger)pointsCount shipmentsCount:(NSUInteger)shipmentsCount positionsCount:(NSUInteger)positionsCount boxesCount:(NSUInteger)boxesCount bottlesCount:(NSUInteger)bottlesCount {
+    
+    NSString *pointsString = [NSString stringWithFormat:@"%lu%@", (unsigned long)pointsCount, NSLocalizedString(@"_POINTS", nil)];
+    
+    NSString *shipmentsString = [NSString stringWithFormat:@"%lu%@", (unsigned long)shipmentsCount, NSLocalizedString(@"_SHIPMENTS", nil)];
+    
+    NSString *positionsString = [NSString stringWithFormat:@"%lu%@", (unsigned long)positionsCount, NSLocalizedString(@"_POSITIONS", nil)];
+    
+    NSString *boxesCountString = [NSString stringWithFormat:@"%lu%@ ", (unsigned long)boxesCount, NSLocalizedString(@"_BOXES", nil)];
+    
+    NSDictionary *appSettings = [[STMObjectsController session].settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+    
+    NSString *bottlesString = (enableShowBottles) ? NSLocalizedString(@"_BOTTLES", nil) : NSLocalizedString(@"_PIECES", nil);
+    
+    NSString *bottlesCountString = [NSString stringWithFormat:@"%lu%@", (unsigned long)bottlesCount, bottlesString];
+    
+    NSArray *stringsArray = @[pointsString, shipmentsString, positionsString, boxesCountString, bottlesCountString];
+    NSString *planSummaryString = [stringsArray componentsJoinedByString:@" "];
+    
+    return planSummaryString;
+
+}
+
+- (NSString *)issuesSummary {
+    
+    NSNumber *badVolume = [self badVolumeSummary];
+    NSNumber *shortageVolume = [self shortageVolumeSummary];
+    NSNumber *excessVolume = [self excessVolumeSummary];
+    NSNumber *regradeVolume = [self regradeVolumeSummary];
+    NSNumber *brokenVolume = [self brokenVolumeSummary];
+    
+    NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:0
+                                                                                               badVolume:badVolume.integerValue
+                                                                                            excessVolume:excessVolume.integerValue
+                                                                                          shortageVolume:shortageVolume.integerValue
+                                                                                           regradeVolume:regradeVolume.integerValue
+                                                                                            brokenVolume:brokenVolume.integerValue
+                                                                                              packageRel:0];
+    
+    return (volumesString) ? [@"\n\n" stringByAppendingString:volumesString] : @"";
+
+}
+
 - (NSString *)pointsCountStringForCount:(NSUInteger)pointsCount {
     
     if (pointsCount > 0) {
@@ -98,7 +179,7 @@
         NSString *pluralString = [STMFunctions pluralTypeForCount:pointsCount];
         NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SRPOINTS"], nil);
         
-        NSString *pointsCountString = [NSString stringWithFormat:@"\n%lu %@\n", (unsigned long)pointsCount, pointsString];
+        NSString *pointsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)pointsCount, pointsString];
         
         return pointsCountString;
 
@@ -117,7 +198,7 @@
         NSString *pluralString = [STMFunctions pluralTypeForCount:shipmentsCount];
         NSString *shipmentsString = NSLocalizedString([pluralString stringByAppendingString:@"SHIPMENTS"], nil);
         
-        NSString *shipmentsCountString = [NSString stringWithFormat:@"\n%lu %@\n", (unsigned long)shipmentsCount, shipmentsString];
+        NSString *shipmentsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)shipmentsCount, shipmentsString];
         
         return shipmentsCountString;
         
@@ -129,6 +210,8 @@
     
 }
 
+
+#pragma mark - volumes summary
 
 - (NSNumber *)badVolumeSummary {
     

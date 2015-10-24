@@ -319,6 +319,7 @@
 "1PIECES" = "piece";
 "2PIECES" = "pieces";
 "5PIECES" = "pieces";
+"_POINTS" = "p";
 "_SHIPMENTS" = "s";
 "_NEED_CASHING" = "c";
 "_POSITIONS" = "p";
