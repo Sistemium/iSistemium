@@ -144,7 +144,7 @@
     
     NSString *positionsString = [NSString stringWithFormat:@"%lu%@", (unsigned long)positionsCount, NSLocalizedString(@"_POSITIONS", nil)];
     
-    NSString *boxesCountString = [NSString stringWithFormat:@"%lu%@ ", (unsigned long)boxesCount, NSLocalizedString(@"_BOXES", nil)];
+    NSString *boxesCountString = [NSString stringWithFormat:@"%lu%@", (unsigned long)boxesCount, NSLocalizedString(@"_BOXES", nil)];
     
     NSDictionary *appSettings = [[STMObjectsController session].settingsController currentSettingsForGroup:@"appSettings"];
     BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
@@ -153,7 +153,7 @@
     
     NSString *bottlesCountString = [NSString stringWithFormat:@"%lu%@", (unsigned long)bottlesCount, bottlesString];
     
-    NSString *weightString = [NSString stringWithFormat:@"%.0f%@ ", weight, NSLocalizedString(@"_KG", nil)];
+    NSString *weightString = [NSString stringWithFormat:@"%.0f%@", weight, NSLocalizedString(@"_KG", nil)];
     
     NSArray *stringsArray = @[pointsString, shipmentsString, positionsString, boxesCountString, bottlesCountString, weightString];
     NSString *planSummaryString = [stringsArray componentsJoinedByString:@" "];
