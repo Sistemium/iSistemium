@@ -567,6 +567,7 @@
     
     if (errorString) {
         
+        [self sharedInstance].isSendingData = NO;
         [[self syncer] sendFinishedWithError:errorString];
 
     } else {
