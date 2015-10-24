@@ -326,6 +326,7 @@
 "_BOXES" = "bx";
 "_BOTTLES" = "bt";
 "_PIECES" = "pc";
+"_KG" = "kg";
 "DISTANCE_KM" = "km";
 "DISTANCE_M" = "m";
 "TIME_H" = "h";

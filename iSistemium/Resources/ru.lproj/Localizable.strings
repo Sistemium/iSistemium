@@ -326,6 +326,7 @@
 "_BOXES" = "к";
 "_BOTTLES" = "б";
 "_PIECES" = "шт";
+"_KG" = "кг";
 "DISTANCE_KM" = "км";
 "DISTANCE_M" = "м";
 "TIME_H" = "ч";

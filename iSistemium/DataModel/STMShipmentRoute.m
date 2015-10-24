@@ -38,11 +38,15 @@
         NSNumber *bottles = [shipments valueForKeyPath:@"@sum.bottleCount"];
         NSUInteger bottlesCount = bottles.integerValue;
 
+        NSNumber *pieceWeight = [positions valueForKeyPath:@"@sum.article.pieceWeight"];
+        double weight = pieceWeight.doubleValue;
+        
         return [self summaryForPointsCount:pointsCount
                             shipmentsCount:shipmentsCount
                             positionsCount:positionsCount
                                 boxesCount:boxesCount
-                              bottlesCount:bottlesCount];
+                              bottlesCount:bottlesCount
+                                    weight:weight];
         
     } else {
         
@@ -71,11 +75,15 @@
     NSNumber *bottles = [shipments valueForKeyPath:@"@sum.bottleCount"];
     NSUInteger bottlesCount = bottles.integerValue;
 
+    NSNumber *pieceWeight = [positions valueForKeyPath:@"@sum.article.pieceWeight"];
+    double weight = pieceWeight.doubleValue;
+
     NSString *doneSummary = [self summaryForPointsCount:pointsCount
                                          shipmentsCount:shipmentsCount
                                          positionsCount:positionsCount
                                              boxesCount:boxesCount
-                                           bottlesCount:bottlesCount];
+                                           bottlesCount:bottlesCount
+                                                 weight:weight];
 
     if ([self haveIssuesInProcessedShipments]) {
         doneSummary = [doneSummary stringByAppendingString:[self issuesSummary]];
@@ -128,7 +136,7 @@
     
 }
 
-- (NSString *)summaryForPointsCount:(NSUInteger)pointsCount shipmentsCount:(NSUInteger)shipmentsCount positionsCount:(NSUInteger)positionsCount boxesCount:(NSUInteger)boxesCount bottlesCount:(NSUInteger)bottlesCount {
+- (NSString *)summaryForPointsCount:(NSUInteger)pointsCount shipmentsCount:(NSUInteger)shipmentsCount positionsCount:(NSUInteger)positionsCount boxesCount:(NSUInteger)boxesCount bottlesCount:(NSUInteger)bottlesCount weight:(double)weight {
     
     NSString *pointsString = [NSString stringWithFormat:@"%lu%@", (unsigned long)pointsCount, NSLocalizedString(@"_POINTS", nil)];
     
@@ -145,7 +153,9 @@
     
     NSString *bottlesCountString = [NSString stringWithFormat:@"%lu%@", (unsigned long)bottlesCount, bottlesString];
     
-    NSArray *stringsArray = @[pointsString, shipmentsString, positionsString, boxesCountString, bottlesCountString];
+    NSString *weightString = [NSString stringWithFormat:@"%.0f%@ ", weight, NSLocalizedString(@"_KG", nil)];
+    
+    NSArray *stringsArray = @[pointsString, shipmentsString, positionsString, boxesCountString, bottlesCountString, weightString];
     NSString *planSummaryString = [stringsArray componentsJoinedByString:@" "];
     
     return planSummaryString;
