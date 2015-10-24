@@ -108,7 +108,7 @@
     
     [nc addObserver:self
            selector:@selector(sessionStatusChanged:)
-               name:@"sessionStatusChanged"
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:nil];
 
 }
@@ -619,12 +619,18 @@
 
 + (BOOL)isWaitingToSyncForObject:(NSManagedObject *)object {
     
-    BOOL isInSyncList = [[STMEntityController uploadableEntitiesNames] containsObject:object.entity.name];
+    if (object.entity.name) {
+        
+        BOOL isInSyncList = [[STMEntityController uploadableEntitiesNames] containsObject:(NSString * _Nonnull)object.entity.name];
+        
+        NSDate *lts = [object valueForKey:@"lts"];
+        NSDate *deviceTs = [object valueForKey:@"deviceTs"];
+        
+        return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
 
-    NSDate *lts = [object valueForKey:@"lts"];
-    NSDate *deviceTs = [object valueForKey:@"deviceTs"];
-    
-    return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
+    } else {
+        return NO;
+    }
     
 }
 
@@ -936,7 +942,7 @@
 //    dispatch_async(dispatch_get_main_queue(), ^{
     
         if ([object valueForKey:@"xid"]) {
-            [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
+            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
         }
         
 //    });
@@ -970,7 +976,7 @@
     [self removeObject:object];
     
     [self.document saveDocument:^(BOOL success) {
-        if (success) [self syncer].syncerState = STMSyncerSendDataOnce;
+//        if (success) [self syncer].syncerState = STMSyncerSendDataOnce;
     }];
 
     return recordStatus;
@@ -1255,9 +1261,13 @@
     }
     
     if (errorMessage) {
-        if (error) *error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier
-                                                code:1
-                                            userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+        
+        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
+        
+        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
+                                                            code:1
+                                                        userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+
     }
     
     return nil;
@@ -1302,9 +1312,9 @@
     
     NSString *errorMessage = nil;
     
-    if ([parameters isKindOfClass:[NSDictionary class]]) {
+    if ([parameters isKindOfClass:[NSDictionary class]] && parameters[@"entityName"] && [parameters[@"entityName"] isKindOfClass:[NSString class]]) {
         
-        NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:parameters[@"entityName"]];
+        NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:(NSString * _Nonnull)parameters[@"entityName"]];
         NSUInteger size = [parameters[@"size"] integerValue];
         NSString *orderBy = parameters[@"orderBy"];
         BOOL ascending = [[parameters[@"order"] lowercaseString] isEqualToString:@"asc"];
@@ -1349,9 +1359,11 @@
 
     if (errorMessage) {
         
-        if (error) *error = [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier]
-                                                code:0
-                                            userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
+        
+        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
+                                                            code:0
+                                                        userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
         
     }
     

@@ -7,13 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+
+#import "iSistemium-Swift.h"
+
 
 typedef NS_ENUM(NSInteger, STMSocketEvent) {
     STMSocketEventConnect,
     STMSocketEventStatusChange,
     STMSocketEventInfo,
     STMSocketEventAuthorization,
-    STMSocketEventRemoteCommands
+    STMSocketEventRemoteCommands,
+    STMSocketEventData
 };
 
 
@@ -23,7 +28,16 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 + (void)closeSocket;
 + (void)reconnectSocket;
 
-+ (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue;
++ (void)reloadResultsControllers;
 
++ (NSArray *)unsyncedObjects;
++ (NSUInteger)numbersOfUnsyncedObjects;
+
++ (void)sendEvent:(STMSocketEvent)event withValue:(id)value;
++ (void)sendUnsyncedObjects:(id)sender;
+
++ (SocketIOClientStatus)currentSocketStatus;
++ (BOOL)socketIsAvailable;
++ (BOOL)isSendingData;
 
 @end

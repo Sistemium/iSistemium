@@ -167,7 +167,11 @@
     STMShipmentRoutePoint *movedPoint = self.points[fromIndex];
     movedPoint.ord = @(toIndex + 1);
     
-    self.points = [self.points sortedArrayUsingDescriptors:[self.parentVC.parentVC shipmentRoutePointsSortDescriptors]];
+    NSArray *sortDescriptors = [self.parentVC.parentVC shipmentRoutePointsSortDescriptors];
+    
+    if (sortDescriptors) {
+        self.points = [self.points sortedArrayUsingDescriptors:(NSArray * _Nonnull)sortDescriptors];
+    }
     
     self.parentVC.points = self.points;
     

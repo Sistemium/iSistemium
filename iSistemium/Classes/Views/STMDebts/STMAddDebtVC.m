@@ -228,31 +228,33 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     
-    NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoMinTwoDigitFormatter];
-    
-    if ([textField isEqual:self.sumTextField]) {
+    if (textField.text) {
         
-        NSNumber *number = [numberFormatter numberFromString:textField.text];
-        textField.text = [numberFormatter stringFromNumber:number];
-
-        numberFormatter.numberStyle = NSNumberFormatterNoStyle;
-        NSString *decimalNumberString = [numberFormatter stringFromNumber:number];
-        NSDictionary *local = @{NSLocaleDecimalSeparator: numberFormatter.decimalSeparator};
+        NSNumberFormatter *numberFormatter = [STMFunctions decimalMaxTwoMinTwoDigitFormatter];
         
-        self.debtSum = [NSDecimalNumber decimalNumberWithString:decimalNumberString locale:local];
-
-    } else if ([textField isEqual:self.ndocTextField]) {
-        
-        self.debtNdoc = textField.text;
-        if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
-        
-    } else if ([textField isEqual:self.commentTextField]) {
-        
-        self.commentText = textField.text;
-        if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
-        
+        if ([textField isEqual:self.sumTextField]) {
+            
+            NSNumber *number = [numberFormatter numberFromString:(NSString * _Nonnull)textField.text];
+            textField.text = [numberFormatter stringFromNumber:number];
+            
+            numberFormatter.numberStyle = NSNumberFormatterNoStyle;
+            NSString *decimalNumberString = [numberFormatter stringFromNumber:number];
+            NSDictionary *local = @{NSLocaleDecimalSeparator: numberFormatter.decimalSeparator};
+            
+            self.debtSum = [NSDecimalNumber decimalNumberWithString:decimalNumberString locale:local];
+            
+        } else if ([textField isEqual:self.ndocTextField]) {
+            
+            self.debtNdoc = textField.text;
+            if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
+            
+        } else if ([textField isEqual:self.commentTextField]) {
+            
+            self.commentText = textField.text;
+            if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
+            
+        }
     }
-    
     
 }
 
@@ -355,10 +357,18 @@
 
 - (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
     
-    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
-    NSNumber *number = [numberFormatter numberFromString:textField.text];
-    
-    return [number boolValue];
+    if (textField.text) {
+        
+        NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+        NSNumber *number = [numberFormatter numberFromString:(NSString * _Nonnull)textField.text];
+        
+        return [number boolValue];
+
+    } else {
+        
+        return NO;
+        
+    }
     
 }
 

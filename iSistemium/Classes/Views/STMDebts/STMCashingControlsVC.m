@@ -363,7 +363,7 @@
     
     if ([textField isEqual:self.debtSummTextField]) {
         
-        NSNumber *number = [numberFormatter numberFromString:self.debtSummTextField.text];
+        NSNumber *number = [numberFormatter numberFromString:(NSString * _Nonnull)self.debtSummTextField.text];
 
         numberFormatter.numberStyle = NSNumberFormatterNoStyle;
         NSString *decimalNumberString = [numberFormatter stringFromNumber:number];
@@ -382,9 +382,9 @@
         numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
         self.debtSummTextField.text = [numberFormatter stringFromNumber:cashingSum];
         
-    } else if ([textField isEqual:self.cashingSummTextField]) {
-        
-        NSNumber *number = [numberFormatter numberFromString:self.cashingSummTextField.text];
+    } else if ([textField isEqual:self.cashingSummTextField] && self.cashingSummTextField.text) {
+
+        NSNumber *number = [numberFormatter numberFromString:(NSString * _Nonnull)self.cashingSummTextField.text];
         self.cashingSummTextField.text = [numberFormatter stringFromNumber:number];
 
         [STMCashingProcessController sharedInstance].cashingSummLimit = [NSDecimalNumber decimalNumberWithDecimal:[number decimalValue]];
@@ -489,10 +489,18 @@
 
 - (BOOL)isCorrectDebtSumValueForTextField:(UITextField *)textField {
     
-    NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
-    NSNumber *number = [numberFormatter numberFromString:textField.text];
-    
-    return [number boolValue];
+    if (textField.text) {
+        
+        NSNumberFormatter *numberFormatter = [STMFunctions decimalFormatter];
+        NSNumber *number = [numberFormatter numberFromString:(NSString * _Nonnull)textField.text];
+        
+        return [number boolValue];
+
+    } else {
+        
+        return NO;
+        
+    }
     
 }
 

@@ -238,6 +238,7 @@
 		2C646F6B1BCE69C00099F034 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5B1BCE69C00099F034 /* SocketTypes.swift */; settings = {ASSET_TAGS = (); }; };
 		2C646F6C1BCE69C00099F034 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5C1BCE69C00099F034 /* SwiftRegex.swift */; settings = {ASSET_TAGS = (); }; };
 		2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5D1BCE69C00099F034 /* WebSocket.swift */; settings = {ASSET_TAGS = (); }; };
+		2C646F701BCE96020099F034 /* STMShipmentRouteController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F6F1BCE96020099F034 /* STMShipmentRouteController.m */; settings = {ASSET_TAGS = (); }; };
 		2C6528F219576894008605D9 /* STMPartner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F119576894008605D9 /* STMPartner.m */; };
 		2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F419576894008605D9 /* STMCampaignPicture.m */; };
 		2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528FA19576894008605D9 /* STMLogMessage.m */; };
@@ -834,6 +835,8 @@
 		2C646F5B1BCE69C00099F034 /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		2C646F5C1BCE69C00099F034 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		2C646F5D1BCE69C00099F034 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		2C646F6E1BCE96020099F034 /* STMShipmentRouteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRouteController.h; sourceTree = "<group>"; };
+		2C646F6F1BCE96020099F034 /* STMShipmentRouteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRouteController.m; sourceTree = "<group>"; };
 		2C6528F019576894008605D9 /* STMPartner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPartner.h; sourceTree = "<group>"; };
 		2C6528F119576894008605D9 /* STMPartner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPartner.m; sourceTree = "<group>"; };
 		2C6528F319576894008605D9 /* STMCampaignPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaignPicture.h; sourceTree = "<group>"; };
@@ -1226,6 +1229,8 @@
 				2CCD06D21B4EC1CE002591C4 /* STMShippingProcessController.m */,
 				2C587AA31BB2D1AF00546A62 /* STMWorkflowController.h */,
 				2C587AA41BB2D1AF00546A62 /* STMWorkflowController.m */,
+				2C646F6E1BCE96020099F034 /* STMShipmentRouteController.h */,
+				2C646F6F1BCE96020099F034 /* STMShipmentRouteController.m */,
 			);
 			path = EntityControllers;
 			sourceTree = "<group>";
@@ -2009,6 +2014,7 @@
 				2C8EF5991940859F0021D202 /* Resources */,
 				18CFE10A922847BD8A0454E0 /* Copy Pods Resources */,
 				2C9D04B71ADE543200D0421D /* ShellScript */,
+				D6E46897797B3EED1FDCB411 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2259,6 +2265,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		D6E46897797B3EED1FDCB411 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2376,6 +2397,7 @@
 				2C140AC31A18D397002C5C17 /* STMUncashingPlace.m in Sources */,
 				2C4620571B67B349007FD646 /* STMVolumeTVCell.m in Sources */,
 				2C57642F1AA5EA6800B9FD2C /* STMInfoTableViewCell.m in Sources */,
+				2C646F701BCE96020099F034 /* STMShipmentRouteController.m in Sources */,
 				2C5764241AA5E1E500B9FD2C /* STMSelectPartnerTVC.m in Sources */,
 				2CFDD88A1A308B1C003515C5 /* STMCashingProcessController.m in Sources */,
 				2C57641D1AA5E1E500B9FD2C /* STMDebtsCombineVC.m in Sources */,
@@ -2570,6 +2592,7 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NULLABLE_TO_NONNULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -2614,6 +2637,7 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NULLABLE_TO_NONNULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -2658,7 +2682,7 @@
 				INFOPLIST_FILE = "iSistemium/iSistemium-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sistemium.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

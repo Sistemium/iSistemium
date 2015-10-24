@@ -125,7 +125,7 @@
 
         completionHandler(YES);
 
-//        double delayInSeconds = 1;
+//        double delayInSeconds = 3;
 //        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 //        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 //
@@ -136,7 +136,7 @@
 //            }];
 //            
 //        });
-//
+
     }
 
 }
@@ -230,7 +230,7 @@
     
     document.persistentStoreOptions = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
     
-    if (![[NSFileManager defaultManager] fileExistsAtPath:[document.fileURL path]]) {
+    if (document.fileURL.path && ![[NSFileManager defaultManager] fileExistsAtPath:(NSString * _Nonnull)document.fileURL.path]) {
 
         [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
             

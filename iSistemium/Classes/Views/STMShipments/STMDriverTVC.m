@@ -12,12 +12,15 @@
 
 #import "STMShipmentRouteTVC.h"
 
+#import "STMShipmentRouteController.h"
+#import "STMWorkflowController.h"
+
 
 @interface STMDriverTVC ()
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 @property (nonatomic, strong) NSString *cellIdentifier;
-
+@property (nonatomic, strong) NSString *shipmentRoutesWorkflow;
 
 @end
 
@@ -39,22 +42,20 @@
     
 }
 
+- (NSString *)shipmentRoutesWorkflow {
+    
+    if (!_shipmentRoutesWorkflow) {
+        _shipmentRoutesWorkflow = [STMWorkflowController workflowForEntityName:NSStringFromClass([STMShipmentRoute class])];
+    }
+    return _shipmentRoutesWorkflow;
+    
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
-        
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentRoute class])];
-        
-        NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
-        NSSortDescriptor *driverDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"driver.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        NSSortDescriptor *idDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:NO selector:@selector(compare:)];
-        
-        request.sortDescriptors = @[dateDescriptor, driverDescriptor, idDescriptor];
-        
-        request.predicate = [STMPredicate predicateWithNoFantoms];
-        
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-        
+
+        _resultsController = [STMShipmentRouteController sharedInstance].resultsController;
         _resultsController.delegate = self;
         
     }
@@ -127,6 +128,11 @@
     }
     
     cell.detailTextLabel.text = detailText;
+    
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:route.processing inWorkflow:self.shipmentRoutesWorkflow];
+    
+    cell.textLabel.textColor = processingColor;
+    cell.detailTextLabel.textColor = processingColor;
 
 }
 
@@ -194,11 +200,37 @@
 }
 
 
+#pragma mark - observers
+
+- (void)syncerGetBunchOfObjects:(NSNotification *)notification {
+    
+    if ([notification.userInfo[@"entityName"] isEqualToString:NSStringFromClass([STMEntity class])]) {
+        self.shipmentRoutesWorkflow = nil;
+    }
+
+}
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(syncerGetBunchOfObjects:)
+               name:NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS
+             object:[(STMSession *)[STMSessionManager sharedManager].currentSession syncer]];
+    
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [super customInit];
+    [self addObservers];
     [self performFetch];
     self.navigationItem.title = NSLocalizedString(@"SHIPMENT ROUTES", nil);
     

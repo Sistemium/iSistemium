@@ -260,6 +260,9 @@
     
     (self.currentTabsVCs)[index] = vc;
     
+    NSString *logMessage = [NSString stringWithFormat:@"didSelectViewController: %@", NSStringFromClass([vc class])];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
+
     [self showTabs];
     
 }
@@ -364,10 +367,14 @@
     
     for (NSDictionary *stcTab in stcTabs) {
         
-        NSMutableDictionary *tab = [stcTab mutableCopy];
-        tab[@"name"] = iPhoneTabsJSON[stcTab[@"name"]];
-        [iPhoneStcTabs addObject:tab];
-        
+        if (stcTab[@"name"]) {
+            
+            NSMutableDictionary *tab = [stcTab mutableCopy];
+            tab[@"name"] = iPhoneTabsJSON[(id _Nonnull)stcTab[@"name"]];
+            [iPhoneStcTabs addObject:tab];
+
+        }
+
     }
     
     return iPhoneStcTabs;
@@ -669,7 +676,7 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
 
     NSString *logMessage = [NSString stringWithFormat:@"didSelectViewController: %@", NSStringFromClass([viewController class])];
-    [STMSocketController sendEvent:STMSocketEventStatusChange withStringValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
 
 }
 
@@ -1011,7 +1018,7 @@
     
     [nc addObserver:self
            selector:@selector(sessionStatusChanged:)
-               name:@"sessionStatusChanged"
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:self.session];
 
 }

@@ -28,9 +28,16 @@
 - (void)receiveEntities:(NSArray *)entitiesNames;
 - (void)sendObjects:(NSDictionary *)parameters;
 
-- (void)afterSendFurcation;
+- (void)nothingToSend;
+- (void)bunchOfObjectsSended;
+- (void)sendFinishedWithError:(NSString *)errorString;
 
+//- (void)afterSendFurcation;
+
+- (NSArray *)unsyncedObjects;
 - (NSUInteger)numbersOfUnsyncedObjects;
+
+- (void)socketReceiveAuthorization;
 
 
 @end

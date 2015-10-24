@@ -72,7 +72,7 @@
     if (self) {
         
         [self addObservers];
-        [self performFetch];
+//        [self performFetch];
         
     }
     return self;
@@ -133,8 +133,12 @@
     
     if (!_s3keychainItem) {
         
-        NSString *bundleIdentifier = [@"S3." stringByAppendingString:[[NSBundle mainBundle] bundleIdentifier]];
-        _s3keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
+        if ([NSBundle mainBundle].bundleIdentifier) {
+        
+            NSString *bundleIdentifier = [@"S3." stringByAppendingString:(NSString * _Nonnull)[NSBundle mainBundle].bundleIdentifier];
+            _s3keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
+
+        }
         
     }
     
@@ -296,6 +300,8 @@
                                                                                        sectionNameKeyPath:nil
                                                                                                 cacheName:nil];
             _nonloadedPicturesResultsController.delegate = self;
+            
+            [_nonloadedPicturesResultsController performFetch:nil];
 
         } else {
             
@@ -308,14 +314,14 @@
     
 }
 
-- (void)performFetch {
-    
-    NSError *error;
-    if (![self.nonloadedPicturesResultsController performFetch:&error]) {
-        NSLog(@"unloadedPicturesResultsController fetch error: ", error.localizedDescription);
-    }
-
-}
+//- (void)performFetch {
+//    
+//    NSError *error;
+//    if (![self.nonloadedPicturesResultsController performFetch:&error]) {
+//        NSLog(@"unloadedPicturesResultsController fetch error: ", error.localizedDescription);
+//    }
+//
+//}
 
 - (NSArray *)photoEntitiesNames {
     
@@ -886,7 +892,7 @@
                             __block STMSession *session = [STMSessionManager sharedManager].currentSession;
                             
                             [session.document saveDocument:^(BOOL success) {
-                                if (success) [session.syncer setSyncerState:STMSyncerSendDataOnce];
+//                                if (success) [session.syncer setSyncerState:STMSyncerSendDataOnce];
                             }];
                             
                         });

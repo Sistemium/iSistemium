@@ -37,4 +37,13 @@
 
 #define TOOLBAR_HEIGHT 44
 
+#define GEOTRACKER_CONTROL_SHIPMENT_ROUTE @"ShipmentRoute"
+
+
+// Notification's names
+
+#define NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS @"syncerGetBunchOfObjects"
+#define NOTIFICATION_SESSION_STATUS_CHANGED @"sessionStatusChanged"
+
+
 #endif

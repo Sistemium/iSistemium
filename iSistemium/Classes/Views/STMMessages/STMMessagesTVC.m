@@ -421,7 +421,7 @@
     if (self.nextProcessing) self.workflowSelectedMessage.processing = self.nextProcessing;
     
     [self.document saveDocument:^(BOOL success) {
-        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+//        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
 
     NSIndexPath *messageIndexPath = [self.resultsController indexPathForObject:self.workflowSelectedMessage];

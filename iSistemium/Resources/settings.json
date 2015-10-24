@@ -89,6 +89,11 @@
       "group": "location",
       "data":
       [
+           {
+               "name": "geotrackerControl",
+               "value": "",
+               "control": "textField"
+           },
         {
           "name": "desiredAccuracy",
           "value": 0,

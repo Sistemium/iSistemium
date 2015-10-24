@@ -12,6 +12,9 @@
 #import "STMClientDataController.h"
 #import "STMObjectsController.h"
 #import "STMLocationController.h"
+#import "STMShipmentRouteController.h"
+#import "STMSocketController.h"
+
 
 #define ACTUAL_LOCATION_CHECK_TIME_INTERVAL 5.0
 
@@ -37,6 +40,8 @@
 @property (nonatomic) CLLocationDistance trackSeparationDistance;
 @property (nonatomic) CLLocationSpeed maxSpeedThreshold;
 
+@property (nonatomic, strong) NSString *geotrackerControl;
+
 @property (nonatomic) BOOL singlePointMode;
 @property (nonatomic) BOOL getLocationsWithNegativeSpeed;
 @property (nonatomic, strong) NSTimer *locationWaitingTimer;
@@ -61,6 +66,7 @@
     [super customInit];
     
     [self initAppStateObservers];
+    [self shipmentRoutesObservers];
     
 }
 
@@ -84,6 +90,21 @@
                name:@"appSettingsSettingsChanged"
              object:self.session];
     
+}
+
+- (void)shipmentRoutesObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver:self
+           selector:@selector(shipmentRouteProcessingChanged)
+               name:@"shipmentRouteProcessingChanged"
+             object:nil];
+    
+}
+
+- (void)shipmentRouteProcessingChanged {
+    [self checkTrackerAutoStart];
 }
 
 - (void)appStateDidChange {
@@ -156,7 +177,7 @@
 
 - (CLLocationAccuracy)currentDesiredAccuracy {
     
-    if ([self currentTimeIsInsideOfScheduleLimits]) {
+    if ([self.geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE] || [self currentTimeIsInsideOfScheduleLimits]) {
         
         UIApplicationState appState = [UIApplication sharedApplication].applicationState;
         
@@ -233,6 +254,10 @@
 
 - (BOOL)getLocationsWithNegativeSpeed {
     return [self.settings[@"getLocationsWithNegativeSpeed"] boolValue];
+}
+
+- (NSString *)geotrackerControl {
+    return self.settings[@"geotrackerControl"];
 }
 
 - (STMLocation *)lastLocationObject {
@@ -483,6 +508,13 @@
         _locationManager.distanceFilter = self.distanceFilter;
         _locationManager.desiredAccuracy = [self currentDesiredAccuracy];
         _locationManager.pausesLocationUpdatesAutomatically = NO;
+        
+        if ([_locationManager respondsToSelector:@selector(allowsBackgroundLocationUpdates)]) {
+            
+            _locationManager.allowsBackgroundLocationUpdates = YES;
+            NSLog(@"locationManager allowsBackgroundLocationUpdates set");
+            
+        }
 
         NSString *logMessage = [NSString stringWithFormat:@"set desired accuracy to %f", _locationManager.desiredAccuracy];
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
@@ -523,8 +555,10 @@
     
     if (locationAge < ACTUAL_LOCATION_CHECK_TIME_INTERVAL &&
         self.currentAccuracy > 0) {
+
+        BOOL shouldSaveLocation = ([self.geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE] || [self currentTimeIsInsideOfScheduleLimits]);
         
-        if ([self isAccuracySufficient] && [self currentTimeIsInsideOfScheduleLimits]) {
+        if ([self isAccuracySufficient] && shouldSaveLocation) {
             
             if (!self.getLocationsWithNegativeSpeed && newLocation.speed < 0) {
                 
@@ -657,23 +691,44 @@
         [self requestAuthorization:^(BOOL success) {
             
             if (success) {
-                
-                [self initTimers];
-                
-                if ([self currentDesiredAccuracy] != 0) {
+
+                if ([self.geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE]) {
                     
-                    if (!self.tracking) [self startTracking];
-                    [self updateDesiredAccuracy];
+                    NSUInteger startedRoutesCount = [STMShipmentRouteController routesWithProcessing:@"started"].count;
+                    
+                    if (startedRoutesCount > 0) {
+                        
+                        [self checkAccuracyToStartTracking];
+                        
+                    } else {
+                        
+                        if (self.tracking) [self stopTracking];
+                        
+                    }
                     
                 } else {
-                    
-                    if (self.tracking) [self stopTracking];
-                    
-                }
+                
+                    [self initTimers];
+                    [self checkAccuracyToStartTracking];
 
+                }
+                
             }
             
         }];
+        
+    } else {
+        if (self.tracking) [self stopTracking];
+    }
+
+}
+
+- (void)checkAccuracyToStartTracking {
+    
+    if ([self currentDesiredAccuracy] != 0) {
+        
+        if (!self.tracking) [self startTracking];
+        [self updateDesiredAccuracy];
         
     } else {
         
@@ -809,11 +864,7 @@
     NSLog(@"location %@", self.lastLocation);
     
     [self.document saveDocument:^(BOOL success) {
-        
-        if (success) {
-            //            NSLog(@"save newLocation success");
-        }
-        
+//        [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
 }
@@ -831,6 +882,9 @@
             NSLog(@"UPDATE LAST SEEN TIMESTAMP FOR LOCATION: %@", self.lastLocation);
             self.lastLocationObject.lastSeenAt = [NSDate date];
             
+            [self.document saveDocument:^(BOOL success) {
+            }];
+
         }
 
     }

@@ -650,35 +650,38 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
     
     __block STMSpinnerView *spinner = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
     [self.view addSubview:spinner];
-
-    [[[CLGeocoder alloc] init] geocodeAddressString:searchBar.text completionHandler:^(NSArray *placemarks, NSError *error) {
+    
+    if (searchBar.text) {
         
-        [spinner removeFromSuperview];
-        
-        if (!error) {
+        [[[CLGeocoder alloc] init] geocodeAddressString:(NSString * _Nonnull)searchBar.text completionHandler:^(NSArray *placemarks, NSError *error) {
             
-            [self.searchBar resignFirstResponder];
+            [spinner removeFromSuperview];
             
-            CLPlacemark *placemark = placemarks.firstObject;
-            [self addUserPinAtLocation:placemark.location];
-            [self.mapView showAnnotations:@[self.userPin] animated:YES];
-            
-        } else {
-            
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                                message:NSLocalizedString(@"ADDRESS GEOCODING FAILED", nil)
-                                                               delegate:nil
-                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                      otherButtonTitles:nil];
-                [alert show];
+            if (!error) {
                 
-            }];
+                [self.searchBar resignFirstResponder];
+                
+                CLPlacemark *placemark = placemarks.firstObject;
+                [self addUserPinAtLocation:placemark.location];
+                [self.mapView showAnnotations:@[self.userPin] animated:YES];
+                
+            } else {
+                
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                                    message:NSLocalizedString(@"ADDRESS GEOCODING FAILED", nil)
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                          otherButtonTitles:nil];
+                    [alert show];
+                    
+                }];
+                
+            }
             
-        }
-        
-    }];
+        }];
+    }
 
 }
 

@@ -159,11 +159,17 @@
         }
         
     }
+
+    [self updateSyncInfo];
+    
+}
+
+- (void)updateSyncInfo {
     
     [self updateSyncDatesLabels];
     [self updateCloudImages];
     [self updateNonloadedPicturesInfo];
-    
+
 }
 
 
@@ -289,8 +295,8 @@
 
 - (void)downloadCloudTapped {
     
-    [[self syncer] afterSendFurcation];
-//    [self syncer].syncerState = STMSyncerReceiveData;
+//    [[self syncer] afterSendFurcation];
+    [self syncer].syncerState = STMSyncerReceiveData;
     
 }
 
@@ -545,10 +551,10 @@
             alert.tag = 2;
             [alert show];
         
+            self.downloadAlertWasShown = YES;
+
         }];
         
-        self.downloadAlertWasShown = YES;
-
     }
     
 }
@@ -667,7 +673,10 @@
 
 - (void)settingsChanged:(NSNotification *)notification {
     
-    if ([@[@"locationTrackerAutoStart", @"blockIfNoLocationPermission", @"requestLocationServiceAuthorization"] containsObject:notification.userInfo.allKeys.firstObject]) {
+    id firstKey = notification.userInfo.allKeys.firstObject;
+    NSArray *observedSettings = @[@"locationTrackerAutoStart", @"blockIfNoLocationPermission", @"requestLocationServiceAuthorization"];
+    
+    if (firstKey && [observedSettings containsObject:firstKey]) {
         
         self.requestLocationServiceAuthorization = nil;
         
@@ -708,10 +717,17 @@
 
     if (![self.requestLocationServiceAuthorization isEqualToString:@"noRequest"]) {
 
+        BOOL isDriver = [[STMSettingsController stringValueForSettings:@"geotrackerControl" forGroup:@"location"] isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE];
+        
         self.lastLocationImageView.hidden = NO;
         [self setupLastLocationLabel];
         [self setupLocationTrackingStatusLabel];
-        [self setupMonitoringStatusLabel];
+        
+        if (isDriver) {
+            self.monitoringStatusLabel.text = @"";
+        } else {
+            [self setupMonitoringStatusLabel];
+        }
 
     } else {
         
@@ -753,7 +769,7 @@
         
         switch ([CLLocationManager authorizationStatus]) {
             case kCLAuthorizationStatusAuthorizedAlways:
-                color = [UIColor greenColor];
+                color = ([self locationTracker].tracking) ? [UIColor greenColor] : [UIColor lightGrayColor];
                 text = ([self locationTracker].tracking) ? NSLocalizedString(@"LOCATION IS TRACKING", nil) : NSLocalizedString(@"LOCATION IS NOT TRACKING", nil);
                 break;
                 
@@ -937,6 +953,16 @@
              object:syncer];
     
     [nc addObserver:self
+           selector:@selector(updateSyncInfo)
+               name:@"sendFinished"
+             object:syncer];
+
+    [nc addObserver:self
+           selector:@selector(updateSyncInfo)
+               name:@"bunchOfObjectsSended"
+             object:syncer];
+
+    [nc addObserver:self
            selector:@selector(entityCountdownChange:)
                name:@"entityCountdownChange"
              object:syncer];
@@ -953,13 +979,13 @@
     
     [nc addObserver:self
            selector:@selector(getBunchOfObjects:)
-               name:@"getBunchOfObjects"
+               name:NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS
              object:syncer];
     
     [nc addObserver:self
            selector:@selector(syncerDidChangeContent:)
                name:@"syncerDidChangeContent"
-             object:syncer];
+             object:nil];
     
     [nc addObserver:self
            selector:@selector(newAppVersionAvailable:)
@@ -1015,6 +1041,26 @@
            selector:@selector(settingsChanged:)
                name:@"locationSettingsChanged"
              object:nil];
+
+    [nc addObserver:self
+           selector:@selector(sessionStatusChanged)
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
+             object:nil];
+    
+}
+
+- (void)sessionStatusChanged {
+    
+    
+    if ([[[STMSessionManager sharedManager].currentSession status] isEqualToString:@"running"]) {
+    
+        [self updateCloudImages];
+        [self updateSyncDatesLabels];
+        [self setupNonloadedPicturesButton];
+        [self updateNonloadedPicturesInfo];
+
+//        self.downloadAlertWasShown = NO;
+    }
 
 }
 

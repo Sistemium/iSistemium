@@ -20,6 +20,7 @@
 #import "STMShippingProcessController.h"
 #import "STMWorkflowController.h"
 #import "STMEntityController.h"
+#import "STMShipmentRouteController.h"
 
 #import "STMReorderRoutePointsTVC.h"
 #import "STMWorkflowEditablesVC.h"
@@ -200,6 +201,38 @@
     return ([self shippedShipments].count > 0);
 }
 
+- (BOOL)haveIssuesInProcessedShipments {
+    
+    NSArray *shippedShipments = [self shippedShipments];
+    
+    NSArray *positions = [shippedShipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
+    
+    NSArray *availableTypes = @[@(STMSummaryTypeBad),
+                                @(STMSummaryTypeExcess),
+                                @(STMSummaryTypeShortage),
+                                @(STMSummaryTypeRegrade),
+                                @(STMSummaryTypeBroken)];
+    
+    NSUInteger issuesCount = 0;
+    
+    for (NSNumber *typeNumber in availableTypes) {
+        
+        STMSummaryType type = typeNumber.integerValue;
+        NSString *typeString = [STMShipmentRouteSummaryTVC stringVolumePropertyForType:type];
+        
+        NSString *predicateFormat = [typeString stringByAppendingString:@".integerValue > 0"];
+        NSPredicate *volumePredicate = [NSPredicate predicateWithFormat:predicateFormat];
+        
+        NSArray *filteredPositions = [positions filteredArrayUsingPredicate:volumePredicate];
+        
+        if (filteredPositions.count > 0) issuesCount++;
+        
+    }
+
+    return (issuesCount > 0);
+    
+}
+
 - (NSNumber *)badVolumeSummary {
     
     NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
@@ -256,7 +289,7 @@
     
     switch (section) {
         case 0:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveProcessedShipments]) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveIssuesInProcessedShipments]) ? 2 : 1;
             break;
             
         case 1:
@@ -619,42 +652,62 @@
     
     if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
         
-        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
-        
-        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
-                                                              didSelectButtonWithIndex:buttonIndex
-                                                                            inWorkflow:workflowAS.workflow];
-        
-        self.nextProcessing = result[@"nextProcessing"];
-        
-        if (self.nextProcessing) {
-            
-            NSArray *editableProperties = result[@"editableProperties"];
-            
-            if (editableProperties) {
-                
-                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
-                
-                editablesVC.workflow = workflowAS.workflow;
-                editablesVC.toProcessing = self.nextProcessing;
-                editablesVC.editableFields = editableProperties;
-                editablesVC.parent = self;
-                
-                [self presentViewController:editablesVC animated:YES completion:^{
-                    
-                }];
-                
-            } else {
-                
-                [self updateAndSyncAndReloadRootCell];
-                
-            }
-
-        }
+        [self workflowAS:(STMWorkflowAS *)actionSheet didDismissWithButtonIndex:buttonIndex];
         
     }
     
 }
+
+- (void)workflowAS:(STMWorkflowAS *)workflowAS didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                          didSelectButtonWithIndex:buttonIndex
+                                                                        inWorkflow:workflowAS.workflow];
+    
+    self.nextProcessing = result[@"nextProcessing"];
+    
+    if (self.nextProcessing) {
+        
+        NSString *startedProcessing = @"started";
+        
+        if ([self.nextProcessing isEqualToString:startedProcessing]) {
+            
+            NSArray *startedRoutes = [STMShipmentRouteController routesWithProcessing:startedProcessing];
+            
+            if (startedRoutes.count > 0) {
+
+                [self showUnfinishedRoutesAlert];
+                return;
+                
+            }
+            
+        }
+        
+        NSArray *editableProperties = result[@"editableProperties"];
+        
+        if (editableProperties) {
+            
+            STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+            
+            editablesVC.workflow = workflowAS.workflow;
+            editablesVC.toProcessing = self.nextProcessing;
+            editablesVC.editableFields = editableProperties;
+            editablesVC.parent = self;
+            
+            [self presentViewController:editablesVC animated:YES completion:^{
+                
+            }];
+            
+        } else {
+            
+            [self updateAndSyncAndReloadRootCell];
+            
+        }
+        
+    }
+
+}
+
 
 - (void)takeEditableValues:(NSDictionary *)editableValues {
     
@@ -674,14 +727,45 @@
 
 - (void)updateAndSyncAndReloadRootCell {
     
-    if (self.nextProcessing) self.route.processing = self.nextProcessing;
+    NSString *from = self.route.processing;
+    NSString *to = self.nextProcessing;
+    
+    if (to) self.route.processing = to;
     
     [self.document saveDocument:^(BOOL success) {
-        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
+//        if (success) [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
     NSIndexPath *routeIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     if (routeIndexPath) [self.tableView reloadRowsAtIndexPaths:@[routeIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+    
+    NSString *geotrackerControl = [STMSettingsController stringValueForSettings:@"geotrackerControl" forGroup:@"location"];
+    
+    if ([geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE]) {
+        
+        if ([@[from, to] containsObject:@"started"]) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"shipmentRouteProcessingChanged" object:self];
+            
+        }
+        
+    }
+
+}
+
+- (void)showUnfinishedRoutesAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                        message:NSLocalizedString(@"UNFINISHED ROUTES ALERT MESSAGE", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:nil];
+
+        [alert show];
+        
+    }];
     
 }
 

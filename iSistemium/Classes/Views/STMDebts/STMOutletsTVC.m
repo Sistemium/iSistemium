@@ -378,13 +378,35 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    // trying to find the crash cause https://fabric.io/sistemium2/ios/apps/com.sistemium.isistemium/issues/5614e30af5d3a7f76b9d7e9a
+    
+    if (!indexPath) {
+        CLSLog(@"!indexPath %@", indexPath);
+    }
+    
+    if (!self.cellIdentifier) {
+        CLSLog(@"!self.cellIdentifier %@", self.cellIdentifier);
+    }
+
     STMCustom7TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
+    if (!cell) {
+        CLSLog(@"!cell %@", cell);
+    }
+
     [self fillCell:cell atIndexPath:indexPath];
+    
+    if (!self.resultsController) {
+        CLSLog(@"!self.resultsController %@", self.resultsController);
+    }
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
 
-    if ([outlet isEqual:self.splitVC.detailVC.outlet]) {        
+    if (!outlet) {
+        CLSLog(@"!outlet %@", outlet);
+    }
+
+    if ([outlet isEqual:self.splitVC.detailVC.outlet]) {
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
 

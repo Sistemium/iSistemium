@@ -371,7 +371,9 @@
     cell.textLabel.text = info[@"value"];
     cell.detailTextLabel.text = info[@"detail"];
     
-    if ([key isEqualToString:self.parentVC.selectedPriceType.name] || [key isEqualToString:@"name"]) {
+    NSString *priceTypeName = self.parentVC.selectedPriceType.name;
+    
+    if ((priceTypeName && [key isEqualToString:(NSString * _Nonnull)priceTypeName]) || [key isEqualToString:@"name"]) {
         [self boldFontForCell:cell];
     } else {
         [self regularFontForCell:cell];

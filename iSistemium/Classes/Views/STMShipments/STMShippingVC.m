@@ -646,7 +646,16 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
             case NSFetchedResultsChangeMove: {
 
                 [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
-                [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationNone];
+
+                NSArray *visibleRows = [self.tableView indexPathsForVisibleRows];
+                
+                if (visibleRows) {
+                    
+                    [self.tableView reloadRowsAtIndexPaths:(NSArray * _Nonnull)visibleRows
+                                          withRowAnimation:UITableViewRowAnimationNone];
+                    
+                }
+                
                 break;
             }
                 

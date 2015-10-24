@@ -24,7 +24,13 @@
 
 + (STMEntityDescription *)entityForName:(NSString *)entityName inManagedObjectContext:(NSManagedObjectContext *)context {
     
-    if (!context) {
+    if (context) {
+        
+        NSString *eName = [NSString stringWithFormat:@"%@", entityName];
+        
+        return (STMEntityDescription *)[super entityForName:eName inManagedObjectContext:context];
+        
+    } else {
         
         STMDocument *document = [[[STMSessionManager sharedManager] currentSession] document];
         
@@ -33,13 +39,11 @@
         CLS_LOG(@"documentState %lu", (unsigned long)document.documentState);
         CLS_LOG(@"managedObjectContext %@", document.managedObjectContext);
         CLS_LOG(@"parentContext %@", document.managedObjectContext.parentContext);
+
+        return nil;
         
     }
-    
-    NSString *eName = [NSString stringWithFormat:@"%@", entityName];
-    
-    return (STMEntityDescription *)[super entityForName:eName inManagedObjectContext:context];
-    
+
 }
 
 @end

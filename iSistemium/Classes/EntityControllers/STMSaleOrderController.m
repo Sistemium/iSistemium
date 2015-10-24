@@ -118,7 +118,9 @@
     
     for (NSString *key in workflow.allKeys) {
         
-        if ([label isEqualToString:workflow[key][@"label"]]) {
+        NSString *keyLabel = workflow[key][@"label"];
+        
+        if (keyLabel && [label isEqualToString:(NSString * _Nonnull)keyLabel]) {
             return key;
         }
         
@@ -239,7 +241,7 @@
             [STMSaleOrderController sharedInstance].processingDidChanged = NO;
             
             [[self document] saveDocument:^(BOOL success) {
-                if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+//                if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
             }];
             
         }];

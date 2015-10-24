@@ -225,7 +225,7 @@
     if (_status != status) {
         
         _status = status;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionStatusChanged" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SESSION_STATUS_CHANGED object:self];
         [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Session #%@ status changed to %@", self.uid, self.status] type:nil];
         
     }

@@ -77,12 +77,16 @@
         
         if (IPAD) {
             
-            CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
-            
-            [self.actionSheetPopover presentPopoverFromRect:rect
-                                                     inView:self.tabBarController.view
-                                   permittedArrowDirections:UIPopoverArrowDirectionAny
-                                                   animated:YES];
+            if (self.tabBarController.view) {
+                
+                CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+                
+                [self.actionSheetPopover presentPopoverFromRect:rect
+                                                         inView:(UIView * _Nonnull)self.tabBarController.view
+                                       permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                       animated:YES];
+
+            }
             
         } else if (IPHONE) {
             

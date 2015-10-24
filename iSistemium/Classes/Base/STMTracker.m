@@ -49,7 +49,7 @@
     
     [nc addObserver:self
            selector:@selector(sessionStatusChanged:)
-               name:@"sessionStatusChanged"
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:self.session];
     
     [nc addObserver:self
@@ -78,7 +78,7 @@
 
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sessionStatusChanged" object:self.session];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_SESSION_STATUS_CHANGED object:self.session];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@SettingsChanged", self.group] object:self.session];
     
 }
@@ -128,7 +128,7 @@
 
 - (void)trackerSettingsChanged:(NSNotification *)notification {
     
-    if (notification.object == self.session) [self.settings addEntriesFromDictionary:notification.userInfo];
+    if (notification.object == self.session && notification.userInfo) [self.settings addEntriesFromDictionary:(NSDictionary * _Nonnull)notification.userInfo];
 
 }
 
@@ -177,21 +177,15 @@
 #pragma mark - tracker settings
 
 - (BOOL)trackerAutoStart {
-    
     return [[self.settings valueForKey:[NSString stringWithFormat:@"%@TrackerAutoStart", self.group]] boolValue];
-    
 }
 
 - (double)trackerStartTime {
-    
     return [[self.settings valueForKey:[NSString stringWithFormat:@"%@TrackerStartTime", self.group]] doubleValue];
-    
 }
 
 - (double)trackerFinishTime {
-    
     return [[self.settings valueForKey:[NSString stringWithFormat:@"%@TrackerFinishTime", self.group]] doubleValue];
-    
 }
 
 #pragma mark - timers

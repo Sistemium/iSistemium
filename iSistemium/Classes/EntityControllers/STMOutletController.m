@@ -24,7 +24,7 @@
     outlet.isFantom = @NO;
     
     [[self document] saveDocument:^(BOOL success) {
-        if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
+//        if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];
     }];
     
 //    NSLog(@"outlet %@", outlet);

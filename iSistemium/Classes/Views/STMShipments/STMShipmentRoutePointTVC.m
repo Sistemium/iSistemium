@@ -1211,6 +1211,10 @@
         [self.tableView reloadRowsAtIndexPaths:@[self.pointNumberCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
     }
     
+    [self.document saveDocument:^(BOOL success) {
+//        [self.session.syncer setSyncerState:STMSyncerSendDataOnce];
+    }];
+    
     [self hideOrdPicker];
     
 }
