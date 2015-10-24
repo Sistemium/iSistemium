@@ -2,8 +2,8 @@
 //  STMArticle.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 19/07/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 24/10/15.
+//  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
 #import "STMArticle.h"
@@ -15,23 +15,8 @@
 #import "STMShipmentPosition.h"
 #import "STMStock.h"
 
-
 @implementation STMArticle
 
-@dynamic code;
-@dynamic extraLabel;
-@dynamic factor;
-@dynamic name;
-@dynamic packageRel;
-@dynamic pieceVolume;
-@dynamic price;
-@dynamic articleGroup;
-@dynamic campaigns;
-@dynamic pictures;
-@dynamic prices;
-@dynamic saleOrderPositions;
-@dynamic shipmentPositions;
-@dynamic stock;
-@dynamic factShipmentPositions;
+// Insert code here to add functionality to your managed object subclass
 
 @end
