@@ -233,51 +233,6 @@
     
 }
 
-- (NSNumber *)badVolumeSummary {
-    
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.badVolume"];
-    
-    return volume;
-    
-}
-
-- (NSNumber *)shortageVolumeSummary {
-
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.shortageVolume"];
-    
-    return volume;
-
-}
-
-- (NSNumber *)excessVolumeSummary {
-    
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.excessVolume"];
-    
-    return volume;
-
-}
-
-- (NSNumber *)regradeVolumeSummary {
-
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.regradeVolume"];
-    
-    return volume;
-
-}
-
-- (NSNumber *)brokenVolumeSummary {
-    
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.brokenVolume"];
-    
-    return volume;
-    
-}
-
 
 #pragma mark - table view data
 
@@ -433,13 +388,13 @@
         break;
             
         case 1:
-            cell.titleLabel.text = [self planSummaryCellTitle];
-            cell.detailLabel.text = [self planSummaryCellDetails];
+            cell.titleLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"PLAN SUMMARY CELL TITLE", nil)];
+            cell.detailLabel.text = [self.route planSummary];
             break;
 
         case 2:
-            cell.titleLabel.text = [self doneSummaryCellTitle];
-            cell.detailLabel.text = [self doneSummaryCellDetails];
+            cell.titleLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"DONE SUMMARY CELL TITLE", nil)];
+            cell.detailLabel.text = [self.route doneSummary];
             self.summaryIndexPath = indexPath;
             if ([self haveIssuesInProcessedShipments])
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -496,52 +451,6 @@
     return detailText;
     
 }
-
-- (NSString *)planSummaryCellTitle {
-    return [NSString stringWithFormat:@"%@", NSLocalizedString(@"PLAN SUMMARY CELL TITLE", nil)];
-}
-
-- (NSString *)planSummaryCellDetails {
-    
-//    0SRPOINTS
-    
-    NSString *pluralString = [STMFunctions pluralTypeForCount:self.route.shipmentRoutePoints.count];
-    NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SRPOINTS"], nil);
-    
-    
-    return [NSString stringWithFormat:@"%lu %@", (unsigned long)self.route.shipmentRoutePoints.count, pointsString];
-    
-}
-
-- (NSString *)doneSummaryCellTitle {
-    
-    NSString *pluralString = [STMFunctions pluralTypeForCount:[self shippedShipments].count];
-    NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SHIPMENTS"], nil);
-    
-    return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"DONE SUMMARY CELL TITLE", nil), (unsigned long)[self shippedShipments].count, pointsString];
-    
-}
-
-- (NSString *)doneSummaryCellDetails {
-    
-    NSNumber *badVolume = [self badVolumeSummary];
-    NSNumber *shortageVolume = [self shortageVolumeSummary];
-    NSNumber *excessVolume = [self excessVolumeSummary];
-    NSNumber *regradeVolume = [self regradeVolumeSummary];
-    NSNumber *brokenVolume = [self brokenVolumeSummary];
-    
-    NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:0
-                                                                                               badVolume:badVolume.integerValue
-                                                                                            excessVolume:excessVolume.integerValue
-                                                                                          shortageVolume:shortageVolume.integerValue
-                                                                                           regradeVolume:regradeVolume.integerValue
-                                                                                            brokenVolume:brokenVolume.integerValue
-                                                                                              packageRel:0];
-    
-    return (volumesString) ? [@"\n" stringByAppendingString:volumesString] : @"";
-    
-}
-
 
 - (void)fillRoutePointCell:(STMCustom9TVCell *)cell atIndex:(NSUInteger)index {
     
