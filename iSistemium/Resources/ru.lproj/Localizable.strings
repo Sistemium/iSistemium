@@ -207,7 +207,7 @@
 "MONITORING WILL TRACKING AT" = "Мониторинг остановлен до";
 "LOCATION IS NOT TRACKING" = "Геолокация остановлена";
 "LOCATION SHOULD NOT BE TRACKING BUT GOING ON" = "Геолокация не выключилась по расписанию";
-"CHECK ROLES" = "Проверка ролей";
+"CHECK ROLES" = "Авторизация";
 "CAN NOT GET ROLES" = "Не могу получить роли. Повторить попытку?";
 "YES" = "Да";
 "NO" = "Нет";
@@ -236,7 +236,7 @@
 "CATALOG SETTINGS" = "Настройки каталога";
 "PRICE_" = "Цены";
 "STOCK_" = "Остатки";
-"ROLES REQUEST ERROR" = "Ошибка проверки ролей: ";
+"ROLES REQUEST ERROR" = "Ошибка авторизации: ";
 "SHIPMENT ROUTES" = "Маршруты";
 "SHIPMENT ROUTE POINTS" = "Точки маршрута";
 "0SRPOINTS" = "нет точек";
