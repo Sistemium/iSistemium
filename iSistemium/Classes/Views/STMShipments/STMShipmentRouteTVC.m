@@ -30,7 +30,7 @@
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
-@property (nonatomic, strong) NSIndexPath *summaryIndexPath;
+@property (nonatomic, strong) NSIndexPath *doneSummaryIndexPath;
 @property (nonatomic, strong) NSString *routeWorkflow;
 @property (nonatomic, strong) NSString *nextProcessing;
 
@@ -185,97 +185,8 @@
     
 }
 
-
-- (NSArray *)shippedShipments {
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue == YES"];
-    
-    NSArray *shipments = [self.resultsController.fetchedObjects valueForKeyPath:@"@distinctUnionOfSets.shipments"];
-    shipments = [shipments filteredArrayUsingPredicate:predicate];
-
-    return shipments;
-    
-}
-
 - (BOOL)haveProcessedShipments {
-    return ([self shippedShipments].count > 0);
-}
-
-- (BOOL)haveIssuesInProcessedShipments {
-    
-    NSArray *shippedShipments = [self shippedShipments];
-    
-    NSArray *positions = [shippedShipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    
-    NSArray *availableTypes = @[@(STMSummaryTypeBad),
-                                @(STMSummaryTypeExcess),
-                                @(STMSummaryTypeShortage),
-                                @(STMSummaryTypeRegrade),
-                                @(STMSummaryTypeBroken)];
-    
-    NSUInteger issuesCount = 0;
-    
-    for (NSNumber *typeNumber in availableTypes) {
-        
-        STMSummaryType type = typeNumber.integerValue;
-        NSString *typeString = [STMShipmentRouteSummaryTVC stringVolumePropertyForType:type];
-        
-        NSString *predicateFormat = [typeString stringByAppendingString:@".integerValue > 0"];
-        NSPredicate *volumePredicate = [NSPredicate predicateWithFormat:predicateFormat];
-        
-        NSArray *filteredPositions = [positions filteredArrayUsingPredicate:volumePredicate];
-        
-        if (filteredPositions.count > 0) issuesCount++;
-        
-    }
-
-    return (issuesCount > 0);
-    
-}
-
-- (NSNumber *)badVolumeSummary {
-    
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.badVolume"];
-    
-    return volume;
-    
-}
-
-- (NSNumber *)shortageVolumeSummary {
-
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.shortageVolume"];
-    
-    return volume;
-
-}
-
-- (NSNumber *)excessVolumeSummary {
-    
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.excessVolume"];
-    
-    return volume;
-
-}
-
-- (NSNumber *)regradeVolumeSummary {
-
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.regradeVolume"];
-    
-    return volume;
-
-}
-
-- (NSNumber *)brokenVolumeSummary {
-    
-    NSArray *positions = [[self shippedShipments] valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    NSNumber *volume = [positions valueForKeyPath:@"@sum.brokenVolume"];
-    
-    return volume;
-    
+    return ([self.route shippedShipments].count > 0);
 }
 
 
@@ -289,7 +200,7 @@
     
     switch (section) {
         case 0:
-            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveIssuesInProcessedShipments]) ? 2 : 1;
+            return ([self.splitVC isMasterNCForViewController:self]) ? 0 : ([self haveProcessedShipments]) ? 3 : 2;
             break;
             
         case 1:
@@ -423,22 +334,28 @@
     
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
+    cell.accessoryType = UITableViewCellAccessoryNone;
 
     switch (indexPath.row) {
         case 0:
 
             cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
             cell.detailLabel.attributedText = [self detailTextForLabel:cell.detailLabel];
-            cell.accessoryType = UITableViewCellAccessoryNone;
         break;
             
         case 1:
-            cell.titleLabel.text = [self summaryCellTitle];
-            cell.detailLabel.text = [self summaryCellDetails];
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            self.summaryIndexPath = indexPath;
+            cell.titleLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"PLAN SUMMARY CELL TITLE", nil)];
+            cell.detailLabel.text = [self.route planSummary];
             break;
-            
+
+        case 2:
+            cell.titleLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"DONE SUMMARY CELL TITLE", nil)];
+            cell.detailLabel.text = [self.route doneSummary];
+            self.doneSummaryIndexPath = indexPath;
+            if ([self.route haveIssuesInProcessedShipments])
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;
+
         default:
             break;
     }
@@ -488,35 +405,6 @@
     }
     
     return detailText;
-    
-}
-
-- (NSString *)summaryCellTitle {
-    
-    NSString *pluralString = [STMFunctions pluralTypeForCount:[self shippedShipments].count];
-    NSString *pointsString = NSLocalizedString([pluralString stringByAppendingString:@"SHIPMENTS"], nil);
-    
-    return [NSString stringWithFormat:@"%@ (%lu %@)", NSLocalizedString(@"SUMMARY CELL TITLE", nil), (unsigned long)[self shippedShipments].count, pointsString];
-    
-}
-
-- (NSString *)summaryCellDetails {
-    
-    NSNumber *badVolume = [self badVolumeSummary];
-    NSNumber *shortageVolume = [self shortageVolumeSummary];
-    NSNumber *excessVolume = [self excessVolumeSummary];
-    NSNumber *regradeVolume = [self regradeVolumeSummary];
-    NSNumber *brokenVolume = [self brokenVolumeSummary];
-    
-    NSString *volumesString = [[STMShippingProcessController sharedInstance] volumesStringWithDoneVolume:0
-                                                                                               badVolume:badVolume.integerValue
-                                                                                            excessVolume:excessVolume.integerValue
-                                                                                          shortageVolume:shortageVolume.integerValue
-                                                                                           regradeVolume:regradeVolume.integerValue
-                                                                                            brokenVolume:brokenVolume.integerValue
-                                                                                              packageRel:0];
-    
-    return (volumesString) ? [@"\n" stringByAppendingString:volumesString] : @"";
     
 }
 
@@ -615,12 +503,12 @@
                 
             }
             
-        } else if (indexPath.row == 1) {
-            
-            [self performSegueWithIdentifier:@"showSummary" sender:self];
-            
         }
         
+    }
+    
+    if ([indexPath compare:self.doneSummaryIndexPath] == NSOrderedSame) {
+        [self performSegueWithIdentifier:@"showSummary" sender:self];
     }
     
 }
@@ -930,7 +818,7 @@
 
 - (void)reloadData {
     
-    if (self.summaryIndexPath) [self.cachedCellsHeights removeObjectForKey:self.summaryIndexPath];
+    if (self.doneSummaryIndexPath) [self.cachedCellsHeights removeObjectForKey:self.doneSummaryIndexPath];
 
     [self.tableView reloadData];
 

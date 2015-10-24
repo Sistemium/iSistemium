@@ -123,6 +123,8 @@
         
     }
     
+    detailText = [route planSummary];
+    
     if (!self.driver && route.driver.name) {
         detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@", %@", route.driver.name]];
     }
