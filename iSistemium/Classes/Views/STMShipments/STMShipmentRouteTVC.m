@@ -185,52 +185,8 @@
     
 }
 
-
-- (NSArray *)shippedShipments {
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue == YES"];
-    
-    NSArray *shipments = [self.resultsController.fetchedObjects valueForKeyPath:@"@distinctUnionOfSets.shipments"];
-    shipments = [shipments filteredArrayUsingPredicate:predicate];
-
-    return shipments;
-    
-}
-
 - (BOOL)haveProcessedShipments {
-    return ([self shippedShipments].count > 0);
-}
-
-- (BOOL)haveIssuesInProcessedShipments {
-    
-    NSArray *shippedShipments = [self shippedShipments];
-    
-    NSArray *positions = [shippedShipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
-    
-    NSArray *availableTypes = @[@(STMSummaryTypeBad),
-                                @(STMSummaryTypeExcess),
-                                @(STMSummaryTypeShortage),
-                                @(STMSummaryTypeRegrade),
-                                @(STMSummaryTypeBroken)];
-    
-    NSUInteger issuesCount = 0;
-    
-    for (NSNumber *typeNumber in availableTypes) {
-        
-        STMSummaryType type = typeNumber.integerValue;
-        NSString *typeString = [STMShipmentRouteSummaryTVC stringVolumePropertyForType:type];
-        
-        NSString *predicateFormat = [typeString stringByAppendingString:@".integerValue > 0"];
-        NSPredicate *volumePredicate = [NSPredicate predicateWithFormat:predicateFormat];
-        
-        NSArray *filteredPositions = [positions filteredArrayUsingPredicate:volumePredicate];
-        
-        if (filteredPositions.count > 0) issuesCount++;
-        
-    }
-
-    return (issuesCount > 0);
-    
+    return ([self.route shippedShipments].count > 0);
 }
 
 
@@ -396,7 +352,7 @@
             cell.titleLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"DONE SUMMARY CELL TITLE", nil)];
             cell.detailLabel.text = [self.route doneSummary];
             self.summaryIndexPath = indexPath;
-            if ([self haveIssuesInProcessedShipments])
+            if ([self.route haveIssuesInProcessedShipments])
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
 

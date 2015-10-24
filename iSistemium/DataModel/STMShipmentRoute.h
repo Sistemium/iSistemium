@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)planSummary;
 - (NSString *)doneSummary;
+- (NSArray *)shippedShipments;
+- (BOOL)haveIssuesInProcessedShipments;
 
 
 @end
