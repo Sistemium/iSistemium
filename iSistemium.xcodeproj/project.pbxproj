@@ -94,6 +94,9 @@
 		2C29496F1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29496C1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
 		2C2949701BDB7E6E0099F24F /* STMShipmentRoute.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29496E1BDB7E6E0099F24F /* STMShipmentRoute.m */; settings = {ASSET_TAGS = (); }; };
 		2C2949721BDCD0390099F24F /* No connection Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949711BDCD0390099F24F /* No connection Cloud-100.png */; settings = {ASSET_TAGS = (); }; };
+		2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */; settings = {ASSET_TAGS = (); }; };
+		2C29497A1BDCFC110099F24F /* STMPhotoReports.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */; settings = {ASSET_TAGS = (); }; };
+		2C29497C1BDCFF800099F24F /* photoReports.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C29497B1BDCFF800099F24F /* photoReports.png */; settings = {ASSET_TAGS = (); }; };
 		2C2957991B400FD600A2D163 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2957981B400FD600A2D163 /* plus.png */; };
 		2C29579C1B40333600A2D163 /* STMShippingLocationPicturesPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */; };
 		2C29579F1B40335C00A2D163 /* STMShippingLocationPictureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579E1B40335C00A2D163 /* STMShippingLocationPictureVC.m */; };
@@ -581,6 +584,10 @@
 		2C29496D1BDB7E6E0099F24F /* STMShipmentRoute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRoute.h; sourceTree = "<group>"; };
 		2C29496E1BDB7E6E0099F24F /* STMShipmentRoute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoute.m; sourceTree = "<group>"; };
 		2C2949711BDCD0390099F24F /* No connection Cloud-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No connection Cloud-100.png"; sourceTree = "<group>"; };
+		2C2949761BDCFBF30099F24F /* STMPhotoReportsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportsSVC.h; sourceTree = "<group>"; };
+		2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportsSVC.m; sourceTree = "<group>"; };
+		2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMPhotoReports.storyboard; sourceTree = "<group>"; };
+		2C29497B1BDCFF800099F24F /* photoReports.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoReports.png; sourceTree = "<group>"; };
 		2C2957981B400FD600A2D163 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
 		2C29579A1B40333600A2D163 /* STMShippingLocationPicturesPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingLocationPicturesPVC.h; sourceTree = "<group>"; };
 		2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationPicturesPVC.m; sourceTree = "<group>"; };
@@ -1312,13 +1319,22 @@
 			path = STMCustomCells;
 			sourceTree = "<group>";
 		};
+		2C2949731BDCFB640099F24F /* STMPhotoReports */ = {
+			isa = PBXGroup;
+			children = (
+				2C2949761BDCFBF30099F24F /* STMPhotoReportsSVC.h */,
+				2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */,
+			);
+			path = STMPhotoReports;
+			sourceTree = "<group>";
+		};
 		2C53B88419409D64002298A5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				2CE8B513195475F400C84A6D /* STMRootTBC.h */,
-				2CE8B514195475F400C84A6D /* STMRootTBC.m */,
 				2C2968FA19A208FB0038B122 /* STMDatePickerVC.h */,
 				2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */,
+				2CE8B513195475F400C84A6D /* STMRootTBC.h */,
+				2CE8B514195475F400C84A6D /* STMRootTBC.m */,
 				2C42ECAC1B0B1A3300B5C91A /* STMTabBarButtonTVC.h */,
 				2C42ECAD1B0B1A3300B5C91A /* STMTabBarButtonTVC.m */,
 				2C587AAC1BBA851600546A62 /* STMWorkflowEditablesVC.h */,
@@ -1330,6 +1346,7 @@
 				2C5764271AA5E29B00B9FD2C /* STMLogs */,
 				2C5764261AA5E27100B9FD2C /* STMMessages */,
 				2C5764571AAB107B00B9FD2C /* STMOrders */,
+				2C2949731BDCFB640099F24F /* STMPhotoReports */,
 				2C16CC4D1AF7661B00A2EC2D /* STMProfile */,
 				2C5763D71AA5E03000B9FD2C /* STMSettings */,
 				2CEAC15F1B3BF94800AD068E /* STMShipments */,
@@ -1912,6 +1929,7 @@
 				2C2949711BDCD0390099F24F /* No connection Cloud-100.png */,
 				D94AC56B198BC6A300D8CD63 /* password2-128.png */,
 				2CD443F0195AD76E004ADE58 /* photo-icon.png */,
+				2C29497B1BDCFF800099F24F /* photoReports.png */,
 				2C761BB41B00833F001DA33E /* Picture Filled-25.png */,
 				2C761BB51B00833F001DA33E /* Picture Filled-32.png */,
 				2C761BB61B00833F001DA33E /* Picture Filled-100.png */,
@@ -1948,6 +1966,7 @@
 				2C29690319B1B2B50038B122 /* STMMessages.storyboard */,
 				2C5297E71ACECAA2008496AE /* STMMessageVC.storyboard */,
 				2C5764531AAA096000B9FD2C /* STMOrders.storyboard */,
+				2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */,
 				2CF365AB19EE884D00F078BD /* STMSettings.storyboard */,
 				2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */,
 				2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */,
@@ -2138,6 +2157,7 @@
 				2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */,
 				2C5764561AAA0A7D00B9FD2C /* bill-128.png in Resources */,
 				2C4620541B67B30C007FD646 /* STMVolumeTVCell.xib in Resources */,
+				2C29497A1BDCFC110099F24F /* STMPhotoReports.storyboard in Resources */,
 				2C1AB3161B70B22800BF5C50 /* 5_circle_colored_blue.png in Resources */,
 				2C1AB31A1B70E77700BF5C50 /* STMCustom8TVCell.xib in Resources */,
 				2C5764391AA8962600B9FD2C /* wine_bottle-512.png in Resources */,
@@ -2216,6 +2236,7 @@
 				2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */,
 				2CF1264D1B778AB50059701F /* alphabetical_sorting.png in Resources */,
 				2C5763C11AA4752600B9FD2C /* beer_bottle-128.png in Resources */,
+				2C29497C1BDCFF800099F24F /* photoReports.png in Resources */,
 				2C1AB28A1B6E555500BF5C50 /* back.png in Resources */,
 				2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */,
 				2C761BC71B01F2D0001DA33E /* Up4-25.png in Resources */,
@@ -2484,6 +2505,7 @@
 				2C46206F1B6BA43B007FD646 /* STMShipment+custom.m in Sources */,
 				2C5797F01A432CFF00EEFBA7 /* STMWebViewVC.m in Sources */,
 				2CCD06DA1B500AED002591C4 /* STMShipmentPosition+custom.m in Sources */,
+				2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */,
 				2C5764691AAB26FD00B9FD2C /* STMOrdersDateTVC.m in Sources */,
 				2C42ECB71B1342D300B5C91A /* STMArticlePicturePVC.m in Sources */,
 				2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */,
