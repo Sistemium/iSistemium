@@ -21,6 +21,7 @@
 
 
 #define SOCKET_URL @"https://socket.sistemium.com/socket.io-client"
+#define CHECK_AUTHORIZATION_DELAY 15
 
 
 @interface STMSocketController() <NSFetchedResultsControllerDelegate>
@@ -135,7 +136,7 @@
     
     STMSocketController *sc = [self sharedInstance];
     
-    if (sc.socketUrl) {
+    if (sc.socketUrl && !sc.isRunning) {
 
         sc.isRunning = YES;
 
@@ -144,6 +145,7 @@
             case SocketIOClientStatusNotConnected:
             case SocketIOClientStatusClosed: {
                 [sc.socket connect];
+                [sc performSelector:@selector(checkAuthorizationForSocket:) withObject:sc.socket afterDelay:CHECK_AUTHORIZATION_DELAY];
                 break;
             }
             case SocketIOClientStatusConnecting: {
@@ -302,6 +304,7 @@
 
     [STMSocketController addEvent:STMSocketEventConnect toSocket:socket];
     [STMSocketController addEvent:STMSocketEventRemoteCommands toSocket:socket];
+    [STMSocketController addEvent:STMSocketEventData toSocket:socket];
     
 }
 
@@ -359,6 +362,10 @@
     
     //            [self checkQueuedEvent];
     
+//    NSLog(@"connectCallback data %@", data);
+//    NSLog(@"connectCallback ack %@", ack);
+//    NSLog(@"connectCallback socket %@", socket);
+
     STMClientData *clientData = [STMClientDataController clientData];
     NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
     
@@ -468,6 +475,8 @@
 
 + (void)socket:(SocketIOClient *)socket receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
     
+    NSLog(@"%@ ___ receive Ack, event: %@, data: %@", [self sharedInstance].socket, event, data);
+
     STMSocketEvent socketEvent = [self eventForString:event];
     
     if (socketEvent == STMSocketEventAuthorization) {
@@ -515,8 +524,6 @@
         }
         
     }
-    
-    NSLog(@"%@ ___ receive Ack, event: %@, data: %@", [self sharedInstance].socket, event, data);
     
 }
 
@@ -630,9 +637,13 @@
     if ([notification.userInfo.allKeys containsObject:@"socketUrl"]) {
         
         self.socketUrl = nil;
-        
-        if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
-            [self reconnectSocket];
+
+        if (self.isRunning) {
+
+            if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
+                [self reconnectSocket];
+            }
+                
         }
         
     }
@@ -738,35 +749,7 @@
 
 }
 
-//- (NSFetchedResultsController *)resultsController {
-//    
-//    if (!_resultsController) {
-//        
-//        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-//        request.includesSubentities = YES;
-//        
-//        request.predicate = [STMPredicate predicateWithNoFantomsFromPredicate:[NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil]];
-//        
-//        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-//                                                                 managedObjectContext:[STMSocketController document].managedObjectContext
-//                                                                   sectionNameKeyPath:nil
-//                                                                            cacheName:nil];
-//        _resultsController.delegate = self;
-//        
-//    }
-//    
-//    return _resultsController;
-//    
-//}
-
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    
-//    NSLog(@"%@ ____ controllerDidChangeContent", self);
-//    
-//    if ([STMSocketController syncer].syncerState != STMSyncerReceiveData) {
-//        
-//    }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
     
@@ -775,45 +758,6 @@
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    
-//    
-//    switch (type) {
-//        case NSFetchedResultsChangeInsert: {
-//            NSLog(@"NSFetchedResultsChangeInsert");
-//            break;
-//        }
-//        case NSFetchedResultsChangeDelete: {
-//            NSLog(@"NSFetchedResultsChangeDelete");
-//            break;
-//        }
-//        case NSFetchedResultsChangeMove: {
-//            NSLog(@"NSFetchedResultsChangeMove");
-//            break;
-//        }
-//        case NSFetchedResultsChangeUpdate: {
-//            NSLog(@"NSFetchedResultsChangeUpdate");
-//            break;
-//        }
-//        default: {
-//            break;
-//        }
-//    }
-//    
-//    NSLog(@"%@, %@", NSStringFromClass([anObject class]), [anObject valueForKey:@"xid"]);
-//    
-//    NSDate *deviceTs = [anObject valueForKey:@"deviceTs"];
-//    
-//    if (deviceTs) {
-//        
-//        NSLog(@"deviceTs %@", [[STMFunctions dateFormatter] stringFromDate:deviceTs]);
-//
-//    } else {
-//        
-//        NSLog(@"deviceTs is nil");
-//        
-//    }
-    
-//    NSLog(@"indexPath %@, newIndexPath %@", indexPath, newIndexPath);
     
 }
 
@@ -870,6 +814,21 @@
     return _socketUrl;
     
 }
+
+- (void)checkAuthorizationForSocket:(SocketIOClient *)socket {
+
+//    NSLog(@"checkAuthorizationForSocket: %@", socket);
+    
+    if ([socket isEqual:self.socket]) {
+        
+        if (!self.isAuthorized) [self reconnectSocket];
+
+    } else {
+//        NSLog(@"not a current socket");
+    }
+    
+}
+
 
 
 @end
