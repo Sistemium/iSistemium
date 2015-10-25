@@ -15,6 +15,7 @@
 #import "STMSyncer.h"
 #import "STMEntityController.h"
 #import "STMPicturesController.h"
+#import "STMSocketController.h"
 
 #import "STMAuthController.h"
 #import "STMRootTBC.h"
@@ -189,30 +190,38 @@
 
     [self.spinner removeFromSuperview];
     
-    NSString *imageName;
+    NSString *imageName = nil;
     
-    switch (syncer.syncerState) {
-        case STMSyncerIdle: {
-            imageName = (hasObjectsToUpload) ? @"Upload To Cloud-100" : @"Download From Cloud-100";
-            break;
+    if ([STMSocketController socketIsAvailable]) {
+        
+        switch (syncer.syncerState) {
+            case STMSyncerIdle: {
+                imageName = (hasObjectsToUpload) ? @"Upload To Cloud-100" : @"Download From Cloud-100";
+                break;
+            }
+            case STMSyncerSendData:
+            case STMSyncerSendDataOnce: {
+                imageName = @"Upload To Cloud-100";
+                self.spinner = [STMSpinnerView spinnerViewWithFrame:self.uploadImageView.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
+                [self.uploadImageView addSubview:self.spinner];
+                break;
+            }
+            case STMSyncerReceiveData: {
+                imageName = @"Download From Cloud-100";
+                self.spinner = [STMSpinnerView spinnerViewWithFrame:self.downloadImageView.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
+                [self.downloadImageView addSubview:self.spinner];
+                break;
+            }
+            default: {
+                imageName = @"Download From Cloud-100";
+                break;
+            }
         }
-        case STMSyncerSendData:
-        case STMSyncerSendDataOnce: {
-            imageName = @"Upload To Cloud-100";
-            self.spinner = [STMSpinnerView spinnerViewWithFrame:self.uploadImageView.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
-            [self.uploadImageView addSubview:self.spinner];
-            break;
-        }
-        case STMSyncerReceiveData: {
-            imageName = @"Download From Cloud-100";
-            self.spinner = [STMSpinnerView spinnerViewWithFrame:self.downloadImageView.bounds indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor:[UIColor whiteColor] alfa:1];
-            [self.downloadImageView addSubview:self.spinner];
-            break;
-        }
-        default: {
-            imageName = @"Download From Cloud-100";
-            break;
-        }
+
+    } else {
+        
+        imageName = @"No connection Cloud-100";
+        
     }
     
     self.syncImageView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -230,7 +239,7 @@
     
     NetworkStatus networkStatus = [self.internetReachability currentReachabilityStatus];
     
-    if (networkStatus == NotReachable) {
+    if (networkStatus == NotReachable || ![STMSocketController socketIsAvailable]) {
         
         color = [color colorWithAlphaComponent:0.3];
         [self.syncImageView setTintColor:color];
@@ -356,6 +365,10 @@
 }
 
 - (void)syncerDidChangeContent:(NSNotification *)notification {
+    [self updateCloudImages];
+}
+
+- (void)socketAuthorizationSuccess {
     [self updateCloudImages];
 }
 
@@ -985,6 +998,11 @@
     [nc addObserver:self
            selector:@selector(syncerDidChangeContent:)
                name:@"syncerDidChangeContent"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(socketAuthorizationSuccess)
+               name:@"socketAuthorizationSuccess"
              object:nil];
     
     [nc addObserver:self

@@ -93,6 +93,7 @@
 		2C29496A1BDB746D0099F24F /* STMArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949681BDB746D0099F24F /* STMArticle.m */; settings = {ASSET_TAGS = (); }; };
 		2C29496F1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29496C1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
 		2C2949701BDB7E6E0099F24F /* STMShipmentRoute.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29496E1BDB7E6E0099F24F /* STMShipmentRoute.m */; settings = {ASSET_TAGS = (); }; };
+		2C2949721BDCD0390099F24F /* No connection Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949711BDCD0390099F24F /* No connection Cloud-100.png */; settings = {ASSET_TAGS = (); }; };
 		2C2957991B400FD600A2D163 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2957981B400FD600A2D163 /* plus.png */; };
 		2C29579C1B40333600A2D163 /* STMShippingLocationPicturesPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */; };
 		2C29579F1B40335C00A2D163 /* STMShippingLocationPictureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579E1B40335C00A2D163 /* STMShippingLocationPictureVC.m */; };
@@ -579,6 +580,7 @@
 		2C29496C1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMShipmentRoute+CoreDataProperties.m"; sourceTree = "<group>"; };
 		2C29496D1BDB7E6E0099F24F /* STMShipmentRoute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRoute.h; sourceTree = "<group>"; };
 		2C29496E1BDB7E6E0099F24F /* STMShipmentRoute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRoute.m; sourceTree = "<group>"; };
+		2C2949711BDCD0390099F24F /* No connection Cloud-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No connection Cloud-100.png"; sourceTree = "<group>"; };
 		2C2957981B400FD600A2D163 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
 		2C29579A1B40333600A2D163 /* STMShippingLocationPicturesPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingLocationPicturesPVC.h; sourceTree = "<group>"; };
 		2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationPicturesPVC.m; sourceTree = "<group>"; };
@@ -1907,6 +1909,7 @@
 				2C02F2C41A8B503A00E0E890 /* full_moon-128.png */,
 				2C7678301B4125100085C514 /* location.png */,
 				2C29690519B1B4210038B122 /* message-128.png */,
+				2C2949711BDCD0390099F24F /* No connection Cloud-100.png */,
 				D94AC56B198BC6A300D8CD63 /* password2-128.png */,
 				2CD443F0195AD76E004ADE58 /* photo-icon.png */,
 				2C761BB41B00833F001DA33E /* Picture Filled-25.png */,
@@ -2170,6 +2173,7 @@
 				2C42ECBC1B13893F00B5C91A /* STMArticlePicturePVC.storyboard in Resources */,
 				2C16CC411AF3940200A2EC2D /* Download From Cloud-100.png in Resources */,
 				2C68B6501BA30F9C009F0B9B /* settings.png in Resources */,
+				2C2949721BDCD0390099F24F /* No connection Cloud-100.png in Resources */,
 				2C1AB28C1B6E556000BF5C50 /* forward.png in Resources */,
 				2CEAC15C1B3BF64C00AD068E /* STMShipments_iphone.storyboard in Resources */,
 				2C3771B51B5E7038003493FB /* Sync With Cloud.png in Resources */,
