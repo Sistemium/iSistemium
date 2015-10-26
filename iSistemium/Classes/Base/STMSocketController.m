@@ -34,6 +34,7 @@
 @property (nonatomic) BOOL isAuthorized;
 @property (nonatomic) BOOL isSendingData;
 @property (nonatomic) BOOL shouldSendData;
+@property (nonatomic) BOOL isReconnecting;
 
 
 @end
@@ -62,6 +63,10 @@
     switch (event) {
         case STMSocketEventConnect: {
             return @"connect";
+            break;
+        }
+        case STMSocketEventDisconnect: {
+            return @"disconnect";
             break;
         }
         case STMSocketEventStatusChange: {
@@ -96,6 +101,8 @@
     
     if ([stringValue isEqualToString:@"connect"]) {
         return STMSocketEventConnect;
+    } else if ([stringValue isEqualToString:@"disconnect"]) {
+        return STMSocketEventDisconnect;
     } else if ([stringValue isEqualToString:@"status:change"]) {
         return STMSocketEventStatusChange;
     } else if ([stringValue isEqualToString:@"info"]) {
@@ -138,7 +145,7 @@
     
     STMSocketController *sc = [self sharedInstance];
     
-    if (sc.socketUrl && !sc.isRunning) {
+    if (sc.socketUrl && !sc.isRunning && !sc.isReconnecting) {
 
         sc.isRunning = YES;
 
@@ -309,6 +316,7 @@
     [STMSocketController addOnAnyEventToSocket:socket];
 
     [STMSocketController addEvent:STMSocketEventConnect toSocket:socket];
+    [STMSocketController addEvent:STMSocketEventDisconnect toSocket:socket];
     [STMSocketController addEvent:STMSocketEventRemoteCommands toSocket:socket];
     [STMSocketController addEvent:STMSocketEventData toSocket:socket];
     
@@ -334,6 +342,10 @@
         switch (event) {
             case STMSocketEventConnect: {
                 [self connectCallbackWithData:data ack:ack socket:socket];
+                break;
+            }
+            case STMSocketEventDisconnect: {
+                [self disconnectCallbackWithData:data ack:ack socket:socket];
                 break;
             }
             case STMSocketEventStatusChange: {
@@ -386,6 +398,19 @@
         [self socket:socket receiveAckWithData:data forEvent:event];
     });
     
+}
+
++ (void)disconnectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
+    
+    NSLog(@"disconnectCallback socket %@", socket);
+    
+    if ([self sharedInstance].isReconnecting) {
+        
+        [self sharedInstance].isReconnecting = NO;
+        [self startSocket];
+        
+    }
+
 }
 
 + (void)remoteCommandsCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
@@ -499,45 +524,41 @@
     STMSocketEvent socketEvent = [self eventForString:event];
     
     if (socketEvent == STMSocketEventAuthorization) {
+        [self socket:socket receiveAuthorizationAckWithData:data];
+    }
+    
+}
+
++ (void)socket:(SocketIOClient *)socket receiveAuthorizationAckWithData:(NSArray *)data {
+    
+    if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
         
-        if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *dataDic = data.firstObject;
+        BOOL isAuthorized = [dataDic[@"isAuthorized"] boolValue];
+        
+        if (isAuthorized) {
             
-            NSDictionary *dataDic = data.firstObject;
-            BOOL isAuthorized = [dataDic[@"isAuthorized"] boolValue];
+            NSLog(@"socket authorized");
             
-            if (isAuthorized) {
+            [self sharedInstance].isAuthorized = YES;
+            [self sharedInstance].isSendingData = NO;
+            [[self syncer] socketReceiveAuthorization];
             
-                NSLog(@"socket authorized");
-
-                [self sharedInstance].isAuthorized = YES;
-                [self sharedInstance].isSendingData = NO;
-                [[self syncer] socketReceiveAuthorization];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"socketAuthorizationSuccess" object:self];
+            
+            [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
+            
+            if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"socketAuthorizationSuccess" object:self];
-                
-                [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
-                
-                if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
+                if ([[STMRootTBC sharedRootVC].selectedViewController class]) {
                     
-                    if ([[STMRootTBC sharedRootVC].selectedViewController class]) {
-                        
-                        Class _Nonnull rootVCClass = (Class _Nonnull)[[STMRootTBC sharedRootVC].selectedViewController class];
-                        
-                        NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass(rootVCClass)];
-                        [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
-
-                    }
+                    Class _Nonnull rootVCClass = (Class _Nonnull)[[STMRootTBC sharedRootVC].selectedViewController class];
+                    
+                    NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass(rootVCClass)];
+                    [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
                     
                 }
                 
-//                [self sendUnsyncedObjects:self];
-                
-            } else {
-                
-                NSLog(@"socket not authorized");
-                [self sharedInstance].isAuthorized = NO;
-                [[STMAuthController authController] logout];
-
             }
             
         } else {
@@ -545,11 +566,17 @@
             NSLog(@"socket not authorized");
             [self sharedInstance].isAuthorized = NO;
             [[STMAuthController authController] logout];
-
+            
         }
         
+    } else {
+        
+        NSLog(@"socket not authorized");
+        [self sharedInstance].isAuthorized = NO;
+        [[STMAuthController authController] logout];
+        
     }
-    
+
 }
 
 + (void)receiveEventDataAckWithData:(NSArray *)data {
@@ -826,10 +853,15 @@
     NSLogMethodName;
     
     if (self.isRunning) {
+        
+        self.isReconnecting = YES;
         [STMSocketController closeSocket];
-    }
+        
+    } else {
     
-    [STMSocketController startSocket];
+        [STMSocketController startSocket];
+
+    }
     
 }
 
