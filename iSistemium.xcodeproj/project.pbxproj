@@ -97,6 +97,7 @@
 		2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */; settings = {ASSET_TAGS = (); }; };
 		2C29497A1BDCFC110099F24F /* STMPhotoReports.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */; settings = {ASSET_TAGS = (); }; };
 		2C29497C1BDCFF800099F24F /* photoReports.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C29497B1BDCFF800099F24F /* photoReports.png */; settings = {ASSET_TAGS = (); }; };
+		2C29497F1BDE6F070099F24F /* STMPhotoReportsCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29497E1BDE6F070099F24F /* STMPhotoReportsCVC.m */; settings = {ASSET_TAGS = (); }; };
 		2C2957991B400FD600A2D163 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2957981B400FD600A2D163 /* plus.png */; };
 		2C29579C1B40333600A2D163 /* STMShippingLocationPicturesPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */; };
 		2C29579F1B40335C00A2D163 /* STMShippingLocationPictureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579E1B40335C00A2D163 /* STMShippingLocationPictureVC.m */; };
@@ -588,6 +589,8 @@
 		2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportsSVC.m; sourceTree = "<group>"; };
 		2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMPhotoReports.storyboard; sourceTree = "<group>"; };
 		2C29497B1BDCFF800099F24F /* photoReports.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoReports.png; sourceTree = "<group>"; };
+		2C29497D1BDE6F070099F24F /* STMPhotoReportsCVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportsCVC.h; sourceTree = "<group>"; };
+		2C29497E1BDE6F070099F24F /* STMPhotoReportsCVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportsCVC.m; sourceTree = "<group>"; };
 		2C2957981B400FD600A2D163 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
 		2C29579A1B40333600A2D163 /* STMShippingLocationPicturesPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingLocationPicturesPVC.h; sourceTree = "<group>"; };
 		2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingLocationPicturesPVC.m; sourceTree = "<group>"; };
@@ -1324,6 +1327,8 @@
 			children = (
 				2C2949761BDCFBF30099F24F /* STMPhotoReportsSVC.h */,
 				2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */,
+				2C29497D1BDE6F070099F24F /* STMPhotoReportsCVC.h */,
+				2C29497E1BDE6F070099F24F /* STMPhotoReportsCVC.m */,
 			);
 			path = STMPhotoReports;
 			sourceTree = "<group>";
@@ -2469,6 +2474,7 @@
 				2C5764821AAF270800B9FD2C /* STMEntity+custom.m in Sources */,
 				2C646F5F1BCE69C00099F034 /* SocketAckManager.swift in Sources */,
 				2CFDD8851A2F6270003515C5 /* STMDebtsController.m in Sources */,
+				2C29497F1BDE6F070099F24F /* STMPhotoReportsCVC.m in Sources */,
 				2C02F2C01A8A989000E0E890 /* STMAuthVC.m in Sources */,
 				2C2968D3199B3AC30038B122 /* STMDebt+Cashing.m in Sources */,
 				2C53B8A319409E71002298A5 /* STMBatteryTracker.m in Sources */,
