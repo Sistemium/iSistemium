@@ -409,7 +409,17 @@
 
 + (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
     
-    NSLog(@"socket:%@ sendEvent:%@ withValue:%@", socket, [self stringValueForEvent:event], value);
+    if (event == STMSocketEventData && [value isKindOfClass:[NSArray class]]) {
+        
+        NSArray *valueArray = [(NSArray *)value valueForKeyPath:@"name"];
+        
+        NSLog(@"socket:%@ sendEvent:%@ withObjects:%@", socket, [self stringValueForEvent:event], valueArray);
+        
+    } else {
+        
+        NSLog(@"socket:%@ sendEvent:%@ withValue:%@", socket, [self stringValueForEvent:event], value);
+        
+    }
     
     NSString *primaryKey = @"url";
     
