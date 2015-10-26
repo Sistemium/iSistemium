@@ -1067,10 +1067,10 @@
         
                 STMLocation *location = (STMLocation *)object;
                 
-                if (location.photos.count == 0) {
+                if (location.photos.count == 0 && location.shippings.count == 0 && location.shipmentRoutePoint == nil) {
                     [objectsSet addObject:object];
                 } else {
-                    NSLog(@"location %@ linked with picture, flush declined", location.xid);
+                    NSLog(@"location %@ linked with (picture|shipping|routePoint), flush declined", location.xid);
                 }
 
 //            } else if ([object isKindOfClass:[STMTrack class]]) {
