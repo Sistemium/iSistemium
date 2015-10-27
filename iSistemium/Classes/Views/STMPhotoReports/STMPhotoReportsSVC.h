@@ -14,6 +14,7 @@
 #import "STMDataModel.h"
 #import "STMNS.h"
 #import "STMUI.h"
+#import "STMFunctions.h"
 
 
 @interface STMPhotoReportsSVC : STMSplitViewController

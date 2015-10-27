@@ -70,6 +70,31 @@
     
     cell.textLabel.text = [campaignGroup displayName];
     
+    NSString *detailText = @"";
+    
+    if (campaignGroup.campaigns.count > 0) {
+    
+        NSString *campaignsString = NSLocalizedString([[STMFunctions pluralTypeForCount:campaignGroup.campaigns.count] stringByAppendingString:@"CAMPAIGNS"], nil);
+        detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"%lu %@", (long unsigned)campaignGroup.campaigns.count, campaignsString]];
+
+    } else {
+        
+        detailText = [detailText stringByAppendingString:NSLocalizedString(@"0CAMPAIGNS", nil)];
+        
+    }
+    
+    NSSet *photoReports = [campaignGroup.campaigns valueForKeyPath:@"@distinctUnionOfSets.photoReports"];
+    
+    if (photoReports.count > 0) {
+        
+        NSString *photoReportsStrings = [NSString stringWithFormat:@"%lu %@", (long unsigned)photoReports.count, NSLocalizedString(@"PHOTO", nil)];
+        detailText = [detailText stringByAppendingString:@" / "];
+        detailText = [detailText stringByAppendingString:photoReportsStrings];
+
+    }
+    
+    cell.detailTextLabel.text = detailText;
+    
     return cell;
     
 }

@@ -39,6 +39,10 @@
 "ADD PHOTO" = "Добавить фото";
 "PHOTO" = "фото";
 "CAMPAIGNS" = "Акции";
+"0CAMPAIGNS" = "нет акций";
+"1CAMPAIGNS" = "акция";
+"2CAMPAIGNS" = "акции";
+"5CAMPAIGNS" = "акций";
 "PHOTO REPORTS" = "Фотоотчёты";
 "PICTURES" = "Картинки";
 "DELETE PHOTO" = "Удаление фото";
