@@ -7,10 +7,12 @@
 //
 
 #import "STMPhotoReportsCVC.h"
+
 #import "STMSessionManager.h"
-#import "STMDataModel.h"
+
 #import "STMFunctions.h"
 #import "STMUI.h"
+#import "STMNS.h"
 
 #define INSET_TOP 10
 #define INSET_BOTTOM 10
@@ -49,15 +51,27 @@ static NSString * const headerIdentifier = @"photoReportHeader";
     
 }
 
+- (void)setSelectedCampaignGroup:(STMCampaignGroup *)selectedCampaignGroup {
+    
+    if (![_selectedCampaignGroup isEqual:selectedCampaignGroup]) {
+        
+        _selectedCampaignGroup = selectedCampaignGroup;
+        
+        [self performFetch];
+        
+    }
+    
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
         
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
         
-//        request.predicate = [self campaignPredicate];
+        request.predicate = [self currentPredicate];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
@@ -74,7 +88,25 @@ static NSString * const headerIdentifier = @"photoReportHeader";
 
 - (void)performFetch {
     
-    [self.resultsController performFetch:nil];
+    self.resultsController = nil;
+    
+    if ([self.resultsController performFetch:nil]) {
+        
+        [self.collectionView reloadData];
+        
+    }
+    
+}
+
+- (NSPredicate *)currentPredicate {
+    
+    NSPredicate *predicate = nil;
+    
+    if (self.selectedCampaignGroup) {
+        predicate = [NSPredicate predicateWithFormat:@"campaign.campaignGroup == %@", self.selectedCampaignGroup];
+    }
+    
+    return predicate;
     
 }
 

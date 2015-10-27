@@ -8,11 +8,55 @@
 
 #import "STMPhotoReportsSVC.h"
 
+
 @interface STMPhotoReportsSVC ()
+
 
 @end
 
+
 @implementation STMPhotoReportsSVC
+
+- (STMCampaignGroupTVC *)masterVC {
+    
+    if (!_masterVC) {
+        
+        UINavigationController *navController = (UINavigationController *)self.viewControllers[0];
+        
+        UIViewController *masterVC = navController.viewControllers[0];
+        
+        if ([masterVC isKindOfClass:[STMCampaignGroupTVC class]]) {
+            
+            _masterVC = (STMCampaignGroupTVC *)masterVC;
+            
+        }
+        
+    }
+    
+    return _masterVC;
+    
+}
+
+- (STMPhotoReportsCVC *)detailVC {
+    
+    if (!_detailVC) {
+        
+        UINavigationController *navController = (UINavigationController *)self.viewControllers[1];
+        
+        UIViewController *detailVC = navController.viewControllers[0];
+        
+        if ([detailVC isKindOfClass:[STMPhotoReportsCVC class]]) {
+            _detailVC = (STMPhotoReportsCVC *)detailVC;
+        }
+        
+    }
+    
+    return _detailVC;
+    
+}
+
+
+#pragma mark - view lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];

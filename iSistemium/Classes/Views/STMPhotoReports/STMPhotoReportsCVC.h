@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+#import "STMDataModel.h"
+
+
 @interface STMPhotoReportsCVC : UICollectionViewController
+
+@property (nonatomic, weak) STMCampaignGroup *selectedCampaignGroup;
+
 
 @end

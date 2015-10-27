@@ -9,7 +9,7 @@
 #import "STMCampaignsTVC.h"
 
 #import "STMCampaign.h"
-#import "STMCampaignGroup+custom.h"
+#import "STMCampaignGroup.h"
 #import "STMOutlet.h"
 #import "STMPhotoReport.h"
 #import "STMPhoto.h"
