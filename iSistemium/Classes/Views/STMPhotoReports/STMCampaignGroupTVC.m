@@ -103,15 +103,27 @@
     
     STMCampaignGroup *campaignGroup = [self.resultsController objectAtIndexPath:indexPath];
     
-    self.splitVC.detailVC.selectedCampaignGroup = campaignGroup;
-
+    if ([campaignGroup isEqual:self.splitVC.detailVC.selectedCampaignGroup]) {
+        
+        self.splitVC.detailVC.selectedCampaignGroup = nil;
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+    } else {
+        
+        self.splitVC.detailVC.selectedCampaignGroup = campaignGroup;
+        
+    }
+    
 }
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [super customInit];
+    
+    self.clearsSelectionOnViewWillAppear = NO;
     
     [self.resultsController performFetch:nil];
     
