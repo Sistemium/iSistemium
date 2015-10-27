@@ -326,6 +326,8 @@
 		2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */; };
 		2CC1943D1BDF7227001F8E48 /* STMCustom1CVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */; };
 		2CC194401BDF7340001F8E48 /* STMCustom1CVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC1943F1BDF7340001F8E48 /* STMCustom1CVCell.m */; };
+		2CC194451BDFA181001F8E48 /* STMCustom1CVHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC194441BDFA181001F8E48 /* STMCustom1CVHeader.m */; };
+		2CC194471BDFAD35001F8E48 /* STMCustom1CVHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CC194461BDFAD35001F8E48 /* STMCustom1CVHeader.xib */; };
 		2CC47BD11AE63D0C008F5250 /* UIToolbar+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */; };
 		2CCD06D31B4EC1CE002591C4 /* STMShippingProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D21B4EC1CE002591C4 /* STMShippingProcessController.m */; };
 		2CCD06DA1B500AED002591C4 /* STMShipmentPosition+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D91B500AED002591C4 /* STMShipmentPosition+custom.m */; };
@@ -989,6 +991,9 @@
 		2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom1CVCell.xib; sourceTree = "<group>"; };
 		2CC1943E1BDF7340001F8E48 /* STMCustom1CVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom1CVCell.h; sourceTree = "<group>"; };
 		2CC1943F1BDF7340001F8E48 /* STMCustom1CVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom1CVCell.m; sourceTree = "<group>"; };
+		2CC194431BDFA181001F8E48 /* STMCustom1CVHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom1CVHeader.h; sourceTree = "<group>"; };
+		2CC194441BDFA181001F8E48 /* STMCustom1CVHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom1CVHeader.m; sourceTree = "<group>"; };
+		2CC194461BDFAD35001F8E48 /* STMCustom1CVHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom1CVHeader.xib; sourceTree = "<group>"; };
 		2CC47BCF1AE63D0C008F5250 /* UIToolbar+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIToolbar+custom.h"; sourceTree = "<group>"; };
 		2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIToolbar+custom.m"; sourceTree = "<group>"; };
 		2CCD06D11B4EC1CE002591C4 /* STMShippingProcessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingProcessController.h; sourceTree = "<group>"; };
@@ -1324,6 +1329,7 @@
 				2C4620531B67B30C007FD646 /* STMVolumeTVCell.xib */,
 				2C4620651B6911DE007FD646 /* STMVolumeControlsTVCell.xib */,
 				2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */,
+				2CC194461BDFAD35001F8E48 /* STMCustom1CVHeader.xib */,
 			);
 			path = STMCustomCells;
 			sourceTree = "<group>";
@@ -1749,6 +1755,8 @@
 				2C4620681B6912F5007FD646 /* STMVolumeControlsTVCell.m */,
 				2CC1943E1BDF7340001F8E48 /* STMCustom1CVCell.h */,
 				2CC1943F1BDF7340001F8E48 /* STMCustom1CVCell.m */,
+				2CC194431BDFA181001F8E48 /* STMCustom1CVHeader.h */,
+				2CC194441BDFA181001F8E48 /* STMCustom1CVHeader.m */,
 			);
 			path = STMCustomTVCells;
 			sourceTree = "<group>";
@@ -2253,6 +2261,7 @@
 				2C29497C1BDCFF800099F24F /* photoReports.png in Resources */,
 				2C1AB28A1B6E555500BF5C50 /* back.png in Resources */,
 				2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */,
+				2CC194471BDFAD35001F8E48 /* STMCustom1CVHeader.xib in Resources */,
 				2C761BC71B01F2D0001DA33E /* Up4-25.png in Resources */,
 				2C1AB2FF1B70AE4400BF5C50 /* 4_circle_filled.png in Resources */,
 				2C02F2AE1A8A307A00E0E890 /* STMAuth.storyboard in Resources */,
@@ -2385,6 +2394,7 @@
 				2C5763F51AA5E13600B9FD2C /* STMCampaignPictureVC.m in Sources */,
 				2C646F671BCE69C00099F034 /* SocketLogger.swift in Sources */,
 				2C81AD531AD0227D00246666 /* STMCustom3TVCell.m in Sources */,
+				2CC194451BDFA181001F8E48 /* STMCustom1CVHeader.m in Sources */,
 				2CFDD7291A29AF42003515C5 /* STMPicturesController.m in Sources */,
 				2C02F2BA1A8A45EC00E0E890 /* STMAuthNC.m in Sources */,
 				2C8EF5AB1940859F0021D202 /* main.m in Sources */,

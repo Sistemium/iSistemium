@@ -12,6 +12,12 @@
 #import "STMFunctions.h"
 #import "STMUI.h"
 
+#define INSET_TOP 10
+#define INSET_BOTTOM 10
+#define INSET_LEFT 10
+#define INSET_RIGHT 10
+#define HEADER_HEIGHT 44
+
 
 @interface STMPhotoReportsCVC () <NSFetchedResultsControllerDelegate>
 
@@ -25,7 +31,8 @@
 
 @implementation STMPhotoReportsCVC
 
-static NSString * const reuseIdentifier = @"photoReportCell";
+static NSString * const cellIdentifier = @"photoReportCell";
+static NSString * const headerIdentifier = @"photoReportHeader";
 
 
 #pragma mark - variables setters & getters
@@ -54,7 +61,7 @@ static NSString * const reuseIdentifier = @"photoReportCell";
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
-                                                                   sectionNameKeyPath:nil
+                                                                   sectionNameKeyPath:@"outlet.name"
                                                                             cacheName:nil];
         
         _resultsController.delegate = self;
@@ -132,17 +139,35 @@ static NSString * const reuseIdentifier = @"photoReportCell";
 #pragma mark <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    
+    return self.resultsController.sections.count;
+    
 }
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.resultsController.fetchedObjects.count;
+    
+    return self.resultsController.sections[section].numberOfObjects;
+    
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    STMCustom1CVHeader *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                        withReuseIdentifier:headerIdentifier
+                                                                               forIndexPath:indexPath];
+    
+    headerView.backgroundColor = STM_LIGHT_LIGHT_GREY_COLOR;
+    
+    headerView.label.text = self.resultsController.sections[indexPath.section].name;
+    
+    return headerView;
+    
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom1CVCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    STMCustom1CVCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
     STMPhotoReport *photoReport = [self.resultsController objectAtIndexPath:indexPath];
     
@@ -156,6 +181,20 @@ static NSString * const reuseIdentifier = @"photoReportCell";
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     return self.cellSize;
+    
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    
+    return UIEdgeInsetsMake(INSET_TOP, INSET_LEFT, INSET_BOTTOM, INSET_RIGHT);
+    
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    
+    CGFloat width = self.collectionView.frame.size.width;
+    
+    return CGSizeMake(width, HEADER_HEIGHT);
     
 }
 
@@ -206,8 +245,11 @@ static NSString * const reuseIdentifier = @"photoReportCell";
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
     UINib *customCellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom1CVCell class]) bundle:nil];
-    [self.collectionView registerNib:customCellNib forCellWithReuseIdentifier:reuseIdentifier];
+    [self.collectionView registerNib:customCellNib forCellWithReuseIdentifier:cellIdentifier];
     
+    UINib *customHeaderNib = [UINib nibWithNibName:NSStringFromClass([STMCustom1CVHeader class]) bundle:nil];
+    [self.collectionView registerNib:customHeaderNib forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerIdentifier];
+
     [self performFetch];
     
 }

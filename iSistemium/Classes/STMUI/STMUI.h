@@ -38,6 +38,7 @@
 #include "STMVolumeControlsTVCell.h"
 
 #include "STMCustom1CVCell.h"
+#include "STMCustom1CVHeader.h"
 
 #include "STMSegmentedControl.h"
 
