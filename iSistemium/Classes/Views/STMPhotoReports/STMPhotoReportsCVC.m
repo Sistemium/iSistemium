@@ -69,7 +69,15 @@ static NSString * const headerIdentifier = @"photoReportHeader";
         
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
         
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        NSSortDescriptor *outletNameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name"
+                                                                               ascending:YES
+                                                                                selector:@selector(caseInsensitiveCompare:)];
+        
+        NSSortDescriptor *deviceCtsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
+                                                                             ascending:YES
+                                                                              selector:@selector(compare:)];
+
+        request.sortDescriptors = @[outletNameDescriptor, deviceCtsDescriptor];
         
         request.predicate = [self currentPredicate];
         
