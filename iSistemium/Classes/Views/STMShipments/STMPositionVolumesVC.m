@@ -740,10 +740,15 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.positionTitleCellIdentifier];
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeTVCell" bundle:nil] forCellReuseIdentifier:self.positionVolumeCellIdentifier];
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeTVCell" bundle:nil] forCellReuseIdentifier:self.volumeCellIdentifier];
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMVolumeControlsTVCell" bundle:nil] forCellReuseIdentifier:self.controlsCellIdentifier];
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom2TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.positionTitleCellIdentifier];
+    
+    cellNib = [UINib nibWithNibName:NSStringFromClass([STMVolumeTVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.positionVolumeCellIdentifier];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.volumeCellIdentifier];
+    
+    cellNib = [UINib nibWithNibName:NSStringFromClass([STMVolumeControlsTVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.controlsCellIdentifier];
 
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
