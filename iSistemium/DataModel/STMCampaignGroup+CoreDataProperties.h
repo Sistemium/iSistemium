@@ -17,16 +17,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nullable, nonatomic, retain) NSString *name;
 @property (nullable, nonatomic, retain) NSNumber *ord;
-@property (nullable, nonatomic, retain) NSSet<STMCampaign *> *campaign;
+@property (nullable, nonatomic, retain) NSSet<STMCampaign *> *campaigns;
 
 @end
 
 @interface STMCampaignGroup (CoreDataGeneratedAccessors)
 
-- (void)addCampaignObject:(STMCampaign *)value;
-- (void)removeCampaignObject:(STMCampaign *)value;
-- (void)addCampaign:(NSSet<STMCampaign *> *)values;
-- (void)removeCampaign:(NSSet<STMCampaign *> *)values;
+- (void)addCampaignsObject:(STMCampaign *)value;
+- (void)removeCampaignsObject:(STMCampaign *)value;
+- (void)addCampaigns:(NSSet<STMCampaign *> *)values;
+- (void)removeCampaigns:(NSSet<STMCampaign *> *)values;
 
 @end
 

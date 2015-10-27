@@ -15,6 +15,6 @@
 
 @dynamic name;
 @dynamic ord;
-@dynamic campaign;
+@dynamic campaigns;
 
 @end
