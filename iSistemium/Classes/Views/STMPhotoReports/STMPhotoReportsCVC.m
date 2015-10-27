@@ -10,14 +10,18 @@
 #import "STMSessionManager.h"
 #import "STMDataModel.h"
 #import "STMFunctions.h"
+#import "STMUI.h"
 
 
 @interface STMPhotoReportsCVC () <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
+@property (nonatomic) CGSize cellSize;
+
 
 @end
+
 
 @implementation STMPhotoReportsCVC
 
@@ -107,6 +111,23 @@ static NSString * const reuseIdentifier = @"photoReportCell";
 //    
 //}
 
+- (CGSize)cellSize {
+    
+    static CGSize cellSize;
+    static dispatch_once_t onceToken;
+
+    dispatch_once(&onceToken, ^{
+        
+        UINib *nib = [UINib nibWithNibName:NSStringFromClass([STMCustom1CVCell class]) bundle:nil];
+        UIView *rootView = [[nib instantiateWithOwner:nil options:nil] lastObject];
+        cellSize = rootView.frame.size;
+        
+    });
+
+    return cellSize;
+    
+}
+
 
 #pragma mark <UICollectionViewDataSource>
 
@@ -121,23 +142,23 @@ static NSString * const reuseIdentifier = @"photoReportCell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    STMCustom1CVCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
     STMPhotoReport *photoReport = [self.resultsController objectAtIndexPath:indexPath];
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 150, 150)];
-//    imageView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:photoReport.resizedImagePath]];
-    imageView.image = [UIImage imageWithData:photoReport.imageThumbnail];
-    
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    cell.imageView.image = [UIImage imageWithData:photoReport.imageThumbnail];
+    cell.label.text = photoReport.campaign.name;
 
-//    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:photoReport.imageThumbnail]];
-    
-    [cell.contentView addSubview:imageView];
-    
     return cell;
     
 }
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return self.cellSize;
+    
+}
+
 
 #pragma mark <UICollectionViewDelegate>
 
@@ -182,10 +203,11 @@ static NSString * const reuseIdentifier = @"photoReportCell";
 
 - (void)customInit {
     
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+
+    UINib *customCellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom1CVCell class]) bundle:nil];
+    [self.collectionView registerNib:customCellNib forCellWithReuseIdentifier:reuseIdentifier];
     
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     [self performFetch];
     
 }
@@ -201,16 +223,6 @@ static NSString * const reuseIdentifier = @"photoReportCell";
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 
 @end

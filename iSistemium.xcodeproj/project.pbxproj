@@ -89,15 +89,15 @@
 		2C1D72EA1AB9D48400C97599 /* STMLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1D72E91AB9D48400C97599 /* STMLabel.m */; };
 		2C27B5A6196FC6D200D26D58 /* STMPhotoReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5A5196FC6D200D26D58 /* STMPhotoReport.m */; };
 		2C27B5AC196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C27B5AB196FFCD300D26D58 /* STMOutlet+photoReportsArePresent.m */; };
-		2C2949691BDB746D0099F24F /* STMArticle+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949661BDB746D0099F24F /* STMArticle+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
-		2C29496A1BDB746D0099F24F /* STMArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949681BDB746D0099F24F /* STMArticle.m */; settings = {ASSET_TAGS = (); }; };
-		2C29496F1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29496C1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
-		2C2949701BDB7E6E0099F24F /* STMShipmentRoute.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29496E1BDB7E6E0099F24F /* STMShipmentRoute.m */; settings = {ASSET_TAGS = (); }; };
-		2C2949721BDCD0390099F24F /* No connection Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949711BDCD0390099F24F /* No connection Cloud-100.png */; settings = {ASSET_TAGS = (); }; };
-		2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */; settings = {ASSET_TAGS = (); }; };
-		2C29497A1BDCFC110099F24F /* STMPhotoReports.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */; settings = {ASSET_TAGS = (); }; };
-		2C29497C1BDCFF800099F24F /* photoReports.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C29497B1BDCFF800099F24F /* photoReports.png */; settings = {ASSET_TAGS = (); }; };
-		2C29497F1BDE6F070099F24F /* STMPhotoReportsCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29497E1BDE6F070099F24F /* STMPhotoReportsCVC.m */; settings = {ASSET_TAGS = (); }; };
+		2C2949691BDB746D0099F24F /* STMArticle+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949661BDB746D0099F24F /* STMArticle+CoreDataProperties.m */; };
+		2C29496A1BDB746D0099F24F /* STMArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949681BDB746D0099F24F /* STMArticle.m */; };
+		2C29496F1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29496C1BDB7E6E0099F24F /* STMShipmentRoute+CoreDataProperties.m */; };
+		2C2949701BDB7E6E0099F24F /* STMShipmentRoute.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29496E1BDB7E6E0099F24F /* STMShipmentRoute.m */; };
+		2C2949721BDCD0390099F24F /* No connection Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949711BDCD0390099F24F /* No connection Cloud-100.png */; };
+		2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */; };
+		2C29497A1BDCFC110099F24F /* STMPhotoReports.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */; };
+		2C29497C1BDCFF800099F24F /* photoReports.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C29497B1BDCFF800099F24F /* photoReports.png */; };
+		2C29497F1BDE6F070099F24F /* STMPhotoReportsCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29497E1BDE6F070099F24F /* STMPhotoReportsCVC.m */; };
 		2C2957991B400FD600A2D163 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2957981B400FD600A2D163 /* plus.png */; };
 		2C29579C1B40333600A2D163 /* STMShippingLocationPicturesPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579B1B40333600A2D163 /* STMShippingLocationPicturesPVC.m */; };
 		2C29579F1B40335C00A2D163 /* STMShippingLocationPictureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29579E1B40335C00A2D163 /* STMShippingLocationPictureVC.m */; };
@@ -230,23 +230,23 @@
 		2C587AAE1BBA851600546A62 /* STMWorkflowEditablesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C587AAD1BBA851600546A62 /* STMWorkflowEditablesVC.m */; };
 		2C587AB21BBBD53100546A62 /* STMShipmentsNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C587AB11BBBD53000546A62 /* STMShipmentsNC.m */; };
 		2C587AB61BC1986500546A62 /* STMShipmentPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C587AB51BC1986500546A62 /* STMShipmentPosition.m */; };
-		2C646F5E1BCE69C00099F034 /* SocketAckEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F4E1BCE69C00099F034 /* SocketAckEmitter.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F5F1BCE69C00099F034 /* SocketAckManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F4F1BCE69C00099F034 /* SocketAckManager.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F601BCE69C00099F034 /* SocketAnyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F501BCE69C00099F034 /* SocketAnyEvent.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F611BCE69C00099F034 /* SocketEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F511BCE69C00099F034 /* SocketEngine.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F621BCE69C00099F034 /* SocketEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F521BCE69C00099F034 /* SocketEngineClient.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F631BCE69C00099F034 /* SocketEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F531BCE69C00099F034 /* SocketEventHandler.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F641BCE69C00099F034 /* SocketFixUTF8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F541BCE69C00099F034 /* SocketFixUTF8.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F651BCE69C00099F034 /* SocketIOClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F551BCE69C00099F034 /* SocketIOClient.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F661BCE69C00099F034 /* SocketIOClientStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F561BCE69C00099F034 /* SocketIOClientStatus.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F671BCE69C00099F034 /* SocketLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F571BCE69C00099F034 /* SocketLogger.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F681BCE69C00099F034 /* SocketPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F581BCE69C00099F034 /* SocketPacket.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F691BCE69C00099F034 /* SocketParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F591BCE69C00099F034 /* SocketParser.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F6A1BCE69C00099F034 /* SocketStringReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5A1BCE69C00099F034 /* SocketStringReader.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F6B1BCE69C00099F034 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5B1BCE69C00099F034 /* SocketTypes.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F6C1BCE69C00099F034 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5C1BCE69C00099F034 /* SwiftRegex.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5D1BCE69C00099F034 /* WebSocket.swift */; settings = {ASSET_TAGS = (); }; };
-		2C646F701BCE96020099F034 /* STMShipmentRouteController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F6F1BCE96020099F034 /* STMShipmentRouteController.m */; settings = {ASSET_TAGS = (); }; };
+		2C646F5E1BCE69C00099F034 /* SocketAckEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F4E1BCE69C00099F034 /* SocketAckEmitter.swift */; };
+		2C646F5F1BCE69C00099F034 /* SocketAckManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F4F1BCE69C00099F034 /* SocketAckManager.swift */; };
+		2C646F601BCE69C00099F034 /* SocketAnyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F501BCE69C00099F034 /* SocketAnyEvent.swift */; };
+		2C646F611BCE69C00099F034 /* SocketEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F511BCE69C00099F034 /* SocketEngine.swift */; };
+		2C646F621BCE69C00099F034 /* SocketEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F521BCE69C00099F034 /* SocketEngineClient.swift */; };
+		2C646F631BCE69C00099F034 /* SocketEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F531BCE69C00099F034 /* SocketEventHandler.swift */; };
+		2C646F641BCE69C00099F034 /* SocketFixUTF8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F541BCE69C00099F034 /* SocketFixUTF8.swift */; };
+		2C646F651BCE69C00099F034 /* SocketIOClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F551BCE69C00099F034 /* SocketIOClient.swift */; };
+		2C646F661BCE69C00099F034 /* SocketIOClientStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F561BCE69C00099F034 /* SocketIOClientStatus.swift */; };
+		2C646F671BCE69C00099F034 /* SocketLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F571BCE69C00099F034 /* SocketLogger.swift */; };
+		2C646F681BCE69C00099F034 /* SocketPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F581BCE69C00099F034 /* SocketPacket.swift */; };
+		2C646F691BCE69C00099F034 /* SocketParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F591BCE69C00099F034 /* SocketParser.swift */; };
+		2C646F6A1BCE69C00099F034 /* SocketStringReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5A1BCE69C00099F034 /* SocketStringReader.swift */; };
+		2C646F6B1BCE69C00099F034 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5B1BCE69C00099F034 /* SocketTypes.swift */; };
+		2C646F6C1BCE69C00099F034 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5C1BCE69C00099F034 /* SwiftRegex.swift */; };
+		2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F5D1BCE69C00099F034 /* WebSocket.swift */; };
+		2C646F701BCE96020099F034 /* STMShipmentRouteController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C646F6F1BCE96020099F034 /* STMShipmentRouteController.m */; };
 		2C6528F219576894008605D9 /* STMPartner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F119576894008605D9 /* STMPartner.m */; };
 		2C6528F519576894008605D9 /* STMCampaignPicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528F419576894008605D9 /* STMCampaignPicture.m */; };
 		2C6528FB19576894008605D9 /* STMLogMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C6528FA19576894008605D9 /* STMLogMessage.m */; };
@@ -324,6 +324,8 @@
 		2CA452E319649C5E00D93CA2 /* STMSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA452E219649C5E00D93CA2 /* STMSetting.m */; };
 		2CA611EC19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */; };
 		2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */; };
+		2CC1943D1BDF7227001F8E48 /* STMCustom1CVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */; };
+		2CC194401BDF7340001F8E48 /* STMCustom1CVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC1943F1BDF7340001F8E48 /* STMCustom1CVCell.m */; };
 		2CC47BD11AE63D0C008F5250 /* UIToolbar+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */; };
 		2CCD06D31B4EC1CE002591C4 /* STMShippingProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D21B4EC1CE002591C4 /* STMShippingProcessController.m */; };
 		2CCD06DA1B500AED002591C4 /* STMShipmentPosition+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D91B500AED002591C4 /* STMShipmentPosition+custom.m */; };
@@ -984,6 +986,9 @@
 		2CA611EA19FB7B1A0046ECF4 /* STMUncashingHandOverVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingHandOverVC.h; sourceTree = "<group>"; };
 		2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingHandOverVC.m; sourceTree = "<group>"; };
 		2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCameraOverlayView.xib; sourceTree = "<group>"; };
+		2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom1CVCell.xib; sourceTree = "<group>"; };
+		2CC1943E1BDF7340001F8E48 /* STMCustom1CVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom1CVCell.h; sourceTree = "<group>"; };
+		2CC1943F1BDF7340001F8E48 /* STMCustom1CVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom1CVCell.m; sourceTree = "<group>"; };
 		2CC47BCF1AE63D0C008F5250 /* UIToolbar+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIToolbar+custom.h"; sourceTree = "<group>"; };
 		2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIToolbar+custom.m"; sourceTree = "<group>"; };
 		2CCD06D11B4EC1CE002591C4 /* STMShippingProcessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingProcessController.h; sourceTree = "<group>"; };
@@ -1318,6 +1323,7 @@
 				2CF1265D1B78EC390059701F /* STMCustom9TVCell.xib */,
 				2C4620531B67B30C007FD646 /* STMVolumeTVCell.xib */,
 				2C4620651B6911DE007FD646 /* STMVolumeControlsTVCell.xib */,
+				2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */,
 			);
 			path = STMCustomCells;
 			sourceTree = "<group>";
@@ -1741,6 +1747,8 @@
 				2C4620561B67B349007FD646 /* STMVolumeTVCell.m */,
 				2C4620671B6912F5007FD646 /* STMVolumeControlsTVCell.h */,
 				2C4620681B6912F5007FD646 /* STMVolumeControlsTVCell.m */,
+				2CC1943E1BDF7340001F8E48 /* STMCustom1CVCell.h */,
+				2CC1943F1BDF7340001F8E48 /* STMCustom1CVCell.m */,
 			);
 			path = STMCustomTVCells;
 			sourceTree = "<group>";
@@ -2240,6 +2248,7 @@
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */,
 				2CF1264D1B778AB50059701F /* alphabetical_sorting.png in Resources */,
+				2CC1943D1BDF7227001F8E48 /* STMCustom1CVCell.xib in Resources */,
 				2C5763C11AA4752600B9FD2C /* beer_bottle-128.png in Resources */,
 				2C29497C1BDCFF800099F24F /* photoReports.png in Resources */,
 				2C1AB28A1B6E555500BF5C50 /* back.png in Resources */,
@@ -2490,6 +2499,7 @@
 				2C646F6B1BCE69C00099F034 /* SocketTypes.swift in Sources */,
 				2CCD06F91B5CDD5B002591C4 /* STMBatteryStatus.m in Sources */,
 				2C1727E61B89BB0A00C82ACB /* STMLocation.m in Sources */,
+				2CC194401BDF7340001F8E48 /* STMCustom1CVCell.m in Sources */,
 				2C81AD591AD1154C00246666 /* STMMessageController.m in Sources */,
 				2CFF9A8A1A67DE8A002B6392 /* STMClientDataController.m in Sources */,
 				2C02F2D41A8E22BF00E0E890 /* STMCashing.m in Sources */,
