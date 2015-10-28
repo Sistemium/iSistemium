@@ -8,6 +8,10 @@
 
 #import "STMVariableCellsHeightTVC.h"
 
+#import "STMDataModel.h"
+
+
 @interface STMCampaignGroupTVC : STMVariableCellsHeightTVC
+
 
 @end

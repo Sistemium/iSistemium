@@ -14,6 +14,13 @@
 
 #import "STMAuthController.h"
 
+#import "STMUI.h"
+#import "STMNS.h"
+
+#import "STMConstants.h"
+#import "STMFunctions.h"
+
+
 @interface STMFetchedResultsControllerTVC : UITableViewController <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;

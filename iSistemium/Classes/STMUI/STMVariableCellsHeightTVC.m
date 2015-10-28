@@ -7,7 +7,6 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
-#import "STMConstants.h"
 
 #import <Crashlytics/Crashlytics.h>
 

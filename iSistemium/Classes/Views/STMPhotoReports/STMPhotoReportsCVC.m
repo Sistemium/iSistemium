@@ -57,6 +57,8 @@ static NSString * const headerIdentifier = @"photoReportHeader";
         
         _selectedCampaignGroup = selectedCampaignGroup;
         
+        self.title = selectedCampaignGroup.name;
+        
         [self performFetch];
         
     }

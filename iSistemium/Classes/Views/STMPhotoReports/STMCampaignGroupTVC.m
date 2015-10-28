@@ -9,13 +9,16 @@
 #import "STMCampaignGroupTVC.h"
 
 #import "STMPhotoReportsSVC.h"
+#import "STMPhotoReportsOutletTVC.h"
 
 
 @interface STMCampaignGroupTVC ()
 
 @property (nonatomic, strong) STMPhotoReportsSVC *splitVC;
 
+
 @end
+
 
 @implementation STMCampaignGroupTVC
 
@@ -91,6 +94,12 @@
         detailText = [detailText stringByAppendingString:@" / "];
         detailText = [detailText stringByAppendingString:photoReportsStrings];
 
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+    } else {
+        
+        cell.accessoryType = UITableViewCellAccessoryNone;
+
     }
     
     cell.detailTextLabel.text = detailText;
@@ -112,6 +121,17 @@
         
         self.splitVC.detailVC.selectedCampaignGroup = campaignGroup;
         
+        NSSet *photoReports = [campaignGroup.campaigns valueForKeyPath:@"@distinctUnionOfSets.photoReports"];
+        
+        if (photoReports.count > 0) {
+            
+            STMPhotoReportsOutletTVC *outletTVC = [[STMPhotoReportsOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            outletTVC.selectedCampaignGroup = campaignGroup;
+            
+            [self.navigationController pushViewController:outletTVC animated:YES];
+            
+        }
+        
     }
     
 }
@@ -127,11 +147,28 @@
     
     [self.resultsController performFetch:nil];
     
+    self.title = NSLocalizedString(@"CAMPAIGNS", nil);
+    
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+
+    if (self.splitVC.detailVC.selectedCampaignGroup) {
+        
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:(STMCampaignGroup * _Nonnull)self.splitVC.detailVC.selectedCampaignGroup];
+        if (indexPath) [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+        self.splitVC.detailVC.selectedCampaignGroup = nil;
+        
+    }
+
 }
 
 - (void)didReceiveMemoryWarning {
