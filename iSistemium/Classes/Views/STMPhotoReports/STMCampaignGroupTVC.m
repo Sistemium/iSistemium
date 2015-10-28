@@ -14,7 +14,7 @@
 
 @interface STMCampaignGroupTVC ()
 
-@property (nonatomic, strong) STMPhotoReportsSVC *splitVC;
+@property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
 
 
 @end

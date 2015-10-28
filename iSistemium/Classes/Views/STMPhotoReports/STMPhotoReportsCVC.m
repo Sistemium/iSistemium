@@ -56,13 +56,36 @@ static NSString * const headerIdentifier = @"photoReportHeader";
     if (![_selectedCampaignGroup isEqual:selectedCampaignGroup]) {
         
         _selectedCampaignGroup = selectedCampaignGroup;
-        
-        self.title = selectedCampaignGroup.name;
-        
+
+        [self updateTitle];
         [self performFetch];
         
     }
     
+}
+
+- (void)setSelectedOutlet:(STMOutlet *)selectedOutlet {
+    
+    if (![_selectedOutlet isEqual:selectedOutlet]) {
+        
+        _selectedOutlet = selectedOutlet;
+        
+        [self updateTitle];
+        [self performFetch];
+        
+    }
+    
+}
+
+- (void)updateTitle {
+
+    NSMutableArray *titleArray = @[].mutableCopy;
+    
+    if (self.selectedCampaignGroup.name) [titleArray addObject:(NSString * _Nonnull)self.selectedCampaignGroup.name];
+    if (self.selectedOutlet.name) [titleArray addObject:(NSString * _Nonnull)self.selectedOutlet.name];
+
+    self.title = [titleArray componentsJoinedByString:@" / "];
+
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -110,55 +133,27 @@ static NSString * const headerIdentifier = @"photoReportHeader";
 
 - (NSPredicate *)currentPredicate {
     
-    NSPredicate *predicate = nil;
+    NSMutableArray *subpredicates = @[].mutableCopy;
     
     if (self.selectedCampaignGroup) {
-        predicate = [NSPredicate predicateWithFormat:@"campaign.campaignGroup == %@", self.selectedCampaignGroup];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"campaign.campaignGroup == %@", self.selectedCampaignGroup];
+        [subpredicates addObject:predicate];
+        
     }
+    
+    if (self.selectedOutlet) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.selectedOutlet];
+        [subpredicates addObject:predicate];
+        
+    }
+    
+    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
     
     return predicate;
     
 }
-
-//- (NSPredicate *)campaignPredicate {
-//    
-//    NSMutableArray *subpredicates = [NSMutableArray array];
-//    
-//    NSPredicate *campaignPredicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
-//    
-//    [subpredicates addObject:campaignPredicate];
-//    
-//    //    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
-//    //        [subpredicates addObject:[NSPredicate predicateWithFormat:@"outlet.name CONTAINS[cd] %@", self.searchBar.text]];
-//    //    }
-//    
-//    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
-//    
-//    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
-//    
-//    return predicate;
-//    
-//}
-//
-//- (NSPredicate *)outletPredicate {
-//    
-//    NSMutableArray *subpredicates = [NSMutableArray array];
-//    
-//    NSPredicate *outletPredicate = [NSPredicate predicateWithFormat:@"name != %@", nil];
-//    
-//    [subpredicates addObject:outletPredicate];
-//    
-//    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
-//        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
-//    }
-//    
-//    [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
-//    
-//    NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
-//    
-//    return predicate;
-//    
-//}
 
 - (CGSize)cellSize {
     

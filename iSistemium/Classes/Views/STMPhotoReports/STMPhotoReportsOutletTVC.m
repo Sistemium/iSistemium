@@ -8,8 +8,12 @@
 
 #import "STMPhotoReportsOutletTVC.h"
 
+#import "STMPhotoReportsSVC.h"
+
 
 @interface STMPhotoReportsOutletTVC ()
+
+@property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
 
 
 @end
@@ -18,6 +22,20 @@
 @implementation STMPhotoReportsOutletTVC
 
 @synthesize resultsController = _resultsController;
+
+- (STMPhotoReportsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMPhotoReportsSVC class]]) {
+            _splitVC = (STMPhotoReportsSVC *)self.splitViewController;
+        }
+        
+    }
+    
+    return _splitVC;
+    
+}
 
 - (NSString *)cellIdentifier {
     return @"photoReportsOutletCell";
@@ -100,6 +118,23 @@
     customCell.detailLabel.text = photosCountString;
     
     [super fillCell:customCell atIndexPath:indexPath];
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    
+    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
+    
+    if ([outlet isEqual:self.splitVC.detailVC.selectedOutlet]) {
+        
+        self.splitVC.detailVC.selectedOutlet = nil;
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+    } else {
+        
+        self.splitVC.detailVC.selectedOutlet = outlet;
+        
+    }
     
 }
 

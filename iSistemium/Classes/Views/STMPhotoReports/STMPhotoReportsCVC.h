@@ -14,6 +14,7 @@
 @interface STMPhotoReportsCVC : UICollectionViewController
 
 @property (nonatomic, weak) STMCampaignGroup *selectedCampaignGroup;
+@property (nonatomic, weak) STMOutlet *selectedOutlet;
 
 
 @end

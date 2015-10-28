@@ -12,7 +12,7 @@
 
 @interface STMPhotoReportsOutletTVC : STMVariableCellsHeightTVC
 
-@property (nonatomic, strong) STMCampaignGroup *selectedCampaignGroup;
+@property (nonatomic, weak) STMCampaignGroup *selectedCampaignGroup;
 
 
 @end
