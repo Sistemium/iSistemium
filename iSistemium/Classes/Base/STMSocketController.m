@@ -337,7 +337,7 @@
     
     NSString *eventString = [STMSocketController stringValueForEvent:event];
     
-    [socket once:eventString callback:^(NSArray *data, SocketAckEmitter *ack) {
+    [socket on:eventString callback:^(NSArray *data, SocketAckEmitter *ack) {
         
         switch (event) {
             case STMSocketEventConnect: {
