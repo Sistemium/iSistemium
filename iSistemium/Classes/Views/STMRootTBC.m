@@ -454,9 +454,11 @@
         
         [self registerTabWithStoryboardParameters:parameters atIndex:index];
         
+// temporary tab for coding
         [self registerTabWithStoryboardParameters:@{@"name": @"STMPhotoReports",
                                                     @"title": NSLocalizedString(@"PHOTO REPORTS", nil),
                                                     @"imageName": @"photoReports.png"} atIndex:6];
+// end of temporary tab
         
     }
 
