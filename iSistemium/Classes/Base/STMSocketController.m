@@ -544,6 +544,10 @@
 
 + (void)socket:(SocketIOClient *)socket receiveAuthorizationAckWithData:(NSArray *)data {
     
+    if (socket.status != SocketIOClientStatusConnected) {
+        return;
+    }
+    
     if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
         
         NSDictionary *dataDic = data.firstObject;
@@ -699,21 +703,27 @@
 
 - (void)appSettingsChanged:(NSNotification *)notification {
     
-    NSString *key = @"socketUrl";
+    STMSession *currentSession = [STMSessionManager sharedManager].currentSession;
     
-    if ([notification.userInfo.allKeys containsObject:key]) {
+    if ([currentSession.status isEqualToString:@"running"]) {
         
-        self.socketUrl = nil;
+        NSString *key = @"socketUrl";
         
-        if (self.isRunning) {
-
-            if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
-                [self reconnectSocket];
+        if ([notification.userInfo.allKeys containsObject:key]) {
+            
+            self.socketUrl = nil;
+            
+            if (self.isRunning) {
+                
+                if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
+                    [self reconnectSocket];
+                }
+                
+            } else {
+                
+                [STMSocketController startSocket];
+                
             }
-            
-        } else {
-            
-            [STMSocketController startSocket];
             
         }
 
