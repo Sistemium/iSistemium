@@ -391,61 +391,68 @@
         
     } else {
         
-//        stcTabs = [self testStcTabs];
-
-//        NSLog(@"stcTabs %@", stcTabs);
+        [self processTabsArray:stcTabs];
         
-        for (id tabsItem in stcTabs) {
-            
-            NSUInteger index = [stcTabs indexOfObject:tabsItem];
-            
-            if ([tabsItem isKindOfClass:[NSDictionary class]]) {
-                
-                NSDictionary *parameters = (NSDictionary *)tabsItem;
-            
-                NSString *minBuild = parameters[@"minBuild"];
-                NSString *maxBuild = parameters[@"maxBuild"];
-                BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
-                
-                if (minBuild && ([BUILD_VERSION integerValue] < [minBuild integerValue])) continue;
-                if (maxBuild && ([BUILD_VERSION integerValue] > [maxBuild integerValue])) continue;
-                
-                if (isDebug) {
-#ifdef DEBUG
-                    [self registerTabWithStoryboardParameters:parameters atIndex:index];
-#endif
-                } else {
-                    
-                    [self registerTabWithStoryboardParameters:parameters atIndex:index];
-                    
-                }
+    }
 
-            } else if ([tabsItem isKindOfClass:[NSArray class]]) {
-                
-                for (NSDictionary *parameters in tabsItem) {
-                    
-                    NSString *minBuild = parameters[@"minBuild"];
-                    NSString *maxBuild = parameters[@"maxBuild"];
-                    BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
-                    
-                    if (minBuild && ([BUILD_VERSION integerValue] < [minBuild integerValue])) continue;
-                    if (maxBuild && ([BUILD_VERSION integerValue] > [maxBuild integerValue])) continue;
-                    
-                    if (isDebug) {
-#ifdef DEBUG
-                        [self registerTabWithStoryboardParameters:parameters atIndex:index];
-#endif
-                    } else {
-                        
-                        [self registerTabWithStoryboardParameters:parameters atIndex:index];
-                        
-                    }
-                    
-                }
-                
-            }
+}
+
+- (void)processTabsArray:(NSArray *)stcTabs {
+    
+//    stcTabs = [self testStcTabs];
+//    NSLog(@"stcTabs %@", stcTabs);
+    
+    for (id tabItem in stcTabs) {
+        
+        NSUInteger index = [stcTabs indexOfObject:tabItem];
+        [self processTabItem:tabItem atIndex:index];
+        
+    }
+
+}
+
+- (void)processTabItem:(id)tabItem atIndex:(NSUInteger)index {
+    
+    if ([tabItem isKindOfClass:[NSDictionary class]]) {
+        
+        NSDictionary *parameters = (NSDictionary *)tabItem;
+        
+        [self processTabItemWithParameters:parameters atIndex:index];
+        
+    } else if ([tabItem isKindOfClass:[NSArray class]]) {
+        
+        for (id subItem in tabItem) {
+
+            [self processTabItem:subItem atIndex:index];
             
         }
+        
+    } else {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"stcTabs wrong format at index %lu", (unsigned long)index];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+        
+    }
+
+}
+
+- (void)processTabItemWithParameters:(NSDictionary *)parameters atIndex:(NSUInteger)index {
+    
+    NSString *minBuild = parameters[@"minBuild"];
+    NSString *maxBuild = parameters[@"maxBuild"];
+    
+    if (minBuild && ([BUILD_VERSION integerValue] < [minBuild integerValue])) return;
+    if (maxBuild && ([BUILD_VERSION integerValue] > [maxBuild integerValue])) return;
+
+    BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
+
+    if (isDebug) {
+#ifdef DEBUG
+        [self registerTabWithStoryboardParameters:parameters atIndex:index];
+#endif
+    } else {
+        
+        [self registerTabWithStoryboardParameters:parameters atIndex:index];
         
         [self registerTabWithStoryboardParameters:@{@"name": @"STMPhotoReports",
                                                     @"title": NSLocalizedString(@"PHOTO REPORTS", nil),
@@ -457,12 +464,16 @@
 
 - (NSArray *)testStcTabs {
     
+// stcTabs should be array with dictionaries and arrays (with dictionaries)
+    
     return @[
-                @{
-                    @"imageName": @"checked_user-128.png",
-                    @"name": @"STMProfile",
-                    @"title": @"Profile"
-                },
+                @[
+                    @{
+                        @"imageName": @"checked_user-128.png",
+                        @"name": @"STMProfile",
+                        @"title": @"Profile"
+                    }
+                ],
 //                @{
 //                    @"imageName": @"christmas_gift-128.png",
 //                    @"name": @"STMCampaigns",
@@ -503,7 +514,7 @@
                         @"imageName": @"bill-128.png",
                         @"minBuild": @"70",
                         @"name": @"STMOrders",
-                        @"title": @"Oreders"
+                        @"title": @"Orders"
                         }
                 ],
                 @[
