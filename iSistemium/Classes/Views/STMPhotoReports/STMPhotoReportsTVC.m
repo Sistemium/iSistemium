@@ -8,8 +8,12 @@
 
 #import "STMPhotoReportsTVC.h"
 
+#define LOCATION_IMAGE_SIZE 24
+
 
 @interface STMPhotoReportsTVC ()
+
+@property (nonatomic, strong) UIImage *locationImage;
 
 
 @end
@@ -22,6 +26,21 @@
 
 - (NSString *)cellIdentifier {
     return @"photoReportCell";
+}
+
+- (UIImage *)locationImage {
+    
+    if (!_locationImage) {
+        
+        UIImage *image = [UIImage imageNamed:@"location.png"];
+        image = [STMFunctions resizeImage:image toSize:CGSizeMake(LOCATION_IMAGE_SIZE, LOCATION_IMAGE_SIZE)];
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+        _locationImage = image;
+        
+    }
+    return _locationImage;
+    
 }
 
 - (void)setSelectedCampaignGroup:(STMCampaignGroup *)selectedCampaignGroup {
@@ -154,12 +173,68 @@
     cell.detailLabel.text = photoReport.campaign.name;
     
     if (photoReport.location) {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.frame = CGRectMake(0.0, 0.0, self.locationImage.size.width, self.locationImage.size.height);
+        [button setBackgroundImage:self.locationImage forState:UIControlStateNormal];
+        
+        [button addTarget:self action:@selector(locationButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+        button.backgroundColor = [UIColor clearColor];
+        
+        cell.accessoryView = button;
+        
     } else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        
+        cell.accessoryView = nil;
+        
     }
     
     cell.infoLabel.text = nil;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSLog(@"didSelectRowAtIndexPath %@", indexPath);
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"???"
+                                                        message:@"А тут вот не знаю, надо ли что-нибудь показать?"
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+    }];
+
+}
+
+- (void)locationButtonTapped:(id)sender event:(id)event {
+    
+    NSSet *touches = [event allTouches];
+    UITouch *touch = [touches anyObject];
+    CGPoint currentTouchPosition = [touch locationInView:self.tableView];
+    
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint: currentTouchPosition];
+    
+    if (indexPath != nil) {
+        
+        NSLog(@"locationButtonTapped for indexPath %@", indexPath);
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"!!!"
+                                                            message:@"Тут я покажу карту с пином"
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
+        
+    }
     
 }
 
