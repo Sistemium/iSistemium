@@ -154,7 +154,7 @@
             case SocketIOClientStatusNotConnected:
             case SocketIOClientStatusClosed: {
                 [sc.socket connect];
-                [sc performSelector:@selector(checkAuthorizationForSocket:) withObject:sc.socket afterDelay:CHECK_AUTHORIZATION_DELAY];
+//                [sc performSelector:@selector(checkAuthorizationForSocket:) withObject:sc.socket afterDelay:CHECK_AUTHORIZATION_DELAY];
                 break;
             }
             case SocketIOClientStatusConnecting: {
@@ -383,6 +383,8 @@
 //    NSLog(@"connectCallback data %@", data);
 //    NSLog(@"connectCallback ack %@", ack);
     NSLog(@"connectCallback socket %@", socket);
+    
+    [[self sharedInstance] performSelector:@selector(checkAuthorizationForSocket:) withObject:socket afterDelay:CHECK_AUTHORIZATION_DELAY];
 
     STMClientData *clientData = [STMClientDataController clientData];
     NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
@@ -521,7 +523,13 @@
         }
 
     } else {
+        
         NSLog(@"socket not connected");
+        
+        if ([self syncer].syncerState == STMSyncerSendData || [self syncer].syncerState == STMSyncerSendDataOnce) {
+            [self sendFinishedWithError:@"socket not connected"];
+        }
+        
     }
     
 }

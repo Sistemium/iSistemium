@@ -21,6 +21,8 @@
 
 #import "STMNS.h"
 
+#define FLUSH_LIMIT 99
+
 
 @interface STMObjectsController()
 
@@ -1007,6 +1009,10 @@
         for (NSString *name in backThreadEntitiesLifetimesDic.allKeys) {
             
             double lifeTime = [backThreadEntitiesLifetimesDic[name] doubleValue];
+            
+// !!!!!!
+//            if ([name isEqualToString:@"SaleOrder"]) lifeTime = 555;
+//
             NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
             
             NSString *capFirstLetter = (name) ? [[name substringToIndex:1] capitalizedString] : nil;
@@ -1017,11 +1023,22 @@
             
             STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
             request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-            request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
+            
+// !!!!!!
+//            if ([name isEqualToString:@"SaleOrder"]) {
+//                request.predicate = [NSPredicate predicateWithFormat:@"date < %@", terminatorDate];
+//            } else {
+                request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
+//            }
+            
             NSArray *fetchResult = [context executeFetchRequest:request error:&error];
             
             for (NSManagedObject *object in fetchResult) {
+                
                 [self checkObject:object forAddingTo:objectsSet];
+                
+                if (objectsSet.count > FLUSH_LIMIT) break;
+                
             }
             
         }
@@ -1036,6 +1053,11 @@
             
             NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
             [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+            
+            [[self document] saveDocument:^(BOOL success) {
+//                NSLog(@"NSDate date %@", [NSDate date]);
+            }];
+            
             
         } else {
             
