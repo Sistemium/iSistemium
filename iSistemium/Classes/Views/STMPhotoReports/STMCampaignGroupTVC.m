@@ -169,6 +169,8 @@
         self.splitVC.detailVC.selectedCampaignGroup = nil;
         
     }
+    
+    self.splitVC.detailVC.selectedOutlet = nil;
 
 }
 
