@@ -49,6 +49,7 @@
                                                                            selector:@selector(caseInsensitiveCompare:)];
         
         request.sortDescriptors = @[groupDescriptor];
+        request.predicate = [NSPredicate predicateWithFormat:@"campaigns.@count > 0"];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
