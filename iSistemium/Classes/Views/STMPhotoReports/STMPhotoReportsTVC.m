@@ -10,10 +10,19 @@
 
 #define LOCATION_IMAGE_SIZE 24
 
+typedef NS_ENUM(NSUInteger, STMPhotoReportGrouping) {
+    STMPhotoReportGroupingCampaign,
+    STMPhotoReportGroupingOutlet
+};
 
-@interface STMPhotoReportsTVC ()
+
+@interface STMPhotoReportsTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, strong) UIImage *locationImage;
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *groupSwitcher;
+
+@property (nonatomic) STMPhotoReportGrouping currentGrouping;
 
 
 @end
@@ -90,17 +99,41 @@
                                                                                ascending:YES
                                                                                 selector:@selector(caseInsensitiveCompare:)];
         
+        NSSortDescriptor *campaignNameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"campaign.name"
+                                                                                 ascending:YES
+                                                                                  selector:@selector(caseInsensitiveCompare:)];
+
         NSSortDescriptor *deviceCtsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
                                                                               ascending:YES
                                                                                selector:@selector(compare:)];
         
-        request.sortDescriptors = @[outletNameDescriptor, deviceCtsDescriptor];
+        NSString *sectionNameKeyPath = nil;
+        
+        switch (self.currentGrouping) {
+            case STMPhotoReportGroupingCampaign: {
+                
+                request.sortDescriptors = @[campaignNameDescriptor, outletNameDescriptor, deviceCtsDescriptor];
+                sectionNameKeyPath = @"campaign.name";
+                
+                break;
+            }
+            case STMPhotoReportGroupingOutlet: {
+                
+                request.sortDescriptors = @[outletNameDescriptor, campaignNameDescriptor, deviceCtsDescriptor];
+                sectionNameKeyPath = @"outlet.name";
+
+                break;
+            }
+            default: {
+                break;
+            }
+        }
         
         request.predicate = [self currentPredicate];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
-                                                                   sectionNameKeyPath:@"outlet.name"
+                                                                   sectionNameKeyPath:sectionNameKeyPath
                                                                             cacheName:nil];
         
         _resultsController.delegate = self;
@@ -152,7 +185,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom4TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+    STMCustom10TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
     
     [self fillCell:cell atIndexPath:indexPath];
     
@@ -160,7 +193,7 @@
     
 }
 
-- (void)fillCell:(STMCustom4TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillCell:(STMCustom10TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMPhotoReport *photoReport = [self.resultsController objectAtIndexPath:indexPath];
     
@@ -170,7 +203,19 @@
     
     cell.titleLabel.text = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:photoReport.deviceCts];
     
-    cell.detailLabel.text = photoReport.campaign.name;
+    switch (self.currentGrouping) {
+        case STMPhotoReportGroupingCampaign: {
+            cell.detailLabel.text = photoReport.outlet.name;
+            break;
+        }
+        case STMPhotoReportGroupingOutlet: {
+            cell.detailLabel.text = photoReport.campaign.name;
+            break;
+        }
+        default: {
+            break;
+        }
+    }
     
     if (photoReport.location) {
         
@@ -189,7 +234,6 @@
         
     }
     
-    cell.infoLabel.text = nil;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
 }
@@ -239,14 +283,102 @@
 }
 
 
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    switch (actionSheet.tag) {
+        case 234:
+            
+            switch (buttonIndex) {
+                case 0:
+                    self.currentGrouping = STMPhotoReportGroupingCampaign;
+                    break;
+
+                case 1:
+                    self.currentGrouping = STMPhotoReportGroupingOutlet;
+                    break;
+
+                default:
+                    break;
+            }
+            
+            [self performFetch];
+            [self updateGroupSwitcher];
+            
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+
+#pragma mark - group switcher
+
+- (IBAction)groupSwitcherPressed:(id)sender {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"GROUPING BY CAMPAIGN", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"GROUPING BY OUTLET", nil)];
+        
+        actionSheet.tag = 234;
+        actionSheet.delegate = self;
+        
+        [actionSheet showFromBarButtonItem:self.groupSwitcher animated:YES];
+        
+    }];
+    
+}
+
+- (void)setupGroupSwitcher {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *key = [@"currentGrouping_" stringByAppendingString:[STMAuthController authController].userID];
+    
+    self.currentGrouping = [defaults integerForKey:key];
+
+    [self updateGroupSwitcher];
+    
+}
+
+- (void)updateGroupSwitcher {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *key = [@"currentGrouping_" stringByAppendingString:[STMAuthController authController].userID];
+    [defaults setInteger:self.currentGrouping forKey:key];
+    [defaults synchronize];
+    
+    switch (self.currentGrouping) {
+        case STMPhotoReportGroupingCampaign: {
+            self.groupSwitcher.title = NSLocalizedString(@"GROUPING BY CAMPAIGN", nil);
+            break;
+        }
+        case STMPhotoReportGroupingOutlet: {
+            self.groupSwitcher.title = NSLocalizedString(@"GROUPING BY OUTLET", nil);
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
+}
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [super customInit];
     
-    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom4TVCell class]) bundle:nil];
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom10TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
+    
+    [self setupGroupSwitcher];
     
     [self performFetch];
     

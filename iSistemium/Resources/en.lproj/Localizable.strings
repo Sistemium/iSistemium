@@ -367,4 +367,5 @@
 "ADDRESS GEOCODING FAILED" = "Address geocoding failed";
 "PICK A NEW POINT NUMBER" = "Pick a new point number:";
 "UNFINISHED ROUTES ALERT MESSAGE" = "Have unfinished routes";
-
+"GROUPING BY CAMPAIGN" = "Grouping by campaign";
+"GROUPING BY OUTLET" = "Grouping by outlet";

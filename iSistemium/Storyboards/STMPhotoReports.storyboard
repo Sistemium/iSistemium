@@ -89,7 +89,18 @@
                             <outlet property="delegate" destination="lwQ-Nk-rpl" id="L3t-QD-oiE"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="7D1-Mx-xuC"/>
+                        <barButtonItem title="Group switcher" id="qa5-kO-xcH">
+                            <connections>
+                                <action selector="groupSwitcherPressed:" destination="lwQ-Nk-rpl" id="87b-sB-Jfk"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="z0e-Bl-p3h"/>
+                    <connections>
+                        <outlet property="groupSwitcher" destination="qa5-kO-xcH" id="W2I-Ru-tlx"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gzy-Ef-0yB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

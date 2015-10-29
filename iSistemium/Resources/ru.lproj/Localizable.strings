@@ -367,5 +367,7 @@
 "ADDRESS GEOCODING FAILED" = "Не могу получить координаты по данному адресу";
 "PICK A NEW POINT NUMBER" = "Выберите новый номер:";
 "UNFINISHED ROUTES ALERT MESSAGE" = "Имеются незавершённые маршруты.";
+"GROUPING BY CAMPAIGN" = "Группировка по акциям";
+"GROUPING BY OUTLET" = "Группировка по точкам";
 
 
