@@ -50,38 +50,48 @@
             </objects>
             <point key="canvasLocation" x="1957" y="-209"/>
         </scene>
-        <!--Photo ReportsCVC-->
-        <scene sceneID="gDt-cm-Oyd">
+        <!--Photo ReportsTVC-->
+        <scene sceneID="dyx-NA-bCd">
             <objects>
-                <collectionViewController id="BHJ-fw-jKq" customClass="STMPhotoReportsCVC" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="DSb-re-Sgk">
+                <tableViewController id="lwQ-Nk-rpl" customClass="STMPhotoReportsTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="d7X-cI-PfT">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="qtM-g1-Fzc">
-                            <size key="itemSize" width="50" height="50"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="photoReportCell" id="3bb-Fn-eGC">
-                                <rect key="frame" x="0.0" y="64" width="50" height="50"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="photoReportCell" textLabel="grF-Au-yPW" detailTextLabel="j2y-9V-Ji6" style="IBUITableViewCellStyleSubtitle" id="uwG-4l-ur3" customClass="STMTableViewCell">
+                                <rect key="frame" x="0.0" y="113.5" width="768" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uwG-4l-ur3" id="dYX-Ar-Ug8">
+                                    <rect key="frame" x="0.0" y="0.0" width="768" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                            </collectionViewCell>
-                        </cells>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="grF-Au-yPW">
+                                            <rect key="frame" x="68" y="6" width="31.5" height="19.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="j2y-9V-Ji6">
+                                            <rect key="frame" x="68" y="25.5" width="40.5" height="13.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="BHJ-fw-jKq" id="yDj-uZ-HpT"/>
-                            <outlet property="delegate" destination="BHJ-fw-jKq" id="2cC-y2-SUx"/>
+                            <outlet property="dataSource" destination="lwQ-Nk-rpl" id="uT3-48-HlF"/>
+                            <outlet property="delegate" destination="lwQ-Nk-rpl" id="L3t-QD-oiE"/>
                         </connections>
-                    </collectionView>
-                    <navigationItem key="navigationItem" id="trf-JH-r8U"/>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="MLd-fh-I9I" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="z0e-Bl-p3h"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gzy-Ef-0yB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2181" y="911"/>
         </scene>
@@ -133,7 +143,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
-                        <segue destination="BHJ-fw-jKq" kind="relationship" relationship="rootViewController" id="3yV-7G-Bzq"/>
+                        <segue destination="lwQ-Nk-rpl" kind="relationship" relationship="rootViewController" id="Zph-qx-27U"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fsv-xH-DvB" userLabel="First Responder" sceneMemberID="firstResponder"/>

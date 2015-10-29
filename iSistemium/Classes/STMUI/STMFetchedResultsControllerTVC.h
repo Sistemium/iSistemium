@@ -26,6 +26,8 @@
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
 
+@property (nonatomic, strong) NSString *cellIdentifier;
+
 @property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
 @property (nonatomic, strong) NSMutableArray *deletedRowIndexPaths;

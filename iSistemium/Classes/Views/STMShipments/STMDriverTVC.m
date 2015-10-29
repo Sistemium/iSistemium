@@ -19,7 +19,6 @@
 @interface STMDriverTVC ()
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
-@property (nonatomic, strong) NSString *cellIdentifier;
 @property (nonatomic, strong) NSString *shipmentRoutesWorkflow;
 
 @end

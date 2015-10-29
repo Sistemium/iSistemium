@@ -1,17 +1,17 @@
 //
-//  STMPhotoReportsCVC.h
+//  STMPhotoReportsTVC.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 26/10/15.
+//  Created by Maxim Grigoriev on 29/10/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "STMFetchedResultsControllerTVC.h"
 
 #import "STMDataModel.h"
 
 
-@interface STMPhotoReportsCVC : UICollectionViewController
+@interface STMPhotoReportsTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, weak) STMCampaignGroup *selectedCampaignGroup;
 @property (nonatomic, weak) STMOutlet *selectedOutlet;

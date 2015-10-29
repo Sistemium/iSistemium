@@ -37,7 +37,7 @@
     
 }
 
-- (STMPhotoReportsCVC *)detailVC {
+- (STMPhotoReportsTVC *)detailVC {
     
     if (!_detailVC) {
         
@@ -45,8 +45,8 @@
         
         UIViewController *detailVC = navController.viewControllers[0];
         
-        if ([detailVC isKindOfClass:[STMPhotoReportsCVC class]]) {
-            _detailVC = (STMPhotoReportsCVC *)detailVC;
+        if ([detailVC isKindOfClass:[STMPhotoReportsTVC class]]) {
+            _detailVC = (STMPhotoReportsTVC *)detailVC;
         }
         
     }
