@@ -21,7 +21,7 @@
 
 #import "STMNS.h"
 
-#define FLUSH_LIMIT 99
+#define FLUSH_LIMIT 17
 
 
 @interface STMObjectsController()
@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSMutableDictionary *entitiesOwnRelationships;
 @property (nonatomic, strong) NSMutableDictionary *entitiesSingleRelationships;
 @property (nonatomic, strong) NSMutableDictionary *objectsCache;
+@property (nonatomic) BOOL isInFlushingProcess;
 
 
 @end
@@ -113,6 +114,16 @@
                name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:nil];
 
+    [nc addObserver:self
+           selector:@selector(objectContextDidSave:)
+               name:NSManagedObjectContextDidSaveNotification
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(saveDocumentSuccessfully)
+               name:@"saveDocumentSuccessfully"
+             object:nil];
+    
 }
 
 - (void)removeObservers {
@@ -132,6 +143,35 @@
     }
     
 }
+
+- (void)objectContextDidSave:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[NSManagedObjectContext class]]) {
+        
+        NSManagedObjectContext *context = (NSManagedObjectContext *)notification.object;
+        
+        if ([context isEqual:[STMObjectsController document].managedObjectContext]) {
+
+            if (self.isInFlushingProcess) {
+                
+                if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+                    [STMObjectsController checkObjectsForFlushing];
+                } else {
+                    self.isInFlushingProcess = NO;
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+- (void)saveDocumentSuccessfully {
+    
+}
+
 
 #pragma mark - singleton
 
@@ -940,34 +980,19 @@
 + (void)removeObject:(NSManagedObject *)object inContext:(NSManagedObjectContext *)context {
     
     if (!context) context = [self document].managedObjectContext;
-
-//    dispatch_async(dispatch_get_main_queue(), ^{
     
-        if ([object valueForKey:@"xid"]) {
-            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
-        }
-        
-//    });
+    if ([object valueForKey:@"xid"]) {
+        [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
+    }
     
-//    [context performBlock:^{
-    
+    [context performBlock:^{
         [context deleteObject:object];
-        
-//        [[self document] saveDocument:^(BOOL success) {
-//            
-//        }];
-        
-//    }];
-
+    }];
+    
 }
 
 + (void)removeObject:(NSManagedObject *)object {
-
     [self removeObject:object inContext:nil];
-    
-//    [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
-//    [self.document.managedObjectContext deleteObject:object];
-
 }
 
 + (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object {
@@ -986,6 +1011,10 @@
 }
 
 + (void)checkObjectsForFlushing {
+    
+    NSLogMethodName;
+    
+    [self sharedController].isInFlushingProcess = NO;
     
     NSDate *startFlushing = [NSDate date];
     
@@ -1023,6 +1052,7 @@
             
             STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
             request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+            request.fetchLimit = FLUSH_LIMIT;
             
 // !!!!!!
 //            if ([name isEqualToString:@"SaleOrder"]) {
@@ -1037,12 +1067,12 @@
                 
                 [self checkObject:object forAddingTo:objectsSet];
                 
-                if (objectsSet.count > FLUSH_LIMIT) break;
+//                if (objectsSet.count > FLUSH_LIMIT) break;
                 
             }
             
         }
-        
+    
         if (objectsSet.count > 0) {
             
             for (NSManagedObject *object in objectsSet) {
@@ -1054,8 +1084,10 @@
             NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
             [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
             
+            [self sharedController].isInFlushingProcess = YES;
+
             [[self document] saveDocument:^(BOOL success) {
-//                NSLog(@"NSDate date %@", [NSDate date]);
+
             }];
             
             
