@@ -28,7 +28,7 @@
 #include "STMDebt+Cashing.h"
 #include "STMDriver.h"
 
-#include "STMEntity+custom.h"
+#include "STMEntity.h"
 
 #include "STMLocation.h"
 #include "STMLogMessage+dayAsString.h"
