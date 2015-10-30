@@ -1,37 +1,47 @@
 //
-//  STMPhotoReportsTVC.m
+//  STMPhotoReportsDetailTVC.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 29/10/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMPhotoReportsTVC.h"
+#import "STMPhotoReportsDetailTVC.h"
+
+#import "STMPhotoReportsSVC.h"
+
 
 #define LOCATION_IMAGE_SIZE 24
 
-typedef NS_ENUM(NSUInteger, STMPhotoReportGrouping) {
-    STMPhotoReportGroupingCampaign,
-    STMPhotoReportGroupingOutlet
-};
 
-
-@interface STMPhotoReportsTVC () <UIActionSheetDelegate>
+@interface STMPhotoReportsDetailTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, strong) UIImage *locationImage;
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *groupSwitcher;
 
-@property (nonatomic) STMPhotoReportGrouping currentGrouping;
-
+@property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
 
 @end
 
 
-@implementation STMPhotoReportsTVC
+@implementation STMPhotoReportsDetailTVC
 
 @synthesize resultsController = _resultsController;
 
+- (STMPhotoReportsSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMPhotoReportsSVC class]]) {
+            _splitVC = (STMPhotoReportsSVC *)self.splitViewController;
+        }
+        
+    }
+    
+    return _splitVC;
+    
+}
 
 - (NSString *)cellIdentifier {
     return @"photoReportCell";
@@ -75,6 +85,15 @@ typedef NS_ENUM(NSUInteger, STMPhotoReportGrouping) {
         [self performFetch];
         
     }
+    
+}
+
+- (void)setCurrentGrouping:(STMPhotoReportGrouping)currentGrouping {
+    
+    _currentGrouping = currentGrouping;
+    
+    [self updateGroupSwitcher];
+    [self.filterTVC photoReportGroupingChanged];
     
 }
 
@@ -283,6 +302,17 @@ typedef NS_ENUM(NSUInteger, STMPhotoReportGrouping) {
 }
 
 
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+
+    [super controllerDidChangeContent:controller];
+    
+    [self.splitVC.masterVC photoReportsWasUpdated];
+    
+}
+
+
 #pragma mark - UIActionSheetDelegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -304,7 +334,7 @@ typedef NS_ENUM(NSUInteger, STMPhotoReportGrouping) {
             }
             
             [self performFetch];
-            [self updateGroupSwitcher];
+//            [self updateGroupSwitcher];
             
             break;
             
@@ -342,7 +372,7 @@ typedef NS_ENUM(NSUInteger, STMPhotoReportGrouping) {
     
     self.currentGrouping = [defaults integerForKey:key];
 
-    [self updateGroupSwitcher];
+//    [self updateGroupSwitcher];
     
 }
 

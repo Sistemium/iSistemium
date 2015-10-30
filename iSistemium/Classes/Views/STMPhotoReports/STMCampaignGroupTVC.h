@@ -13,5 +13,7 @@
 
 @interface STMCampaignGroupTVC : STMVariableCellsHeightTVC
 
+- (void)photoReportsWasUpdated;
+
 
 @end

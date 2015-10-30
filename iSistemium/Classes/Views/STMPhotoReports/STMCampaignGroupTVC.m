@@ -9,7 +9,7 @@
 #import "STMCampaignGroupTVC.h"
 
 #import "STMPhotoReportsSVC.h"
-#import "STMPhotoReportsOutletTVC.h"
+#import "STMPhotoReportsFilterTVC.h"
 
 
 @interface STMCampaignGroupTVC ()
@@ -36,6 +36,10 @@
     
     return _splitVC;
     
+}
+
+- (void)photoReportsWasUpdated {
+    [self.tableView reloadData];
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -126,10 +130,12 @@
         
         if (photoReports.count > 0) {
             
-            STMPhotoReportsOutletTVC *outletTVC = [[STMPhotoReportsOutletTVC alloc] initWithStyle:UITableViewStyleGrouped];
-            outletTVC.selectedCampaignGroup = campaignGroup;
+            STMPhotoReportsFilterTVC *filterTVC = [[STMPhotoReportsFilterTVC alloc] initWithStyle:UITableViewStyleGrouped];
+            filterTVC.selectedCampaignGroup = campaignGroup;
             
-            [self.navigationController pushViewController:outletTVC animated:YES];
+            self.splitVC.detailVC.filterTVC = filterTVC;
+            
+            [self.navigationController pushViewController:filterTVC animated:YES];
             
         }
         

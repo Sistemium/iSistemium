@@ -1,5 +1,5 @@
 //
-//  STMPhotoReportsOutletTVC.h
+//  STMPhotoReportsFilterTVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 28/10/15.
@@ -10,9 +10,11 @@
 #import "STMDataModel.h"
 
 
-@interface STMPhotoReportsOutletTVC : STMVariableCellsHeightTVC
+@interface STMPhotoReportsFilterTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, weak) STMCampaignGroup *selectedCampaignGroup;
+
+- (void)photoReportGroupingChanged;
 
 
 @end
