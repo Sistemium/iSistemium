@@ -877,6 +877,26 @@
 
 #pragma mark - getting entity properties
 
++ (NSArray *)attributesForEntityName:(NSString *)entityName withType:(NSAttributeType)type {
+    
+    STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    
+    NSMutableArray *resultSet = @[].mutableCopy;
+
+    for (NSString *key in objectEntity.attributesByName.allKeys) {
+        
+        NSAttributeDescription *attribute = objectEntity.attributesByName[key];
+        
+        if (attribute.attributeType == type) {
+            [resultSet addObject:key];
+        }
+        
+    }
+    
+    return resultSet;
+
+}
+
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName {
     
     NSMutableDictionary *entitiesOwnKeys = [self sharedController].entitiesOwnKeys;
@@ -885,10 +905,10 @@
     if (!objectKeys) {
 
         STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
-        NSSet *coreKeys = [NSSet setWithArray:[[coreEntity attributesByName] allKeys]];
+        NSSet *coreKeys = [NSSet setWithArray:coreEntity.attributesByName.allKeys];
 
         STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-        objectKeys = [NSMutableSet setWithArray:[[objectEntity attributesByName] allKeys]];
+        objectKeys = [NSMutableSet setWithArray:objectEntity.attributesByName.allKeys];
         [objectKeys minusSet:coreKeys];
         
         entitiesOwnKeys[entityName] = objectKeys;
@@ -1030,82 +1050,72 @@
 
     NSMutableDictionary *entityDic = [NSMutableDictionary dictionary];
     
-    for (STMEntity *entity in entitiesWithLifeTime) entityDic[entity.name] = entity.lifeTime;
-
-    NSDictionary *backThreadEntitiesLifetimesDic = [entityDic copy];
-    
-//    backThreadEntitiesLifetimesDic = @{@"Location": @(0.1),
-//                                       @"LogMessage": @(0.1)};
-    
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-    
-        NSManagedObjectContext *context = [self document].managedObjectContext;
+    for (STMEntity *entity in entitiesWithLifeTime) {
         
-        NSMutableSet *objectsSet = [NSMutableSet set];
-        
-        for (NSString *name in backThreadEntitiesLifetimesDic.allKeys) {
+        if (entity.name) {
             
-            double lifeTime = [backThreadEntitiesLifetimesDic[name] doubleValue];
-            
-// !!!!!!
-//            if ([name isEqualToString:@"SaleOrder"]) lifeTime = 555;
-//
-            NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
-            
-            NSString *capFirstLetter = (name) ? [[name substringToIndex:1] capitalizedString] : nil;
-            NSString *capEntityName = [name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
+            NSString *capFirstLetter = [[entity.name substringToIndex:1] capitalizedString];
+            NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
             NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
-            
-            NSError *error;
-            
-            STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-            request.fetchLimit = FLUSH_LIMIT;
-            
-// !!!!!!
-//            if ([name isEqualToString:@"SaleOrder"]) {
-//                request.predicate = [NSPredicate predicateWithFormat:@"date < %@", terminatorDate];
-//            } else {
-                request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
-//            }
-            
-            NSArray *fetchResult = [context executeFetchRequest:request error:&error];
-            
-            for (NSManagedObject *object in fetchResult) {
-                
-                [self checkObject:object forAddingTo:objectsSet];
-                
-//                if (objectsSet.count > FLUSH_LIMIT) break;
-                
-            }
+         
+            entityDic[entityName] = @{@"lifeTime": entity.lifeTime,
+                                      @"lifeTimeDateField": entity.lifeTimeDateField};
             
         }
+        
+    }
     
-        if (objectsSet.count > 0) {
+    NSManagedObjectContext *context = [self document].managedObjectContext;
+    
+    NSMutableSet *objectsSet = [NSMutableSet set];
+    
+    for (NSString *entityName in entityDic.allKeys) {
+        
+        double lifeTime = [entityDic[entityName][@"lifeTime"] doubleValue];
+        NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:startFlushing];
+        
+        NSString *dateField = entityDic[entityName][@"lifeTimeDateField"];
+        NSArray *availableDateKeys = [self attributesForEntityName:entityName withType:NSDateAttributeType];
+        dateField = ([availableDateKeys containsObject:dateField]) ? dateField : @"deviceCts";
+        
+        NSError *error;
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:dateField ascending:YES selector:@selector(compare:)]];
+        request.fetchLimit = FLUSH_LIMIT;
+        
+        NSString *predicateString = [dateField stringByAppendingString:@" < %@"];
+        request.predicate = [NSPredicate predicateWithFormat:predicateString, terminatorDate];
 
-            for (NSManagedObject *object in objectsSet) {
-                [self removeObject:object inContext:context];
-            }
-            
-            NSTimeInterval flushingTime = [[NSDate date] timeIntervalSinceDate:startFlushing];
-            
-            NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
-            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
-            
-            [self sharedController].isInFlushingProcess = YES;
+        NSArray *fetchResult = [context executeFetchRequest:request error:&error];
+        
+        for (NSManagedObject *object in fetchResult) [self checkObject:object forAddingTo:objectsSet];
 
-            [[self document] saveDocument:^(BOOL success) {
+    }
 
-            }];
-            
-            
-        } else {
-            
-            NSLog(@"No objects for flushing");
-            
+    if (objectsSet.count > 0) {
+
+        for (NSManagedObject *object in objectsSet) {
+            [self removeObject:object inContext:context];
         }
+        
+        NSTimeInterval flushingTime = [[NSDate date] timeIntervalSinceDate:startFlushing];
+        
+        NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+        
+        [self sharedController].isInFlushingProcess = YES;
 
-//    });
+        [[self document] saveDocument:^(BOOL success) {
+
+        }];
+        
+        
+    } else {
+        
+        NSLog(@"No objects for flushing");
+        
+    }
     
 }
 
