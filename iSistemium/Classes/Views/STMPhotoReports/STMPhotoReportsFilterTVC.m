@@ -94,18 +94,18 @@
 - (NSFetchedResultsController *)campaignResultsController {
 
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
-    
+
     NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name"
                                                                      ascending:YES
                                                                       selector:@selector(caseInsensitiveCompare:)];
-    
+
     request.sortDescriptors = @[nameDescriptor];
     
-    request.predicate = [NSPredicate predicateWithFormat:@"campaignGroup == %@ AND name != %@ AND photoReports.@count > 0", self.selectedCampaignGroup, nil];
+    request.predicate = [NSPredicate predicateWithFormat:@"campaignGroup == %@ AND name != %@", self.selectedCampaignGroup, nil];
     
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                managedObjectContext:self.document.managedObjectContext
-                                                 sectionNameKeyPath:@"campaignGroup.displayName"
+                                                 sectionNameKeyPath:nil
                                                           cacheName:nil];
 
 }
@@ -168,7 +168,10 @@
     
     cell.titleLabel.text = outlet.shortName;
     
-    NSUInteger count = outlet.photoReports.count;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"campaign.campaignGroup == %@", self.selectedCampaignGroup];
+    NSSet *photoReports = [outlet.photoReports filteredSetUsingPredicate:predicate];
+    
+    NSUInteger count = photoReports.count;
     
     NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(@"PHOTO", nil)];
     
@@ -180,22 +183,47 @@
     
     STMCampaign *campaign = [self.resultsController objectAtIndexPath:indexPath];
     
-    UIColor *textColor = [UIColor blackColor];
-    
-    cell.titleLabel.textColor = textColor;
-    cell.detailLabel.textColor = textColor;
-    
     cell.titleLabel.text = campaign.name;
     
     NSUInteger count = campaign.photoReports.count;
     
-    NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(@"PHOTO", nil)];
+    UIColor *textColor = (count > 0) ? [UIColor blackColor] : [UIColor lightGrayColor];
     
-    cell.detailLabel.text = photosCountString;
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
 
+    if (count > 0) {
+    
+        NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(@"PHOTO", nil)];
+        cell.detailLabel.text = photosCountString;
+        
+    } else {
+        
+        cell.detailLabel.text = nil;
+
+    }
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    
+    switch (self.splitVC.detailVC.currentGrouping) {
+        case STMPhotoReportGroupingCampaign: {
+            [self tableView:tableView didSelectOutletAtIndexPath:indexPath];
+            break;
+        }
+        case STMPhotoReportGroupingOutlet: {
+            [self tableView:tableView didSelectCampaignAtIndexPath:indexPath];
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectOutletAtIndexPath:(nonnull NSIndexPath *)indexPath {
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
@@ -209,7 +237,24 @@
         self.splitVC.detailVC.selectedOutlet = outlet;
         
     }
+
+}
+
+- (void)tableView:(UITableView *)tableView didSelectCampaignAtIndexPath:(nonnull NSIndexPath *)indexPath {
     
+    STMCampaign *campaign = [self.resultsController objectAtIndexPath:indexPath];
+    
+    if ([campaign isEqual:self.splitVC.detailVC.selectedCampaign]) {
+        
+        self.splitVC.detailVC.selectedCampaign = nil;
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+    } else {
+        
+        self.splitVC.detailVC.selectedCampaign = campaign;
+        
+    }
+
 }
 
 

@@ -2,8 +2,8 @@
 //  STMCampaign.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 04/02/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 30/10/15.
+//  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
 #import "STMCampaign.h"
@@ -13,16 +13,21 @@
 #import "STMOutlet.h"
 #import "STMPhotoReport.h"
 
-
 @implementation STMCampaign
 
-@dynamic gain;
-@dynamic goal;
-@dynamic name;
-@dynamic articles;
-@dynamic outlets;
-@dynamic photoReports;
-@dynamic pictures;
-@dynamic campaignGroup;
+- (BOOL)photoReportsArePresent {
+    
+    if (self.photoReports.count == 0) {
+        
+        return NO;
+        
+    } else {
+        
+        return YES;
+        
+    }
+    
+}
+
 
 @end

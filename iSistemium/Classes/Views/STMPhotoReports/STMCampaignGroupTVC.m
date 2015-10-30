@@ -176,6 +176,7 @@
         
     }
     
+    self.splitVC.detailVC.selectedCampaign = nil;
     self.splitVC.detailVC.selectedOutlet = nil;
 
 }

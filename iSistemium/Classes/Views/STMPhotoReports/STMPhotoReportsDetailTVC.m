@@ -88,6 +88,19 @@
     
 }
 
+- (void)setSelectedCampaign:(STMCampaign *)selectedCampaign {
+    
+    if (![_selectedCampaign isEqual:selectedCampaign]) {
+        
+        _selectedCampaign = selectedCampaign;
+
+        [self updateTitle];
+        [self performFetch];
+
+    }
+    
+}
+
 - (void)setCurrentGrouping:(STMPhotoReportGrouping)currentGrouping {
     
     _currentGrouping = currentGrouping;
@@ -101,7 +114,12 @@
     
     NSMutableArray *titleArray = @[].mutableCopy;
     
-    if (self.selectedCampaignGroup.name) [titleArray addObject:(NSString * _Nonnull)self.selectedCampaignGroup.name];
+    if (self.selectedCampaign.name) {
+        [titleArray addObject:(NSString * _Nonnull)self.selectedCampaign.name];
+    } else {
+        if (self.selectedCampaignGroup.name) [titleArray addObject:(NSString * _Nonnull)self.selectedCampaignGroup.name];
+    }
+    
     if (self.selectedOutlet.name) [titleArray addObject:(NSString * _Nonnull)self.selectedOutlet.name];
     
     self.title = [titleArray componentsJoinedByString:@" / "];
@@ -185,7 +203,14 @@
         [subpredicates addObject:predicate];
         
     }
-    
+
+    if (self.selectedCampaign) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.selectedCampaign];
+        [subpredicates addObject:predicate];
+        
+    }
+
     if (self.selectedOutlet) {
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"outlet == %@", self.selectedOutlet];

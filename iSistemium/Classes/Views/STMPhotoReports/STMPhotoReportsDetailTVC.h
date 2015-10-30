@@ -23,6 +23,8 @@ typedef NS_ENUM(NSUInteger, STMPhotoReportGrouping) {
 
 @property (nonatomic, weak) STMCampaignGroup *selectedCampaignGroup;
 @property (nonatomic, weak) STMOutlet *selectedOutlet;
+@property (nonatomic, weak) STMCampaign *selectedCampaign;
+
 @property (nonatomic) STMPhotoReportGrouping currentGrouping;
 @property (nonatomic, weak) STMPhotoReportsFilterTVC *filterTVC;
 
