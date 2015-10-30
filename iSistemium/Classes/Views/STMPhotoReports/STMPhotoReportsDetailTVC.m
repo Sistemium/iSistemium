@@ -393,8 +393,25 @@
         
         UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
         
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"GROUPING BY CAMPAIGN", nil)];
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"GROUPING BY OUTLET", nil)];
+        NSString *campaignButtonTitle = NSLocalizedString(@"GROUPING BY CAMPAIGN", nil);
+        NSString *outletButtonTitle = NSLocalizedString(@"GROUPING BY OUTLET", nil);
+        
+        switch (self.currentGrouping) {
+            case STMPhotoReportGroupingCampaign: {
+                campaignButtonTitle = [@"✓ " stringByAppendingString:campaignButtonTitle];
+                break;
+            }
+            case STMPhotoReportGroupingOutlet: {
+                outletButtonTitle = [@"✓ " stringByAppendingString:outletButtonTitle];
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        
+        [actionSheet addButtonWithTitle:campaignButtonTitle];
+        [actionSheet addButtonWithTitle:outletButtonTitle];
         
         actionSheet.tag = 234;
         actionSheet.delegate = self;
