@@ -1059,7 +1059,7 @@
             NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
          
             entityDic[entityName] = @{@"lifeTime": entity.lifeTime,
-                                      @"lifeTimeDateField": entity.lifeTimeDateField};
+                                      @"lifeTimeDateField": entity.lifeTimeDateField ? entity.lifeTimeDateField : @"deviceCts"};
             
         }
         
