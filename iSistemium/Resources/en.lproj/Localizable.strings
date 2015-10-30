@@ -369,3 +369,8 @@
 "UNFINISHED ROUTES ALERT MESSAGE" = "Have unfinished routes";
 "GROUPING BY CAMPAIGN" = "Grouping by campaign";
 "GROUPING BY OUTLET" = "Grouping by outlet";
+"0OUTLETS" = "no outlets";
+"1OUTLETS" = "outlet";
+"2OUTLETS" = "outlets";
+"5OUTLETS" = "outlets";
+

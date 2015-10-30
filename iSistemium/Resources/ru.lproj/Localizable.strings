@@ -369,5 +369,9 @@
 "UNFINISHED ROUTES ALERT MESSAGE" = "Имеются незавершённые маршруты.";
 "GROUPING BY CAMPAIGN" = "Группировка по акциям";
 "GROUPING BY OUTLET" = "Группировка по точкам";
+"0OUTLETS" = "нет точек";
+"1OUTLETS" = "точка";
+"2OUTLETS" = "точки";
+"5OUTLETS" = "точек";
 
 
