@@ -45,6 +45,10 @@
     [self performFetch];
 }
 
+- (void)photoReportsWasUpdated {
+    [self.tableView reloadData];
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
@@ -170,12 +174,16 @@
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"campaign.campaignGroup == %@", self.selectedCampaignGroup];
     NSSet *photoReports = [outlet.photoReports filteredSetUsingPredicate:predicate];
+    NSArray *campaigns = [photoReports valueForKeyPath:@"@distinctUnionOfObjects.campaign"];
     
-    NSUInteger count = photoReports.count;
+    NSUInteger photoReportsCount = photoReports.count;
+    NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)photoReportsCount, NSLocalizedString(@"PHOTO", nil)];
     
-    NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(@"PHOTO", nil)];
-    
-    cell.detailLabel.text = photosCountString;
+    NSUInteger campaignsCount = campaigns.count;
+    NSString *campaignsString = NSLocalizedString([[STMFunctions pluralTypeForCount:campaignsCount] stringByAppendingString:@"CAMPAIGNS"], nil);
+    NSString *campaignsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)campaignsCount, campaignsString];
+
+    cell.detailLabel.text = [@[photosCountString, campaignsCountString] componentsJoinedByString:@" / "];
     
 }
 
@@ -185,18 +193,24 @@
     
     cell.titleLabel.text = campaign.name;
     
-    NSUInteger count = campaign.photoReports.count;
+    NSUInteger photoReportsCount = campaign.photoReports.count;
     
-    UIColor *textColor = (count > 0) ? [UIColor blackColor] : [UIColor lightGrayColor];
+    UIColor *textColor = (photoReportsCount > 0) ? [UIColor blackColor] : [UIColor lightGrayColor];
     
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
 
-    if (count > 0) {
+    if (photoReportsCount > 0) {
     
-        NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(@"PHOTO", nil)];
-        cell.detailLabel.text = photosCountString;
+        NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)photoReportsCount, NSLocalizedString(@"PHOTO", nil)];
         
+        NSArray *outlets = [campaign.photoReports valueForKeyPath:@"@distinctUnionOfObjects.outlet"];
+        NSUInteger outletsCount = outlets.count;
+        NSString *outletsString = NSLocalizedString([[STMFunctions pluralTypeForCount:outletsCount] stringByAppendingString:@"OUTLETS"], nil);
+        NSString *outletsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)outletsCount, outletsString];
+
+        cell.detailLabel.text = [@[photosCountString, outletsCountString] componentsJoinedByString:@" / "];
+
     } else {
         
         cell.detailLabel.text = nil;

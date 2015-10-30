@@ -15,6 +15,7 @@
 @property (nonatomic, weak) STMCampaignGroup *selectedCampaignGroup;
 
 - (void)photoReportGroupingChanged;
+- (void)photoReportsWasUpdated;
 
 
 @end

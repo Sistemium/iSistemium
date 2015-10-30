@@ -105,6 +105,20 @@
     
     _currentGrouping = currentGrouping;
     
+    switch (currentGrouping) {
+        case STMPhotoReportGroupingCampaign: {
+            self.selectedCampaign = nil;
+            break;
+        }
+        case STMPhotoReportGroupingOutlet: {
+            self.selectedOutlet = nil;
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    
     [self updateGroupSwitcher];
     [self.filterTVC photoReportGroupingChanged];
     
@@ -334,6 +348,7 @@
     [super controllerDidChangeContent:controller];
     
     [self.splitVC.masterVC photoReportsWasUpdated];
+    [self.filterTVC photoReportsWasUpdated];
     
 }
 
