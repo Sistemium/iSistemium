@@ -1013,8 +1013,16 @@
 + (void)checkObjectsForFlushing {
     
     NSLogMethodName;
-    
+
     [self sharedController].isInFlushingProcess = NO;
+    
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+        
+        NSLog(@"app is not in background, flushing canceled");
+        return;
+        
+    }
+
     
     NSDate *startFlushing = [NSDate date];
     
@@ -1074,7 +1082,7 @@
         }
     
         if (objectsSet.count > 0) {
-            
+
             for (NSManagedObject *object in objectsSet) {
                 [self removeObject:object inContext:context];
             }
