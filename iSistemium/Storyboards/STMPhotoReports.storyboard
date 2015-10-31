@@ -182,8 +182,6 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="leadingMargin" secondItem="6ro-ad-VKb" secondAttribute="leading" id="9uk-RC-l5x"/>
-                            <constraint firstItem="6ro-ad-VKb" firstAttribute="centerY" secondItem="VxO-cC-87L" secondAttribute="centerY" id="BeE-z9-gSx"/>
-                            <constraint firstItem="6ro-ad-VKb" firstAttribute="centerX" secondItem="VxO-cC-87L" secondAttribute="centerX" id="Bi3-Sd-Aqc"/>
                             <constraint firstItem="6ro-ad-VKb" firstAttribute="top" secondItem="g9O-dx-CEc" secondAttribute="bottom" id="EMG-97-XdF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="6ro-ad-VKb" secondAttribute="trailing" id="NOw-P6-E3k"/>
                             <constraint firstItem="iOh-0I-hVh" firstAttribute="top" secondItem="6ro-ad-VKb" secondAttribute="bottom" constant="20" id="gQQ-wV-jIq"/>
