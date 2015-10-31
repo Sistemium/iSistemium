@@ -1,5 +1,5 @@
 //
-//  STMPhotoReportVC.h
+//  STMPhotoReportMapVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 31/10/15.
@@ -11,7 +11,7 @@
 #import "STMDataModel.h"
 
 
-@interface STMPhotoReportVC : UIViewController
+@interface STMPhotoReportMapVC : UIViewController
 
 @property (nonatomic, weak) STMPhotoReport *photoReport;
 

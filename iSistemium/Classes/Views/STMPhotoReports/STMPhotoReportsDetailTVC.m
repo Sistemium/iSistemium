@@ -10,6 +10,7 @@
 
 #import "STMPhotoReportsSVC.h"
 #import "STMPhotoReportVC.h"
+#import "STMPhotoReportMapVC.h"
 
 
 #define LOCATION_IMAGE_SIZE 24
@@ -22,7 +23,6 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *groupSwitcher;
 
 @property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
-@property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
 
 
 @end
@@ -304,9 +304,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    self.selectedPhotoReport = [self.resultsController objectAtIndexPath:indexPath];
-
-    if (self.selectedPhotoReport) [self performSegueWithIdentifier:@"showPhotoReport" sender:self];
+    [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
     
 
 //    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -332,18 +330,18 @@
     
     if (indexPath != nil) {
         
-        NSLog(@"locationButtonTapped for indexPath %@", indexPath);
+        [self performSegueWithIdentifier:@"showPhotoReportMap" sender:indexPath];
         
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"!!!"
-                                                            message:@"Тут я покажу карту с пином"
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                  otherButtonTitles:nil];
-            [alert show];
-            
-        }];
+//        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//            
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"!!!"
+//                                                            message:@"Тут я покажу карту с пином"
+//                                                           delegate:nil
+//                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+//                                                  otherButtonTitles:nil];
+//            [alert show];
+//            
+//        }];
         
     }
     
@@ -354,15 +352,28 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"showPhotoReport"]) {
-        
-        if ([segue.destinationViewController isKindOfClass:[STMPhotoReportVC class]]) {
+    if ([sender isKindOfClass:[NSIndexPath class]]) {
+    
+        if ([segue.identifier isEqualToString:@"showPhotoReport"]) {
             
-            STMPhotoReportVC *vc = (STMPhotoReportVC *)segue.destinationViewController;
-            vc.photoReport = self.selectedPhotoReport;
-
+            if ([segue.destinationViewController isKindOfClass:[STMPhotoReportVC class]]) {
+                
+                STMPhotoReportVC *vc = (STMPhotoReportVC *)segue.destinationViewController;
+                vc.photoReport = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+                
+            }
+            
+        } else if ([segue.identifier isEqualToString:@"showPhotoReportMap"]) {
+            
+            if ([segue.destinationViewController isKindOfClass:[STMPhotoReportMapVC class]]) {
+                
+                STMPhotoReportMapVC *vc = (STMPhotoReportMapVC *)segue.destinationViewController;
+                vc.photoReport = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+                
+            }
+            
         }
-        
+
     }
     
 }
