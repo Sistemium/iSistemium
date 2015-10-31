@@ -333,6 +333,7 @@
 		2CC194671BE37CDA001F8E48 /* STMEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC194651BE37CDA001F8E48 /* STMEntity.m */; };
 		2CC1946C1BE3AF42001F8E48 /* STMCampaign+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC194691BE3AF42001F8E48 /* STMCampaign+CoreDataProperties.m */; };
 		2CC1946D1BE3AF42001F8E48 /* STMCampaign.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC1946B1BE3AF42001F8E48 /* STMCampaign.m */; };
+		2CC194701BE4D364001F8E48 /* STMPhotoReportVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC1946F1BE4D364001F8E48 /* STMPhotoReportVC.m */; };
 		2CC47BD11AE63D0C008F5250 /* UIToolbar+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */; };
 		2CCD06D31B4EC1CE002591C4 /* STMShippingProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D21B4EC1CE002591C4 /* STMShippingProcessController.m */; };
 		2CCD06DA1B500AED002591C4 /* STMShipmentPosition+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06D91B500AED002591C4 /* STMShipmentPosition+custom.m */; };
@@ -1012,6 +1013,8 @@
 		2CC194691BE3AF42001F8E48 /* STMCampaign+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMCampaign+CoreDataProperties.m"; sourceTree = "<group>"; };
 		2CC1946A1BE3AF42001F8E48 /* STMCampaign.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCampaign.h; sourceTree = "<group>"; };
 		2CC1946B1BE3AF42001F8E48 /* STMCampaign.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCampaign.m; sourceTree = "<group>"; };
+		2CC1946E1BE4D364001F8E48 /* STMPhotoReportVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportVC.h; sourceTree = "<group>"; };
+		2CC1946F1BE4D364001F8E48 /* STMPhotoReportVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportVC.m; sourceTree = "<group>"; };
 		2CC47BCF1AE63D0C008F5250 /* UIToolbar+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIToolbar+custom.h"; sourceTree = "<group>"; };
 		2CC47BD01AE63D0C008F5250 /* UIToolbar+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIToolbar+custom.m"; sourceTree = "<group>"; };
 		2CCD06D11B4EC1CE002591C4 /* STMShippingProcessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingProcessController.h; sourceTree = "<group>"; };
@@ -1363,6 +1366,8 @@
 				2CC194561BE0F676001F8E48 /* STMPhotoReportsFilterTVC.m */,
 				2CC194591BE25B28001F8E48 /* STMPhotoReportsDetailTVC.h */,
 				2CC1945A1BE25B28001F8E48 /* STMPhotoReportsDetailTVC.m */,
+				2CC1946E1BE4D364001F8E48 /* STMPhotoReportVC.h */,
+				2CC1946F1BE4D364001F8E48 /* STMPhotoReportVC.m */,
 			);
 			path = STMPhotoReports;
 			sourceTree = "<group>";
@@ -2621,6 +2626,7 @@
 				2C57641A1AA5E1E500B9FD2C /* STMAddPopoverNC.m in Sources */,
 				2CD657A91AC328EE00EAB4FF /* STMPredicate.m in Sources */,
 				2C53B8AC19409E83002298A5 /* STMSettingsTVC.m in Sources */,
+				2CC194701BE4D364001F8E48 /* STMPhotoReportVC.m in Sources */,
 				2C761BC31B00E01B001DA33E /* STMCustom5TVCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

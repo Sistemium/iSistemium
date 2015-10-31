@@ -9,6 +9,7 @@
 #import "STMPhotoReportsDetailTVC.h"
 
 #import "STMPhotoReportsSVC.h"
+#import "STMPhotoReportVC.h"
 
 
 #define LOCATION_IMAGE_SIZE 24
@@ -21,6 +22,8 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *groupSwitcher;
 
 @property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
+@property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
+
 
 @end
 
@@ -231,7 +234,10 @@
         [subpredicates addObject:predicate];
         
     }
-    
+
+    NSPredicate *imageThumbnailPredicate = [NSPredicate predicateWithFormat:@"imageThumbnail != %@", nil];
+    [subpredicates addObject:imageThumbnailPredicate];
+
     NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
     
     return predicate;
@@ -298,18 +304,21 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"didSelectRowAtIndexPath %@", indexPath);
+    self.selectedPhotoReport = [self.resultsController objectAtIndexPath:indexPath];
+
+    if (self.selectedPhotoReport) [self performSegueWithIdentifier:@"showPhotoReport" sender:self];
     
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"???"
-                                                        message:@"А тут вот не знаю, надо ли что-нибудь показать?"
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                              otherButtonTitles:nil];
-        [alert show];
-        
-    }];
+
+//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//        
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"???"
+//                                                        message:@"А тут вот не знаю, надо ли что-нибудь показать?"
+//                                                       delegate:nil
+//                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+//                                              otherButtonTitles:nil];
+//        [alert show];
+//        
+//    }];
 
 }
 
@@ -340,6 +349,23 @@
     
 }
 
+
+#pragma mark - Segues
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showPhotoReport"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMPhotoReportVC class]]) {
+            
+            STMPhotoReportVC *vc = (STMPhotoReportVC *)segue.destinationViewController;
+            vc.photoReport = self.selectedPhotoReport;
+
+        }
+        
+    }
+    
+}
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
