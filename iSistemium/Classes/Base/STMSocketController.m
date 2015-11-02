@@ -384,6 +384,8 @@
 //    NSLog(@"connectCallback ack %@", ack);
     NSLog(@"connectCallback socket %@", socket);
     
+    [self sharedInstance].isAuthorized = NO;
+
     [[self sharedInstance] performSelector:@selector(checkAuthorizationForSocket:) withObject:socket afterDelay:CHECK_AUTHORIZATION_DELAY];
 
     STMClientData *clientData = [STMClientDataController clientData];
