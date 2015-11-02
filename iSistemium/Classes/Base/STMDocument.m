@@ -99,8 +99,12 @@
                 
                 if (success) {
 
-                    completionHandler(YES);
+                    NSLog(@"UIDocumentSaveForOverwriting success");
                     
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"saveDocumentSuccessfully" object:self];
+                    
+                    completionHandler(YES);
+
                 } else {
                     
                     NSLog(@"UIDocumentSaveForOverwriting not success");
@@ -123,6 +127,7 @@
 
     } else {
 
+        NSLog(@"Document currently is saving");
         completionHandler(YES);
 
 //        double delayInSeconds = 3;

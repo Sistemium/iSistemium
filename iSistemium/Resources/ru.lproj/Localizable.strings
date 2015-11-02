@@ -39,6 +39,10 @@
 "ADD PHOTO" = "Добавить фото";
 "PHOTO" = "фото";
 "CAMPAIGNS" = "Акции";
+"0CAMPAIGNS" = "нет акций";
+"1CAMPAIGNS" = "акция";
+"2CAMPAIGNS" = "акции";
+"5CAMPAIGNS" = "акций";
 "PHOTO REPORTS" = "Фотоотчёты";
 "PICTURES" = "Картинки";
 "DELETE PHOTO" = "Удаление фото";
@@ -363,5 +367,11 @@
 "ADDRESS GEOCODING FAILED" = "Не могу получить координаты по данному адресу";
 "PICK A NEW POINT NUMBER" = "Выберите новый номер:";
 "UNFINISHED ROUTES ALERT MESSAGE" = "Имеются незавершённые маршруты.";
+"GROUPING BY CAMPAIGN" = "Группировка по акциям";
+"GROUPING BY OUTLET" = "Группировка по точкам";
+"0OUTLETS" = "нет точек";
+"1OUTLETS" = "точка";
+"2OUTLETS" = "точки";
+"5OUTLETS" = "точек";
 
 

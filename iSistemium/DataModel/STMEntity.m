@@ -2,24 +2,26 @@
 //  STMEntity.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/09/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 30/10/15.
+//  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
 #import "STMEntity.h"
 #import "STMWorkflow.h"
 
-
 @implementation STMEntity
 
-@dynamic eTag;
-@dynamic isUploadable;
-@dynamic lifeTime;
-@dynamic name;
-@dynamic roleName;
-@dynamic roleOwner;
-@dynamic url;
-@dynamic workflow;
-@dynamic wf;
+- (void)willSave {
+    
+    NSArray *changedKeys = [[self changedValues] allKeys];
+    
+    if ([changedKeys containsObject:@"workflow"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"workflowDidChange" object:self];
+    }
+    
+    [super willSave];
+    
+}
+
 
 @end

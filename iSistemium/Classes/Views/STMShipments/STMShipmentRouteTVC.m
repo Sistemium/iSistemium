@@ -954,10 +954,13 @@
         self.title = NSLocalizedString(@"SHIPMENT ROUTE POINTS", nil);
     }
 
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom9TVCell" bundle:nil] forCellReuseIdentifier:self.routePointCellIdentifier];
-    [self performFetch];
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom7TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
     
+    cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom9TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.routePointCellIdentifier];
+    
+    [self performFetch];
     [self addObservers];
     
     [super customInit];

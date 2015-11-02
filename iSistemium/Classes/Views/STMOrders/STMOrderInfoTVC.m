@@ -862,7 +862,9 @@
     
     [self.navigationItem setHidesBackButton:YES];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom2TVCell" bundle:nil] forCellReuseIdentifier:self.custom2CellIdentifier];
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom2TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.custom2CellIdentifier];
+    
     [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:self.positionCellIdentifier];
     
     [self performFetch];

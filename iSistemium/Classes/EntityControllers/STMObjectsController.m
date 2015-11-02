@@ -21,6 +21,8 @@
 
 #import "STMNS.h"
 
+#define FLUSH_LIMIT 17
+
 
 @interface STMObjectsController()
 
@@ -29,6 +31,7 @@
 @property (nonatomic, strong) NSMutableDictionary *entitiesOwnRelationships;
 @property (nonatomic, strong) NSMutableDictionary *entitiesSingleRelationships;
 @property (nonatomic, strong) NSMutableDictionary *objectsCache;
+@property (nonatomic) BOOL isInFlushingProcess;
 
 
 @end
@@ -111,6 +114,16 @@
                name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:nil];
 
+    [nc addObserver:self
+           selector:@selector(objectContextDidSave:)
+               name:NSManagedObjectContextDidSaveNotification
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(saveDocumentSuccessfully)
+               name:@"saveDocumentSuccessfully"
+             object:nil];
+    
 }
 
 - (void)removeObservers {
@@ -130,6 +143,35 @@
     }
     
 }
+
+- (void)objectContextDidSave:(NSNotification *)notification {
+    
+    if ([notification.object isKindOfClass:[NSManagedObjectContext class]]) {
+        
+        NSManagedObjectContext *context = (NSManagedObjectContext *)notification.object;
+        
+        if ([context isEqual:[STMObjectsController document].managedObjectContext]) {
+
+            if (self.isInFlushingProcess) {
+                
+                if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+                    [STMObjectsController checkObjectsForFlushing];
+                } else {
+                    self.isInFlushingProcess = NO;
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+- (void)saveDocumentSuccessfully {
+    
+}
+
 
 #pragma mark - singleton
 
@@ -835,6 +877,26 @@
 
 #pragma mark - getting entity properties
 
++ (NSArray *)attributesForEntityName:(NSString *)entityName withType:(NSAttributeType)type {
+    
+    STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+    
+    NSMutableArray *resultSet = @[].mutableCopy;
+
+    for (NSString *key in objectEntity.attributesByName.allKeys) {
+        
+        NSAttributeDescription *attribute = objectEntity.attributesByName[key];
+        
+        if (attribute.attributeType == type) {
+            [resultSet addObject:key];
+        }
+        
+    }
+    
+    return resultSet;
+
+}
+
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName {
     
     NSMutableDictionary *entitiesOwnKeys = [self sharedController].entitiesOwnKeys;
@@ -843,10 +905,10 @@
     if (!objectKeys) {
 
         STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
-        NSSet *coreKeys = [NSSet setWithArray:[[coreEntity attributesByName] allKeys]];
+        NSSet *coreKeys = [NSSet setWithArray:coreEntity.attributesByName.allKeys];
 
         STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-        objectKeys = [NSMutableSet setWithArray:[[objectEntity attributesByName] allKeys]];
+        objectKeys = [NSMutableSet setWithArray:objectEntity.attributesByName.allKeys];
         [objectKeys minusSet:coreKeys];
         
         entitiesOwnKeys[entityName] = objectKeys;
@@ -938,34 +1000,19 @@
 + (void)removeObject:(NSManagedObject *)object inContext:(NSManagedObjectContext *)context {
     
     if (!context) context = [self document].managedObjectContext;
-
-//    dispatch_async(dispatch_get_main_queue(), ^{
     
-        if ([object valueForKey:@"xid"]) {
-            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
-        }
-        
-//    });
+    if ([object valueForKey:@"xid"]) {
+        [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
+    }
     
-//    [context performBlock:^{
-    
+    [context performBlock:^{
         [context deleteObject:object];
-        
-//        [[self document] saveDocument:^(BOOL success) {
-//            
-//        }];
-        
-//    }];
-
+    }];
+    
 }
 
 + (void)removeObject:(NSManagedObject *)object {
-
     [self removeObject:object inContext:nil];
-    
-//    [[self sharedController].objectsCache removeObjectForKey:[object valueForKey:@"xid"]];
-//    [self.document.managedObjectContext deleteObject:object];
-
 }
 
 + (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object {
@@ -985,65 +1032,90 @@
 
 + (void)checkObjectsForFlushing {
     
+    NSLogMethodName;
+
+    [self sharedController].isInFlushingProcess = NO;
+    
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+        
+        NSLog(@"app is not in background, flushing canceled");
+        return;
+        
+    }
+
+    
     NSDate *startFlushing = [NSDate date];
     
     NSArray *entitiesWithLifeTime = [STMEntityController entitiesWithLifeTime];
 
     NSMutableDictionary *entityDic = [NSMutableDictionary dictionary];
     
-    for (STMEntity *entity in entitiesWithLifeTime) entityDic[entity.name] = entity.lifeTime;
-
-    NSDictionary *backThreadEntitiesLifetimesDic = [entityDic copy];
-    
-//    backThreadEntitiesLifetimesDic = @{@"Location": @(0.1),
-//                                       @"LogMessage": @(0.1)};
-    
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-    
-        NSManagedObjectContext *context = [self document].managedObjectContext;
+    for (STMEntity *entity in entitiesWithLifeTime) {
         
-        NSMutableSet *objectsSet = [NSMutableSet set];
-        
-        for (NSString *name in backThreadEntitiesLifetimesDic.allKeys) {
+        if (entity.name) {
             
-            double lifeTime = [backThreadEntitiesLifetimesDic[name] doubleValue];
-            NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:[NSDate date]];
-            
-            NSString *capFirstLetter = (name) ? [[name substringToIndex:1] capitalizedString] : nil;
-            NSString *capEntityName = [name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
+            NSString *capFirstLetter = [[entity.name substringToIndex:1] capitalizedString];
+            NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
             NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
-            
-            NSError *error;
-            
-            STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
-            request.predicate = [NSPredicate predicateWithFormat:@"deviceCts < %@", terminatorDate];
-            NSArray *fetchResult = [context executeFetchRequest:request error:&error];
-            
-            for (NSManagedObject *object in fetchResult) {
-                [self checkObject:object forAddingTo:objectsSet];
-            }
+         
+            entityDic[entityName] = @{@"lifeTime": entity.lifeTime,
+                                      @"lifeTimeDateField": entity.lifeTimeDateField ? entity.lifeTimeDateField : @"deviceCts"};
             
         }
         
-        if (objectsSet.count > 0) {
-            
-            for (NSManagedObject *object in objectsSet) {
-                [self removeObject:object inContext:context];
-            }
-            
-            NSTimeInterval flushingTime = [[NSDate date] timeIntervalSinceDate:startFlushing];
-            
-            NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
-            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
-            
-        } else {
-            
-            NSLog(@"No objects for flushing");
-            
-        }
+    }
+    
+    NSManagedObjectContext *context = [self document].managedObjectContext;
+    
+    NSMutableSet *objectsSet = [NSMutableSet set];
+    
+    for (NSString *entityName in entityDic.allKeys) {
+        
+        double lifeTime = [entityDic[entityName][@"lifeTime"] doubleValue];
+        NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:startFlushing];
+        
+        NSString *dateField = entityDic[entityName][@"lifeTimeDateField"];
+        NSArray *availableDateKeys = [self attributesForEntityName:entityName withType:NSDateAttributeType];
+        dateField = ([availableDateKeys containsObject:dateField]) ? dateField : @"deviceCts";
+        
+        NSError *error;
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:dateField ascending:YES selector:@selector(compare:)]];
+        request.fetchLimit = FLUSH_LIMIT;
+        
+        NSString *predicateString = [dateField stringByAppendingString:@" < %@"];
+        request.predicate = [NSPredicate predicateWithFormat:predicateString, terminatorDate];
 
-//    });
+        NSArray *fetchResult = [context executeFetchRequest:request error:&error];
+        
+        for (NSManagedObject *object in fetchResult) [self checkObject:object forAddingTo:objectsSet];
+
+    }
+
+    if (objectsSet.count > 0) {
+
+        for (NSManagedObject *object in objectsSet) {
+            [self removeObject:object inContext:context];
+        }
+        
+        NSTimeInterval flushingTime = [[NSDate date] timeIntervalSinceDate:startFlushing];
+        
+        NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+        
+        [self sharedController].isInFlushingProcess = YES;
+
+        [[self document] saveDocument:^(BOOL success) {
+
+        }];
+        
+        
+    } else {
+        
+        NSLog(@"No objects for flushing");
+        
+    }
     
 }
 

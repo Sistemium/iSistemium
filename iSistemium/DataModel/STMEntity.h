@@ -2,26 +2,23 @@
 //  STMEntity.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/09/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 30/10/15.
+//  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
 
 @class STMWorkflow;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface STMEntity : STMComment
 
-@property (nonatomic, retain) NSString * eTag;
-@property (nonatomic, retain) NSNumber * isUploadable;
-@property (nonatomic, retain) NSNumber * lifeTime;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * roleName;
-@property (nonatomic, retain) NSString * roleOwner;
-@property (nonatomic, retain) NSString * url;
-@property (nonatomic, retain) NSString * workflow;
-@property (nonatomic, retain) STMWorkflow *wf;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMEntity+CoreDataProperties.h"

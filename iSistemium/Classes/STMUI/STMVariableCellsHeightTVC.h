@@ -12,7 +12,6 @@
 
 @interface STMVariableCellsHeightTVC : STMFetchedResultsControllerTVC
 
-@property (nonatomic, strong) NSString *cellIdentifier;
 @property (strong, nonatomic) NSMutableDictionary *cachedCellsHeights;
 @property (nonatomic) CGFloat standardCellHeight;
 

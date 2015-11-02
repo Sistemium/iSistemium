@@ -7,6 +7,9 @@
 //
 
 #import "STMCampaignPhotoReportCVC.h"
+
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "STMOutlet+photoReportsArePresent.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
@@ -420,7 +423,28 @@
     
 }
 
-- (void)saveImage:(UIImage *)image {
+- (void)saveImage:(UIImage *)image withLocation:(CLLocation *)location {
+
+    STMPhotoReport *savedPhotoReport = [self saveImage:image];
+    
+    if (location) savedPhotoReport.location = [STMLocationController locationObjectFromCLLocation:location];
+    
+}
+
+- (void)saveImage:(UIImage *)image andWaitForLocation:(BOOL)waitForLocation {
+    
+    STMPhotoReport *savedPhotoReport = [self saveImage:image];
+    
+    if (waitForLocation && savedPhotoReport) {
+
+        [self.waitingLocationPhotos addObject:savedPhotoReport];
+        [self.locationTracker getLocation];
+
+    }
+    
+}
+
+- (STMPhotoReport *)saveImage:(UIImage *)image {
     
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
     
@@ -428,11 +452,13 @@
         self.selectedPhotoReport = [self newPhotoReport];
     }
     
+    STMPhotoReport *savingPhotoReport = self.selectedPhotoReport;
+    
     [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
-                                  forPicture:self.selectedPhotoReport
+                                  forPicture:savingPhotoReport
                                    andUpload:YES];
     
-    [self.selectedPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+    [savingPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
     
     if (![self.selectedPhotoReport.managedObjectContext isEqual:self.campaign.managedObjectContext]) {
         
@@ -449,19 +475,18 @@
         
     }
     
-    self.selectedPhotoReport.campaign = self.campaign;
-    self.selectedPhotoReport.outlet = self.selectedOutlet;
-    
-    [self.waitingLocationPhotos addObject:self.selectedPhotoReport];
-    [self.locationTracker getLocation];
-    
+    savingPhotoReport.campaign = self.campaign;
+    savingPhotoReport.outlet = self.selectedOutlet;
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
-    
+
     [[self document] saveDocument:^(BOOL success) {
         if (success) {
             
         }
     }];
+
+    return savingPhotoReport;
     
 }
 
@@ -541,7 +566,42 @@
     
     [picker dismissViewControllerAnimated:NO completion:^{
         
-        [self saveImage:info[UIImagePickerControllerOriginalImage]];
+        UIImage *image = info[UIImagePickerControllerOriginalImage];
+        
+        if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+            
+            [self saveImage:image andWaitForLocation:YES];
+            
+        } else {
+            
+            NSURL *assetURL = info[UIImagePickerControllerReferenceURL];
+            
+            if (assetURL) {
+
+                ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+                
+                [library assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+                    
+                    CLLocation *location = [asset valueForProperty:ALAssetPropertyLocation];
+                    
+                    [self saveImage:image withLocation:location];
+                    
+                } failureBlock:^(NSError *error) {
+                    
+                    NSLog(@"assetForURL %@ error %@", assetURL, error.localizedDescription);
+                    
+                    [self saveImage:image andWaitForLocation:NO];
+                    
+                }];
+                
+            } else {
+                
+                [self saveImage:image andWaitForLocation:NO];
+
+            }
+
+        }
+        
         self.imagePickerController = nil;
         //        NSLog(@"dismiss UIImagePickerController");
         

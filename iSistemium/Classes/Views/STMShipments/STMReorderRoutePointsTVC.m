@@ -273,7 +273,9 @@
     
     self.tableView.scrollEnabled = YES;
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom8TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom8TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
+    
     self.editing = !([self.splitVC isMasterNCForViewController:self]);
     
     [super customInit];

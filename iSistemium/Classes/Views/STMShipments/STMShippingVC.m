@@ -1323,7 +1323,8 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     [self setupNavBar];
     [self setupToolbarButtons];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom9TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom9TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;

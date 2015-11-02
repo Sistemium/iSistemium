@@ -34,6 +34,7 @@
 @property (nonatomic) BOOL isAuthorized;
 @property (nonatomic) BOOL isSendingData;
 @property (nonatomic) BOOL shouldSendData;
+@property (nonatomic) BOOL isReconnecting;
 
 
 @end
@@ -62,6 +63,10 @@
     switch (event) {
         case STMSocketEventConnect: {
             return @"connect";
+            break;
+        }
+        case STMSocketEventDisconnect: {
+            return @"disconnect";
             break;
         }
         case STMSocketEventStatusChange: {
@@ -96,6 +101,8 @@
     
     if ([stringValue isEqualToString:@"connect"]) {
         return STMSocketEventConnect;
+    } else if ([stringValue isEqualToString:@"disconnect"]) {
+        return STMSocketEventDisconnect;
     } else if ([stringValue isEqualToString:@"status:change"]) {
         return STMSocketEventStatusChange;
     } else if ([stringValue isEqualToString:@"info"]) {
@@ -136,7 +143,9 @@
     
     STMSocketController *sc = [self sharedInstance];
     
-    if (sc.socketUrl && !sc.isRunning) {
+    if (sc.socketUrl && !sc.isRunning && !sc.isReconnecting) {
+
+        NSLogMethodName;
 
         sc.isRunning = YES;
 
@@ -145,7 +154,7 @@
             case SocketIOClientStatusNotConnected:
             case SocketIOClientStatusClosed: {
                 [sc.socket connect];
-                [sc performSelector:@selector(checkAuthorizationForSocket:) withObject:sc.socket afterDelay:CHECK_AUTHORIZATION_DELAY];
+//                [sc performSelector:@selector(checkAuthorizationForSocket:) withObject:sc.socket afterDelay:CHECK_AUTHORIZATION_DELAY];
                 break;
             }
             case SocketIOClientStatusConnecting: {
@@ -176,6 +185,8 @@
 
 + (void)closeSocket {
     
+    NSLogMethodName;
+
     STMSocketController *sc = [self sharedInstance];
     
     if (sc.isRunning) {
@@ -300,9 +311,12 @@
 
 - (void)addEventObserversToSocket:(SocketIOClient *)socket {
     
+    NSLog(@"addEventObserversToSocket %@", socket);
+    
     [STMSocketController addOnAnyEventToSocket:socket];
 
     [STMSocketController addEvent:STMSocketEventConnect toSocket:socket];
+    [STMSocketController addEvent:STMSocketEventDisconnect toSocket:socket];
     [STMSocketController addEvent:STMSocketEventRemoteCommands toSocket:socket];
     [STMSocketController addEvent:STMSocketEventData toSocket:socket];
     
@@ -328,6 +342,10 @@
         switch (event) {
             case STMSocketEventConnect: {
                 [self connectCallbackWithData:data ack:ack socket:socket];
+                break;
+            }
+            case STMSocketEventDisconnect: {
+                [self disconnectCallbackWithData:data ack:ack socket:socket];
                 break;
             }
             case STMSocketEventStatusChange: {
@@ -364,7 +382,9 @@
     
 //    NSLog(@"connectCallback data %@", data);
 //    NSLog(@"connectCallback ack %@", ack);
-//    NSLog(@"connectCallback socket %@", socket);
+    NSLog(@"connectCallback socket %@", socket);
+    
+    [[self sharedInstance] performSelector:@selector(checkAuthorizationForSocket:) withObject:socket afterDelay:CHECK_AUTHORIZATION_DELAY];
 
     STMClientData *clientData = [STMClientDataController clientData];
     NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
@@ -375,32 +395,46 @@
     [dataDic addEntriesFromDictionary:authDic];
     
     NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
+    
     [socket emitWithAck:event withItems:@[dataDic]](0, ^(NSArray *data) {
         [self socket:socket receiveAckWithData:data forEvent:event];
     });
     
 }
 
++ (void)disconnectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
+    
+    NSLog(@"disconnectCallback socket %@", socket);
+    
+    if ([self sharedInstance].isReconnecting) {
+        
+        [self sharedInstance].isReconnecting = NO;
+        [self startSocket];
+        
+    }
+
+}
+
 + (void)remoteCommandsCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
     
+    NSLog(@"remoteCommandsCallback socket %@", socket);
+
     if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
-        
         [STMRemoteController receiveRemoteCommands:data.firstObject];
-        
     }
 
 }
 
 + (void)dataCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
     
-    NSLog(@"data %@", data);
+    NSLog(@"dataCallback socket %@ data %@", socket, data);
     
 }
 
 
 #pragma mark - socket events sending
 
-+ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
++ (NSString *)primaryKeyForEvent:(STMSocketEvent)event {
     
     NSString *primaryKey = @"url";
     
@@ -419,52 +453,83 @@
             break;
         }
     }
+    return primaryKey;
 
-    if (value && primaryKey) {
+}
 
-        NSDictionary *dataDic = @{primaryKey : value};
++ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
+    
+    if (event == STMSocketEventData && [value isKindOfClass:[NSArray class]]) {
         
-        dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
+        NSArray *valueArray = [(NSArray *)value valueForKeyPath:@"name"];
         
-        NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
+        NSLog(@"socket:%@ sendEvent:%@ withObjects:%@", socket, [self stringValueForEvent:event], valueArray);
         
-        if (dataDic) {
+    } else {
+        
+        NSLog(@"socket:%@ sendEvent:%@ withValue:%@", socket, [self stringValueForEvent:event], value);
+        
+    }
+
+    if (socket.status == SocketIOClientStatusConnected) {
+        
+        NSString *primaryKey = [self primaryKeyForEvent:event];
+        
+        if (value && primaryKey) {
             
-            if (socket.status != SocketIOClientStatusConnected) {
+            NSDictionary *dataDic = @{primaryKey : value};
+            
+            dataDic = [STMFunctions validJSONDictionaryFromDictionary:dataDic];
+            
+            NSString *eventStringValue = [STMSocketController stringValueForEvent:event];
+            
+            if (dataDic) {
                 
-            } else {
-                
-//                NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
-                
-                if (event == STMSocketEventData) {
-                    
-                    [self sharedInstance].isSendingData = YES;
-                    
-                    [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-                        
-                        [self receiveEventDataAckWithData:data];
-//                        [self receiveAckWithData:data forEvent:eventStringValue];
-                        
-                    });
-                    
-//                } else if (event == STMSocketEventInfo) {
-//                
-//                    [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-//                        [self receiveAckWithData:data forEvent:eventStringValue];
-//                    });
+                if (socket.status != SocketIOClientStatusConnected) {
                     
                 } else {
                     
-                    [socket emit:eventStringValue withItems:@[dataDic]];
+                    //                NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
+                    
+                    if (event == STMSocketEventData) {
+                        
+                        [self sharedInstance].isSendingData = YES;
+                        
+                        [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+                            
+                            [self receiveEventDataAckWithData:data];
+                            //                        [self receiveAckWithData:data forEvent:eventStringValue];
+                            
+                        });
+                        
+                        //                } else if (event == STMSocketEventInfo) {
+                        //
+                        //                    [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+                        //                        [self receiveAckWithData:data forEvent:eventStringValue];
+                        //                    });
+                        
+                    } else {
+                        
+                        [socket emit:eventStringValue withItems:@[dataDic]];
+                        
+                    }
                     
                 }
                 
+            } else {
+                NSLog(@"%@ ___ no dataDic to send via socket for event: %@", socket, eventStringValue);
             }
             
-        } else {
-            NSLog(@"%@ ___ no dataDic to send via socket for event: %@", socket, eventStringValue);
         }
 
+    } else {
+        
+        NSLog(@"socket not connected");
+        
+        if ([self syncer].syncerState == STMSyncerSendData || [self syncer].syncerState == STMSyncerSendDataOnce) {
+            [self sendFinishedWithError:@"socket not connected"];
+        }
+        
     }
     
 }
@@ -475,58 +540,68 @@
 
 + (void)socket:(SocketIOClient *)socket receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
     
-    NSLog(@"%@ ___ receive Ack, event: %@, data: %@", [self sharedInstance].socket, event, data);
+    NSLog(@"%@ ___ receive Ack, event: %@, data: %@", socket, event, data);
 
     STMSocketEvent socketEvent = [self eventForString:event];
     
     if (socketEvent == STMSocketEventAuthorization) {
-        
-        if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
-            
-            NSDictionary *dataDic = data.firstObject;
-            BOOL isAuthorized = [dataDic[@"isAuthorized"] boolValue];
-            
-            if (isAuthorized) {
-                
-                [self sharedInstance].isAuthorized = YES;
-                [self sharedInstance].isSendingData = NO;
-                [[self syncer] socketReceiveAuthorization];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"socketAuthorizationSuccess" object:self];
-                
-                [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
-                
-                if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
-                    
-                    if ([[STMRootTBC sharedRootVC].selectedViewController class]) {
-                        
-                        Class _Nonnull rootVCClass = (Class _Nonnull)[[STMRootTBC sharedRootVC].selectedViewController class];
-                        
-                        NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass(rootVCClass)];
-                        [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
+        [self socket:socket receiveAuthorizationAckWithData:data];
+    }
+    
+}
 
-                    }
++ (void)socket:(SocketIOClient *)socket receiveAuthorizationAckWithData:(NSArray *)data {
+    
+    if (socket.status != SocketIOClientStatusConnected) {
+        return;
+    }
+    
+    if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
+        
+        NSDictionary *dataDic = data.firstObject;
+        BOOL isAuthorized = [dataDic[@"isAuthorized"] boolValue];
+        
+        if (isAuthorized) {
+            
+            NSLog(@"socket authorized");
+            
+            [self sharedInstance].isAuthorized = YES;
+            [self sharedInstance].isSendingData = NO;
+            [[self syncer] socketReceiveAuthorization];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"socketAuthorizationSuccess" object:self];
+            
+            [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
+            
+            if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
+                
+                if ([[STMRootTBC sharedRootVC].selectedViewController class]) {
+                    
+                    Class _Nonnull rootVCClass = (Class _Nonnull)[[STMRootTBC sharedRootVC].selectedViewController class];
+                    
+                    NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass(rootVCClass)];
+                    [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
                     
                 }
                 
-//                [self sendUnsyncedObjects:self];
-                
-            } else {
-                
-                [self sharedInstance].isAuthorized = NO;
-                [[STMAuthController authController] logout];
-
             }
             
         } else {
             
+            NSLog(@"socket not authorized");
             [self sharedInstance].isAuthorized = NO;
             [[STMAuthController authController] logout];
-
+            
         }
         
+    } else {
+        
+        NSLog(@"socket not authorized");
+        [self sharedInstance].isAuthorized = NO;
+        [[STMAuthController authController] logout];
+        
     }
-    
+
 }
 
 + (void)receiveEventDataAckWithData:(NSArray *)data {
@@ -636,18 +711,30 @@
 
 - (void)appSettingsChanged:(NSNotification *)notification {
     
-    if ([notification.userInfo.allKeys containsObject:@"socketUrl"]) {
+    STMSession *currentSession = [STMSessionManager sharedManager].currentSession;
+    
+    if ([currentSession.status isEqualToString:@"running"]) {
         
-        self.socketUrl = nil;
-
-        if (self.isRunning) {
-
-            if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
-                [self reconnectSocket];
-            }
+        NSString *key = @"socketUrl";
+        
+        if ([notification.userInfo.allKeys containsObject:key]) {
+            
+            self.socketUrl = nil;
+            
+            if (self.isRunning) {
                 
+                if (![self.socket.socketURL isEqualToString:self.socketUrl]) {
+                    [self reconnectSocket];
+                }
+                
+            } else {
+                
+                [STMSocketController startSocket];
+                
+            }
+            
         }
-        
+
     }
     
 }
@@ -757,9 +844,15 @@
     
     self.controllersDidChangeContent = YES;
     
+    [[STMSocketController document] saveDocument:^(BOOL success) {
+        
+    }];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
+//    NSLog(@"didChangeObject %@", [anObject entity].name);
     
 }
 
@@ -786,7 +879,9 @@
     if (!_socket && self.socketUrl) {
         
         SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:self.socketUrl opts:nil];
-        
+
+        NSLog(@"init socket %@", socket);
+
         [self addEventObserversToSocket:socket];
 
         _socket = socket;
@@ -798,11 +893,18 @@
 
 - (void)reconnectSocket {
 
-    if (self.isRunning) {
-        [STMSocketController closeSocket];
-    }
+    NSLogMethodName;
     
-    [STMSocketController startSocket];
+    if (self.isRunning) {
+        
+        self.isReconnecting = YES;
+        [STMSocketController closeSocket];
+        
+    } else {
+    
+        [STMSocketController startSocket];
+
+    }
     
 }
 
@@ -819,14 +921,25 @@
 
 - (void)checkAuthorizationForSocket:(SocketIOClient *)socket {
 
-//    NSLog(@"checkAuthorizationForSocket: %@", socket);
+    NSLog(@"checkAuthorizationForSocket: %@", socket);
     
     if ([socket isEqual:self.socket]) {
         
-        if (!self.isAuthorized) [self reconnectSocket];
+        if (self.isAuthorized) {
+            
+            NSLog(@"socket is authorized");
+            
+        } else {
+
+            NSLog(@"socket is not authorized, trying to resolve this issue by reconnecting");
+            [self reconnectSocket];
+            
+        }
 
     } else {
-//        NSLog(@"not a current socket");
+        
+        NSLog(@"not a current socket");
+        
     }
     
 }

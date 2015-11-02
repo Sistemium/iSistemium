@@ -39,6 +39,10 @@
 "ADD PHOTO" = "Add photo";
 "PHOTO" = "photo";
 "CAMPAIGNS" = "Campaigns";
+"0CAMPAIGNS" = "no campaigns";
+"1CAMPAIGNS" = "campaign";
+"2CAMPAIGNS" = "campaigns";
+"5CAMPAIGNS" = "campaigns";
 "PHOTO REPORTS" = "Photo reports";
 "PICTURES" = "Pictures";
 "DELETE PHOTO" = "Delete photo";
@@ -363,4 +367,10 @@
 "ADDRESS GEOCODING FAILED" = "Address geocoding failed";
 "PICK A NEW POINT NUMBER" = "Pick a new point number:";
 "UNFINISHED ROUTES ALERT MESSAGE" = "Have unfinished routes";
+"GROUPING BY CAMPAIGN" = "Grouping by campaign";
+"GROUPING BY OUTLET" = "Grouping by outlet";
+"0OUTLETS" = "no outlets";
+"1OUTLETS" = "outlet";
+"2OUTLETS" = "outlets";
+"5OUTLETS" = "outlets";
 

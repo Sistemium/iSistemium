@@ -14,6 +14,7 @@
 
 typedef NS_ENUM(NSInteger, STMSocketEvent) {
     STMSocketEventConnect,
+    STMSocketEventDisconnect,
     STMSocketEventStatusChange,
     STMSocketEventInfo,
     STMSocketEventAuthorization,

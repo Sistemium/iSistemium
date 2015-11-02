@@ -463,7 +463,8 @@
     
 //    [STMMessageController generateTestMessages];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom3TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom3TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
 
     [self performFetch];
     [self showUnreadCount];

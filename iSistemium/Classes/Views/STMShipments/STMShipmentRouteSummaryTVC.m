@@ -267,7 +267,9 @@
 
 - (void)customInit {
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"STMCustom7TVCell" bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+    UINib *custom7TVCellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom7TVCell class]) bundle:nil];
+    [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.cellIdentifier];
+    
     [self prepareTableData];
     
     [super customInit];
