@@ -87,6 +87,19 @@
     
 }
 
+- (void)performFetch {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    
+    if (![self.resultsController performFetch:&error]) {
+        NSLog(@"performFetch error %@", error);
+    } else {
+        [self.tableView reloadData];
+    }
+    
+}
 
 
 #pragma mark - Table view data source

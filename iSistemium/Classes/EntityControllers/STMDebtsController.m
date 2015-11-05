@@ -17,9 +17,8 @@
 
 + (STMDebt *)addNewDebtWithSum:(NSDecimalNumber *)sum ndoc:(NSString *)ndoc date:(NSDate *)date outlet:(STMOutlet *)outlet comment:(NSString *)commentText {
     
-    STMDebt *debt = (STMDebt *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMDebt class])];
+    STMDebt *debt = (STMDebt *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMDebt class]) isFantom:NO];
     
-    debt.isFantom = @NO;
     debt.date = date;
     debt.summ = sum;
     debt.summOrigin = sum;

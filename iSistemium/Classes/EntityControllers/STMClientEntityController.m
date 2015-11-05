@@ -32,8 +32,7 @@
     
     if (!clientEntity) {
         
-        clientEntity = (STMClientEntity *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMClientEntity class])];
-        clientEntity.isFantom = @NO;
+        clientEntity = (STMClientEntity *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMClientEntity class]) isFantom:NO];
         clientEntity.name = name;
         
         STMEntity *entity = [STMEntityController entityWithName:name];

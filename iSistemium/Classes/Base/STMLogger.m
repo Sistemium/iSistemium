@@ -223,8 +223,7 @@
     
     if (sessionIsRunning && self.document) {
         
-        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class])];
-        logMessage.isFantom = @NO;
+        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class]) isFantom:NO];
         logMessage.text = text;
         logMessage.type = type;
         
@@ -265,8 +264,7 @@
 
     for (NSDictionary *logMessageDic in [loggerDefaults allValues]) {
         
-        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class])];
-        logMessage.isFantom = @NO;
+        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class]) isFantom:NO];
         
         for (NSString *key in [logMessageDic allKeys]) {
             [logMessage setValue:logMessageDic[key] forKey:key];

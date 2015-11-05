@@ -40,7 +40,9 @@
 
 + (void)dataLoadingFinished;
 
-+ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
+//+ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName isFantom:(BOOL)isFantom;
+
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
 
 + (NSArray *)localDataModelEntityNames;

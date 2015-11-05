@@ -55,8 +55,7 @@
 
 - (void)getBatteryStatus {
     
-    STMBatteryStatus *batteryStatus = (STMBatteryStatus *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBatteryStatus class])];
-    batteryStatus.isFantom = @NO;
+    STMBatteryStatus *batteryStatus = (STMBatteryStatus *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBatteryStatus class]) isFantom:NO];
     batteryStatus.batteryLevel = [NSDecimalNumber decimalNumberWithDecimal:@((double)[UIDevice currentDevice].batteryLevel).decimalValue];
     NSString *batteryState;
     

@@ -20,8 +20,7 @@
 
 + (STMCashing *)addCashingWithSum:(NSDecimalNumber *)sum ndoc:(NSString *)ndoc date:(NSDate *)date comment:(NSString *)comment debt:(STMDebt *)debt outlet:(STMOutlet *)outlet type:(STMCashingType)type {
     
-    STMCashing *cashing = (STMCashing *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMCashing class])];
-    cashing.isFantom = @NO;
+    STMCashing *cashing = (STMCashing *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMCashing class]) isFantom:NO];
     
     if (type == STMCashingDeduction) {
 

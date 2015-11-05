@@ -345,8 +345,7 @@
 
 - (void)saveImage:(UIImage *)image {
     
-    STMShippingLocationPicture *shippingLocationPicture = (STMShippingLocationPicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocationPicture class])];
-    shippingLocationPicture.isFantom = @NO;
+    STMShippingLocationPicture *shippingLocationPicture = (STMShippingLocationPicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocationPicture class]) isFantom:NO];
     
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
     

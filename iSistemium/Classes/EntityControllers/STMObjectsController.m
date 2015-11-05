@@ -729,14 +729,22 @@
     
 }
 
-+ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData {
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
+    return [self newObjectForEntityName:entityName andXid:nil isFantom:YES];
+}
 
-// time checking
-//    NSDate *start = [NSDate date];
-// -------------
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName isFantom:(BOOL)isFantom {
+    return [self newObjectForEntityName:entityName andXid:nil isFantom:isFantom];
+}
+
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData {
+    return [self newObjectForEntityName:entityName andXid:xidData isFantom:YES];
+}
+
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData isFantom:(BOOL)isFantom {
     
     NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-    [object setValue:@YES forKey:@"isFantom"];
+    [object setValue:@(isFantom) forKey:@"isFantom"];
     
     if (xidData) {
         [object setValue:xidData forKey:@"xid"];
@@ -746,17 +754,8 @@
     
     [self sharedController].objectsCache[xidData] = object;
 
-
-// time checking
-//    [[self sharedController].timesDic[@"9"] addObject:@([start timeIntervalSinceNow])];
-// -------------
-    
     return object;
 
-}
-
-+ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
-    return [self newObjectForEntityName:entityName andXid:nil];
 }
 
 + (NSArray *)objectsWithXids:(NSArray *)xids {

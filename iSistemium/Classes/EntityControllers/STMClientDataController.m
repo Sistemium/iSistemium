@@ -155,10 +155,7 @@
         STMClientData *clientData = [fetchResult lastObject];
         
         if (!clientData) {
-            
-            clientData = (STMClientData *)[STMObjectsController newObjectForEntityName:entityName];
-            clientData.isFantom = @NO;
-            
+            clientData = (STMClientData *)[STMObjectsController newObjectForEntityName:entityName isFantom:NO];
         }
         
         return clientData;

@@ -383,8 +383,7 @@
 
             if (!settingToCheck) {
                 
-                STMSetting *newSetting = (STMSetting *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMSetting class])];
-                newSetting.isFantom = @NO;
+                STMSetting *newSetting = (STMSetting *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMSetting class]) isFantom:NO];
                 newSetting.group = settingsGroupName;
                 newSetting.name = settingName;
                 
@@ -436,8 +435,7 @@
             
             if (!setting) {
                 
-                setting = (STMSetting *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMSetting class])];
-                setting.isFantom = @NO;
+                setting = (STMSetting *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMSetting class]) isFantom:NO];
                 setting.group = group;
                 setting.name = settingName;
                 

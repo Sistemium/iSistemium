@@ -14,8 +14,6 @@
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
 
 
-- (void)performFetch;
-
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText;
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar;
 - (void)searchButtonPressed;
