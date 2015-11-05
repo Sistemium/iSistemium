@@ -82,6 +82,26 @@
                     "name": "requestLocationServiceAuthorization",
                     "value": "noRequest",
                     "control": "segmentedContol"
+                },
+                {
+                    "name": "minBuild",
+                    "value": "",
+                    "control": "textField"
+                },
+                {
+                    "name": "minBuildLockText",
+                    "value": "",
+                    "control": "textField"
+                },
+                {
+                    "name": "appDownloadUrl",
+                    "value": "",
+                    "control": "textField"
+                },
+                {
+                    "name": "appDownloadUrlLabel",
+                    "value": "",
+                    "control": "textField"
                 }
             ]
        },

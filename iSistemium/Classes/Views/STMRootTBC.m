@@ -832,9 +832,7 @@
 }
 
 - (void)syncerInitSuccessfully {
-    
     [self removeSpinner];
-    
 }
 
 - (void)syncerTimeoutError {

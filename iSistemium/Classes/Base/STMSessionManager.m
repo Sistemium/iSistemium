@@ -91,7 +91,7 @@
     
     STMSession *session = (self.sessions)[uid];
     
-    if ([session.status isEqualToString:@"running"] || [session.status isEqualToString:@"removing"]) {
+    if ([session.status isEqualToString:@"running"] || [session.status isEqualToString:@"removing"] || [session.status isEqualToString:@"starting"]) {
         
         if ([self.currentSessionUID isEqualToString:uid]) {
             self.currentSessionUID = nil;

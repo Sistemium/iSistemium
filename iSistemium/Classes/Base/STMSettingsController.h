@@ -32,6 +32,8 @@
 - (BOOL)isValidTime:(NSString *)value;
 - (BOOL)isValidURI:(NSString *)value;
 
+- (BOOL)shouldBlockAppByMinBuildSetting;
+
 
 @property (nonatomic, strong) NSMutableDictionary *startSettings;
 @property (nonatomic, strong) id <STMSession> session;

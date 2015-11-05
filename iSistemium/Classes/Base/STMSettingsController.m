@@ -13,10 +13,13 @@
 #import "STMObjectsController.h"
 #import "STMSessionManager.h"
 
+#define MIN_BUILD_ALERT_TAG 4
 
-@interface STMSettingsController() <NSFetchedResultsControllerDelegate>
+
+@interface STMSettingsController() <NSFetchedResultsControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedSettingsResultController;
+@property (nonatomic, strong) NSString *appNewVersionDownloadURL;
 
 
 @end
@@ -99,7 +102,8 @@
                                @"recieveDataServerURI",
                                @"sendDataServerURI",
                                @"API.url",
-                               @"socketUrl"];
+                               @"socketUrl",
+                               @"appDownloadUrl"];
         
         NSArray *timeValues = @[];
         NSArray *timeValueSuffixes = @[@"TrackerStartTime",
@@ -107,7 +111,10 @@
         
         NSArray *stringValue = @[@"uploadLog.type",
                                  @"genericPriceType",
-                                 @"geotrackerControl"];
+                                 @"geotrackerControl",
+                                 @"minBuild",
+                                 @"minBuildLockText",
+                                 @"appDownloadUrlLabel"];
         
         NSArray *logicValue = @[@"timeDistanceLogic"];
         
@@ -415,12 +422,101 @@
     }
     
     [[(STMSession *)self.session document] saveDocument:^(BOOL success) {
+        
         if (success) {
+            
+            if ([self shouldBlockAppByMinBuildSetting]) {
+                [self checkMinBuild];
+            }
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"settingsLoadComplete" object:self];
         }
+        
     }];
 
 }
+
+
+#pragma mark - minBuild checking
+
+- (void)checkMinBuild {
+    
+    if ([self shouldBlockAppByMinBuildSetting]) {
+        
+        self.appNewVersionDownloadURL = [STMSettingsController stringValueForSettings:@"appDownloadUrl" forGroup:@"appSettings"];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            NSString *lockText = [STMSettingsController stringValueForSettings:@"minBuildLockText" forGroup:@"appSettings"];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:lockText
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+            alert.tag = MIN_BUILD_ALERT_TAG;
+            
+            [alert show];
+            
+            [[STMAuthController authController] logout];
+            
+        }];
+        
+    }
+    
+}
+
+- (void)openNewAppVersionURL {
+    
+    if (self.appNewVersionDownloadURL) {
+        
+        NSURL *url = [NSURL URLWithString:self.appNewVersionDownloadURL];
+        [[UIApplication sharedApplication] openURL:url];
+        
+    } else {
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            NSString *errorText = NSLocalizedString(@"NOT VALID URL", nil);
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:errorText
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
+        
+    }
+    
+}
+
+- (BOOL)shouldBlockAppByMinBuildSetting {
+    
+    NSString *minBuildString = [STMSettingsController stringValueForSettings:@"minBuild" forGroup:@"appSettings"];
+    NSString *currentBuild = BUILD_VERSION;
+    
+    return (minBuildString.integerValue > currentBuild.integerValue);
+
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (alertView.tag == MIN_BUILD_ALERT_TAG) {
+        
+        if (buttonIndex == 1) {
+            [self openNewAppVersionURL];
+        } else {
+            [[STMAuthController authController] logout];
+        }
+        
+    }
+    
+}
+
+
+#pragma mark - set new settings
 
 - (NSString *)setNewSettings:(NSDictionary *)newSettings forGroup:(NSString *)group {
 
@@ -499,6 +595,8 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"settingsChanged" object:self.session userInfo:@{@"changedObject": anObject}];
         
+        if ([[anObject valueForKey:@"name"] isEqualToString:@"minBuild"]) [self checkMinBuild];
+
     }
         
     if (type == NSFetchedResultsChangeDelete) {

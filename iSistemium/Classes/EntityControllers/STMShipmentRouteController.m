@@ -43,7 +43,9 @@
 
 - (NSFetchedResultsController *)resultsController {
     
-    if (!_resultsController) {
+    NSManagedObjectContext *context = [STMShipmentRouteController document].managedObjectContext;
+    
+    if (!_resultsController && context) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMShipmentRoute class])];
         
@@ -55,7 +57,10 @@
         
         request.predicate = [STMPredicate predicateWithNoFantoms];
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:[STMShipmentRouteController document].managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:context
+                                                                   sectionNameKeyPath:nil
+                                                                            cacheName:nil];
         
         [_resultsController performFetch:nil];
 

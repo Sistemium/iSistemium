@@ -10,6 +10,9 @@
 
 @interface STMRootTBC : UITabBarController
 
+@property (nonatomic, strong) NSMutableArray *storyboardTitles;
+@property (nonatomic) BOOL newAppVersionAvailable;
+
 + (STMRootTBC *)sharedRootVC;
 
 - (UIViewController *)topmostVC;
@@ -20,9 +23,6 @@
 - (void)showTabWithName:(NSString *)tabName;
 - (void)showTabAtIndex:(NSUInteger)index;
 - (void)newAppVersionAvailable:(NSNotification *)notification;
-
-@property (nonatomic, strong) NSMutableArray *storyboardTitles;
-@property (nonatomic) BOOL newAppVersionAvailable;
 
 
 @end

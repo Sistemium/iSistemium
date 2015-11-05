@@ -687,7 +687,10 @@
 - (void)settingsChanged:(NSNotification *)notification {
     
     id firstKey = notification.userInfo.allKeys.firstObject;
-    NSArray *observedSettings = @[@"locationTrackerAutoStart", @"blockIfNoLocationPermission", @"requestLocationServiceAuthorization"];
+    
+    NSArray *observedSettings = @[@"locationTrackerAutoStart",
+                                  @"blockIfNoLocationPermission",
+                                  @"requestLocationServiceAuthorization"];
     
     if (firstKey && [observedSettings containsObject:firstKey]) {
         
@@ -695,7 +698,7 @@
         
         [self setupLabels];
         [self checkLocationDisabled];
-        
+
     }
     
 }
@@ -811,6 +814,9 @@
     
 }
 
+
+#pragma mark - location disabled checking
+
 - (void)checkLocationDisabled {
     
     if (![self.requestLocationServiceAuthorization isEqualToString:@"noRequest"]) {
@@ -878,6 +884,9 @@
     return (blockIfNoLocationPermission && locationTrackerAutoStart);
     
 }
+
+
+#pragma mark - some methods
 
 - (void)setupMonitoringStatusLabel {
     
@@ -1076,7 +1085,7 @@
         [self updateSyncDatesLabels];
         [self setupNonloadedPicturesButton];
         [self updateNonloadedPicturesInfo];
-
+        
 //        self.downloadAlertWasShown = NO;
     }
 
@@ -1111,7 +1120,7 @@
     
     [self addObservers];
     [self startReachability];
-        
+
 }
 
 - (void)viewDidLoad {

@@ -110,7 +110,7 @@
         self.document = (STMDocument *)session.document;
         _session = session;
         
-        [self startSyncer];
+//        [self startSyncer];
         
     }
     
