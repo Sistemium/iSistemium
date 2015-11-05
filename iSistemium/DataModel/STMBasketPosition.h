@@ -1,5 +1,5 @@
 //
-//  STMOutlet.h
+//  STMBasketPosition.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 03/11/15.
@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "STMComment.h"
 
-@class STMBasketPosition, STMCampaign, STMCashing, STMDebt, STMPartner, STMPhotoReport, STMSaleOrder, STMSalesman, STMShipment;
+@class STMArticle, STMOutlet;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMOutlet : STMComment
+@interface STMBasketPosition : STMComment
 
 // Insert code here to declare functionality of your managed object subclass
 
@@ -21,4 +21,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#import "STMOutlet+CoreDataProperties.h"
+#import "STMBasketPosition+CoreDataProperties.h"

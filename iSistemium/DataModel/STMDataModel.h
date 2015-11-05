@@ -9,67 +9,68 @@
 #ifndef iSistemium_STMDataModel_h
 #define iSistemium_STMDataModel_h
 
-#include "STMArticle.h"
-#include "STMArticleGroup+custom.h"
-#include "STMArticlePicture.h"
+#import "STMArticle.h"
+#import "STMArticleGroup+custom.h"
+#import "STMArticlePicture.h"
 
-#include "STMBatteryStatus.h"
+#import "STMBasketPosition.h"
+#import "STMBatteryStatus.h"
 
-#include "STMCampaign.h"
-#include "STMCampaignGroup.h"
-#include "STMCampaignPicture.h"
+#import "STMCampaign.h"
+#import "STMCampaignGroup.h"
+#import "STMCampaignPicture.h"
 
-#include "STMCashing+dayAsString.h"
-#include "STMClientData.h"
-#include "STMClientEntity.h"
-#include "STMComment.h"
+#import "STMCashing+dayAsString.h"
+#import "STMClientData.h"
+#import "STMClientEntity.h"
+#import "STMComment.h"
 
-#include "STMDatum+init.h"
-#include "STMDebt+Cashing.h"
-#include "STMDriver.h"
+#import "STMDatum+init.h"
+#import "STMDebt+Cashing.h"
+#import "STMDriver.h"
 
-#include "STMEntity.h"
+#import "STMEntity.h"
 
-#include "STMLocation.h"
-#include "STMLogMessage+dayAsString.h"
+#import "STMLocation.h"
+#import "STMLogMessage+dayAsString.h"
 
-#include "STMMessage.h"
-#include "STMMessagePicture.h"
+#import "STMMessage.h"
+#import "STMMessagePicture.h"
 
-#include "STMOutlet+photoReportsArePresent.h"
+#import "STMOutlet.h"
 
-#include "STMPartner.h"
-#include "STMPhoto.h"
-#include "STMPhotoReport.h"
-#include "STMPicture+customs.h"
+#import "STMPartner.h"
+#import "STMPhoto.h"
+#import "STMPhotoReport.h"
+#import "STMPicture+customs.h"
 
-#include "STMPrice.h"
-#include "STMPriceType.h"
+#import "STMPrice.h"
+#import "STMPriceType.h"
 
-#include "STMRecordStatus.h"
+#import "STMRecordStatus.h"
 
-#include "STMSaleOrder.h"
-#include "STMSaleOrderPosition.h"
+#import "STMSaleOrder.h"
+#import "STMSaleOrderPosition.h"
 
-#include "STMSalesman.h"
-#include "STMSetting.h"
+#import "STMSalesman.h"
+#import "STMSetting.h"
 
-#include "STMShipment+custom.h"
-#include "STMShipmentPosition+custom.h"
-#include "STMShipmentRoute.h"
-#include "STMShipmentRoutePoint+custom.h"
-#include "STMShippingLocation.h"
-#include "STMShippingLocationPicture.h"
+#import "STMShipment+custom.h"
+#import "STMShipmentPosition+custom.h"
+#import "STMShipmentRoute.h"
+#import "STMShipmentRoutePoint+custom.h"
+#import "STMShippingLocation.h"
+#import "STMShippingLocationPicture.h"
 
-#include "STMStock.h"
+#import "STMStock.h"
 
-#include "STMTrack+dayAsString.h"
+#import "STMTrack+dayAsString.h"
 
-#include "STMUncashing.h"
-#include "STMUncashingPicture.h"
-#include "STMUncashingPlace.h"
+#import "STMUncashing.h"
+#import "STMUncashingPicture.h"
+#import "STMUncashingPlace.h"
 
-#include "STMWorkflow.h"
+#import "STMWorkflow.h"
 
 
 #endif

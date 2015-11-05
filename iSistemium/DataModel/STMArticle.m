@@ -9,6 +9,7 @@
 #import "STMArticle.h"
 #import "STMArticleGroup.h"
 #import "STMArticlePicture.h"
+#import "STMBasketPosition.h"
 #import "STMCampaign.h"
 #import "STMPrice.h"
 #import "STMSaleOrderPosition.h"

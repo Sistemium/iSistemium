@@ -8,7 +8,7 @@
 
 #import "STMCashing+dayAsString.h"
 #import "STMDebt+Cashing.h"
-#import "STMOutlet+photoReportsArePresent.h"
+#import "STMOutlet.h"
 #import "STMFunctions.h"
 
 @implementation STMCashing (dayAsString)
