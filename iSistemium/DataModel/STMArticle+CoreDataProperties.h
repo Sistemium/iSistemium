@@ -2,7 +2,7 @@
 //  STMArticle+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 03/11/15.
+//  Created by Maxim Grigoriev on 05/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -23,7 +23,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDecimalNumber *pieceVolume;
 @property (nullable, nonatomic, retain) NSDecimalNumber *pieceWeight;
 @property (nullable, nonatomic, retain) NSDecimalNumber *price;
+@property (nullable, nonatomic, retain) NSString *barcode;
 @property (nullable, nonatomic, retain) STMArticleGroup *articleGroup;
+@property (nullable, nonatomic, retain) NSSet<STMBasketPosition *> *basketPositions;
 @property (nullable, nonatomic, retain) NSSet<STMCampaign *> *campaigns;
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *factShipmentPositions;
 @property (nullable, nonatomic, retain) NSSet<STMArticlePicture *> *pictures;
@@ -31,11 +33,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSSet<STMSaleOrderPosition *> *saleOrderPositions;
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *shipmentPositions;
 @property (nullable, nonatomic, retain) STMStock *stock;
-@property (nullable, nonatomic, retain) NSSet<STMBasketPosition *> *basketPositions;
 
 @end
 
 @interface STMArticle (CoreDataGeneratedAccessors)
+
+- (void)addBasketPositionsObject:(STMBasketPosition *)value;
+- (void)removeBasketPositionsObject:(STMBasketPosition *)value;
+- (void)addBasketPositions:(NSSet<STMBasketPosition *> *)values;
+- (void)removeBasketPositions:(NSSet<STMBasketPosition *> *)values;
 
 - (void)addCampaignsObject:(STMCampaign *)value;
 - (void)removeCampaignsObject:(STMCampaign *)value;
@@ -66,11 +72,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeShipmentPositionsObject:(STMShipmentPosition *)value;
 - (void)addShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
 - (void)removeShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
-
-- (void)addBasketPositionsObject:(STMBasketPosition *)value;
-- (void)removeBasketPositionsObject:(STMBasketPosition *)value;
-- (void)addBasketPositions:(NSSet<STMBasketPosition *> *)values;
-- (void)removeBasketPositions:(NSSet<STMBasketPosition *> *)values;
 
 @end
 
