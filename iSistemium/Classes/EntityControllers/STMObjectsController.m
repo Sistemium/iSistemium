@@ -1230,6 +1230,8 @@
                              NSStringFromClass([STMArticle class]),
                              NSStringFromClass([STMArticlePicture class]),
                              NSStringFromClass([STMArticleGroup class]),
+                             NSStringFromClass([STMBarCode class]),
+                             NSStringFromClass([STMBasketPosition class]),
                              NSStringFromClass([STMBatteryStatus class]),
                              NSStringFromClass([STMCampaign class]),
                              NSStringFromClass([STMCampaignGroup class]),

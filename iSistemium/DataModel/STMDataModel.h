@@ -13,6 +13,7 @@
 #import "STMArticleGroup+custom.h"
 #import "STMArticlePicture.h"
 
+#import "STMBarCode.h"
 #import "STMBasketPosition.h"
 #import "STMBatteryStatus.h"
 
