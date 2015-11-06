@@ -791,8 +791,13 @@
     for (NSString *entityName in entityNamesForSending) {
         
         NSFetchedResultsController *rc = [self resultsControllerForEntityName:entityName];
-        [self.resultsControllers addObject:rc];
-        [rc performFetch:nil];
+        
+        if (rc) {
+            
+            [self.resultsControllers addObject:rc];
+            [rc performFetch:nil];
+            
+        }
 
     }
     
@@ -810,33 +815,41 @@
 
 - (NSFetchedResultsController *)resultsControllerForEntityName:(NSString *)entityName {
     
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    request.includesSubentities = YES;
-
-    NSMutableArray *subpredicates = @[].mutableCopy;
-    
-    if ([entityName isEqualToString:NSStringFromClass([STMLogMessage class])]) {
+    if ([[STMObjectsController localDataModelEntityNames] containsObject:entityName]) {
         
-        STMLogger *logger = [[STMSessionManager sharedManager].currentSession logger];
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+        request.includesSubentities = YES;
         
-        NSArray *logMessageSyncTypes = [logger syncingTypesForSettingType:[self uploadLogType]];
+        NSMutableArray *subpredicates = @[].mutableCopy;
         
-        [subpredicates addObject:[NSPredicate predicateWithFormat:@"type IN %@", logMessageSyncTypes]];
-
+        if ([entityName isEqualToString:NSStringFromClass([STMLogMessage class])]) {
+            
+            STMLogger *logger = [[STMSessionManager sharedManager].currentSession logger];
+            
+            NSArray *logMessageSyncTypes = [logger syncingTypesForSettingType:[self uploadLogType]];
+            
+            [subpredicates addObject:[NSPredicate predicateWithFormat:@"type IN %@", logMessageSyncTypes]];
+            
+        }
+        
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil]];
+        
+        request.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+        
+        NSFetchedResultsController *rc = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                             managedObjectContext:[STMSocketController document].managedObjectContext
+                                                                               sectionNameKeyPath:nil
+                                                                                        cacheName:nil];
+        rc.delegate = self;
+        
+        return rc;
+        
+    } else {
+        
+        return nil;
+        
     }
-
-    [subpredicates addObject:[NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil]];
-
-    request.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
-    
-    NSFetchedResultsController *rc = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                         managedObjectContext:[STMSocketController document].managedObjectContext
-                                                                           sectionNameKeyPath:nil
-                                                                                    cacheName:nil];
-    rc.delegate = self;
-    
-    return rc;
 
 }
 
