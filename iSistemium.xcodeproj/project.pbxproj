@@ -368,6 +368,8 @@
 		2CEE30471BEBAD10009B229F /* STMWorkflow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30081BEBAD10009B229F /* STMWorkflow.m */; };
 		2CEE304E1BECD922009B229F /* STMBarCode+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE304B1BECD922009B229F /* STMBarCode+CoreDataProperties.m */; };
 		2CEE304F1BECD922009B229F /* STMBarCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE304D1BECD922009B229F /* STMBarCode.m */; };
+		2CEE30511BECEE78009B229F /* STMBarCodeScan_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE30501BECEE78009B229F /* STMBarCodeScan_iphone.storyboard */; };
+		2CEE30551BECEF1F009B229F /* STMBarCodeScanVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30541BECEF1F009B229F /* STMBarCodeScanVC.m */; };
 		2CF126321B74F5210059701F /* STMShippingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126311B74F5210059701F /* STMShippingVC.m */; };
 		2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126341B77520F0059701F /* STMShippingSettingsTVC.m */; };
 		2CF1264A1B778AB50059701F /* future.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126461B778AB50059701F /* future.png */; };
@@ -1087,6 +1089,9 @@
 		2CEE304B1BECD922009B229F /* STMBarCode+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMBarCode+CoreDataProperties.m"; sourceTree = "<group>"; };
 		2CEE304C1BECD922009B229F /* STMBarCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMBarCode.h; sourceTree = "<group>"; };
 		2CEE304D1BECD922009B229F /* STMBarCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMBarCode.m; sourceTree = "<group>"; };
+		2CEE30501BECEE78009B229F /* STMBarCodeScan_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMBarCodeScan_iphone.storyboard; sourceTree = "<group>"; };
+		2CEE30531BECEF1F009B229F /* STMBarCodeScanVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMBarCodeScanVC.h; sourceTree = "<group>"; };
+		2CEE30541BECEF1F009B229F /* STMBarCodeScanVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMBarCodeScanVC.m; sourceTree = "<group>"; };
 		2CF126301B74F5200059701F /* STMShippingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingVC.h; sourceTree = "<group>"; };
 		2CF126311B74F5210059701F /* STMShippingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingVC.m; sourceTree = "<group>"; };
 		2CF126331B77520F0059701F /* STMShippingSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingSettingsTVC.h; sourceTree = "<group>"; };
@@ -1408,6 +1413,7 @@
 				2C2968FA19A208FB0038B122 /* STMDatePickerVC.h */,
 				2C2968FB19A208FB0038B122 /* STMDatePickerVC.m */,
 				2C5763D51AA5DF7500B9FD2C /* STMAuth */,
+				2CEE30521BECEECF009B229F /* STMBarCodeScan */,
 				2C5763D81AA5E0B300B9FD2C /* STMCampaign */,
 				2C5764291AA5E2EE00B9FD2C /* STMCatalog */,
 				2C5763FA1AA5E16200B9FD2C /* STMDebts */,
@@ -2058,6 +2064,7 @@
 				2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */,
 				2C1727EB1B94440D00C82ACB /* STMShipments.storyboard */,
 				2CEAC15B1B3BF64C00AD068E /* STMShipments_iphone.storyboard */,
+				2CEE30501BECEE78009B229F /* STMBarCodeScan_iphone.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -2109,6 +2116,15 @@
 				2C4620591B68F813007FD646 /* STMPositionVolumesVC.m */,
 			);
 			path = STMShipments;
+			sourceTree = "<group>";
+		};
+		2CEE30521BECEECF009B229F /* STMBarCodeScan */ = {
+			isa = PBXGroup;
+			children = (
+				2CEE30531BECEF1F009B229F /* STMBarCodeScanVC.h */,
+				2CEE30541BECEF1F009B229F /* STMBarCodeScanVC.m */,
+			);
+			path = STMBarCodeScan;
 			sourceTree = "<group>";
 		};
 		C2F565BFB1515E69445A0A71 /* Pods */ = {
@@ -2242,6 +2258,7 @@
 				2CF1265E1B78EC390059701F /* STMCustom9TVCell.xib in Resources */,
 				2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */,
 				2CC1945D1BE272F8001F8E48 /* STMCustom10TVCell.xib in Resources */,
+				2CEE30511BECEE78009B229F /* STMBarCodeScan_iphone.storyboard in Resources */,
 				2C5764561AAA0A7D00B9FD2C /* bill-128.png in Resources */,
 				2C4620541B67B30C007FD646 /* STMVolumeTVCell.xib in Resources */,
 				2C29497A1BDCFC110099F24F /* STMPhotoReports.storyboard in Resources */,
@@ -2491,6 +2508,7 @@
 				2C02F2D01A8E1FE100E0E890 /* STMCashingController.m in Sources */,
 				2C57642C1AA5E9C400B9FD2C /* STMTableViewCell.m in Sources */,
 				2CCD06E31B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m in Sources */,
+				2CEE30551BECEF1F009B229F /* STMBarCodeScanVC.m in Sources */,
 				2C14D43E1A3B737E00747844 /* STMLogMessagesSVC.m in Sources */,
 				2C02F2B11A8A319B00E0E890 /* STMAuthPhoneVC.m in Sources */,
 				2C14D4441A3B73B400747844 /* STMLogMessagesDetailTVC.m in Sources */,

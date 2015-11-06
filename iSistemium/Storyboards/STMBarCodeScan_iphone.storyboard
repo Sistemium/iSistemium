@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Q7W-3x-PPB">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Bar Code ScanVC-->
+        <scene sceneID="NlZ-5q-HRz">
+            <objects>
+                <viewController id="Q7W-3x-PPB" customClass="STMBarCodeScanVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="WTt-OU-gc2"/>
+                        <viewControllerLayoutGuide type="bottom" id="MJt-KI-tsr"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="LpZ-mb-96u">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BarCodeScan" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1zb-PA-KSi">
+                                <rect key="frame" x="20" y="28" width="560" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="scanned barcode" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qlq-3A-smd">
+                                <rect key="frame" x="20" y="56.5" width="560" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="article name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fgs-oQ-NFe">
+                                <rect key="frame" x="20" y="85" width="560" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="article volume" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Ri-Xo-dEk">
+                                <rect key="frame" x="20" y="113.5" width="560" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="article price" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ZP-Hl-0TY">
+                                <rect key="frame" x="20" y="142" width="560" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Fgs-oQ-NFe" firstAttribute="top" secondItem="qlq-3A-smd" secondAttribute="bottom" constant="8" id="1JX-pH-qae"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Fgs-oQ-NFe" secondAttribute="trailing" id="1gM-rB-DSt"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="qlq-3A-smd" secondAttribute="trailing" id="2Jx-qS-04N"/>
+                            <constraint firstItem="qlq-3A-smd" firstAttribute="top" secondItem="1zb-PA-KSi" secondAttribute="bottom" constant="8" id="5hp-Wv-4CS"/>
+                            <constraint firstItem="1Ri-Xo-dEk" firstAttribute="top" secondItem="Fgs-oQ-NFe" secondAttribute="bottom" constant="8" id="BXC-bu-iC9"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="3ZP-Hl-0TY" secondAttribute="leading" id="Hwa-DO-qzK"/>
+                            <constraint firstItem="3ZP-Hl-0TY" firstAttribute="top" secondItem="1Ri-Xo-dEk" secondAttribute="bottom" constant="8" id="IFm-m4-dM5"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="1Ri-Xo-dEk" secondAttribute="trailing" id="QoS-BG-nXs"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="1zb-PA-KSi" secondAttribute="trailing" id="WWe-5b-UMt"/>
+                            <constraint firstItem="qlq-3A-smd" firstAttribute="width" secondItem="1zb-PA-KSi" secondAttribute="width" id="XmZ-tr-dsD"/>
+                            <constraint firstItem="1Ri-Xo-dEk" firstAttribute="width" secondItem="Fgs-oQ-NFe" secondAttribute="width" id="Z3d-tJ-qSJ"/>
+                            <constraint firstItem="1zb-PA-KSi" firstAttribute="top" secondItem="WTt-OU-gc2" secondAttribute="bottom" constant="8" id="cDZ-d5-Ph5"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="Fgs-oQ-NFe" secondAttribute="leading" id="iaa-TG-Jp7"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="3ZP-Hl-0TY" secondAttribute="trailing" id="nva-WQ-JOz"/>
+                            <constraint firstItem="Fgs-oQ-NFe" firstAttribute="width" secondItem="qlq-3A-smd" secondAttribute="width" id="rWF-2j-sVC"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="1zb-PA-KSi" secondAttribute="leading" id="vGF-1y-20F"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="1Ri-Xo-dEk" secondAttribute="leading" id="wt1-WG-TTh"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="qlq-3A-smd" secondAttribute="leading" id="x4l-jw-PYy"/>
+                            <constraint firstItem="3ZP-Hl-0TY" firstAttribute="width" secondItem="1Ri-Xo-dEk" secondAttribute="width" id="y75-zD-Hrb"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="articleNameLabel" destination="Fgs-oQ-NFe" id="vi6-sa-WSZ"/>
+                        <outlet property="articlePriceLabel" destination="3ZP-Hl-0TY" id="vdQ-pd-zoi"/>
+                        <outlet property="articleVolumeLabel" destination="1Ri-Xo-dEk" id="Lw8-vS-C7v"/>
+                        <outlet property="barcodeLabel" destination="qlq-3A-smd" id="c5u-Xl-s2h"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hg7-RA-5Bp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="824" y="395"/>
+        </scene>
+    </scenes>
+</document>

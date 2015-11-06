@@ -813,7 +813,7 @@
 
 #pragma mark - NSFetchedResultsController
 
-- (NSFetchedResultsController *)resultsControllerForEntityName:(NSString *)entityName {
+- (nullable NSFetchedResultsController *)resultsControllerForEntityName:(NSString *)entityName {
     
     if ([[STMObjectsController localDataModelEntityNames] containsObject:entityName]) {
         
