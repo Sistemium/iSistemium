@@ -8,12 +8,15 @@
 
 #import "STMBarCodeScanVC.h"
 
+#import <AVFoundation/AVFoundation.h>
+
+#import "STMConstants.h"
 #import "STMSessionManager.h"
 #import "STMDataModel.h"
 #import "STMNS.h"
 
 
-@interface STMBarCodeScanVC () <UITextFieldDelegate>
+@interface STMBarCodeScanVC () <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *barcodeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *articleNameLabel;
@@ -22,25 +25,125 @@
 
 @property (nonatomic, strong) UITextField *hiddenBarCodeTextField;
 
+@property (nonatomic, strong) AVCaptureDevice *device;
+@property (nonatomic, strong) AVCaptureDeviceInput *input;
+@property (nonatomic, strong) AVCaptureSession *session;
+@property (nonatomic, strong) AVCaptureMetadataOutput *output;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer *preview;
+
 
 @end
 
 
 @implementation STMBarCodeScanVC
 
+- (IBAction)cameraButtonPressed:(id)sender {
+    
+    [self.hiddenBarCodeTextField resignFirstResponder];
+    
+    [self.view.layer insertSublayer:self.preview atIndex:0];
+
+    [self.session startRunning];
+    
+}
+
+- (BOOL)isCameraAvailable {
+    
+    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    return [videoDevices count] > 0;
+    
+}
+
+
+#pragma mark - AVFoundationSetup
+
+- (void)setupScanner {
+    
+    self.device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    self.input = [AVCaptureDeviceInput deviceInputWithDevice:self.device error:nil];
+    self.session = [[AVCaptureSession alloc] init];
+    self.output = [[AVCaptureMetadataOutput alloc] init];
+    
+    [self.session addOutput:self.output];
+    [self.session addInput:self.input];
+    
+    [self.output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+//    self.output.metadataObjectTypes = @[AVMetadataObjectTypeQRCode];
+    
+    self.output.metadataObjectTypes = self.output.availableMetadataObjectTypes;
+    
+    self.preview = [AVCaptureVideoPreviewLayer layerWithSession:self.session];
+    self.preview.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    self.preview.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    
+    AVCaptureConnection *con = self.preview.connection;
+    
+    con.videoOrientation = AVCaptureVideoOrientationPortrait;
+    
+//    [self.view.layer insertSublayer:self.preview atIndex:0];
+    
+}
+
+
+#pragma mark AVCaptureMetadataOutputObjectsDelegate
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
+    
+    for (AVMetadataObject *current in metadataObjects) {
+        
+        if([current isKindOfClass:[AVMetadataMachineReadableCodeObject class]]) {
+            
+            NSString *scannedValue = [(AVMetadataMachineReadableCodeObject *)current stringValue];
+            [self didSuccessfullyScan:scannedValue];
+            
+        }
+        
+    }
+    
+}
+
+- (void)didSuccessfullyScan:(NSString *)aScannedValue {
+    
+//    NSLog(@"aScannedValue %@", aScannedValue);
+    
+    [self.session stopRunning];
+    
+    [self.preview removeFromSuperlayer];
+    
+    [self searchBarCode:aScannedValue];
+    
+}
+
+
 - (void)searchBarCode:(NSString *)barcode {
     
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMBarCode class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"barcode" ascending:YES]];
-    request.predicate = [NSPredicate predicateWithFormat:@"barcode == %@", barcode];
+    self.barcodeLabel.text = barcode;
+
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
+    request.predicate = [NSPredicate predicateWithFormat:@"ANY barcodes.barcode == %@", barcode];
     
-    NSArray *barcodesArray = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
+    NSArray *articlesArray = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
     
-    STMBarCode *barcodeObject = barcodesArray.firstObject;
+    if (articlesArray.count > 1) {
+        NSLog(@"articlesArray.count > 1");
+    }
     
-    self.articleNameLabel.text = barcodeObject.article.name;
-    self.articleVolumeLabel.text = barcodeObject.article.pieceVolume.stringValue;
-    self.articlePriceLabel.text = [(STMPrice *)barcodeObject.article.prices.allObjects.firstObject price].stringValue;
+    STMArticle *article = articlesArray.firstObject;
+    
+    if (article) {
+        
+        self.articleNameLabel.text = article.name;
+        self.articleVolumeLabel.text = article.pieceVolume.stringValue;
+        self.articlePriceLabel.text = [(STMPrice *)article.prices.allObjects.firstObject price].stringValue;
+
+    } else {
+        
+        self.articleNameLabel.text = @"N/A";
+        self.articleVolumeLabel.text = @"N/A";
+        self.articlePriceLabel.text = @"N/A";
+
+    }
     
 }
 
@@ -49,7 +152,6 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
     
-    self.barcodeLabel.text = textField.text;
     [self searchBarCode:textField.text];
     textField.text = @"";
     return NO;
@@ -66,6 +168,10 @@
     self.hiddenBarCodeTextField.delegate = self;
     
     [self.view addSubview:self.hiddenBarCodeTextField];
+    
+    if ([self isCameraAvailable]) {
+        [self setupScanner];
+    }
     
 }
 
