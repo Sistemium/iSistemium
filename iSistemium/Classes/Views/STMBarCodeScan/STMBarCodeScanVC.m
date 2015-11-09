@@ -8,7 +8,7 @@
 
 #import "STMBarCodeScanVC.h"
 
-#import <AVFoundation/AVFoundation.h>
+#import "STMBarCodeScanner.h"
 
 #import "STMConstants.h"
 #import "STMSessionManager.h"
@@ -16,20 +16,15 @@
 #import "STMNS.h"
 
 
-@interface STMBarCodeScanVC () <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate>
+@interface STMBarCodeScanVC () <STMBarCodeScannerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *barcodeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *articleNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *articleVolumeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *articlePriceLabel;
 
-@property (nonatomic, strong) UITextField *hiddenBarCodeTextField;
-
-@property (nonatomic, strong) AVCaptureDevice *device;
-@property (nonatomic, strong) AVCaptureDeviceInput *input;
-@property (nonatomic, strong) AVCaptureSession *session;
-@property (nonatomic, strong) AVCaptureMetadataOutput *output;
-@property (nonatomic, strong) AVCaptureVideoPreviewLayer *preview;
+@property (nonatomic, strong) STMBarCodeScanner *cameraScanner;
+@property (nonatomic, strong) STMBarCodeScanner *HIDScanner;
 
 
 @end
@@ -39,78 +34,11 @@
 
 - (IBAction)cameraButtonPressed:(id)sender {
     
-    [self.hiddenBarCodeTextField resignFirstResponder];
-    
-    [self.view.layer insertSublayer:self.preview atIndex:0];
-
-    [self.session startRunning];
-    
-}
-
-- (BOOL)isCameraAvailable {
-    
-    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    return [videoDevices count] > 0;
-    
-}
-
-
-#pragma mark - AVFoundationSetup
-
-- (void)setupScanner {
-    
-    self.device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    self.input = [AVCaptureDeviceInput deviceInputWithDevice:self.device error:nil];
-    self.session = [[AVCaptureSession alloc] init];
-    self.output = [[AVCaptureMetadataOutput alloc] init];
-    
-    [self.session addOutput:self.output];
-    [self.session addInput:self.input];
-    
-    [self.output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-//    self.output.metadataObjectTypes = @[AVMetadataObjectTypeQRCode];
-    
-    self.output.metadataObjectTypes = self.output.availableMetadataObjectTypes;
-    
-    self.preview = [AVCaptureVideoPreviewLayer layerWithSession:self.session];
-    self.preview.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    self.preview.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    
-    AVCaptureConnection *con = self.preview.connection;
-    
-    con.videoOrientation = AVCaptureVideoOrientationPortrait;
-    
-//    [self.view.layer insertSublayer:self.preview atIndex:0];
-    
-}
-
-
-#pragma mark AVCaptureMetadataOutputObjectsDelegate
-
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
-    
-    for (AVMetadataObject *current in metadataObjects) {
-        
-        if([current isKindOfClass:[AVMetadataMachineReadableCodeObject class]]) {
-            
-            NSString *scannedValue = [(AVMetadataMachineReadableCodeObject *)current stringValue];
-            [self didSuccessfullyScan:scannedValue];
-            
-        }
-        
+    if (self.HIDScanner.status == STMBarCodeScannerStarted) {
+        [self.HIDScanner stopScan];
     }
     
-}
-
-- (void)didSuccessfullyScan:(NSString *)aScannedValue {
-    
-//    NSLog(@"aScannedValue %@", aScannedValue);
-    
-    [self.session stopRunning];
-    
-    [self.preview removeFromSuperlayer];
-    
-    [self searchBarCode:aScannedValue];
+    [self.cameraScanner startScan];
     
 }
 
@@ -148,14 +76,24 @@
 }
 
 
-#pragma mark - UITextFieldDelegate
+#pragma mark - STMBarCodeScannerDelegate
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode {
     
-    [self searchBarCode:textField.text];
-    textField.text = @"";
-    return NO;
+    if (scanner == self.cameraScanner) {
+        [self.HIDScanner startScan];
+    }
     
+    [self searchBarCode:barcode];
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
+    NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
 }
 
 
@@ -163,15 +101,12 @@
 
 - (void)customInit {
     
-    self.hiddenBarCodeTextField = [[UITextField alloc] init];
-    [self.hiddenBarCodeTextField becomeFirstResponder];
-    self.hiddenBarCodeTextField.delegate = self;
+    self.cameraScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerCameraMode];
+    self.cameraScanner.delegate = self;
     
-    [self.view addSubview:self.hiddenBarCodeTextField];
-    
-    if ([self isCameraAvailable]) {
-        [self setupScanner];
-    }
+    self.HIDScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
+    self.HIDScanner.delegate = self;
+    [self.HIDScanner startScan];
     
 }
 
@@ -187,14 +122,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
