@@ -362,6 +362,8 @@
 		2CEAC16C1B3C313000AD068E /* STMShipmentRoutePointTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16B1B3C313000AD068E /* STMShipmentRoutePointTVC.m */; };
 		2CEAC16F1B3C3E4200AD068E /* STMShipmentTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */; };
 		2CEAC1751B3ECC3A00AD068E /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEAC1741B3ECC3A00AD068E /* MapKit.framework */; };
+		2CEE305F1BF24086009B229F /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE305D1BF24086009B229F /* camera.png */; };
+		2CEE30601BF24086009B229F /* camera_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE305E1BF24086009B229F /* camera_filled.png */; };
 		2CF126321B74F5210059701F /* STMShippingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126311B74F5210059701F /* STMShippingVC.m */; };
 		2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126341B77520F0059701F /* STMShippingSettingsTVC.m */; };
 		2CF1264A1B778AB50059701F /* future.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126461B778AB50059701F /* future.png */; };
@@ -1067,6 +1069,8 @@
 		2CEAC16D1B3C3E4100AD068E /* STMShipmentTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentTVC.h; sourceTree = "<group>"; };
 		2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentTVC.m; sourceTree = "<group>"; };
 		2CEAC1741B3ECC3A00AD068E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		2CEE305D1BF24086009B229F /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
+		2CEE305E1BF24086009B229F /* camera_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_filled.png; sourceTree = "<group>"; };
 		2CF126301B74F5200059701F /* STMShippingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingVC.h; sourceTree = "<group>"; };
 		2CF126311B74F5210059701F /* STMShippingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingVC.m; sourceTree = "<group>"; };
 		2CF126331B77520F0059701F /* STMShippingSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingSettingsTVC.h; sourceTree = "<group>"; };
@@ -1961,6 +1965,8 @@
 				2CF126501B7895EB0059701F /* checkmark.png */,
 				2CF126621B7CB4F50059701F /* uncheckmark_filled.png */,
 				2CF126531B789B360059701F /* uncheckmark.png */,
+				2CEE305D1BF24086009B229F /* camera.png */,
+				2CEE305E1BF24086009B229F /* camera_filled.png */,
 				2C587AAA1BB5917500546A62 /* help.png */,
 				2CF126461B778AB50059701F /* future.png */,
 				2CF126471B778AB50059701F /* past.png */,
@@ -2243,6 +2249,7 @@
 				2C1AB3011B70AE4400BF5C50 /* 1_circle_filled.png in Resources */,
 				2C1AB3181B70B47D00BF5C50 /* circle_colored_blue.png in Resources */,
 				2CF126631B7CB4F50059701F /* uncheckmark_filled.png in Resources */,
+				2CEE305F1BF24086009B229F /* camera.png in Resources */,
 				2C761BB91B00833F001DA33E /* Picture Filled-100.png in Resources */,
 				2C1AB2F01B70AE0F00BF5C50 /* 0_circle_filled.png in Resources */,
 				2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */,
@@ -2295,6 +2302,7 @@
 				2C5797ED1A432CDF00EEFBA7 /* STMWebView.storyboard in Resources */,
 				2C1727EC1B94440D00C82ACB /* STMShipments.storyboard in Resources */,
 				2C1AB2FD1B70AE4400BF5C50 /* 2_circle_filled.png in Resources */,
+				2CEE30601BF24086009B229F /* camera_filled.png in Resources */,
 				2C587AAB1BB5917500546A62 /* help.png in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */,

@@ -91,8 +91,13 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
+                        <barButtonItem title="Camera" id="nOB-lH-cSg" customClass="STMBarButtonItem">
+                            <connections>
+                                <action selector="cameraButtonPressed:" destination="lwQ-Nk-rpl" id="5jm-UL-Nwo"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="7D1-Mx-xuC"/>
-                        <barButtonItem title="Group switcher" id="qa5-kO-xcH">
+                        <barButtonItem title="Group switcher" id="qa5-kO-xcH" customClass="STMBarButtonItem">
                             <connections>
                                 <action selector="groupSwitcherPressed:" destination="lwQ-Nk-rpl" id="87b-sB-Jfk"/>
                             </connections>
@@ -100,6 +105,7 @@
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="z0e-Bl-p3h"/>
                     <connections>
+                        <outlet property="cameraButton" destination="nOB-lH-cSg" id="FkL-FB-zJ2"/>
                         <outlet property="groupSwitcher" destination="qa5-kO-xcH" id="W2I-Ru-tlx"/>
                         <segue destination="lnz-jv-JOC" kind="modal" identifier="showPhotoReport" id="BdN-MP-3PY"/>
                         <segue destination="fAL-Td-D75" kind="modal" identifier="showPhotoReportMap" id="elA-Kz-cg3"/>

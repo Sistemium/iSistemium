@@ -13,14 +13,20 @@
 #import "STMPhotoReportMapVC.h"
 
 
-#define LOCATION_IMAGE_SIZE 24
+#define LOCATION_IMAGE_SIZE 25
+#define CAMERA_IMAGE_SIZE 25
 
 
 @interface STMPhotoReportsDetailTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, strong) UIImage *locationImage;
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *groupSwitcher;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *groupSwitcher;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *cameraButton;
+
+@property (nonatomic) BOOL enableAddPhoto;
+@property (nonatomic, strong) UIImage *cameraImage;
+@property (nonatomic, strong) UIImage *cameraFilledImage;
 
 @property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
 
@@ -65,6 +71,36 @@
         
     }
     return _locationImage;
+    
+}
+
+- (UIImage *)cameraImage {
+    
+    if (!_cameraImage) {
+        
+        UIImage *image = [UIImage imageNamed:@"camera.png"];
+        image = [STMFunctions resizeImage:image toSize:CGSizeMake(CAMERA_IMAGE_SIZE, CAMERA_IMAGE_SIZE)];
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        
+        _cameraImage = image;
+
+    }
+    return _cameraImage;
+    
+}
+
+- (UIImage *)cameraFilledImage {
+    
+    if (!_cameraFilledImage) {
+        
+        UIImage *image = [UIImage imageNamed:@"camera_filled.png"];
+        image = [STMFunctions resizeImage:image toSize:CGSizeMake(CAMERA_IMAGE_SIZE, CAMERA_IMAGE_SIZE)];
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        
+        _cameraFilledImage = image;
+        
+    }
+    return _cameraFilledImage;
     
 }
 
@@ -147,6 +183,10 @@
 }
 
 - (BOOL)shouldShowAddPhotoCell {
+    
+    if (!self.enableAddPhoto) {
+        return NO;
+    }
     
     if (self.selectedCampaignGroup) {
         
@@ -346,10 +386,15 @@
     
     for (STMCampaign *campaign in campaigns) {
         
-        NSArray *photoReports = (campaign.photoReports.count > 0) ?
-                                [campaign.photoReports sortedArrayUsingDescriptors:@[[self outletNameDescriptor], [self deviceCtsDescriptor]]] :
-                                @[];
-
+        NSArray *photoReports = @[];
+        
+        if (campaign.photoReports.count > 0) {
+            
+            photoReports = [campaign.photoReports filteredSetUsingPredicate:[self currentPredicate]].allObjects;
+            photoReports = [photoReports sortedArrayUsingDescriptors:@[[self outletNameDescriptor], [self deviceCtsDescriptor]]];
+            
+        }
+        
         [campaignsTableData addObject:@{campaign.name : photoReports}];
         
     }
@@ -372,9 +417,14 @@
     
     for (STMOutlet *outlet in outlets) {
         
-        NSArray *photoReports = (outlet.photoReports.count > 0) ?
-                                [outlet.photoReports sortedArrayUsingDescriptors:@[[self campaignNameDescriptor], [self deviceCtsDescriptor]]] :
-                                @[];
+        NSArray *photoReports = @[];
+
+        if (outlet.photoReports.count > 0) {
+            
+            photoReports = [outlet.photoReports filteredSetUsingPredicate:[self currentPredicate]].allObjects;
+            photoReports = [photoReports sortedArrayUsingDescriptors:@[[self campaignNameDescriptor], [self deviceCtsDescriptor]]];
+
+        }
         
         [outletsTableData addObject:@{outlet.name : photoReports}];
         
@@ -696,6 +746,34 @@
     
 }
 
+
+#pragma mark - camera button
+
+- (void)setupCameraButton {
+    
+    self.enableAddPhoto = NO;
+    self.cameraButton.title = nil;
+    
+    [self updateCameraButton];
+    
+}
+
+- (void)updateCameraButton {
+    
+    UIImage *image = (self.enableAddPhoto) ? self.cameraFilledImage : self.cameraImage;
+    self.cameraButton.image = image;
+    
+}
+
+- (IBAction)cameraButtonPressed:(id)sender {
+
+    self.enableAddPhoto = !self.enableAddPhoto;
+    [self updateCameraButton];
+    [self performFetch];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -706,6 +784,7 @@
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
     
     [self setupGroupSwitcher];
+    [self setupCameraButton];
     
     [self performFetch];
     
