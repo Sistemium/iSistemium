@@ -373,5 +373,7 @@
 "1OUTLETS" = "точка";
 "2OUTLETS" = "точки";
 "5OUTLETS" = "точек";
+"SHOW DATA ONLY WITH PHOTOS" = "Только с фотоотчётами";
+"SHOW ALL DATA" = "Показывать всё";
 
 
