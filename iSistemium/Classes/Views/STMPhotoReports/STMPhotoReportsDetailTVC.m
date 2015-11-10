@@ -473,6 +473,8 @@
 
 - (void)fillCell:(STMCustom10TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
+    [self flushCell:cell];
+    
     if (self.shouldShowAddPhotoCell && indexPath.row == 0) {
         
         [self fillAddPhotoCell:cell];
@@ -486,15 +488,27 @@
     
 }
 
-- (void)fillAddPhotoCell:(STMCustom10TVCell *)cell {
+- (void)flushCell:(STMCustom10TVCell *)cell {
     
-    cell.titleLabel.text = @"ADD PHOTO";
-    cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
-    
+    cell.titleLabel.text = nil;
+    cell.titleLabel.textAlignment = NSTextAlignmentLeft;
+    cell.titleLabel.textColor = [UIColor blackColor];
+
     cell.detailLabel.text = nil;
+    cell.detailLabel.textAlignment = NSTextAlignmentLeft;
+    cell.detailLabel.textColor = [UIColor blackColor];
+
     cell.pictureView.image = nil;
     cell.accessoryView = nil;
+
+}
+
+- (void)fillAddPhotoCell:(STMCustom10TVCell *)cell {
     
+    cell.titleLabel.textAlignment = NSTextAlignmentCenter;
+    cell.titleLabel.text = NSLocalizedString(@"ADD PHOTOREPORT", nil);
+    cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+
 }
 
 - (void)fillCell:(STMCustom10TVCell *)cell withPhotoReport:(STMPhotoReport *)photoReport {
@@ -502,9 +516,8 @@
     cell.pictureView.contentMode = UIViewContentModeScaleAspectFill;
     cell.pictureView.clipsToBounds = YES;
     cell.pictureView.image = [UIImage imageWithData:photoReport.imageThumbnail];
-    
+
     cell.titleLabel.text = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:photoReport.deviceCts];
-    cell.titleLabel.textColor = [UIColor blackColor];
 
     switch (self.currentGrouping) {
         case STMPhotoReportGroupingCampaign: {
