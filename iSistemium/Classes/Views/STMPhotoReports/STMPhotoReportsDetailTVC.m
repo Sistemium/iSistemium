@@ -123,6 +123,7 @@
         
         _selectedOutlet = selectedOutlet;
         
+        [self updateCameraButton];
         [self updateTitle];
         [self performFetch];
         
@@ -136,6 +137,7 @@
         
         _selectedCampaign = selectedCampaign;
 
+        [self updateCameraButton];
         [self updateTitle];
         [self performFetch];
 
@@ -188,40 +190,26 @@
         return NO;
     }
     
-    if (self.selectedCampaignGroup) {
-        
-        switch (self.currentGrouping) {
-            case STMPhotoReportGroupingCampaign: {
-                
-                if (self.selectedOutlet) {
-                    return YES;
-                } else {
-                    return NO;
-                }
-                
-                break;
-            }
-            case STMPhotoReportGroupingOutlet: {
-                
-                if (self.selectedCampaign) {
-                    return YES;
-                } else {
-                    return NO;
-                }
-                
-                break;
-            }
-            default: {
-                break;
-            }
-        }
-        
-    } else {
-        
-        return NO;
-        
-    }
+    return (self.selectedCampaignGroup) ? [self shouldEnableAddPhotoButton] : NO;
     
+}
+
+- (BOOL)shouldEnableAddPhotoButton {
+    
+    switch (self.currentGrouping) {
+        case STMPhotoReportGroupingCampaign: {
+            return (self.selectedOutlet) ? YES : NO;
+            break;
+        }
+        case STMPhotoReportGroupingOutlet: {
+            return (self.selectedCampaign) ? YES : NO;
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -334,7 +322,7 @@
 }
 
 - (void)performFetch {
-    
+
     if (self.shouldShowAddPhotoCell) {
         
         [self prepareTableDataForTakingPhoto];
@@ -772,6 +760,14 @@
 }
 
 - (void)updateCameraButton {
+    
+    BOOL shouldEnableAddPhotoButton = [self shouldEnableAddPhotoButton];
+    
+    self.cameraButton.enabled = shouldEnableAddPhotoButton;
+    
+    if (!shouldEnableAddPhotoButton) {
+        self.enableAddPhoto = NO;
+    }
     
     UIImage *image = (self.enableAddPhoto) ? self.cameraFilledImage : self.cameraImage;
     self.cameraButton.image = image;
