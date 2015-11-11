@@ -18,6 +18,8 @@
 @property (nonatomic) BOOL showDataOnlyWithPhotos;
 @property (nonatomic, strong) NSString *showDataOnlyWithPhotosDefaultsKey;
 
+@property (nonatomic, strong) NSManagedObject *selectedObject;
+
 
 @end
 
@@ -180,12 +182,46 @@
 
 - (void)performFetch {
     
+    [self rememberSelectedObject];
+    
     self.resultsController = nil;
     
     if ([self.resultsController performFetch:nil]) {
+        
         [self.tableView reloadData];
+        [self selectRememberedObject];
+        
     }
     
+}
+
+- (void)rememberSelectedObject {
+    
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+    if (selectedIndexPath) self.selectedObject = [self.resultsController objectAtIndexPath:selectedIndexPath];
+    
+}
+
+- (void)selectRememberedObject {
+    
+    if (self.selectedObject) {
+        
+        if ([self.resultsController.fetchedObjects containsObject:self.selectedObject]) {
+            
+            NSIndexPath *selectedIndexPath = [self.resultsController indexPathForObject:self.selectedObject];
+            [self.tableView selectRowAtIndexPath:selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            [self.tableView scrollToNearestSelectedRowAtScrollPosition:UITableViewScrollPositionNone animated:YES];
+            
+        } else {
+            
+            self.selectedObject = nil;
+            self.splitVC.detailVC.selectedCampaign = nil;
+            self.splitVC.detailVC.selectedOutlet = nil;
+            
+        }
+        
+    }
+
 }
 
 
@@ -267,7 +303,7 @@
     
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
-    
+
 }
 
 - (void)fillCampaignCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
