@@ -376,5 +376,7 @@
 "5OUTLETS" = "точек";
 "SHOW DATA ONLY WITH PHOTOS" = "Только с фотоотчётами";
 "SHOW ALL DATA" = "Показывать всё";
+"SELECT CAMPAIGN" = "Выберите акцию";
+"SELECT OUTLET" = "Выберите точку";
 
 

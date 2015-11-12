@@ -11,6 +11,7 @@
 #import "STMPhotoReportsSVC.h"
 #import "STMPhotoReportVC.h"
 #import "STMPhotoReportMapVC.h"
+#import "STMPhotoReportAddPhotoTVC.h"
 
 #import "STMImagePickerOwnerProtocol.h"
 
@@ -34,18 +35,7 @@
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *groupSwitcher;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *cameraButton;
 
-@property (nonatomic) BOOL enableAddPhoto;
-@property (nonatomic, strong) UIImage *cameraImage;
-@property (nonatomic, strong) UIImage *cameraFilledImage;
-
 @property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
-
-@property (nonatomic) BOOL shouldShowAddPhotoCell;
-@property (nonatomic, strong) NSArray <NSDictionary <NSString *, NSArray *> *> *tableData;
-
-@property (nonatomic, strong) NSArray *campaigns;
-@property (nonatomic, strong) NSArray *outlets;
-@property (nonatomic) NSUInteger indexForNewPhotoReport;
 
 
 @end
@@ -88,56 +78,16 @@
     
 }
 
-- (UIImage *)cameraImage {
-    
-    if (!_cameraImage) {
-        
-        UIImage *image = [UIImage imageNamed:@"camera.png"];
-        image = [STMFunctions resizeImage:image toSize:CGSizeMake(CAMERA_IMAGE_SIZE, CAMERA_IMAGE_SIZE)];
-        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        
-        _cameraImage = image;
-
-    }
-    return _cameraImage;
-    
-}
-
-- (UIImage *)cameraFilledImage {
-    
-    if (!_cameraFilledImage) {
-        
-        UIImage *image = [UIImage imageNamed:@"camera_filled.png"];
-        image = [STMFunctions resizeImage:image toSize:CGSizeMake(CAMERA_IMAGE_SIZE, CAMERA_IMAGE_SIZE)];
-        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        
-        _cameraFilledImage = image;
-        
-    }
-    return _cameraFilledImage;
-    
-}
-
 - (void)setSelectedCampaignGroup:(STMCampaignGroup *)selectedCampaignGroup {
     
     if (![_selectedCampaignGroup isEqual:selectedCampaignGroup]) {
         
         _selectedCampaignGroup = selectedCampaignGroup;
         
-        [self updateTitle];
-        [self performFetch];
-        
-    }
-    
-}
+        if (!selectedCampaignGroup && [self.navigationController.topViewController isKindOfClass:[STMPhotoReportAddPhotoTVC class]]) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
 
-- (void)setSelectedOutlet:(STMOutlet *)selectedOutlet {
-    
-    if (![_selectedOutlet isEqual:selectedOutlet]) {
-        
-        _selectedOutlet = selectedOutlet;
-        
-        [self updateCameraButton];
         [self updateTitle];
         [self performFetch];
         
@@ -157,6 +107,36 @@
 
     }
     
+}
+
+- (void)setSelectedOutlet:(STMOutlet *)selectedOutlet {
+    
+    if (![_selectedOutlet isEqual:selectedOutlet]) {
+        
+        _selectedOutlet = selectedOutlet;
+        
+        [self updateCameraButton];
+        [self updateTitle];
+        [self performFetch];
+        
+    }
+    
+}
+
+- (void)setSelectedCampaignForPhotoReport:(STMCampaign *)selectedCampaignForPhotoReport {
+    
+    _selectedCampaignForPhotoReport = selectedCampaignForPhotoReport;
+    
+    [self addNewPhotoReport];
+    
+}
+
+- (void)setSelectedOutletForPhotoReport:(STMOutlet *)selectedOutletForPhotoReport {
+    
+    _selectedOutletForPhotoReport = selectedOutletForPhotoReport;
+
+    [self addNewPhotoReport];
+
 }
 
 - (void)setCurrentGrouping:(STMPhotoReportGrouping)currentGrouping {
@@ -195,16 +175,6 @@
     if (self.selectedOutlet.name) [titleArray addObject:(NSString * _Nonnull)self.selectedOutlet.name];
     
     self.title = [titleArray componentsJoinedByString:@" / "];
-    
-}
-
-- (BOOL)shouldShowAddPhotoCell {
-    
-    if (!self.enableAddPhoto) {
-        return NO;
-    }
-    
-    return (self.selectedCampaignGroup) ? [self shouldEnableAddPhotoButton] : NO;
     
 }
 
@@ -269,14 +239,6 @@
     
 }
 
-- (NSSortDescriptor *)nameDescriptor {
-    
-    return [NSSortDescriptor sortDescriptorWithKey:@"name"
-                                         ascending:YES
-                                          selector:@selector(caseInsensitiveCompare:)];
-    
-}
-
 - (NSSortDescriptor *)outletNameDescriptor {
  
     return [NSSortDescriptor sortDescriptorWithKey:@"outlet.name"
@@ -337,131 +299,18 @@
 
 - (void)performFetch {
 
-    if (self.shouldShowAddPhotoCell) {
+    self.resultsController = nil;
+    
+    if ([self.resultsController performFetch:nil]) {
         
-        [self prepareTableDataForTakingPhoto];
         [self.tableView reloadData];
         
-    } else {
-        
-        self.resultsController = nil;
-        
-        if ([self.resultsController performFetch:nil]) {
-            
-            [self.tableView reloadData];
-            
-        }
-        
     }
     
-}
-
-- (void)prepareTableDataForTakingPhoto {
-    
-    switch (self.currentGrouping) {
-        case STMPhotoReportGroupingCampaign: {
-            [self prepareCampaignsTableData];
-            break;
-        }
-        case STMPhotoReportGroupingOutlet: {
-            [self prepareOutletsTableData];
-            break;
-        }
-        default: {
-            break;
-        }
-    }
-    
-}
-
-- (void)prepareCampaignsTableData {
-
-    NSMutableArray <NSDictionary <NSString *, NSArray *> *> *campaignsTableData = @[].mutableCopy;
-    
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
-
-    request.sortDescriptors = @[[self nameDescriptor]];
-    
-    request.predicate = [NSPredicate predicateWithFormat:@"campaignGroup == %@", self.selectedCampaignGroup];
-
-    self.campaigns = [self.document.managedObjectContext executeFetchRequest:request error:nil];
-    
-    for (STMCampaign *campaign in self.campaigns) {
-        
-        NSArray *photoReports = @[];
-        
-        if (campaign.photoReports.count > 0) {
-            
-            photoReports = [campaign.photoReports filteredSetUsingPredicate:[self currentPredicate]].allObjects;
-            photoReports = [photoReports sortedArrayUsingDescriptors:@[[self outletNameDescriptor], [self deviceCtsDescriptor]]];
-            
-        }
-        
-        [campaignsTableData addObject:@{campaign.name : photoReports}];
-        
-    }
-    
-    self.tableData = campaignsTableData;
-
-}
-
-- (void)prepareOutletsTableData {
-    
-    NSMutableArray <NSDictionary <NSString *, NSArray *> *> *outletsTableData = @[].mutableCopy;
-    
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMOutlet class])];
-    
-    request.sortDescriptors = @[[self nameDescriptor]];
-    
-    request.predicate = [STMPredicate predicateWithNoFantoms];
-    
-    self.outlets = [self.document.managedObjectContext executeFetchRequest:request error:nil];
-    
-    for (STMOutlet *outlet in self.outlets) {
-        
-        NSArray *photoReports = @[];
-
-        if (outlet.photoReports.count > 0) {
-            
-            photoReports = [outlet.photoReports filteredSetUsingPredicate:[self currentPredicate]].allObjects;
-            photoReports = [photoReports sortedArrayUsingDescriptors:@[[self campaignNameDescriptor], [self deviceCtsDescriptor]]];
-
-        }
-        
-        [outletsTableData addObject:@{outlet.name : photoReports}];
-        
-    }
-    
-    self.tableData = outletsTableData;
-
 }
 
 
 #pragma mark - table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    return (self.shouldShowAddPhotoCell) ?
-            self.tableData.count :
-            [super numberOfSectionsInTableView:tableView];
-    
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    return (self.shouldShowAddPhotoCell) ?
-            self.tableData[section].allValues.firstObject.count + 1 :
-            [super tableView:tableView numberOfRowsInSection:section];
-    
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    
-    return (self.shouldShowAddPhotoCell) ?
-            self.tableData[section].allKeys.firstObject :
-            [super tableView:tableView titleForHeaderInSection:section];
-    
-}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -477,17 +326,9 @@
     
     [self flushCell:cell];
     
-    if (self.shouldShowAddPhotoCell && indexPath.row == 0) {
-        
-        [self fillAddPhotoCell:cell];
-        
-    } else {
+    STMPhotoReport *photoReport = [self.resultsController objectAtIndexPath:indexPath];
+    [self fillCell:cell withPhotoReport:photoReport];
 
-        STMPhotoReport *photoReport = [self photoReportForIndexPath:indexPath];
-        [self fillCell:cell withPhotoReport:photoReport];
-
-    }
-    
 }
 
 - (void)flushCell:(STMCustom10TVCell *)cell {
@@ -502,14 +343,6 @@
 
     cell.pictureView.image = nil;
     cell.accessoryView = nil;
-
-}
-
-- (void)fillAddPhotoCell:(STMCustom10TVCell *)cell {
-    
-    cell.titleLabel.textAlignment = NSTextAlignmentCenter;
-    cell.titleLabel.text = NSLocalizedString(@"ADD PHOTOREPORT", nil);
-    cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
 
 }
 
@@ -557,17 +390,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (self.shouldShowAddPhotoCell && indexPath.row == 0) {
-        
-        [self addNewPhotoReportAtIndex:indexPath.section];
-        
-    } else {
-            
-        [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
-
-    }
-
+    [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
 }
 
 - (void)locationButtonTapped:(id)sender event:(id)event {
@@ -584,45 +407,18 @@
     
 }
 
-- (STMPhotoReport *)photoReportForIndexPath:(NSIndexPath *)indexPath {
-    
-    if (self.shouldShowAddPhotoCell) {
-        
-        if (self.tableData.count > indexPath.section) {
-            
-            NSArray *photoReports = self.tableData[indexPath.section].allValues.firstObject;
-            
-            if (photoReports.count >= indexPath.row) {
-                
-                STMPhotoReport *photoReport = photoReports[indexPath.row - 1];
-                return photoReport;
-                
-            }
-            
-        }
-
-    } else {
-        
-        STMPhotoReport *photoReport = [self.resultsController objectAtIndexPath:indexPath];
-        return photoReport;
-
-    }
-    
-    return nil;
-    
-}
-
 
 #pragma mark - add photoReport
 
-- (void)addNewPhotoReportAtIndex:(NSInteger)index {
+- (void)addNewPhotoReport {
     
-    if (index >= 0) {
+    if ([self.navigationController.topViewController isKindOfClass:[STMPhotoReportAddPhotoTVC class]]) {
         
-        self.indexForNewPhotoReport = index;
-        [self showImagePicker];
-
+        [self.navigationController popViewControllerAnimated:NO];
+        
     }
+    
+//    [self showImagePicker];
     
 }
 
@@ -706,8 +502,7 @@
     switch (self.currentGrouping) {
         case STMPhotoReportGroupingCampaign: {
             
-            STMCampaign *campaign = self.campaigns[self.indexForNewPhotoReport];
-            photoReport.campaign = campaign;
+            photoReport.campaign = self.selectedCampaignForPhotoReport;
             photoReport.outlet = self.selectedOutlet;
             
             break;
@@ -715,8 +510,7 @@
         }
         case STMPhotoReportGroupingOutlet: {
             
-            STMOutlet *outlet = self.outlets[self.indexForNewPhotoReport];
-            photoReport.outlet = outlet;
+            photoReport.outlet = self.selectedOutletForPhotoReport;
             photoReport.campaign = self.selectedCampaign;
             
             break;
@@ -746,7 +540,7 @@
     
     if ([sender isKindOfClass:[NSIndexPath class]]) {
 
-        STMPhotoReport *photoReport = [self photoReportForIndexPath:(NSIndexPath *)sender];
+        STMPhotoReport *photoReport = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
 
         if ([segue.identifier isEqualToString:@"showPhotoReport"]) {
             
@@ -892,12 +686,7 @@
 #pragma mark - camera button
 
 - (void)setupCameraButton {
-    
-    self.enableAddPhoto = NO;
-    self.cameraButton.title = nil;
-    
     [self updateCameraButton];
-    
 }
 
 - (void)updateCameraButton {
@@ -905,22 +694,18 @@
     BOOL shouldEnableAddPhotoButton = [self shouldEnableAddPhotoButton];
     
     self.cameraButton.enabled = shouldEnableAddPhotoButton;
-    
-    if (!shouldEnableAddPhotoButton) {
-        self.enableAddPhoto = NO;
-    }
-    
-    UIImage *image = (self.enableAddPhoto) ? self.cameraFilledImage : self.cameraImage;
-    self.cameraButton.image = image;
-    
+
 }
 
 - (IBAction)cameraButtonPressed:(id)sender {
 
-    self.enableAddPhoto = !self.enableAddPhoto;
-    [self updateCameraButton];
-    [self performFetch];
+    NSLogMethodName;
     
+    STMPhotoReportAddPhotoTVC *addPhotoTVC = [[STMPhotoReportAddPhotoTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    addPhotoTVC.parentVC = self;
+    
+    [self.navigationController pushViewController:addPhotoTVC animated:YES];
+
 }
 
 
@@ -929,6 +714,12 @@
 - (void)customInit {
     
     [super customInit];
+    
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"BACK", nil)
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:nil
+                                                                            action:nil];
+
 
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom10TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];

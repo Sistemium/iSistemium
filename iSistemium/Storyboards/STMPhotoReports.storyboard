@@ -91,7 +91,7 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem title="Camera" id="nOB-lH-cSg" customClass="STMBarButtonItem">
+                        <barButtonItem systemItem="camera" id="nOB-lH-cSg" customClass="STMBarButtonItem">
                             <connections>
                                 <action selector="cameraButtonPressed:" destination="lwQ-Nk-rpl" id="5jm-UL-Nwo"/>
                             </connections>

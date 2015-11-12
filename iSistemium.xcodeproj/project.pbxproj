@@ -365,6 +365,7 @@
 		2CEE305F1BF24086009B229F /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE305D1BF24086009B229F /* camera.png */; };
 		2CEE30601BF24086009B229F /* camera_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE305E1BF24086009B229F /* camera_filled.png */; };
 		2CEE30641BF49603009B229F /* STMPhotosController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30631BF49603009B229F /* STMPhotosController.m */; };
+		2CEE30671BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30661BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m */; };
 		2CF126321B74F5210059701F /* STMShippingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126311B74F5210059701F /* STMShippingVC.m */; };
 		2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126341B77520F0059701F /* STMShippingSettingsTVC.m */; };
 		2CF1264A1B778AB50059701F /* future.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126461B778AB50059701F /* future.png */; };
@@ -1075,6 +1076,8 @@
 		2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMImagePickerOwnerProtocol.h; sourceTree = "<group>"; };
 		2CEE30621BF49603009B229F /* STMPhotosController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotosController.h; sourceTree = "<group>"; };
 		2CEE30631BF49603009B229F /* STMPhotosController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotosController.m; sourceTree = "<group>"; };
+		2CEE30651BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportAddPhotoTVC.h; sourceTree = "<group>"; };
+		2CEE30661BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportAddPhotoTVC.m; sourceTree = "<group>"; };
 		2CF126301B74F5200059701F /* STMShippingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingVC.h; sourceTree = "<group>"; };
 		2CF126311B74F5210059701F /* STMShippingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingVC.m; sourceTree = "<group>"; };
 		2CF126331B77520F0059701F /* STMShippingSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingSettingsTVC.h; sourceTree = "<group>"; };
@@ -1383,6 +1386,8 @@
 				2CC194561BE0F676001F8E48 /* STMPhotoReportsFilterTVC.m */,
 				2CC194591BE25B28001F8E48 /* STMPhotoReportsDetailTVC.h */,
 				2CC1945A1BE25B28001F8E48 /* STMPhotoReportsDetailTVC.m */,
+				2CEE30651BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.h */,
+				2CEE30661BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m */,
 				2CC1946E1BE4D364001F8E48 /* STMPhotoReportVC.h */,
 				2CC1946F1BE4D364001F8E48 /* STMPhotoReportVC.m */,
 				2CC194711BE4DAFE001F8E48 /* STMPhotoReportMapVC.h */,
@@ -2644,6 +2649,7 @@
 				2C5764211AA5E1E500B9FD2C /* STMOutletCashingVC.m in Sources */,
 				2C5763F01AA5E13600B9FD2C /* STMCampaignDetailsPVC.m in Sources */,
 				2C646F631BCE69C00099F034 /* SocketEventHandler.swift in Sources */,
+				2CEE30671BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m in Sources */,
 				2C57648F1AB1B1EE00B9FD2C /* STMFetchRequest.m in Sources */,
 				2C761BAD1AFCE43C001DA33E /* STMClientEntityController.m in Sources */,
 				2C5764201AA5E1E500B9FD2C /* STMDebtsSVC.m in Sources */,
