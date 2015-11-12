@@ -12,12 +12,22 @@
 #import "STMPhotoReportVC.h"
 #import "STMPhotoReportMapVC.h"
 
+#import "STMImagePickerOwnerProtocol.h"
+
+#import "STMPicturesController.h"
+#import "STMObjectsController.h"
+#import "STMLocationController.h"
+#import "STMPhotosController.h"
+
 
 #define LOCATION_IMAGE_SIZE 25
 #define CAMERA_IMAGE_SIZE 25
 
 
-@interface STMPhotoReportsDetailTVC () <UIActionSheetDelegate>
+@interface STMPhotoReportsDetailTVC () <UIActionSheetDelegate,
+                                        UINavigationControllerDelegate,
+                                        UIImagePickerControllerDelegate,
+                                        STMImagePickerOwnerProtocol>
 
 @property (nonatomic, strong) UIImage *locationImage;
 
@@ -32,6 +42,10 @@
 
 @property (nonatomic) BOOL shouldShowAddPhotoCell;
 @property (nonatomic, strong) NSArray <NSDictionary <NSString *, NSArray *> *> *tableData;
+
+@property (nonatomic, strong) NSArray *campaigns;
+@property (nonatomic, strong) NSArray *outlets;
+@property (nonatomic) NSUInteger indexForNewPhotoReport;
 
 
 @end
@@ -361,7 +375,7 @@
 }
 
 - (void)prepareCampaignsTableData {
-    
+
     NSMutableArray <NSDictionary <NSString *, NSArray *> *> *campaignsTableData = @[].mutableCopy;
     
     STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMCampaign class])];
@@ -370,9 +384,9 @@
     
     request.predicate = [NSPredicate predicateWithFormat:@"campaignGroup == %@", self.selectedCampaignGroup];
 
-    NSArray *campaigns = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+    self.campaigns = [self.document.managedObjectContext executeFetchRequest:request error:nil];
     
-    for (STMCampaign *campaign in campaigns) {
+    for (STMCampaign *campaign in self.campaigns) {
         
         NSArray *photoReports = @[];
         
@@ -401,9 +415,9 @@
     
     request.predicate = [STMPredicate predicateWithNoFantoms];
     
-    NSArray *outlets = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+    self.outlets = [self.document.managedObjectContext executeFetchRequest:request error:nil];
     
-    for (STMOutlet *outlet in outlets) {
+    for (STMOutlet *outlet in self.outlets) {
         
         NSArray *photoReports = @[];
 
@@ -546,7 +560,7 @@
     
     if (self.shouldShowAddPhotoCell && indexPath.row == 0) {
         
-        NSLog(@"ADD NEW PHOTO");
+        [self addNewPhotoReportAtIndex:indexPath.section];
         
     } else {
             
@@ -595,6 +609,133 @@
     }
     
     return nil;
+    
+}
+
+
+#pragma mark - add photoReport
+
+- (void)addNewPhotoReportAtIndex:(NSInteger)index {
+    
+    if (index >= 0) {
+        
+        self.indexForNewPhotoReport = index;
+        [self showImagePicker];
+
+    }
+    
+}
+
+- (void)showImagePicker {
+    
+    BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+    BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
+    
+    if (camera) {
+        
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+        
+    } else if (photoLibrary) {
+        
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+        
+    } else {
+        
+        //        [STMObjectsController removeObject:self.selectedPhotoReport];
+        
+    }
+
+}
+
+
+#pragma mark - STMImagePickerOwnerProtocol
+
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
+        
+        STMImagePickerController *imagePickerController = [[STMImagePickerController alloc] initWithSourceType:imageSourceType];
+        imagePickerController.ownerVC = self;
+        
+        [self.splitViewController presentViewController:imagePickerController animated:YES completion:^{
+            
+            //            [self.splitViewController.view addSubview:self.spinnerView];
+            //            NSLog(@"presentViewController:UIImagePickerController");
+            
+        }];
+        
+    }
+    
+}
+
+- (void)saveImage:(UIImage *)image andWaitForLocation:(BOOL)waitForLocation {
+    
+    STMPhotoReport *savedPhotoReport = [self savePhotoReportWithImage:image];
+    
+    if (waitForLocation && savedPhotoReport) {
+        
+        [[STMPhotosController sharedController] addPhotoReportToWaitingLocation:savedPhotoReport];
+                
+    }
+
+}
+
+- (void)saveImage:(UIImage *)image withLocation:(CLLocation *)location {
+    
+    STMPhotoReport *savedPhotoReport = [self savePhotoReportWithImage:image];
+    
+    if (location) savedPhotoReport.location = [STMLocationController locationObjectFromCLLocation:location];
+
+}
+
+- (STMPhotoReport *)savePhotoReportWithImage:(UIImage *)image {
+    
+    CGFloat jpgQuality = [STMPicturesController jpgQuality];
+    
+#warning - don't forget to replace method
+    
+    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
+    photoReport.isFantom = @NO;
+    
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
+                                  forPicture:photoReport
+                                   andUpload:YES];
+    
+//    [photoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+    
+    switch (self.currentGrouping) {
+        case STMPhotoReportGroupingCampaign: {
+            
+            STMCampaign *campaign = self.campaigns[self.indexForNewPhotoReport];
+            photoReport.campaign = campaign;
+            photoReport.outlet = self.selectedOutlet;
+            
+            break;
+            
+        }
+        case STMPhotoReportGroupingOutlet: {
+            
+            STMOutlet *outlet = self.outlets[self.indexForNewPhotoReport];
+            photoReport.outlet = outlet;
+            photoReport.campaign = self.selectedCampaign;
+            
+            break;
+            
+        }
+        default: {
+            break;
+        }
+    }
+
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
+    
+    [[self document] saveDocument:^(BOOL success) {
+        if (success) {
+            
+        }
+    }];
+    
+    return photoReport;
     
 }
 
@@ -788,7 +929,7 @@
 - (void)customInit {
     
     [super customInit];
-    
+
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom10TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
     

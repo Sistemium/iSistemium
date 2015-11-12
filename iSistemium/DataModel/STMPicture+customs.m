@@ -7,14 +7,23 @@
 //
 
 #import "STMPicture+customs.h"
+
 #import "STMPicturesController.h"
+#import "STMPhotosController.h"
+
 
 @implementation STMPicture (customs)
 
 - (void)willSave {
     
     if (self.isDeleted) {
+        
+        if ([self isKindOfClass:[STMPhotoReport class]]) {
+            [[STMPhotosController sharedController] photoReportWasDeleted:(STMPhotoReport *)self];
+        }
+        
         [STMPicturesController removeImageFilesForPicture:self];
+        
     }
     
     [super willSave];

@@ -364,6 +364,7 @@
 		2CEAC1751B3ECC3A00AD068E /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEAC1741B3ECC3A00AD068E /* MapKit.framework */; };
 		2CEE305F1BF24086009B229F /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE305D1BF24086009B229F /* camera.png */; };
 		2CEE30601BF24086009B229F /* camera_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE305E1BF24086009B229F /* camera_filled.png */; };
+		2CEE30641BF49603009B229F /* STMPhotosController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30631BF49603009B229F /* STMPhotosController.m */; };
 		2CF126321B74F5210059701F /* STMShippingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126311B74F5210059701F /* STMShippingVC.m */; };
 		2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126341B77520F0059701F /* STMShippingSettingsTVC.m */; };
 		2CF1264A1B778AB50059701F /* future.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126461B778AB50059701F /* future.png */; };
@@ -1071,6 +1072,9 @@
 		2CEAC1741B3ECC3A00AD068E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		2CEE305D1BF24086009B229F /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
 		2CEE305E1BF24086009B229F /* camera_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_filled.png; sourceTree = "<group>"; };
+		2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMImagePickerOwnerProtocol.h; sourceTree = "<group>"; };
+		2CEE30621BF49603009B229F /* STMPhotosController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotosController.h; sourceTree = "<group>"; };
+		2CEE30631BF49603009B229F /* STMPhotosController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotosController.m; sourceTree = "<group>"; };
 		2CF126301B74F5200059701F /* STMShippingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingVC.h; sourceTree = "<group>"; };
 		2CF126311B74F5210059701F /* STMShippingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingVC.m; sourceTree = "<group>"; };
 		2CF126331B77520F0059701F /* STMShippingSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingSettingsTVC.h; sourceTree = "<group>"; };
@@ -1271,6 +1275,8 @@
 				2C4BA3CB1A41AE9A007F1D0A /* STMPartnerController.m */,
 				2CFDD7271A29AF42003515C5 /* STMPicturesController.h */,
 				2CFDD7281A29AF42003515C5 /* STMPicturesController.m */,
+				2CEE30621BF49603009B229F /* STMPhotosController.h */,
+				2CEE30631BF49603009B229F /* STMPhotosController.m */,
 				2C4E44391A810A6D006E6AF1 /* STMRecordStatusController.h */,
 				2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */,
 				2C5764741AAC421E00B9FD2C /* STMSaleOrderController.h */,
@@ -1422,6 +1428,7 @@
 				2C420FC51A4C24DE001C65B9 /* STMTabBarItemControllable.h */,
 				2CF1264E1B7880750059701F /* STMShipmentPositionSortable.h */,
 				2C587AAF1BBAC54B00546A62 /* STMWorkflowable.h */,
+				2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -2588,6 +2595,7 @@
 				2CCD06DA1B500AED002591C4 /* STMShipmentPosition+custom.m in Sources */,
 				2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */,
 				2C5764691AAB26FD00B9FD2C /* STMOrdersDateTVC.m in Sources */,
+				2CEE30641BF49603009B229F /* STMPhotosController.m in Sources */,
 				2C42ECB71B1342D300B5C91A /* STMArticlePicturePVC.m in Sources */,
 				2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */,
 				2C53B8A519409E71002298A5 /* STMSettingsData.m in Sources */,
