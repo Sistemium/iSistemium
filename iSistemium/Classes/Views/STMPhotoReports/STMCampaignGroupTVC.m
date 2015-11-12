@@ -126,18 +126,12 @@
         
         self.splitVC.detailVC.selectedCampaignGroup = campaignGroup;
         
-        NSSet *photoReports = [campaignGroup.campaigns valueForKeyPath:@"@distinctUnionOfSets.photoReports"];
+        STMPhotoReportsFilterTVC *filterTVC = [[STMPhotoReportsFilterTVC alloc] initWithStyle:UITableViewStyleGrouped];
+        filterTVC.selectedCampaignGroup = campaignGroup;
         
-        if (photoReports.count > 0) {
-            
-            STMPhotoReportsFilterTVC *filterTVC = [[STMPhotoReportsFilterTVC alloc] initWithStyle:UITableViewStyleGrouped];
-            filterTVC.selectedCampaignGroup = campaignGroup;
-            
-            self.splitVC.detailVC.filterTVC = filterTVC;
-            
-            [self.navigationController pushViewController:filterTVC animated:YES];
-            
-        }
+        self.splitVC.detailVC.filterTVC = filterTVC;
+        
+        [self.navigationController pushViewController:filterTVC animated:YES];
         
     }
     
