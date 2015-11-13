@@ -418,7 +418,7 @@
         
     }
     
-//    [self showImagePicker];
+    [self showImagePicker];
     
 }
 

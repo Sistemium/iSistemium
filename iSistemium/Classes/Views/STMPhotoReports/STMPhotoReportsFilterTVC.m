@@ -96,7 +96,11 @@
 }
 
 - (void)photoReportsWasUpdated {
+    
+    [self rememberSelectedObject];
     [self.tableView reloadData];
+    [self selectRememberedObject];
+    
 }
 
 - (NSFetchedResultsController *)resultsController {
