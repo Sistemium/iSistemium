@@ -403,7 +403,7 @@
     self.commentLabel.text = NSLocalizedString(@"DEBT COMMENT", nil);
     
     self.ndocTextField.delegate = self;
-    self.ndocTextField.keyboardType = UIKeyboardTypeDefault;
+    self.ndocTextField.keyboardType = UIKeyboardTypeDecimalPad;
     
     self.sumTextField.delegate = self;
     self.sumTextField.keyboardType = UIKeyboardTypeDecimalPad;
