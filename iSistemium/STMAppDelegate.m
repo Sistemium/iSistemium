@@ -82,17 +82,15 @@
 }
 
 - (void)registerForNotification {
-    
-    float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
-    
-    if (systemVersion >= 8.0) {
+
+    if (SYSTEM_VERSION >= 8.0) {
         
         UIUserNotificationType types = UIUserNotificationTypeSound | UIUserNotificationTypeBadge | UIUserNotificationTypeAlert;
         UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
         [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
         
-    } else if (systemVersion >= 3.0 && systemVersion < 8.0) {
+    } else if (SYSTEM_VERSION >= 3.0 && SYSTEM_VERSION < 8.0) {
         
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
         
@@ -321,10 +319,8 @@
 - (NSString *)currentNotificationTypes {
     
     NSMutableArray *typesArray = [NSMutableArray array];
-    
-    float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
-    
-    if (systemVersion >= 8.0) {
+
+    if (SYSTEM_VERSION >= 8.0) {
 
         UIUserNotificationSettings *settings = [[UIApplication sharedApplication] currentUserNotificationSettings];
         UIUserNotificationType types = settings.types;
@@ -342,7 +338,7 @@
             [typesArray addObject:@"none"];
         }
 
-    } else if (systemVersion >= 3.0 && systemVersion < 8.0) {
+    } else if (SYSTEM_VERSION >= 3.0 && SYSTEM_VERSION < 8.0) {
 
         UIRemoteNotificationType types = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
         

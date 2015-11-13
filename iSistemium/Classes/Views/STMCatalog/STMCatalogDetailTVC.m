@@ -733,54 +733,62 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMPrice *price = (self.tableView == self.searchDisplayController.searchResultsTableView) ? (self.searchResults)[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
-  
-    if (price.article.pictures.count > 0) {
-     
-        static STMCustom4TVCell *cell = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier];
-        });
-
-        [self fillPictureCell:cell withPrice:price];
+    if (SYSTEM_VERSION >= 8.0) {
         
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+        return [super heightForCellAtIndexPath:indexPath];
         
-        [cell setNeedsLayout];
-        [cell layoutIfNeeded];
-        
-        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-        
-        [self putCachedHeight:height forIndexPath:indexPath];
-        
-        return height;
-
     } else {
         
-        static STMCustom5TVCell *cell = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            cell = [self.tableView dequeueReusableCellWithIdentifier:Custom5CellIdentifier];
-        });
+        STMPrice *price = (self.tableView == self.searchDisplayController.searchResultsTableView) ? (self.searchResults)[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
         
-        [self fillCell:cell withPrice:price];
-        
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-        
-        [cell setNeedsLayout];
-        [cell layoutIfNeeded];
-        
-        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-        
-        [self putCachedHeight:height forIndexPath:indexPath];
-        
-        return height;
+        if (price.article.pictures.count > 0) {
+            
+            static STMCustom4TVCell *cell = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                cell = [self.tableView dequeueReusableCellWithIdentifier:Custom4CellIdentifier];
+            });
+            
+            [self fillPictureCell:cell withPrice:price];
+            
+            cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+            
+            [cell setNeedsLayout];
+            [cell layoutIfNeeded];
+            
+            CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+            CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+            
+            [self putCachedHeight:height forIndexPath:indexPath];
+            
+            return height;
+            
+        } else {
+            
+            static STMCustom5TVCell *cell = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                cell = [self.tableView dequeueReusableCellWithIdentifier:Custom5CellIdentifier];
+            });
+            
+            [self fillCell:cell withPrice:price];
+            
+            cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+            
+            [cell setNeedsLayout];
+            [cell layoutIfNeeded];
+            
+            CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+            CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+            
+            [self putCachedHeight:height forIndexPath:indexPath];
+            
+            return height;
+            
+        }
         
     }
-
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -827,8 +835,12 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     cell.detailLabel.text = [self detailedTextForArticle:price.article];
     cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
     
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+    if (SYSTEM_VERSION < 8.0) {
+        
+        [cell setNeedsUpdateConstraints];
+        [cell updateConstraintsIfNeeded];
+
+    }
 
 }
 

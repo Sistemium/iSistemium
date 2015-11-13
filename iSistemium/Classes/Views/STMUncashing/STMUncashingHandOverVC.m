@@ -75,7 +75,7 @@
             self.cameraOverlayView.autoresizesSubviews = YES;
             self.cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
             
-            if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+            if (SYSTEM_VERSION >= 8.0) {
                 
                 UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
                 CGRect originalFrame = [[UIScreen mainScreen] bounds];

@@ -155,7 +155,7 @@
     
     [super viewDidLoad];
     
-    float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+    float systemVersion = SYSTEM_VERSION;
     
     if (systemVersion >= 8.0) {
         

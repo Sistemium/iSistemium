@@ -60,7 +60,7 @@
 
 - (BOOL)shouldAutorotate {
     
-    return (IPHONE && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) ? NO : [super shouldAutorotate];
+    return (IPHONE && SYSTEM_VERSION >= 8.0) ? NO : [super shouldAutorotate];
         
 }
 
