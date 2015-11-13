@@ -364,25 +364,32 @@
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
-    switch (indexPath.section) {
-        case 0:
-            return [self heightForInfoCellAtIndexPath:indexPath];
-            break;
+    if (SYSTEM_VERSION >= 8.0) {
+        
+        return [super heightForCellAtIndexPath:indexPath];
+        
+    } else {
+     
+        switch (indexPath.section) {
+            case 0:
+                return [self heightForInfoCellAtIndexPath:indexPath];
+                break;
+                
+            case 1:
+                return [self heightForPositionCellAtIndexPath:indexPath];
+                break;
+                
+            default:
+                return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+                break;
+        }
 
-        case 1:
-            return [self heightForPositionCellAtIndexPath:indexPath];
-            break;
-            
-        default:
-            return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
-            break;
     }
-    
     
 }
 
 - (CGFloat)heightForInfoCellAtIndexPath:(NSIndexPath *)indexPath {
-    
+
     static STMCustom2TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -579,8 +586,12 @@
             break;
     }
     
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+    if (SYSTEM_VERSION < 8.0) {
+        
+        [cell setNeedsUpdateConstraints];
+        [cell updateConstraintsIfNeeded];
+
+    }
     
 }
 

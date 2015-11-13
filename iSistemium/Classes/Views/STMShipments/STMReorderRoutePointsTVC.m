@@ -131,6 +131,8 @@
         
     }
     
+    [super fillCell:cell atIndexPath:indexPath];
+    
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -289,18 +289,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     return [self heightForCellAtIndexPath:indexPath];
-    
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
-    
-    return height;
-    
 }
 
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
