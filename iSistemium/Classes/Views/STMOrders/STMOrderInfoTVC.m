@@ -458,15 +458,21 @@
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
 
-    NSDictionary *attributes = @{NSFontAttributeName:cell.textLabel.font};
+//    NSDictionary *attributes = @{NSFontAttributeName:cell.textLabel.font};
+//    
+//    CGSize lineSize = [cell.textLabel.text sizeWithAttributes:attributes];
+//    CGRect multilineRect = [cell.textLabel.text boundingRectWithSize:CGSizeMake(cell.textLabel.frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+//    
+//    CGFloat diff = ceil(multilineRect.size.height) - ceil(lineSize.height);
+//    
+//    CGFloat height = cell.frame.size.height + diff;
+
+    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingExpandedSize];
     
-    CGSize lineSize = [cell.textLabel.text sizeWithAttributes:attributes];
-    CGRect multilineRect = [cell.textLabel.text boundingRectWithSize:CGSizeMake(cell.textLabel.frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
     
-    CGFloat diff = ceil(multilineRect.size.height) - ceil(lineSize.height);
-    
-    CGFloat height = cell.frame.size.height + diff;
-    
+    [self putCachedHeight:height forIndexPath:indexPath];
+
     return height;
     
 //    return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
