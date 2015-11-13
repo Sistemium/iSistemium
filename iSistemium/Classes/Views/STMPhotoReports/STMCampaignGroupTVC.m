@@ -98,17 +98,13 @@
         NSString *photoReportsStrings = [NSString stringWithFormat:@"%lu %@", (long unsigned)photoReports.count, NSLocalizedString(@"PHOTO", nil)];
         detailText = [detailText stringByAppendingString:@" / "];
         detailText = [detailText stringByAppendingString:photoReportsStrings];
-
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
-    } else {
-        
-        cell.accessoryType = UITableViewCellAccessoryNone;
-
     }
-    
+
     cell.detailTextLabel.text = detailText;
-    
+
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
     return cell;
     
 }

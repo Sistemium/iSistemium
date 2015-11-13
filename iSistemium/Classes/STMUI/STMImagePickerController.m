@@ -34,7 +34,7 @@
             
             self.showsCameraControls = NO;
             
-            UIView *cameraOverlayView = [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:nil options:nil].firstObject;
+            UIView *cameraOverlayView = [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil].firstObject;
             
             cameraOverlayView.backgroundColor = [UIColor clearColor];
             cameraOverlayView.autoresizesSubviews = YES;
@@ -52,7 +52,6 @@
             self.cameraOverlayView = cameraOverlayView;
             
         }
-
         
     }
     return self;
