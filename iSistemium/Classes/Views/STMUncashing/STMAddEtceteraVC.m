@@ -411,7 +411,7 @@
     }
     
     self.numberTextField.delegate = self;
-    self.numberTextField.keyboardType = UIKeyboardTypeDefault;
+    self.numberTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.numberTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     [self okStyleForTextField:self.numberTextField];
 
