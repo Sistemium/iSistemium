@@ -31,5 +31,7 @@ typedef NS_ENUM(NSUInteger, STMPhotoReportGrouping) {
 @property (nonatomic) STMPhotoReportGrouping currentGrouping;
 @property (nonatomic, weak) STMPhotoReportsFilterTVC *filterTVC;
 
+- (void)deletePhotoReport:(STMPhotoReport *)photoReport;
+
 
 @end

@@ -9,11 +9,13 @@
 #import <UIKit/UIKit.h>
 
 #import "STMDataModel.h"
+#import "STMPhotoReportsDetailTVC.h"
 
 
 @interface STMPhotoReportVC : UIViewController
 
 @property (nonatomic, weak) STMPhotoReport *photoReport;
+@property (nonatomic, weak) STMPhotoReportsDetailTVC *parentVC;
 
 
 @end

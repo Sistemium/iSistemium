@@ -309,6 +309,10 @@
     
 }
 
+- (void)deletePhotoReport:(STMPhotoReport *)photoReport {
+    [STMObjectsController removeObject:photoReport];
+}
+
 
 #pragma mark - table view data source
 
@@ -548,6 +552,7 @@
                 
                 STMPhotoReportVC *vc = (STMPhotoReportVC *)segue.destinationViewController;
                 vc.photoReport = photoReport;
+                vc.parentVC = self;
                 
             }
             
