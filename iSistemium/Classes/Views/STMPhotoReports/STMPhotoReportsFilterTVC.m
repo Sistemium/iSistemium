@@ -285,22 +285,12 @@
 
     } else {
 
-        cell.detailLabel.text = nil;
+        cell.detailLabel.text = NSLocalizedString(@"NO PHOTO", nil);
 
     }
     
-    UIColor *textColor;
-    
-    if (!outlet.isActive || [outlet.isActive boolValue]) {
-        
-        textColor = (photoReports.count > 0) ? [UIColor blackColor] : [UIColor lightGrayColor];
-        
-    } else {
-        
-        textColor = (photoReports.count > 0) ? [UIColor redColor] : [UIColor colorWithRed:1 green:0.666 blue:0.666 alpha:1];
-        
-    }
-    
+    UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
+
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
 
@@ -314,7 +304,7 @@
     
     NSUInteger photoReportsCount = campaign.photoReports.count;
     
-    UIColor *textColor = (photoReportsCount > 0) ? [UIColor blackColor] : [UIColor lightGrayColor];
+    UIColor *textColor = [UIColor blackColor];
     
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
@@ -332,7 +322,7 @@
 
     } else {
         
-        cell.detailLabel.text = nil;
+        cell.detailLabel.text = NSLocalizedString(@"NO PHOTO", nil);
 
     }
     

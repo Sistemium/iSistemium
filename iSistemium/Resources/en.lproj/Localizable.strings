@@ -39,6 +39,7 @@
 "ADD PHOTO" = "Add photo";
 "ADD PHOTOREPORT" = "Add photoreport";
 "PHOTO" = "photo";
+"NO PHOTO" = "no photo";
 "CAMPAIGNS" = "Campaigns";
 "0CAMPAIGNS" = "no campaigns";
 "1CAMPAIGNS" = "campaign";

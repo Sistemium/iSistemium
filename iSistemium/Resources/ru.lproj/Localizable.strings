@@ -39,6 +39,7 @@
 "ADD PHOTO" = "Добавить фото";
 "ADD PHOTOREPORT" = "Добавить фотоотчёт";
 "PHOTO" = "фото";
+"NO PHOTO" = "нет фото";
 "CAMPAIGNS" = "Акции";
 "0CAMPAIGNS" = "нет акций";
 "1CAMPAIGNS" = "акция";
