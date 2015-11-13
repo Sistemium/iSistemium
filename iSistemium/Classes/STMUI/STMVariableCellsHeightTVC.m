@@ -93,10 +93,18 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+    if (SYSTEM_VERSION >= 8.0) {
+        
+        return UITableViewAutomaticDimension;
+        
+    } else {
     
-    return height;
+        NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+        CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+        
+        return height;
+
+    }
     
 }
 
@@ -136,9 +144,13 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+    if (SYSTEM_VERSION < 8.0) {
+        
+        [cell setNeedsUpdateConstraints];
+        [cell updateConstraintsIfNeeded];
 
+    }
+    
 }
 
 
