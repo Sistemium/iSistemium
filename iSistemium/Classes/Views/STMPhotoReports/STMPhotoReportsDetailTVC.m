@@ -310,7 +310,7 @@
 }
 
 - (void)deletePhotoReport:(STMPhotoReport *)photoReport {
-    [STMObjectsController removeObject:photoReport];
+    [STMObjectsController createRecordStatusAndRemoveObject:photoReport];
 }
 
 
