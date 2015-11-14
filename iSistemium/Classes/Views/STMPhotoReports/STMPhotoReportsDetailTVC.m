@@ -446,10 +446,10 @@
 - (void)addNewPhotoReport {
 
     if ([self.navigationController.topViewController isKindOfClass:[STMPhotoReportAddPhotoTVC class]]) {
-        
         [self.navigationController popViewControllerAnimated:NO];
-        
     }
+    
+    self.filterTVC.lockSelection = NO;
     
     [self showImagePicker];
     
@@ -752,7 +752,7 @@
 
 - (IBAction)cameraButtonPressed:(id)sender {
 
-    NSLogMethodName;
+    self.filterTVC.lockSelection = YES;
     
     STMPhotoReportAddPhotoTVC *addPhotoTVC = [[STMPhotoReportAddPhotoTVC alloc] initWithStyle:UITableViewStyleGrouped];
     addPhotoTVC.parentVC = self;

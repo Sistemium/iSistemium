@@ -332,6 +332,10 @@
     
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return (self.lockSelection) ? nil : indexPath;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     
     switch (self.splitVC.detailVC.currentGrouping) {

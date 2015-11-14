@@ -273,6 +273,16 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self isMovingFromParentViewController]) {
+        self.parentVC.filterTVC.lockSelection = NO;
+    }
+    
+    [super viewWillDisappear:animated];
+    
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
