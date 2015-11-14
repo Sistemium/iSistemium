@@ -115,6 +115,8 @@
             
         }
         
+        [self.ownerVC imagePickerWasDissmised:picker];
+        
     }];
     
 }
@@ -122,7 +124,7 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     
     [picker dismissViewControllerAnimated:NO completion:^{
-        
+        [self.ownerVC imagePickerWasDissmised:picker];
     }];
     
 //    [self.spinnerView removeFromSuperview];

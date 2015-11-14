@@ -37,6 +37,8 @@
 
 @property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
 
+@property (nonatomic, strong) STMSpinnerView *spinner;
+
 
 @end
 
@@ -56,6 +58,15 @@
     }
     
     return _splitVC;
+    
+}
+
+- (STMSpinnerView *)spinner {
+    
+    if (!_spinner) {
+        _spinner = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
+    }
+    return _spinner;
     
 }
 
@@ -433,7 +444,7 @@
 #pragma mark - add photoReport
 
 - (void)addNewPhotoReport {
-    
+
     if ([self.navigationController.topViewController isKindOfClass:[STMPhotoReportAddPhotoTVC class]]) {
         
         [self.navigationController popViewControllerAnimated:NO];
@@ -477,12 +488,18 @@
         
         [self.splitViewController presentViewController:imagePickerController animated:YES completion:^{
             
-            //            [self.splitViewController.view addSubview:self.spinnerView];
-            //            NSLog(@"presentViewController:UIImagePickerController");
+            [self.view addSubview:self.spinner];
             
         }];
         
     }
+    
+}
+
+- (void)imagePickerWasDissmised:(UIImagePickerController *)picker {
+    
+    [self.spinner removeFromSuperview];
+    self.spinner = nil;
     
 }
 
@@ -750,6 +767,8 @@
 - (void)customInit {
     
     [super customInit];
+
+    self.edgesForExtendedLayout = UIRectEdgeNone;
 
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"BACK", nil)
                                                                              style:UIBarButtonItemStylePlain

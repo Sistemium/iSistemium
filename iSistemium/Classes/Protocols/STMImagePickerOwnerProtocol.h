@@ -17,7 +17,9 @@
 
 - (void)saveImage:(UIImage *)image withLocation:(CLLocation *)location;
 - (void)saveImage:(UIImage *)image andWaitForLocation:(BOOL)waitForLocation;
+
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType;
+- (void)imagePickerWasDissmised:(UIImagePickerController *)picker;
 
 
 @end
