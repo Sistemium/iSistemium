@@ -310,7 +310,25 @@
 }
 
 - (void)deletePhotoReport:(STMPhotoReport *)photoReport {
+    
+// Notification to inform STMCampaignsTVC.m
+    if (photoReport.campaign) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged"
+                                                            object:self.splitViewController
+                                                          userInfo:@{@"campaign": photoReport.campaign}];
+        
+    }
+// End of notification
+
+// Notification to inform STMCampaignPhotoReportCVC
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged"
+                                                        object:self];
+// End of notification
+
+
     [STMObjectsController createRecordStatusAndRemoveObject:photoReport];
+    
 }
 
 
@@ -524,9 +542,22 @@
             break;
         }
     }
-
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
     
+// Notification to inform STMCampaignsTVC.m
+    if (photoReport.campaign) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged"
+                                                            object:self.splitViewController
+                                                          userInfo:@{@"campaign": photoReport.campaign}];
+        
+    }
+// End of notification
+    
+// Notification to inform STMCampaignPhotoReportCVC
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged"
+                                                        object:self];
+// End of notification
+
     [[self document] saveDocument:^(BOOL success) {
         if (success) {
             
@@ -719,7 +750,7 @@
 - (void)customInit {
     
     [super customInit];
-    
+
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"BACK", nil)
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:nil

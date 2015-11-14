@@ -133,12 +133,50 @@
     
 }
 
+- (void)handleNotification:(NSNotification *)notification {
+    
+    if (![notification.object isEqual:self.splitVC.detailVC]) {
+        
+        NSArray *notificationsNames = @[@"photoReportsChanged", @"photosCountChanged"];
+        
+        if ([notificationsNames containsObject:notification.name]) {
+            [self photoReportsWasUpdated];
+        }
+        
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+// Notifications for compatibility with old photoReports view controller
+    [nc addObserver:self
+           selector:@selector(handleNotification:)
+               name:@"photoReportsChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(handleNotification:)
+               name:@"photosCountChanged"
+             object:nil];
+// End
+    
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)customInit {
     
     [super customInit];
+    
+    [self addObservers];
     
     self.clearsSelectionOnViewWillAppear = NO;
     
