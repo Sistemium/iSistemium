@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+#import "STMImagePickerOwnerProtocol.h"
+
+
 @interface STMImagePickerController : UIImagePickerController
+
+@property (nonatomic, strong) UIViewController <STMImagePickerOwnerProtocol> *ownerVC;
+
+- (instancetype)initWithSourceType:(UIImagePickerControllerSourceType)sourceType;
+
 
 @end

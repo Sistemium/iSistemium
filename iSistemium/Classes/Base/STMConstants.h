@@ -32,8 +32,9 @@
 
 #define BUILD_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]
 #define APP_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
+#define SYSTEM_VERSION [[[UIDevice currentDevice] systemVersion] floatValue]
 
-#define MAGIC_NUMBER_FOR_CELL_WIDTH 16
+#define MAGIC_NUMBER_FOR_CELL_WIDTH 0 //16
 
 #define TOOLBAR_HEIGHT 44
 

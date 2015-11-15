@@ -564,21 +564,25 @@
     
     for (STMPicture *picture in result) {
         
-        NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
-        NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        
-        NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
-        
-        if (photoData && photoData.length > 0) {
+        if (!picture.objectID.temporaryID) {
             
-            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+            NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
+            NSString *fileName = [xid stringByAppendingString:@".jpg"];
             
-        } else {
+            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
-            NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
-            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
-            [self deletePicture:picture];
-            
+            if (photoData && photoData.length > 0) {
+                
+                [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+                
+            } else {
+                
+                NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+                [self deletePicture:picture];
+                
+            }
+
         }
         
     }

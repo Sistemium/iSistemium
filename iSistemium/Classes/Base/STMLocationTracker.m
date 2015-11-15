@@ -366,7 +366,7 @@
     
     if (self.tracking) {
         
-        float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+        float systemVersion = SYSTEM_VERSION;
         
         if (systemVersion >= 8.0) {
             
@@ -418,7 +418,7 @@
             
         } else if (status == kCLAuthorizationStatusNotDetermined) {
             
-            float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+            float systemVersion = SYSTEM_VERSION;
 
             if (systemVersion >= 8.0) {
 

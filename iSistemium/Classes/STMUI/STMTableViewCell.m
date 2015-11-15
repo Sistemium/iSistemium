@@ -7,6 +7,7 @@
 //
 
 #import "STMTableViewCell.h"
+#import "STMConstants.h"
 
 
 @implementation STMTableViewCell
@@ -19,7 +20,7 @@
     
     [super setEditing:editing animated:animated];
     
-    if (editing && self.editingStyle != UITableViewCellEditingStyleDelete && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+    if (editing && self.editingStyle != UITableViewCellEditingStyleDelete && SYSTEM_VERSION >= 8.0) {
         
         for (UIView *subview in self.subviews) {
             

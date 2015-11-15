@@ -147,15 +147,10 @@
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:self.splitVC.selectedOrder];
     
     if (indexPath) {
-        
-        if (self.resultsController.fetchedObjects.lastObject) {
-            
-            NSIndexPath *lastIndexPath = [self.resultsController indexPathForObject:(id _Nonnull)self.resultsController.fetchedObjects.lastObject];
-            [self.tableView selectRowAtIndexPath:lastIndexPath animated:NO scrollPosition:UITableViewScrollPositionBottom];
-
-        }
-        
-        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+    
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+        }];
         
     } else {
         

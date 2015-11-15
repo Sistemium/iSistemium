@@ -114,31 +114,47 @@
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [self cellForHeightCalculationForIndexPath:indexPath];
+    if (SYSTEM_VERSION >= 8.0) {
     
-    [self fillCell:cell atIndexPath:indexPath];
+        CGFloat autoHeight = [super tableView:self.tableView heightForRowAtIndexPath:indexPath];
+
+        [self putCachedHeight:autoHeight forIndexPath:indexPath];
+
+        return autoHeight;
+        
+    } else {
     
-    cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+        UITableViewCell *cell = [self cellForHeightCalculationForIndexPath:indexPath];
+        
+        [self fillCell:cell atIndexPath:indexPath];
+        
+        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+        
+        [cell setNeedsLayout];
+        [cell layoutIfNeeded];
+        
+        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+        
+        height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
+        
+        [self putCachedHeight:height forIndexPath:indexPath];
+        
+        return height;
     
-    [cell setNeedsLayout];
-    [cell layoutIfNeeded];
-    
-    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-    
-    height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
-    
-    [self putCachedHeight:height forIndexPath:indexPath];
-    
-    return height;
+    }
     
 }
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+    if (SYSTEM_VERSION < 8.0) {
+        
+        [cell setNeedsUpdateConstraints];
+        [cell updateConstraintsIfNeeded];
 
+    }
+    
 }
 
 

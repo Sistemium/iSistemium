@@ -15,6 +15,7 @@
 
 
 - (void)performFetch;
+- (void)performFetchWithCompletionHandler:(void (^)(BOOL success))completionHandler;
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText;
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar;

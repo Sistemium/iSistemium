@@ -98,17 +98,13 @@
         NSString *photoReportsStrings = [NSString stringWithFormat:@"%lu %@", (long unsigned)photoReports.count, NSLocalizedString(@"PHOTO", nil)];
         detailText = [detailText stringByAppendingString:@" / "];
         detailText = [detailText stringByAppendingString:photoReportsStrings];
-
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
-    } else {
-        
-        cell.accessoryType = UITableViewCellAccessoryNone;
-
     }
-    
+
     cell.detailTextLabel.text = detailText;
-    
+
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
     return cell;
     
 }
@@ -126,17 +122,25 @@
         
         self.splitVC.detailVC.selectedCampaignGroup = campaignGroup;
         
-        NSSet *photoReports = [campaignGroup.campaigns valueForKeyPath:@"@distinctUnionOfSets.photoReports"];
+        STMPhotoReportsFilterTVC *filterTVC = [[STMPhotoReportsFilterTVC alloc] initWithStyle:UITableViewStyleGrouped];
+        filterTVC.selectedCampaignGroup = campaignGroup;
         
-        if (photoReports.count > 0) {
-            
-            STMPhotoReportsFilterTVC *filterTVC = [[STMPhotoReportsFilterTVC alloc] initWithStyle:UITableViewStyleGrouped];
-            filterTVC.selectedCampaignGroup = campaignGroup;
-            
-            self.splitVC.detailVC.filterTVC = filterTVC;
-            
-            [self.navigationController pushViewController:filterTVC animated:YES];
-            
+        self.splitVC.detailVC.filterTVC = filterTVC;
+        
+        [self.navigationController pushViewController:filterTVC animated:YES];
+        
+    }
+    
+}
+
+- (void)handleNotification:(NSNotification *)notification {
+    
+    if (![notification.object isEqual:self.splitVC.detailVC]) {
+        
+        NSArray *notificationsNames = @[@"photoReportsChanged", @"photosCountChanged"];
+        
+        if ([notificationsNames containsObject:notification.name]) {
+            [self photoReportsWasUpdated];
         }
         
     }
@@ -146,9 +150,33 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+// Notifications for compatibility with old photoReports view controller
+    [nc addObserver:self
+           selector:@selector(handleNotification:)
+               name:@"photoReportsChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(handleNotification:)
+               name:@"photosCountChanged"
+             object:nil];
+// End
+    
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)customInit {
     
     [super customInit];
+    
+    [self addObservers];
     
     self.clearsSelectionOnViewWillAppear = NO;
     
