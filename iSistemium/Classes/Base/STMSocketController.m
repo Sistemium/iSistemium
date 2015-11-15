@@ -464,7 +464,7 @@
 // Log
 // ----------
     
-    if (DEBUG) {
+#ifdef DEBUG
         
         if (event == STMSocketEventData && [value isKindOfClass:[NSArray class]]) {
             
@@ -477,8 +477,7 @@
             NSLog(@"socket:%@ sendEvent:%@ withValue:%@", socket, [self stringValueForEvent:event], value);
             
         }
-
-    }
+#endif
     
 // ----------
 // End of log
