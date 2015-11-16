@@ -13,6 +13,7 @@
 @interface STMPhotoReportsFilterTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, weak) STMCampaignGroup *selectedCampaignGroup;
+@property (nonatomic) BOOL lockSelection;
 
 - (void)photoReportGroupingChanged;
 - (void)photoReportsWasUpdated;

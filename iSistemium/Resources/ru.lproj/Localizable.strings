@@ -37,7 +37,9 @@
 "2PICTURES" = "изображения";
 "5PICTURES" = "изображений";
 "ADD PHOTO" = "Добавить фото";
+"ADD PHOTOREPORT" = "Добавить фотоотчёт";
 "PHOTO" = "фото";
+"NO PHOTO" = "нет фото";
 "CAMPAIGNS" = "Акции";
 "0CAMPAIGNS" = "нет акций";
 "1CAMPAIGNS" = "акция";
@@ -373,5 +375,9 @@
 "1OUTLETS" = "точка";
 "2OUTLETS" = "точки";
 "5OUTLETS" = "точек";
+"SHOW DATA ONLY WITH PHOTOS" = "Только с фотоотчётами";
+"SHOW ALL DATA" = "Показывать всё";
+"SELECT CAMPAIGN" = "Выберите акцию";
+"SELECT OUTLET" = "Выберите точку";
 
 

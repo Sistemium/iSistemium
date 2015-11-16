@@ -11,7 +11,7 @@
 #import "STMFunctions.h"
 
 
-@interface STMPhotoReportVC () <UIGestureRecognizerDelegate>
+@interface STMPhotoReportVC () <UIGestureRecognizerDelegate, UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
 
@@ -21,11 +21,49 @@
 
 @implementation STMPhotoReportVC
 
+- (IBAction)deleteButtonPressed:(id)sender {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DELETE PHOTO", nil) message:NSLocalizedString(@"R U SURE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        alertView.tag = 1;
+        [alertView show];
+        
+    }];
+    
+}
 
 - (void)photoViewTap {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+            
+        case 1:
+            
+            if (buttonIndex == 1) {
+                
+                [self.parentVC deletePhotoReport:self.photoReport];
+                [self dismissViewControllerAnimated:YES completion:nil];
+
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+
+}
 
 #pragma mark - UIGestureRecognizerDelegate
 

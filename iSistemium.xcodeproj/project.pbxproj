@@ -372,6 +372,10 @@
 		2CEE30551BECEF1F009B229F /* STMBarCodeScanVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30541BECEF1F009B229F /* STMBarCodeScanVC.m */; };
 		2CEE30581BEF40F0009B229F /* STMBarCodeScanNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30571BEF40EF009B229F /* STMBarCodeScanNC.m */; };
 		2CEE305B1BF0CC43009B229F /* STMBarCodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE305A1BF0CC43009B229F /* STMBarCodeScanner.m */; };
+		2CEE305F1BF24086009B229F /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE305D1BF24086009B229F /* camera.png */; };
+		2CEE30601BF24086009B229F /* camera_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE305E1BF24086009B229F /* camera_filled.png */; };
+		2CEE30641BF49603009B229F /* STMPhotosController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30631BF49603009B229F /* STMPhotosController.m */; };
+		2CEE30671BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE30661BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m */; };
 		2CF126321B74F5210059701F /* STMShippingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126311B74F5210059701F /* STMShippingVC.m */; };
 		2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF126341B77520F0059701F /* STMShippingSettingsTVC.m */; };
 		2CF1264A1B778AB50059701F /* future.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF126461B778AB50059701F /* future.png */; };
@@ -1099,6 +1103,13 @@
 		2CEE30591BF0CC43009B229F /* STMBarCodeScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMBarCodeScanner.h; sourceTree = "<group>"; };
 		2CEE305A1BF0CC43009B229F /* STMBarCodeScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMBarCodeScanner.m; sourceTree = "<group>"; };
 		2CEE305C1BF0CFB7009B229F /* STMBarCodeScannerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMBarCodeScannerDelegate.h; sourceTree = "<group>"; };
+		2CEE305D1BF24086009B229F /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
+		2CEE305E1BF24086009B229F /* camera_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_filled.png; sourceTree = "<group>"; };
+		2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMImagePickerOwnerProtocol.h; sourceTree = "<group>"; };
+		2CEE30621BF49603009B229F /* STMPhotosController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotosController.h; sourceTree = "<group>"; };
+		2CEE30631BF49603009B229F /* STMPhotosController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotosController.m; sourceTree = "<group>"; };
+		2CEE30651BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportAddPhotoTVC.h; sourceTree = "<group>"; };
+		2CEE30661BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportAddPhotoTVC.m; sourceTree = "<group>"; };
 		2CF126301B74F5200059701F /* STMShippingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingVC.h; sourceTree = "<group>"; };
 		2CF126311B74F5210059701F /* STMShippingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShippingVC.m; sourceTree = "<group>"; };
 		2CF126331B77520F0059701F /* STMShippingSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShippingSettingsTVC.h; sourceTree = "<group>"; };
@@ -1296,6 +1307,8 @@
 				2C4BA3CB1A41AE9A007F1D0A /* STMPartnerController.m */,
 				2CFDD7271A29AF42003515C5 /* STMPicturesController.h */,
 				2CFDD7281A29AF42003515C5 /* STMPicturesController.m */,
+				2CEE30621BF49603009B229F /* STMPhotosController.h */,
+				2CEE30631BF49603009B229F /* STMPhotosController.m */,
 				2C4E44391A810A6D006E6AF1 /* STMRecordStatusController.h */,
 				2C4E443A1A810A6D006E6AF1 /* STMRecordStatusController.m */,
 				2C5764741AAC421E00B9FD2C /* STMSaleOrderController.h */,
@@ -1402,6 +1415,8 @@
 				2CC194561BE0F676001F8E48 /* STMPhotoReportsFilterTVC.m */,
 				2CC194591BE25B28001F8E48 /* STMPhotoReportsDetailTVC.h */,
 				2CC1945A1BE25B28001F8E48 /* STMPhotoReportsDetailTVC.m */,
+				2CEE30651BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.h */,
+				2CEE30661BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m */,
 				2CC1946E1BE4D364001F8E48 /* STMPhotoReportVC.h */,
 				2CC1946F1BE4D364001F8E48 /* STMPhotoReportVC.m */,
 				2CC194711BE4DAFE001F8E48 /* STMPhotoReportMapVC.h */,
@@ -1449,6 +1464,7 @@
 				2CF1264E1B7880750059701F /* STMShipmentPositionSortable.h */,
 				2C587AAF1BBAC54B00546A62 /* STMWorkflowable.h */,
 				2CEE305C1BF0CFB7009B229F /* STMBarCodeScannerDelegate.h */,
+				2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -2000,6 +2016,8 @@
 				2CF126501B7895EB0059701F /* checkmark.png */,
 				2CF126621B7CB4F50059701F /* uncheckmark_filled.png */,
 				2CF126531B789B360059701F /* uncheckmark.png */,
+				2CEE305D1BF24086009B229F /* camera.png */,
+				2CEE305E1BF24086009B229F /* camera_filled.png */,
 				2C587AAA1BB5917500546A62 /* help.png */,
 				2CF126461B778AB50059701F /* future.png */,
 				2CF126471B778AB50059701F /* past.png */,
@@ -2295,6 +2313,7 @@
 				2C1AB3011B70AE4400BF5C50 /* 1_circle_filled.png in Resources */,
 				2C1AB3181B70B47D00BF5C50 /* circle_colored_blue.png in Resources */,
 				2CF126631B7CB4F50059701F /* uncheckmark_filled.png in Resources */,
+				2CEE305F1BF24086009B229F /* camera.png in Resources */,
 				2C761BB91B00833F001DA33E /* Picture Filled-100.png in Resources */,
 				2C1AB2F01B70AE0F00BF5C50 /* 0_circle_filled.png in Resources */,
 				2CF365AC19EE884D00F078BD /* STMSettings.storyboard in Resources */,
@@ -2347,6 +2366,7 @@
 				2C5797ED1A432CDF00EEFBA7 /* STMWebView.storyboard in Resources */,
 				2C1727EC1B94440D00C82ACB /* STMShipments.storyboard in Resources */,
 				2C1AB2FD1B70AE4400BF5C50 /* 2_circle_filled.png in Resources */,
+				2CEE30601BF24086009B229F /* camera_filled.png in Resources */,
 				2C587AAB1BB5917500546A62 /* help.png in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */,
@@ -2628,6 +2648,7 @@
 				2C5797F01A432CFF00EEFBA7 /* STMWebViewVC.m in Sources */,
 				2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */,
 				2C5764691AAB26FD00B9FD2C /* STMOrdersDateTVC.m in Sources */,
+				2CEE30641BF49603009B229F /* STMPhotosController.m in Sources */,
 				2C42ECB71B1342D300B5C91A /* STMArticlePicturePVC.m in Sources */,
 				2C8EF5F31940872E0021D202 /* STMAppDelegate.m in Sources */,
 				2C53B8A519409E71002298A5 /* STMSettingsData.m in Sources */,
@@ -2684,6 +2705,7 @@
 				2CEE301D1BEBAD10009B229F /* STMDatum+Init.m in Sources */,
 				2C5763F01AA5E13600B9FD2C /* STMCampaignDetailsPVC.m in Sources */,
 				2C646F631BCE69C00099F034 /* SocketEventHandler.swift in Sources */,
+				2CEE30671BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m in Sources */,
 				2C57648F1AB1B1EE00B9FD2C /* STMFetchRequest.m in Sources */,
 				2C761BAD1AFCE43C001DA33E /* STMClientEntityController.m in Sources */,
 				2C5764201AA5E1E500B9FD2C /* STMDebtsSVC.m in Sources */,

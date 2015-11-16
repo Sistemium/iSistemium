@@ -460,19 +460,28 @@
 }
 
 + (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
-    
-    if (event == STMSocketEventData && [value isKindOfClass:[NSArray class]]) {
-        
-        NSArray *valueArray = [(NSArray *)value valueForKeyPath:@"name"];
-        
-        NSLog(@"socket:%@ sendEvent:%@ withObjects:%@", socket, [self stringValueForEvent:event], valueArray);
-        
-    } else {
-        
-        NSLog(@"socket:%@ sendEvent:%@ withValue:%@", socket, [self stringValueForEvent:event], value);
-        
-    }
 
+// Log
+// ----------
+    
+#ifdef DEBUG
+        
+        if (event == STMSocketEventData && [value isKindOfClass:[NSArray class]]) {
+            
+            NSArray *valueArray = [(NSArray *)value valueForKeyPath:@"name"];
+            
+            NSLog(@"socket:%@ sendEvent:%@ withObjects:%@", socket, [self stringValueForEvent:event], valueArray);
+            
+        } else {
+            
+            NSLog(@"socket:%@ sendEvent:%@ withValue:%@", socket, [self stringValueForEvent:event], value);
+            
+        }
+#endif
+    
+// ----------
+// End of log
+    
     if (socket.status == SocketIOClientStatusConnected) {
         
         NSString *primaryKey = [self primaryKeyForEvent:event];

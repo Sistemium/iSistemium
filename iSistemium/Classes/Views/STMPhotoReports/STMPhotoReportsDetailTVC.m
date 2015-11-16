@@ -11,18 +11,33 @@
 #import "STMPhotoReportsSVC.h"
 #import "STMPhotoReportVC.h"
 #import "STMPhotoReportMapVC.h"
+#import "STMPhotoReportAddPhotoTVC.h"
+
+#import "STMImagePickerOwnerProtocol.h"
+
+#import "STMPicturesController.h"
+#import "STMObjectsController.h"
+#import "STMLocationController.h"
+#import "STMPhotosController.h"
 
 
-#define LOCATION_IMAGE_SIZE 24
+#define LOCATION_IMAGE_SIZE 25
+#define CAMERA_IMAGE_SIZE 25
 
 
-@interface STMPhotoReportsDetailTVC () <UIActionSheetDelegate>
+@interface STMPhotoReportsDetailTVC () <UIActionSheetDelegate,
+                                        UINavigationControllerDelegate,
+                                        UIImagePickerControllerDelegate,
+                                        STMImagePickerOwnerProtocol>
 
 @property (nonatomic, strong) UIImage *locationImage;
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *groupSwitcher;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *groupSwitcher;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *cameraButton;
 
 @property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
+
+@property (nonatomic, strong) STMSpinnerView *spinner;
 
 
 @end
@@ -43,6 +58,15 @@
     }
     
     return _splitVC;
+    
+}
+
+- (STMSpinnerView *)spinner {
+    
+    if (!_spinner) {
+        _spinner = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
+    }
+    return _spinner;
     
 }
 
@@ -71,19 +95,10 @@
         
         _selectedCampaignGroup = selectedCampaignGroup;
         
-        [self updateTitle];
-        [self performFetch];
-        
-    }
-    
-}
+        if (!selectedCampaignGroup && [self.navigationController.topViewController isKindOfClass:[STMPhotoReportAddPhotoTVC class]]) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
 
-- (void)setSelectedOutlet:(STMOutlet *)selectedOutlet {
-    
-    if (![_selectedOutlet isEqual:selectedOutlet]) {
-        
-        _selectedOutlet = selectedOutlet;
-        
         [self updateTitle];
         [self performFetch];
         
@@ -97,11 +112,42 @@
         
         _selectedCampaign = selectedCampaign;
 
+        [self updateCameraButton];
         [self updateTitle];
         [self performFetch];
 
     }
     
+}
+
+- (void)setSelectedOutlet:(STMOutlet *)selectedOutlet {
+    
+    if (![_selectedOutlet isEqual:selectedOutlet]) {
+        
+        _selectedOutlet = selectedOutlet;
+        
+        [self updateCameraButton];
+        [self updateTitle];
+        [self performFetch];
+        
+    }
+    
+}
+
+- (void)setSelectedCampaignForPhotoReport:(STMCampaign *)selectedCampaignForPhotoReport {
+    
+    _selectedCampaignForPhotoReport = selectedCampaignForPhotoReport;
+    
+    [self addNewPhotoReport];
+    
+}
+
+- (void)setSelectedOutletForPhotoReport:(STMOutlet *)selectedOutletForPhotoReport {
+    
+    _selectedOutletForPhotoReport = selectedOutletForPhotoReport;
+
+    [self addNewPhotoReport];
+
 }
 
 - (void)setCurrentGrouping:(STMPhotoReportGrouping)currentGrouping {
@@ -143,37 +189,43 @@
     
 }
 
+- (BOOL)shouldEnableAddPhotoButton {
+    
+    switch (self.currentGrouping) {
+        case STMPhotoReportGroupingCampaign: {
+            return (self.selectedOutlet) ? YES : NO;
+            break;
+        }
+        case STMPhotoReportGroupingOutlet: {
+            return (self.selectedCampaign) ? YES : NO;
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
         
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhotoReport class])];
         
-        NSSortDescriptor *outletNameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"outlet.name"
-                                                                               ascending:YES
-                                                                                selector:@selector(caseInsensitiveCompare:)];
-        
-        NSSortDescriptor *campaignNameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"campaign.name"
-                                                                                 ascending:YES
-                                                                                  selector:@selector(caseInsensitiveCompare:)];
-
-        NSSortDescriptor *deviceCtsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
-                                                                              ascending:YES
-                                                                               selector:@selector(compare:)];
-        
         NSString *sectionNameKeyPath = nil;
         
         switch (self.currentGrouping) {
             case STMPhotoReportGroupingCampaign: {
                 
-                request.sortDescriptors = @[campaignNameDescriptor, outletNameDescriptor, deviceCtsDescriptor];
+                request.sortDescriptors = @[[self campaignNameDescriptor], [self outletNameDescriptor], [self deviceCtsDescriptor]];
                 sectionNameKeyPath = @"campaign.name";
                 
                 break;
             }
             case STMPhotoReportGroupingOutlet: {
                 
-                request.sortDescriptors = @[outletNameDescriptor, campaignNameDescriptor, deviceCtsDescriptor];
+                request.sortDescriptors = @[[self outletNameDescriptor], [self campaignNameDescriptor], [self deviceCtsDescriptor]];
                 sectionNameKeyPath = @"outlet.name";
 
                 break;
@@ -198,16 +250,28 @@
     
 }
 
-- (void)performFetch {
-    
-    self.resultsController = nil;
-    
-    if ([self.resultsController performFetch:nil]) {
-        
-        [self.tableView reloadData];
-        
-    }
-    
+- (NSSortDescriptor *)outletNameDescriptor {
+ 
+    return [NSSortDescriptor sortDescriptorWithKey:@"outlet.name"
+                                         ascending:YES
+                                          selector:@selector(caseInsensitiveCompare:)];
+
+}
+
+- (NSSortDescriptor *)campaignNameDescriptor {
+
+    return [NSSortDescriptor sortDescriptorWithKey:@"campaign.name"
+                                         ascending:YES
+                                          selector:@selector(caseInsensitiveCompare:)];
+
+}
+
+- (NSSortDescriptor *)deviceCtsDescriptor {
+ 
+    return [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
+                                         ascending:NO
+                                          selector:@selector(compare:)];
+
 }
 
 - (NSPredicate *)currentPredicate {
@@ -244,6 +308,40 @@
     
 }
 
+- (void)performFetch {
+
+    self.resultsController = nil;
+    
+    if ([self.resultsController performFetch:nil]) {
+        
+        [self.tableView reloadData];
+        
+    }
+    
+}
+
+- (void)deletePhotoReport:(STMPhotoReport *)photoReport {
+    
+// Notification to inform STMCampaignsTVC.m
+    if (photoReport.campaign) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged"
+                                                            object:self.splitViewController
+                                                          userInfo:@{@"campaign": photoReport.campaign}];
+        
+    }
+// End of notification
+
+// Notification to inform STMCampaignPhotoReportCVC
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged"
+                                                        object:self];
+// End of notification
+
+
+    [STMObjectsController createRecordStatusAndRemoveObject:photoReport];
+    
+}
+
 
 #pragma mark - table view data source
 
@@ -259,14 +357,36 @@
 
 - (void)fillCell:(STMCustom10TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
+    [self flushCell:cell];
+    
     STMPhotoReport *photoReport = [self.resultsController objectAtIndexPath:indexPath];
+    [self fillCell:cell withPhotoReport:photoReport];
+
+}
+
+- (void)flushCell:(STMCustom10TVCell *)cell {
+    
+    cell.titleLabel.text = nil;
+    cell.titleLabel.textAlignment = NSTextAlignmentLeft;
+    cell.titleLabel.textColor = [UIColor blackColor];
+
+    cell.detailLabel.text = nil;
+    cell.detailLabel.textAlignment = NSTextAlignmentLeft;
+    cell.detailLabel.textColor = [UIColor blackColor];
+
+    cell.pictureView.image = nil;
+    cell.accessoryView = nil;
+
+}
+
+- (void)fillCell:(STMCustom10TVCell *)cell withPhotoReport:(STMPhotoReport *)photoReport {
     
     cell.pictureView.contentMode = UIViewContentModeScaleAspectFill;
     cell.pictureView.clipsToBounds = YES;
     cell.pictureView.image = [UIImage imageWithData:photoReport.imageThumbnail];
-    
+
     cell.titleLabel.text = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:photoReport.deviceCts];
-    
+
     switch (self.currentGrouping) {
         case STMPhotoReportGroupingCampaign: {
             cell.detailLabel.text = photoReport.outlet.name;
@@ -303,21 +423,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
-    
-
-//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//        
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"???"
-//                                                        message:@"А тут вот не знаю, надо ли что-нибудь показать?"
-//                                                       delegate:nil
-//                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-//                                              otherButtonTitles:nil];
-//        [alert show];
-//        
-//    }];
-
 }
 
 - (void)locationButtonTapped:(id)sender event:(id)event {
@@ -329,21 +435,153 @@
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint: currentTouchPosition];
     
     if (indexPath != nil) {
-        
         [self performSegueWithIdentifier:@"showPhotoReportMap" sender:indexPath];
+    }
+    
+}
+
+
+#pragma mark - add photoReport
+
+- (void)addNewPhotoReport {
+
+    if ([self.navigationController.topViewController isKindOfClass:[STMPhotoReportAddPhotoTVC class]]) {
+        [self.navigationController popViewControllerAnimated:NO];
+    }
+    
+    self.filterTVC.lockSelection = NO;
+    
+    [self showImagePicker];
+    
+}
+
+- (void)showImagePicker {
+    
+    BOOL camera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+    BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
+    
+    if (camera) {
         
-//        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//            
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"!!!"
-//                                                            message:@"Тут я покажу карту с пином"
-//                                                           delegate:nil
-//                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-//                                                  otherButtonTitles:nil];
-//            [alert show];
-//            
-//        }];
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+        
+    } else if (photoLibrary) {
+        
+        [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+        
+    } else {
+        
+        //        [STMObjectsController removeObject:self.selectedPhotoReport];
         
     }
+
+}
+
+
+#pragma mark - STMImagePickerOwnerProtocol
+
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
+        
+        STMImagePickerController *imagePickerController = [[STMImagePickerController alloc] initWithSourceType:imageSourceType];
+        imagePickerController.ownerVC = self;
+        
+        [self.splitViewController presentViewController:imagePickerController animated:YES completion:^{
+            
+            [self.view addSubview:self.spinner];
+            
+        }];
+        
+    }
+    
+}
+
+- (void)imagePickerWasDissmised:(UIImagePickerController *)picker {
+    
+    [self.spinner removeFromSuperview];
+    self.spinner = nil;
+    
+}
+
+- (void)saveImage:(UIImage *)image andWaitForLocation:(BOOL)waitForLocation {
+    
+    STMPhotoReport *savedPhotoReport = [self savePhotoReportWithImage:image];
+    
+    if (waitForLocation && savedPhotoReport) {
+        
+        [[STMPhotosController sharedController] addPhotoReportToWaitingLocation:savedPhotoReport];
+                
+    }
+
+}
+
+- (void)saveImage:(UIImage *)image withLocation:(CLLocation *)location {
+    
+    STMPhotoReport *savedPhotoReport = [self savePhotoReportWithImage:image];
+    
+    if (location) savedPhotoReport.location = [STMLocationController locationObjectFromCLLocation:location];
+
+}
+
+- (STMPhotoReport *)savePhotoReportWithImage:(UIImage *)image {
+    
+    CGFloat jpgQuality = [STMPicturesController jpgQuality];
+    
+#warning - don't forget to replace method
+    
+    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
+    photoReport.isFantom = @NO;
+    
+    [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
+                                  forPicture:photoReport
+                                   andUpload:YES];
+    
+//    [photoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
+    
+    switch (self.currentGrouping) {
+        case STMPhotoReportGroupingCampaign: {
+            
+            photoReport.campaign = self.selectedCampaignForPhotoReport;
+            photoReport.outlet = self.selectedOutlet;
+            
+            break;
+            
+        }
+        case STMPhotoReportGroupingOutlet: {
+            
+            photoReport.outlet = self.selectedOutletForPhotoReport;
+            photoReport.campaign = self.selectedCampaign;
+            
+            break;
+            
+        }
+        default: {
+            break;
+        }
+    }
+    
+// Notification to inform STMCampaignsTVC.m
+    if (photoReport.campaign) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged"
+                                                            object:self.splitViewController
+                                                          userInfo:@{@"campaign": photoReport.campaign}];
+        
+    }
+// End of notification
+    
+// Notification to inform STMCampaignPhotoReportCVC
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photosCountChanged"
+                                                        object:self];
+// End of notification
+
+    [[self document] saveDocument:^(BOOL success) {
+        if (success) {
+            
+        }
+    }];
+    
+    return photoReport;
     
 }
 
@@ -353,13 +591,16 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([sender isKindOfClass:[NSIndexPath class]]) {
-    
+
+        STMPhotoReport *photoReport = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+
         if ([segue.identifier isEqualToString:@"showPhotoReport"]) {
             
             if ([segue.destinationViewController isKindOfClass:[STMPhotoReportVC class]]) {
                 
                 STMPhotoReportVC *vc = (STMPhotoReportVC *)segue.destinationViewController;
-                vc.photoReport = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+                vc.photoReport = photoReport;
+                vc.parentVC = self;
                 
             }
             
@@ -368,7 +609,7 @@
             if ([segue.destinationViewController isKindOfClass:[STMPhotoReportMapVC class]]) {
                 
                 STMPhotoReportMapVC *vc = (STMPhotoReportMapVC *)segue.destinationViewController;
-                vc.photoReport = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+                vc.photoReport = photoReport;
                 
             }
             
@@ -377,6 +618,7 @@
     }
     
 }
+
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
@@ -493,16 +735,52 @@
     
 }
 
+
+#pragma mark - camera button
+
+- (void)setupCameraButton {
+    [self updateCameraButton];
+}
+
+- (void)updateCameraButton {
+    
+    BOOL shouldEnableAddPhotoButton = [self shouldEnableAddPhotoButton];
+    
+    self.cameraButton.enabled = shouldEnableAddPhotoButton;
+
+}
+
+- (IBAction)cameraButtonPressed:(id)sender {
+
+    self.filterTVC.lockSelection = YES;
+    
+    STMPhotoReportAddPhotoTVC *addPhotoTVC = [[STMPhotoReportAddPhotoTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    addPhotoTVC.parentVC = self;
+    
+    [self.navigationController pushViewController:addPhotoTVC animated:YES];
+
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [super customInit];
-    
+
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"BACK", nil)
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:nil
+                                                                            action:nil];
+
+
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom10TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
     
     [self setupGroupSwitcher];
+    [self setupCameraButton];
     
     [self performFetch];
     

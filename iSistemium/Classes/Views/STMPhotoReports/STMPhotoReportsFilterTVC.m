@@ -15,6 +15,11 @@
 
 @property (nonatomic, weak) STMPhotoReportsSVC *splitVC;
 
+@property (nonatomic) BOOL showDataOnlyWithPhotos;
+@property (nonatomic, strong) NSString *showDataOnlyWithPhotosDefaultsKey;
+
+@property (nonatomic, strong) NSManagedObject *selectedObject;
+
 
 @end
 
@@ -22,6 +27,7 @@
 @implementation STMPhotoReportsFilterTVC
 
 @synthesize resultsController = _resultsController;
+@synthesize showDataOnlyWithPhotos = _showDataOnlyWithPhotos;
 
 - (STMPhotoReportsSVC *)splitVC {
     
@@ -41,12 +47,60 @@
     return @"photoReportsOutletCell";
 }
 
+- (NSString *)showDataOnlyWithPhotosDefaultsKey {
+    
+    if (!_showDataOnlyWithPhotosDefaultsKey) {
+
+        NSString *userID = [STMAuthController authController].userID;
+        NSString *key = [@"showDataOnlyWithPhotos_" stringByAppendingString:userID];
+
+        _showDataOnlyWithPhotosDefaultsKey = key;
+        
+    }
+    return _showDataOnlyWithPhotosDefaultsKey;
+    
+}
+
+- (BOOL)showDataOnlyWithPhotos {
+    
+    if (!_showDataOnlyWithPhotos) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        BOOL showDataOnlyWithPhotos = [defaults boolForKey:self.showDataOnlyWithPhotosDefaultsKey];
+        
+        _showDataOnlyWithPhotos = showDataOnlyWithPhotos;
+        
+    }
+    return _showDataOnlyWithPhotos;
+    
+}
+
+- (void)setShowDataOnlyWithPhotos:(BOOL)showDataOnlyWithPhotos {
+    
+    if (_showDataOnlyWithPhotos != showDataOnlyWithPhotos) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setBool:showDataOnlyWithPhotos forKey:self.showDataOnlyWithPhotosDefaultsKey];
+        [defaults synchronize];
+        
+        _showDataOnlyWithPhotos = showDataOnlyWithPhotos;
+        
+        [self performFetch];
+        
+    }
+    
+}
+
 - (void)photoReportGroupingChanged {
     [self performFetch];
 }
 
 - (void)photoReportsWasUpdated {
+    
+    [self rememberSelectedObject];
     [self.tableView reloadData];
+    [self selectRememberedObject];
+    
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -86,7 +140,15 @@
     
     request.sortDescriptors = @[partnerNameSortDescriptor, nameSortDescriptor];
     
-    request.predicate = [NSPredicate predicateWithFormat:@"photoReports.@count > 0 AND ANY photoReports.campaign IN %@", self.selectedCampaignGroup.campaigns];
+    if (self.showDataOnlyWithPhotos) {
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"photoReports.@count > 0 AND ANY photoReports.campaign IN %@", self.selectedCampaignGroup.campaigns];
+        
+    } else {
+        
+//        request.predicate = [NSPredicate predicateWithFormat:@"ANY photoReports.campaign IN %@", self.selectedCampaignGroup.campaigns];
+
+    }
     
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                managedObjectContext:self.document.managedObjectContext
@@ -105,23 +167,65 @@
 
     request.sortDescriptors = @[nameDescriptor];
     
-    request.predicate = [NSPredicate predicateWithFormat:@"campaignGroup == %@ AND name != %@", self.selectedCampaignGroup, nil];
+    if (self.showDataOnlyWithPhotos) {
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"campaignGroup == %@ AND name != %@ AND photoReports.@count > 0", self.selectedCampaignGroup, nil];
+
+    } else {
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"campaignGroup == %@ AND name != %@", self.selectedCampaignGroup, nil];
+
+    }
     
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                managedObjectContext:self.document.managedObjectContext
-                                                 sectionNameKeyPath:nil
+                                                 sectionNameKeyPath:@"campaignGroup.displayName"
                                                           cacheName:nil];
 
 }
 
 - (void)performFetch {
     
+    [self rememberSelectedObject];
+    
     self.resultsController = nil;
     
     if ([self.resultsController performFetch:nil]) {
+        
         [self.tableView reloadData];
+        [self selectRememberedObject];
+        
     }
     
+}
+
+- (void)rememberSelectedObject {
+    
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+    if (selectedIndexPath) self.selectedObject = [self.resultsController objectAtIndexPath:selectedIndexPath];
+    
+}
+
+- (void)selectRememberedObject {
+    
+    if (self.selectedObject) {
+        
+        if ([self.resultsController.fetchedObjects containsObject:self.selectedObject]) {
+            
+            NSIndexPath *selectedIndexPath = [self.resultsController indexPathForObject:self.selectedObject];
+            [self.tableView selectRowAtIndexPath:selectedIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            [self.tableView scrollToNearestSelectedRowAtScrollPosition:UITableViewScrollPositionNone animated:YES];
+            
+        } else {
+            
+            self.selectedObject = nil;
+            self.splitVC.detailVC.selectedCampaign = nil;
+            self.splitVC.detailVC.selectedOutlet = nil;
+            
+        }
+        
+    }
+
 }
 
 
@@ -165,26 +269,35 @@
     
     STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
     
-    UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
-    
-    cell.titleLabel.textColor = textColor;
-    cell.detailLabel.textColor = textColor;
-    
     cell.titleLabel.text = outlet.shortName;
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"campaign.campaignGroup == %@", self.selectedCampaignGroup];
     NSSet *photoReports = [outlet.photoReports filteredSetUsingPredicate:predicate];
-    NSArray *campaigns = [photoReports valueForKeyPath:@"@distinctUnionOfObjects.campaign"];
     
-    NSUInteger photoReportsCount = photoReports.count;
-    NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)photoReportsCount, NSLocalizedString(@"PHOTO", nil)];
-    
-    NSUInteger campaignsCount = campaigns.count;
-    NSString *campaignsString = NSLocalizedString([[STMFunctions pluralTypeForCount:campaignsCount] stringByAppendingString:@"CAMPAIGNS"], nil);
-    NSString *campaignsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)campaignsCount, campaignsString];
+    if (photoReports.count > 0) {
+        
+        NSArray *campaigns = [photoReports valueForKeyPath:@"@distinctUnionOfObjects.campaign"];
+        
+        NSUInteger photoReportsCount = photoReports.count;
+        NSString *photosCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)photoReportsCount, NSLocalizedString(@"PHOTO", nil)];
+        
+        NSUInteger campaignsCount = campaigns.count;
+        NSString *campaignsString = NSLocalizedString([[STMFunctions pluralTypeForCount:campaignsCount] stringByAppendingString:@"CAMPAIGNS"], nil);
+        NSString *campaignsCountString = [NSString stringWithFormat:@"%lu %@", (unsigned long)campaignsCount, campaignsString];
+        
+        cell.detailLabel.text = [@[photosCountString, campaignsCountString] componentsJoinedByString:@" / "];
 
-    cell.detailLabel.text = [@[photosCountString, campaignsCountString] componentsJoinedByString:@" / "];
+    } else {
+
+        cell.detailLabel.text = NSLocalizedString(@"NO PHOTO", nil);
+
+    }
     
+    UIColor *textColor = (!outlet.isActive || [outlet.isActive boolValue]) ? [UIColor blackColor] : [UIColor redColor];
+
+    cell.titleLabel.textColor = textColor;
+    cell.detailLabel.textColor = textColor;
+
 }
 
 - (void)fillCampaignCell:(STMCustom7TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -195,7 +308,7 @@
     
     NSUInteger photoReportsCount = campaign.photoReports.count;
     
-    UIColor *textColor = (photoReportsCount > 0) ? [UIColor blackColor] : [UIColor lightGrayColor];
+    UIColor *textColor = [UIColor blackColor];
     
     cell.titleLabel.textColor = textColor;
     cell.detailLabel.textColor = textColor;
@@ -213,10 +326,14 @@
 
     } else {
         
-        cell.detailLabel.text = nil;
+        cell.detailLabel.text = NSLocalizedString(@"NO PHOTO", nil);
 
     }
     
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return (self.lockSelection) ? nil : indexPath;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
@@ -272,11 +389,77 @@
 }
 
 
+#pragma mark - photo filter button
+
+- (void)setupPhotoFilterButton {
+    
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+    
+    NSString *title = (self.showDataOnlyWithPhotos) ? NSLocalizedString(@"SHOW ALL DATA", nil) : NSLocalizedString(@"SHOW DATA ONLY WITH PHOTOS", nil);
+    
+    STMBarButtonItem *photoFilterButton = [[STMBarButtonItem alloc] initWithTitle:title
+                                                                            style:UIBarButtonItemStylePlain
+                                                                           target:self
+                                                                           action:@selector(photoFilterButtonPressed)];
+    
+    [self setToolbarItems:@[flexibleSpace, photoFilterButton, flexibleSpace]];
+    
+}
+
+- (void)photoFilterButtonPressed {
+    
+    self.showDataOnlyWithPhotos = !self.showDataOnlyWithPhotos;
+    [self setupPhotoFilterButton];
+    
+}
+
+
+- (void)handleNotification:(NSNotification *)notification {
+    
+    if (![notification.object isEqual:self.splitVC.detailVC]) {
+        
+        NSArray *notificationsNames = @[@"photoReportsChanged", @"photosCountChanged"];
+        
+        if ([notificationsNames containsObject:notification.name]) {
+            [self photoReportsWasUpdated];
+        }
+        
+    }
+    
+}
+
+
 #pragma mark - view lifecycle
+
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+// Notifications for compatibility with old photoReports view controller
+    [nc addObserver:self
+           selector:@selector(handleNotification:)
+               name:@"photoReportsChanged"
+             object:nil];
+    
+    [nc addObserver:self
+           selector:@selector(handleNotification:)
+               name:@"photosCountChanged"
+             object:nil];
+// End
+    
+}
+
+- (void)removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)customInit {
     
     [super customInit];
+    
+    [self addObservers];
+    
+    [self setupPhotoFilterButton];
     
     self.clearsSelectionOnViewWillAppear = NO;
 
@@ -290,6 +473,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self isMovingFromParentViewController]) {
+        [self removeObservers];
+    }
+    
+    [super viewWillDisappear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {

@@ -37,7 +37,9 @@
 "2PICTURES" = "pictures";
 "5PICTURES" = "pictures";
 "ADD PHOTO" = "Add photo";
+"ADD PHOTOREPORT" = "Add photoreport";
 "PHOTO" = "photo";
+"NO PHOTO" = "no photo";
 "CAMPAIGNS" = "Campaigns";
 "0CAMPAIGNS" = "no campaigns";
 "1CAMPAIGNS" = "campaign";
@@ -373,4 +375,8 @@
 "1OUTLETS" = "outlet";
 "2OUTLETS" = "outlets";
 "5OUTLETS" = "outlets";
+"SHOW DATA ONLY WITH PHOTOS" = "Show data only with photos";
+"SHOW ALL DATA" = "Show all data";
+"SELECT CAMPAIGN" = "Select campaign";
+"SELECT OUTLET" = "Select outlet";
 

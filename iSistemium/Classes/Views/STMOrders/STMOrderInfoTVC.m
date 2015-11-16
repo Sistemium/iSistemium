@@ -364,30 +364,70 @@
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
-    switch (indexPath.section) {
-        case 0:
-            return [self heightForInfoCellAtIndexPath:indexPath];
-            break;
+    if (SYSTEM_VERSION >= 8.0) {
+        
+        return [super heightForCellAtIndexPath:indexPath];
+        
+    } else {
+    
+        switch (indexPath.section) {
+            case 0:
+                return [self heightForInfoCellAtIndexPath:indexPath];
+                break;
+                
+            case 1:
+                return [self heightForPositionCellAtIndexPath:indexPath];
+                break;
+                
+            default:
+                return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
+                break;
+        }
 
-        case 1:
-            return [self heightForPositionCellAtIndexPath:indexPath];
-            break;
-            
-        default:
-            return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
-            break;
     }
     
+}
+
+- (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+        case 0: {
+            
+            static STMCustom2TVCell *cell = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                cell = [self.tableView dequeueReusableCellWithIdentifier:self.custom2CellIdentifier];
+            });
+            
+            return cell;
+
+        }
+            break;
+
+        case 1: {
+            
+//            static STMInfoTableViewCell *cell = nil;
+            static STMCustom5TVCell *cell = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken,^{
+                cell = [self.tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier];
+            });
+
+            return cell;
+            
+        }
+            break;
+
+        default:
+            return [[UITableViewCell alloc] init];
+            break;
+    }
     
 }
 
 - (CGFloat)heightForInfoCellAtIndexPath:(NSIndexPath *)indexPath {
     
-    static STMCustom2TVCell *cell = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        cell = [self.tableView dequeueReusableCellWithIdentifier:self.custom2CellIdentifier];
-    });
+    STMCustom2TVCell *cell = (STMCustom2TVCell *)[self cellForHeightCalculationForIndexPath:indexPath];
     
     [self fillOrderInfoCell:cell forRow:indexPath.row];
     
@@ -407,14 +447,10 @@
 }
 
 - (CGFloat)heightForPositionCellAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static STMInfoTableViewCell *cell = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken,^{
-        cell = [[STMInfoTableViewCell alloc] init];
-//        cell = [self.tableView dequeueReusableCellWithIdentifier:positionCellIdentifier];
-    });
 
+//    STMInfoTableViewCell *cell = (STMInfoTableViewCell *)[self cellForHeightCalculationForIndexPath:indexPath];
+    STMCustom5TVCell *cell = (STMCustom5TVCell *)[self cellForHeightCalculationForIndexPath:indexPath];
+    
     [self fillOrderPositionCell:cell forRow:indexPath.row];
     
     cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.frame) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
@@ -422,15 +458,21 @@
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
 
-    NSDictionary *attributes = @{NSFontAttributeName:cell.textLabel.font};
+//    NSDictionary *attributes = @{NSFontAttributeName:cell.textLabel.font};
+//    
+//    CGSize lineSize = [cell.textLabel.text sizeWithAttributes:attributes];
+//    CGRect multilineRect = [cell.textLabel.text boundingRectWithSize:CGSizeMake(cell.textLabel.frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+//    
+//    CGFloat diff = ceil(multilineRect.size.height) - ceil(lineSize.height);
+//    
+//    CGFloat height = cell.frame.size.height + diff;
+
+    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingExpandedSize];
     
-    CGSize lineSize = [cell.textLabel.text sizeWithAttributes:attributes];
-    CGRect multilineRect = [cell.textLabel.text boundingRectWithSize:CGSizeMake(cell.textLabel.frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+    CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
     
-    CGFloat diff = ceil(multilineRect.size.height) - ceil(lineSize.height);
-    
-    CGFloat height = cell.frame.size.height + diff;
-    
+    [self putCachedHeight:height forIndexPath:indexPath];
+
     return height;
     
 //    return [self tableView:self.tableView estimatedHeightForRowAtIndexPath:indexPath];
@@ -453,7 +495,7 @@
         case 1:
 //            cell = [[STMInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:positionCellIdentifier];
             cell = [tableView dequeueReusableCellWithIdentifier:self.positionCellIdentifier forIndexPath:indexPath];
-            [self fillOrderPositionCell:(STMInfoTableViewCell *)cell forRow:indexPath.row];
+            [self fillOrderPositionCell:(STMCustom5TVCell *)cell forRow:indexPath.row];
             break;
 
         default:
@@ -579,8 +621,12 @@
             break;
     }
     
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+    if (SYSTEM_VERSION < 8.0) {
+    
+        [cell setNeedsUpdateConstraints];
+        [cell updateConstraintsIfNeeded];
+
+    }
     
 }
 
@@ -606,16 +652,16 @@
 
 }
 
-- (void)fillOrderPositionCell:(STMInfoTableViewCell *)cell forRow:(NSUInteger)row {
+- (void)fillOrderPositionCell:(STMCustom5TVCell *)cell forRow:(NSUInteger)row {
     
-    cell.textLabel.numberOfLines = 0;
+//    cell.titleLabel.numberOfLines = 0;
     
     STMSaleOrderPosition *saleOrderPosition = self.saleOrderPositions[row];
     
-    cell.textLabel.text = saleOrderPosition.article.name;
+    cell.titleLabel.text = saleOrderPosition.article.name;
     
-    cell.detailTextLabel.attributedText = [self attributedDetailedTextForSaleOrderPosition:saleOrderPosition
-                                                                                  withFont:cell.detailTextLabel.font];
+    cell.detailLabel.attributedText = [self attributedDetailedTextForSaleOrderPosition:saleOrderPosition
+                                                                                  withFont:cell.detailLabel.font];
     
     NSString *volumeUnitString = nil;
     
@@ -652,6 +698,13 @@
 
     }
     
+    if (SYSTEM_VERSION < 8.0) {
+        
+        [cell setNeedsUpdateConstraints];
+        [cell updateConstraintsIfNeeded];
+        
+    }
+
 }
 
 - (NSAttributedString *)attributedDetailedTextForSaleOrderPosition:(STMSaleOrderPosition *)saleOrderPosition withFont:(UIFont *)font {
@@ -864,8 +917,11 @@
     
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom2TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.custom2CellIdentifier];
-    
-    [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:self.positionCellIdentifier];
+
+    cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.positionCellIdentifier];
+
+//    [self.tableView registerClass:[STMInfoTableViewCell class] forCellReuseIdentifier:self.positionCellIdentifier];
     
     [self performFetch];
 

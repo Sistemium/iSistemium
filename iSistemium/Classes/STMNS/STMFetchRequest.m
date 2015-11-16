@@ -30,7 +30,7 @@
 
 - (void)setPredicate:(NSPredicate *)predicate {
     
-    predicate  = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
+    predicate = [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
     
     [super setPredicate:predicate];
     

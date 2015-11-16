@@ -31,4 +31,5 @@
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture;
 
+
 @end
