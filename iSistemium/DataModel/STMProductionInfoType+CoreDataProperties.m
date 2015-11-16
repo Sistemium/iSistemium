@@ -1,5 +1,5 @@
 //
-//  STMBarCode+CoreDataProperties.m
+//  STMProductionInfoType+CoreDataProperties.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 16/11/15.
@@ -9,13 +9,13 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMBarCode+CoreDataProperties.h"
+#import "STMProductionInfoType+CoreDataProperties.h"
 
-@implementation STMBarCode (CoreDataProperties)
+@implementation STMProductionInfoType (CoreDataProperties)
 
-@dynamic code;
-@dynamic stockBatches;
+@dynamic name;
+@dynamic datatype;
 @dynamic articles;
-@dynamic pickingOrderArticlesPicked;
+@dynamic articleProductionInfo;
 
 @end

@@ -1,5 +1,5 @@
 //
-//  STMBarCode+CoreDataProperties.m
+//  STMQualityClass+CoreDataProperties.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 16/11/15.
@@ -9,13 +9,13 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMBarCode+CoreDataProperties.h"
+#import "STMQualityClass+CoreDataProperties.h"
 
-@implementation STMBarCode (CoreDataProperties)
+@implementation STMQualityClass (CoreDataProperties)
 
-@dynamic code;
+@dynamic name;
+@dynamic ord;
 @dynamic stockBatches;
-@dynamic articles;
-@dynamic pickingOrderArticlesPicked;
+@dynamic pickingOrderArticles;
 
 @end

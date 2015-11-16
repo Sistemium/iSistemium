@@ -1,17 +1,16 @@
 //
-//  STMBarCode.m
+//  STMQualityClass.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/11/15.
+//  Created by Maxim Grigoriev on 16/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMBarCode.h"
-#import "STMArticle.h"
-#import "STMPickingOrderArticlePicked.h"
+#import "STMQualityClass.h"
+#import "STMPickingOrderArticle.h"
 #import "STMStockBatch.h"
 
-@implementation STMBarCode
+@implementation STMQualityClass
 
 // Insert code here to add functionality to your managed object subclass
 

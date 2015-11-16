@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "STMComment.h"
 
-@class STMArticleGroup, STMArticlePicture, STMBarCode, STMBasketPosition, STMCampaign, STMPrice, STMSaleOrderPosition, STMShipmentPosition, STMStock;
+@class STMArticleGroup, STMArticlePicture, STMArticleProductionInfo, STMBarCode, STMBasketPosition, STMCampaign, STMPickingOrderArticle, STMPickingOrderArticlePicked, STMPrice, STMProductionInfoType, STMSaleOrderPosition, STMShipmentPosition, STMStock, STMStockBatch;
 
 NS_ASSUME_NONNULL_BEGIN
 

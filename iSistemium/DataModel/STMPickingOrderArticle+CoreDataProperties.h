@@ -1,5 +1,5 @@
 //
-//  STMBarCode+CoreDataProperties.h
+//  STMPickingOrderArticle+CoreDataProperties.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 16/11/15.
@@ -9,30 +9,21 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMBarCode.h"
+#import "STMPickingOrderArticle.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMBarCode (CoreDataProperties)
+@interface STMPickingOrderArticle (CoreDataProperties)
 
-@property (nullable, nonatomic, retain) NSString *code;
-@property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
-@property (nullable, nonatomic, retain) NSSet<STMArticle *> *articles;
+@property (nullable, nonatomic, retain) NSNumber *volume;
+@property (nullable, nonatomic, retain) STMPickingOrder *pickingOrder;
+@property (nullable, nonatomic, retain) STMArticle *article;
+@property (nullable, nonatomic, retain) STMQualityClass *qualityClass;
 @property (nullable, nonatomic, retain) NSSet<STMPickingOrderArticlePicked *> *pickingOrderArticlesPicked;
 
 @end
 
-@interface STMBarCode (CoreDataGeneratedAccessors)
-
-- (void)addStockBatchesObject:(STMStockBatch *)value;
-- (void)removeStockBatchesObject:(STMStockBatch *)value;
-- (void)addStockBatches:(NSSet<STMStockBatch *> *)values;
-- (void)removeStockBatches:(NSSet<STMStockBatch *> *)values;
-
-- (void)addArticlesObject:(STMArticle *)value;
-- (void)removeArticlesObject:(STMArticle *)value;
-- (void)addArticles:(NSSet<STMArticle *> *)values;
-- (void)removeArticles:(NSSet<STMArticle *> *)values;
+@interface STMPickingOrderArticle (CoreDataGeneratedAccessors)
 
 - (void)addPickingOrderArticlesPickedObject:(STMPickingOrderArticlePicked *)value;
 - (void)removePickingOrderArticlesPickedObject:(STMPickingOrderArticlePicked *)value;

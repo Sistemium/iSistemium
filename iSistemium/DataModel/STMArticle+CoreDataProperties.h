@@ -2,7 +2,7 @@
 //  STMArticle+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/11/15.
+//  Created by Maxim Grigoriev on 16/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -33,7 +33,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSSet<STMSaleOrderPosition *> *saleOrderPositions;
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *shipmentPositions;
 @property (nullable, nonatomic, retain) STMStock *stock;
-@property (nullable, nonatomic, retain) NSSet<STMBarCode *> *barcodes;
+@property (nullable, nonatomic, retain) STMProductionInfoType *productionInfoType;
+@property (nullable, nonatomic, retain) NSSet<STMArticleProductionInfo *> *articleProductionInfo;
+@property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
+@property (nullable, nonatomic, retain) NSSet<STMBarCode *> *barCodes;
+@property (nullable, nonatomic, retain) NSSet<STMPickingOrderArticle *> *pickingOrderArticles;
+@property (nullable, nonatomic, retain) NSSet<STMPickingOrderArticlePicked *> *pickingOrderArticlesPicked;
 
 @end
 
@@ -74,10 +79,30 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
 - (void)removeShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
 
-- (void)addBarcodesObject:(STMBarCode *)value;
-- (void)removeBarcodesObject:(STMBarCode *)value;
-- (void)addBarcodes:(NSSet<STMBarCode *> *)values;
-- (void)removeBarcodes:(NSSet<STMBarCode *> *)values;
+- (void)addArticleProductionInfoObject:(STMArticleProductionInfo *)value;
+- (void)removeArticleProductionInfoObject:(STMArticleProductionInfo *)value;
+- (void)addArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
+- (void)removeArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
+
+- (void)addStockBatchesObject:(STMStockBatch *)value;
+- (void)removeStockBatchesObject:(STMStockBatch *)value;
+- (void)addStockBatches:(NSSet<STMStockBatch *> *)values;
+- (void)removeStockBatches:(NSSet<STMStockBatch *> *)values;
+
+- (void)addBarCodesObject:(STMBarCode *)value;
+- (void)removeBarCodesObject:(STMBarCode *)value;
+- (void)addBarCodes:(NSSet<STMBarCode *> *)values;
+- (void)removeBarCodes:(NSSet<STMBarCode *> *)values;
+
+- (void)addPickingOrderArticlesObject:(STMPickingOrderArticle *)value;
+- (void)removePickingOrderArticlesObject:(STMPickingOrderArticle *)value;
+- (void)addPickingOrderArticles:(NSSet<STMPickingOrderArticle *> *)values;
+- (void)removePickingOrderArticles:(NSSet<STMPickingOrderArticle *> *)values;
+
+- (void)addPickingOrderArticlesPickedObject:(STMPickingOrderArticlePicked *)value;
+- (void)removePickingOrderArticlesPickedObject:(STMPickingOrderArticlePicked *)value;
+- (void)addPickingOrderArticlesPicked:(NSSet<STMPickingOrderArticlePicked *> *)values;
+- (void)removePickingOrderArticlesPicked:(NSSet<STMPickingOrderArticlePicked *> *)values;
 
 @end
 

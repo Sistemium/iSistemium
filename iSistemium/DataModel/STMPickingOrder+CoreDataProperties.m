@@ -1,5 +1,5 @@
 //
-//  STMBarCode+CoreDataProperties.m
+//  STMPickingOrder+CoreDataProperties.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 16/11/15.
@@ -9,13 +9,14 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMBarCode+CoreDataProperties.h"
+#import "STMPickingOrder+CoreDataProperties.h"
 
-@implementation STMBarCode (CoreDataProperties)
+@implementation STMPickingOrder (CoreDataProperties)
 
-@dynamic code;
-@dynamic stockBatches;
-@dynamic articles;
-@dynamic pickingOrderArticlesPicked;
+@dynamic date;
+@dynamic ndoc;
+@dynamic processing;
+@dynamic picker;
+@dynamic pickingOrderArticles;
 
 @end
