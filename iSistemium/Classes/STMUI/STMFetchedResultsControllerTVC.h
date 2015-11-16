@@ -40,6 +40,7 @@
 - (void)customInit;
 
 - (void)performFetch;
+- (void)performFetchWithCompletionHandler:(void (^)(BOOL success))completionHandler;
 
 
 @end

@@ -15,44 +15,6 @@
 
 @implementation STMSearchableTVC
 
-<<<<<<< HEAD
-=======
-- (void)performFetch {
-    
-    self.resultsController = nil;
-    
-    NSError *error;
-    
-    if (![self.resultsController performFetch:&error]) {
-        NSLog(@"performFetch error %@", error);
-    } else {
-        [self.tableView reloadData];
-    }
-
-}
-
-- (void)performFetchWithCompletionHandler:(void (^)(BOOL success))completionHandler {
-    
-    self.resultsController = nil;
-    
-    NSError *error;
-    
-    if (![self.resultsController performFetch:&error]) {
-        
-        NSLog(@"performFetch error %@", error);
-        completionHandler(NO);
-        
-    } else {
-        
-        [self.tableView reloadData];
-        completionHandler(YES);
-        
-    }
-    
-}
-
-
->>>>>>> dev
 #pragma mark - search & UISearchBarDelegate
 
 - (void)searchButtonPressed {
