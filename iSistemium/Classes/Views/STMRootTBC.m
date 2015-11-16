@@ -394,9 +394,10 @@
         [self processTabsArray:stcTabs];
         
 // temporary tab for coding
-        [self registerTabWithStoryboardParameters:@{@"name": @"STMBarCodeScan_iphone",
-                                                    @"title": NSLocalizedString(@"BAR CODE", nil),
-                                                    @"imageName": @"full_moon-128.png"} atIndex:6];
+        [self registerTabWithStoryboardParameters:@{@"name": @"STMPickingOrders",
+                                                    @"title": NSLocalizedString(@"PICKING ORDERS", nil),
+                                                    @"imageName": @"move_by_trolley.png"}
+                                          atIndex:stcTabs.count];
 // end of temporary tab
 
     }

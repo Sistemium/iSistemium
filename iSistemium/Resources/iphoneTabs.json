@@ -10,5 +10,6 @@
     "STMSettings": "STMSettings",
     "STMUncashing": null,
     "STMWebView": "STMWebView",
-    "STMShipments": "STMShipments_iphone"
+    "STMShipments": "STMShipments_iphone",
+    "STMPickingOrders": "STMPickingOrders"
 }
