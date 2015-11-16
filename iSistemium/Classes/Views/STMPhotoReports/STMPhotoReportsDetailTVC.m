@@ -526,11 +526,9 @@
 - (STMPhotoReport *)savePhotoReportWithImage:(UIImage *)image {
     
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
-    
-#warning - don't forget to replace method
-    
-    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
-    photoReport.isFantom = @NO;
+
+    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])
+                                                                                        isFantom:NO];
     
     [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
                                   forPicture:photoReport
