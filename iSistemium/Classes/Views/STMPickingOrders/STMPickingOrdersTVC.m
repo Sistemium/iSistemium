@@ -8,9 +8,14 @@
 
 #import "STMPickingOrdersTVC.h"
 
+#import "STMPickingOrderArticlesTVC.h"
+
+
 @interface STMPickingOrdersTVC ()
 
+
 @end
+
 
 @implementation STMPickingOrdersTVC
 
@@ -85,19 +90,25 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        
-        STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
+    STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
 
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:pickingOrder.ndoc
-                                                        message:nil
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                              otherButtonTitles:nil];
-        
-        [alert show];
-        
-    }];
+    STMPickingOrderArticlesTVC *articlesTVC = [[STMPickingOrderArticlesTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    articlesTVC.pickingOrder = pickingOrder;
+    
+    [self.navigationController pushViewController:articlesTVC animated:YES];
+    
+    
+//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//        
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:pickingOrder.ndoc
+//                                                        message:nil
+//                                                       delegate:nil
+//                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+//                                              otherButtonTitles:nil];
+//        
+//        [alert show];
+//        
+//    }];
     
 }
 

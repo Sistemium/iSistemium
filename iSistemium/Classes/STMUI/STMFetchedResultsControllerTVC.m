@@ -29,6 +29,20 @@
     
 }
 
+- (NSString *)cellIdentifier {
+    
+    if (!_cellIdentifier) {
+        
+        NSString *selfClassName = NSStringFromClass([self class]);
+        NSString *cellIdentifier = [selfClassName stringByAppendingString:@"_cellIdentifier"];
+        
+        _cellIdentifier = cellIdentifier;
+        
+    }
+    return _cellIdentifier;
+    
+}
+
 - (NSMutableIndexSet *)deletedSectionIndexes {
     
     if (!_deletedSectionIndexes) {
