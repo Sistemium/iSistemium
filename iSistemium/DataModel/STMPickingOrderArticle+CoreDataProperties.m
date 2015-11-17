@@ -2,7 +2,7 @@
 //  STMPickingOrderArticle+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/11/15.
+//  Created by Maxim Grigoriev on 17/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -14,9 +14,10 @@
 @implementation STMPickingOrderArticle (CoreDataProperties)
 
 @dynamic volume;
-@dynamic pickingOrder;
+@dynamic ord;
 @dynamic article;
-@dynamic qualityClass;
+@dynamic pickingOrder;
 @dynamic pickingOrderArticlesPicked;
+@dynamic qualityClass;
 
 @end
