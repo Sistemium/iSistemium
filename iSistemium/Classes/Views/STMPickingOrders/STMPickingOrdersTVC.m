@@ -9,9 +9,12 @@
 #import "STMPickingOrdersTVC.h"
 
 #import "STMPickingOrderPositionsTVC.h"
+#import "STMWorkflowController.h"
 
 
-@interface STMPickingOrdersTVC ()
+@interface STMPickingOrdersTVC () <UIActionSheetDelegate>
+
+@property (nonatomic, strong) NSString *pickingOrderWorkflow;
 
 
 @end
@@ -20,6 +23,15 @@
 @implementation STMPickingOrdersTVC
 
 @synthesize resultsController = _resultsController;
+
+- (NSString *)pickingOrderWorkflow {
+    
+    if (!_pickingOrderWorkflow) {
+        _pickingOrderWorkflow = [STMWorkflowController workflowForEntityName:NSStringFromClass([STMPickingOrder class])];
+    }
+    return _pickingOrderWorkflow;
+    
+}
 
 - (NSString *)cellIdentifier {
     return @"pickingOrderCell";
@@ -73,7 +85,7 @@
 
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
-    static UITableViewCell *cell = nil;
+    static STMCustom1TVCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
@@ -85,7 +97,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     return cell;
     
 }
@@ -98,23 +110,69 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
-    
-    cell.textLabel.text = pickingOrder.ndoc;
-    
-    NSUInteger count = pickingOrder.pickingOrderPositions.count;
-    NSString *pluralType = [STMFunctions pluralTypeForCount:count];
-    NSString *positionsString = [pluralType stringByAppendingString:@"POSITIONS"];
-    
-    if (count > 0) {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(positionsString, nil)];
-    } else {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(positionsString, nil)];
+    if ([cell isKindOfClass:[STMCustom1TVCell class]]) {
+        [self fillPickingOrderCell:(STMCustom1TVCell *)cell atIndexPath:indexPath];
     }
-        
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     [super fillCell:cell atIndexPath:indexPath];
+    
+}
+
+- (void)fillPickingOrderCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
+    
+    cell.titleLabel.text = pickingOrder.ndoc;
+    cell.detailLabel.text = [pickingOrder positionsCountString];
+    
+    [self setupMessageLabelForCell:cell andPickingOrder:pickingOrder];
+    [self setupInfoLabelForCell:cell andPickingOrder:pickingOrder];
+    
+//    if (pickingOrder.pickingOrderPositions.count > 0) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//    } else {
+//        cell.accessoryType = UITableViewCellAccessoryNone;
+//    }
+
+}
+
+- (void)setupMessageLabelForCell:(STMCustom1TVCell *)cell andPickingOrder:(STMPickingOrder *)pickingOrder {
+    
+    if (pickingOrder.pickingOrderPositions.count > 0) {
+        
+        NSString *boxes = [pickingOrder approximateBoxCountString];
+        NSString *bottles = [pickingOrder bottleCountString];
+        
+        cell.messageLabel.text = [NSString stringWithFormat:@"%@, %@", boxes, bottles];
+
+    } else {
+        
+        cell.messageLabel.text = nil;
+        
+    }
+
+}
+
+- (void)setupInfoLabelForCell:(STMCustom1TVCell *)cell andPickingOrder:(STMPickingOrder *)pickingOrder {
+    
+    NSString *processing = pickingOrder.processing;
+    NSString *workflow = self.pickingOrderWorkflow;
+    
+    NSString *processingLabel = [STMWorkflowController labelForProcessing:processing inWorkflow:workflow];
+    
+    cell.infoLabel.text = (processingLabel) ? processingLabel : processing;
+    
+    for (UIGestureRecognizer *gestures in cell.infoLabel.gestureRecognizers) {
+        [cell.infoLabel removeGestureRecognizer:gestures];
+    }
+    
+    cell.infoLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(infoLabelTapped:)];
+    [cell.infoLabel addGestureRecognizer:tap];
+    
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:processing inWorkflow:workflow];
+    
+    cell.infoLabel.textColor = (processingColor) ? processingColor : [UIColor blackColor];
     
 }
 
@@ -142,6 +200,29 @@
     
 }
 
+- (void)infoLabelTapped:(id)sender {
+    
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        UITapGestureRecognizer *tap = (UITapGestureRecognizer *)sender;
+        
+        CGPoint currentTouchPosition = [tap locationInView:self.tableView];
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint: currentTouchPosition];
+        
+        STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
+        
+        STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:pickingOrder.processing
+                                                                                          inWorkflow:self.pickingOrderWorkflow
+                                                                                        withDelegate:self];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [workflowActionSheet showInView:self.view];
+        }];
+        
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 
@@ -149,6 +230,9 @@
     
     [super customInit];
     
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom1TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
+
     self.title = NSLocalizedString(@"PICKING ORDERS", nil);
     
     [self performFetch];

@@ -15,7 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STMPickingOrder : STMComment
 
-// Insert code here to declare functionality of your managed object subclass
+- (NSString *)positionsCountString;
+
+- (NSUInteger)approximateBoxCount;
+- (NSString *)approximateBoxCountString;
+
+- (NSUInteger)bottleCount;
+- (NSString *)bottleCountString;
+
 
 @end
 
