@@ -32,11 +32,13 @@
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPickingOrder class])];
         
         NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
-        request.sortDescriptors = @[dateDescriptor];
+        NSSortDescriptor *ndocDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ndoc" ascending:NO selector:@selector(caseInsensitiveCompare:)];
+        
+        request.sortDescriptors = @[dateDescriptor, ndocDescriptor];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
-                                                                   sectionNameKeyPath:nil
+                                                                   sectionNameKeyPath:@"date"
                                                                             cacheName:nil];
         
         _resultsController.delegate = self;
@@ -48,6 +50,26 @@
 
 
 #pragma mark - table view data source
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    if (self.resultsController.sections.count > 0) {
+        
+        id <NSFetchedResultsSectionInfo> sectionInfo = self.resultsController.sections[section];
+        
+        STMSaleOrder *saleOrder = [[sectionInfo objects] lastObject];
+        
+        NSString *dateString = [STMFunctions dayWithDayOfWeekFromDate:saleOrder.date];
+        
+        return dateString;
+        
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
 
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
@@ -80,8 +102,16 @@
     
     cell.textLabel.text = pickingOrder.ndoc;
     
-    cell.detailTextLabel.text = (pickingOrder.date) ? [[STMFunctions dateLongNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)pickingOrder.date] : NSLocalizedString(@"NO DATA", nil);
+    NSUInteger count = pickingOrder.pickingOrderPositions.count;
+    NSString *pluralType = [STMFunctions pluralTypeForCount:count];
+    NSString *positionsString = [pluralType stringByAppendingString:@"POSITIONS"];
     
+    if (count > 0) {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long)count, NSLocalizedString(positionsString, nil)];
+    } else {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(positionsString, nil)];
+    }
+        
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     [super fillCell:cell atIndexPath:indexPath];
