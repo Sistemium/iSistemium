@@ -19,7 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *productionInfo;
 @property (nullable, nonatomic, retain) NSNumber *volume;
 @property (nullable, nonatomic, retain) STMArticle *article;
-@property (nullable, nonatomic, retain) STMBarCode *barCode;
 @property (nullable, nonatomic, retain) STMPickingOrderPosition *pickingOrderPosition;
 @property (nullable, nonatomic, retain) STMStockBatch *stockBatch;
 

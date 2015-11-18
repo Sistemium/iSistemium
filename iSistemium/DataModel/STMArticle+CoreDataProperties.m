@@ -24,7 +24,6 @@
 @dynamic price;
 @dynamic articleGroup;
 @dynamic articleProductionInfo;
-@dynamic barCodes;
 @dynamic basketPositions;
 @dynamic campaigns;
 @dynamic factShipmentPositions;
@@ -37,5 +36,6 @@
 @dynamic shipmentPositions;
 @dynamic stock;
 @dynamic stockBatches;
+@dynamic barCodes;
 
 @end

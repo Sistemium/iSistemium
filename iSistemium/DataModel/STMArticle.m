@@ -7,10 +7,10 @@
 //
 
 #import "STMArticle.h"
+#import "STMArticleBarCode.h"
 #import "STMArticleGroup.h"
 #import "STMArticlePicture.h"
 #import "STMArticleProductionInfo.h"
-#import "STMBarCode.h"
 #import "STMBasketPosition.h"
 #import "STMCampaign.h"
 #import "STMPickingOrderPosition.h"

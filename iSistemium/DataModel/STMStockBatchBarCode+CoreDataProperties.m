@@ -1,5 +1,5 @@
 //
-//  STMPickingOrderPositionPicked+CoreDataProperties.m
+//  STMStockBatchBarCode+CoreDataProperties.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 18/11/15.
@@ -9,15 +9,10 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMPickingOrderPositionPicked+CoreDataProperties.h"
+#import "STMStockBatchBarCode+CoreDataProperties.h"
 
-@implementation STMPickingOrderPositionPicked (CoreDataProperties)
+@implementation STMStockBatchBarCode (CoreDataProperties)
 
-@dynamic code;
-@dynamic productionInfo;
-@dynamic volume;
-@dynamic article;
-@dynamic pickingOrderPosition;
 @dynamic stockBatch;
 
 @end

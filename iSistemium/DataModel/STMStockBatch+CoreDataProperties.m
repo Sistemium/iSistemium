@@ -16,8 +16,8 @@
 @dynamic processing;
 @dynamic volume;
 @dynamic article;
-@dynamic barCodes;
 @dynamic pickingOrderPositionsPicked;
 @dynamic qualityClass;
+@dynamic barCodes;
 
 @end

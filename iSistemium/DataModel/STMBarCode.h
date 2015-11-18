@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "STMComment.h"
 
-@class STMArticle, STMPickingOrderPositionPicked, STMStockBatch;
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface STMBarCode : STMComment

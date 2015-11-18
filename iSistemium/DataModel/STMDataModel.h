@@ -10,6 +10,7 @@
 #define iSistemium_STMDataModel_h
 
 #import "STMArticle.h"
+#import "STMArticleBarCode.h"
 #import "STMArticleGroup+custom.h"
 #import "STMArticlePicture.h"
 #import "STMArticleProductionInfo.h"
@@ -68,6 +69,7 @@
 #import "STMShippingLocationPicture.h"
 #import "STMStock.h"
 #import "STMStockBatch.h"
+#import "STMStockBatchBarCode.h"
 
 #import "STMTrack+dayAsString.h"
 

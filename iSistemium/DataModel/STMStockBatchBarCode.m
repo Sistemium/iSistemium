@@ -1,17 +1,15 @@
 //
-//  STMPickingOrderPositionPicked.m
+//  STMStockBatchBarCode.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 18/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMPickingOrderPositionPicked.h"
-#import "STMArticle.h"
-#import "STMPickingOrderPosition.h"
+#import "STMStockBatchBarCode.h"
 #import "STMStockBatch.h"
 
-@implementation STMPickingOrderPositionPicked
+@implementation STMStockBatchBarCode
 
 // Insert code here to add functionality to your managed object subclass
 

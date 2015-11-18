@@ -7,9 +7,6 @@
 //
 
 #import "STMBarCode.h"
-#import "STMArticle.h"
-#import "STMPickingOrderPositionPicked.h"
-#import "STMStockBatch.h"
 
 @implementation STMBarCode
 

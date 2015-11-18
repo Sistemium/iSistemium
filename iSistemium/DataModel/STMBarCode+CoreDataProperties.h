@@ -16,28 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface STMBarCode (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSString *code;
-@property (nullable, nonatomic, retain) NSSet<STMArticle *> *articles;
-@property (nullable, nonatomic, retain) NSSet<STMPickingOrderPositionPicked *> *pickingOrderPositionssPicked;
-@property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
-
-@end
-
-@interface STMBarCode (CoreDataGeneratedAccessors)
-
-- (void)addArticlesObject:(STMArticle *)value;
-- (void)removeArticlesObject:(STMArticle *)value;
-- (void)addArticles:(NSSet<STMArticle *> *)values;
-- (void)removeArticles:(NSSet<STMArticle *> *)values;
-
-- (void)addPickingOrderPositionssPickedObject:(STMPickingOrderPositionPicked *)value;
-- (void)removePickingOrderPositionssPickedObject:(STMPickingOrderPositionPicked *)value;
-- (void)addPickingOrderPositionssPicked:(NSSet<STMPickingOrderPositionPicked *> *)values;
-- (void)removePickingOrderPositionssPicked:(NSSet<STMPickingOrderPositionPicked *> *)values;
-
-- (void)addStockBatchesObject:(STMStockBatch *)value;
-- (void)removeStockBatchesObject:(STMStockBatch *)value;
-- (void)addStockBatches:(NSSet<STMStockBatch *> *)values;
-- (void)removeStockBatches:(NSSet<STMStockBatch *> *)values;
 
 @end
 

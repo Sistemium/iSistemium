@@ -1,5 +1,5 @@
 //
-//  STMBarCode+CoreDataProperties.m
+//  STMStockBatchBarCode+CoreDataProperties.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 18/11/15.
@@ -9,10 +9,14 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMBarCode+CoreDataProperties.h"
+#import "STMStockBatchBarCode.h"
 
-@implementation STMBarCode (CoreDataProperties)
+NS_ASSUME_NONNULL_BEGIN
 
-@dynamic code;
+@interface STMStockBatchBarCode (CoreDataProperties)
+
+@property (nullable, nonatomic, retain) STMStockBatch *stockBatch;
 
 @end
+
+NS_ASSUME_NONNULL_END

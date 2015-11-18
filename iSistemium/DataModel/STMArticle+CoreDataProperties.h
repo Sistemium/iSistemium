@@ -26,7 +26,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDecimalNumber *price;
 @property (nullable, nonatomic, retain) STMArticleGroup *articleGroup;
 @property (nullable, nonatomic, retain) NSSet<STMArticleProductionInfo *> *articleProductionInfo;
-@property (nullable, nonatomic, retain) NSSet<STMBarCode *> *barCodes;
 @property (nullable, nonatomic, retain) NSSet<STMBasketPosition *> *basketPositions;
 @property (nullable, nonatomic, retain) NSSet<STMCampaign *> *campaigns;
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *factShipmentPositions;
@@ -39,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *shipmentPositions;
 @property (nullable, nonatomic, retain) STMStock *stock;
 @property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
+@property (nullable, nonatomic, retain) NSSet<STMArticleBarCode *> *barCodes;
 
 @end
 
@@ -48,11 +48,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeArticleProductionInfoObject:(STMArticleProductionInfo *)value;
 - (void)addArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
 - (void)removeArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
-
-- (void)addBarCodesObject:(STMBarCode *)value;
-- (void)removeBarCodesObject:(STMBarCode *)value;
-- (void)addBarCodes:(NSSet<STMBarCode *> *)values;
-- (void)removeBarCodes:(NSSet<STMBarCode *> *)values;
 
 - (void)addBasketPositionsObject:(STMBasketPosition *)value;
 - (void)removeBasketPositionsObject:(STMBasketPosition *)value;
@@ -103,6 +98,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeStockBatchesObject:(STMStockBatch *)value;
 - (void)addStockBatches:(NSSet<STMStockBatch *> *)values;
 - (void)removeStockBatches:(NSSet<STMStockBatch *> *)values;
+
+- (void)addBarCodesObject:(STMArticleBarCode *)value;
+- (void)removeBarCodesObject:(STMArticleBarCode *)value;
+- (void)addBarCodes:(NSSet<STMArticleBarCode *> *)values;
+- (void)removeBarCodes:(NSSet<STMArticleBarCode *> *)values;
 
 @end
 
