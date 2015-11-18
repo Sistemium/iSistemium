@@ -1,15 +1,15 @@
 //
-//  STMPickingOrderArticlesTVC.m
+//  STMPickingOrderPositionsTVC.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 17/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMPickingOrderArticlesTVC.h"
+#import "STMPickingOrderPositionsTVC.h"
 
 
-@interface STMPickingOrderArticlesTVC ()
+@interface STMPickingOrderPositionsTVC ()
 
 @property (nonatomic, strong) NSArray <STMPickingOrderPosition *> *tableData;
 
@@ -17,7 +17,7 @@
 @end
 
 
-@implementation STMPickingOrderArticlesTVC
+@implementation STMPickingOrderPositionsTVC
 
 - (NSArray <STMPickingOrderPosition *> *)tableData {
     

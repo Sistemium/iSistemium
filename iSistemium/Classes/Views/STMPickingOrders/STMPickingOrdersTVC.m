@@ -8,7 +8,7 @@
 
 #import "STMPickingOrdersTVC.h"
 
-#import "STMPickingOrderArticlesTVC.h"
+#import "STMPickingOrderPositionsTVC.h"
 
 
 @interface STMPickingOrdersTVC ()
@@ -122,10 +122,10 @@
     
     STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
 
-    STMPickingOrderArticlesTVC *articlesTVC = [[STMPickingOrderArticlesTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    articlesTVC.pickingOrder = pickingOrder;
+    STMPickingOrderPositionsTVC *positionsTVC = [[STMPickingOrderPositionsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    positionsTVC.pickingOrder = pickingOrder;
     
-    [self.navigationController pushViewController:articlesTVC animated:YES];
+    [self.navigationController pushViewController:positionsTVC animated:YES];
     
     
 //    [[NSOperationQueue mainQueue] addOperationWithBlock:^{

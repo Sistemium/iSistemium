@@ -96,7 +96,7 @@
 		2C1F751B1BFA2D0C003699C8 /* move_by_trolley.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1F751A1BFA2D0C003699C8 /* move_by_trolley.png */; };
 		2C1F751E1BFA2DE7003699C8 /* STMPickingOrdersNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1F751D1BFA2DE7003699C8 /* STMPickingOrdersNC.m */; };
 		2C1F75211BFA2E36003699C8 /* STMPickingOrdersTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1F75201BFA2E36003699C8 /* STMPickingOrdersTVC.m */; };
-		2C1F75251BFB538F003699C8 /* STMPickingOrderArticlesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1F75241BFB538F003699C8 /* STMPickingOrderArticlesTVC.m */; };
+		2C1F75251BFB538F003699C8 /* STMPickingOrderPositionsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1F75241BFB538F003699C8 /* STMPickingOrderPositionsTVC.m */; };
 		2C2949721BDCD0390099F24F /* No connection Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949711BDCD0390099F24F /* No connection Cloud-100.png */; };
 		2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */; };
 		2C29497A1BDCFC110099F24F /* STMPhotoReports.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */; };
@@ -579,8 +579,8 @@
 		2C1F751F1BFA2E36003699C8 /* STMPickingOrdersTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPickingOrdersTVC.h; sourceTree = "<group>"; };
 		2C1F75201BFA2E36003699C8 /* STMPickingOrdersTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPickingOrdersTVC.m; sourceTree = "<group>"; };
 		2C1F75221BFB52FC003699C8 /* STMDataModel 75.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 75.xcdatamodel"; sourceTree = "<group>"; };
-		2C1F75231BFB538F003699C8 /* STMPickingOrderArticlesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPickingOrderArticlesTVC.h; sourceTree = "<group>"; };
-		2C1F75241BFB538F003699C8 /* STMPickingOrderArticlesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPickingOrderArticlesTVC.m; sourceTree = "<group>"; };
+		2C1F75231BFB538F003699C8 /* STMPickingOrderPositionsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPickingOrderPositionsTVC.h; sourceTree = "<group>"; };
+		2C1F75241BFB538F003699C8 /* STMPickingOrderPositionsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPickingOrderPositionsTVC.m; sourceTree = "<group>"; };
 		2C2949711BDCD0390099F24F /* No connection Cloud-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No connection Cloud-100.png"; sourceTree = "<group>"; };
 		2C2949761BDCFBF30099F24F /* STMPhotoReportsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportsSVC.h; sourceTree = "<group>"; };
 		2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportsSVC.m; sourceTree = "<group>"; };
@@ -1488,8 +1488,8 @@
 				2C1F751D1BFA2DE7003699C8 /* STMPickingOrdersNC.m */,
 				2C1F751F1BFA2E36003699C8 /* STMPickingOrdersTVC.h */,
 				2C1F75201BFA2E36003699C8 /* STMPickingOrdersTVC.m */,
-				2C1F75231BFB538F003699C8 /* STMPickingOrderArticlesTVC.h */,
-				2C1F75241BFB538F003699C8 /* STMPickingOrderArticlesTVC.m */,
+				2C1F75231BFB538F003699C8 /* STMPickingOrderPositionsTVC.h */,
+				2C1F75241BFB538F003699C8 /* STMPickingOrderPositionsTVC.m */,
 			);
 			path = STMPickingOrders;
 			sourceTree = "<group>";
@@ -2672,7 +2672,7 @@
 				2C2968F619A0C37E0038B122 /* STMUncashingMasterTVC.m in Sources */,
 				2C646F691BCE69C00099F034 /* SocketParser.swift in Sources */,
 				2CEE302F1BEBAD10009B229F /* STMPicture+customs.m in Sources */,
-				2C1F75251BFB538F003699C8 /* STMPickingOrderArticlesTVC.m in Sources */,
+				2C1F75251BFB538F003699C8 /* STMPickingOrderPositionsTVC.m in Sources */,
 				2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */,
 				2C57641B1AA5E1E500B9FD2C /* STMAddPopoverVC.m in Sources */,
 				2C7678371B4193E10085C514 /* STMMapAnnotation.m in Sources */,

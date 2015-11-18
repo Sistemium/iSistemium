@@ -1,5 +1,5 @@
 //
-//  STMPickingOrderArticlesTVC.h
+//  STMPickingOrderPositionsTVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 17/11/15.
@@ -8,7 +8,7 @@
 
 #import "STMVariableCellsHeightTVC.h"
 
-@interface STMPickingOrderArticlesTVC : STMVariableCellsHeightTVC
+@interface STMPickingOrderPositionsTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, weak) STMPickingOrder *pickingOrder;
 
