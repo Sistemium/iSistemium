@@ -8,10 +8,18 @@
 
 #import "STMPickingOrderPositionsTVC.h"
 
+#define SLIDE_THRESHOLD 20
+#define ACTION_THRESHOLD 100
 
-@interface STMPickingOrderPositionsTVC ()
+
+@interface STMPickingOrderPositionsTVC () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) NSArray <STMPickingOrderPosition *> *tableData;
+
+@property (nonatomic) CGFloat slideStartPoint;
+@property (nonatomic, strong) UITableViewCell *slidedCell;
+@property (nonatomic) CGRect initialFrame;
+@property (nonatomic) BOOL cellStartSliding;
 
 
 @end
@@ -122,11 +130,104 @@
 }
 
 
+#pragma mark - gestures
+
+- (void)addPanGesture {
+    
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    pan.delegate = self;
+    
+    [self.tableView addGestureRecognizer:pan];
+    
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)pan {
+    
+    switch (pan.state) {
+        case UIGestureRecognizerStateBegan: {
+            
+            break;
+            
+        }
+        case UIGestureRecognizerStateChanged: {
+            
+            CGFloat slideShift = [pan translationInView:pan.view].x;
+
+            if (!self.cellStartSliding) {
+                
+                if (slideShift > SLIDE_THRESHOLD) {
+                    
+                    self.cellStartSliding = YES;
+                    
+                    self.tableView.scrollEnabled = NO;
+                    
+                    CGPoint startPoint = [pan locationInView:pan.view];
+                    
+                    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:startPoint];
+                    self.slidedCell = [self.tableView cellForRowAtIndexPath:indexPath];
+                    self.initialFrame = self.slidedCell.contentView.frame;
+                    
+                    self.slideStartPoint = startPoint.x;
+
+                }
+                
+            } else {
+                
+                [self slideCellWithShift:slideShift];
+                
+            }
+            
+            break;
+            
+        }
+        case UIGestureRecognizerStateEnded: {
+            
+            self.slidedCell.contentView.frame = self.initialFrame;
+            self.cellStartSliding = NO;
+            self.tableView.scrollEnabled = YES;
+            break;
+            
+        }
+        default: {
+            break;
+        }
+    }
+    
+}
+
+- (void)slideCellWithShift:(CGFloat)slideShift {
+    
+    if (self.initialFrame.origin.x + slideShift > 0) {
+        
+        self.slidedCell.contentView.frame = CGRectMake(self.initialFrame.origin.x + slideShift, self.initialFrame.origin.y, self.initialFrame.size.width, self.initialFrame.size.height);
+    
+    } else {
+        
+        self.slidedCell.contentView.frame = self.initialFrame;
+        
+    }
+    
+    if (slideShift > ACTION_THRESHOLD && self.slideStartPoint + slideShift > self.tableView.frame.size.width - SLIDE_THRESHOLD) {
+        NSLog(@"cell's slide did moved enough distance and achive a right edge of the screen, it's a time to do something");
+    }
+    
+}
+
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [super customInit];
+    
+    [self addPanGesture];
     
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];

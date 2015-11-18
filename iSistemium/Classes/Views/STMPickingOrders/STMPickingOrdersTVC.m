@@ -208,7 +208,7 @@
         
         CGPoint currentTouchPosition = [tap locationInView:self.tableView];
         
-        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint: currentTouchPosition];
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
         
         STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
         
