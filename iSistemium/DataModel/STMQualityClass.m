@@ -7,7 +7,7 @@
 //
 
 #import "STMQualityClass.h"
-#import "STMPickingOrderArticle.h"
+#import "STMPickingOrderPosition.h"
 #import "STMStockBatch.h"
 
 @implementation STMQualityClass

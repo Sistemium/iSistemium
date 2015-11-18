@@ -1,19 +1,19 @@
 //
-//  STMPickingOrderArticle.h
+//  STMPickingOrderPositionPicked.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/11/15.
+//  Created by Maxim Grigoriev on 18/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "STMComment.h"
 
-@class STMArticle, STMPickingOrder, STMPickingOrderArticlePicked, STMQualityClass;
+@class STMArticle, STMBarCode, STMPickingOrderPosition, STMStockBatch;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMPickingOrderArticle : STMComment
+@interface STMPickingOrderPositionPicked : STMComment
 
 // Insert code here to declare functionality of your managed object subclass
 
@@ -21,4 +21,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#import "STMPickingOrderArticle+CoreDataProperties.h"
+#import "STMPickingOrderPositionPicked+CoreDataProperties.h"

@@ -2,7 +2,7 @@
 //  STMQualityClass+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/11/15.
+//  Created by Maxim Grigoriev on 18/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,7 +15,7 @@
 
 @dynamic name;
 @dynamic ord;
+@dynamic pickingOrderPositions;
 @dynamic stockBatches;
-@dynamic pickingOrderArticles;
 
 @end

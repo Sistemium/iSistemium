@@ -2,7 +2,7 @@
 //  STMArticle+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/11/15.
+//  Created by Maxim Grigoriev on 18/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -25,24 +25,34 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDecimalNumber *pieceWeight;
 @property (nullable, nonatomic, retain) NSDecimalNumber *price;
 @property (nullable, nonatomic, retain) STMArticleGroup *articleGroup;
+@property (nullable, nonatomic, retain) NSSet<STMArticleProductionInfo *> *articleProductionInfo;
+@property (nullable, nonatomic, retain) NSSet<STMBarCode *> *barCodes;
 @property (nullable, nonatomic, retain) NSSet<STMBasketPosition *> *basketPositions;
 @property (nullable, nonatomic, retain) NSSet<STMCampaign *> *campaigns;
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *factShipmentPositions;
+@property (nullable, nonatomic, retain) NSSet<STMPickingOrderPosition *> *pickingOrderPositions;
+@property (nullable, nonatomic, retain) NSSet<STMPickingOrderPositionPicked *> *pickingOrderPositionsPicked;
 @property (nullable, nonatomic, retain) NSSet<STMArticlePicture *> *pictures;
 @property (nullable, nonatomic, retain) NSSet<STMPrice *> *prices;
+@property (nullable, nonatomic, retain) STMProductionInfoType *productionInfoType;
 @property (nullable, nonatomic, retain) NSSet<STMSaleOrderPosition *> *saleOrderPositions;
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *shipmentPositions;
 @property (nullable, nonatomic, retain) STMStock *stock;
-@property (nullable, nonatomic, retain) STMProductionInfoType *productionInfoType;
-@property (nullable, nonatomic, retain) NSSet<STMArticleProductionInfo *> *articleProductionInfo;
 @property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
-@property (nullable, nonatomic, retain) NSSet<STMBarCode *> *barCodes;
-@property (nullable, nonatomic, retain) NSSet<STMPickingOrderArticle *> *pickingOrderArticles;
-@property (nullable, nonatomic, retain) NSSet<STMPickingOrderArticlePicked *> *pickingOrderArticlesPicked;
 
 @end
 
 @interface STMArticle (CoreDataGeneratedAccessors)
+
+- (void)addArticleProductionInfoObject:(STMArticleProductionInfo *)value;
+- (void)removeArticleProductionInfoObject:(STMArticleProductionInfo *)value;
+- (void)addArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
+- (void)removeArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
+
+- (void)addBarCodesObject:(STMBarCode *)value;
+- (void)removeBarCodesObject:(STMBarCode *)value;
+- (void)addBarCodes:(NSSet<STMBarCode *> *)values;
+- (void)removeBarCodes:(NSSet<STMBarCode *> *)values;
 
 - (void)addBasketPositionsObject:(STMBasketPosition *)value;
 - (void)removeBasketPositionsObject:(STMBasketPosition *)value;
@@ -58,6 +68,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeFactShipmentPositionsObject:(STMShipmentPosition *)value;
 - (void)addFactShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
 - (void)removeFactShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
+
+- (void)addPickingOrderPositionsObject:(STMPickingOrderPosition *)value;
+- (void)removePickingOrderPositionsObject:(STMPickingOrderPosition *)value;
+- (void)addPickingOrderPositions:(NSSet<STMPickingOrderPosition *> *)values;
+- (void)removePickingOrderPositions:(NSSet<STMPickingOrderPosition *> *)values;
+
+- (void)addPickingOrderPositionsPickedObject:(STMPickingOrderPositionPicked *)value;
+- (void)removePickingOrderPositionsPickedObject:(STMPickingOrderPositionPicked *)value;
+- (void)addPickingOrderPositionsPicked:(NSSet<STMPickingOrderPositionPicked *> *)values;
+- (void)removePickingOrderPositionsPicked:(NSSet<STMPickingOrderPositionPicked *> *)values;
 
 - (void)addPicturesObject:(STMArticlePicture *)value;
 - (void)removePicturesObject:(STMArticlePicture *)value;
@@ -79,30 +99,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
 - (void)removeShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
 
-- (void)addArticleProductionInfoObject:(STMArticleProductionInfo *)value;
-- (void)removeArticleProductionInfoObject:(STMArticleProductionInfo *)value;
-- (void)addArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
-- (void)removeArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
-
 - (void)addStockBatchesObject:(STMStockBatch *)value;
 - (void)removeStockBatchesObject:(STMStockBatch *)value;
 - (void)addStockBatches:(NSSet<STMStockBatch *> *)values;
 - (void)removeStockBatches:(NSSet<STMStockBatch *> *)values;
-
-- (void)addBarCodesObject:(STMBarCode *)value;
-- (void)removeBarCodesObject:(STMBarCode *)value;
-- (void)addBarCodes:(NSSet<STMBarCode *> *)values;
-- (void)removeBarCodes:(NSSet<STMBarCode *> *)values;
-
-- (void)addPickingOrderArticlesObject:(STMPickingOrderArticle *)value;
-- (void)removePickingOrderArticlesObject:(STMPickingOrderArticle *)value;
-- (void)addPickingOrderArticles:(NSSet<STMPickingOrderArticle *> *)values;
-- (void)removePickingOrderArticles:(NSSet<STMPickingOrderArticle *> *)values;
-
-- (void)addPickingOrderArticlesPickedObject:(STMPickingOrderArticlePicked *)value;
-- (void)removePickingOrderArticlesPickedObject:(STMPickingOrderArticlePicked *)value;
-- (void)addPickingOrderArticlesPicked:(NSSet<STMPickingOrderArticlePicked *> *)values;
-- (void)removePickingOrderArticlesPicked:(NSSet<STMPickingOrderArticlePicked *> *)values;
 
 @end
 

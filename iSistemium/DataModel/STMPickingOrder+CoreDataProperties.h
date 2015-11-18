@@ -2,7 +2,7 @@
 //  STMPickingOrder+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/11/15.
+//  Created by Maxim Grigoriev on 18/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -19,16 +19,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *ndoc;
 @property (nullable, nonatomic, retain) NSString *processing;
 @property (nullable, nonatomic, retain) STMPicker *picker;
-@property (nullable, nonatomic, retain) NSSet<STMPickingOrderArticle *> *pickingOrderArticles;
+@property (nullable, nonatomic, retain) NSSet<STMPickingOrderPosition *> *pickingOrderPositions;
 
 @end
 
 @interface STMPickingOrder (CoreDataGeneratedAccessors)
 
-- (void)addPickingOrderArticlesObject:(STMPickingOrderArticle *)value;
-- (void)removePickingOrderArticlesObject:(STMPickingOrderArticle *)value;
-- (void)addPickingOrderArticles:(NSSet<STMPickingOrderArticle *> *)values;
-- (void)removePickingOrderArticles:(NSSet<STMPickingOrderArticle *> *)values;
+- (void)addPickingOrderPositionsObject:(STMPickingOrderPosition *)value;
+- (void)removePickingOrderPositionsObject:(STMPickingOrderPosition *)value;
+- (void)addPickingOrderPositions:(NSSet<STMPickingOrderPosition *> *)values;
+- (void)removePickingOrderPositions:(NSSet<STMPickingOrderPosition *> *)values;
 
 @end
 

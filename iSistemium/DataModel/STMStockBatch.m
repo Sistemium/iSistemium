@@ -9,7 +9,7 @@
 #import "STMStockBatch.h"
 #import "STMArticle.h"
 #import "STMBarCode.h"
-#import "STMPickingOrderArticlePicked.h"
+#import "STMPickingOrderPositionPicked.h"
 #import "STMQualityClass.h"
 
 @implementation STMStockBatch

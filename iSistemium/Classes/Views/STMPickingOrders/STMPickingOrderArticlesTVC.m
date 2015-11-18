@@ -11,7 +11,7 @@
 
 @interface STMPickingOrderArticlesTVC ()
 
-@property (nonatomic, strong) NSArray <STMPickingOrderArticle *> *tableData;
+@property (nonatomic, strong) NSArray <STMPickingOrderPosition *> *tableData;
 
 
 @end
@@ -19,7 +19,7 @@
 
 @implementation STMPickingOrderArticlesTVC
 
-- (NSArray <STMPickingOrderArticle *> *)tableData {
+- (NSArray <STMPickingOrderPosition *> *)tableData {
     
     if (!_tableData) {
         
@@ -29,7 +29,7 @@
                                                                             ascending:YES
                                                                              selector:@selector(compare:)];
             
-            _tableData = [self.pickingOrder.pickingOrderArticles sortedArrayUsingDescriptors:@[ordDescriptor]];
+            _tableData = [self.pickingOrder.pickingOrderPositions sortedArrayUsingDescriptors:@[ordDescriptor]];
             
         } else {
             
@@ -92,11 +92,11 @@
 
 - (void)fillPickingOrderArticleCell:(STMCustom5TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    STMPickingOrderArticle *pickingArticle = self.tableData[indexPath.row];
+    STMPickingOrderPosition *pickingPosition = self.tableData[indexPath.row];
     
-    cell.titleLabel.text = pickingArticle.article.name;
-    cell.detailLabel.text = pickingArticle.ord.stringValue;
-    cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickingArticle.volume.integerValue andPackageRel:pickingArticle.article.packageRel.integerValue];
+    cell.titleLabel.text = pickingPosition.article.name;
+    cell.detailLabel.text = pickingPosition.ord.stringValue;
+    cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickingPosition.volume.integerValue andPackageRel:pickingPosition.article.packageRel.integerValue];
     
 }
 

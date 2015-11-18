@@ -2,7 +2,7 @@
 //  STMBarCode+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/11/15.
+//  Created by Maxim Grigoriev on 18/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -14,8 +14,8 @@
 @implementation STMBarCode (CoreDataProperties)
 
 @dynamic code;
-@dynamic stockBatches;
 @dynamic articles;
-@dynamic pickingOrderArticlesPicked;
+@dynamic pickingOrderPositionssPicked;
+@dynamic stockBatches;
 
 @end

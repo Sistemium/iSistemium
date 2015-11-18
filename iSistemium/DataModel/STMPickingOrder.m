@@ -8,7 +8,7 @@
 
 #import "STMPickingOrder.h"
 #import "STMPicker.h"
-#import "STMPickingOrderArticle.h"
+#import "STMPickingOrderPosition.h"
 
 @implementation STMPickingOrder
 

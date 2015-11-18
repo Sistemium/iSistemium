@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "STMComment.h"
 
-@class STMArticle, STMPickingOrderArticlePicked, STMStockBatch;
+@class STMArticle, STMPickingOrderPositionPicked, STMStockBatch;
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -1,5 +1,5 @@
 //
-//  STMStockBatch+CoreDataProperties.h
+//  STMPickingOrderPosition+CoreDataProperties.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 18/11/15.
@@ -9,27 +9,22 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMStockBatch.h"
+#import "STMPickingOrderPosition.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMStockBatch (CoreDataProperties)
+@interface STMPickingOrderPosition (CoreDataProperties)
 
-@property (nullable, nonatomic, retain) NSString *processing;
+@property (nullable, nonatomic, retain) NSNumber *ord;
 @property (nullable, nonatomic, retain) NSNumber *volume;
 @property (nullable, nonatomic, retain) STMArticle *article;
-@property (nullable, nonatomic, retain) NSSet<STMBarCode *> *barCodes;
+@property (nullable, nonatomic, retain) STMPickingOrder *pickingOrder;
 @property (nullable, nonatomic, retain) NSSet<STMPickingOrderPositionPicked *> *pickingOrderPositionsPicked;
 @property (nullable, nonatomic, retain) STMQualityClass *qualityClass;
 
 @end
 
-@interface STMStockBatch (CoreDataGeneratedAccessors)
-
-- (void)addBarCodesObject:(STMBarCode *)value;
-- (void)removeBarCodesObject:(STMBarCode *)value;
-- (void)addBarCodes:(NSSet<STMBarCode *> *)values;
-- (void)removeBarCodes:(NSSet<STMBarCode *> *)values;
+@interface STMPickingOrderPosition (CoreDataGeneratedAccessors)
 
 - (void)addPickingOrderPositionsPickedObject:(STMPickingOrderPositionPicked *)value;
 - (void)removePickingOrderPositionsPickedObject:(STMPickingOrderPositionPicked *)value;
