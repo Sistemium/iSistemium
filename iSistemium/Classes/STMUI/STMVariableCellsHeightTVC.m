@@ -93,10 +93,18 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
-    
-    return height;
+    if (SYSTEM_VERSION >= 8.0) {
+        
+        return [super tableView:self.tableView heightForRowAtIndexPath:indexPath];
+        
+    } else {
+
+        NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+        CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+        
+        return height;
+        
+    }
     
 }
 
@@ -115,10 +123,13 @@
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
     if (SYSTEM_VERSION >= 8.0) {
-    
+        
+        // autoHeight is always -1 if use [super tableView:self.tableView heightForRowAtIndexPath:indexPath]
+        // may be remove this part of code
+
         CGFloat autoHeight = [super tableView:self.tableView heightForRowAtIndexPath:indexPath];
 
-        [self putCachedHeight:autoHeight forIndexPath:indexPath];
+        if (autoHeight > 0) [self putCachedHeight:autoHeight forIndexPath:indexPath];
 
         return autoHeight;
         
