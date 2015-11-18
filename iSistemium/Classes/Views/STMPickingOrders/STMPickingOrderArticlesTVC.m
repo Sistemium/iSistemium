@@ -43,6 +43,28 @@
 }
 
 
+#pragma mark - cell's height caching
+
+- (void)putCachedHeight:(CGFloat)height forIndexPath:(NSIndexPath *)indexPath {
+    
+    NSManagedObject *object = self.tableData[indexPath.row];
+    NSManagedObjectID *objectID = object.objectID;
+    
+    if (objectID) {
+        self.cachedCellsHeights[objectID] = @(height);
+    }
+    
+}
+
+- (NSNumber *)getCachedHeightForIndexPath:(NSIndexPath *)indexPath {
+    
+    NSManagedObjectID *objectID = [self.tableData[indexPath.row] objectID];
+    
+    return self.cachedCellsHeights[objectID];
+    
+}
+
+
 #pragma mark - table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -72,12 +94,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    
+    [self fillCell:cell atIndexPath:indexPath];
+
     return cell;
     
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self fillCell:cell atIndexPath:indexPath];
 }
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -109,8 +130,6 @@
     
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
-    
-    [self performFetch];
     
 }
 
