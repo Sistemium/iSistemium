@@ -132,7 +132,7 @@
 }
 
 
-#pragma mark - gestures
+#pragma mark - pan gesture
 
 - (void)addPanGesture {
     
@@ -248,7 +248,7 @@
     
     [super customInit];
     
-    [self addPanGesture];
+//    [self addPanGesture];
     
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
