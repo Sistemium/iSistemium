@@ -2,7 +2,7 @@
 //  STMProductionInfoType+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/11/15.
+//  Created by Maxim Grigoriev on 19/11/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,24 +15,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STMProductionInfoType (CoreDataProperties)
 
-@property (nullable, nonatomic, retain) NSString *name;
 @property (nullable, nonatomic, retain) NSString *datatype;
-@property (nullable, nonatomic, retain) NSSet<STMArticle *> *articles;
+@property (nullable, nonatomic, retain) NSString *name;
+@property (nullable, nonatomic, retain) NSString *mask;
+@property (nullable, nonatomic, retain) NSString *separator;
 @property (nullable, nonatomic, retain) NSSet<STMArticleProductionInfo *> *articleProductionInfo;
+@property (nullable, nonatomic, retain) NSSet<STMArticle *> *articles;
 
 @end
 
 @interface STMProductionInfoType (CoreDataGeneratedAccessors)
 
-- (void)addArticlesObject:(STMArticle *)value;
-- (void)removeArticlesObject:(STMArticle *)value;
-- (void)addArticles:(NSSet<STMArticle *> *)values;
-- (void)removeArticles:(NSSet<STMArticle *> *)values;
-
 - (void)addArticleProductionInfoObject:(STMArticleProductionInfo *)value;
 - (void)removeArticleProductionInfoObject:(STMArticleProductionInfo *)value;
 - (void)addArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
 - (void)removeArticleProductionInfo:(NSSet<STMArticleProductionInfo *> *)values;
+
+- (void)addArticlesObject:(STMArticle *)value;
+- (void)removeArticlesObject:(STMArticle *)value;
+- (void)addArticles:(NSSet<STMArticle *> *)values;
+- (void)removeArticles:(NSSet<STMArticle *> *)values;
 
 @end
 

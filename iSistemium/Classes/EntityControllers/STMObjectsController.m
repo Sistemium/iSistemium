@@ -1270,6 +1270,7 @@
                              NSStringFromClass([STMStock class]),
                              NSStringFromClass([STMStockBatch class]),
                              NSStringFromClass([STMStockBatchBarCode class]),
+                             NSStringFromClass([STMStockBatchOperation class]),
                              NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMUncashingPicture class]),
