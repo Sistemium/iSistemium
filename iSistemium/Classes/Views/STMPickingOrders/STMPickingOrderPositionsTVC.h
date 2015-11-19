@@ -7,8 +7,10 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import "STMWorkflowable.h"
 
-@interface STMPickingOrderPositionsTVC : STMVariableCellsHeightTVC
+
+@interface STMPickingOrderPositionsTVC : STMVariableCellsHeightTVC <STMWorkflowable>
 
 @property (nonatomic, weak) STMPickingOrder *pickingOrder;
 

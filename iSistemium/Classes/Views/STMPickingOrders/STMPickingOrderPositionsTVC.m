@@ -9,6 +9,7 @@
 #import "STMPickingOrderPositionsTVC.h"
 
 #import "STMWorkflowController.h"
+#import "STMWorkflowEditablesVC.h"
 
 
 #define SLIDE_THRESHOLD 20
@@ -20,6 +21,7 @@
 @property (nonatomic, strong) NSArray <STMPickingOrderPosition *> *tableData;
 
 @property (nonatomic, strong) NSString *pickingOrderWorkflow;
+@property (nonatomic, strong) NSString *nextProcessing;
 
 @property (nonatomic) CGFloat slideStartPoint;
 @property (nonatomic, strong) UITableViewCell *slidedCell;
@@ -156,6 +158,8 @@
     
     if ([self orderIsProcessed]) {
         
+        [self setupToolbarsForOrderProcessing];
+        
     } else {
         
         NSString *title = [STMWorkflowController labelForProcessing:self.pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
@@ -182,6 +186,92 @@
         [workflowActionSheet showInView:self.view];
     }];
 
+}
+
+- (void)setupToolbarsForOrderProcessing {
+    
+    STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(closeButtonPressed)];
+  
+    self.navigationItem.rightBarButtonItem = closeButton;
+    self.navigationItem.hidesBackButton = YES;
+    
+}
+
+- (void)closeButtonPressed {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
+        
+        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
+        
+        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                              didSelectButtonWithIndex:buttonIndex
+                                                                            inWorkflow:workflowAS.workflow];
+        
+        self.nextProcessing = result[@"nextProcessing"];
+        
+        if (self.nextProcessing) {
+            
+            if ([result[@"editableProperties"] isKindOfClass:[NSArray class]]) {
+                
+                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+                
+                editablesVC.workflow = workflowAS.workflow;
+                editablesVC.toProcessing = self.nextProcessing;
+                editablesVC.editableFields = result[@"editableProperties"];
+                editablesVC.parent = self;
+                
+                [self presentViewController:editablesVC animated:YES completion:^{
+                    
+                }];
+                
+            } else {
+                
+                [self updateWorkflowSelectedOrder];
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+- (void)takeEditableValues:(NSDictionary *)editableValues {
+    
+    for (NSString *field in editableValues.allKeys) {
+        
+        if ([self.pickingOrder.entity.propertiesByName.allKeys containsObject:field]) {
+            [self.pickingOrder setValue:editableValues[field] forKey:field];
+        }
+        
+    }
+    
+    [self updateWorkflowSelectedOrder];
+    
+}
+
+- (void)updateWorkflowSelectedOrder {
+    
+    if (self.nextProcessing) {
+        
+        self.pickingOrder.processing = self.nextProcessing;
+        [self updateToolbars];
+        
+    }
+    
+    [self.document saveDocument:^(BOOL success) {
+    }];
+    
 }
 
 
@@ -302,7 +392,9 @@
     [super customInit];
     
 //    [self addPanGesture];
-    
+
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
     [self updateToolbars];
     
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
@@ -320,14 +412,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    if ([self isMovingFromParentViewController]) {
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    }
+    
 }
-*/
+
 
 @end
