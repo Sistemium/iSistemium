@@ -157,23 +157,44 @@
 - (void)updateToolbars {
     
     if ([self orderIsProcessed]) {
-        
         [self setupToolbarsForOrderProcessing];
-        
     } else {
-        
-        NSString *title = [STMWorkflowController labelForProcessing:self.pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
-        
-        STMBarButtonItem *processingButton = [[STMBarButtonItem alloc] initWithTitle:title
-                                                                               style:UIBarButtonItemStylePlain
-                                                                              target:self
-                                                                              action:@selector(processingButtonPressed)];
-        
-        processingButton.tintColor = [STMWorkflowController colorForProcessing:self.pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
-        
-        self.navigationItem.rightBarButtonItem = processingButton;
-        
+        [self addProcessingButton];
     }
+    
+}
+
+- (void)setupToolbarsForOrderProcessing {
+    
+    [self addProcessingButton];
+
+    self.navigationItem.hidesBackButton = YES;
+
+//    STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+//                                                                      style:UIBarButtonItemStylePlain
+//                                                                     target:self
+//                                                                     action:@selector(closeButtonPressed)];
+//  
+//    self.navigationItem.rightBarButtonItem = closeButton;
+    
+}
+
+//- (void)closeButtonPressed {
+//    [self.navigationController popViewControllerAnimated:YES];
+//}
+
+- (void)addProcessingButton {
+    
+    NSString *title = [STMWorkflowController labelForProcessing:self.pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
+    
+    STMBarButtonItem *processingButton = [[STMBarButtonItem alloc] initWithTitle:title
+                                                                           style:UIBarButtonItemStylePlain
+                                                                          target:self
+                                                                          action:@selector(processingButtonPressed)];
+    
+    processingButton.tintColor = [STMWorkflowController colorForProcessing:self.pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
+    
+    self.navigationItem.rightBarButtonItem = processingButton;
     
 }
 
@@ -185,23 +206,7 @@
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [workflowActionSheet showInView:self.view];
     }];
-
-}
-
-- (void)setupToolbarsForOrderProcessing {
     
-    STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
-                                                                      style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(closeButtonPressed)];
-  
-    self.navigationItem.rightBarButtonItem = closeButton;
-    self.navigationItem.hidesBackButton = YES;
-    
-}
-
-- (void)closeButtonPressed {
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 
