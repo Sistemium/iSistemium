@@ -10,6 +10,7 @@
 
 #import "STMWorkflowController.h"
 #import "STMWorkflowEditablesVC.h"
+#import "STMPickingPositionVolumeTVC.h"
 
 
 #define SLIDE_THRESHOLD 20
@@ -148,6 +149,33 @@
     cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickingPosition.volume.integerValue andPackageRel:pickingPosition.article.packageRel.integerValue];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMPickingOrderPosition *position = self.tableData[indexPath.row];
+    
+    [self performSegueWithIdentifier:@"showPositionVolume" sender:position];
+    
+}
+
+
+#pragma mark - navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showPositionVolume"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMPickingPositionVolumeTVC class]] &&
+            [sender isKindOfClass:[STMPickingOrderPosition class]]) {
+            
+            STMPickingPositionVolumeTVC *volumeTVC = (STMPickingPositionVolumeTVC *)segue.destinationViewController;
+            volumeTVC.position = (STMPickingOrderPosition *)sender;
+            
+        }
+        
+    }
     
 }
 
