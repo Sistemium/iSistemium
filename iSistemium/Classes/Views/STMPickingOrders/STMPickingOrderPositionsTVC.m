@@ -127,6 +127,8 @@
     cell.detailLabel.text = pickingPosition.ord.stringValue;
     cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickingPosition.volume.integerValue andPackageRel:pickingPosition.article.packageRel.integerValue];
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
 }
 
 
@@ -173,7 +175,7 @@
                 
             } else {
                 
-                [self slideCellWithShift:slideShift];
+                [self slideCellWithShift:slideShift panGesture:pan];
                 
             }
             
@@ -181,13 +183,20 @@
             
         }
         case UIGestureRecognizerStateEnded: {
-            
-            self.slidedCell.contentView.frame = self.initialFrame;
-            self.cellStartSliding = NO;
-            self.tableView.scrollEnabled = YES;
+
+            [self panGestureEnded];
             break;
             
         }
+            
+        case UIGestureRecognizerStateCancelled: {
+            
+            pan.enabled = YES;
+            [self panGestureEnded];
+            break;
+            
+        }
+            
         default: {
             break;
         }
@@ -195,7 +204,15 @@
     
 }
 
-- (void)slideCellWithShift:(CGFloat)slideShift {
+- (void)panGestureEnded {
+    
+    self.slidedCell.contentView.frame = self.initialFrame;
+    self.cellStartSliding = NO;
+    self.tableView.scrollEnabled = YES;
+
+}
+
+- (void)slideCellWithShift:(CGFloat)slideShift panGesture:(UIPanGestureRecognizer *)pan {
     
     if (self.initialFrame.origin.x + slideShift > 0) {
         
@@ -208,7 +225,11 @@
     }
     
     if (slideShift > ACTION_THRESHOLD && self.slideStartPoint + slideShift > self.tableView.frame.size.width - SLIDE_THRESHOLD) {
-        NSLog(@"cell's slide did moved enough distance and achive a right edge of the screen, it's a time to do something");
+        
+        NSLog(@"cell's slide did moved enough distance and achieve a right edge of the screen, it's a time to do something");
+        
+        pan.enabled = NO;
+        
     }
     
 }
