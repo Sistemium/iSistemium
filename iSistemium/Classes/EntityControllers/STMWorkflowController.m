@@ -196,6 +196,13 @@
     
 }
 
++ (BOOL)isEditableProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
+    
+    NSDictionary *dictionaryForProcessing = [self dictionaryForProcessing:processing inWorkflow:workflow];
+    return [dictionaryForProcessing[@"editable"] boolValue];
+
+}
+
 
 //+ (NSString *)processingForLabel:(NSString *)label inWorkflow:(NSString *)workflow {
 //    

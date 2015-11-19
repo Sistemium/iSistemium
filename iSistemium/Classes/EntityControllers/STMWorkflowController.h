@@ -24,5 +24,7 @@
 
 + (NSString *)labelForEditableProperty:(NSString *)editableProperty;
 
++ (BOOL)isEditableProcessing:(NSString *)processing inWorkflow:(NSString *)workflow;
+
 
 @end

@@ -8,13 +8,18 @@
 
 #import "STMPickingOrderPositionsTVC.h"
 
+#import "STMWorkflowController.h"
+
+
 #define SLIDE_THRESHOLD 20
 #define ACTION_THRESHOLD 100
 
 
-@interface STMPickingOrderPositionsTVC () <UIGestureRecognizerDelegate>
+@interface STMPickingOrderPositionsTVC () <UIGestureRecognizerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) NSArray <STMPickingOrderPosition *> *tableData;
+
+@property (nonatomic, strong) NSString *pickingOrderWorkflow;
 
 @property (nonatomic) CGFloat slideStartPoint;
 @property (nonatomic, strong) UITableViewCell *slidedCell;
@@ -26,6 +31,19 @@
 
 
 @implementation STMPickingOrderPositionsTVC
+
+- (NSString *)pickingOrderWorkflow {
+    
+    if (!_pickingOrderWorkflow) {
+        _pickingOrderWorkflow = [STMWorkflowController workflowForEntityName:NSStringFromClass([STMPickingOrder class])];
+    }
+    return _pickingOrderWorkflow;
+    
+}
+
+- (BOOL)orderIsProcessed {
+    return [STMWorkflowController isEditableProcessing:self.pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
+}
 
 - (NSArray <STMPickingOrderPosition *> *)tableData {
     
@@ -129,6 +147,41 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
+}
+
+
+#pragma mark - setup toolbars
+
+- (void)updateToolbars {
+    
+    if ([self orderIsProcessed]) {
+        
+    } else {
+        
+        NSString *title = [STMWorkflowController labelForProcessing:self.pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
+        
+        STMBarButtonItem *processingButton = [[STMBarButtonItem alloc] initWithTitle:title
+                                                                               style:UIBarButtonItemStylePlain
+                                                                              target:self
+                                                                              action:@selector(processingButtonPressed)];
+        
+        processingButton.tintColor = [STMWorkflowController colorForProcessing:self.pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
+        
+        self.navigationItem.rightBarButtonItem = processingButton;
+        
+    }
+    
+}
+
+- (void)processingButtonPressed {
+    
+    STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:self.pickingOrder.processing
+                                                                                      inWorkflow:self.pickingOrderWorkflow
+                                                                                    withDelegate:self];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [workflowActionSheet showInView:self.view];
+    }];
+
 }
 
 
@@ -249,6 +302,8 @@
     [super customInit];
     
 //    [self addPanGesture];
+    
+    [self updateToolbars];
     
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
