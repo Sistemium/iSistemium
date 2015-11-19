@@ -10,11 +10,14 @@
 
 #import "STMPickingOrderPositionsTVC.h"
 #import "STMWorkflowController.h"
+#import "STMWorkflowEditablesVC.h"
 
 
 @interface STMPickingOrdersTVC () <UIActionSheetDelegate>
 
 @property (nonatomic, strong) NSString *pickingOrderWorkflow;
+@property (nonatomic, strong) STMPickingOrder *workflowSelectedOrder;
+@property (nonatomic, strong) NSString *nextProcessing;
 
 
 @end
@@ -179,25 +182,17 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
+    [self showPositionsForPickingOrder:pickingOrder];
 
+}
+
+- (void)showPositionsForPickingOrder:(STMPickingOrder *)pickingOrder {
+    
     STMPickingOrderPositionsTVC *positionsTVC = [[STMPickingOrderPositionsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     positionsTVC.pickingOrder = pickingOrder;
     
     [self.navigationController pushViewController:positionsTVC animated:YES];
-    
-    
-//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//        
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:pickingOrder.ndoc
-//                                                        message:nil
-//                                                       delegate:nil
-//                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-//                                              otherButtonTitles:nil];
-//        
-//        [alert show];
-//        
-//    }];
-    
+
 }
 
 - (void)infoLabelTapped:(id)sender {
@@ -212,6 +207,8 @@
         
         STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
         
+        self.workflowSelectedOrder = pickingOrder;
+        
         STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:pickingOrder.processing
                                                                                           inWorkflow:self.pickingOrderWorkflow
                                                                                         withDelegate:self];
@@ -220,6 +217,79 @@
         }];
         
     }
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
+        
+        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
+        
+        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                              didSelectButtonWithIndex:buttonIndex
+                                                                            inWorkflow:workflowAS.workflow];
+        
+        self.nextProcessing = result[@"nextProcessing"];
+        
+        if (self.nextProcessing) {
+            
+            if ([result[@"editableProperties"] isKindOfClass:[NSArray class]]) {
+                
+                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+                
+                editablesVC.workflow = workflowAS.workflow;
+                editablesVC.toProcessing = self.nextProcessing;
+                editablesVC.editableFields = result[@"editableProperties"];
+                editablesVC.parent = self;
+                
+                [self presentViewController:editablesVC animated:YES completion:^{
+                    
+                }];
+                
+            } else {
+                
+                [self updateWorkflowSelectedOrder];
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+- (void)takeEditableValues:(NSDictionary *)editableValues {
+
+    for (NSString *field in editableValues.allKeys) {
+        
+        if ([self.workflowSelectedOrder.entity.propertiesByName.allKeys containsObject:field]) {
+            [self.workflowSelectedOrder setValue:editableValues[field] forKey:field];
+        }
+        
+    }
+    
+    [self updateWorkflowSelectedOrder];
+    
+}
+
+- (void)updateWorkflowSelectedOrder {
+    
+    if (self.nextProcessing) {
+     
+        self.workflowSelectedOrder.processing = self.nextProcessing;
+    
+        if ([STMWorkflowController isEditableProcessing:self.nextProcessing inWorkflow:self.pickingOrderWorkflow]) {
+            [self showPositionsForPickingOrder:self.workflowSelectedOrder];
+        }
+
+    }
+    
+    [self.document saveDocument:^(BOOL success) {
+    }];
     
 }
 

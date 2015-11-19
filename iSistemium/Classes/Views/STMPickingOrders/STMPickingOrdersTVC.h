@@ -7,7 +7,8 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import "STMWorkflowable.h"
 
-@interface STMPickingOrdersTVC : STMVariableCellsHeightTVC
+@interface STMPickingOrdersTVC : STMVariableCellsHeightTVC <STMWorkflowable>
 
 @end
