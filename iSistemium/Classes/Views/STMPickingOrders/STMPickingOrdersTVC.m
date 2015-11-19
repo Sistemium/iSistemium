@@ -186,15 +186,6 @@
 
 }
 
-- (void)showPositionsForPickingOrder:(STMPickingOrder *)pickingOrder {
-    
-    STMPickingOrderPositionsTVC *positionsTVC = [[STMPickingOrderPositionsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    positionsTVC.pickingOrder = pickingOrder;
-    
-    [self.navigationController pushViewController:positionsTVC animated:YES];
-
-}
-
 - (void)infoLabelTapped:(id)sender {
     
     if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
@@ -294,6 +285,36 @@
 }
 
 
+#pragma mark - Navigation
+
+- (void)showPositionsForPickingOrder:(STMPickingOrder *)pickingOrder {
+    
+    [self performSegueWithIdentifier:@"showPositions" sender:pickingOrder];
+    
+    //    STMPickingOrderPositionsTVC *positionsTVC = [[STMPickingOrderPositionsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    //    positionsTVC.pickingOrder = pickingOrder;
+    //
+    //    [self.navigationController pushViewController:positionsTVC animated:YES];
+    
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showPositions"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMPickingOrderPositionsTVC class]] &&
+            [sender isKindOfClass:[STMPickingOrder class]]) {
+            
+            STMPickingOrderPositionsTVC *positionsTVC = (STMPickingOrderPositionsTVC *)segue.destinationViewController;
+            positionsTVC.pickingOrder = (STMPickingOrder *)sender;
+            
+        }
+        
+    }
+
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -319,14 +340,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
