@@ -21,6 +21,9 @@
 @property (nonatomic) NSInteger packageRel;
 @property (nonatomic) NSString *name;
 
+@property (nonatomic) NSInteger selectedVolume;
+@property (nonatomic) NSInteger selectedBoxCount;
+
 
 @end
 
@@ -54,7 +57,7 @@
         _volumePicker = [[UIPickerView alloc] initWithFrame:pickerFrame];
         _volumePicker.dataSource = self;
         _volumePicker.delegate = self;
-        
+
     }
     return _volumePicker;
     
@@ -70,6 +73,17 @@
 
 - (NSString *)name {
     return self.position.article.name;
+}
+
+- (void)setSelectedVolume:(NSInteger)selectedVolume {
+
+    _selectedVolume = selectedVolume;
+    
+    self.selectedBoxCount = (self.packageRel > 0) ? self.selectedVolume / self.packageRel : 0;
+    
+    [self.volumePicker selectRow:self.selectedBoxCount inComponent:0 animated:YES];
+    [self.volumePicker selectRow:self.selectedVolume inComponent:2 animated:YES];
+
 }
 
 
@@ -274,10 +288,33 @@
     
 }
 
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
+    return self.standardCellHeight;
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    switch (component) {
+        case 0:
+            self.selectedVolume = self.selectedVolume + (row - self.selectedBoxCount) * self.packageRel;
+            break;
+
+        case 2:
+            self.selectedVolume = row;
+            break;
+
+        default:
+            break;
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    [super customInit];
     
     self.tableView.scrollEnabled = NO;
 
@@ -287,12 +324,13 @@
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom7TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.positionNameCellIdentifier];
 
+    self.selectedVolume = self.volume;
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self customInit];
     
 }
 
