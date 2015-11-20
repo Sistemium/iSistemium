@@ -7,14 +7,14 @@
 //
 
 #import "STMPickingPositionInfoTVC.h"
+#import "STMPickingPositionAddInfoVC.h"
+
 
 @interface STMPickingPositionInfoTVC ()
 
 @property (nonatomic, strong) NSArray *productionInfo;
 @property (nonatomic, strong) NSString *articleNameCellIdentifier;
 @property (nonatomic, strong) NSString *doneButtonCellIdentifier;
-
-@property (nonatomic, strong) STMArticleProductionInfo *selectedProductionInfo;
 
 
 @end
@@ -52,6 +52,22 @@
         _doneButtonCellIdentifier = [self.cellIdentifier stringByAppendingString:@"_doneButtonCellIdentifier"];
     }
     return _doneButtonCellIdentifier;
+    
+}
+
+- (void)setSelectedProductionInfo:(STMArticleProductionInfo *)selectedProductionInfo {
+    
+    _selectedProductionInfo = selectedProductionInfo;
+    
+    if (![self.navigationController.topViewController isEqual:self]) {
+        self.productionInfo = nil;
+    }
+    
+    NSRange indexRange;
+    indexRange.location = 1;
+    indexRange.length = 2;
+    
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:indexRange] withRowAnimation:UITableViewRowAnimationNone];
     
 }
 
@@ -209,12 +225,17 @@
         case 1:
             if (indexPath.row == self.productionInfo.count) {
                 
-                NSLog(@"Enter new info");
+                STMProductionInfoType *type = self.position.article.productionInfoType;
+                
+                if ([type.datatype isEqualToString:@"date"]) {
+                    [self performSegueWithIdentifier:@"addDateInfo" sender:nil];
+                } else {
+                    [self performSegueWithIdentifier:@"addInfo" sender:nil];
+                }
                 
             } else {
                 
                 self.selectedProductionInfo = self.productionInfo[indexPath.row];
-                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
 
             }
             break;
@@ -227,6 +248,22 @@
 
         default:
             break;
+    }
+    
+}
+
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.destinationViewController isKindOfClass:[STMPickingPositionAddInfoVC class]]) {
+        
+        STMPickingPositionAddInfoVC *addInfoVC = (STMPickingPositionAddInfoVC *)segue.destinationViewController;
+        addInfoVC.parentVC = self;
+        addInfoVC.infoType = self.position.article.productionInfoType;
+        addInfoVC.position = self.position;
+        
     }
     
 }
@@ -256,14 +293,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

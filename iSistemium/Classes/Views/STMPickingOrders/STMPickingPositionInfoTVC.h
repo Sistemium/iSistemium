@@ -12,6 +12,7 @@
 
 @property (nonatomic, weak) STMPickingOrderPosition *position;
 @property (nonatomic) NSInteger selectedVolume;
+@property (nonatomic, strong) STMArticleProductionInfo *selectedProductionInfo;
 
 
 @end

@@ -58,6 +58,15 @@
     
 }
 
++ (NSDateFormatter *)dateNumbersFormatterTwo {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"dd/MM/yyyy";
+    
+    return dateFormatter;
+    
+}
+
 + (NSDateFormatter *)dateNoTimeFormatter {
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
