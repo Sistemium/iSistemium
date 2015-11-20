@@ -87,8 +87,12 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
     switch (section) {
-        case 1:
-            return [NSLocalizedString(@"SELECT INFO", nil) stringByAppendingString:@":"];
+        case 1: {
+
+            NSString *infoTypeName = self.position.article.productionInfoType.name;
+            return [(infoTypeName) ? infoTypeName : NSLocalizedString(@"SELECT INFO", nil) stringByAppendingString:@":"];
+            
+        }
             break;
             
         default:
@@ -174,7 +178,7 @@
     
     if (index == self.productionInfo.count) {
         
-        cell.textLabel.text = NSLocalizedString(@"ADD INFO", nil);
+        cell.textLabel.text = NSLocalizedString(@"ADD", nil);
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
         cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -197,6 +201,34 @@
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     cell.textLabel.textColor = (self.selectedProductionInfo) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
 
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+        case 1:
+            if (indexPath.row == self.productionInfo.count) {
+                
+                NSLog(@"Enter new info");
+                
+            } else {
+                
+                self.selectedProductionInfo = self.productionInfo[indexPath.row];
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+
+            }
+            break;
+
+        case 2:
+            if (self.selectedProductionInfo) {
+                NSLog(@"done!");
+            }
+            break;
+
+        default:
+            break;
+    }
+    
 }
 
 

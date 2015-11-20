@@ -77,6 +77,10 @@
 
 - (void)setSelectedVolume:(NSInteger)selectedVolume {
 
+    if (selectedVolume > self.volume) {
+        selectedVolume = self.volume;
+    }
+    
     _selectedVolume = selectedVolume;
     
     self.selectedBoxCount = (self.packageRel > 0) ? self.selectedVolume / self.packageRel : 0;
