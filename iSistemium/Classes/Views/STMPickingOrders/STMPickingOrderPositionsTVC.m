@@ -57,8 +57,12 @@
             NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord"
                                                                             ascending:YES
                                                                              selector:@selector(compare:)];
-            
-            _tableData = [self.pickingOrder.pickingOrderPositions sortedArrayUsingDescriptors:@[ordDescriptor]];
+
+            NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name"
+                                                                            ascending:YES
+                                                                             selector:@selector(caseInsensitiveCompare:)];
+
+            _tableData = [self.pickingOrder.pickingOrderPositions sortedArrayUsingDescriptors:@[ordDescriptor, nameDescriptor]];
             
         } else {
             
@@ -150,13 +154,22 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    if ([self orderIsProcessed]) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    } else {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMPickingOrderPosition *position = self.tableData[indexPath.row];
-    
-    [self performSegueWithIdentifier:@"showPositionVolume" sender:position];
+    if ([self orderIsProcessed]) {
+        
+        STMPickingOrderPosition *position = self.tableData[indexPath.row];
+        [self performSegueWithIdentifier:@"showPositionVolume" sender:position];
+
+    }
     
 }
 
@@ -184,32 +197,10 @@
 
 - (void)updateToolbars {
     
-    if ([self orderIsProcessed]) {
-        [self setupToolbarsForOrderProcessing];
-    } else {
-        [self addProcessingButton];
-    }
-    
-}
-
-- (void)setupToolbarsForOrderProcessing {
-    
+    self.navigationItem.hidesBackButton = [self orderIsProcessed];
     [self addProcessingButton];
 
-    self.navigationItem.hidesBackButton = YES;
-
-//    STMBarButtonItem *closeButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
-//                                                                      style:UIBarButtonItemStylePlain
-//                                                                     target:self
-//                                                                     action:@selector(closeButtonPressed)];
-//  
-//    self.navigationItem.rightBarButtonItem = closeButton;
-    
 }
-
-//- (void)closeButtonPressed {
-//    [self.navigationController popViewControllerAnimated:YES];
-//}
 
 - (void)addProcessingButton {
     
@@ -299,6 +290,7 @@
         
         self.pickingOrder.processing = self.nextProcessing;
         [self updateToolbars];
+        [self.tableView reloadData];
         
     }
     
