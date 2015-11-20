@@ -118,10 +118,44 @@
                             <outlet property="delegate" destination="NrD-BS-fFG" id="PGv-og-5VO"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="edq-qQ-6V6" kind="show" identifier="showPositionInfo" id="6c0-CO-jhp"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hvc-qA-M8I" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2913" y="331"/>
+        </scene>
+        <!--Picking Position InfoTVC-->
+        <scene sceneID="hoC-Fx-Mgd">
+            <objects>
+                <tableViewController id="edq-qQ-6V6" customClass="STMPickingPositionInfoTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="9nS-f9-Lah">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="positionInfoCell" id="rpC-UO-TzO">
+                                <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rpC-UO-TzO" id="uW0-U9-dcN">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                </tableViewCellContentView>
+                                <animations/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="edq-qQ-6V6" id="TLk-JT-NfD"/>
+                            <outlet property="delegate" destination="edq-qQ-6V6" id="kw8-z6-xex"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ugs-Ta-Bg6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3645" y="331"/>
         </scene>
         <!--Picking OrdersNC-->
         <scene sceneID="uO9-N4-C1f">

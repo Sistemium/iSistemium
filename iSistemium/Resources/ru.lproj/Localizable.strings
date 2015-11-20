@@ -380,5 +380,8 @@
 "SELECT CAMPAIGN" = "Выберите акцию";
 "SELECT OUTLET" = "Выберите точку";
 "PICKING ORDERS" = "Комплектация заказов";
+"NEXT" = "Дальше";
+"SELECT INFO" = "Выберите признак";
+"ADD INFO" = "Добавить признак";
 
 

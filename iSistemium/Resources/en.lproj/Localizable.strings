@@ -380,4 +380,8 @@
 "SELECT CAMPAIGN" = "Select campaign";
 "SELECT OUTLET" = "Select outlet";
 "PICKING ORDERS" = "Picking orders";
+"NEXT" = "Next";
+"SELECT INFO" = "Select info";
+"ADD INFO" = "Add info";
+
 

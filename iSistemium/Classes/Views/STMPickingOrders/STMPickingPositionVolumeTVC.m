@@ -7,13 +7,13 @@
 //
 
 #import "STMPickingPositionVolumeTVC.h"
+#import "STMPickingPositionInfoTVC.h"
 
 
 @interface STMPickingPositionVolumeTVC () <UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, strong) NSString *positionNameCellIdentifier;
 @property (nonatomic, strong) NSString *volumeCellIdentifier;
-//@property (nonatomic, strong) NSString *volumeControlsCellIdentifier;
 
 @property (nonatomic, strong) UIPickerView *volumePicker;
 
@@ -119,7 +119,7 @@
     
     switch (section) {
         case 1:
-            return @"Количество:";
+            return [NSLocalizedString(@"QVOLUME", nil) stringByAppendingString:@":"];
             break;
             
         default:
@@ -204,6 +204,8 @@
         
     }
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
 }
 
 - (void)fillVolumeCell:(UITableViewCell *)cell {
@@ -212,15 +214,24 @@
 
 - (void)fillButtonCell:(UITableViewCell *)cell {
 
-    cell.textLabel.text = @"NEXT BUTTON";
+    cell.textLabel.text = NSLocalizedString(@"NEXT", nil);
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
 }
 
-- (void)nextButtonPressed {
-    NSLogMethodName;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.section) {
+        case 2:
+            [self performSegueWithIdentifier:@"showPositionInfo" sender:nil];
+            break;
+            
+        default:
+            break;
+    }
+    
 }
 
 
@@ -305,6 +316,22 @@
 
         default:
             break;
+    }
+    
+}
+
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:@"showPositionInfo"] &&
+        [segue.destinationViewController isKindOfClass:[STMPickingPositionInfoTVC class]]) {
+        
+        STMPickingPositionInfoTVC *infoTVC = (STMPickingPositionInfoTVC *)segue.destinationViewController;
+        infoTVC.position = self.position;
+        infoTVC.selectedVolume = self.selectedVolume;
+        
     }
     
 }
