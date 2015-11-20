@@ -14,6 +14,14 @@
 
 @implementation STMPickingOrderPosition
 
-// Insert code here to add functionality to your managed object subclass
+- (NSUInteger)nonPickedVolume {
+    
+    NSInteger volume = self.volume.integerValue;
+    NSInteger pickedVolume = [[self.pickingOrderPositionsPicked valueForKeyPath:@"@sum.volume"] integerValue];
+
+    return volume - pickedVolume;
+    
+}
+
 
 @end

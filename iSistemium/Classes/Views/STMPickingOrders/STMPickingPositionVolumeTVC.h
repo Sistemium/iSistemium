@@ -6,11 +6,11 @@
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMVariableCellsHeightTVC.h"
 #import "STMDataModel.h"
 
 
-@interface STMPickingPositionVolumeTVC : STMFetchedResultsControllerTVC
+@interface STMPickingPositionVolumeTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, weak) STMPickingOrderPosition *position;
 

@@ -15,7 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STMPickingOrderPosition : STMComment
 
-// Insert code here to declare functionality of your managed object subclass
+- (NSUInteger)nonPickedVolume;
+
 
 @end
 

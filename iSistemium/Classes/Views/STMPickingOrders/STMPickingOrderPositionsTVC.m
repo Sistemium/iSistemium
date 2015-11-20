@@ -146,7 +146,7 @@
     
     cell.titleLabel.text = pickingPosition.article.name;
     cell.detailLabel.text = pickingPosition.ord.stringValue;
-    cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickingPosition.volume.integerValue andPackageRel:pickingPosition.article.packageRel.integerValue];
+    cell.infoLabel.text = [STMFunctions volumeStringWithVolume:[pickingPosition nonPickedVolume] andPackageRel:pickingPosition.article.packageRel.integerValue];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
