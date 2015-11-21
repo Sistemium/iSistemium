@@ -29,6 +29,8 @@
 @property (nonatomic) CGRect initialFrame;
 @property (nonatomic) BOOL cellStartSliding;
 
+@property (nonatomic, strong) STMBarButtonItem *pickedPositionsButton;
+
 
 @end
 
@@ -195,9 +197,28 @@
 
 #pragma mark - setup toolbars
 
+- (void)addPickedPositionsButton {
+    
+    self.pickedPositionsButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"PICKED POSITIONS", nil)
+                                                                                style:UIBarButtonItemStylePlain
+                                                                               target:self
+                                                                               action:@selector(pickedPositionsButtonPressed)];
+    
+    [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], self.pickedPositionsButton, [STMBarButtonItem flexibleSpace]]];
+    
+}
+
+- (void)pickedPositionsButtonPressed {
+    [self performSegueWithIdentifier:@"showPickedPositions" sender:nil];
+}
+
 - (void)updateToolbars {
     
-    self.navigationItem.hidesBackButton = [self orderIsProcessed];
+    BOOL orderIsProcessed = [self orderIsProcessed];
+    
+    self.navigationItem.hidesBackButton = orderIsProcessed;
+    self.navigationController.toolbarHidden =  !orderIsProcessed;
+    
     [self addProcessingButton];
 
 }
@@ -420,6 +441,7 @@
 
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
+    [self addPickedPositionsButton];
     [self updateToolbars];
     
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
