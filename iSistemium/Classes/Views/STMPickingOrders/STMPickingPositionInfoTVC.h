@@ -8,7 +8,12 @@
 
 #import "STMVariableCellsHeightTVC.h"
 
+#import "STMPickingOrderPositionsTVC.h"
+
+
 @interface STMPickingPositionInfoTVC : STMVariableCellsHeightTVC
+
+@property (nonatomic, weak) STMPickingOrderPositionsTVC *mainVC;
 
 @property (nonatomic, weak) STMPickingOrderPosition *position;
 @property (nonatomic) NSInteger selectedVolume;

@@ -11,6 +11,7 @@
 #import "STMWorkflowController.h"
 #import "STMWorkflowEditablesVC.h"
 #import "STMPickingPositionVolumeTVC.h"
+#import "STMPickingOrderPositionsPickedTVC.h"
 
 
 #define SLIDE_THRESHOLD 20
@@ -64,7 +65,13 @@
                                                                             ascending:YES
                                                                              selector:@selector(caseInsensitiveCompare:)];
 
-            _tableData = [self.pickingOrder.pickingOrderPositions sortedArrayUsingDescriptors:@[ordDescriptor, nameDescriptor]];
+            NSArray *positions = [self.pickingOrder.pickingOrderPositions sortedArrayUsingDescriptors:@[ordDescriptor, nameDescriptor]];
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"nonPickedVolume > 0"];
+            
+            positions = [positions filteredArrayUsingPredicate:[STMPredicate predicateWithNoFantomsFromPredicate:predicate]];
+            
+            _tableData = positions;
             
         } else {
             
@@ -74,6 +81,34 @@
 
     }
     return _tableData;
+    
+}
+
+- (void)positionWasPicked:(STMPickingOrderPosition *)position {
+    
+    [self.navigationController popToViewController:self animated:YES];
+    
+    if (position) {
+
+        if ([self.tableData containsObject:position]) {
+        
+            if ([position nonPickedVolume] > 0) {
+
+                NSUInteger positionIndex = [self.tableData indexOfObject:position];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:positionIndex inSection:0];
+                
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+            } else {
+                
+                self.tableData = nil;
+                [self.tableView reloadData];
+                
+            }
+            
+        }
+        
+    }
     
 }
 
@@ -187,6 +222,16 @@
             
             STMPickingPositionVolumeTVC *volumeTVC = (STMPickingPositionVolumeTVC *)segue.destinationViewController;
             volumeTVC.position = (STMPickingOrderPosition *)sender;
+            volumeTVC.mainVC = self;
+            
+        }
+        
+    } else if ([segue.identifier isEqualToString:@"showPickedPositions"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMPickingOrderPositionsPickedTVC class]]) {
+            
+            STMPickingOrderPositionsPickedTVC *pickedPositionsTVC = (STMPickingOrderPositionsPickedTVC *)segue.destinationViewController;
+            pickedPositionsTVC.pickingOrder = self.pickingOrder;
             
         }
         

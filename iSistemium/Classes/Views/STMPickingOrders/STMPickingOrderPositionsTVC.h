@@ -14,5 +14,7 @@
 
 @property (nonatomic, weak) STMPickingOrder *pickingOrder;
 
+- (void)positionWasPicked:(STMPickingOrderPosition *)position;
+
 
 @end

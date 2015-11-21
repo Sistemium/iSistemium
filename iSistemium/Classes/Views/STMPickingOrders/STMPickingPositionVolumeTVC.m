@@ -335,6 +335,7 @@
         STMPickingPositionInfoTVC *infoTVC = (STMPickingPositionInfoTVC *)segue.destinationViewController;
         infoTVC.position = self.position;
         infoTVC.selectedVolume = self.selectedVolume;
+        infoTVC.mainVC = self.mainVC;
         
     }
     

@@ -7,7 +7,9 @@
 //
 
 #import "STMPickingPositionInfoTVC.h"
+
 #import "STMPickingPositionAddInfoVC.h"
+#import "STMObjectsController.h"
 
 
 @interface STMPickingPositionInfoTVC ()
@@ -242,12 +244,34 @@
 
         case 2:
             if (self.selectedProductionInfo) {
-                NSLog(@"done!");
+                [self savePickedPosition];
             }
             break;
 
         default:
             break;
+    }
+    
+}
+
+- (void)savePickedPosition {
+    
+    if (self.selectedProductionInfo) {
+        
+        NSString *entityName = NSStringFromClass([STMPickingOrderPositionPicked class]);
+        STMPickingOrderPositionPicked *pickedPosition = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:entityName isFantom:NO];
+        
+        pickedPosition.productionInfo = self.selectedProductionInfo.info;
+        pickedPosition.article = self.position.article;
+        pickedPosition.pickingOrderPosition = self.position;
+        pickedPosition.volume = @(self.selectedVolume);
+        
+        [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
+            
+        }];
+        
+        [self.mainVC positionWasPicked:self.position];
+        
     }
     
 }
