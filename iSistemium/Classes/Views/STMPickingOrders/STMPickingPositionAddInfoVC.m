@@ -12,7 +12,7 @@
 #import "STMFunctions.h"
 
 
-@interface STMPickingPositionAddInfoVC ()
+@interface STMPickingPositionAddInfoVC () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
@@ -28,7 +28,7 @@
     
     if (![self.infoType.datatype isEqualToString:@"date"]) {
         
-        if ([self isCorrectTextFieldValue]) {
+        if ([self isCorrectProductionInfo:self.textField.text]) {
             
             [self saveProductionInfo:self.textField.text];
             
@@ -43,8 +43,12 @@
     
 }
 
-- (BOOL)isCorrectTextFieldValue {
-    return YES;
+- (BOOL)isCorrectProductionInfo:(NSString *)info {
+    
+    NSString *textToCheck = [info stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    return (textToCheck && ![textToCheck isEqualToString:@""]);
+
 }
 
 - (void)saveProductionInfo:(NSString *)info {
@@ -62,6 +66,20 @@
 }
 
 
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    NSMutableString *textToCheck = [textField.text mutableCopy];
+    [textToCheck replaceCharactersInRange:range withString:string];
+    
+    self.doneButton.enabled = [self isCorrectProductionInfo:textToCheck];
+    
+    return YES;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -74,8 +92,12 @@
     if (![self.infoType.datatype isEqualToString:@"date"]) {
         
         self.textField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+        self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.textField.delegate = self;
         [self.textField becomeFirstResponder];
-        
+
+        self.doneButton.enabled = NO;
+
     }
     
 }
