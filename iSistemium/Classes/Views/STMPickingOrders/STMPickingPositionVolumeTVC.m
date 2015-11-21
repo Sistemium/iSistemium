@@ -7,6 +7,7 @@
 //
 
 #import "STMPickingPositionVolumeTVC.h"
+
 #import "STMPickingPositionInfoTVC.h"
 
 
@@ -232,10 +233,20 @@
 
 - (void)fillButtonCell:(UITableViewCell *)cell {
 
-    cell.textLabel.text = NSLocalizedString(@"NEXT", nil);
+    if (self.position.article.productionInfoType) {
+
+        cell.textLabel.text = NSLocalizedString(@"NEXT", nil);
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+    } else {
+
+        cell.textLabel.text = NSLocalizedString(@"DONE", nil);
+        cell.accessoryType = UITableViewCellAccessoryNone;
+
+    }
+    
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     cell.textLabel.textColor = ACTIVE_BLUE_COLOR;
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
 }
 
@@ -243,7 +254,11 @@
     
     switch (indexPath.section) {
         case 2:
-            [self performSegueWithIdentifier:@"showPositionInfo" sender:nil];
+            if (self.position.article.productionInfoType) {
+                [self performSegueWithIdentifier:@"showPositionInfo" sender:nil];
+            } else {
+                [self.mainVC position:self.position wasPickedWithVolume:self.selectedVolume andProductionInfo:nil];
+            }
             break;
             
         default:

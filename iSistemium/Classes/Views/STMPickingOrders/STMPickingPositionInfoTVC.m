@@ -244,34 +244,12 @@
 
         case 2:
             if (self.selectedProductionInfo) {
-                [self savePickedPosition];
+                [self.mainVC position:self.position wasPickedWithVolume:self.selectedVolume andProductionInfo:self.selectedProductionInfo.info];
             }
             break;
 
         default:
             break;
-    }
-    
-}
-
-- (void)savePickedPosition {
-    
-    if (self.selectedProductionInfo) {
-        
-        NSString *entityName = NSStringFromClass([STMPickingOrderPositionPicked class]);
-        STMPickingOrderPositionPicked *pickedPosition = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:entityName isFantom:NO];
-        
-        pickedPosition.productionInfo = self.selectedProductionInfo.info;
-        pickedPosition.article = self.position.article;
-        pickedPosition.pickingOrderPosition = self.position;
-        pickedPosition.volume = @(self.selectedVolume);
-        
-        [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-            
-        }];
-        
-        [self.mainVC positionWasPicked:self.position];
-        
     }
     
 }

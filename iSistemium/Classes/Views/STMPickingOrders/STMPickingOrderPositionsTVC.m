@@ -12,6 +12,7 @@
 #import "STMWorkflowEditablesVC.h"
 #import "STMPickingPositionVolumeTVC.h"
 #import "STMPickingOrderPositionsPickedTVC.h"
+#import "STMObjectsController.h"
 
 
 #define SLIDE_THRESHOLD 20
@@ -84,8 +85,20 @@
     
 }
 
-- (void)positionWasPicked:(STMPickingOrderPosition *)position {
+- (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
     
+    NSString *entityName = NSStringFromClass([STMPickingOrderPositionPicked class]);
+    STMPickingOrderPositionPicked *pickedPosition = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:entityName isFantom:NO];
+    
+    pickedPosition.productionInfo = info;
+    pickedPosition.article = position.article;
+    pickedPosition.pickingOrderPosition = position;
+    pickedPosition.volume = @(volume);
+    
+    [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
+        
+    }];
+
     [self.navigationController popToViewController:self animated:YES];
     
     [self updatePickedPositionsButton];

@@ -14,7 +14,7 @@
 
 @property (nonatomic, weak) STMPickingOrder *pickingOrder;
 
-- (void)positionWasPicked:(STMPickingOrderPosition *)position;
+- (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info;
 
 
 @end
