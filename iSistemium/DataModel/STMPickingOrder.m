@@ -26,8 +26,17 @@
         NSString *pluralType = [STMFunctions pluralTypeForCount:positionsCount];
         NSString *positionString = [NSString stringWithFormat:@"%@POSITIONS", pluralType];
         
-        return [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(positionString, nil)];
+        NSString *countString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(positionString, nil)];
         
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"nonPickedVolume == 0"];
+        NSSet *pickedPositions = [self.pickingOrderPositions filteredSetUsingPredicate:predicate];
+        
+        if (pickedPositions.count > 0) {
+            countString = [NSString stringWithFormat:@"%@ (%@ %@)", countString, NSLocalizedString(@"POSITION PICKED", nil), @(pickedPositions.count).stringValue];
+        }
+        
+        return countString;
+
     } else {
         return NSLocalizedString(@"0POSITIONS", nil);
     }

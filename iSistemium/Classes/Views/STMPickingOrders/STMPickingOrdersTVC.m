@@ -47,7 +47,7 @@
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPickingOrder class])];
         
         NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
-        NSSortDescriptor *ndocDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ndoc" ascending:NO selector:@selector(caseInsensitiveCompare:)];
+        NSSortDescriptor *ndocDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ndoc" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         
         request.sortDescriptors = @[dateDescriptor, ndocDescriptor];
         
@@ -127,15 +127,11 @@
     
     cell.titleLabel.text = pickingOrder.ndoc;
     cell.detailLabel.text = [pickingOrder positionsCountString];
-    
+        
     [self setupMessageLabelForCell:cell andPickingOrder:pickingOrder];
     [self setupInfoLabelForCell:cell andPickingOrder:pickingOrder];
     
-//    if (pickingOrder.pickingOrderPositions.count > 0) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//    } else {
-//        cell.accessoryType = UITableViewCellAccessoryNone;
-//    }
+    cell.accessoryType = UITableViewCellAccessoryNone;
 
 }
 
@@ -288,14 +284,7 @@
 #pragma mark - Navigation
 
 - (void)showPositionsForPickingOrder:(STMPickingOrder *)pickingOrder {
-    
     [self performSegueWithIdentifier:@"showPositions" sender:pickingOrder];
-    
-    //    STMPickingOrderPositionsTVC *positionsTVC = [[STMPickingOrderPositionsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    //    positionsTVC.pickingOrder = pickingOrder;
-    //
-    //    [self.navigationController pushViewController:positionsTVC animated:YES];
-    
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
