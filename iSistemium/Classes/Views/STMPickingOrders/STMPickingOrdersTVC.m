@@ -324,7 +324,7 @@
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom1TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
 
-    self.title = NSLocalizedString(@"PICKING ORDERS", nil);
+    self.navigationItem.title = NSLocalizedString(@"PICKING ORDERS", nil);
     
     [self performFetch];
     

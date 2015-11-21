@@ -88,6 +88,8 @@
     
     [self.navigationController popToViewController:self animated:YES];
     
+    [self updatePickedPositionsButton];
+
     if (position) {
 
         if ([self.tableData containsObject:position]) {
@@ -249,12 +251,23 @@
                                                                                target:self
                                                                                action:@selector(pickedPositionsButtonPressed)];
     
+    [self updatePickedPositionsButton];
+    
     [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], self.pickedPositionsButton, [STMBarButtonItem flexibleSpace]]];
     
 }
 
 - (void)pickedPositionsButtonPressed {
     [self performSegueWithIdentifier:@"showPickedPositions" sender:nil];
+}
+
+- (void)updatePickedPositionsButton {
+    
+    NSSet *pickedPositions = [self.pickingOrder.pickingOrderPositions valueForKeyPath:@"@distinctUnionOfSets.pickingOrderPositionsPicked"];
+    
+    self.pickedPositionsButton.enabled = (pickedPositions.count > 0);
+    self.pickedPositionsButton.title = [NSString stringWithFormat:@"%@ (%@)", NSLocalizedString(@"PICKED POSITIONS", nil), @(pickedPositions.count).stringValue];
+    
 }
 
 - (void)updateToolbars {

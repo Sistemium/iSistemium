@@ -133,6 +133,20 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    switch (section) {
+        case 2:
+            return CGFLOAT_MIN;
+            break;
+            
+        default:
+            return [super tableView:tableView heightForHeaderInSection:section];
+            break;
+    }
+    
+}
+
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
     static STMCustom7TVCell *cell = nil;
