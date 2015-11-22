@@ -32,7 +32,10 @@
     self = [super init];
     
     if (self) {
+        
         _mode = mode;
+        _status = STMBarCodeScannerStopped;
+        
     }
     return self;
 
@@ -172,7 +175,7 @@
     
     con.videoOrientation = AVCaptureVideoOrientationPortrait;
 
-    [superView.layer insertSublayer:self.preview atIndex:0];
+    [superView.layer insertSublayer:self.preview above:superView.layer];
     
     [self.session startRunning];
 

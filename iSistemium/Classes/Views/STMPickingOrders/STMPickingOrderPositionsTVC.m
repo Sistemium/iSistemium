@@ -445,7 +445,17 @@
 }
 
 - (void)cameraBarCodeScannerButtonPressed {
-    NSLogMethodName;
+    
+    if (self.cameraBarCodeScanner.status == STMBarCodeScannerStarted) {
+        
+        [self.cameraBarCodeScanner stopScan];
+        
+    } else if (self.cameraBarCodeScanner.status == STMBarCodeScannerStopped) {
+    
+        [self.cameraBarCodeScanner startScan];
+
+    }
+
 }
 
 
@@ -473,24 +483,35 @@
 
 - (void)searchBarCode:(NSString *)barcode {
     
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
-    request.predicate = [NSPredicate predicateWithFormat:@"ANY barcodes.barcode == %@", barcode];
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMBarCode class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]];
+    request.predicate = [NSPredicate predicateWithFormat:@"code == %@", barcode];
     
-    NSArray *articlesArray = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
+    NSArray *barcodesArray = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
     
-    if (articlesArray.count > 1) {
-        NSLog(@"articlesArray.count > 1");
+    if (barcodesArray.count > 1) {
+        NSLog(@"barcodesArray.count > 1");
     }
     
-    STMArticle *article = articlesArray.firstObject;
-    
-    if (article) {
-        
-    } else {
+    for (STMBarCode *barcodeObject in barcodesArray) {
+
+        if ([barcodeObject isKindOfClass:[STMArticleBarCode class]]) {
+            
+            NSLog(@"article name %@", [(STMArticleBarCode *)barcodeObject article].name);
+            
+        } else if ([barcodeObject isKindOfClass:[STMStockBatchBarCode class]]) {
+
+            NSLog(@"stockBatch article name %@", [(STMStockBatchBarCode *)barcodeObject stockBatch].article.name);
+
+        } else {
+            
+            NSLog(@"barcode %@", barcode);
+            
+        }
         
     }
-    
+
+
 }
 
 
