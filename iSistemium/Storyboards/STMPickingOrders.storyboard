@@ -120,6 +120,9 @@
                             <outlet property="delegate" destination="ngO-0S-lAI" id="bsf-Wd-8pb"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="NrD-BS-fFG" kind="show" identifier="showPositionVolume" id="wCb-Mo-hw1"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tTU-E8-7aG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -309,4 +312,7 @@
             <point key="canvasLocation" x="695" y="331"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="wCb-Mo-hw1"/>
+    </inferredMetricsTieBreakers>
 </document>

@@ -26,7 +26,7 @@
 
 - (IBAction)doneButtonPressed:(id)sender {
     
-    if (![self.infoType.datatype isEqualToString:@"date"]) {
+    if (![self.article.productionInfoType.datatype isEqualToString:@"date"]) {
         
         if ([self isCorrectProductionInfo:self.textField.text]) {
             
@@ -56,14 +56,12 @@
     STMArticleProductionInfo *productionInfo = (STMArticleProductionInfo *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMArticleProductionInfo class]) isFantom:NO];
     
     productionInfo.info = info;
-    productionInfo.article = self.position.article;
-    productionInfo.productionInfoType = self.infoType;
+    productionInfo.article = self.article;
+    productionInfo.productionInfoType = self.article.productionInfoType;
     
     self.parentVC.selectedProductionInfo = productionInfo;
     
     [self.parentVC positionDidPicked];
-    
-//    [self.navigationController popViewControllerAnimated:YES];
 
 }
 
@@ -91,7 +89,7 @@
     
     self.datePicker.maximumDate = [NSDate date];
     
-    if (![self.infoType.datatype isEqualToString:@"date"]) {
+    if (![self.article.productionInfoType.datatype isEqualToString:@"date"]) {
         
         self.textField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
         self.textField.autocorrectionType = UITextAutocorrectionTypeNo;

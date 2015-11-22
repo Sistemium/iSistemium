@@ -8,6 +8,9 @@
 
 #import "STMPickingOrderPositionsPickedTVC.h"
 
+#import "STMPickingPositionVolumeTVC.h"
+#import "STMObjectsController.h"
+
 
 @interface STMPickingOrderPositionsPickedTVC ()
 
@@ -45,6 +48,49 @@
         
     }
     return _tableData;
+    
+}
+
+- (void)pickedPosition:(STMPickingOrderPositionPicked *)pickedPosition newVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
+    
+    if (volume > 0) {
+        
+        pickedPosition.volume = @(volume);
+        pickedPosition.productionInfo = info;
+        
+        if ([self.tableData containsObject:pickedPosition]) {
+            
+            NSInteger index = [self.tableData indexOfObject:pickedPosition];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            
+        }
+        
+        [self.positionsTVC positionWasUpdated:pickedPosition.pickingOrderPosition];
+
+    } else {
+        
+        self.tableData = nil;
+        [self deletePickedPosition:pickedPosition];
+        [self.tableView reloadData];
+        
+    }
+    
+    [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
+        
+    }];
+
+    [self.navigationController popToViewController:self animated:YES];
+
+}
+
+- (void)deletePickedPosition:(STMPickingOrderPositionPicked *)pickedPosition {
+    
+    STMPickingOrderPosition *position = pickedPosition.pickingOrderPosition;
+    
+    [STMObjectsController createRecordStatusAndRemoveObject:pickedPosition];
+    
+    [self.positionsTVC positionWasUpdated:position];
     
 }
 
@@ -126,6 +172,34 @@
     cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickedPosition.volume.integerValue andPackageRel:pickedPosition.article.packageRel.integerValue];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMPickingOrderPositionPicked *pickedPosition = self.tableData[indexPath.row];
+    [self performSegueWithIdentifier:@"showPositionVolume" sender:pickedPosition];
+
+}
+
+
+#pragma mark - navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showPositionVolume"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMPickingPositionVolumeTVC class]] &&
+            [sender isKindOfClass:[STMPickingOrderPositionPicked class]]) {
+            
+            STMPickingPositionVolumeTVC *volumeTVC = (STMPickingPositionVolumeTVC *)segue.destinationViewController;
+            volumeTVC.pickedPosition = (STMPickingOrderPositionPicked *)sender;
+            volumeTVC.pickedPositionsTVC = self;
+            
+        }
+        
+    }
     
 }
 

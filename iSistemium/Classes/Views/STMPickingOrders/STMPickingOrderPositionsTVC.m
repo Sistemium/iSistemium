@@ -103,22 +103,28 @@
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
         
     }];
-
-    [self.navigationController popToViewController:self animated:YES];
     
     [self updatePickedPositionsButton];
+    
+    [self positionWasUpdated:position];
 
+    [self.navigationController popToViewController:self animated:YES];
+
+}
+
+- (void)positionWasUpdated:(STMPickingOrderPosition *)position {
+    
     if (position) {
-
-        if ([self.tableData containsObject:position]) {
         
+        if ([self.tableData containsObject:position]) {
+            
             if ([position nonPickedVolume] > 0) {
-
+                
                 NSUInteger positionIndex = [self.tableData indexOfObject:position];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:positionIndex inSection:0];
                 
                 [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-
+                
             } else {
                 
                 self.tableData = nil;
@@ -126,10 +132,15 @@
                 
             }
             
+        } else if ([self.pickingOrder.pickingOrderPositions containsObject:position]) {
+            
+            self.tableData = nil;
+            [self.tableView reloadData];
+
         }
         
     }
-    
+
 }
 
 
@@ -242,7 +253,7 @@
             
             STMPickingPositionVolumeTVC *volumeTVC = (STMPickingPositionVolumeTVC *)segue.destinationViewController;
             volumeTVC.position = (STMPickingOrderPosition *)sender;
-            volumeTVC.mainVC = self;
+            volumeTVC.positionsTVC = self;
             
         }
         
@@ -252,6 +263,7 @@
             
             STMPickingOrderPositionsPickedTVC *pickedPositionsTVC = (STMPickingOrderPositionsPickedTVC *)segue.destinationViewController;
             pickedPositionsTVC.pickingOrder = self.pickingOrder;
+            pickedPositionsTVC.positionsTVC = self;
             
         }
         
@@ -427,9 +439,9 @@
         
     }
     
-    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
-    self.HIDBarCodeScanner.delegate = self;
-    [self.HIDBarCodeScanner startScan];
+//    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
+//    self.HIDBarCodeScanner.delegate = self;
+//    [self.HIDBarCodeScanner startScan];
 
 }
 
@@ -469,10 +481,6 @@
     
     NSLog(@"barCodeScanner receiveBarCode: %@", barcode);
     
-//    if (scanner == self.cameraBarCodeScanner) {
-//        [self.HIDBarCodeScanner startScan];
-//    }
-
     [self searchBarCode:barcode];
     
 }

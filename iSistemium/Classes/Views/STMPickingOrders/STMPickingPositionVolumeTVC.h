@@ -10,12 +10,16 @@
 
 #import "STMDataModel.h"
 #import "STMPickingOrderPositionsTVC.h"
+#import "STMPickingOrderPositionsPickedTVC.h"
 
 
 @interface STMPickingPositionVolumeTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, weak) STMPickingOrderPosition *position;
-@property (nonatomic, weak) STMPickingOrderPositionsTVC *mainVC;
+@property (nonatomic, weak) STMPickingOrderPositionsTVC *positionsTVC;
+
+@property (nonatomic, weak) STMPickingOrderPositionPicked *pickedPosition;
+@property (nonatomic, weak) STMPickingOrderPositionsPickedTVC *pickedPositionsTVC;
 
 
 @end

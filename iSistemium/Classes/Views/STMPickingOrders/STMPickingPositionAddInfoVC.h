@@ -13,8 +13,7 @@
 @interface STMPickingPositionAddInfoVC : UIViewController
 
 @property (nonatomic, weak) STMPickingPositionInfoTVC *parentVC;
-@property (nonatomic, weak) STMPickingOrderPosition *position;
-@property (nonatomic, weak) STMProductionInfoType *infoType;
+@property (nonatomic, weak) STMArticle *article;
 
 
 @end

@@ -18,11 +18,22 @@
 @property (nonatomic, strong) NSString *articleNameCellIdentifier;
 @property (nonatomic, strong) NSString *doneButtonCellIdentifier;
 
+@property (nonatomic, weak) STMArticle *article;
+
 
 @end
 
 
 @implementation STMPickingPositionInfoTVC
+
+- (STMArticle *)article {
+    
+    if (!_article) {
+        _article = (self.position) ? self.position.article : self.pickedPosition.article;
+    }
+    return _article;
+    
+}
 
 - (NSArray *)productionInfo {
     
@@ -32,7 +43,7 @@
                                                                          ascending:YES
                                                                           selector:@selector(caseInsensitiveCompare:)];
         
-        _productionInfo = [self.position.article.articleProductionInfo sortedArrayUsingDescriptors:@[sortDescriptor]];
+        _productionInfo = [self.article.articleProductionInfo sortedArrayUsingDescriptors:@[sortDescriptor]];
         
     }
     return _productionInfo;
@@ -107,7 +118,7 @@
     switch (section) {
         case 1: {
 
-            NSString *infoTypeName = self.position.article.productionInfoType.name;
+            NSString *infoTypeName = self.article.productionInfoType.name;
             return [(infoTypeName) ? infoTypeName : NSLocalizedString(@"SELECT INFO", nil) stringByAppendingString:@":"];
             
         }
@@ -180,10 +191,10 @@
         
         STMCustom5TVCell *customCell = (STMCustom5TVCell *)cell;
         
-        customCell.titleLabel.text = self.position.article.name;
+        customCell.titleLabel.text = self.article.name;
         customCell.detailLabel.text = nil;
         customCell.infoLabel.text = [STMFunctions volumeStringWithVolume:self.selectedVolume
-                                                           andPackageRel:self.position.article.packageRel.integerValue];
+                                                           andPackageRel:self.article.packageRel.integerValue];
         
     }
     
@@ -227,7 +238,7 @@
         case 1:
             if (indexPath.row == self.productionInfo.count) {
                 
-                STMProductionInfoType *type = self.position.article.productionInfoType;
+                STMProductionInfoType *type = self.article.productionInfoType;
                 
                 if ([type.datatype isEqualToString:@"date"]) {
                     [self performSegueWithIdentifier:@"addDateInfo" sender:nil];
@@ -255,7 +266,13 @@
 }
 
 - (void)positionDidPicked {
-    [self.mainVC position:self.position wasPickedWithVolume:self.selectedVolume andProductionInfo:self.selectedProductionInfo.info];
+    
+    if (self.position) {
+        [self.positionsTVC position:self.position wasPickedWithVolume:self.selectedVolume andProductionInfo:self.selectedProductionInfo.info];
+    } else {
+        [self.pickedPositionsTVC pickedPosition:self.pickedPosition newVolume:self.selectedVolume andProductionInfo:self.selectedProductionInfo.info];
+    }
+    
 }
 
 
@@ -267,8 +284,7 @@
         
         STMPickingPositionAddInfoVC *addInfoVC = (STMPickingPositionAddInfoVC *)segue.destinationViewController;
         addInfoVC.parentVC = self;
-        addInfoVC.infoType = self.position.article.productionInfoType;
-        addInfoVC.position = self.position;
+        addInfoVC.article = self.article;
         
     }
     

@@ -21,6 +21,7 @@
 @property (nonatomic) NSInteger volume;
 @property (nonatomic) NSInteger packageRel;
 @property (nonatomic) NSString *name;
+@property (nonatomic, weak) STMProductionInfoType *productionInfoType;
 
 @property (nonatomic) NSInteger selectedVolume;
 @property (nonatomic) NSInteger selectedBoxCount;
@@ -65,15 +66,19 @@
 }
 
 - (NSInteger)volume {
-    return [self.position nonPickedVolume];
+    return (self.position) ? [self.position nonPickedVolume] : self.pickedPosition.volume.integerValue;
 }
 
 - (NSInteger)packageRel {
-    return self.position.article.packageRel.integerValue;
+    return (self.position) ? self.position.article.packageRel.integerValue : self.pickedPosition.article.packageRel.integerValue;
 }
 
 - (NSString *)name {
-    return self.position.article.name;
+    return (self.position) ? self.position.article.name : self.pickedPosition.article.name;
+}
+
+- (STMProductionInfoType *)productionInfoType {
+    return (self.position) ? self.position.article.productionInfoType : self.pickedPosition.article.productionInfoType;
 }
 
 - (void)setSelectedVolume:(NSInteger)selectedVolume {
@@ -233,7 +238,7 @@
 
 - (void)fillButtonCell:(UITableViewCell *)cell {
 
-    if (self.position.article.productionInfoType) {
+    if (self.productionInfoType) {
 
         cell.textLabel.text = NSLocalizedString(@"NEXT", nil);
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -254,15 +259,25 @@
     
     switch (indexPath.section) {
         case 2:
-            if (self.position.article.productionInfoType) {
+            if (self.productionInfoType) {
                 [self performSegueWithIdentifier:@"showPositionInfo" sender:nil];
             } else {
-                [self.mainVC position:self.position wasPickedWithVolume:self.selectedVolume andProductionInfo:nil];
+                [self doneButtonPressed];
             }
             break;
             
         default:
             break;
+    }
+    
+}
+
+- (void)doneButtonPressed {
+    
+    if (self.position) {
+        [self.positionsTVC position:self.position wasPickedWithVolume:self.selectedVolume andProductionInfo:nil];
+    } else {
+        [self.pickedPositionsTVC pickedPosition:self.pickedPosition newVolume:self.selectedVolume andProductionInfo:nil];
     }
     
 }
@@ -362,9 +377,13 @@
         [segue.destinationViewController isKindOfClass:[STMPickingPositionInfoTVC class]]) {
         
         STMPickingPositionInfoTVC *infoTVC = (STMPickingPositionInfoTVC *)segue.destinationViewController;
+
         infoTVC.position = self.position;
         infoTVC.selectedVolume = self.selectedVolume;
-        infoTVC.mainVC = self.mainVC;
+        infoTVC.positionsTVC = self.positionsTVC;
+        
+        infoTVC.pickedPosition = self.pickedPosition;
+        infoTVC.pickedPositionsTVC = self.pickedPositionsTVC;
         
     }
     

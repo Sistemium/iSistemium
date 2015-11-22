@@ -8,9 +8,15 @@
 
 #import "STMVariableCellsHeightTVC.h"
 
+#import "STMPickingOrderPositionsTVC.h"
+
+
 @interface STMPickingOrderPositionsPickedTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, weak) STMPickingOrder *pickingOrder;
+@property (nonatomic, weak) STMPickingOrderPositionsTVC *positionsTVC;
 
+- (void)pickedPosition:(STMPickingOrderPositionPicked *)pickedPosition newVolume:(NSUInteger)volume andProductionInfo:(NSString *)info;
+- (void)deletePickedPosition:(STMPickingOrderPositionPicked *)pickedPosition;
 
 @end
