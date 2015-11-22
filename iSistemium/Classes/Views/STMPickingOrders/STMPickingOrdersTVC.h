@@ -11,4 +11,8 @@
 
 @interface STMPickingOrdersTVC : STMVariableCellsHeightTVC <STMWorkflowable>
 
+- (NSArray <NSString *>*)actions;
+- (void)selectAction:(NSString *)action;
+
+
 @end

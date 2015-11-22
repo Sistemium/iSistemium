@@ -204,21 +204,25 @@
 }
 
 
-//+ (NSString *)processingForLabel:(NSString *)label inWorkflow:(NSString *)workflow {
-//    
-//    NSDictionary *workflowDic = [self workflowDicFromWorkflow:workflow];
-//    
-//    for (NSString *key in workflowDic.allKeys) {
-//        
-//        if ([label isEqualToString:workflowDic[key][@"label"]]) {
-//            return key;
-//        }
-//        
-//    }
-//    
-//    return nil;
-//    
-//}
++ (NSString *)processingForLabel:(NSString *)label inWorkflow:(NSString *)workflow {
+    
+    NSDictionary *workflowDic = [self workflowDicFromWorkflow:workflow];
+    
+    for (NSString *key in workflowDic.allKeys) {
+        
+        NSString *keyLabel = workflowDic[key][@"label"];
+        
+        if (keyLabel) {
+            if ([label isEqualToString:keyLabel]) {
+                return key;
+            }
+        }
+        
+    }
+    
+    return nil;
+    
+}
 
 + (UIColor *)colorForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow {
     return [self colorForType:@"cls" andProcessing:processing inWorkflow:workflow];

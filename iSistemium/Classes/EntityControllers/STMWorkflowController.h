@@ -20,6 +20,9 @@
 
 + (NSString *)labelForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow;
 + (NSString *)descriptionForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow;
+
++ (NSString *)processingForLabel:(NSString *)label inWorkflow:(NSString *)workflow;
+
 + (UIColor *)colorForProcessing:(NSString *)processing inWorkflow:(NSString *)workflow;
 
 + (NSString *)labelForEditableProperty:(NSString *)editableProperty;

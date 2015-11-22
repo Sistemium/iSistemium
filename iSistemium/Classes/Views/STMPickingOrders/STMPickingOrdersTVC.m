@@ -19,6 +19,8 @@
 @property (nonatomic, strong) STMPickingOrder *workflowSelectedOrder;
 @property (nonatomic, strong) NSString *nextProcessing;
 
+@property (nonatomic, strong) NSString *selectedProcessing;
+
 
 @end
 
@@ -51,6 +53,8 @@
         
         request.sortDescriptors = @[dateDescriptor, ndocDescriptor];
         
+        request.predicate = [self currentPredicate];
+        
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
                                                                    sectionNameKeyPath:@"date"
@@ -60,6 +64,89 @@
         
     }
     return _resultsController;
+    
+}
+
+- (NSPredicate *)currentPredicate {
+    
+    NSMutableArray *subpredicates = @[].mutableCopy;
+    
+    NSPredicate *positionsCountPredicate = [NSPredicate predicateWithFormat:@"pickingOrderPositions.@count > 0"];
+    [subpredicates addObject:positionsCountPredicate];
+
+    if (self.selectedProcessing) {
+        
+        NSPredicate *processingPredicate = [NSPredicate predicateWithFormat:@"processing == %@", self.selectedProcessing];
+        [subpredicates addObject:processingPredicate];
+        
+    }
+    
+    return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+}
+
+- (NSArray <NSString *>*)actions {
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPickingOrder class])];
+    
+    NSSortDescriptor *dateDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO selector:@selector(compare:)];
+    NSSortDescriptor *ndocDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ndoc" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    
+    request.sortDescriptors = @[dateDescriptor, ndocDescriptor];
+
+    request.predicate = [NSPredicate predicateWithFormat:@"pickingOrderPositions.@count > 0"];
+    
+    NSArray *pickingOrders = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+    
+    NSArray *processings = [pickingOrders valueForKeyPath:@"@distinctUnionOfObjects.processing"];
+    
+    if (processings.count > 0) {
+        
+        NSMutableArray *actions = @[].mutableCopy;
+        
+        for (NSString *processing in processings) {
+            [actions addObject:[STMWorkflowController labelForProcessing:processing inWorkflow:self.pickingOrderWorkflow]];
+        }
+        
+        return actions;
+
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
+
+- (void)selectAction:(NSString *)action {
+    self.selectedProcessing = [STMWorkflowController processingForLabel:action inWorkflow:self.pickingOrderWorkflow];
+}
+
+- (void)setSelectedProcessing:(NSString *)selectedProcessing {
+    
+    if (![_selectedProcessing isEqualToString:selectedProcessing]) {
+        
+        _selectedProcessing = selectedProcessing;
+        
+        [self updateTitle];
+        [self performFetch];
+        
+    }
+    
+}
+
+- (void)updateTitle {
+    
+    if (self.selectedProcessing) {
+        
+        NSString *label = [STMWorkflowController labelForProcessing:self.selectedProcessing inWorkflow:self.pickingOrderWorkflow];
+        self.navigationItem.title = label;
+        
+    } else {
+        
+        self.navigationItem.title = NSLocalizedString(@"PICKING ORDERS", nil);
+
+    }
     
 }
 
@@ -313,8 +400,7 @@
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom1TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
 
-    self.navigationItem.title = NSLocalizedString(@"PICKING ORDERS", nil);
-    
+    [self updateTitle];
     [self performFetch];
     
 }
