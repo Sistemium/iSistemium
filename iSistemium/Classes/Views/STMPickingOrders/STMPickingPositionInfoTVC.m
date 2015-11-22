@@ -303,6 +303,17 @@
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:self.doneButtonCellIdentifier];
     
+    if (self.pickedPosition) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"info == %@", self.pickedPosition.productionInfo];
+        NSArray *currentProductionInfo = [self.productionInfo filteredArrayUsingPredicate:predicate];
+        
+        if (currentProductionInfo.count == 1) {
+            self.selectedProductionInfo = currentProductionInfo.firstObject;
+        }
+        
+    }
+    
 }
 
 - (void)viewDidLoad {

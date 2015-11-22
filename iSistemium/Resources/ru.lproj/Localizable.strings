@@ -385,5 +385,6 @@
 "ADD INFO" = "Добавить признак";
 "PICKED POSITIONS" = "Собранные позиции";
 "POSITION PICKED" = "Собрано";
+"DELETE" = "Удалить";
 
 

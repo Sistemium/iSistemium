@@ -66,7 +66,7 @@
 }
 
 - (NSInteger)volume {
-    return (self.position) ? [self.position nonPickedVolume] : self.pickedPosition.volume.integerValue;
+    return (self.position) ? [self.position nonPickedVolume] : [self.pickedPosition.pickingOrderPosition nonPickedVolume] + self.pickedPosition.volume.integerValue;
 }
 
 - (NSInteger)packageRel {
@@ -107,7 +107,7 @@
 
     switch (section) {
         case 0:
-            return 1;
+            return (self.pickedPosition) ? 2 : 1;
             break;
 
         case 1:
@@ -169,7 +169,15 @@
     
     switch (indexPath.section) {
         case 0:
-            return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+            switch (indexPath.row) {
+                case 0:
+                    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+                    break;
+                    
+                default:
+                    return self.standardCellHeight;
+                    break;
+            }
             break;
             
         case 1:
@@ -190,8 +198,20 @@
     switch (indexPath.section) {
         case 0:
             
-            cell = [tableView dequeueReusableCellWithIdentifier:self.positionNameCellIdentifier forIndexPath:indexPath];
-            [self fillPositionNameCell:cell];
+            switch (indexPath.row) {
+                case 0:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.positionNameCellIdentifier forIndexPath:indexPath];
+                    [self fillCell:cell atIndexPath:indexPath];
+                    break;
+
+                case 1:
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+                    [self fillDeleteCell:cell];
+                    break;
+
+                default:
+                    break;
+            }
             
             break;
 
@@ -217,6 +237,13 @@
     
 }
 
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    [self fillPositionNameCell:cell];
+    [super fillCell:cell atIndexPath:indexPath];
+    
+}
+
 - (void)fillPositionNameCell:(UITableViewCell *)cell {
     
     if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
@@ -229,6 +256,19 @@
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+}
+
+- (void)fillDeleteCell:(UITableViewCell *)cell {
+    
+    if (self.pickedPosition) {
+        
+        cell.textLabel.text = NSLocalizedString(@"DELETE", nil);
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        cell.textLabel.textColor = [UIColor redColor];
+    
+    }
     
 }
 
@@ -258,6 +298,24 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     switch (indexPath.section) {
+        case 0:
+            
+            switch (indexPath.row) {
+                case 1:
+                    if (self.pickedPosition) {
+                        
+                        [self.pickedPositionsTVC deletePickedPosition:self.pickedPosition];
+                        [self.navigationController popViewControllerAnimated:YES];
+                        
+                    }
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
         case 2:
             if (self.productionInfoType) {
                 [self performSegueWithIdentifier:@"showPositionInfo" sender:nil];
@@ -404,7 +462,7 @@
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom7TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.positionNameCellIdentifier];
 
-    self.selectedVolume = self.volume;
+    self.selectedVolume = (self.position) ? [self.position nonPickedVolume] : self.pickedPosition.volume.integerValue;;
     
 }
 
