@@ -107,7 +107,7 @@
 
 - (void)prepareForCameraMode {
     
-    if ([self isCameraAvailable]) {
+    if ([STMBarCodeScanner isCameraAvailable]) {
         
         [self setupScanner];
         
@@ -140,10 +140,10 @@
     
 }
 
-- (BOOL)isCameraAvailable {
++ (BOOL)isCameraAvailable {
     
     NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    return [videoDevices count] > 0;
+    return ([videoDevices count] > 0);
     
 }
 
@@ -177,6 +177,7 @@
     [self.session startRunning];
 
 }
+
 
 #pragma mark AVCaptureMetadataOutputObjectsDelegate
 

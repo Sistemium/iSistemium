@@ -25,6 +25,8 @@ typedef NS_ENUM(NSUInteger, STMBarCodeScannerStatus) {
 
 @interface STMBarCodeScanner : NSObject
 
++ (BOOL)isCameraAvailable;
+
 @property (nonatomic, readonly) STMBarCodeScannerMode mode;
 @property (nonatomic, readonly) STMBarCodeScannerStatus status;
 

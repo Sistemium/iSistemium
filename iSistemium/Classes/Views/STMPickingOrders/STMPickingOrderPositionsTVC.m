@@ -14,12 +14,14 @@
 #import "STMPickingOrderPositionsPickedTVC.h"
 #import "STMObjectsController.h"
 
+#import "STMBarCodeScanner.h"
+
 
 #define SLIDE_THRESHOLD 20
 #define ACTION_THRESHOLD 100
 
 
-@interface STMPickingOrderPositionsTVC () <UIGestureRecognizerDelegate, UIActionSheetDelegate>
+@interface STMPickingOrderPositionsTVC () <UIGestureRecognizerDelegate, UIActionSheetDelegate, STMBarCodeScannerDelegate>
 
 @property (nonatomic, strong) NSArray <STMPickingOrderPosition *> *tableData;
 
@@ -32,6 +34,9 @@
 @property (nonatomic) BOOL cellStartSliding;
 
 @property (nonatomic, strong) STMBarButtonItem *pickedPositionsButton;
+
+@property (nonatomic, strong) STMBarCodeScanner *cameraBarCodeScanner;
+@property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
 
 
 @end
@@ -381,13 +386,110 @@
     if (self.nextProcessing) {
         
         self.pickingOrder.processing = self.nextProcessing;
-        [self updateToolbars];
-        [self.tableView reloadData];
+        [self orderProcessingChanged];
+        
+    }
+
+}
+
+- (void)orderProcessingChanged {
+    
+    [self checkIfBarcodeScanerIsNeeded];
+    [self updateToolbars];
+    [self.tableView reloadData];
+
+    [self.document saveDocument:^(BOOL success) {
+    }];
+
+}
+
+
+#pragma mark - barcode scanning
+
+- (void)checkIfBarcodeScanerIsNeeded {
+    
+    ([self orderIsProcessed]) ? [self startBarcodeScanning] : [self stopBarcodeScanning];
+    
+}
+
+- (void)startBarcodeScanning {
+    
+    if ([STMBarCodeScanner isCameraAvailable]) {
+    
+        self.cameraBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerCameraMode];
+        self.cameraBarCodeScanner.delegate = self;
+
+        STMBarButtonItem *cameraButton = [[STMBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
+                                                                                        target:self
+                                                                                        action:@selector(cameraBarCodeScannerButtonPressed)];
+        
+        self.navigationItem.leftBarButtonItem = cameraButton;
         
     }
     
-    [self.document saveDocument:^(BOOL success) {
-    }];
+    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
+    self.HIDBarCodeScanner.delegate = self;
+    [self.HIDBarCodeScanner startScan];
+
+}
+
+- (void)stopBarcodeScanning {
+    
+    [self.cameraBarCodeScanner stopScan];
+    self.cameraBarCodeScanner = nil;
+    self.navigationItem.leftBarButtonItem = nil;
+    
+    [self.HIDBarCodeScanner stopScan];
+    self.HIDBarCodeScanner = nil;
+    
+}
+
+- (void)cameraBarCodeScannerButtonPressed {
+    NSLogMethodName;
+}
+
+
+#pragma mark - STMBarCodeScannerDelegate
+
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode {
+    
+    NSLog(@"barCodeScanner receiveBarCode: %@", barcode);
+    
+//    if (scanner == self.cameraBarCodeScanner) {
+//        [self.HIDBarCodeScanner startScan];
+//    }
+
+    [self searchBarCode:barcode];
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
+    NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
+}
+
+- (void)searchBarCode:(NSString *)barcode {
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMArticle class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
+    request.predicate = [NSPredicate predicateWithFormat:@"ANY barcodes.barcode == %@", barcode];
+    
+    NSArray *articlesArray = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
+    
+    if (articlesArray.count > 1) {
+        NSLog(@"articlesArray.count > 1");
+    }
+    
+    STMArticle *article = articlesArray.firstObject;
+    
+    if (article) {
+        
+    } else {
+        
+    }
     
 }
 
@@ -523,6 +625,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self checkIfBarcodeScanerIsNeeded];
+    
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    
+    [super viewDidDisappear:animated];
+    [self stopBarcodeScanning];
+    
 }
 
 - (void)didReceiveMemoryWarning {
