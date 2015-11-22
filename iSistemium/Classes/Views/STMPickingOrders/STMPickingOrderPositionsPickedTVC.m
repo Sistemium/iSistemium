@@ -70,9 +70,7 @@
 
     } else {
         
-        self.tableData = nil;
         [self deletePickedPosition:pickedPosition];
-        [self.tableView reloadData];
         
     }
     
@@ -88,9 +86,19 @@
     
     STMPickingOrderPosition *position = pickedPosition.pickingOrderPosition;
     
+    self.tableData = nil;
     [STMObjectsController createRecordStatusAndRemoveObject:pickedPosition];
     
-    [self.positionsTVC positionWasUpdated:position];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        [self.tableView reloadData];
+        [self.positionsTVC positionWasUpdated:position];
+        
+        if (self.tableData.count == 0) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+
+    }];
     
 }
 
@@ -182,6 +190,30 @@
     [self performSegueWithIdentifier:@"showPositionVolume" sender:pickedPosition];
 
 }
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+//- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return NO;
+//}
+//
+//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return YES;
+//}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMPickingOrderPositionPicked *pickedPosition = self.tableData[indexPath.row];
+        [self deletePickedPosition:pickedPosition];
+        
+    }
+    
+}
+
 
 
 #pragma mark - navigation

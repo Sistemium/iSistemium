@@ -103,9 +103,7 @@
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
         
     }];
-    
-    [self updatePickedPositionsButton];
-    
+
     [self positionWasUpdated:position];
 
     [self.navigationController popToViewController:self animated:YES];
@@ -114,6 +112,8 @@
 
 - (void)positionWasUpdated:(STMPickingOrderPosition *)position {
     
+    [self updatePickedPositionsButton];
+
     if (position) {
         
         if ([self.tableData containsObject:position]) {
