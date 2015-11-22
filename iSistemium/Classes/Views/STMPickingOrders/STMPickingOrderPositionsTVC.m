@@ -302,10 +302,10 @@
 
 - (void)updateToolbars {
     
-    BOOL orderIsProcessed = [self orderIsProcessed];
+//    BOOL orderIsProcessed = [self orderIsProcessed];
+//    self.navigationItem.hidesBackButton = orderIsProcessed;
     
-    self.navigationItem.hidesBackButton = orderIsProcessed;
-    self.navigationController.toolbarHidden =  !orderIsProcessed;
+    self.navigationController.toolbarHidden = NO;
     
     [self addProcessingButton];
 
