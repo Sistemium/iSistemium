@@ -175,7 +175,7 @@
 
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
-    static STMCustom1TVCell *cell = nil;
+    static UITableViewCell *cell = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
@@ -187,7 +187,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMCustom1TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     return cell;
     
 }
@@ -200,66 +200,35 @@
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    if ([cell isKindOfClass:[STMCustom1TVCell class]]) {
-        [self fillPickingOrderCell:(STMCustom1TVCell *)cell atIndexPath:indexPath];
+    if ([cell isKindOfClass:[UITableViewCell class]]) {
+        [self fillPickingOrderCell:(UITableViewCell *)cell atIndexPath:indexPath];
     }
     
     [super fillCell:cell atIndexPath:indexPath];
     
 }
 
-- (void)fillPickingOrderCell:(STMCustom1TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillPickingOrderCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.titleLabel.text = pickingOrder.ndoc;
-    cell.detailLabel.text = [pickingOrder positionsCountString];
-        
-    [self setupMessageLabelForCell:cell andPickingOrder:pickingOrder];
-    [self setupInfoLabelForCell:cell andPickingOrder:pickingOrder];
-    
-    cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@", pickingOrder.ndoc, [pickingOrder positionsCountString]];
 
-}
-
-- (void)setupMessageLabelForCell:(STMCustom1TVCell *)cell andPickingOrder:(STMPickingOrder *)pickingOrder {
-    
     if (pickingOrder.pickingOrderPositions.count > 0) {
         
         NSString *boxes = [pickingOrder approximateBoxCountString];
         NSString *bottles = [pickingOrder bottleCountString];
         
-        cell.messageLabel.text = [NSString stringWithFormat:@"%@, %@", boxes, bottles];
-
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@, %@", boxes, bottles];
+        
     } else {
         
-        cell.messageLabel.text = nil;
+        cell.detailTextLabel.text = nil;
         
     }
 
-}
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-- (void)setupInfoLabelForCell:(STMCustom1TVCell *)cell andPickingOrder:(STMPickingOrder *)pickingOrder {
-    
-    NSString *processing = pickingOrder.processing;
-    NSString *workflow = self.pickingOrderWorkflow;
-    
-    NSString *processingLabel = [STMWorkflowController labelForProcessing:processing inWorkflow:workflow];
-    
-    cell.infoLabel.text = (processingLabel) ? processingLabel : processing;
-    
-    for (UIGestureRecognizer *gestures in cell.infoLabel.gestureRecognizers) {
-        [cell.infoLabel removeGestureRecognizer:gestures];
-    }
-    
-    cell.infoLabel.userInteractionEnabled = YES;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(infoLabelTapped:)];
-    [cell.infoLabel addGestureRecognizer:tap];
-    
-    UIColor *processingColor = [STMWorkflowController colorForProcessing:processing inWorkflow:workflow];
-    
-    cell.infoLabel.textColor = (processingColor) ? processingColor : [UIColor blackColor];
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -397,8 +366,7 @@
     
     [super customInit];
     
-    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom1TVCell class]) bundle:nil];
-    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerClass:[STMTableViewCellStyleSubtitle class] forCellReuseIdentifier:self.cellIdentifier];
 
     [self updateTitle];
     [self performFetch];
