@@ -244,7 +244,7 @@
 
         case 2:
             if (self.selectedProductionInfo) {
-                [self.mainVC position:self.position wasPickedWithVolume:self.selectedVolume andProductionInfo:self.selectedProductionInfo.info];
+                [self positionDidPicked];
             }
             break;
 
@@ -252,6 +252,10 @@
             break;
     }
     
+}
+
+- (void)positionDidPicked {
+    [self.mainVC position:self.position wasPickedWithVolume:self.selectedVolume andProductionInfo:self.selectedProductionInfo.info];
 }
 
 

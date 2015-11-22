@@ -19,5 +19,7 @@
 @property (nonatomic) NSInteger selectedVolume;
 @property (nonatomic, strong) STMArticleProductionInfo *selectedProductionInfo;
 
+- (void)positionDidPicked;
+
 
 @end

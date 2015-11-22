@@ -61,7 +61,9 @@
     
     self.parentVC.selectedProductionInfo = productionInfo;
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.parentVC positionDidPicked];
+    
+//    [self.navigationController popViewControllerAnimated:YES];
 
 }
 
