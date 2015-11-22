@@ -13,11 +13,10 @@
 #import "STMWorkflowEditablesVC.h"
 
 
-@interface STMPickingOrdersTVC () <UIActionSheetDelegate>
+@interface STMPickingOrdersTVC ()
 
 @property (nonatomic, strong) NSString *pickingOrderWorkflow;
 @property (nonatomic, strong) STMPickingOrder *workflowSelectedOrder;
-@property (nonatomic, strong) NSString *nextProcessing;
 
 @property (nonatomic, strong) NSString *selectedProcessing;
 
@@ -102,7 +101,7 @@
     
     if (processings.count > 0) {
         
-        NSMutableArray *actions = @[].mutableCopy;
+        NSMutableArray *actions = @[NSLocalizedString(@"SHOW ALL DATA", nil)].mutableCopy;
         
         for (NSString *processing in processings) {
             [actions addObject:[STMWorkflowController labelForProcessing:processing inWorkflow:self.pickingOrderWorkflow]];
@@ -188,14 +187,30 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    
+    [self fillCell:cell atIndexPath:indexPath];
+
     return cell;
     
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self fillCell:cell atIndexPath:indexPath];
-    
+    STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:pickingOrder.processing inWorkflow:self.pickingOrderWorkflow];
+
+    [[cell.contentView viewWithTag:1] removeFromSuperview];
+
+    CGFloat fillWidth = 5;
+
+    CGRect rect = CGRectMake(1, 1, fillWidth, cell.frame.size.height-2);
+    UIView *view = [[UIView alloc] initWithFrame:rect];
+    view.tag = 1;
+    view.backgroundColor = (processingColor) ? processingColor : [UIColor blackColor];
+
+    [cell.contentView addSubview:view];
+    [cell.contentView sendSubviewToBack:view];
+
 }
 
 - (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -236,104 +251,6 @@
     STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
     [self showPositionsForPickingOrder:pickingOrder];
 
-}
-
-- (void)infoLabelTapped:(id)sender {
-    
-    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
-        
-        UITapGestureRecognizer *tap = (UITapGestureRecognizer *)sender;
-        
-        CGPoint currentTouchPosition = [tap locationInView:self.tableView];
-        
-        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-        
-        STMPickingOrder *pickingOrder = [self.resultsController objectAtIndexPath:indexPath];
-        
-        self.workflowSelectedOrder = pickingOrder;
-        
-        STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:pickingOrder.processing
-                                                                                          inWorkflow:self.pickingOrderWorkflow
-                                                                                        withDelegate:self];
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            [workflowActionSheet showInView:self.view];
-        }];
-        
-    }
-    
-}
-
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    
-    if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
-        
-        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
-        
-        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
-                                                              didSelectButtonWithIndex:buttonIndex
-                                                                            inWorkflow:workflowAS.workflow];
-        
-        self.nextProcessing = result[@"nextProcessing"];
-        
-        if (self.nextProcessing) {
-            
-            if ([result[@"editableProperties"] isKindOfClass:[NSArray class]]) {
-                
-                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
-                
-                editablesVC.workflow = workflowAS.workflow;
-                editablesVC.toProcessing = self.nextProcessing;
-                editablesVC.editableFields = result[@"editableProperties"];
-                editablesVC.parent = self;
-                
-                [self presentViewController:editablesVC animated:YES completion:^{
-                    
-                }];
-                
-            } else {
-                
-                [self updateWorkflowSelectedOrder];
-                
-            }
-            
-        }
-        
-    }
-    
-}
-
-- (void)takeEditableValues:(NSDictionary *)editableValues {
-
-    for (NSString *field in editableValues.allKeys) {
-        
-        if ([self.workflowSelectedOrder.entity.propertiesByName.allKeys containsObject:field]) {
-            [self.workflowSelectedOrder setValue:editableValues[field] forKey:field];
-        }
-        
-    }
-    
-    [self updateWorkflowSelectedOrder];
-    
-}
-
-- (void)updateWorkflowSelectedOrder {
-    
-    if (self.nextProcessing) {
-     
-        self.workflowSelectedOrder.processing = self.nextProcessing;
-    
-        if ([STMWorkflowController isEditableProcessing:self.nextProcessing inWorkflow:self.pickingOrderWorkflow]) {
-            [self showPositionsForPickingOrder:self.workflowSelectedOrder];
-        }
-
-    }
-    
-    [self.document saveDocument:^(BOOL success) {
-    }];
-    
 }
 
 
