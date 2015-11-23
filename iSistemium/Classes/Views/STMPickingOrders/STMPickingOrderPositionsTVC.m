@@ -15,6 +15,7 @@
 #import "STMObjectsController.h"
 
 #import "STMBarCodeScanner.h"
+#import "STMSoundController.h"
 
 
 #define SLIDE_THRESHOLD 20
@@ -439,9 +440,9 @@
         
     }
     
-//    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
-//    self.HIDBarCodeScanner.delegate = self;
-//    [self.HIDBarCodeScanner startScan];
+    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
+    self.HIDBarCodeScanner.delegate = self;
+    [self.HIDBarCodeScanner startScan];
 
 }
 
@@ -497,28 +498,38 @@
     
     NSArray *barcodesArray = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
     
-    if (barcodesArray.count > 1) {
-        NSLog(@"barcodesArray.count > 1");
-    }
-    
-    for (STMBarCode *barcodeObject in barcodesArray) {
-
-        if ([barcodeObject isKindOfClass:[STMArticleBarCode class]]) {
-            
-            NSLog(@"article name %@", [(STMArticleBarCode *)barcodeObject article].name);
-            
-        } else if ([barcodeObject isKindOfClass:[STMStockBatchBarCode class]]) {
-
-            NSLog(@"stockBatch article name %@", [(STMStockBatchBarCode *)barcodeObject stockBatch].article.name);
-
-        } else {
-            
-            NSLog(@"barcode %@", barcode);
-            
+    if (barcodesArray.count > 0) {
+        
+        [STMSoundController playOk];
+        
+        if (barcodesArray.count > 1) {
+            NSLog(@"barcodesArray.count > 1");
         }
         
-    }
+        for (STMBarCode *barcodeObject in barcodesArray) {
+            
+            if ([barcodeObject isKindOfClass:[STMArticleBarCode class]]) {
+                
+                NSLog(@"article name %@", [(STMArticleBarCode *)barcodeObject article].name);
+                
+            } else if ([barcodeObject isKindOfClass:[STMStockBatchBarCode class]]) {
+                
+                NSLog(@"stockBatch article name %@", [(STMStockBatchBarCode *)barcodeObject stockBatch].article.name);
+                
+            } else {
+                
+                NSLog(@"barcode %@", barcode);
+                
+            }
+            
+        }
 
+    } else {
+        
+        [STMSoundController playAlert];
+        [STMSoundController say:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+        
+    }
 
 }
 

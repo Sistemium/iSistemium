@@ -80,6 +80,7 @@
 		2C1C54831BFF4E230095F1DD /* STMPickingPositionInfoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1C54821BFF4E230095F1DD /* STMPickingPositionInfoTVC.m */; };
 		2C1C54891BFF6FA20095F1DD /* STMPickingPositionAddInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1C54881BFF6FA20095F1DD /* STMPickingPositionAddInfoVC.m */; };
 		2C1C548C1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1C548B1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.m */; };
+		2C1C548F1C031D7C0095F1DD /* STMSoundController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1C548E1C031D7C0095F1DD /* STMSoundController.m */; };
 		2C1D72DF1AB99DEC00C97599 /* STMCustom1TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C1D72DE1AB99DEC00C97599 /* STMCustom1TVCell.xib */; };
 		2C1D72E41AB9A88700C97599 /* STMCustom1TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */; };
 		2C1D72E71AB9BCFE00C97599 /* STMInsetLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1D72E61AB9BCFE00C97599 /* STMInsetLabel.m */; };
@@ -554,6 +555,8 @@
 		2C1C54881BFF6FA20095F1DD /* STMPickingPositionAddInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPickingPositionAddInfoVC.m; sourceTree = "<group>"; };
 		2C1C548A1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPickingOrderPositionsPickedTVC.h; sourceTree = "<group>"; };
 		2C1C548B1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPickingOrderPositionsPickedTVC.m; sourceTree = "<group>"; };
+		2C1C548D1C031D7C0095F1DD /* STMSoundController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSoundController.h; sourceTree = "<group>"; };
+		2C1C548E1C031D7C0095F1DD /* STMSoundController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSoundController.m; sourceTree = "<group>"; };
 		2C1D72DE1AB99DEC00C97599 /* STMCustom1TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom1TVCell.xib; sourceTree = "<group>"; };
 		2C1D72E21AB9A88700C97599 /* STMCustom1TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom1TVCell.h; sourceTree = "<group>"; };
 		2C1D72E31AB9A88700C97599 /* STMCustom1TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom1TVCell.m; sourceTree = "<group>"; };
@@ -1327,6 +1330,8 @@
 				2C9D04B51ADBC01800D0421D /* STMRemoteController.m */,
 				2CEE30591BF0CC43009B229F /* STMBarCodeScanner.h */,
 				2CEE305A1BF0CC43009B229F /* STMBarCodeScanner.m */,
+				2C1C548D1C031D7C0095F1DD /* STMSoundController.h */,
+				2C1C548E1C031D7C0095F1DD /* STMSoundController.m */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -2733,6 +2738,7 @@
 				2CEE30121BEBAD10009B229F /* STMCampaign+CoreDataProperties.m in Sources */,
 				2C1AB2911B6F5CF200BF5C50 /* STMAllRoutesMapVC.m in Sources */,
 				2C9D04B61ADBC01800D0421D /* STMRemoteController.m in Sources */,
+				2C1C548F1C031D7C0095F1DD /* STMSoundController.m in Sources */,
 				2C42ECB41B0B66C000B5C91A /* STMWebViewNC.m in Sources */,
 				2C5764191AA5E1E500B9FD2C /* STMAddPartnerVC.m in Sources */,
 				2C1AB2961B6F937B00BF5C50 /* STMReorderRoutePointsTVC.m in Sources */,
