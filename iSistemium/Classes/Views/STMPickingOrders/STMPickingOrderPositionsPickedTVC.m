@@ -15,6 +15,7 @@
 @interface STMPickingOrderPositionsPickedTVC ()
 
 @property (nonatomic, strong) NSArray <STMPickingOrderPositionPicked *> *tableData;
+@property (nonatomic) BOOL orderIsProcessed;
 
 
 @end
@@ -48,6 +49,15 @@
         
     }
     return _tableData;
+    
+}
+
+- (BOOL)orderIsProcessed {
+    
+    if (!_orderIsProcessed) {
+        _orderIsProcessed = [self.positionsTVC orderIsProcessed];
+    }
+    return _orderIsProcessed;
     
 }
 
@@ -180,28 +190,24 @@
     cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickedPosition.volume.integerValue andPackageRel:pickedPosition.article.packageRel.integerValue];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryType = (self.orderIsProcessed) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
     
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMPickingOrderPositionPicked *pickedPosition = self.tableData[indexPath.row];
-    [self performSegueWithIdentifier:@"showPositionVolume" sender:pickedPosition];
+    if (self.orderIsProcessed) {
+        
+        STMPickingOrderPositionPicked *pickedPosition = self.tableData[indexPath.row];
+        [self performSegueWithIdentifier:@"showPositionVolume" sender:pickedPosition];
 
+    }
+    
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return UITableViewCellEditingStyleDelete;
+    return (self.orderIsProcessed) ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
 }
-
-//- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-//    return NO;
-//}
-//
-//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-//    return YES;
-//}
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
