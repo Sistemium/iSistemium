@@ -12,9 +12,12 @@
 
 + (STMSoundController *)sharedController;
 
-+ (void)say:(NSString *)string;
 + (void)playAlert;
 + (void)playOk;
+
++ (void)say:(NSString *)string;
++ (void)alertSay:(NSString *)string;
++ (void)okSay:(NSString *)string;
 
 
 @end

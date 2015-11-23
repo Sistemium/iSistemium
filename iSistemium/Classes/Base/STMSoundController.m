@@ -53,13 +53,8 @@
     
 }
 
-+ (void)say:(NSString *)string {
 
-    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:string];
-    utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
-    [[self sharedController].speechSynthesizer speakUtterance:utterance];
-
-}
+#pragma mark - class methods
 
 + (void)playAlert {
     
@@ -73,6 +68,28 @@
 
 + (void)playOk {
     AudioServicesPlaySystemSound(1003);
+}
+
++ (void)say:(NSString *)string {
+    
+    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:string];
+    utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
+    [[self sharedController].speechSynthesizer speakUtterance:utterance];
+    
+}
+
++ (void)alertSay:(NSString *)string {
+    
+    [self playAlert];
+    [self say:string];
+    
+}
+
++ (void)okSay:(NSString *)string {
+
+    [self playOk];
+    [self say:string];
+
 }
 
 

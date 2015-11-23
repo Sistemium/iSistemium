@@ -39,6 +39,9 @@
 @property (nonatomic, strong) STMBarCodeScanner *cameraBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
 
+@property (nonatomic, strong) NSMutableArray *scannedStockBatches;
+@property (nonatomic, strong) NSMutableArray *scannedArticles;
+
 
 @end
 
@@ -481,7 +484,6 @@
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode {
     
     NSLog(@"barCodeScanner receiveBarCode: %@", barcode);
-    
     [self searchBarCode:barcode];
     
 }
@@ -489,6 +491,9 @@
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
     NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
 }
+
+
+#pragma mark - barcodes
 
 - (void)searchBarCode:(NSString *)barcode {
     
@@ -500,34 +505,217 @@
     
     if (barcodesArray.count > 0) {
         
-        [STMSoundController playOk];
+//        [STMSoundController playOk];
         
         if (barcodesArray.count > 1) {
             NSLog(@"barcodesArray.count > 1");
         }
+
+        [self checkBarCodes:barcodesArray];
         
-        for (STMBarCode *barcodeObject in barcodesArray) {
+    } else {
+        
+        [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+        NSLog(@"unknown barcode %@", barcode);
+
+    }
+
+}
+
+- (void)checkBarCodes:(NSArray <STMBarCode *> *)barcodesArray {
+
+    self.scannedArticles = @[].mutableCopy;
+    self.scannedStockBatches = @[].mutableCopy;
+
+    for (STMBarCode *barcodeObject in barcodesArray) {
+    
+        if ([barcodeObject isKindOfClass:[STMArticleBarCode class]]) {
             
-            if ([barcodeObject isKindOfClass:[STMArticleBarCode class]]) {
+            STMArticle *article = [(STMArticleBarCode *)barcodeObject article];
+            [self.scannedArticles addObject:article];
+            
+            NSLog(@"article name %@", article.name);
+            
+        } else if ([barcodeObject isKindOfClass:[STMStockBatchBarCode class]]) {
+            
+            STMStockBatch *stockBatch = [(STMStockBatchBarCode *)barcodeObject stockBatch];
+            [self.scannedStockBatches addObject:stockBatch];
+            
+            NSLog(@"stockBatch article name %@", stockBatch.article.name);
+            
+        } else {
+            
+        }
+    
+    }
+    
+    if (self.scannedArticles.count > 1 && self.scannedStockBatches.count > 1) {
+        
+        [STMSoundController alertSay:NSLocalizedString(@"ARTICLE COINCIDE WITH STOCKBATCH", nil)];
+        NSLog(@"!!!article barcode coincide with stock batch barcode!!!");
+        
+    }
+    
+    [self searchScannedArticle];
+    
+}
+
+- (void)searchScannedArticle {
+    
+    if (self.scannedStockBatches.count > 0) {
+        
+        [self checkScannedStockBatches];
+        
+    } else {
+        
+        if (self.scannedArticles.count > 0) {
+            
+            [self checkScannedArticles];
+            
+        } else {
+            
+            [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+            NSLog(@"unknown barcode %@", barcode);
+
+        }
+        
+    }
+
+}
+
+- (void)checkScannedStockBatches {
+    
+    if (self.scannedStockBatches.count > 1) {
+        
+        [STMSoundController alertSay:NSLocalizedString(@"ERROR", nil)];
+        NSLog(@"to many stock batches %@", self.scannedStockBatches);
+        
+    } else {
+        
+        STMStockBatch *stockBatch = self.scannedStockBatches.firstObject;
+        
+        if (stockBatch.volume.integerValue > 0) {
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article == %@", stockBatch.article];
+            
+            NSArray *correspondingPositions = [self.tableData filteredArrayUsingPredicate:predicate];
+            
+            if (correspondingPositions.count > 0) {
                 
-                NSLog(@"article name %@", [(STMArticleBarCode *)barcodeObject article].name);
-                
-            } else if ([barcodeObject isKindOfClass:[STMStockBatchBarCode class]]) {
-                
-                NSLog(@"stockBatch article name %@", [(STMStockBatchBarCode *)barcodeObject stockBatch].article.name);
+                if (correspondingPositions.count > 1) {
+                    
+                    [STMSoundController alertSay:NSLocalizedString(@"ERROR", nil)];
+                    NSLog(@"to many correspondingPositions %@", correspondingPositions);
+                    
+                } else {
+                    
+                    STMPickingOrderPosition *position = correspondingPositions.firstObject;
+                    [self pickPosition:position fromStockBatch:stockBatch];
+                    
+                }
                 
             } else {
                 
-                NSLog(@"barcode %@", barcode);
+                if (self.scannedArticles.count > 0) {
+                    
+                    [self checkScannedArticles];
+                    
+                } else {
+                    
+                    [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
+                    NSLog(@"picking order nave not this article %@", stockBatch.article);
+                    
+                }
+                
+            }
+
+        } else {
+
+            if (self.scannedArticles.count > 0) {
+                
+                [self checkScannedArticles];
+                
+            } else {
+                
+                [STMSoundController alertSay:NSLocalizedString(@"STOCK BATCH IS EMPTY", nil)];
+                NSLog(@"stock batch is empty %@", stockBatch);
+                
+            }
+
+        }
+
+    }
+
+}
+
+- (void)checkScannedArticles {
+    
+    if (self.scannedArticles.count > 1) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article IN %@", self.scannedArticles];
+        NSArray *correspondingPositions = [self.tableData filteredArrayUsingPredicate:predicate];
+        
+        if (correspondingPositions.count > 0) {
+            
+            if (correspondingPositions.count > 1) {
+                
+                [STMSoundController alertSay:NSLocalizedString(@"ERROR", nil)];
+                NSLog(@"%@ correspondingPositions for articles %@", @(correspondingPositions.count), [self.scannedArticles valueForKeyPath:@"@unionOfObjects.name"]);
+                
+            } else {
+                
+                STMPickingOrderPosition *position = correspondingPositions.firstObject;
+                [self performSegueWithIdentifier:@"showPositionVolume" sender:position];
                 
             }
             
+        } else {
+            
+            [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
+            NSLog(@"picking order nave not this articles %@", [self.scannedArticles valueForKeyPath:@"@unionOfObjects.name"]);
+            
         }
-
+        
     } else {
         
-        [STMSoundController playAlert];
-        [STMSoundController say:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+        STMArticle *article = self.scannedArticles.firstObject;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
+        NSArray *correspondingPositions = [self.tableData filteredArrayUsingPredicate:predicate];
+        
+        if (correspondingPositions.count > 0) {
+            
+            if (correspondingPositions.count > 1) {
+                
+                [STMSoundController alertSay:NSLocalizedString(@"ERROR", nil)];
+                NSLog(@"%@ correspondingPositions for article %@", @(correspondingPositions.count), article);
+                
+            } else {
+                
+                STMPickingOrderPosition *position = correspondingPositions.firstObject;
+                [self performSegueWithIdentifier:@"showPositionVolume" sender:position];
+                
+            }
+            
+        } else {
+            
+            [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
+            NSLog(@"picking order nave not this article %@", article.name);
+
+        }
+
+    }
+    
+}
+
+- (void)pickPosition:(STMPickingOrderPosition *)position fromStockBatch:(STMStockBatch *)stockBatch {
+    
+    if (stockBatch.volume.integerValue > position.volume.integerValue) {
+        
+        
+        
+    } else {
+        
+        
         
     }
 
