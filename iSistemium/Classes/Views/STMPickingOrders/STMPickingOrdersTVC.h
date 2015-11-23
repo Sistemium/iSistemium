@@ -7,9 +7,8 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
-#import "STMWorkflowable.h"
 
-@interface STMPickingOrdersTVC : STMVariableCellsHeightTVC <STMWorkflowable>
+@interface STMPickingOrdersTVC : STMVariableCellsHeightTVC
 
 - (NSArray <NSString *>*)actions;
 - (void)selectAction:(NSString *)action;

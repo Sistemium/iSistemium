@@ -572,11 +572,6 @@
             
             [self checkScannedArticles];
             
-        } else {
-            
-            [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
-            NSLog(@"unknown barcode %@", barcode);
-
         }
         
     }
