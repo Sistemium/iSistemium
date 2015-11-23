@@ -59,37 +59,6 @@
             </objects>
             <point key="canvasLocation" x="1507" y="331"/>
         </scene>
-        <!--Table View Controller-->
-        <scene sceneID="aud-hn-b6R">
-            <objects>
-                <tableViewController id="uHt-Ab-Q2j" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="UiX-nQ-WJR">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Gw7-eH-F42">
-                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Gw7-eH-F42" id="Ezk-5F-JhF">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
-                                </tableViewCellContentView>
-                                <animations/>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="uHt-Ab-Q2j" id="nla-oK-1CR"/>
-                            <outlet property="delegate" destination="uHt-Ab-Q2j" id="twe-dn-flC"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6I0-4d-0e9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2913" y="-416"/>
-        </scene>
         <!--Picking Order PositionsTVC-->
         <scene sceneID="ftM-dD-Bcj">
             <objects>
@@ -119,7 +88,6 @@
                     <connections>
                         <segue destination="NrD-BS-fFG" kind="show" identifier="showPositionVolume" id="tOD-gD-1Sy"/>
                         <segue destination="ngO-0S-lAI" kind="show" identifier="showPickedPositions" id="xy8-6U-ozm"/>
-                        <segue destination="uHt-Ab-Q2j" kind="show" identifier="showArticleSelector" id="aZl-Pu-e7z"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lsc-AG-QC1" userLabel="First Responder" sceneMemberID="firstResponder"/>
