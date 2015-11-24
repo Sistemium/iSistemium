@@ -88,15 +88,27 @@
 
     if (pickedPosition.stockBatch) {
         
-        [self stockBatchOperationWithSource:pickedPosition
-                                destination:pickedPosition.stockBatch
-                                     volume:pickedPosition.volume
-                                       save:NO];
+        if (pickedPosition.stockBatch.sts) {
+        
+            [self stockBatchOperationWithSource:pickedPosition
+                                    destination:pickedPosition.stockBatch
+                                         volume:pickedPosition.volume
+                                           save:NO];
+
+        } else {
+            
+            [STMObjectsController removeObject:pickedPosition.stockBatch];
+            
+        }
         
     }
     
-    [STMObjectsController createRecordStatusAndRemoveObject:pickedPosition];
-
+    if (pickedPosition.sts) {
+        [STMObjectsController createRecordStatusAndRemoveObject:pickedPosition];
+    } else {
+        [STMObjectsController removeObject:pickedPosition];
+    }
+    
 }
 
 
