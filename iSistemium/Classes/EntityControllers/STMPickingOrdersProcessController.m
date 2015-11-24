@@ -13,60 +13,74 @@
 
 @implementation STMPickingOrdersProcessController
 
-+ (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
++ (STMPickingOrderPositionPicked *)pickPosition:(STMPickingOrderPosition *)position withVolume:(NSUInteger)volume productionInfo:(NSString *)info article:(STMArticle *)article stockBatch:(STMStockBatch *)stockBatch barcode:(NSString *)barcode save:(BOOL)save {
     
     NSString *entityName = NSStringFromClass([STMPickingOrderPositionPicked class]);
     STMPickingOrderPositionPicked *pickedPosition = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:entityName isFantom:NO];
     
-    pickedPosition.productionInfo = info;
-    pickedPosition.article = position.article;
     pickedPosition.pickingOrderPosition = position;
     pickedPosition.volume = @(volume);
+    pickedPosition.productionInfo = info;
+    pickedPosition.article = article;
+    pickedPosition.stockBatch = stockBatch;
+    pickedPosition.code = barcode;
     
-    [self.document saveDocument:^(BOOL success) {
-        
-    }];
+    if (save) [self.document saveDocument:^(BOOL success) {}];
+
+    return pickedPosition;
+    
+}
+
++ (STMStockBatchOperation *)stockBatchOperationWithSource:(NSManagedObject *)source destination:(NSManagedObject *)destination volume:(NSNumber *)volume save:(BOOL)save {
+    
+    NSString *stockBatchOperationClassName = NSStringFromClass([STMStockBatchOperation class]);
+    
+    STMStockBatchOperation *stockBatchOperation = (STMStockBatchOperation *)[STMObjectsController newObjectForEntityName:stockBatchOperationClassName
+                                                                                                                isFantom:NO];
+    
+    NSString *sourceEntity = [NSStringFromClass([source class]) stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
+    NSString *destinationEntity= [NSStringFromClass([destination class]) stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
+    
+    stockBatchOperation.sourceEntity = sourceEntity;
+    stockBatchOperation.sourceXid = [source valueForKey:@"xid"];
+    stockBatchOperation.destinationEntity = destinationEntity;
+    stockBatchOperation.destinationXid = [destination valueForKey:@"xid"];
+    stockBatchOperation.volume = volume;
+
+    if (save) [self.document saveDocument:^(BOOL success) {}];
+
+    return stockBatchOperation;
+    
+}
+
++ (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
+    
+    [self pickPosition:position
+            withVolume:volume
+        productionInfo:info
+               article:position.article
+            stockBatch:nil
+               barcode:nil
+                  save:YES];
 
 }
 
 + (void)pickPosition:(STMPickingOrderPosition *)position fromStockBatch:(STMStockBatch *)stockBatch withBarCode:(NSString *)barcode {
-
-    NSString *pickedPositionClassName = NSStringFromClass([STMPickingOrderPositionPicked class]);
-
-    STMPickingOrderPositionPicked *pickedPosition = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:pickedPositionClassName
-                                                                                                                         isFantom:NO];
     
-    pickedPosition.pickingOrderPosition = position;
-    pickedPosition.article = stockBatch.article;
-    pickedPosition.stockBatch = stockBatch;
-    pickedPosition.code = barcode;
+    NSInteger volume = ([stockBatch localVolume] > position.volume.integerValue) ? position.volume.integerValue : [stockBatch localVolume];
     
-    if ([stockBatch localVolume] > position.volume.integerValue) {
-        
-        pickedPosition.volume = position.volume;
-        
-    } else {
-        
-        pickedPosition.volume = @([stockBatch localVolume]);
-        
-    }
+    STMPickingOrderPositionPicked *pickedPosition = [self pickPosition:position
+                                                            withVolume:volume
+                                                        productionInfo:nil
+                                                               article:stockBatch.article
+                                                            stockBatch:stockBatch
+                                                               barcode:barcode
+                                                                  save:NO];
     
-    NSString *stockBatchOperationClassName = NSStringFromClass([STMStockBatchOperation class]);
-
-    STMStockBatchOperation *stockBatchOperation = (STMStockBatchOperation *)[STMObjectsController newObjectForEntityName:stockBatchOperationClassName
-                                                                                                                isFantom:NO];
-    
-    NSString *stockBatchClassName = NSStringFromClass([STMStockBatch class]);
-
-    stockBatchOperation.sourceEntity = [stockBatchClassName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-    stockBatchOperation.sourceXid = stockBatch.xid;
-    stockBatchOperation.destinationEntity = [pickedPositionClassName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-    stockBatchOperation.destinationXid = pickedPosition.xid;
-    stockBatchOperation.volume = pickedPosition.volume;
-
-    [self.document saveDocument:^(BOOL success) {
-        
-    }];
+    [self stockBatchOperationWithSource:stockBatch
+                            destination:pickedPosition
+                                 volume:pickedPosition.volume
+                                   save:YES];
 
 }
 
@@ -74,27 +88,14 @@
 
     if (pickedPosition.stockBatch) {
         
-        NSString *stockBatchOperationClassName = NSStringFromClass([STMStockBatchOperation class]);
-        
-        STMStockBatchOperation *stockBatchOperation = (STMStockBatchOperation *)[STMObjectsController newObjectForEntityName:stockBatchOperationClassName
-                                                                                                                    isFantom:NO];
-
-        NSString *pickedPositionClassName = NSStringFromClass([STMPickingOrderPositionPicked class]);
-        NSString *stockBatchClassName = NSStringFromClass([STMStockBatch class]);
-
-        stockBatchOperation.sourceEntity = [pickedPositionClassName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-        stockBatchOperation.sourceXid = pickedPosition.xid;
-        stockBatchOperation.destinationEntity = [stockBatchClassName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-        stockBatchOperation.destinationXid = pickedPosition.stockBatch.xid;
-        stockBatchOperation.volume = pickedPosition.volume;
+        [self stockBatchOperationWithSource:pickedPosition
+                                destination:pickedPosition.stockBatch
+                                     volume:pickedPosition.volume
+                                       save:NO];
         
     }
     
     [STMObjectsController createRecordStatusAndRemoveObject:pickedPosition];
-    
-    [self.document saveDocument:^(BOOL success) {
-        
-    }];
 
 }
 
