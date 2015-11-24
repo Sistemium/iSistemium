@@ -25,7 +25,7 @@
     STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchOperation class])];
     
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"isProcessed == NO AND (sourceXid == %@ OR destinationXid == %@)", self.xid, self.xid];
+    request.predicate = [NSPredicate predicateWithFormat:@"(isProcessed == NO OR isProcessed == nil) AND (sourceXid == %@ OR destinationXid == %@)", self.xid, self.xid];
     
     NSArray *result = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
     
