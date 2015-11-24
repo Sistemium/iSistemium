@@ -11,6 +11,8 @@
 #import "STMPickingPositionVolumeTVC.h"
 #import "STMObjectsController.h"
 
+#import "STMPickingOrdersProcessController.h"
+
 
 @interface STMPickingOrderPositionsPickedTVC ()
 
@@ -94,35 +96,11 @@
 
 - (void)deletePickedPosition:(STMPickingOrderPositionPicked *)pickedPosition {
     
-#warning - move objects manipulation to separate class
-    
     STMPickingOrderPosition *position = pickedPosition.pickingOrderPosition;
     
     self.tableData = nil;
-    
-    if (pickedPosition.stockBatch) {
 
-        NSString *pickedPositionClassName = NSStringFromClass([STMPickingOrderPositionPicked class]);
-        NSString *stockBatchClassName = NSStringFromClass([STMStockBatch class]);
-        NSString *stockBatchOperationClassName = NSStringFromClass([STMStockBatchOperation class]);
-        STMStockBatchOperation *stockBatchOperation = (STMStockBatchOperation *)[STMObjectsController newObjectForEntityName:stockBatchOperationClassName
-                                                                                                                    isFantom:NO];
-        
-        stockBatchOperation.sourceEntity = [pickedPositionClassName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-        stockBatchOperation.sourceXid = pickedPosition.xid;
-        stockBatchOperation.destinationEntity = [stockBatchClassName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-        stockBatchOperation.destinationXid = pickedPosition.stockBatch.xid;
-        stockBatchOperation.volume = pickedPosition.volume;
-        
-        pickedPosition.pickingOrderPosition = nil;
-        
-        [self.positionsTVC positionWasUpdated:position];
-        
-    } else {
-    
-        [STMObjectsController createRecordStatusAndRemoveObject:pickedPosition];
-
-    }
+    [STMPickingOrdersProcessController deletePickedPosition:pickedPosition];
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 

@@ -17,6 +17,8 @@
 #import "STMBarCodeScanner.h"
 #import "STMSoundController.h"
 
+#import "STMPickingOrdersProcessController.h"
+
 
 #define SLIDE_THRESHOLD 20
 #define ACTION_THRESHOLD 100
@@ -97,22 +99,8 @@
 
 - (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
     
-#warning - move objects manipulation to separate class
-
-    NSString *entityName = NSStringFromClass([STMPickingOrderPositionPicked class]);
-    STMPickingOrderPositionPicked *pickedPosition = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:entityName isFantom:NO];
-    
-    pickedPosition.productionInfo = info;
-    pickedPosition.article = position.article;
-    pickedPosition.pickingOrderPosition = position;
-    pickedPosition.volume = @(volume);
-    
-    [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-        
-    }];
-
+    [STMPickingOrdersProcessController position:position wasPickedWithVolume:volume andProductionInfo:info];
     [self positionWasUpdated:position];
-
     [self.navigationController popToViewController:self animated:YES];
 
 }
@@ -708,38 +696,7 @@
 
 - (void)pickPosition:(STMPickingOrderPosition *)position fromStockBatch:(STMStockBatch *)stockBatch withBarCode:(NSString *)barcode {
     
-#warning - move objects manipulation to separate class
-
-    NSString *stockBatchClassName = NSStringFromClass([STMStockBatch class]);
-    NSString *pickedPositionClassName = NSStringFromClass([STMPickingOrderPositionPicked class]);
-    STMPickingOrderPositionPicked *pickedPosition = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:pickedPositionClassName
-                                                                                                                         isFantom:NO];
-    
-    pickedPosition.pickingOrderPosition = position;
-    pickedPosition.article = stockBatch.article;
-    pickedPosition.stockBatch = stockBatch;
-    pickedPosition.code = barcode;
-
-    if ([stockBatch localVolume] > position.volume.integerValue) {
-
-        pickedPosition.volume = position.volume;
-
-    } else {
-        
-        pickedPosition.volume = @([stockBatch localVolume]);
-        
-    }
-
-    NSString *stockBatchOperationClassName = NSStringFromClass([STMStockBatchOperation class]);
-    STMStockBatchOperation *stockBatchOperation = (STMStockBatchOperation *)[STMObjectsController newObjectForEntityName:stockBatchOperationClassName
-                                                                                                                isFantom:NO];
-    
-    stockBatchOperation.sourceEntity = [stockBatchClassName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-    stockBatchOperation.sourceXid = stockBatch.xid;
-    stockBatchOperation.destinationEntity = [pickedPositionClassName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-    stockBatchOperation.destinationXid = pickedPosition.xid;
-    stockBatchOperation.volume = pickedPosition.volume;
-
+    [STMPickingOrdersProcessController pickPosition:position fromStockBatch:stockBatch withBarCode:barcode];
     [self positionWasUpdated:position];
     
 }
