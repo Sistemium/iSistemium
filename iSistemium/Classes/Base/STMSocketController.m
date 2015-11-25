@@ -294,7 +294,7 @@
 + (void)addObject:(NSManagedObject *)object toSyncDataArray:(NSMutableArray *)syncDataArray {
     
     NSDate *currentDate = [NSDate date];
-    [object setPrimitiveValue:currentDate forKey:@"sts"];
+    [object setValue:currentDate forKey:@"sts"];
     
     NSDictionary *objectDictionary = [STMObjectsController dictionaryForObject:object];
     
