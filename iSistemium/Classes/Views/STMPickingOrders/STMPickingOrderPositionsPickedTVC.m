@@ -64,11 +64,14 @@
 }
 
 - (void)pickedPosition:(STMPickingOrderPositionPicked *)pickedPosition newVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
+
+    [STMPickingOrdersProcessController pickedPosition:pickedPosition
+                                            newVolume:volume
+                                    andProductionInfo:info];
+    
+#warning - have to check available stockBatch localVolume
     
     if (volume > 0) {
-        
-        pickedPosition.volume = @(volume);
-        pickedPosition.productionInfo = info;
         
         if ([self.tableData containsObject:pickedPosition]) {
             
@@ -80,15 +83,7 @@
         
         [self.positionsTVC positionWasUpdated:pickedPosition.pickingOrderPosition];
 
-    } else {
-        
-        [self deletePickedPosition:pickedPosition];
-        
     }
-    
-    [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-        
-    }];
 
     [self.navigationController popToViewController:self animated:YES];
 

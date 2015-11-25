@@ -67,7 +67,7 @@
 
 + (void)pickPosition:(STMPickingOrderPosition *)position fromStockBatch:(STMStockBatch *)stockBatch withBarCode:(NSString *)barcode {
     
-    NSInteger volume = ([stockBatch localVolume] > position.volume.integerValue) ? position.volume.integerValue : [stockBatch localVolume];
+    NSInteger volume = ([stockBatch localVolume] > [position nonPickedVolume]) ? [position nonPickedVolume] : [stockBatch localVolume];
     
     STMPickingOrderPositionPicked *pickedPosition = [self pickPosition:position
                                                             withVolume:volume
@@ -81,6 +81,34 @@
                             destination:pickedPosition
                                  volume:pickedPosition.volume
                                    save:YES];
+
+}
+
++ (void)pickedPosition:(STMPickingOrderPositionPicked *)pickedPosition newVolume:(NSUInteger)newVolume andProductionInfo:(NSString *)info {
+    
+    if (newVolume > 0) {
+        
+        pickedPosition.volume = @(newVolume);
+        pickedPosition.productionInfo = info;
+        
+        if (pickedPosition.stockBatch) {
+            
+#warning - may be create another stockBatchOperation instead of simple volume change / have to check available stockBatch localVolume
+            
+            STMStockBatchOperation *operation = [self findStockBatchOperationSource:pickedPosition.stockBatch andDestination:pickedPosition];
+            operation.volume = @(newVolume);
+            
+            [[self document] saveDocument:^(BOOL success) {
+                
+            }];
+            
+        }
+        
+    } else {
+        
+        [self deletePickedPosition:pickedPosition];
+        
+    }
 
 }
 

@@ -19,7 +19,9 @@
     NSInteger volume = self.volume.integerValue;
     NSInteger pickedVolume = [[self.pickingOrderPositionsPicked valueForKeyPath:@"@sum.volume"] integerValue];
 
-    return volume - pickedVolume;
+    NSInteger result = volume - pickedVolume;
+    
+    return (result > 0) ? result : 0;
     
 }
 

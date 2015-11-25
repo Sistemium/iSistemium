@@ -590,7 +590,7 @@
         
         STMStockBatch *stockBatch = self.scannedStockBatches.firstObject;
         
-        if (stockBatch.volume.integerValue > 0) {
+        if ([stockBatch localVolume] > 0) {
             
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article == %@", stockBatch.article];
             
