@@ -97,6 +97,10 @@
     
 }
 
+- (NSSet <STMPickingOrderPositionPicked *> *)pickedPositions {
+    return [self.pickingOrder.pickingOrderPositions valueForKeyPath:@"@distinctUnionOfSets.pickingOrderPositionsPicked"];
+}
+
 - (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
     
     [STMPickingOrdersProcessController position:position wasPickedWithVolume:volume andProductionInfo:info];
@@ -230,6 +234,9 @@
     if ([self orderIsProcessed]) {
         
         STMPickingOrderPosition *position = self.tableData[indexPath.row];
+        
+//        NSLog(@"%@", [position.article.stockBatches valueForKeyPath:@"@distinctUnionOfObjects.barCodes"]);
+        
         [self performSegueWithIdentifier:@"showPositionVolume" sender:position];
 
     }
@@ -433,6 +440,8 @@
         self.navigationItem.leftBarButtonItem = cameraButton;
         
     }
+
+//    [self barCodeScanner:nil receiveBarCode:@"10000099"];
     
     self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
     self.HIDBarCodeScanner.delegate = self;
@@ -602,16 +611,28 @@
                 }
                 
             } else {
+
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"stockBatch == %@", stockBatch];
+                NSSet *pickedPositions = [[self pickedPositions] filteredSetUsingPredicate:predicate];
                 
-                if (self.scannedArticles.count > 0) {
-                    
-                    [self checkScannedArticles];
+                if (pickedPositions.count > 0) {
+                                        
+                    [STMSoundController alertSay:NSLocalizedString(@"THIS POSITION ALREADY PICKED", nil)];
+                    NSLog(@"position %@ already picked", stockBatch.article.name);
                     
                 } else {
-                    
-                    [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
-                    NSLog(@"picking order nave not this article %@", stockBatch.article);
-                    
+                
+                    if (self.scannedArticles.count > 0) {
+                        
+                        [self checkScannedArticles];
+                        
+                    } else {
+                        
+                        [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
+                        NSLog(@"picking order nave not this article %@", stockBatch.article.name);
+                        
+                    }
+
                 }
                 
             }
@@ -658,8 +679,20 @@
             
         } else {
             
-            [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
-            NSLog(@"picking order nave not this articles %@", [self.scannedArticles valueForKeyPath:@"@unionOfObjects.name"]);
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article IN %@", self.scannedArticles];
+            NSSet *pickedPositions = [[self pickedPositions] filteredSetUsingPredicate:predicate];
+            
+            if (pickedPositions.count > 0) {
+                
+                [STMSoundController alertSay:NSLocalizedString(@"THIS POSITION ALREADY PICKED", nil)];
+                NSLog(@"position %@ already picked", [self.scannedArticles valueForKeyPath:@"@unionOfObjects.name"]);
+                
+            } else {
+
+                [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
+                NSLog(@"picking order nave not this articles %@", [self.scannedArticles valueForKeyPath:@"@unionOfObjects.name"]);
+
+            }
             
         }
         
@@ -685,8 +718,20 @@
             
         } else {
             
-            [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
-            NSLog(@"picking order nave not this article %@", article.name);
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
+            NSSet *pickedPositions = [[self pickedPositions] filteredSetUsingPredicate:predicate];
+            
+            if (pickedPositions.count > 0) {
+                
+                [STMSoundController alertSay:NSLocalizedString(@"THIS POSITION ALREADY PICKED", nil)];
+                NSLog(@"position %@ already picked", article.name);
+                
+            } else {
+            
+                [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
+                NSLog(@"picking order nave not this article %@", article.name);
+                
+            }
 
         }
 

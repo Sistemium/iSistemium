@@ -390,5 +390,6 @@
 "PICKING ORDER NAVE NOT THIS ARTICLE" = "Этого товара нет в заказе";
 "STOCK BATCH IS EMPTY" = "В этой партии не осталось товаров";
 "ARTICLE COINCIDE WITH STOCKBATCH" = "Штрих код товара совпадает со штрих кодом партии товара.";
+"THIS POSITION ALREADY PICKED" = "Этот товар уже собран";
 
 
