@@ -389,7 +389,7 @@
     CFStringRef CFUUIDString = CFUUIDCreateString(kCFAllocatorDefault, CFUUID);
     CFRelease(CFUUID);
     
-    NSString *UUIDString = (NSString *)CFBridgingRelease(CFUUIDString);
+    NSString *UUIDString = [(NSString *)CFBridgingRelease(CFUUIDString) lowercaseString];
     
     return UUIDString;
     
