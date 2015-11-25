@@ -88,7 +88,9 @@
 
     if (pickedPosition.stockBatch) {
         
-        if (pickedPosition.stockBatch.sts) {
+        STMStockBatchOperation *operation = [self findStockBatchOperationSource:pickedPosition.stockBatch andDestination:pickedPosition];
+        
+        if (operation.sts) {
         
             [self stockBatchOperationWithSource:pickedPosition
                                     destination:pickedPosition.stockBatch
@@ -97,7 +99,7 @@
 
         } else {
             
-            [STMObjectsController removeObject:pickedPosition.stockBatch];
+            [STMObjectsController removeObject:operation];
             
         }
         
@@ -109,6 +111,23 @@
         [STMObjectsController removeObject:pickedPosition];
     }
     
+}
+
++ (STMStockBatchOperation *)findStockBatchOperationSource:(NSManagedObject *)source andDestination:(NSManagedObject *)destination {
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchOperation class])];
+    
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"sourceXid == %@ AND destinationXid == %@", [source valueForKey:@"xid"], [destination valueForKey:@"xid"]];
+    
+    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:nil];
+
+    if (result.count > 1) {
+        NSLog(@"Something wrong, stockBatchOperation not unique, return first one");
+    }
+    
+    return result.firstObject;
+
 }
 
 
