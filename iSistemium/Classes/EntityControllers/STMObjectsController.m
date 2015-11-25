@@ -1005,7 +1005,12 @@
     }
     
     [context performBlock:^{
+        
         [context deleteObject:object];
+        
+        [[self document] saveDocument:^(BOOL success) {
+        }];
+
     }];
     
 }
@@ -1021,10 +1026,6 @@
     
     [self removeObject:object];
     
-    [self.document saveDocument:^(BOOL success) {
-//        if (success) [self syncer].syncerState = STMSyncerSendDataOnce;
-    }];
-
     return recordStatus;
 
 }
@@ -1501,7 +1502,7 @@
                     
                 } else if ([value isKindOfClass:[NSData class]]) {
                     
-                    if ([@[@"deviceUUID", @"objectXid"] containsObject:key]) {
+                    if ([key isEqualToString:@"deviceUUID"] || [key hasSuffix:@"Xid"]) {
                         
                         value = [STMFunctions UUIDStringFromUUIDData:value];
                         
