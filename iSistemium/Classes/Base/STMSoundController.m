@@ -76,6 +76,8 @@
     utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
     [[self sharedController].speechSynthesizer speakUtterance:utterance];
     
+    NSLog(@"Say: %@", string);
+    
 }
 
 + (void)alertSay:(NSString *)string {
