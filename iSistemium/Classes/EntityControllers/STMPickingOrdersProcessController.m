@@ -88,23 +88,63 @@
     
     if (newVolume > 0) {
         
-        pickedPosition.volume = @(newVolume);
+        NSUInteger maxVolume = [pickedPosition.pickingOrderPosition nonPickedVolume] + pickedPosition.volume.integerValue;
+        
+        if (newVolume > maxVolume) {
+            newVolume = maxVolume;
+        }
+        
         pickedPosition.productionInfo = info;
         
         if (pickedPosition.stockBatch) {
-            
-#warning - may be create another stockBatchOperation instead of simple volume change / have to check available stockBatch localVolume
-            
+        
+            NSInteger diff = newVolume - pickedPosition.volume.integerValue;
+
+            pickedPosition.volume = @(newVolume);
+
             STMStockBatchOperation *operation = [self findStockBatchOperationSource:pickedPosition.stockBatch andDestination:pickedPosition];
-            operation.volume = @(newVolume);
             
-            [[self document] saveDocument:^(BOOL success) {
+            if (operation.sts) {
                 
-            }];
+                NSManagedObject *source = nil;
+                NSManagedObject *destination = nil;
+                
+                if (diff > 0) {
+                    
+                    source = pickedPosition.stockBatch;
+                    destination = pickedPosition;
+                    
+                } else {
+                    
+                    source = pickedPosition;
+                    destination = pickedPosition.stockBatch;
+                    
+                    diff = -diff;
+                    
+                }
+                
+                [self stockBatchOperationWithSource:source
+                                        destination:destination
+                                             volume:@(diff)
+                                               save:NO];
+                
+            } else {
+                
+                operation.volume = @(newVolume);
+                
+            }
+            
+        } else {
+            
+            pickedPosition.volume = @(newVolume);
             
         }
         
-    } else {
+        [[self document] saveDocument:^(BOOL success) {
+            
+        }];
+        
+    } else if (newVolume == 0) {
         
         [self deletePickedPosition:pickedPosition];
         

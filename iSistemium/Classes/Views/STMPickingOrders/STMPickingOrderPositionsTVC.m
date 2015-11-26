@@ -464,7 +464,7 @@
         
     }
 
-//    [self barCodeScanner:nil receiveBarCode:@"10000099"];
+//    [self barCodeScanner:nil receiveBarCode:@"10000412"];
     
 //    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
 //    self.HIDBarCodeScanner.delegate = self;
@@ -656,6 +656,7 @@
                     
                 } else {
                     
+                    [STMSoundController playOk];
                     STMPickingOrderPosition *position = correspondingPositions.firstObject;
                     [self pickPosition:position fromStockBatch:stockBatch withBarCode:self.scannedBarCode];
                     

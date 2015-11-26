@@ -68,9 +68,7 @@
     [STMPickingOrdersProcessController pickedPosition:pickedPosition
                                             newVolume:volume
                                     andProductionInfo:info];
-    
-#warning - have to check available stockBatch localVolume
-    
+
     if (volume > 0) {
         
         if ([self.tableData containsObject:pickedPosition]) {

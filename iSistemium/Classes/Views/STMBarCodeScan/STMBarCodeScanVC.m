@@ -96,6 +96,14 @@
     NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
 }
 
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+}
+
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+}
+
 
 #pragma mark - view lifecycle
 
