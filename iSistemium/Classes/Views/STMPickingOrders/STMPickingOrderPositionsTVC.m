@@ -40,6 +40,7 @@
 
 @property (nonatomic, strong) STMBarCodeScanner *cameraBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
+@property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 @property (nonatomic, strong) NSString *scannedBarCode;
 @property (nonatomic, strong) NSMutableArray *scannedStockBatches;
@@ -443,10 +444,14 @@
 
 //    [self barCodeScanner:nil receiveBarCode:@"10000099"];
     
-    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
-    self.HIDBarCodeScanner.delegate = self;
-    [self.HIDBarCodeScanner startScan];
+//    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
+//    self.HIDBarCodeScanner.delegate = self;
+//    [self.HIDBarCodeScanner startScan];
 
+    self.iOSModeBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerIOSMode];
+    self.iOSModeBarCodeScanner.delegate = self;
+    [self.iOSModeBarCodeScanner startScan];
+    
 }
 
 - (void)stopBarcodeScanning {

@@ -9,9 +9,10 @@
 #import "STMBarCodeScanner.h"
 
 #import <AVFoundation/AVFoundation.h>
+#import <ScanAPI/ScanApiHelper.h>
 
 
-@interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate>
+@interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, ScanApiHelperDelegate>
 
 @property (nonatomic, strong) UITextField *hiddenBarCodeTextField;
 
@@ -20,6 +21,9 @@
 @property (nonatomic, strong) AVCaptureSession *session;
 @property (nonatomic, strong) AVCaptureMetadataOutput *output;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *preview;
+
+@property (nonatomic, strong) ScanApiHelper *iOSModeScanner;
+@property (nonatomic, strong) NSTimer* scanApiConsumer;
 
 
 @end
@@ -62,6 +66,7 @@
             }
             case STMBarCodeScannerIOSMode: {
                 
+                [self prepareForIOSScanMode];
                 break;
             }
             default: {
@@ -241,6 +246,62 @@
     
     return NO;
     
+}
+
+
+#pragma mark - STMBarCodeScannerIOSMode
+
+- (void)prepareForIOSScanMode {
+    
+    self.iOSModeScanner = [[ScanApiHelper alloc] init];
+    [self.iOSModeScanner setDelegate:self];
+    [self.iOSModeScanner open];
+    
+    self.scanApiConsumer = [NSTimer scheduledTimerWithTimeInterval:.2
+                                                            target:self
+                                                          selector:@selector(onScanApiConsumerTimer:)
+                                                          userInfo:nil
+                                                           repeats:YES];
+
+}
+
+-(void)onScanApiConsumerTimer:(NSTimer*)timer {
+    
+    if (timer == self.scanApiConsumer){
+        [self.iOSModeScanner doScanApiReceive];
+    }
+    
+}
+
+
+
+#pragma mark - ScanApiHelperDelegate
+
+- (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
+    
+    NSLog(@"onDeviceArrival result: %@, info: %@", result, deviceInfo);
+    
+}
+
+- (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
+    
+    NSLog(@"onDeviceRemoval: %@", deviceRemoved);
+    
+}
+
+- (void)onDecodedDataResult:(long)result device:(DeviceInfo *)device decodedData:(ISktScanDecodedData *)decodedData {
+    
+    if(SKTSUCCESS(result)){
+        
+        NSString *resultString = [NSString stringWithUTF8String:(const char *)[decodedData getData]];
+        NSLog(@"resultString %@", resultString);
+        
+//        if(_doAppDataConfirmation==YES){
+//            [ScanApi postSetDataConfirmation:device Target:self Response:@selector(onDataConfirmation:)];
+//        }
+
+    }
+
 }
 
 
