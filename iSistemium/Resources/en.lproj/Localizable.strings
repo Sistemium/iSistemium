@@ -391,4 +391,6 @@
 "STOCK BATCH IS EMPTY" = "Stock batch is empty";
 "ARTICLE COINCIDE WITH STOCKBATCH" = "Article barcode coincide with stock batch barcode";
 "THIS POSITION ALREADY PICKED" = "This position already picked";
+"SCANNER DEVICE ARRIVAL" = "Scanner device arrival";
+"SCANNER DEVICE REMOVAL" = "Scanner device removal";
 

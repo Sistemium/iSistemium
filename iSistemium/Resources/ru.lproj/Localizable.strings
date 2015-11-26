@@ -391,5 +391,7 @@
 "STOCK BATCH IS EMPTY" = "В этой партии не осталось товаров";
 "ARTICLE COINCIDE WITH STOCKBATCH" = "Штрих код товара совпадает со штрих кодом партии товара.";
 "THIS POSITION ALREADY PICKED" = "Этот товар уже собран";
+"SCANNER DEVICE ARRIVAL" = "Сканер штрих кодов подключён";
+"SCANNER DEVICE REMOVAL" = "Сканер штрих кодов отключён";
 
 

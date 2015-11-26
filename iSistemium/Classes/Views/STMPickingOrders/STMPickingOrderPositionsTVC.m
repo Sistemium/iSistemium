@@ -498,6 +498,22 @@
     NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
 }
 
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
+    }
+    
+}
+
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+
+    if (scanner == self.iOSModeBarCodeScanner) {
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
+    }
+
+}
+
 
 #pragma mark - barcodes
 
@@ -695,8 +711,12 @@
             } else {
 
                 [STMSoundController alertSay:NSLocalizedString(@"PICKING ORDER NAVE NOT THIS ARTICLE", nil)];
-                NSLog(@"picking order nave not this articles %@", [self.scannedArticles valueForKeyPath:@"@unionOfObjects.name"]);
-
+                NSLog(@"picking order have no following articles:");
+                NSArray <NSString *> *articlesNames = [self.scannedArticles valueForKeyPath:@"@unionOfObjects.name"];
+                for (NSString *articleName in articlesNames) {
+                    NSLog(@"%@", articleName);
+                }
+                
             }
             
         }

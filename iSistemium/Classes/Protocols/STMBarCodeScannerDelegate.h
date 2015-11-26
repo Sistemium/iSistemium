@@ -18,6 +18,8 @@
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode;
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error;
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner;
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner;
 
 
 @end

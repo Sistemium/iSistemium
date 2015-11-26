@@ -22,7 +22,7 @@
 @property (nonatomic, strong) AVCaptureMetadataOutput *output;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *preview;
 
-@property (nonatomic, strong) ScanApiHelper *iOSModeScanner;
+@property (nonatomic, strong) ScanApiHelper *iOSScanHelper;
 @property (nonatomic, strong) NSTimer* scanApiConsumer;
 
 
@@ -33,7 +33,7 @@
 
 - (instancetype)initWithMode:(STMBarCodeScannerMode)mode {
 
-    self = [super init];
+    self = (mode == STMBarCodeScannerIOSMode) ? [STMBarCodeScanner iOSModeScanner] : [super init];
     
     if (self) {
         
@@ -99,6 +99,7 @@
             }
             case STMBarCodeScannerIOSMode: {
                 
+                [self finishIOSScanMode];
                 break;
             }
             default: {
@@ -251,42 +252,71 @@
 
 #pragma mark - STMBarCodeScannerIOSMode
 
++ (STMBarCodeScanner *)iOSModeScanner {
+
+    static dispatch_once_t pred = 0;
+    __strong static id _iOSModeScanner = nil;
+    
+    dispatch_once(&pred, ^{
+        
+        _iOSModeScanner = [[STMBarCodeScanner alloc] init];
+        [self addScanHelperToScanner:_iOSModeScanner];
+        
+    });
+    
+    return _iOSModeScanner;
+
+}
+
++ (void)addScanHelperToScanner:(STMBarCodeScanner *)scanner {
+    
+    scanner.iOSScanHelper = [[ScanApiHelper alloc] init];
+    [scanner.iOSScanHelper setDelegate:scanner];
+    [scanner.iOSScanHelper open];
+
+    scanner.scanApiConsumer = [NSTimer scheduledTimerWithTimeInterval:.2
+                                                               target:scanner
+                                                             selector:@selector(onScanApiConsumerTimer:)
+                                                             userInfo:nil
+                                                              repeats:YES];
+
+}
+
 - (void)prepareForIOSScanMode {
     
-    self.iOSModeScanner = [[ScanApiHelper alloc] init];
-    [self.iOSModeScanner setDelegate:self];
-    [self.iOSModeScanner open];
-    
-    self.scanApiConsumer = [NSTimer scheduledTimerWithTimeInterval:.2
-                                                            target:self
-                                                          selector:@selector(onScanApiConsumerTimer:)
-                                                          userInfo:nil
-                                                           repeats:YES];
+//    self.iOSScanHelper = [[ScanApiHelper alloc] init];
+//    [self.iOSScanHelper setDelegate:self];
+//    [self.iOSScanHelper open];
+//    
+//    self.scanApiConsumer = [NSTimer scheduledTimerWithTimeInterval:.2
+//                                                            target:self
+//                                                          selector:@selector(onScanApiConsumerTimer:)
+//                                                          userInfo:nil
+//                                                           repeats:YES];
 
 }
 
 -(void)onScanApiConsumerTimer:(NSTimer*)timer {
     
     if (timer == self.scanApiConsumer){
-        [self.iOSModeScanner doScanApiReceive];
+        [self.iOSScanHelper doScanApiReceive];
     }
     
 }
 
+- (void)finishIOSScanMode {
+//    [self.iOSScanHelper close];
+}
 
 
 #pragma mark - ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
-    
-    NSLog(@"onDeviceArrival result: %@, info: %@", result, deviceInfo);
-    
+    [self.delegate deviceArrivalForBarCodeScanner:self];
 }
 
 - (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
-    
-    NSLog(@"onDeviceRemoval: %@", deviceRemoved);
-    
+    [self.delegate deviceRemovalForBarCodeScanner:self];
 }
 
 - (void)onDecodedDataResult:(long)result device:(DeviceInfo *)device decodedData:(ISktScanDecodedData *)decodedData {
@@ -294,11 +324,8 @@
     if(SKTSUCCESS(result)){
         
         NSString *resultString = [NSString stringWithUTF8String:(const char *)[decodedData getData]];
-        NSLog(@"resultString %@", resultString);
-        
-//        if(_doAppDataConfirmation==YES){
-//            [ScanApi postSetDataConfirmation:device Target:self Response:@selector(onDataConfirmation:)];
-//        }
+
+        [self.delegate barCodeScanner:self receiveBarCode:resultString];
 
     }
 
