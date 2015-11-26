@@ -305,7 +305,18 @@
 
 - (void)updateToolbars {
     
-//    BOOL orderIsProcessed = [self orderIsProcessed];
+    BOOL orderIsProcessed = [self orderIsProcessed];
+    
+    if (orderIsProcessed) {
+        
+        ([self.iOSModeBarCodeScanner isDeviceConnected]) ? [self addBarcodeImage] : [self removeBarcodeImage];
+        
+    } else {
+        
+        [self removeBarcodeImage];
+        
+    }
+    
 //    self.navigationItem.hidesBackButton = orderIsProcessed;
     
     self.navigationController.toolbarHidden = NO;
@@ -463,6 +474,8 @@
     self.iOSModeBarCodeScanner.delegate = self;
     [self.iOSModeBarCodeScanner startScan];
     
+    ([self.iOSModeBarCodeScanner isDeviceConnected]) ? [self addBarcodeImage] : [self removeBarcodeImage];
+
 }
 
 - (void)stopBarcodeScanning {

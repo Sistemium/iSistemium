@@ -45,6 +45,10 @@
 
 }
 
+- (BOOL)isDeviceConnected {
+    return (self.mode == STMBarCodeScannerIOSMode) ? [self.iOSScanHelper isDeviceConnected] : NO;
+}
+
 - (void)startScan {
     
     if (self.status != STMBarCodeScannerStarted) {
@@ -284,16 +288,6 @@
 
 - (void)prepareForIOSScanMode {
     
-//    self.iOSScanHelper = [[ScanApiHelper alloc] init];
-//    [self.iOSScanHelper setDelegate:self];
-//    [self.iOSScanHelper open];
-//    
-//    self.scanApiConsumer = [NSTimer scheduledTimerWithTimeInterval:.2
-//                                                            target:self
-//                                                          selector:@selector(onScanApiConsumerTimer:)
-//                                                          userInfo:nil
-//                                                           repeats:YES];
-
 }
 
 -(void)onScanApiConsumerTimer:(NSTimer*)timer {
@@ -305,7 +299,7 @@
 }
 
 - (void)finishIOSScanMode {
-//    [self.iOSScanHelper close];
+
 }
 
 
