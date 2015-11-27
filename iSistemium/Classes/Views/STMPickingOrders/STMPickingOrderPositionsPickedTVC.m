@@ -179,14 +179,18 @@
 
 - (void)fillPickingOrderArticleCell:(STMCustom5TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    STMPickingOrderPositionPicked *pickedPosition = self.tableData[indexPath.row];
-    
-    cell.titleLabel.text = pickedPosition.article.name;
-    cell.detailLabel.text = pickedPosition.productionInfo;
-    cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickedPosition.volume.integerValue andPackageRel:pickedPosition.article.packageRel.integerValue];
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.accessoryType = (self.orderIsProcessed) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+    if (indexPath.row < self.tableData.count) {
+        
+        STMPickingOrderPositionPicked *pickedPosition = self.tableData[indexPath.row];
+        
+        cell.titleLabel.text = pickedPosition.article.name;
+        cell.detailLabel.text = pickedPosition.productionInfo;
+        cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickedPosition.volume.integerValue andPackageRel:pickedPosition.article.packageRel.integerValue];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.accessoryType = (self.orderIsProcessed) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+
+    }
     
 }
 
