@@ -104,7 +104,7 @@
 
 - (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
     
-    [STMPickingOrdersProcessController position:position wasPickedWithVolume:volume andProductionInfo:info];
+    [STMPickingOrdersProcessController position:position wasPickedWithVolume:volume andProductionInfo:info andBarCode:self.scannedBarCode];
     [self positionWasUpdated:position];
     [self.navigationController popToViewController:self animated:YES];
 

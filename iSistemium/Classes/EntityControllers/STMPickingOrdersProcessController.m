@@ -53,14 +53,14 @@
     
 }
 
-+ (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
++ (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info andBarCode:(NSString *)barcode {
     
     [self pickPosition:position
             withVolume:volume
         productionInfo:info
                article:position.article
             stockBatch:nil
-               barcode:nil
+               barcode:barcode
                   save:YES];
 
 }

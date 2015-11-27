@@ -393,5 +393,6 @@
 "THIS POSITION ALREADY PICKED" = "Этот товар уже собран";
 "SCANNER DEVICE ARRIVAL" = "Сканер штрих кодов подключён";
 "SCANNER DEVICE REMOVAL" = "Сканер штрих кодов отключён";
-
+"STOCK BATCH" = "Партия";
+"ARTICLE" = "Товар";
 

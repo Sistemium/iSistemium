@@ -184,13 +184,32 @@
         STMPickingOrderPositionPicked *pickedPosition = self.tableData[indexPath.row];
         
         cell.titleLabel.text = pickedPosition.article.name;
-        cell.detailLabel.text = pickedPosition.productionInfo;
+        cell.detailLabel.text = [self detailLabelTextForPickedPosition:pickedPosition];
         cell.infoLabel.text = [STMFunctions volumeStringWithVolume:pickedPosition.volume.integerValue andPackageRel:pickedPosition.article.packageRel.integerValue];
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.accessoryType = (self.orderIsProcessed) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
 
     }
+    
+}
+
+- (NSString *)detailLabelTextForPickedPosition:(STMPickingOrderPositionPicked *)pickedPosition {
+    
+    NSMutableArray *subTexts = @[].mutableCopy;
+    
+    if (pickedPosition.code) {
+        
+        NSString *codeTitle = (pickedPosition.stockBatch) ? NSLocalizedString(@"STOCK BATCH", nil) : NSLocalizedString(@"ARTICLE", nil);
+        [subTexts addObject:[NSString stringWithFormat:@"%@: %@", codeTitle, pickedPosition.code]];
+        
+    }
+    
+    if (pickedPosition.productionInfo) {
+        [subTexts addObject:(NSString * _Nonnull)pickedPosition.productionInfo];
+    }
+    
+    return [subTexts componentsJoinedByString:@" / "];
     
 }
 
