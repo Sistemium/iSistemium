@@ -86,5 +86,7 @@
 
 + (NSString *)appStateString;
 
++ (uint64_t)freeDiskspace;
+
 
 @end

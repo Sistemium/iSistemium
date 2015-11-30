@@ -2,27 +2,14 @@
 //  STMClientData.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/05/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 30/11/15.
+//  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
 #import "STMClientData.h"
 
-
 @implementation STMClientData
 
-@dynamic appVersion;
-@dynamic buildType;
-@dynamic deviceName;
-@dynamic devicePlatform;
-@dynamic deviceToken;
-@dynamic deviceTokenError;
-@dynamic deviceUUID;
-@dynamic lastAuth;
-@dynamic locationServiceStatus;
-@dynamic notificationTypes;
-@dynamic systemVersion;
-@dynamic tokenHash;
-@dynamic bundleVersion;
+// Insert code here to add functionality to your managed object subclass
 
 @end

@@ -99,10 +99,23 @@
     
 }
 
++ (NSNumber *)freeDiskSpace {
+    
+    uint64_t freeSpace = [STMFunctions freeDiskspace];
+    
+    freeSpace = ((freeSpace/1024ll)/1024ll); // freeSpace in MiB
+    
+    freeSpace = (freeSpace / FREE_SPACE_PRECISION_MiB) * FREE_SPACE_PRECISION_MiB;
+    
+    return @(freeSpace);
+    
+}
+
+
 #pragma mark - checking client state
 
 + (void)checkClientData {
-    
+
     STMClientData *clientData = [self clientData];
     
     if (clientData) {
