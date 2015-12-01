@@ -47,6 +47,7 @@
 #define NOTIFICATION_SESSION_STATUS_CHANGED @"sessionStatusChanged"
 
 #define FREE_SPACE_PRECISION_MiB 200
+#define FREE_SPACE_THRESHOLD 500
 
 
 #endif

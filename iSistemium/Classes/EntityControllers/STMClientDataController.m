@@ -107,6 +107,12 @@
     
     freeSpace = (freeSpace / FREE_SPACE_PRECISION_MiB) * FREE_SPACE_PRECISION_MiB;
     
+    if (freeSpace < FREE_SPACE_THRESHOLD) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lowFreeDiskSpace" object:@(FREE_SPACE_THRESHOLD)];
+        
+    }
+    
     return @(freeSpace);
     
 }

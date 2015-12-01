@@ -395,4 +395,5 @@
 "SCANNER DEVICE REMOVAL" = "Scanner device removal";
 "STOCK BATCH" = "Stock batch";
 "ARTICLE" = "Article";
-
+"WARNING" = "Warning";
+"LOW FREE SPACE ALERT" = "Low free space alert";
