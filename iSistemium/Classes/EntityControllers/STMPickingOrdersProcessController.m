@@ -88,70 +88,78 @@
 
 }
 
-+ (void)pickedPosition:(STMPickingOrderPositionPicked *)pickedPosition newVolume:(NSUInteger)newVolume andProductionInfo:(NSString *)info {
++ (void)pickedPosition:(STMPickingOrderPositionPicked *)pickedPosition newVolume:(NSUInteger)newVolume andProductionInfo:(NSString *)newInfo {
     
-    if (newVolume > 0) {
-        
-        NSUInteger maxVolume = [pickedPosition.pickingOrderPosition nonPickedVolume] + pickedPosition.volume.integerValue;
-        
-        if (newVolume > maxVolume) {
-            newVolume = maxVolume;
-        }
-        
-        pickedPosition.productionInfo = info;
-        
-        if (pickedPosition.stockBatch) {
-        
-            NSInteger diff = newVolume - pickedPosition.volume.integerValue;
+    BOOL volumeIsChanged = ![pickedPosition.volume isEqualToNumber:@(newVolume)];
+    
+    BOOL infoIsChanged = (pickedPosition.productionInfo || newInfo) && ![pickedPosition.productionInfo isEqualToString:newInfo];
+    
+    if (volumeIsChanged || infoIsChanged) {
 
-            pickedPosition.volume = @(newVolume);
-
-            STMStockBatchOperation *operation = [self findStockBatchOperationWithSource:pickedPosition.stockBatch andDestination:pickedPosition];
+        if (newVolume > 0) {
             
-            if (operation.sts) {
+            NSUInteger maxVolume = [pickedPosition.pickingOrderPosition nonPickedVolume] + pickedPosition.volume.integerValue;
+            
+            if (newVolume > maxVolume) {
+                newVolume = maxVolume;
+            }
+            
+            pickedPosition.productionInfo = newInfo;
+            
+            if (pickedPosition.stockBatch) {
                 
-                STMStockBatchOperationAgent *source = nil;
-                STMStockBatchOperationAgent *destination = nil;
+                NSInteger diff = newVolume - pickedPosition.volume.integerValue;
                 
-                if (diff > 0) {
+                pickedPosition.volume = @(newVolume);
+                
+                STMStockBatchOperation *operation = [self findStockBatchOperationWithSource:pickedPosition.stockBatch andDestination:pickedPosition];
+                
+                if (operation.sts) {
                     
-                    source = pickedPosition.stockBatch;
-                    destination = pickedPosition;
+                    STMStockBatchOperationAgent *source = nil;
+                    STMStockBatchOperationAgent *destination = nil;
+                    
+                    if (diff > 0) {
+                        
+                        source = pickedPosition.stockBatch;
+                        destination = pickedPosition;
+                        
+                    } else {
+                        
+                        source = pickedPosition;
+                        destination = pickedPosition.stockBatch;
+                        
+                        diff = -diff;
+                        
+                    }
+                    
+                    [self stockBatchOperationWithSource:source
+                                            destination:destination
+                                                 volume:@(diff)
+                                                   save:NO];
                     
                 } else {
                     
-                    source = pickedPosition;
-                    destination = pickedPosition.stockBatch;
-                    
-                    diff = -diff;
+                    operation.volume = @(newVolume);
                     
                 }
                 
-                [self stockBatchOperationWithSource:source
-                                        destination:destination
-                                             volume:@(diff)
-                                               save:NO];
-                
             } else {
                 
-                operation.volume = @(newVolume);
+                pickedPosition.volume = @(newVolume);
                 
             }
             
-        } else {
+            [[self document] saveDocument:^(BOOL success) {
+                
+            }];
             
-            pickedPosition.volume = @(newVolume);
+        } else if (newVolume == 0) {
+            
+            [self deletePickedPosition:pickedPosition];
             
         }
-        
-        [[self document] saveDocument:^(BOOL success) {
-            
-        }];
-        
-    } else if (newVolume == 0) {
-        
-        [self deletePickedPosition:pickedPosition];
-        
+    
     }
 
 }

@@ -63,24 +63,32 @@
     
 }
 
-- (void)pickedPosition:(STMPickingOrderPositionPicked *)pickedPosition newVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
+- (void)pickedPosition:(STMPickingOrderPositionPicked *)pickedPosition newVolume:(NSUInteger)newVolume andProductionInfo:(NSString *)newInfo {
 
-    [STMPickingOrdersProcessController pickedPosition:pickedPosition
-                                            newVolume:volume
-                                    andProductionInfo:info];
-
-    if (volume > 0) {
+    BOOL volumeIsChanged = ![pickedPosition.volume isEqualToNumber:@(newVolume)];
+    
+    BOOL infoIsChanged = (pickedPosition.productionInfo || newInfo) && ![pickedPosition.productionInfo isEqualToString:newInfo];
+    
+    if (volumeIsChanged || infoIsChanged) {
         
-        if ([self.tableData containsObject:pickedPosition]) {
+        [STMPickingOrdersProcessController pickedPosition:pickedPosition
+                                                newVolume:newVolume
+                                        andProductionInfo:newInfo];
+        
+        if (newVolume > 0) {
             
-            NSInteger index = [self.tableData indexOfObject:pickedPosition];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            if ([self.tableData containsObject:pickedPosition]) {
+                
+                NSInteger index = [self.tableData indexOfObject:pickedPosition];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                
+            }
+            
+            [self.positionsTVC positionWasUpdated:pickedPosition.pickingOrderPosition];
             
         }
         
-        [self.positionsTVC positionWasUpdated:pickedPosition.pickingOrderPosition];
-
     }
 
     [self.navigationController popToViewController:self animated:YES];
@@ -209,7 +217,7 @@
         [subTexts addObject:(NSString * _Nonnull)pickedPosition.productionInfo];
     }
     
-    return [subTexts componentsJoinedByString:@" / "];
+    return [subTexts componentsJoinedByString:@" • "];
     
 }
 

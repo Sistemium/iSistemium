@@ -278,15 +278,15 @@
 
 - (void)fillButtonCell:(UITableViewCell *)cell {
 
-    if (self.productionInfoType) {
-
-        cell.textLabel.text = NSLocalizedString(@"NEXT", nil);
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
-    } else {
+    if (self.pickedPosition.stockBatch || !self.productionInfoType) {
 
         cell.textLabel.text = NSLocalizedString(@"DONE", nil);
         cell.accessoryType = UITableViewCellAccessoryNone;
+
+    } else {
+
+        cell.textLabel.text = NSLocalizedString(@"NEXT", nil);
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
     }
     
@@ -317,10 +317,10 @@
             break;
             
         case 2:
-            if (self.productionInfoType) {
-                [self performSegueWithIdentifier:@"showPositionInfo" sender:nil];
-            } else {
+            if (self.pickedPosition.stockBatch || !self.productionInfoType) {
                 [self doneButtonPressed];
+            } else {
+                [self performSegueWithIdentifier:@"showPositionInfo" sender:nil];
             }
             break;
             
