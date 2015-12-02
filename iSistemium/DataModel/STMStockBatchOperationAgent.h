@@ -1,19 +1,19 @@
 //
-//  STMStockBatchOperation.h
+//  STMStockBatchOperationAgent.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 19/11/15.
+//  Created by Maxim Grigoriev on 02/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "STMComment.h"
 
-@class STMStockBatchOperationAgent;
+@class STMStockBatchOperation;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMStockBatchOperation : STMComment
+@interface STMStockBatchOperationAgent : STMComment
 
 // Insert code here to declare functionality of your managed object subclass
 
@@ -21,4 +21,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#import "STMStockBatchOperation+CoreDataProperties.h"
+#import "STMStockBatchOperationAgent+CoreDataProperties.h"

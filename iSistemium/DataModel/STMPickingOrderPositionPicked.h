@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMStockBatchOperationAgent.h"
 
 @class STMArticle, STMPickingOrderPosition, STMStockBatch;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMPickingOrderPositionPicked : STMComment
+@interface STMPickingOrderPositionPicked : STMStockBatchOperationAgent
 
 // Insert code here to declare functionality of your managed object subclass
 

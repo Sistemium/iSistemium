@@ -21,33 +21,50 @@
 @implementation STMStockBatch
 
 - (NSInteger)localVolume {
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isProcessed == NO OR isProcessed == nil"];
     
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchOperation class])];
-    
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"(isProcessed == NO OR isProcessed == nil) AND (sourceXid == %@ OR destinationXid == %@)", self.xid, self.xid];
-    
-    NSArray *result = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
+    NSSet *nonProcessedSourceOperations = [self.sourceOperations filteredSetUsingPredicate:predicate];
+    NSSet *nonProcessedDestinationOperations = [self.destinationOperations filteredSetUsingPredicate:predicate];
     
     NSInteger volume = self.volume.integerValue;
     
-    for (STMStockBatchOperation *operation in result) {
-        
-        if ([operation.sourceXid isEqualToData:self.xid]) {
-            
-            volume -= operation.volume.integerValue;
-        
-        }
+    for (STMStockBatchOperation *operation in nonProcessedSourceOperations) {
+        volume -= operation.volume.integerValue;
+    }
 
-        if ([operation.destinationXid isEqualToData:self.xid]) {
-            
-            volume += operation.volume.integerValue;
-            
-        }
-
+    for (STMStockBatchOperation *operation in nonProcessedDestinationOperations) {
+        volume += operation.volume.integerValue;
     }
     
     return volume;
+
+//    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchOperation class])];
+//    
+//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+//    request.predicate = [NSPredicate predicateWithFormat:@"(isProcessed == NO OR isProcessed == nil) AND (sourceXid == %@ OR destinationXid == %@)", self.xid, self.xid];
+//    
+//    NSArray *result = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
+//    
+//    NSInteger volume = self.volume.integerValue;
+//    
+//    for (STMStockBatchOperation *operation in result) {
+//        
+//        if ([operation.sourceXid isEqualToData:self.xid]) {
+//            
+//            volume -= operation.volume.integerValue;
+//        
+//        }
+//
+//        if ([operation.destinationXid isEqualToData:self.xid]) {
+//            
+//            volume += operation.volume.integerValue;
+//            
+//        }
+//
+//    }
+//    
+//    return volume;
     
 }
 

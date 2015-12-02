@@ -31,7 +31,7 @@
     
 }
 
-+ (STMStockBatchOperation *)stockBatchOperationWithSource:(NSManagedObject *)source destination:(NSManagedObject *)destination volume:(NSNumber *)volume save:(BOOL)save {
++ (STMStockBatchOperation *)stockBatchOperationWithSource:(STMStockBatchOperationAgent *)source destination:(STMStockBatchOperationAgent *)destination volume:(NSNumber *)volume save:(BOOL)save {
     
     NSString *stockBatchOperationClassName = NSStringFromClass([STMStockBatchOperation class]);
     
@@ -43,8 +43,12 @@
     
     stockBatchOperation.sourceEntity = sourceEntity;
     stockBatchOperation.sourceXid = [source valueForKey:@"xid"];
+    stockBatchOperation.sourceAgent = source;
+    
     stockBatchOperation.destinationEntity = destinationEntity;
     stockBatchOperation.destinationXid = [destination valueForKey:@"xid"];
+    stockBatchOperation.destinationAgent = destination;
+    
     stockBatchOperation.volume = volume;
 
     if (save) [self.document saveDocument:^(BOOL success) {}];
@@ -102,12 +106,12 @@
 
             pickedPosition.volume = @(newVolume);
 
-            STMStockBatchOperation *operation = [self findStockBatchOperationSource:pickedPosition.stockBatch andDestination:pickedPosition];
+            STMStockBatchOperation *operation = [self findStockBatchOperationWithSource:pickedPosition.stockBatch andDestination:pickedPosition];
             
             if (operation.sts) {
                 
-                NSManagedObject *source = nil;
-                NSManagedObject *destination = nil;
+                STMStockBatchOperationAgent *source = nil;
+                STMStockBatchOperationAgent *destination = nil;
                 
                 if (diff > 0) {
                     
@@ -156,7 +160,7 @@
 
     if (pickedPosition.stockBatch) {
         
-        STMStockBatchOperation *operation = [self findStockBatchOperationSource:pickedPosition.stockBatch andDestination:pickedPosition];
+        STMStockBatchOperation *operation = [self findStockBatchOperationWithSource:pickedPosition.stockBatch andDestination:pickedPosition];
         
         if (operation.sts) {
         
@@ -181,21 +185,29 @@
     
 }
 
-+ (STMStockBatchOperation *)findStockBatchOperationSource:(NSManagedObject *)source andDestination:(NSManagedObject *)destination {
-    
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchOperation class])];
-    
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"sourceXid == %@ AND destinationXid == %@", [source valueForKey:@"xid"], [destination valueForKey:@"xid"]];
-    
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:nil];
++ (STMStockBatchOperation *)findStockBatchOperationWithSource:(STMStockBatchOperationAgent *)source andDestination:(STMStockBatchOperationAgent *)destination {
 
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"destinationAgent == %@", destination];
+    
+    NSArray *result = [source.sourceOperations filteredSetUsingPredicate:predicate].allObjects;
+    
+    if (result.count == 0) {
+        
+//        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchOperation class])];
+//    
+//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+//        request.predicate = [NSPredicate predicateWithFormat:@"sourceXid == %@ AND destinationXid == %@", [source valueForKey:@"xid"], [destination valueForKey:@"xid"]];
+//    
+//        result = [[self document].managedObjectContext executeFetchRequest:request error:nil];
+
+    }
+    
     if (result.count > 1) {
         NSLog(@"Something wrong, stockBatchOperation not unique, return first one");
     }
     
     return result.firstObject;
-
+    
 }
 
 

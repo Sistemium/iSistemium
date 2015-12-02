@@ -1,15 +1,15 @@
 //
-//  STMStockBatchOperation.m
+//  STMStockBatchOperationAgent.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 19/11/15.
+//  Created by Maxim Grigoriev on 02/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMStockBatchOperation.h"
 #import "STMStockBatchOperationAgent.h"
+#import "STMStockBatchOperation.h"
 
-@implementation STMStockBatchOperation
+@implementation STMStockBatchOperationAgent
 
 // Insert code here to add functionality to your managed object subclass
 

@@ -71,6 +71,7 @@
 #import "STMStockBatch.h"
 #import "STMStockBatchBarCode.h"
 #import "STMStockBatchOperation.h"
+#import "STMStockBatchOperationAgent.h"
 
 #import "STMTrack+dayAsString.h"
 

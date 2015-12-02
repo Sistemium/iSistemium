@@ -2,7 +2,7 @@
 //  STMStockBatchOperation+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 19/11/15.
+//  Created by Maxim Grigoriev on 02/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -13,11 +13,13 @@
 
 @implementation STMStockBatchOperation (CoreDataProperties)
 
-@dynamic sourceXid;
-@dynamic sourceEntity;
 @dynamic destinationEntity;
-@dynamic volume;
 @dynamic destinationXid;
 @dynamic isProcessed;
+@dynamic sourceEntity;
+@dynamic sourceXid;
+@dynamic volume;
+@dynamic sourceAgent;
+@dynamic destinationAgent;
 
 @end

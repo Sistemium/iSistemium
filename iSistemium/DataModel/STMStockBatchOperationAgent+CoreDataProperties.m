@@ -1,5 +1,5 @@
 //
-//  STMStockBatch+CoreDataProperties.m
+//  STMStockBatchOperationAgent+CoreDataProperties.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 02/12/15.
@@ -9,15 +9,11 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMStockBatch+CoreDataProperties.h"
+#import "STMStockBatchOperationAgent+CoreDataProperties.h"
 
-@implementation STMStockBatch (CoreDataProperties)
+@implementation STMStockBatchOperationAgent (CoreDataProperties)
 
-@dynamic processing;
-@dynamic volume;
-@dynamic article;
-@dynamic barCodes;
-@dynamic pickingOrderPositionsPicked;
-@dynamic qualityClass;
+@dynamic sourceOperations;
+@dynamic destinationOperations;
 
 @end

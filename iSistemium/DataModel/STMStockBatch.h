@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMStockBatchOperationAgent.h"
 
 @class STMArticle, STMPickingOrderPositionPicked, STMQualityClass, STMStockBatchBarCode;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMStockBatch : STMComment
+@interface STMStockBatch : STMStockBatchOperationAgent
 
 - (NSInteger)localVolume;
 
