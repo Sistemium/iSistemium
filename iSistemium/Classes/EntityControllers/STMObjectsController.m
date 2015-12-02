@@ -998,20 +998,24 @@
 
 + (void)removeObject:(NSManagedObject *)object inContext:(NSManagedObjectContext *)context {
     
-    if (!context) context = [self document].managedObjectContext;
-    
-    if ([object valueForKey:@"xid"]) {
-        [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
-    }
-    
-    [context performBlock:^{
+    if (object) {
         
-        [context deleteObject:object];
+        if (!context) context = [self document].managedObjectContext;
         
-        [[self document] saveDocument:^(BOOL success) {
+        if ([object valueForKey:@"xid"]) {
+            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
+        }
+        
+        [context performBlock:^{
+            
+            [context deleteObject:object];
+            
+            [[self document] saveDocument:^(BOOL success) {
+            }];
+            
         }];
 
-    }];
+    }
     
 }
 
@@ -1230,9 +1234,11 @@
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
                              NSStringFromClass([STMArticle class]),
                              NSStringFromClass([STMArticleBarCode class]),
+                             NSStringFromClass([STMArticleDoc class]),
                              NSStringFromClass([STMArticleGroup class]),
                              NSStringFromClass([STMArticlePicture class]),
                              NSStringFromClass([STMArticleProductionInfo class]),
+                             NSStringFromClass([STMBarCodeType class]),
                              NSStringFromClass([STMBasketPosition class]),
                              NSStringFromClass([STMBatteryStatus class]),
                              NSStringFromClass([STMCampaign class]),
@@ -1272,6 +1278,8 @@
                              NSStringFromClass([STMStockBatch class]),
                              NSStringFromClass([STMStockBatchBarCode class]),
                              NSStringFromClass([STMStockBatchOperation class]),
+                             NSStringFromClass([STMSupplyOrder class]),
+                             NSStringFromClass([STMSupplyOrderArticleDoc class]),
                              NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMUncashingPicture class]),

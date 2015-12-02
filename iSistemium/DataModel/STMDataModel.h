@@ -11,11 +11,13 @@
 
 #import "STMArticle.h"
 #import "STMArticleBarCode.h"
+#import "STMArticleDoc.h"
 #import "STMArticleGroup+custom.h"
 #import "STMArticlePicture.h"
 #import "STMArticleProductionInfo.h"
 
 #import "STMBarCode.h"
+#import "STMBarCodeType.h"
 #import "STMBasketPosition.h"
 #import "STMBatteryStatus.h"
 
@@ -72,6 +74,8 @@
 #import "STMStockBatchBarCode.h"
 #import "STMStockBatchOperation.h"
 #import "STMStockBatchOperationAgent.h"
+#import "STMSupplyOrder.h"
+#import "STMSupplyOrderArticleDoc.h"
 
 #import "STMTrack+dayAsString.h"
 

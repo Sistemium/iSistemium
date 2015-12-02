@@ -7,6 +7,7 @@
 //
 
 #import "STMArticle.h"
+#import "STMArticleDoc.h"
 #import "STMArticleBarCode.h"
 #import "STMArticleGroup.h"
 #import "STMArticlePicture.h"
@@ -21,6 +22,7 @@
 #import "STMShipmentPosition.h"
 #import "STMStock.h"
 #import "STMStockBatch.h"
+#import "STMSupplyOrderArticleDoc.h"
 
 @implementation STMArticle
 
