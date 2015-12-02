@@ -196,7 +196,7 @@
         if (clientData) {
             
             NSString *buildVersion = BUILD_VERSION;
-            if (![buildVersion isEqualToString:clientData.appVersion]) {
+            if (![clientData.appVersion isEqualToString:buildVersion]) {
                 clientData.appVersion = buildVersion;
             }
             
