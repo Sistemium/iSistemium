@@ -8,6 +8,7 @@
 
 #import "STMStockBatch.h"
 #import "STMArticle.h"
+#import "STMInventoryBatch.h"
 #import "STMPickingOrderPositionPicked.h"
 #import "STMQualityClass.h"
 #import "STMStockBatchBarCode.h"

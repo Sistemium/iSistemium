@@ -35,6 +35,9 @@
 
 #import "STMEntity.h"
 
+#import "STMInventoryBatch.h"
+#import "STMInventoryBatchItem.h"
+
 #import "STMLocation.h"
 #import "STMLogMessage+dayAsString.h"
 

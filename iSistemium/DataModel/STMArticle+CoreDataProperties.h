@@ -2,7 +2,7 @@
 //  STMArticle+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 02/12/15.
+//  Created by Maxim Grigoriev on 03/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDecimalNumber *pieceVolume;
 @property (nullable, nonatomic, retain) NSDecimalNumber *pieceWeight;
 @property (nullable, nonatomic, retain) NSDecimalNumber *price;
+@property (nullable, nonatomic, retain) NSSet<STMArticleDoc *> *articleDocs;
 @property (nullable, nonatomic, retain) STMArticleGroup *articleGroup;
 @property (nullable, nonatomic, retain) NSSet<STMArticleProductionInfo *> *articleProductionInfo;
 @property (nullable, nonatomic, retain) NSSet<STMArticleBarCode *> *barCodes;
@@ -39,12 +40,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *shipmentPositions;
 @property (nullable, nonatomic, retain) STMStock *stock;
 @property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
-@property (nullable, nonatomic, retain) NSSet<STMArticleDoc *> *articleDocs;
 @property (nullable, nonatomic, retain) NSSet<STMSupplyOrderArticleDoc *> *supplyOrderArticleDocs;
+@property (nullable, nonatomic, retain) NSSet<STMInventoryBatch *> *inventoryBatches;
 
 @end
 
 @interface STMArticle (CoreDataGeneratedAccessors)
+
+- (void)addArticleDocsObject:(STMArticleDoc *)value;
+- (void)removeArticleDocsObject:(STMArticleDoc *)value;
+- (void)addArticleDocs:(NSSet<STMArticleDoc *> *)values;
+- (void)removeArticleDocs:(NSSet<STMArticleDoc *> *)values;
 
 - (void)addArticleProductionInfoObject:(STMArticleProductionInfo *)value;
 - (void)removeArticleProductionInfoObject:(STMArticleProductionInfo *)value;
@@ -106,15 +112,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addStockBatches:(NSSet<STMStockBatch *> *)values;
 - (void)removeStockBatches:(NSSet<STMStockBatch *> *)values;
 
-- (void)addArticleDocsObject:(STMArticleDoc *)value;
-- (void)removeArticleDocsObject:(STMArticleDoc *)value;
-- (void)addArticleDocs:(NSSet<STMArticleDoc *> *)values;
-- (void)removeArticleDocs:(NSSet<STMArticleDoc *> *)values;
-
 - (void)addSupplyOrderArticleDocsObject:(STMSupplyOrderArticleDoc *)value;
 - (void)removeSupplyOrderArticleDocsObject:(STMSupplyOrderArticleDoc *)value;
 - (void)addSupplyOrderArticleDocs:(NSSet<STMSupplyOrderArticleDoc *> *)values;
 - (void)removeSupplyOrderArticleDocs:(NSSet<STMSupplyOrderArticleDoc *> *)values;
+
+- (void)addInventoryBatchesObject:(STMInventoryBatch *)value;
+- (void)removeInventoryBatchesObject:(STMInventoryBatch *)value;
+- (void)addInventoryBatches:(NSSet<STMInventoryBatch *> *)values;
+- (void)removeInventoryBatches:(NSSet<STMInventoryBatch *> *)values;
 
 @end
 

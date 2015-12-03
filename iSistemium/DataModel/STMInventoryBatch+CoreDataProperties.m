@@ -1,5 +1,5 @@
 //
-//  STMStockBatch+CoreDataProperties.m
+//  STMInventoryBatch+CoreDataProperties.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 03/12/15.
@@ -9,16 +9,14 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMStockBatch+CoreDataProperties.h"
+#import "STMInventoryBatch+CoreDataProperties.h"
 
-@implementation STMStockBatch (CoreDataProperties)
+@implementation STMInventoryBatch (CoreDataProperties)
 
-@dynamic processing;
-@dynamic volume;
+@dynamic code;
+@dynamic productionInfo;
 @dynamic article;
-@dynamic barCodes;
-@dynamic pickingOrderPositionsPicked;
-@dynamic qualityClass;
-@dynamic inventoryBatches;
+@dynamic stockBatch;
+@dynamic inventoryBatchItems;
 
 @end

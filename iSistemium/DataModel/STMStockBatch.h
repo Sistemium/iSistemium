@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "STMStockBatchOperationAgent.h"
 
-@class STMArticle, STMPickingOrderPositionPicked, STMQualityClass, STMStockBatchBarCode;
+@class STMArticle, STMInventoryBatch, STMPickingOrderPositionPicked, STMQualityClass, STMStockBatchBarCode;
 
 NS_ASSUME_NONNULL_BEGIN
 

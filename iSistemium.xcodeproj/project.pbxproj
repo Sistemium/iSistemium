@@ -341,6 +341,10 @@
 		2CE3F5041C0F2AC400D8B4F3 /* STMSupplyOrderArticleDoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F4FA1C0F2AC400D8B4F3 /* STMSupplyOrderArticleDoc.m */; };
 		2CE3F5051C0F2AC400D8B4F3 /* STMArticleDoc+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F4FC1C0F2AC400D8B4F3 /* STMArticleDoc+CoreDataProperties.m */; };
 		2CE3F5061C0F2AC400D8B4F3 /* STMArticleDoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F4FE1C0F2AC400D8B4F3 /* STMArticleDoc.m */; };
+		2CE3F51C1C1073D000D8B4F3 /* STMInventoryBatch+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5151C1073D000D8B4F3 /* STMInventoryBatch+CoreDataProperties.m */; };
+		2CE3F51D1C1073D000D8B4F3 /* STMInventoryBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5171C1073D000D8B4F3 /* STMInventoryBatch.m */; };
+		2CE3F51E1C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5191C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m */; };
+		2CE3F51F1C1073D000D8B4F3 /* STMInventoryBatchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F51B1C1073D000D8B4F3 /* STMInventoryBatchItem.m */; };
 		2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B514195475F400C84A6D /* STMRootTBC.m */; };
 		2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */; };
 		2CEAC15C1B3BF64C00AD068E /* STMShipments_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15B1B3BF64C00AD068E /* STMShipments_iphone.storyboard */; };
@@ -1023,6 +1027,15 @@
 		2CE3F4FC1C0F2AC400D8B4F3 /* STMArticleDoc+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMArticleDoc+CoreDataProperties.m"; sourceTree = "<group>"; };
 		2CE3F4FD1C0F2AC400D8B4F3 /* STMArticleDoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticleDoc.h; sourceTree = "<group>"; };
 		2CE3F4FE1C0F2AC400D8B4F3 /* STMArticleDoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMArticleDoc.m; sourceTree = "<group>"; };
+		2CE3F5071C10712D00D8B4F3 /* STMDataModel 82.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 82.xcdatamodel"; sourceTree = "<group>"; };
+		2CE3F5141C1073D000D8B4F3 /* STMInventoryBatch+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMInventoryBatch+CoreDataProperties.h"; sourceTree = "<group>"; };
+		2CE3F5151C1073D000D8B4F3 /* STMInventoryBatch+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMInventoryBatch+CoreDataProperties.m"; sourceTree = "<group>"; };
+		2CE3F5161C1073D000D8B4F3 /* STMInventoryBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryBatch.h; sourceTree = "<group>"; };
+		2CE3F5171C1073D000D8B4F3 /* STMInventoryBatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMInventoryBatch.m; sourceTree = "<group>"; };
+		2CE3F5181C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMInventoryBatchItem+CoreDataProperties.h"; sourceTree = "<group>"; };
+		2CE3F5191C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMInventoryBatchItem+CoreDataProperties.m"; sourceTree = "<group>"; };
+		2CE3F51A1C1073D000D8B4F3 /* STMInventoryBatchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryBatchItem.h; sourceTree = "<group>"; };
+		2CE3F51B1C1073D000D8B4F3 /* STMInventoryBatchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMInventoryBatchItem.m; sourceTree = "<group>"; };
 		2CE8B513195475F400C84A6D /* STMRootTBC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRootTBC.h; sourceTree = "<group>"; };
 		2CE8B514195475F400C84A6D /* STMRootTBC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRootTBC.m; sourceTree = "<group>"; };
 		2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMCampaigns.storyboard; sourceTree = "<group>"; };
@@ -1712,6 +1725,14 @@
 				2CEE2FBC1BEBAD10009B229F /* STMEntity.m */,
 				2CEE2FBD1BEBAD10009B229F /* STMEntity+CoreDataProperties.h */,
 				2CEE2FBE1BEBAD10009B229F /* STMEntity+CoreDataProperties.m */,
+				2CE3F5161C1073D000D8B4F3 /* STMInventoryBatch.h */,
+				2CE3F5171C1073D000D8B4F3 /* STMInventoryBatch.m */,
+				2CE3F5141C1073D000D8B4F3 /* STMInventoryBatch+CoreDataProperties.h */,
+				2CE3F5151C1073D000D8B4F3 /* STMInventoryBatch+CoreDataProperties.m */,
+				2CE3F51A1C1073D000D8B4F3 /* STMInventoryBatchItem.h */,
+				2CE3F51B1C1073D000D8B4F3 /* STMInventoryBatchItem.m */,
+				2CE3F5181C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.h */,
+				2CE3F5191C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m */,
 				2CEE2FBF1BEBAD10009B229F /* STMLocation.h */,
 				2CEE2FC01BEBAD10009B229F /* STMLocation.m */,
 				2CEE2FC11BEBAD10009B229F /* STMLogMessage.h */,
@@ -2717,6 +2738,7 @@
 				2CE3F4EC1C0F1CDD00D8B4F3 /* STMStockBatchOperationAgent+CoreDataProperties.m in Sources */,
 				2C1D72E41AB9A88700C97599 /* STMCustom1TVCell.m in Sources */,
 				2CCD06D31B4EC1CE002591C4 /* STMShippingProcessController.m in Sources */,
+				2CE3F51D1C1073D000D8B4F3 /* STMInventoryBatch.m in Sources */,
 				2C7E7DA71ABCA94700A26185 /* STMCustom2TVCell.m in Sources */,
 				2C88F1C11B1894B500E30418 /* STMCustom6TVCell.m in Sources */,
 				2CEE30301BEBAD10009B229F /* STMPrice.m in Sources */,
@@ -2871,7 +2893,9 @@
 				2C5764231AA5E1E500B9FD2C /* STMOutletsTVC.m in Sources */,
 				2C14D4411A3B73A000747844 /* STMLogMessagesMasterTVC.m in Sources */,
 				2C1F75121BFA1B6E003699C8 /* STMStockBatch.m in Sources */,
+				2CE3F51E1C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m in Sources */,
 				2C646F5E1BCE69C00099F034 /* SocketAckEmitter.swift in Sources */,
+				2CE3F51F1C1073D000D8B4F3 /* STMInventoryBatchItem.m in Sources */,
 				2C16CC3D1AF2051900A2EC2D /* STMCampaignController.m in Sources */,
 				2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */,
 				2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */,
@@ -2946,6 +2970,7 @@
 				2CEE303E1BEBAD10009B229F /* STMShipmentRoutePoint+custom.m in Sources */,
 				2CEE30351BEBAD10009B229F /* STMSalesman.m in Sources */,
 				2C420FC81A4C29B4001C65B9 /* STMMessagesNC.m in Sources */,
+				2CE3F51C1C1073D000D8B4F3 /* STMInventoryBatch+CoreDataProperties.m in Sources */,
 				2CF126611B78ED870059701F /* STMCustom9TVCell.m in Sources */,
 				2CEE302D1BEBAD10009B229F /* STMPhotoReport.m in Sources */,
 				2CEE30091BEBAD10009B229F /* STMArticle.m in Sources */,
@@ -3275,6 +3300,7 @@
 		2CEE2F691BEBAD10009B229F /* STMDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2CE3F5071C10712D00D8B4F3 /* STMDataModel 82.xcdatamodel */,
 				2CE3F4EE1C0F267900D8B4F3 /* STMDataModel 81.xcdatamodel */,
 				2CE3F4E71C0F19E300D8B4F3 /* STMDataModel 80.xcdatamodel */,
 				2CE3F4DD1C0C886800D8B4F3 /* STMDataModel 79.xcdatamodel */,
@@ -3357,7 +3383,7 @@
 				2CEE2FAF1BEBAD10009B229F /* STMDataModel 9.xcdatamodel */,
 				2CEE2FB01BEBAD10009B229F /* STMDataModel.xcdatamodel */,
 			);
-			currentVersion = 2CE3F4EE1C0F267900D8B4F3 /* STMDataModel 81.xcdatamodel */;
+			currentVersion = 2CE3F5071C10712D00D8B4F3 /* STMDataModel 82.xcdatamodel */;
 			path = STMDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -1248,6 +1248,8 @@
                              NSStringFromClass([STMClientData class]),
                              NSStringFromClass([STMDebt class]),
                              NSStringFromClass([STMDriver class]),
+                             NSStringFromClass([STMInventoryBatch class]),
+                             NSStringFromClass([STMInventoryBatchItem class]),
                              NSStringFromClass([STMLocation class]),
                              NSStringFromClass([STMLogMessage class]),
                              NSStringFromClass([STMMessage class]),

@@ -2,7 +2,7 @@
 //  STMArticle+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 02/12/15.
+//  Created by Maxim Grigoriev on 03/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -22,6 +22,7 @@
 @dynamic pieceVolume;
 @dynamic pieceWeight;
 @dynamic price;
+@dynamic articleDocs;
 @dynamic articleGroup;
 @dynamic articleProductionInfo;
 @dynamic barCodes;
@@ -37,7 +38,7 @@
 @dynamic shipmentPositions;
 @dynamic stock;
 @dynamic stockBatches;
-@dynamic articleDocs;
 @dynamic supplyOrderArticleDocs;
+@dynamic inventoryBatches;
 
 @end

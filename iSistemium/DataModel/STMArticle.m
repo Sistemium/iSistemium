@@ -14,6 +14,7 @@
 #import "STMArticleProductionInfo.h"
 #import "STMBasketPosition.h"
 #import "STMCampaign.h"
+#import "STMInventoryBatch.h"
 #import "STMPickingOrderPosition.h"
 #import "STMPickingOrderPositionPicked.h"
 #import "STMPrice.h"
