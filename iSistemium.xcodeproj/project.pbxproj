@@ -345,6 +345,8 @@
 		2CE3F51D1C1073D000D8B4F3 /* STMInventoryBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5171C1073D000D8B4F3 /* STMInventoryBatch.m */; };
 		2CE3F51E1C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5191C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m */; };
 		2CE3F51F1C1073D000D8B4F3 /* STMInventoryBatchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F51B1C1073D000D8B4F3 /* STMInventoryBatchItem.m */; };
+		2CE3F5211C10756900D8B4F3 /* barcode_scanner.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CE3F5201C10756900D8B4F3 /* barcode_scanner.png */; };
+		2CE3F5251C10763900D8B4F3 /* STMInventory_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE3F5241C10763900D8B4F3 /* STMInventory_iphone.storyboard */; };
 		2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B514195475F400C84A6D /* STMRootTBC.m */; };
 		2CE8B51B19547AF100C84A6D /* STMCampaigns.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */; };
 		2CEAC15C1B3BF64C00AD068E /* STMShipments_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15B1B3BF64C00AD068E /* STMShipments_iphone.storyboard */; };
@@ -1036,6 +1038,8 @@
 		2CE3F5191C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMInventoryBatchItem+CoreDataProperties.m"; sourceTree = "<group>"; };
 		2CE3F51A1C1073D000D8B4F3 /* STMInventoryBatchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryBatchItem.h; sourceTree = "<group>"; };
 		2CE3F51B1C1073D000D8B4F3 /* STMInventoryBatchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMInventoryBatchItem.m; sourceTree = "<group>"; };
+		2CE3F5201C10756900D8B4F3 /* barcode_scanner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = barcode_scanner.png; sourceTree = "<group>"; };
+		2CE3F5241C10763900D8B4F3 /* STMInventory_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMInventory_iphone.storyboard; sourceTree = "<group>"; };
 		2CE8B513195475F400C84A6D /* STMRootTBC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRootTBC.h; sourceTree = "<group>"; };
 		2CE8B514195475F400C84A6D /* STMRootTBC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRootTBC.m; sourceTree = "<group>"; };
 		2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMCampaigns.storyboard; sourceTree = "<group>"; };
@@ -2270,6 +2274,7 @@
 				2CF126621B7CB4F50059701F /* uncheckmark_filled.png */,
 				2CF126531B789B360059701F /* uncheckmark.png */,
 				2CE3F4DB1C071F8400D8B4F3 /* barcode.png */,
+				2CE3F5201C10756900D8B4F3 /* barcode_scanner.png */,
 				2CEE305D1BF24086009B229F /* camera.png */,
 				2CEE305E1BF24086009B229F /* camera_filled.png */,
 				2C587AAA1BB5917500546A62 /* help.png */,
@@ -2349,6 +2354,7 @@
 				2CEAC15B1B3BF64C00AD068E /* STMShipments_iphone.storyboard */,
 				2CEE30501BECEE78009B229F /* STMBarCodeScan_iphone.storyboard */,
 				2C1F75171BFA2BB9003699C8 /* STMPickingOrders.storyboard */,
+				2CE3F5241C10763900D8B4F3 /* STMInventory_iphone.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -2538,6 +2544,7 @@
 				2C1AB3121B70B22800BF5C50 /* 3_circle_colored_blue.png in Resources */,
 				2C02F2C51A8B503A00E0E890 /* full_moon-128.png in Resources */,
 				2C1AB30E1B70B22800BF5C50 /* 1_circle_colored_blue.png in Resources */,
+				2CE3F5251C10763900D8B4F3 /* STMInventory_iphone.storyboard in Resources */,
 				2C1AB3021B70AE4400BF5C50 /* 6_circle_filled.png in Resources */,
 				2C1AB2E81B70ADBB00BF5C50 /* 4_circle.png in Resources */,
 				2C1F75181BFA2BB9003699C8 /* STMPickingOrders.storyboard in Resources */,
@@ -2581,6 +2588,7 @@
 				2C1AB3101B70B22800BF5C50 /* 9_circle_colored_blue.png in Resources */,
 				2C29690419B1B2B50038B122 /* STMMessages.storyboard in Resources */,
 				D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */,
+				2CE3F5211C10756900D8B4F3 /* barcode_scanner.png in Resources */,
 				2C1AB2E71B70ADBB00BF5C50 /* 8_circle.png in Resources */,
 				2C1AB2FA1B70AE4400BF5C50 /* 7_circle_filled.png in Resources */,
 				2C42ECBC1B13893F00B5C91A /* STMArticlePicturePVC.storyboard in Resources */,
