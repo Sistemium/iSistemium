@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
     </dependencies>
     <scenes>
-        <!--Table View Controller-->
+        <!--Inventory BatchesTVC-->
         <scene sceneID="lpJ-Hg-0Ju">
             <objects>
-                <tableViewController id="ZXl-Am-K6s" sceneMemberID="viewController">
+                <tableViewController id="ZXl-Am-K6s" customClass="STMInventoryBatchesTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="N6v-rh-uev">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -37,10 +37,10 @@
             </objects>
             <point key="canvasLocation" x="1300" y="341"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--InventoryNC-->
         <scene sceneID="FBt-LY-4Pj">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="zLU-6F-gn5" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="zLU-6F-gn5" customClass="STMInventoryNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="dyN-nD-ji4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
