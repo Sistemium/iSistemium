@@ -8,6 +8,8 @@
 
 #import "STMInventoryBatchesTVC.h"
 
+#import "STMInventoryItemsVC.h"
+
 
 @interface STMInventoryBatchesTVC ()
 
@@ -85,7 +87,35 @@
     cell.textLabel.text = [[STMFunctions noDateShortTimeFormatter] stringFromDate:batch.deviceCts];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", @(batch.inventoryBatchItems.count)];
     
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
     return cell;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self performSegueWithIdentifier:@"showItems" sender:indexPath];
+    
+}
+
+
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showItems"] &&
+        [segue.destinationViewController isKindOfClass:[STMInventoryItemsVC class]] &&
+        [sender isKindOfClass:[NSIndexPath class]]) {
+        
+        STMInventoryBatch *inventoryBatch = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+        
+        STMInventoryItemsVC *inventoryItemsVC = (STMInventoryItemsVC *)segue.destinationViewController;
+        inventoryItemsVC.inventoryBatch = inventoryBatch;
+        inventoryItemsVC.inventoryArticle = inventoryBatch.article;
+        
+    }
     
 }
 
@@ -116,14 +146,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -143,6 +143,16 @@
 
 }
 
++ (NSDateFormatter *)noDateMediumTimeFormatter {
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterNoStyle;
+    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+    
+    return dateFormatter;
+    
+}
+
 + (NSDateFormatter *)noDateShortTimeFormatterAllowZero:(BOOL)allowZero {
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
