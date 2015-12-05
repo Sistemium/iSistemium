@@ -11,6 +11,9 @@
 #import "STMUI.h"
 #import "STMBarCodeScanner.h"
 
+#import "STMInventoryController.h"
+
+
 @interface STMInventoryNC () <STMBarCodeScannerDelegate>
 
 @property (nonatomic, strong) STMBarCodeScanner *cameraBarCodeScanner;
@@ -81,6 +84,8 @@
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
 
     NSLog(@"barCodeScanner receiveBarCode: %@ withType: %d", barcode, type);
+    
+    [STMInventoryController receiveBarcode:barcode withType:type];
 
 }
 

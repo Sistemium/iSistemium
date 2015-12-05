@@ -177,5 +177,22 @@
 
 }
 
+- (NSString *)ctsDayAsString {
+    
+    static NSDateFormatter *formatter;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        
+        formatter = [STMFunctions dateMediumNoTimeFormatter];
+        
+    });
+    
+    NSString *dateString = [formatter stringFromDate:self.deviceCts];
+    
+    return dateString;
+    
+}
+
 
 @end

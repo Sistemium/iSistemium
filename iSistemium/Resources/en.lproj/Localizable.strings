@@ -398,4 +398,6 @@
 "WARNING" = "Warning";
 "LOW FREE SPACE ALERT" = "Low free space alert";
 "INVENTORY" = "Inventory";
+"INVENTORY INFO TITLE" = "Inventory info";
+"INVENTORY INFO MESSAGE" = "Inventory info message";
 
