@@ -510,7 +510,7 @@
     return self.view;
 }
 
-- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode {
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
     
     NSLog(@"barCodeScanner receiveBarCode: %@", barcode);
     self.scannedBarCode = barcode;

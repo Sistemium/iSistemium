@@ -8,8 +8,13 @@
 
 #import "STMBarCodeScanner.h"
 
+#import <CoreData/CoreData.h>
 #import <AVFoundation/AVFoundation.h>
 #import <ScanAPI/ScanApiHelper.h>
+
+#import "STMNS.h"
+#import "STMDataModel.h"
+#import "STMSessionManager.h"
 
 
 @interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, ScanApiHelperDelegate>
@@ -24,6 +29,8 @@
 
 @property (nonatomic, strong) ScanApiHelper *iOSScanHelper;
 @property (nonatomic, strong) NSTimer* scanApiConsumer;
+
+@property (nonatomic, strong) NSFetchedResultsController *barCodeTypesRC;
 
 
 @end
@@ -113,6 +120,87 @@
         
     }
 
+}
+
+- (NSFetchedResultsController *)barCodeTypesRC {
+    
+    if (!_barCodeTypesRC) {
+        
+        NSManagedObjectContext *context = [[STMSessionManager sharedManager].currentSession document].managedObjectContext;
+        
+        if (context) {
+            
+            STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMBarCodeType class])];
+            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+            request.predicate = [STMPredicate predicateWithNoFantoms];
+            
+            NSFetchedResultsController *rc = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                 managedObjectContext:context
+                                                                                   sectionNameKeyPath:nil
+                                                                                            cacheName:nil];
+            [rc performFetch:nil];
+            
+            _barCodeTypesRC = rc;
+
+        }
+        
+    }
+    return _barCodeTypesRC;
+    
+}
+
+- (void)checkScannedBarcode:(NSString *)barcode {
+    
+    NSString *matchedType = nil;
+
+    for (STMBarCodeType *barCodeType in self.barCodeTypesRC.fetchedObjects) {
+        
+        if (barCodeType.mask) {
+            
+            NSError *error = nil;
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:(NSString * _Nonnull)barCodeType.mask
+                                                                                   options:NSRegularExpressionCaseInsensitive
+                                                                                     error:&error];
+            
+            NSUInteger numberOfMatches = [regex numberOfMatchesInString:barcode
+                                                                options:0
+                                                                  range:NSMakeRange(0, barcode.length)];
+            
+            if (numberOfMatches > 0) {
+                
+                matchedType = barCodeType.type;
+                break;
+                
+            }
+
+        }
+        
+    }
+    
+    [self.delegate barCodeScanner:self receiveBarCode:barcode withType:[self barCodeScannedTypeForStringType:matchedType]];
+
+}
+
+- (STMBarCodeScannedType)barCodeScannedTypeForStringType:(NSString *)type {
+    
+    if ([type isEqualToString:@"Article"]) {
+        
+        return STMBarCodeTypeArticle;
+        
+    } else if ([type isEqualToString:@"StockBatch"]) {
+        
+        return STMBarCodeTypeStockBatch;
+        
+    } else if ([type isEqualToString:@"ExciseStamp"]) {
+        
+        return STMBarCodeTypeExciseStamp;
+        
+    } else {
+        
+        return STMBarCodeTypeUnknown;
+        
+    }
+    
 }
 
 
@@ -213,7 +301,7 @@
     
     //    NSLog(@"aScannedValue %@", aScannedValue);
     
-    [self.delegate barCodeScanner:self receiveBarCode:aScannedValue];
+    [self checkScannedBarcode:aScannedValue];
     [self stopScan];
     
 }
@@ -242,11 +330,11 @@
 }
 
 
-#pragma mark - UITextFieldDelegate
+#pragma mark UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
     
-    [self.delegate barCodeScanner:self receiveBarCode:textField.text];
+    [self checkScannedBarcode:textField.text];
     textField.text = @"";
     
     return NO;
@@ -303,7 +391,7 @@
 }
 
 
-#pragma mark - ScanApiHelperDelegate
+#pragma mark ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
     [self.delegate deviceArrivalForBarCodeScanner:self];
@@ -319,7 +407,7 @@
         
         NSString *resultString = [NSString stringWithUTF8String:(const char *)[decodedData getData]];
 
-        [self.delegate barCodeScanner:self receiveBarCode:resultString];
+        [self checkScannedBarcode:resultString];
 
     }
 

@@ -78,24 +78,14 @@
     return self.view;
 }
 
-- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode {
-    
-    NSLog(@"barCodeScanner receiveBarCode: %@", barcode);
-//    self.scannedBarCode = barcode;
-//    [self searchBarCode:self.scannedBarCode];
-    
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+
+    NSLog(@"barCodeScanner receiveBarCode: %@ withType: %d", barcode, type);
+
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
     NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
-}
-
-- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
-
-}
-
-- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
-    
 }
 
 
