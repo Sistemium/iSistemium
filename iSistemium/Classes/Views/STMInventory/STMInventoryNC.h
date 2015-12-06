@@ -14,6 +14,9 @@
 @interface STMInventoryNC : STMActionPopoverNC
 
 @property (nonatomic, strong) STMInventoryItemsVC *itemsVC;
+@property (nonatomic) BOOL scanEnabled;
+
+- (void)selectArticle:(STMArticle *)article;
 
 
 @end

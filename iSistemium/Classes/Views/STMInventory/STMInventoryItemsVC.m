@@ -81,9 +81,9 @@
     
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {
     
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     
     if ([self isMovingFromParentViewController]) {
         

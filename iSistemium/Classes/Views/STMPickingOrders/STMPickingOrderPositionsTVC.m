@@ -481,11 +481,17 @@
 - (void)stopBarcodeScanning {
     
     [self.cameraBarCodeScanner stopScan];
+    self.cameraBarCodeScanner.delegate = nil; // may be move to stopScan method
     self.cameraBarCodeScanner = nil;
     self.navigationItem.leftBarButtonItem = nil;
     
     [self.HIDBarCodeScanner stopScan];
+    self.HIDBarCodeScanner.delegate = nil;
     self.HIDBarCodeScanner = nil;
+    
+    [self.iOSModeBarCodeScanner stopScan];
+    self.iOSModeBarCodeScanner.delegate = nil;
+    self.iOSModeBarCodeScanner = nil;
     
 }
 

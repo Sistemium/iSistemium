@@ -14,6 +14,8 @@
 #import "STMInventoryController.h"
 #import "STMInventoryControlling.h"
 
+#import "STMInventoryArticleSelectTVC.h"
+
 
 @interface STMInventoryNC () <STMBarCodeScannerDelegate, STMInventoryControlling>
 
@@ -26,6 +28,12 @@
 
 @implementation STMInventoryNC
 
+- (BOOL)isInActiveTab {
+    return [self.tabBarController.selectedViewController isEqual:self];
+}
+
+
+#pragma mark - barcode scanning
 
 - (void)startBarcodeScanning {
     
@@ -84,9 +92,12 @@
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
 
-    NSLog(@"barCodeScanner receiveBarCode: %@ withType: %d", barcode, type);
-    
-    [STMInventoryController receiveBarcode:barcode withType:type source:self];
+    if (self.scanEnabled && [self isInActiveTab]) {
+        
+        NSLog(@"barCodeScanner receiveBarCode: %@ withType: %d", barcode, type);
+        [STMInventoryController receiveBarcode:barcode withType:type source:self];
+
+    }
 
 }
 
@@ -98,6 +109,14 @@
 #pragma mark - STMInventoryControlling
 
 - (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles {
+    
+    [self popToRootViewControllerAnimated:YES];
+
+    STMInventoryArticleSelectTVC *articleSelectTVC = [[STMInventoryArticleSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    articleSelectTVC.articles = articles;
+    articleSelectTVC.parentNC = self;
+    
+    [self pushViewController:articleSelectTVC animated:YES];
     
 }
 
@@ -124,10 +143,23 @@
 }
 
 
+#pragma mark -
+
+- (void)selectArticle:(STMArticle *)article {
+    
+    [self popToRootViewControllerAnimated:YES];
+    [STMInventoryController selectArticle:article source:self];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
+    self.scanEnabled = YES;
     [self startBarcodeScanning];
+    
 }
 
 - (void)viewDidLoad {
