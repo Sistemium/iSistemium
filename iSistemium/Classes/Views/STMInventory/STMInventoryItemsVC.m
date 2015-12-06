@@ -8,6 +8,7 @@
 
 #import "STMInventoryItemsVC.h"
 
+#import "STMInventoryNC.h"
 #import "STMInventoryArticleVC.h"
 #import "STMInventoryBatchItemsTVC.h"
 
@@ -64,6 +65,34 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if ([self isMovingToParentViewController]) {
+        
+        if ([self.navigationController isKindOfClass:[STMInventoryNC class]]) {
+            [(STMInventoryNC *)self.navigationController setItemsVC:self];
+        }
+        
+    }
+    
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    
+    [super viewDidDisappear:animated];
+    
+    if ([self isMovingFromParentViewController]) {
+        
+        if ([self.navigationController isKindOfClass:[STMInventoryNC class]]) {
+            [(STMInventoryNC *)self.navigationController setItemsVC:nil];
+        }
+
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {

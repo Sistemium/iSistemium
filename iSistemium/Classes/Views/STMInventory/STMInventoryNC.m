@@ -12,9 +12,10 @@
 #import "STMBarCodeScanner.h"
 
 #import "STMInventoryController.h"
+#import "STMInventoryControlling.h"
 
 
-@interface STMInventoryNC () <STMBarCodeScannerDelegate>
+@interface STMInventoryNC () <STMBarCodeScannerDelegate, STMInventoryControlling>
 
 @property (nonatomic, strong) STMBarCodeScanner *cameraBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
@@ -85,12 +86,41 @@
 
     NSLog(@"barCodeScanner receiveBarCode: %@ withType: %d", barcode, type);
     
-    [STMInventoryController receiveBarcode:barcode withType:type];
+    [STMInventoryController receiveBarcode:barcode withType:type source:self];
 
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
     NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
+}
+
+
+#pragma mark - STMInventoryControlling
+
+- (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles {
+    
+}
+
+- (void)shouldSetProductionInfoForArticle:(STMArticle *)article {
+    
+}
+
+- (void)didSuccessfullySelectArticle:(STMArticle *)article {
+    
+    if (self.itemsVC) {
+        
+        self.itemsVC.inventoryArticle = article;
+        self.itemsVC.inventoryBatch = nil;
+        
+    } else {
+        
+        STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];
+        itemsVC.inventoryArticle = article;
+
+        [self pushViewController:itemsVC animated:YES];
+        
+    }
+    
 }
 
 

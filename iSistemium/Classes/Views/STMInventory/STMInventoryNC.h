@@ -8,6 +8,12 @@
 
 #import "STMActionPopoverNC.h"
 
+#import "STMInventoryItemsVC.h"
+
+
 @interface STMInventoryNC : STMActionPopoverNC
+
+@property (nonatomic, strong) STMInventoryItemsVC *itemsVC;
+
 
 @end

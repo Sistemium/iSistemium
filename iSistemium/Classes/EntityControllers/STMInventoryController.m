@@ -16,6 +16,7 @@
 
 @property (nonatomic, strong) STMInventoryBatch *currentBatch;
 @property (nonatomic, strong) STMArticle *currentArticle;
+@property (nonatomic, strong) NSString *selectedProductionInfo;
 
 
 @end
@@ -36,7 +37,7 @@
     
 }
 
-+ (void)receiveBarcode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
++ (void)receiveBarcode:(NSString *)barcode withType:(STMBarCodeScannedType)type source:(id <STMInventoryControlling>)source {
     
     switch (type) {
         case STMBarCodeTypeUnknown: {
@@ -44,7 +45,7 @@
             break;
         }
         case STMBarCodeTypeArticle: {
-            [[self sharedInstance] prepareToCreateNewBatchOfArticlesWithCode:barcode];
+            [[self sharedInstance] prepareToCreateNewBatchOfArticlesWithCode:barcode responder:source];
             break;
         }
         case STMBarCodeTypeExciseStamp: {
@@ -62,18 +63,51 @@
     
 }
 
-- (void)prepareToCreateNewBatchOfArticlesWithCode:(NSString *)articleCode {
++ (void)selectArticle:(STMArticle *)article source:(id <STMInventoryControlling>)source {
+    [[self sharedInstance] checkArticleProductionInfo:article responder:source];
+}
+
++ (void)productionInfo:(NSString *)productionInfo setForArticle:(STMArticle *)article source:(id <STMInventoryControlling>)source {
+    
+    [self sharedInstance].selectedProductionInfo = productionInfo;
+    [[self sharedInstance] didSuccessfullySelectArticle:article responder:source];
+    
+}
+
+- (void)prepareToCreateNewBatchOfArticlesWithCode:(NSString *)articleCode responder:(id <STMInventoryControlling>)responder {
 
     if (self.currentBatch) self.currentBatch = nil;
+    if (self.selectedProductionInfo) self.selectedProductionInfo = nil;
 
     NSArray *articles = [STMBarCodeController articlesForBarcode:articleCode];
     
     if (articles.count > 1) {
-        NSLog(@"show article selector");
+        
+        [responder shouldSelectArticleFromArray:articles];
+        
+    } else {
+        
+        [self checkArticleProductionInfo:articles.firstObject responder:responder];
+        
     }
     
-    self.currentArticle = articles.firstObject;
+}
+
+- (void)checkArticleProductionInfo:(STMArticle *)article responder:(id <STMInventoryControlling>)responder {
     
+    if (article.productionInfoType) {
+        [responder shouldSetProductionInfoForArticle:article];
+    } else {
+        [self didSuccessfullySelectArticle:article responder:responder];
+    }
+    
+}
+
+- (void)didSuccessfullySelectArticle:(STMArticle *)article responder:(id <STMInventoryControlling>)responder {
+    
+    self.currentArticle = article;
+    [responder didSuccessfullySelectArticle:self.currentArticle];
+
 }
 
 - (void)currentBatchAddItemWithCode:(NSString *)itemCode {
@@ -84,6 +118,7 @@
             
             self.currentBatch = (STMInventoryBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatch class]) isFantom:NO];
             self.currentBatch.article = self.currentArticle;
+            self.currentBatch.productionInfo = self.selectedProductionInfo;
             
         }
 

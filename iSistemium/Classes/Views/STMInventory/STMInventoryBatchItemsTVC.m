@@ -19,6 +19,13 @@
 
 @synthesize resultsController = _resultsController;
 
+- (void)setBatch:(STMInventoryBatch *)batch {
+    
+    _batch = batch;
+    [self performFetch];
+    
+}
+
 - (NSFetchedResultsController *)resultsController {
 
     if (!_resultsController) {

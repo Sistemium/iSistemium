@@ -9,11 +9,20 @@
 #import "STMController.h"
 
 #import "STMBarCodeScannerDelegate.h"
+#import "STMInventoryControlling.h"
 
 
 @interface STMInventoryController : STMController
 
-+ (void)receiveBarcode:(NSString *)barcode withType:(STMBarCodeScannedType)type;
++ (void)receiveBarcode:(NSString *)barcode withType:(STMBarCodeScannedType)type
+                source:(id <STMInventoryControlling>)source;
+
++ (void)selectArticle:(STMArticle *)article
+               source:(id <STMInventoryControlling>)source;
+
++ (void)productionInfo:(NSString *)productionInfo
+         setForArticle:(STMArticle *)article
+                source:(id <STMInventoryControlling>)source;
 
 
 @end

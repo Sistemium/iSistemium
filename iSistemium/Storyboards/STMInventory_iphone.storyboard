@@ -44,7 +44,7 @@
         <!--Inventory ItemsVC-->
         <scene sceneID="8ic-oI-90h">
             <objects>
-                <viewController id="hKW-KH-YhZ" customClass="STMInventoryItemsVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="inventoryItemsVC" id="hKW-KH-YhZ" customClass="STMInventoryItemsVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="C2i-5N-7Ny"/>
                         <viewControllerLayoutGuide type="bottom" id="vyo-oV-fkj"/>

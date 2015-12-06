@@ -1061,6 +1061,7 @@
 		2CE3F5371C13303700D8B4F3 /* STMInventoryBatchItemsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMInventoryBatchItemsTVC.m; sourceTree = "<group>"; };
 		2CE3F5391C13306900D8B4F3 /* STMInventoryItemsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryItemsVC.h; sourceTree = "<group>"; };
 		2CE3F53A1C13306900D8B4F3 /* STMInventoryItemsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMInventoryItemsVC.m; sourceTree = "<group>"; };
+		2CE3F53C1C14287200D8B4F3 /* STMInventoryControlling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryControlling.h; sourceTree = "<group>"; };
 		2CE8B513195475F400C84A6D /* STMRootTBC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRootTBC.h; sourceTree = "<group>"; };
 		2CE8B514195475F400C84A6D /* STMRootTBC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRootTBC.m; sourceTree = "<group>"; };
 		2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMCampaigns.storyboard; sourceTree = "<group>"; };
@@ -1673,6 +1674,7 @@
 				2CF1264E1B7880750059701F /* STMShipmentPositionSortable.h */,
 				2C587AAF1BBAC54B00546A62 /* STMWorkflowable.h */,
 				2CEE305C1BF0CFB7009B229F /* STMBarCodeScannerDelegate.h */,
+				2CE3F53C1C14287200D8B4F3 /* STMInventoryControlling.h */,
 				2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */,
 			);
 			path = Protocols;
