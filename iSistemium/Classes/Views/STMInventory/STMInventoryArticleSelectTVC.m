@@ -158,7 +158,6 @@
         self.parentNC.scanEnabled = NO;
     }
 
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

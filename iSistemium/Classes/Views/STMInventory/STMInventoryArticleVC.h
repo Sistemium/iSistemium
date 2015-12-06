@@ -10,10 +10,15 @@
 
 #import "STMDataModel.h"
 
+#import "STMInventoryItemsVC.h"
+
 
 @interface STMInventoryArticleVC : UIViewController
 
 @property (nonatomic, weak) STMArticle *article;
+@property (nonatomic, weak) NSString *productionInfo;
+
+@property (nonatomic, weak) STMInventoryItemsVC *parentVC;
 
 
 @end

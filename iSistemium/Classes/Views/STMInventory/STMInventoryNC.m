@@ -15,6 +15,7 @@
 #import "STMInventoryControlling.h"
 
 #import "STMInventoryArticleSelectTVC.h"
+#import "STMInventoryInfoSelectTVC.h"
 
 
 @interface STMInventoryNC () <STMBarCodeScannerDelegate, STMInventoryControlling>
@@ -122,9 +123,17 @@
 
 - (void)shouldSetProductionInfoForArticle:(STMArticle *)article {
     
+    [self popToRootViewControllerAnimated:YES];
+    
+    STMInventoryInfoSelectTVC *infoSelectTVC = [[STMInventoryInfoSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    infoSelectTVC.article = article;
+    infoSelectTVC.parentNC = self;
+    
+    [self pushViewController:infoSelectTVC animated:YES];
+
 }
 
-- (void)didSuccessfullySelectArticle:(STMArticle *)article {
+- (void)didSuccessfullySelectArticle:(STMArticle *)article withProductionInfo:(NSString *)productionInfo {
     
     if (self.itemsVC) {
         
@@ -135,6 +144,7 @@
         
         STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];
         itemsVC.inventoryArticle = article;
+        itemsVC.productionInfo = productionInfo;
 
         [self pushViewController:itemsVC animated:YES];
         
@@ -142,6 +152,17 @@
     
 }
 
+- (void)itemWasAdded:(STMInventoryBatchItem *)item {
+    
+    if (self.itemsVC) {
+        
+        if (![self.itemsVC.inventoryBatch isEqual:item.inventoryBatch]) {
+            self.itemsVC.inventoryBatch = item.inventoryBatch;
+        }
+        
+    }
+    
+}
 
 #pragma mark -
 
@@ -150,6 +171,13 @@
     [self popToRootViewControllerAnimated:YES];
     [STMInventoryController selectArticle:article source:self];
     
+}
+
+- (void)selectInfo:(STMArticleProductionInfo *)info {
+
+    [self popToRootViewControllerAnimated:YES];
+    [STMInventoryController productionInfo:info.info setForArticle:info.article source:self];
+
 }
 
 

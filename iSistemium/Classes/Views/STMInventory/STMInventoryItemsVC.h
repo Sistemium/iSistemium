@@ -15,6 +15,6 @@
 
 @property (nonatomic, weak) STMArticle *inventoryArticle;
 @property (nonatomic, weak) STMInventoryBatch *inventoryBatch;
-
+@property (nonatomic, weak) NSString *productionInfo;
 
 @end

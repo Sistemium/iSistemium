@@ -17,6 +17,7 @@
 @property (nonatomic) BOOL scanEnabled;
 
 - (void)selectArticle:(STMArticle *)article;
+- (void)selectInfo:(STMArticleProductionInfo *)info;
 
 
 @end

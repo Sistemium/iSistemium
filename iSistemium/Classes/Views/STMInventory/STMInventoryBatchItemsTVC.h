@@ -8,9 +8,14 @@
 
 #import "STMVariableCellsHeightTVC.h"
 
+#import "STMInventoryItemsVC.h"
+
+
 @interface STMInventoryBatchItemsTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, weak) STMInventoryBatch *batch;
+
+@property (nonatomic, weak) STMInventoryItemsVC *parentVC;
 
 
 @end

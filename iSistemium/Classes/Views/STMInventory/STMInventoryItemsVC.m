@@ -31,6 +31,13 @@
 
 }
 
+- (void)setProductionInfo:(NSString *)productionInfo {
+    
+    _productionInfo = productionInfo;
+    self.articleVC.productionInfo = _productionInfo;
+    
+}
+
 - (void)setInventoryBatch:(STMInventoryBatch *)inventoryBatch {
     
     _inventoryBatch = inventoryBatch;
@@ -48,12 +55,15 @@
         
         self.articleVC = (STMInventoryArticleVC *)segue.destinationViewController;
         self.articleVC.article = self.inventoryArticle;
+        self.articleVC.productionInfo = self.productionInfo;
+        self.articleVC.parentVC = self;
         
     } else if ([segue.identifier isEqualToString:@"itemsTVC"] &&
                [segue.destinationViewController isKindOfClass:[STMInventoryBatchItemsTVC class]]) {
         
         self.itemsTVC = (STMInventoryBatchItemsTVC *)segue.destinationViewController;
         self.itemsTVC.batch = self.inventoryBatch;
+        self.itemsTVC.parentVC = self;
         
     }
     

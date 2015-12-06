@@ -16,8 +16,13 @@
 @required
 
 - (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles;
+
 - (void)shouldSetProductionInfoForArticle:(STMArticle *)article;
-- (void)didSuccessfullySelectArticle:(STMArticle *)article;
+
+- (void)didSuccessfullySelectArticle:(STMArticle *)article
+                  withProductionInfo:(NSString *)productionInfo;
+
+- (void)itemWasAdded:(STMInventoryBatchItem *)item;
 
 
 @end

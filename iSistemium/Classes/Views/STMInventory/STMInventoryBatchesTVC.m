@@ -114,6 +114,7 @@
         STMInventoryItemsVC *inventoryItemsVC = (STMInventoryItemsVC *)segue.destinationViewController;
         inventoryItemsVC.inventoryBatch = inventoryBatch;
         inventoryItemsVC.inventoryArticle = inventoryBatch.article;
+        inventoryItemsVC.productionInfo = inventoryBatch.productionInfo;
         
     }
     

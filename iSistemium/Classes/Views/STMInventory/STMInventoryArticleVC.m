@@ -19,11 +19,44 @@
 
 @implementation STMInventoryArticleVC
 
+@synthesize article = _article;
+
+
+- (STMArticle *)article {
+    
+    if (!_article) {
+        
+        
+        
+    }
+    return _article;
+    
+}
+
 - (void)setArticle:(STMArticle *)article {
     
     _article = article;
-    self.articleLabel.text = _article.name;
     
+    [self updateArticleLabel];
+    
+}
+
+- (void)setProductionInfo:(NSString *)productionInfo {
+    
+    _productionInfo = productionInfo;
+    
+    [self updateArticleLabel];
+    
+}
+
+- (void)updateArticleLabel {
+    
+    NSString *labelText = self.article.name;
+    
+    if (self.productionInfo) labelText = [[labelText stringByAppendingString:@"\n"] stringByAppendingString:(NSString * _Nonnull)self.productionInfo];
+    
+    self.articleLabel.text = labelText;
+
 }
 
 
@@ -31,7 +64,7 @@
 
 - (void)customInit {
     
-    self.articleLabel.text = self.article.name;
+    [self updateArticleLabel];
     
 }
 

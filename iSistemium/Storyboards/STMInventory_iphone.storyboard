@@ -35,6 +35,8 @@
                     <navigationItem key="navigationItem" id="OfZ-AC-aj3"/>
                     <connections>
                         <segue destination="hKW-KH-YhZ" kind="show" identifier="showItems" id="gbE-Lr-v0J"/>
+                        <segue destination="hFg-cT-zdG" kind="show" identifier="addDataVC" id="Obq-Ec-Imj"/>
+                        <segue destination="4tX-67-0pd" kind="show" identifier="addInfoVC" id="nZU-jQ-S2N"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H0I-9V-Zii" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -170,6 +172,101 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NI2-MU-AlU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2458" y="983"/>
+        </scene>
+        <!--Picking Position Add InfoVC-->
+        <scene sceneID="sph-fh-z1N">
+            <objects>
+                <viewController storyboardIdentifier="addDateVC" id="hFg-cT-zdG" customClass="STMPickingPositionAddInfoVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="kBC-rP-z2Q"/>
+                        <viewControllerLayoutGuide type="bottom" id="GBO-1a-DEn"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ad5-gU-ojB">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="S2y-nN-cf2">
+                                <rect key="frame" x="20" y="72" width="560" height="216"/>
+                                <animations/>
+                                <date key="date" timeIntervalSinceReferenceDate="469724699.76472002">
+                                    <!--2015-11-20 15:04:59 +0000-->
+                                </date>
+                            </datePicker>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DkA-HU-Pwy">
+                                <rect key="frame" x="20" y="296" width="560" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="doneButtonPressed:" destination="hFg-cT-zdG" eventType="touchUpInside" id="NaC-XL-QCo"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="S2y-nN-cf2" firstAttribute="trailing" secondItem="DkA-HU-Pwy" secondAttribute="trailing" id="8lX-t2-0P9"/>
+                            <constraint firstItem="S2y-nN-cf2" firstAttribute="leading" secondItem="DkA-HU-Pwy" secondAttribute="leading" id="JHW-of-WLV"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="DkA-HU-Pwy" secondAttribute="leading" id="VYp-2u-3Dl"/>
+                            <constraint firstItem="DkA-HU-Pwy" firstAttribute="top" secondItem="S2y-nN-cf2" secondAttribute="bottom" constant="8" symbolic="YES" id="XTZ-hV-cFq"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="DkA-HU-Pwy" secondAttribute="trailing" id="cAD-0q-R6h"/>
+                            <constraint firstItem="S2y-nN-cf2" firstAttribute="top" secondItem="kBC-rP-z2Q" secondAttribute="bottom" constant="8" symbolic="YES" id="z3f-8D-De4"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="datePicker" destination="S2y-nN-cf2" id="cWV-08-cmv"/>
+                        <outlet property="doneButton" destination="DkA-HU-Pwy" id="7Kq-oi-rzT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aAt-qH-8rs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2017" y="-553"/>
+        </scene>
+        <!--Picking Position Add InfoVC-->
+        <scene sceneID="QIN-57-vhj">
+            <objects>
+                <viewController storyboardIdentifier="addInfoVC" id="4tX-67-0pd" customClass="STMPickingPositionAddInfoVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="HV5-sg-Xcf"/>
+                        <viewControllerLayoutGuide type="bottom" id="dhM-6c-3Xf"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="MrB-sl-6bU">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NsD-0F-88q">
+                                <rect key="frame" x="20" y="206" width="560" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="doneButtonPressed:" destination="4tX-67-0pd" eventType="touchUpInside" id="Vko-Jz-1z8"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mzP-qP-ZHb">
+                                <rect key="frame" x="20" y="120" width="560" height="30"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="mzP-qP-ZHb" firstAttribute="top" secondItem="HV5-sg-Xcf" secondAttribute="bottom" constant="56" id="C53-Gi-N6i"/>
+                            <constraint firstItem="NsD-0F-88q" firstAttribute="top" secondItem="mzP-qP-ZHb" secondAttribute="bottom" constant="56" id="Mkp-HD-5cP"/>
+                            <constraint firstItem="NsD-0F-88q" firstAttribute="trailing" secondItem="mzP-qP-ZHb" secondAttribute="trailing" id="UE5-TQ-vme"/>
+                            <constraint firstItem="mzP-qP-ZHb" firstAttribute="leading" secondItem="MrB-sl-6bU" secondAttribute="leadingMargin" id="jNl-j2-P1A"/>
+                            <constraint firstItem="NsD-0F-88q" firstAttribute="leading" secondItem="mzP-qP-ZHb" secondAttribute="leading" id="xcR-pA-KZ0"/>
+                            <constraint firstItem="NsD-0F-88q" firstAttribute="trailing" secondItem="MrB-sl-6bU" secondAttribute="trailingMargin" id="zfU-Y5-v5K"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="doneButton" destination="NsD-0F-88q" id="6e4-VX-pDT"/>
+                        <outlet property="textField" destination="mzP-qP-ZHb" id="oct-NM-RMt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bpL-8g-yH1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2823" y="-553"/>
         </scene>
     </scenes>
 </document>

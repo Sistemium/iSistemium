@@ -49,7 +49,7 @@
             break;
         }
         case STMBarCodeTypeExciseStamp: {
-            [[self sharedInstance] currentBatchAddItemWithCode:barcode];
+            [[self sharedInstance] currentBatchAddItemWithCode:barcode responder:source];
             break;
         }
         case STMBarCodeTypeStockBatch: {
@@ -94,7 +94,7 @@
 }
 
 - (void)checkArticleProductionInfo:(STMArticle *)article responder:(id <STMInventoryControlling>)responder {
-    
+
     if (article.productionInfoType) {
         [responder shouldSetProductionInfoForArticle:article];
     } else {
@@ -106,11 +106,11 @@
 - (void)didSuccessfullySelectArticle:(STMArticle *)article responder:(id <STMInventoryControlling>)responder {
     
     self.currentArticle = article;
-    [responder didSuccessfullySelectArticle:self.currentArticle];
+    [responder didSuccessfullySelectArticle:self.currentArticle withProductionInfo:self.selectedProductionInfo];
 
 }
 
-- (void)currentBatchAddItemWithCode:(NSString *)itemCode {
+- (void)currentBatchAddItemWithCode:(NSString *)itemCode responder:(id <STMInventoryControlling>)responder {
     
     if (self.currentArticle) {
         
@@ -125,6 +125,8 @@
         STMInventoryBatchItem *item = (STMInventoryBatchItem *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatchItem class]) isFantom:NO];
         item.code = itemCode;
         item.inventoryBatch = self.currentBatch;
+        
+        [responder itemWasAdded:item];
         
     }
     

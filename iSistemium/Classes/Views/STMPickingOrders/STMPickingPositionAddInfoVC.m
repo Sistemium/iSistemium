@@ -59,10 +59,21 @@
     productionInfo.article = self.article;
     productionInfo.productionInfoType = self.article.productionInfoType;
     
-    self.parentVC.selectedProductionInfo = productionInfo;
-    
-    [self.parentVC positionDidPicked];
+    if (self.parentVC) {
+        
+        self.parentVC.selectedProductionInfo = productionInfo;
+        [self.parentVC positionDidPicked];
 
+    }
+    
+    if (self.inventoryInfoVC) {
+        
+        self.inventoryInfoVC.selectedProductionInfo = productionInfo;
+        
+        [self.inventoryInfoVC infoSelected];
+        
+    }
+    
 }
 
 
@@ -99,7 +110,7 @@
         self.doneButton.enabled = NO;
 
     }
-    
+
 }
 
 - (void)viewDidLoad {
