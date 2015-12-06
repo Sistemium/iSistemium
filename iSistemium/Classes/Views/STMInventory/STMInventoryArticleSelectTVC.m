@@ -165,7 +165,11 @@
     [super viewWillDisappear:animated];
     
     if ([self isMovingFromParentViewController]) {
+        
         self.parentNC.scanEnabled = YES;
+        
+        self.navigationController.toolbarHidden = YES;
+
     }
 
 }

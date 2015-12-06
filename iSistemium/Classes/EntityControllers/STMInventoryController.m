@@ -53,7 +53,7 @@
             break;
         }
         case STMBarCodeTypeStockBatch: {
-            [[self sharedInstance] currentBatchDoneWithStockBatchCode:barcode];
+            [[self sharedInstance] currentBatchDoneWithStockBatchCode:barcode responder:source];
             break;
         }
         default: {
@@ -132,7 +132,7 @@
     
 }
 
-- (void)currentBatchDoneWithStockBatchCode:(NSString *)stockBatchCode {
+- (void)currentBatchDoneWithStockBatchCode:(NSString *)stockBatchCode responder:(id <STMInventoryControlling>)responder {
     
     if (self.currentBatch) {
         
@@ -145,10 +145,12 @@
         STMStockBatch *stockBatch = stockBatches.firstObject;
         
         self.currentBatch.stockBatch = stockBatch;
-        
+
+        [responder finishInventoryBatch:self.currentBatch withStockBatch:stockBatch];
+
         self.currentBatch = nil;
         self.currentArticle = nil; // may be not necessary
-
+        
         [[[self class] document] saveDocument:^(BOOL success) {
             
         }];

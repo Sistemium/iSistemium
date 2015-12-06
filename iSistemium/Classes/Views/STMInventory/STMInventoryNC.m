@@ -164,6 +164,11 @@
     
 }
 
+- (void)finishInventoryBatch:(STMInventoryBatch *)inventoryBatch withStockBatch:(STMStockBatch *)stockBatch {
+    [self popToRootViewControllerAnimated:YES];
+}
+
+
 #pragma mark -
 
 - (void)selectArticle:(STMArticle *)article {

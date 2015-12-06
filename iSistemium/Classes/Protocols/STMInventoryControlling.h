@@ -24,5 +24,7 @@
 
 - (void)itemWasAdded:(STMInventoryBatchItem *)item;
 
+- (void)finishInventoryBatch:(STMInventoryBatch *)inventoryBatch withStockBatch:(STMStockBatch *)stockBatch;
+
 
 @end
