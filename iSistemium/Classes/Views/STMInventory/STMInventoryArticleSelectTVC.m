@@ -157,7 +157,7 @@
         
         STMArticle *article = self.tableData[selectedIndexPath.row];
         
-        [self.parentNC selectArticle:article];
+        [self.parentNC selectArticle:article withSearchedBarcode:self.searchedBarcode];
         
     }
     

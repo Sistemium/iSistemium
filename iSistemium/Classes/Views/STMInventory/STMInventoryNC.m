@@ -12,6 +12,7 @@
 #import "STMBarCodeScanner.h"
 
 #import "STMSoundController.h"
+#import "STMObjectsController.h"
 
 #import "STMInventoryController.h"
 #import "STMInventoryControlling.h"
@@ -175,13 +176,14 @@
 
 #pragma mark - STMInventoryControlling
 
-- (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles {
+- (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles lookingForBarcode:(NSString *)barcode {
     
     [self popToRootViewControllerAnimated:YES];
 
     STMInventoryArticleSelectTVC *articleSelectTVC = [[STMInventoryArticleSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
     articleSelectTVC.articles = articles;
     articleSelectTVC.parentNC = self;
+    articleSelectTVC.searchedBarcode = barcode;
     
     [self pushViewController:articleSelectTVC animated:YES];
     
@@ -245,7 +247,15 @@
 
 #pragma mark -
 
-- (void)selectArticle:(STMArticle *)article {
+- (void)selectArticle:(STMArticle *)article withSearchedBarcode:(NSString *)barcode {
+    
+    if (barcode) {
+        
+        STMArticleBarCode *articleBarcode = (STMArticleBarCode *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMArticleBarCode class]) isFantom:NO];
+        articleBarcode.code = barcode;
+        articleBarcode.article = article;
+        
+    }
     
     [self popToRootViewControllerAnimated:YES];
     [STMInventoryController selectArticle:article source:self];

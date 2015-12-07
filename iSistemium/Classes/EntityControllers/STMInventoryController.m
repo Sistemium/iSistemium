@@ -84,7 +84,7 @@
     
     if (articles.count > 1) {
         
-        [responder shouldSelectArticleFromArray:articles];
+        [responder shouldSelectArticleFromArray:articles lookingForBarcode:nil];
         
     } else if (articles.count == 1) {
         
@@ -100,7 +100,7 @@
                                        inManagedObjectContext:nil
                                                         error:nil];
         
-        [responder shouldSelectArticleFromArray:articles];
+        [responder shouldSelectArticleFromArray:articles lookingForBarcode:articleCode];
         
     }
     

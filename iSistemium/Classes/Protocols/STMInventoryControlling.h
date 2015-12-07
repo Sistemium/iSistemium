@@ -15,7 +15,7 @@
 
 @required
 
-- (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles;
+- (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles lookingForBarcode:(NSString *)barcode;
 
 - (void)shouldSetProductionInfoForArticle:(STMArticle *)article;
 

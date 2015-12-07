@@ -14,8 +14,8 @@
 @interface STMInventoryArticleSelectTVC : STMSearchableTVC
 
 @property (nonatomic, strong) NSArray <STMArticle *> *articles;
-
 @property (nonatomic, weak) STMInventoryNC *parentNC;
+@property (nonatomic, weak) NSString *searchedBarcode;
 
 
 @end

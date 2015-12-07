@@ -16,7 +16,7 @@
 @property (nonatomic, strong) STMInventoryItemsVC *itemsVC;
 @property (nonatomic) BOOL scanEnabled;
 
-- (void)selectArticle:(STMArticle *)article;
+- (void)selectArticle:(STMArticle *)article withSearchedBarcode:(NSString *)barcode;
 - (void)selectInfo:(STMArticleProductionInfo *)info;
 
 
