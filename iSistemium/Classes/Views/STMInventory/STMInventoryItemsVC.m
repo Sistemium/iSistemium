@@ -17,12 +17,26 @@
 
 @property (nonatomic, strong) STMInventoryArticleVC *articleVC;
 @property (nonatomic, strong) STMInventoryBatchItemsTVC *itemsTVC;
+@property (nonatomic, weak) STMInventoryNC *inventoryNC;
 
 
 @end
 
 
 @implementation STMInventoryItemsVC
+
+- (STMInventoryNC *)inventoryNC {
+    
+    if (!_inventoryNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMInventoryNC class]]) {
+            _inventoryNC = (STMInventoryNC *)self.navigationController;
+        }
+
+    }
+    return _inventoryNC;
+    
+}
 
 - (void)setInventoryArticle:(STMArticle *)inventoryArticle {
     
@@ -43,6 +57,63 @@
     _inventoryBatch = inventoryBatch;
     self.itemsTVC.batch = _inventoryBatch;
     
+    [self updateButtons];
+    
+}
+
+- (void)updateButtons {
+ 
+    (!_inventoryBatch || [self.inventoryNC.currentlyProcessedBatch isEqual:_inventoryBatch]) ? [self showButtonsForProcessing] : [self hideButtonsForProcessing];
+
+}
+
+- (void)showButtonsForProcessing {
+
+    self.navigationItem.hidesBackButton = YES;
+    self.navigationController.toolbarHidden = NO;
+
+    if (self.inventoryBatch) {
+
+        STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
+                                                                                 style:UIBarButtonItemStyleDone
+                                                                                target:self
+                                                                                action:@selector(doneButtonPressed)];
+
+        [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], doneButton, [STMBarButtonItem flexibleSpace]]];
+
+    } else {
+    
+        STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil)
+                                                                                       style:UIBarButtonItemStylePlain
+                                                                                      target:self
+                                                                                      action:@selector(cancelButtonPressed)];
+        
+        [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], cancelButton, [STMBarButtonItem flexibleSpace]]];
+
+    }
+    
+}
+
+- (void)hideButtonsForProcessing {
+
+    [self setToolbarItems:nil];
+    self.navigationController.toolbarHidden = YES;
+    self.navigationItem.hidesBackButton = NO;
+
+}
+
+- (void)cancelButtonPressed {
+    
+    [self.inventoryNC cancelCurrentInventoryProcessing];
+    [self.navigationController popViewControllerAnimated:YES];
+    
+}
+
+- (void)doneButtonPressed {
+
+    [self.inventoryNC doneCurrentInventoryProcessing];
+    [self.navigationController popViewControllerAnimated:YES];
+
 }
 
 
@@ -72,9 +143,15 @@
 
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    [self updateButtons];
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -82,11 +159,7 @@
     [super viewDidAppear:animated];
     
     if ([self isMovingToParentViewController]) {
-        
-        if ([self.navigationController isKindOfClass:[STMInventoryNC class]]) {
-            [(STMInventoryNC *)self.navigationController setItemsVC:self];
-        }
-        
+        self.inventoryNC.itemsVC = self;
     }
     
 }
@@ -96,11 +169,7 @@
     [super viewWillDisappear:animated];
     
     if ([self isMovingFromParentViewController]) {
-        
-        if ([self.navigationController isKindOfClass:[STMInventoryNC class]]) {
-            [(STMInventoryNC *)self.navigationController setItemsVC:nil];
-        }
-
+        self.inventoryNC.itemsVC = nil;
     }
     
 }

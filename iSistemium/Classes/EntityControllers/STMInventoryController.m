@@ -75,6 +75,15 @@
     
 }
 
++ (void)cancelCurrentInventoryProcessing {
+    [[self sharedInstance] cancelCurrentProcess];
+}
+
++ (void)doneCurrentInventoryProcessing {
+    [[self sharedInstance] currentBatchDoneWithStockBatchCode:nil responder:nil];
+}
+
+
 - (void)prepareToCreateNewBatchOfArticlesWithCode:(NSString *)articleCode responder:(id <STMInventoryControlling>)responder {
 
     if (self.currentBatch) self.currentBatch = nil;
@@ -179,6 +188,13 @@
         }];
         
     }
+    
+}
+
+- (void)cancelCurrentProcess {
+    
+    self.currentBatch = nil;
+    self.currentArticle = nil;
     
 }
 

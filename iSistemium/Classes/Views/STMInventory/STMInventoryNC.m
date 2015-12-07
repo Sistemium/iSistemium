@@ -203,6 +203,8 @@
 
 - (void)didSuccessfullySelectArticle:(STMArticle *)article withProductionInfo:(NSString *)productionInfo {
     
+    self.currentlyProcessedBatch = nil;
+    
     if (article) {
         
         if (self.itemsVC) {
@@ -215,14 +217,13 @@
             STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];
             itemsVC.inventoryArticle = article;
             itemsVC.productionInfo = productionInfo;
+            itemsVC.inventoryBatch = nil;
             
             [self pushViewController:itemsVC animated:YES];
             
         }
 
     } else {
-        
-        
         
     }
     
@@ -233,7 +234,10 @@
     if (self.itemsVC) {
         
         if (![self.itemsVC.inventoryBatch isEqual:item.inventoryBatch]) {
+            
+            self.currentlyProcessedBatch = item.inventoryBatch;
             self.itemsVC.inventoryBatch = item.inventoryBatch;
+            
         }
         
     }
@@ -267,6 +271,14 @@
     [self popToRootViewControllerAnimated:YES];
     [STMInventoryController productionInfo:info.info setForArticle:info.article source:self];
 
+}
+
+- (void)cancelCurrentInventoryProcessing {
+    [STMInventoryController cancelCurrentInventoryProcessing];
+}
+
+- (void)doneCurrentInventoryProcessing {
+    [STMInventoryController doneCurrentInventoryProcessing];
 }
 
 

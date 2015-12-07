@@ -24,5 +24,8 @@
          setForArticle:(STMArticle *)article
                 source:(id <STMInventoryControlling>)source;
 
++ (void)cancelCurrentInventoryProcessing;
++ (void)doneCurrentInventoryProcessing;
+
 
 @end

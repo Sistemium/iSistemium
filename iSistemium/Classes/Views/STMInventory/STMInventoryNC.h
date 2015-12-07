@@ -15,9 +15,14 @@
 
 @property (nonatomic, strong) STMInventoryItemsVC *itemsVC;
 @property (nonatomic) BOOL scanEnabled;
+@property (nonatomic, strong) STMInventoryBatch *currentlyProcessedBatch;
+
 
 - (void)selectArticle:(STMArticle *)article withSearchedBarcode:(NSString *)barcode;
 - (void)selectInfo:(STMArticleProductionInfo *)info;
+
+- (void)cancelCurrentInventoryProcessing;
+- (void)doneCurrentInventoryProcessing;
 
 
 @end
