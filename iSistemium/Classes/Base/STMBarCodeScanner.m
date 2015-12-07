@@ -393,11 +393,26 @@
 
 }
 
+- (void)postGetPostamble:(id)sender {
+    
+    NSLog(@"%@", sender);
+    
+}
+
 
 #pragma mark ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
+    
+//    [self.iOSScanHelper postGetPostambleDevice:deviceInfo Target:self Response:@selector(postGetPostamble:)];
+    
+    [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
+
+//    [self.iOSScanHelper postGetPostambleDevice:deviceInfo Target:self Response:@selector(postGetPostamble:)];
+
+    
     [self.delegate deviceArrivalForBarCodeScanner:self];
+    
 }
 
 - (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
