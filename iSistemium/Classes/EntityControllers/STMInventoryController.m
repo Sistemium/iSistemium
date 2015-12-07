@@ -86,9 +86,21 @@
         
         [responder shouldSelectArticleFromArray:articles];
         
-    } else {
+    } else if (articles.count == 1) {
         
         [self checkArticleProductionInfo:articles.firstObject responder:responder];
+        
+    } else {
+        
+        articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
+                                                      orderBy:@"name"
+                                                    ascending:YES
+                                                   fetchLimit:0
+                                                  withFantoms:NO
+                                       inManagedObjectContext:nil
+                                                        error:nil];
+        
+        [responder shouldSelectArticleFromArray:articles];
         
     }
     

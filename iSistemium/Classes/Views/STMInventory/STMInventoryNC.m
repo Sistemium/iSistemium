@@ -201,18 +201,26 @@
 
 - (void)didSuccessfullySelectArticle:(STMArticle *)article withProductionInfo:(NSString *)productionInfo {
     
-    if (self.itemsVC) {
+    if (article) {
         
-        self.itemsVC.inventoryArticle = article;
-        self.itemsVC.inventoryBatch = nil;
-        
+        if (self.itemsVC) {
+            
+            self.itemsVC.inventoryArticle = article;
+            self.itemsVC.inventoryBatch = nil;
+            
+        } else {
+            
+            STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];
+            itemsVC.inventoryArticle = article;
+            itemsVC.productionInfo = productionInfo;
+            
+            [self pushViewController:itemsVC animated:YES];
+            
+        }
+
     } else {
         
-        STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];
-        itemsVC.inventoryArticle = article;
-        itemsVC.productionInfo = productionInfo;
-
-        [self pushViewController:itemsVC animated:YES];
+        
         
     }
     

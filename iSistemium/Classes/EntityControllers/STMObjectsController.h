@@ -49,6 +49,13 @@
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName;
 
++ (NSArray *)objectsForEntityName:(NSString *)entityName
+                          orderBy:(NSString *)orderBy
+                        ascending:(BOOL)ascending
+                       fetchLimit:(NSUInteger)fetchLimit
+                      withFantoms:(BOOL)withFantoms
+           inManagedObjectContext:(NSManagedObjectContext *)context
+                            error:(NSError **)error;
 
 
 @end

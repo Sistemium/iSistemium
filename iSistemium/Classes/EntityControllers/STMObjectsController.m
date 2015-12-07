@@ -1317,12 +1317,13 @@
                               orderBy:@"id"
                             ascending:YES
                            fetchLimit:0
+                          withFantoms:NO
                inManagedObjectContext:[self document].managedObjectContext
                                 error:nil];
     
 }
 
-+ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
++ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
     
     NSString *errorMessage = nil;
     
@@ -1337,6 +1338,11 @@
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
             request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending selector:@selector(compare:)]];
             request.fetchLimit = fetchLimit;
+            
+            if (!withFantoms) {
+                request.predicate = [STMPredicate predicateWithNoFantoms];
+            }
+            
             NSError *error;
             NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
             
@@ -1421,6 +1427,7 @@
                                                   orderBy:orderBy
                                                 ascending:ascending
                                                fetchLimit:size
+                                              withFantoms:YES
                                    inManagedObjectContext:[self document].managedObjectContext
                                                     error:&fetchError];
             
