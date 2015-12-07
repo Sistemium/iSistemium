@@ -118,6 +118,8 @@
             }
         }
         
+        self.delegate = nil;
+        
     }
 
 }

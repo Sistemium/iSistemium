@@ -22,6 +22,7 @@
 
 @property (nonatomic, strong) STMBarCodeScanner *cameraBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
+@property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 
 @end
@@ -37,6 +38,18 @@
 #pragma mark - barcode scanning
 
 - (void)startBarcodeScanning {
+
+    [self startCameraScanner];
+
+    [self startIOSModeScanner];
+
+    if (![self.iOSModeBarCodeScanner isDeviceConnected]) {
+        [self startHIDModeScanner];
+    }
+
+}
+
+- (void)startCameraScanner {
     
     if ([STMBarCodeScanner isCameraAvailable]) {
         
@@ -50,8 +63,18 @@
         self.navigationItem.leftBarButtonItem = cameraButton;
         
     }
+
+}
+
+- (void)startIOSModeScanner {
     
-//    [self barCodeScanner:nil receiveBarCode:@"10000412"];
+    self.iOSModeBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerIOSMode];
+    self.iOSModeBarCodeScanner.delegate = self;
+    [self.iOSModeBarCodeScanner startScan];
+
+}
+
+- (void)startHIDModeScanner {
     
     self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
     self.HIDBarCodeScanner.delegate = self;
@@ -61,13 +84,32 @@
 
 - (void)stopBarcodeScanning {
     
+    [self stopCameraScanner];
+    [self stopHIDModeScanner];
+    [self stopIOSModeScanner];
+    
+}
+
+- (void)stopCameraScanner {
+    
     [self.cameraBarCodeScanner stopScan];
     self.cameraBarCodeScanner = nil;
     self.navigationItem.leftBarButtonItem = nil;
+
+}
+
+- (void)stopIOSModeScanner {
+    
+    [self.iOSModeBarCodeScanner stopScan];
+    self.iOSModeBarCodeScanner = nil;
+
+}
+
+- (void)stopHIDModeScanner {
     
     [self.HIDBarCodeScanner stopScan];
     self.HIDBarCodeScanner = nil;
-    
+
 }
 
 - (void)cameraBarCodeScannerButtonPressed {
@@ -104,6 +146,28 @@
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
     NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
+}
+
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if ([scanner isEqual:self.iOSModeBarCodeScanner]) {
+
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
+        [self stopHIDModeScanner];
+        
+    }
+    
+}
+
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+
+    if ([scanner isEqual:self.iOSModeBarCodeScanner]) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
+        [self startHIDModeScanner];
+        
+    }
+
 }
 
 
