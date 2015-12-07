@@ -313,6 +313,7 @@
 
     
     self.hiddenBarCodeTextField = [[UITextField alloc] init];
+    self.hiddenBarCodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
     [self.hiddenBarCodeTextField becomeFirstResponder];
     self.hiddenBarCodeTextField.delegate = self;
     
