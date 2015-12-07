@@ -11,6 +11,8 @@
 #import "STMUI.h"
 #import "STMBarCodeScanner.h"
 
+#import "STMSoundController.h"
+
 #import "STMInventoryController.h"
 #import "STMInventoryControlling.h"
 
