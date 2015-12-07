@@ -10,6 +10,7 @@
 
 #import "STMBarCodeController.h"
 #import "STMObjectsController.h"
+#import "STMSoundController.h"
 
 
 @interface STMInventoryController()
@@ -121,12 +122,22 @@
             self.currentBatch.productionInfo = self.selectedProductionInfo;
             
         }
-
-        STMInventoryBatchItem *item = (STMInventoryBatchItem *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatchItem class]) isFantom:NO];
-        item.code = itemCode;
-        item.inventoryBatch = self.currentBatch;
         
-        [responder itemWasAdded:item];
+        NSSet *itemsCodes = [self.currentBatch.inventoryBatchItems valueForKeyPath:@"@distinctUnionOfObjects.code"];
+        
+        if ([itemsCodes containsObject:itemCode]) {
+            
+            [STMSoundController alertSay:NSLocalizedString(@"THIS EXCISE STAMP ALREADY SCANNED", nil)];
+            
+        } else {
+
+            STMInventoryBatchItem *item = (STMInventoryBatchItem *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatchItem class]) isFantom:NO];
+            item.code = itemCode;
+            item.inventoryBatch = self.currentBatch;
+            
+            [responder itemWasAdded:item];
+
+        }
         
     }
     
