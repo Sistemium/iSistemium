@@ -83,9 +83,9 @@
     STMTableViewCellStyleSubtitle *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     STMInventoryBatch *batch = [self.resultsController objectAtIndexPath:indexPath];
-    
-    cell.textLabel.text = [[STMFunctions noDateShortTimeFormatter] stringFromDate:batch.deviceCts];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", @(batch.inventoryBatchItems.count)];
+
+    [self fillCellTextLabel:cell.textLabel withInventoryBatch:batch];
+    [self fillCellDetailLabel:cell.detailTextLabel withInventoryBatch:batch];
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
@@ -99,6 +99,60 @@
     
 }
 
+- (void)fillCellTextLabel:(UILabel *)textLabel withInventoryBatch:(STMInventoryBatch *)batch {
+
+    UIFont *font = textLabel.font;
+    
+    NSDictionary *attributes = @{NSFontAttributeName: font,
+                                 NSForegroundColorAttributeName: textLabel.textColor};
+
+    NSString *deviceCtsString = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:batch.deviceCts];
+    
+    NSMutableAttributedString *labelText = [[NSMutableAttributedString alloc] initWithString:deviceCtsString
+                                                                                  attributes:attributes];
+    
+    if (batch.article.name) {
+        
+        [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        
+        attributes = @{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize - 2],
+                       NSForegroundColorAttributeName: textLabel.textColor};
+        
+        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:(NSString * _Nonnull)batch.article.name
+                                                                          attributes:attributes];
+        
+        [labelText appendAttributedString:articleName];
+
+    }
+    
+    textLabel.numberOfLines = 0;
+    textLabel.attributedText = labelText;
+    
+}
+
+- (void)fillCellDetailLabel:(UILabel *)detailTextLabel withInventoryBatch:(STMInventoryBatch *)batch {
+    
+    NSUInteger bottlesCount = batch.inventoryBatchItems.count;
+    
+    NSDictionary *appSettings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
+    BOOL enableShowBottles = [appSettings[@"enableShowBottles"] boolValue];
+    
+    NSString *bottleString = (enableShowBottles) ? @"BOTTLES" : @"PIECES";
+    NSString *pluralType = [STMFunctions pluralTypeForCount:bottlesCount];
+
+    bottleString = [pluralType stringByAppendingString:bottleString];
+
+    if (bottlesCount > 0) {
+    
+        detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", @(bottlesCount), NSLocalizedString(bottleString, nil)];
+
+    } else {
+        
+        detailTextLabel.text = NSLocalizedString(bottleString, nil);
+        
+    }
+    
+}
 
 
 #pragma mark - Navigation
