@@ -12,12 +12,43 @@
 @interface STMInventoryArticleSelectTVC ()
 
 @property (nonatomic, strong) STMBarButtonItem *doneButton;
+@property (nonatomic, strong) NSArray *tableData;
 
 
 @end
 
 
 @implementation STMInventoryArticleSelectTVC
+
+- (NSArray *)tableData {
+    
+    if (!_tableData) {
+    
+        if ([self.searchBar isFirstResponder] && ![self.searchBar.text isEqualToString:@""]) {
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text];
+            
+            _tableData = [self.articles filteredArrayUsingPredicate:predicate];
+            
+        } else {
+            
+            _tableData = self.articles;
+            
+        }
+
+        
+    }
+    return _tableData;
+    
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    self.tableData = nil;
+    [self.tableView reloadData];
+    
+}
+
 
 #pragma mark - table view data
 
@@ -26,14 +57,14 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.articles.count;
+    return self.tableData.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMTableViewCellStyleSubtitle *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    STMArticle *article = self.articles[indexPath.row];
+    STMArticle *article = self.tableData[indexPath.row];
     
     cell.textLabel.text = article.name;
     cell.textLabel.numberOfLines = 0;
@@ -124,7 +155,7 @@
 
     if (selectedIndexPath) {
         
-        STMArticle *article = self.articles[selectedIndexPath.row];
+        STMArticle *article = self.tableData[selectedIndexPath.row];
         
         [self.parentNC selectArticle:article];
         

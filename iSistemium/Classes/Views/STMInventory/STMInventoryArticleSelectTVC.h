@@ -6,12 +6,12 @@
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMVariableCellsHeightTVC.h"
+#import "STMSearchableTVC.h"
 
 #import "STMInventoryNC.h"
 
 
-@interface STMInventoryArticleSelectTVC : STMVariableCellsHeightTVC
+@interface STMInventoryArticleSelectTVC : STMSearchableTVC
 
 @property (nonatomic, strong) NSArray <STMArticle *> *articles;
 
