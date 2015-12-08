@@ -1,19 +1,19 @@
 //
-//  STMInventoryController.m
+//  STMInventoryProcessController.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 05/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMInventoryController.h"
+#import "STMInventoryProcessController.h"
 
 #import "STMBarCodeController.h"
 #import "STMObjectsController.h"
 #import "STMSoundController.h"
 
 
-@interface STMInventoryController()
+@interface STMInventoryProcessController()
 
 @property (nonatomic, strong) STMInventoryBatch *currentBatch;
 @property (nonatomic, strong) STMArticle *currentArticle;
@@ -25,9 +25,9 @@
 @end
 
 
-@implementation STMInventoryController
+@implementation STMInventoryProcessController
 
-+ (STMInventoryController *)sharedInstance {
++ (STMInventoryProcessController *)sharedInstance {
     
     static dispatch_once_t pred = 0;
     __strong static id _sharedInstance = nil;

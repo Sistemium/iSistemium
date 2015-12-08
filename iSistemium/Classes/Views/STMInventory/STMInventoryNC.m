@@ -14,7 +14,7 @@
 #import "STMSoundController.h"
 #import "STMObjectsController.h"
 
-#import "STMInventoryController.h"
+#import "STMInventoryProcessController.h"
 #import "STMInventoryControlling.h"
 
 #import "STMInventoryArticleSelectTVC.h"
@@ -141,7 +141,7 @@
     if (self.scanEnabled && [self isInActiveTab]) {
         
         NSLog(@"barCodeScanner receiveBarCode: %@ withType: %d", barcode, type);
-        [STMInventoryController receiveBarcode:barcode withType:type source:self];
+        [STMInventoryProcessController receiveBarcode:barcode withType:type source:self];
 
     }
 
@@ -282,7 +282,7 @@
             
             switch (buttonIndex) {
                 case 1:
-                    [STMInventoryController articleMismatchConfirmedForStockBatch:self.mismatchedStockBatch source:self];
+                    [STMInventoryProcessController articleMismatchConfirmedForStockBatch:self.mismatchedStockBatch source:self];
                     break;
 
                 default:
@@ -312,23 +312,23 @@
     }
     
     [self popToRootViewControllerAnimated:YES];
-    [STMInventoryController selectArticle:article source:self];
+    [STMInventoryProcessController selectArticle:article source:self];
     
 }
 
 - (void)selectInfo:(STMArticleProductionInfo *)info {
 
     [self popToRootViewControllerAnimated:YES];
-    [STMInventoryController productionInfo:info.info setForArticle:info.article source:self];
+    [STMInventoryProcessController productionInfo:info.info setForArticle:info.article source:self];
 
 }
 
 - (void)cancelCurrentInventoryProcessing {
-    [STMInventoryController cancelCurrentInventoryProcessing];
+    [STMInventoryProcessController cancelCurrentInventoryProcessing];
 }
 
 - (void)doneCurrentInventoryProcessing {
-    [STMInventoryController doneCurrentInventoryProcessing];
+    [STMInventoryProcessController doneCurrentInventoryProcessing];
 }
 
 

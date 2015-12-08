@@ -1,5 +1,5 @@
 //
-//  STMInventoryController.h
+//  STMInventoryProcessController.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 05/12/15.
@@ -12,7 +12,7 @@
 #import "STMInventoryControlling.h"
 
 
-@interface STMInventoryController : STMController
+@interface STMInventoryProcessController : STMController
 
 + (void)receiveBarcode:(NSString *)barcode withType:(STMBarCodeScannedType)type
                 source:(id <STMInventoryControlling>)source;
