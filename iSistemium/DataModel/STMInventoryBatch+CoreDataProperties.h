@@ -2,7 +2,7 @@
 //  STMInventoryBatch+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 03/12/15.
+//  Created by Maxim Grigoriev on 08/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -17,9 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nullable, nonatomic, retain) NSString *code;
 @property (nullable, nonatomic, retain) NSString *productionInfo;
+@property (nullable, nonatomic, retain) NSString *stockBatchCode;
 @property (nullable, nonatomic, retain) STMArticle *article;
-@property (nullable, nonatomic, retain) STMStockBatch *stockBatch;
 @property (nullable, nonatomic, retain) NSSet<STMInventoryBatchItem *> *inventoryBatchItems;
+@property (nullable, nonatomic, retain) STMStockBatch *stockBatch;
 
 @end
 

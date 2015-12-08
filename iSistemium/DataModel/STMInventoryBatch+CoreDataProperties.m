@@ -2,7 +2,7 @@
 //  STMInventoryBatch+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 03/12/15.
+//  Created by Maxim Grigoriev on 08/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,8 +15,9 @@
 
 @dynamic code;
 @dynamic productionInfo;
+@dynamic stockBatchCode;
 @dynamic article;
-@dynamic stockBatch;
 @dynamic inventoryBatchItems;
+@dynamic stockBatch;
 
 @end
