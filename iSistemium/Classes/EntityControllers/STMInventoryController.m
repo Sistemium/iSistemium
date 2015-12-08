@@ -42,7 +42,8 @@
     
     switch (type) {
         case STMBarCodeTypeUnknown: {
-            
+            [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+            NSLog(@"unknown barcode %@", barcode);
             break;
         }
         case STMBarCodeTypeArticle: {
