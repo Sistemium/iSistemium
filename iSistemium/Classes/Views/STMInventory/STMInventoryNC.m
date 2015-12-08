@@ -21,12 +21,12 @@
 #import "STMInventoryInfoSelectTVC.h"
 
 
-@interface STMInventoryNC () <STMBarCodeScannerDelegate, STMInventoryControlling>
+@interface STMInventoryNC () <STMBarCodeScannerDelegate, STMInventoryControlling, UIAlertViewDelegate>
 
 @property (nonatomic, strong) STMBarCodeScanner *cameraBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
-
+@property (nonatomic, weak) STMStockBatch *mismatchedStockBatch;
 
 @end
 
@@ -244,8 +244,54 @@
     
 }
 
+- (void)shouldConfirmArticleMismatchForStockBatch:(STMStockBatch *)stockBatch withInventoryBatch:(STMInventoryBatch *)inventoryBatch {
+    
+    self.mismatchedStockBatch = stockBatch;
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"ARTICLE MISMATCH ALERT MESSAGE", nil), inventoryBatch.article.name, stockBatch.article.name];
+       
+        UIAlertView *mismatchArticleAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"WARNING", nil)
+                                                                       message:message
+                                                                      delegate:self
+                                                             cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                             otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        mismatchArticleAlert.tag = 342;
+        [mismatchArticleAlert show];
+        
+    }];
+    
+}
+
 - (void)finishInventoryBatch:(STMInventoryBatch *)inventoryBatch withStockBatch:(STMStockBatch *)stockBatch {
     [self popToRootViewControllerAnimated:YES];
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 342:
+            
+            switch (buttonIndex) {
+                case 1:
+                    [STMInventoryController articleMismatchConfirmedForStockBatch:self.mismatchedStockBatch source:self];
+                    break;
+
+                default:
+                    break;
+            }
+            
+            self.mismatchedStockBatch = nil;
+            break;
+            
+        default:
+            break;
+    }
+    
 }
 
 

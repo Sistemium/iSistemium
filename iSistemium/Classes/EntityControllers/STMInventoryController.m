@@ -18,6 +18,7 @@
 @property (nonatomic, strong) STMInventoryBatch *currentBatch;
 @property (nonatomic, strong) STMArticle *currentArticle;
 @property (nonatomic, strong) NSString *currentArticleCode;
+@property (nonatomic, strong) NSString *currentStockBatchCode;
 @property (nonatomic, strong) NSString *selectedProductionInfo;
 
 
@@ -85,11 +86,13 @@
     [[self sharedInstance] currentBatchDoneWithStockBatchCode:nil responder:nil];
 }
 
++ (void)articleMismatchConfirmedForStockBatch:(STMStockBatch *)stockBatch source:(id<STMInventoryControlling>)source {
+    [[self sharedInstance] articleMismatchConfirmedForStockBatch:stockBatch source:source];
+}
 
 - (void)prepareToCreateNewBatchOfArticlesWithCode:(NSString *)articleCode responder:(id <STMInventoryControlling>)responder {
 
-    if (self.currentBatch) self.currentBatch = nil;
-    if (self.selectedProductionInfo) self.selectedProductionInfo = nil;
+    [self nullifyCurrentProperties];
     
     self.currentArticleCode = articleCode;
 
@@ -162,6 +165,10 @@
             item.inventoryBatch = self.currentBatch;
             
             [responder itemWasAdded:item];
+            
+            [[[self class] document] saveDocument:^(BOOL success) {
+                
+            }];
 
         }
         
@@ -173,6 +180,8 @@
     
     if (self.currentBatch) {
         
+        self.currentStockBatchCode = stockBatchCode;
+        
         NSArray *stockBatches = [STMBarCodeController stockBatchForBarcode:stockBatchCode];
         
         if (stockBatches.count > 1) {
@@ -181,19 +190,47 @@
         
         STMStockBatch *stockBatch = stockBatches.firstObject;
         
-        self.currentBatch.stockBatch = stockBatch;
-
-        [responder finishInventoryBatch:self.currentBatch withStockBatch:stockBatch];
-
-        self.currentBatch = nil;
-        self.currentArticle = nil; // may be not necessary
-        
-        [[[self class] document] saveDocument:^(BOOL success) {
+        if ([stockBatch.article isEqual:self.currentArticle]) {
             
-        }];
+            [self finishInventoryBatchWithStockBatch:stockBatch responder:responder];
+
+        } else {
+            
+            [responder shouldConfirmArticleMismatchForStockBatch:stockBatch withInventoryBatch:self.currentBatch];
+            
+        }
         
     }
     
+}
+
+- (void)articleMismatchConfirmedForStockBatch:(STMStockBatch *)stockBatch source:(id<STMInventoryControlling>)source {
+    [self finishInventoryBatchWithStockBatch:stockBatch responder:source];
+}
+
+- (void)finishInventoryBatchWithStockBatch:(STMStockBatch *)stockBatch responder:(id <STMInventoryControlling>)responder {
+    
+    self.currentBatch.stockBatch = stockBatch;
+    self.currentBatch.stockBatchCode = self.currentStockBatchCode;
+    
+    [responder finishInventoryBatch:self.currentBatch withStockBatch:stockBatch];
+    
+    [self nullifyCurrentProperties];
+    
+    [[[self class] document] saveDocument:^(BOOL success) {
+        
+    }];
+
+}
+
+- (void)nullifyCurrentProperties {
+    
+    self.currentBatch = nil;
+    self.currentArticle = nil;
+    self.currentArticleCode = nil;
+    self.currentStockBatchCode = nil;
+    self.selectedProductionInfo = nil;
+
 }
 
 - (void)cancelCurrentProcess {

@@ -27,5 +27,7 @@
 + (void)cancelCurrentInventoryProcessing;
 + (void)doneCurrentInventoryProcessing;
 
++ (void)articleMismatchConfirmedForStockBatch:(STMStockBatch *)stockBatch source:(id <STMInventoryControlling>)source;
+
 
 @end
