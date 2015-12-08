@@ -22,10 +22,18 @@
 + (void)requestDefaults;
 
 - (void)saveLogMessageWithText:(NSString *)text;
-- (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type;
+
+- (void)saveLogMessageWithText:(NSString *)text
+                          type:(NSString *)type;
+
+- (void)saveLogMessageWithText:(NSString *)text
+                          type:(NSString *)type
+                         owner:(STMDatum *)owner;
+
 - (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic;
 - (void)saveLogMessageDictionaryToDocument;
 
 - (NSArray *)syncingTypesForSettingType:(NSString *)settingType;
+
 
 @end

@@ -205,7 +205,10 @@
 }
 
 - (void)articleMismatchConfirmedForStockBatch:(STMStockBatch *)stockBatch source:(id<STMInventoryControlling>)source {
+    
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"articleMismatch" type:@"error" owner:self.currentBatch];
     [self finishInventoryBatchWithStockBatch:stockBatch responder:source];
+    
 }
 
 - (void)finishInventoryBatchWithStockBatch:(STMStockBatch *)stockBatch responder:(id <STMInventoryControlling>)responder {

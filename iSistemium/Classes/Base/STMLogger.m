@@ -214,6 +214,10 @@
 }
 
 - (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type {
+    [self saveLogMessageWithText:text type:type owner:nil];
+}
+
+- (void)saveLogMessageWithText:(NSString *)text type:(NSString *)type owner:(STMDatum *)owner {
     
     if (![[self availableTypes] containsObject:type]) type = @"info";
     
@@ -226,6 +230,7 @@
         STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class]) isFantom:NO];
         logMessage.text = text;
         logMessage.type = type;
+        logMessage.owner = owner;
         
         [self.document saveDocument:^(BOOL success) {
         }];
@@ -233,7 +238,7 @@
     } else {
         [self saveLogMessageDictionary:@{@"text": [NSString stringWithFormat:@"%@", text], @"type": [NSString stringWithFormat:@"%@", type]}];
     }
-    
+
 }
 
 - (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic {
