@@ -53,6 +53,7 @@
     
     NSString *labelText = self.article.name;
     
+    if (self.article.extraLabel) labelText = [[labelText stringByAppendingString:@" "] stringByAppendingString:(NSString * _Nonnull)self.article.extraLabel];
     if (self.productionInfo) labelText = [[labelText stringByAppendingString:@"\n\n"] stringByAppendingString:(NSString * _Nonnull)self.productionInfo];
     
     self.articleLabel.text = labelText;

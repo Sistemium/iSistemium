@@ -118,7 +118,13 @@
         
         [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
         
-        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:(NSString * _Nonnull)batch.article.name
+        NSString *articleNameString = batch.article.name;
+        
+        if (batch.article.extraLabel) {
+            articleNameString = [NSString stringWithFormat:@"%@ %@", articleNameString, batch.article.extraLabel];
+        }
+        
+        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:articleNameString
                                                                           attributes:attributes];
         
         [labelText appendAttributedString:articleName];
