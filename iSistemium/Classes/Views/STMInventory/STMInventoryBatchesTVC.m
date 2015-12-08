@@ -110,15 +110,44 @@
     
     NSMutableAttributedString *labelText = [[NSMutableAttributedString alloc] initWithString:deviceCtsString
                                                                                   attributes:attributes];
-    
+
+    attributes = @{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize - 2],
+                   NSForegroundColorAttributeName: textLabel.textColor};
+
     if (batch.article.name) {
         
         [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
         
-        attributes = @{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize - 2],
-                       NSForegroundColorAttributeName: textLabel.textColor};
-        
         NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:(NSString * _Nonnull)batch.article.name
+                                                                          attributes:attributes];
+        
+        [labelText appendAttributedString:articleName];
+
+    }
+    
+    attributes = @{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize - 4],
+                   NSForegroundColorAttributeName: textLabel.textColor};
+
+    if (batch.code) {
+        
+        [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        
+        NSString *codeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"ARTICLE", nil), batch.code];
+        
+        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:codeString
+                                                                          attributes:attributes];
+        
+        [labelText appendAttributedString:articleName];
+
+    }
+    
+    if (batch.stockBatchCode) {
+        
+        [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+
+        NSString *stockBatchCodeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"STOCK BATCH", nil), batch.stockBatchCode];
+        
+        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:stockBatchCodeString
                                                                           attributes:attributes];
         
         [labelText appendAttributedString:articleName];
