@@ -159,6 +159,8 @@
             [STMSoundController alertSay:NSLocalizedString(@"THIS EXCISE STAMP ALREADY SCANNED", nil)];
             
         } else {
+            
+            [STMSoundController playOk];
 
             STMInventoryBatchItem *item = (STMInventoryBatchItem *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatchItem class]) isFantom:NO];
             item.code = itemCode;

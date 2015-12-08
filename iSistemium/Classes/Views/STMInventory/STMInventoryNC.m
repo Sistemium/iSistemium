@@ -179,6 +179,8 @@
 - (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles lookingForBarcode:(NSString *)barcode {
     
     [self popToRootViewControllerAnimated:YES];
+    
+    [STMSoundController say:NSLocalizedString(@"SELECT ARTICLE", nil)];
 
     STMInventoryArticleSelectTVC *articleSelectTVC = [[STMInventoryArticleSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
     articleSelectTVC.articles = articles;
@@ -247,6 +249,8 @@
 - (void)shouldConfirmArticleMismatchForStockBatch:(STMStockBatch *)stockBatch withInventoryBatch:(STMInventoryBatch *)inventoryBatch {
     
     self.mismatchedStockBatch = stockBatch;
+    
+    [STMSoundController playAlert];
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         

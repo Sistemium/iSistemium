@@ -402,5 +402,5 @@
 "INVENTORY INFO MESSAGE" = "Для начала работы просканируйте штрих-код товара";
 "THIS EXCISE STAMP ALREADY SCANNED" = "Эта акцизная марка уже обработана";
 "ARTICLE MISMATCH ALERT MESSAGE" = "Сканируемый товар:\n\n%@\n\nне совпадает с товаром партии:\n\n%@\n\n\nПривязать эту партию\nк сканируемому товару?";
-
+"SELECT ARTICLE" = "Выберите товар";
 
