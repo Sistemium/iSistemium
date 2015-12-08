@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) STMInventoryBatch *currentBatch;
 @property (nonatomic, strong) STMArticle *currentArticle;
+@property (nonatomic, strong) NSString *currentArticleCode;
 @property (nonatomic, strong) NSString *selectedProductionInfo;
 
 
@@ -89,6 +90,8 @@
 
     if (self.currentBatch) self.currentBatch = nil;
     if (self.selectedProductionInfo) self.selectedProductionInfo = nil;
+    
+    self.currentArticleCode = articleCode;
 
     NSArray *articles = [STMBarCodeController articlesForBarcode:articleCode];
     
@@ -142,6 +145,7 @@
             self.currentBatch = (STMInventoryBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatch class]) isFantom:NO];
             self.currentBatch.article = self.currentArticle;
             self.currentBatch.productionInfo = self.selectedProductionInfo;
+            self.currentBatch.code = self.currentArticleCode;
             
         }
         
