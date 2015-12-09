@@ -11,6 +11,9 @@
 #import "STMPickingPositionInfoTVC.h"
 #import "STMInventoryInfoSelectTVC.h"
 
+#import "iSistemium-Swift.h"
+
+
 @interface STMPickingPositionAddInfoVC : UIViewController
 
 @property (nonatomic, weak) STMPickingPositionInfoTVC *parentVC;

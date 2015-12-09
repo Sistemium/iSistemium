@@ -67,7 +67,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="pickingOrderPositionCell" id="UWc-8P-f6F">
                                 <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
@@ -102,7 +102,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="pickedPositonCell" id="IVw-0T-SSU">
                                 <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
@@ -136,7 +136,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="volumeCell" id="4bD-R5-go1">
                                 <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
@@ -170,7 +170,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="positionInfoCell" id="rpC-UO-TzO">
                                 <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
@@ -209,13 +209,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="ylz-rK-iV5">
-                                <rect key="frame" x="20" y="72" width="560" height="216"/>
-                                <animations/>
-                                <date key="date" timeIntervalSinceReferenceDate="469724699.76472002">
-                                    <!--2015-11-20 15:04:59 +0000-->
-                                </date>
-                            </datePicker>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NvW-Ei-0EP">
                                 <rect key="frame" x="20" y="296" width="560" height="30"/>
                                 <animations/>
@@ -224,20 +217,24 @@
                                     <action selector="doneButtonPressed:" destination="bxV-eY-hzj" eventType="touchUpInside" id="m9t-1W-gvR"/>
                                 </connections>
                             </button>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="acP-N6-Tpw" customClass="STMDatePicker" customModule="iSistemium" customModuleProvider="target">
+                                <rect key="frame" x="20" y="72" width="560" height="216"/>
+                                <animations/>
+                            </pickerView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="ylz-rK-iV5" secondAttribute="trailing" id="FEK-yy-98D"/>
+                            <constraint firstItem="acP-N6-Tpw" firstAttribute="top" secondItem="VK6-4F-KfH" secondAttribute="bottom" constant="8" id="2N3-ck-K6d"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="acP-N6-Tpw" secondAttribute="leading" id="Fnm-xO-y8F"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="acP-N6-Tpw" secondAttribute="trailing" id="Oig-Je-HB5"/>
                             <constraint firstAttribute="trailingMargin" secondItem="NvW-Ei-0EP" secondAttribute="trailing" id="Ycb-aA-tGO"/>
-                            <constraint firstItem="ylz-rK-iV5" firstAttribute="top" secondItem="VK6-4F-KfH" secondAttribute="bottom" constant="8" id="c6Q-e7-w5s"/>
                             <constraint firstAttribute="leadingMargin" secondItem="NvW-Ei-0EP" secondAttribute="leading" id="kXb-2O-5Kt"/>
-                            <constraint firstItem="NvW-Ei-0EP" firstAttribute="top" secondItem="ylz-rK-iV5" secondAttribute="bottom" constant="8" id="mGF-4C-Wu1"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="ylz-rK-iV5" secondAttribute="leading" id="mjB-Kb-Zp9"/>
+                            <constraint firstItem="NvW-Ei-0EP" firstAttribute="top" secondItem="acP-N6-Tpw" secondAttribute="bottom" constant="8" id="zwg-Ac-DsW"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="datePicker" destination="ylz-rK-iV5" id="DMF-b7-olY"/>
+                        <outlet property="datePicker" destination="acP-N6-Tpw" id="hBV-5M-epz"/>
                         <outlet property="doneButton" destination="NvW-Ei-0EP" id="xPo-dE-CHx"/>
                     </connections>
                 </viewController>

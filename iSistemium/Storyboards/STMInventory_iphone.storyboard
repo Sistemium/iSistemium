@@ -113,6 +113,10 @@
         <scene sceneID="fKt-Pb-dGy">
             <objects>
                 <viewController id="EkI-no-QeX" customClass="STMInventoryArticleVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="cNN-AB-mU1"/>
+                        <viewControllerLayoutGuide type="bottom" id="Sok-zN-cED"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Wwp-29-dLQ">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="160"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -121,7 +125,7 @@
                                 <rect key="frame" x="20" y="20" width="560" height="120"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>

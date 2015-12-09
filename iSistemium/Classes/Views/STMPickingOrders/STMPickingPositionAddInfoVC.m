@@ -14,7 +14,7 @@
 
 @interface STMPickingPositionAddInfoVC () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
+@property (weak, nonatomic) IBOutlet STMDatePicker *datePicker;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 @property (weak, nonatomic) IBOutlet UIButton *doneButton;
 
@@ -36,7 +36,7 @@
         
     } else {
         
-        NSString *info = [[STMFunctions dateNumbersFormatter] stringFromDate:self.datePicker.date];
+        NSString *info = [self.datePicker selectedDateAsString];// [[STMFunctions dateNumbersFormatter] stringFromDate:self.datePicker.date];
         [self saveProductionInfo:info];
         
     }
@@ -98,7 +98,7 @@
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateNormal];
     [self.doneButton setTitle:NSLocalizedString(@"DONE", nil) forState:UIControlStateDisabled];
     
-    self.datePicker.maximumDate = [NSDate date];
+//    self.datePicker.maximumDate = [NSDate date];
     
     if (![self.article.productionInfoType.datatype isEqualToString:@"date"]) {
         
