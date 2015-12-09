@@ -457,6 +457,7 @@
 		2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF365AD19EE8C0100F078BD /* settings3-128.png */; };
 		2CF365B119EEA35400F078BD /* STMSettingControlsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */; };
 		2CF858C91C1854A0004D7BD1 /* STMDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF858C81C1854A0004D7BD1 /* STMDatePicker.swift */; };
+		2CF858CE1C1874DF004D7BD1 /* STMApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF858CD1C1874DF004D7BD1 /* STMApplication.m */; };
 		2CFDD7291A29AF42003515C5 /* STMPicturesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD7281A29AF42003515C5 /* STMPicturesController.m */; };
 		2CFDD8851A2F6270003515C5 /* STMDebtsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD8841A2F6270003515C5 /* STMDebtsController.m */; };
 		2CFDD88E1A308B4C003515C5 /* STMSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFDD88D1A308B4C003515C5 /* STMSingleton.m */; };
@@ -1326,6 +1327,8 @@
 		2CF365AF19EEA35400F078BD /* STMSettingControlsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingControlsTVC.h; sourceTree = "<group>"; };
 		2CF365B019EEA35400F078BD /* STMSettingControlsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMSettingControlsTVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2CF858C81C1854A0004D7BD1 /* STMDatePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMDatePicker.swift; sourceTree = "<group>"; };
+		2CF858CC1C1874DF004D7BD1 /* STMApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMApplication.h; sourceTree = "<group>"; };
+		2CF858CD1C1874DF004D7BD1 /* STMApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMApplication.m; sourceTree = "<group>"; };
 		2CFDD7271A29AF42003515C5 /* STMPicturesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesController.h; sourceTree = "<group>"; };
 		2CFDD7281A29AF42003515C5 /* STMPicturesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMPicturesController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDatePickerParent.h; sourceTree = "<group>"; };
@@ -2208,6 +2211,8 @@
 				2C8EF5E0194086450021D202 /* Resources */,
 				2C8EF5F11940872E0021D202 /* STMAppDelegate.h */,
 				2C8EF5F21940872E0021D202 /* STMAppDelegate.m */,
+				2CF858CC1C1874DF004D7BD1 /* STMApplication.h */,
+				2CF858CD1C1874DF004D7BD1 /* STMApplication.m */,
 				2C8EF5B61940859F0021D202 /* Images.xcassets */,
 				2C8EF5A51940859F0021D202 /* Supporting Files */,
 				2C90CAD51BCBDC19002DC1AE /* iSistemium-Bridging-Header.h */,
@@ -2960,6 +2965,7 @@
 				2C14D43B1A3B396300747844 /* STMImagePickerController.m in Sources */,
 				2C5764601AAB13AD00B9FD2C /* STMOrdersDetailTVC.m in Sources */,
 				2CEE304E1BECD922009B229F /* STMBarCode+CoreDataProperties.m in Sources */,
+				2CF858CE1C1874DF004D7BD1 /* STMApplication.m in Sources */,
 				2CEE303D1BEBAD10009B229F /* STMShipmentRoutePoint.m in Sources */,
 				2C4E443B1A810A6D006E6AF1 /* STMRecordStatusController.m in Sources */,
 				2CE3F5451C146DF100D8B4F3 /* STMInventoryInfoSelectTVC.m in Sources */,
