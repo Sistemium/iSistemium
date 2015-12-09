@@ -20,7 +20,10 @@
 - (void)searchButtonPressed {
     
     [self.searchBar becomeFirstResponder];
-    [self.tableView setContentOffset:CGPointZero animated:YES];
+    
+//    [self.tableView setContentOffset:CGPointZero animated:YES];
+    
+    [self.tableView scrollRectToVisible:self.tableView.tableHeaderView.frame animated:NO];
     
     [self hideSearchButton];
     
@@ -28,7 +31,9 @@
 
 - (void)showSearchButton {
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                           target:self
+                                                                                           action:@selector(searchButtonPressed)];
 }
 
 - (void)hideSearchButton {
