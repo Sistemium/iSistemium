@@ -189,13 +189,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="S2y-nN-cf2">
-                                <rect key="frame" x="20" y="72" width="560" height="216"/>
-                                <animations/>
-                                <date key="date" timeIntervalSinceReferenceDate="469724699.76472002">
-                                    <!--2015-11-20 15:04:59 +0000-->
-                                </date>
-                            </datePicker>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DkA-HU-Pwy">
                                 <rect key="frame" x="20" y="296" width="560" height="30"/>
                                 <animations/>
@@ -204,20 +197,24 @@
                                     <action selector="doneButtonPressed:" destination="hFg-cT-zdG" eventType="touchUpInside" id="NaC-XL-QCo"/>
                                 </connections>
                             </button>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EO5-oh-62e" customClass="STMDatePicker" customModule="iSistemium" customModuleProvider="target">
+                                <rect key="frame" x="20" y="72" width="560" height="216"/>
+                                <animations/>
+                            </pickerView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="S2y-nN-cf2" firstAttribute="trailing" secondItem="DkA-HU-Pwy" secondAttribute="trailing" id="8lX-t2-0P9"/>
-                            <constraint firstItem="S2y-nN-cf2" firstAttribute="leading" secondItem="DkA-HU-Pwy" secondAttribute="leading" id="JHW-of-WLV"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="EO5-oh-62e" secondAttribute="trailing" id="ISt-Ye-lx0"/>
                             <constraint firstAttribute="leadingMargin" secondItem="DkA-HU-Pwy" secondAttribute="leading" id="VYp-2u-3Dl"/>
-                            <constraint firstItem="DkA-HU-Pwy" firstAttribute="top" secondItem="S2y-nN-cf2" secondAttribute="bottom" constant="8" symbolic="YES" id="XTZ-hV-cFq"/>
                             <constraint firstAttribute="trailingMargin" secondItem="DkA-HU-Pwy" secondAttribute="trailing" id="cAD-0q-R6h"/>
-                            <constraint firstItem="S2y-nN-cf2" firstAttribute="top" secondItem="kBC-rP-z2Q" secondAttribute="bottom" constant="8" symbolic="YES" id="z3f-8D-De4"/>
+                            <constraint firstItem="DkA-HU-Pwy" firstAttribute="top" secondItem="EO5-oh-62e" secondAttribute="bottom" constant="8" id="fzk-XV-4zB"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="EO5-oh-62e" secondAttribute="leading" id="jyO-m0-861"/>
+                            <constraint firstItem="EO5-oh-62e" firstAttribute="top" secondItem="kBC-rP-z2Q" secondAttribute="bottom" constant="8" id="qnq-Xl-kUH"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="datePicker" destination="S2y-nN-cf2" id="cWV-08-cmv"/>
+                        <outlet property="datePicker" destination="EO5-oh-62e" id="orW-Fc-TJy"/>
                         <outlet property="doneButton" destination="DkA-HU-Pwy" id="7Kq-oi-rzT"/>
                     </connections>
                 </viewController>

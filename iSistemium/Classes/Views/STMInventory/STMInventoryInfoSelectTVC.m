@@ -147,7 +147,7 @@
     } else {
         
         STMArticleProductionInfo *productionInfo = self.productionInfo[index];
-        cell.textLabel.text = productionInfo.info;
+        cell.textLabel.text = [productionInfo displayInfo];
         cell.textLabel.textAlignment = NSTextAlignmentLeft;
         cell.textLabel.textColor = [UIColor blackColor];
         cell.accessoryType = ([self.selectedProductionInfo isEqual:productionInfo]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;

@@ -69,7 +69,6 @@
     if (self.inventoryInfoVC) {
         
         self.inventoryInfoVC.selectedProductionInfo = productionInfo;
-        
         [self.inventoryInfoVC infoSelected];
         
     }
