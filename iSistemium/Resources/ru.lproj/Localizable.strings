@@ -403,4 +403,8 @@
 "THIS EXCISE STAMP ALREADY SCANNED" = "Эта акцизная марка уже обработана";
 "ARTICLE MISMATCH ALERT MESSAGE" = "Сканируемый товар:\n\n%@\n\nне совпадает с товаром партии:\n\n%@\n\n\nПривязать эту партию\nк сканируемому товару?";
 "SELECT ARTICLE" = "Выберите товар";
+"CONNECT HID SCANNER" = "Подключить HID-сканер";
+"DISCONNECT HID SCANNER" = "Отключить HID-сканер";
+"HID SCANNER NOT FOUND" = "HID-сканер не найден";
+"SAY HID SCANNER NOT FOUND" = "HID Сканер не найден";
 

@@ -20,6 +20,9 @@
 #import "STMInventoryArticleSelectTVC.h"
 #import "STMInventoryInfoSelectTVC.h"
 
+#define CONNECT_HID_SCANNER_ACTION NSLocalizedString(@"CONNECT HID SCANNER", nil)
+#define DISCONNECT_HID_SCANNER_ACTION NSLocalizedString(@"DISCONNECT HID SCANNER", nil)
+
 
 @interface STMInventoryNC () <STMBarCodeScannerDelegate, STMInventoryControlling, UIAlertViewDelegate>
 
@@ -33,8 +36,74 @@
 
 @implementation STMInventoryNC
 
+
+#pragma mark - STMTabBarItemControllable protocol
+
+- (BOOL)shouldShowOwnActions {
+    return YES;
+}
+
+- (void)selectActionAtIndex:(NSUInteger)index {
+    
+    [super selectActionAtIndex:index];
+    
+    NSString *action = self.actions[index];
+    
+    if ([action isEqualToString:CONNECT_HID_SCANNER_ACTION]) {
+
+        [self startHIDModeScanner];
+        
+    } else if ([action isEqualToString:DISCONNECT_HID_SCANNER_ACTION]) {
+        
+        [self stopHIDModeScanner];
+        
+    }
+    
+}
+
+
+#pragma mark
+
 - (BOOL)isInActiveTab {
     return [self.tabBarController.selectedViewController isEqual:self];
+}
+
+- (void)addBarcodeImage {
+    
+    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"barcode.png"] toSize:CGSizeMake(25, 25)];
+    
+    UIViewController *rootVC = self.viewControllers.firstObject;
+    rootVC.navigationItem.titleView = [[UIImageView alloc] initWithImage:image];
+    
+}
+
+- (void)removeBarcodeImage {
+
+    UIViewController *rootVC = self.viewControllers.firstObject;
+    rootVC.navigationItem.titleView = nil;
+    
+}
+
+
+#pragma mark - keyboard notifications
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    [self stopHIDModeScanner];
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                        message:NSLocalizedString(@"HID SCANNER NOT FOUND", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+        [STMSoundController alertSay:NSLocalizedString(@"SAY HID SCANNER NOT FOUND", nil)];
+        
+    }];
+    
 }
 
 
@@ -79,10 +148,19 @@
 
 - (void)startHIDModeScanner {
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    self.actions = @[DISCONNECT_HID_SCANNER_ACTION];
+    
     self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
     self.HIDBarCodeScanner.delegate = self;
     [self.HIDBarCodeScanner startScan];
 
+    [self addBarcodeImage];
+    
 }
 
 - (void)stopBarcodeScanning {
@@ -110,8 +188,16 @@
 
 - (void)stopHIDModeScanner {
     
+    if (![self.iOSModeBarCodeScanner isDeviceConnected]) [self removeBarcodeImage];
+    
     [self.HIDBarCodeScanner stopScan];
     self.HIDBarCodeScanner = nil;
+    
+    self.actions = @[CONNECT_HID_SCANNER_ACTION];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillShowNotification
+                                                  object:nil];
 
 }
 
@@ -155,6 +241,8 @@
     
     if ([scanner isEqual:self.iOSModeBarCodeScanner]) {
 
+        [self addBarcodeImage];
+        
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
         [self stopHIDModeScanner];
         
@@ -165,6 +253,8 @@
 - (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
 
     if ([scanner isEqual:self.iOSModeBarCodeScanner]) {
+        
+        [self removeBarcodeImage];
         
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
         [self startHIDModeScanner];
@@ -335,7 +425,7 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
+
     self.scanEnabled = YES;
     [self startBarcodeScanning];
     

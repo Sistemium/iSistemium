@@ -403,5 +403,8 @@
 "THIS EXCISE STAMP ALREADY SCANNED" = "This excise stamp already scanned";
 "ARTICLE MISMATCH ALERT MESSAGE" = "Scanned article:\n\n%@\n\nmismatch with stock batch article:\n\n%@\n\nContinue?";
 "SELECT ARTICLE" = "Select article";
-
+"CONNECT HID SCANNER" = "Connect HID-scanner";
+"DISCONNECT HID SCANNER" = "Disconnect HID-scanner";
+"HID SCANNER NOT FOUND" = "HID-scanner not found";
+"SAY HID SCANNER NOT FOUND" = "HID-scanner not found";
 
