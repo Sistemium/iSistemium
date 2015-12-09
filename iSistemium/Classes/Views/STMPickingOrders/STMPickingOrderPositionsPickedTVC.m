@@ -213,8 +213,10 @@
         
     }
     
-    if (pickedPosition.productionInfo) {
-        [subTexts addObject:(NSString * _Nonnull)pickedPosition.productionInfo];
+    NSString *displayProductionInfo = [pickedPosition displayProductionInfo];
+    
+    if (displayProductionInfo) {
+        [subTexts addObject:displayProductionInfo];
     }
     
     return [subTexts componentsJoinedByString:@" • "];

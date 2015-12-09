@@ -11,8 +11,31 @@
 #import "STMInventoryBatchItem.h"
 #import "STMStockBatch.h"
 
+#import "STMProductionInfoType.h"
+
+
 @implementation STMInventoryBatch
 
-// Insert code here to add functionality to your managed object subclass
+- (NSString *)displayProductionInfo {
+    
+    NSString *info = nil;
+    
+    if ([self.article.productionInfoType.datatype isEqualToString:@"date"]) {
+        
+        NSString *separator = @"/";
+        NSArray *infoParts = [self.productionInfo componentsSeparatedByString:separator];
+        infoParts = [[infoParts reverseObjectEnumerator] allObjects];
+        info = [infoParts componentsJoinedByString:separator];
+        
+    } else {
+        
+        info = self.productionInfo;
+        
+    }
+    
+    return info;
+
+}
+
 
 @end

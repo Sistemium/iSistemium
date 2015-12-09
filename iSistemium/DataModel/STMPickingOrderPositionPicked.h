@@ -15,7 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STMPickingOrderPositionPicked : STMStockBatchOperationAgent
 
-// Insert code here to declare functionality of your managed object subclass
+- (NSString *)displayProductionInfo;
+
 
 @end
 
