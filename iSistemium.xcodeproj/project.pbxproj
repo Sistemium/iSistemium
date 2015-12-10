@@ -1329,6 +1329,7 @@
 		2CF858C81C1854A0004D7BD1 /* STMDatePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMDatePicker.swift; sourceTree = "<group>"; };
 		2CF858CC1C1874DF004D7BD1 /* STMApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMApplication.h; sourceTree = "<group>"; };
 		2CF858CD1C1874DF004D7BD1 /* STMApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMApplication.m; sourceTree = "<group>"; };
+		2CF858E01C196418004D7BD1 /* STMDataModel 84.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 84.xcdatamodel"; sourceTree = "<group>"; };
 		2CFDD7271A29AF42003515C5 /* STMPicturesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesController.h; sourceTree = "<group>"; };
 		2CFDD7281A29AF42003515C5 /* STMPicturesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMPicturesController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMDatePickerParent.h; sourceTree = "<group>"; };
@@ -3391,6 +3392,7 @@
 		2CEE2F691BEBAD10009B229F /* STMDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2CF858E01C196418004D7BD1 /* STMDataModel 84.xcdatamodel */,
 				2C8379BC1C16C6F200621419 /* STMDataModel 83.xcdatamodel */,
 				2CE3F5071C10712D00D8B4F3 /* STMDataModel 82.xcdatamodel */,
 				2CE3F4EE1C0F267900D8B4F3 /* STMDataModel 81.xcdatamodel */,
@@ -3475,7 +3477,7 @@
 				2CEE2FAF1BEBAD10009B229F /* STMDataModel 9.xcdatamodel */,
 				2CEE2FB01BEBAD10009B229F /* STMDataModel.xcdatamodel */,
 			);
-			currentVersion = 2C8379BC1C16C6F200621419 /* STMDataModel 83.xcdatamodel */;
+			currentVersion = 2CF858E01C196418004D7BD1 /* STMDataModel 84.xcdatamodel */;
 			path = STMDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
