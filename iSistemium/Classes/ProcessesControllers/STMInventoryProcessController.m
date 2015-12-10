@@ -134,6 +134,8 @@
 
 - (void)didSuccessfullySelectArticle:(STMArticle *)article responder:(id <STMInventoryControlling>)responder {
     
+    [STMSoundController playOk];
+
     self.currentArticle = article;
     [responder didSuccessfullySelectArticle:self.currentArticle withProductionInfo:self.selectedProductionInfo];
 
@@ -215,6 +217,8 @@
 
 - (void)finishInventoryBatchWithStockBatch:(STMStockBatch *)stockBatch responder:(id <STMInventoryControlling>)responder {
     
+    [STMSoundController playOk];
+
     self.currentBatch.stockBatch = stockBatch;
     self.currentBatch.stockBatchCode = self.currentStockBatchCode;
     
