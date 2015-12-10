@@ -31,6 +31,9 @@
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 @property (nonatomic, weak) STMStockBatch *mismatchedStockBatch;
 
+@property (nonatomic) BOOL shouldUseHIDScanner;
+
+
 @end
 
 
@@ -51,11 +54,15 @@
     
     if ([action isEqualToString:CONNECT_HID_SCANNER_ACTION]) {
 
+        self.shouldUseHIDScanner = YES;
+        
         [self startHIDModeScanner];
         
     } else if ([action isEqualToString:DISCONNECT_HID_SCANNER_ACTION]) {
-        
+
         [self stopHIDModeScanner];
+
+        self.shouldUseHIDScanner = NO;
         
     }
     
@@ -89,20 +96,24 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     
-    [self stopHIDModeScanner];
-    
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                        message:NSLocalizedString(@"HID SCANNER NOT FOUND", nil)
-                                                       delegate:nil
-                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                              otherButtonTitles:nil];
-        [alert show];
+    if (self.shouldUseHIDScanner) {
         
-        [STMSoundController alertSay:NSLocalizedString(@"SAY HID SCANNER NOT FOUND", nil)];
+        [self stopHIDModeScanner];
         
-    }];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"HID SCANNER NOT FOUND", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+            [STMSoundController alertSay:NSLocalizedString(@"SAY HID SCANNER NOT FOUND", nil)];
+            
+        }];
+
+    }
     
 }
 
@@ -148,18 +159,22 @@
 
 - (void)startHIDModeScanner {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
+    if (self.shouldUseHIDScanner) {
     
-    self.actions = @[DISCONNECT_HID_SCANNER_ACTION];
-    
-    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
-    self.HIDBarCodeScanner.delegate = self;
-    [self.HIDBarCodeScanner startScan];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardWillShow:)
+                                                     name:UIKeyboardWillShowNotification
+                                                   object:nil];
 
-    [self addBarcodeImage];
+        self.actions = @[DISCONNECT_HID_SCANNER_ACTION];
+        
+        self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
+        self.HIDBarCodeScanner.delegate = self;
+        [self.HIDBarCodeScanner startScan];
+        
+        [self addBarcodeImage];
+
+    }
     
 }
 
@@ -188,17 +203,21 @@
 
 - (void)stopHIDModeScanner {
     
-    if (![self.iOSModeBarCodeScanner isDeviceConnected]) [self removeBarcodeImage];
-    
-    [self.HIDBarCodeScanner stopScan];
-    self.HIDBarCodeScanner = nil;
-    
-    self.actions = @[CONNECT_HID_SCANNER_ACTION];
+    if (self.shouldUseHIDScanner) {
+        
+        if (![self.iOSModeBarCodeScanner isDeviceConnected]) [self removeBarcodeImage];
+        
+        [self.HIDBarCodeScanner stopScan];
+        self.HIDBarCodeScanner = nil;
+        
+        self.actions = @[CONNECT_HID_SCANNER_ACTION];
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIKeyboardWillShowNotification
+                                                      object:nil];
 
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification
-                                                  object:nil];
-
+    }
+    
 }
 
 - (void)cameraBarCodeScannerButtonPressed {
@@ -425,6 +444,8 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+
+    self.actions = @[CONNECT_HID_SCANNER_ACTION];
 
     self.scanEnabled = YES;
     [self startBarcodeScanning];
