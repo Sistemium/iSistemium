@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
+#import "STMDataModel.h"
+
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 
@@ -36,6 +38,9 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView nearestIndexPathFor:(NSIndexPath *)indexPath;
 - (void)customInit;
+
+- (void)performFetch;
+- (void)performFetchWithCompletionHandler:(void (^)(BOOL success))completionHandler;
 
 
 @end

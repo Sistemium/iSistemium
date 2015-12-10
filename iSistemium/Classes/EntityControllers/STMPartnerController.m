@@ -14,10 +14,9 @@
 
 + (STMPartner *)addPartnerWithName:(NSString *)name {
     
-    STMPartner *partner = (STMPartner *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPartner class])];
+    STMPartner *partner = (STMPartner *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPartner class]) isFantom:NO];
     
     partner.name = name;
-    partner.isFantom = @NO;
     
     [[self document] saveDocument:^(BOOL success) {
 //        if (success) [[self syncer] setSyncerState:STMSyncerSendDataOnce];

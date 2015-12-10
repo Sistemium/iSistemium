@@ -329,47 +329,47 @@
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMMessage" inverseName="workflow" inverseEntity="STMMessage" syncable="YES"/>
     </entity>
     <elements>
-        <element name="STMArticle" positionX="160" positionY="-675" width="128" height="283"/>
-        <element name="STMArticleGroup" positionX="-83" positionY="-468" width="128" height="148"/>
-        <element name="STMArticlePicture" positionX="727" positionY="-373" width="128" height="58"/>
+        <element name="STMArticle" positionX="-126" positionY="-661" width="128" height="283"/>
+        <element name="STMArticleGroup" positionX="70" positionY="-427" width="128" height="148"/>
+        <element name="STMArticlePicture" positionX="288" positionY="-211" width="128" height="58"/>
         <element name="STMBatteryStatus" positionX="-513" positionY="186" width="128" height="73"/>
         <element name="STMCampaign" positionX="-146" positionY="-279" width="128" height="163"/>
         <element name="STMCampaignGroup" positionX="-299" positionY="-378" width="128" height="88"/>
-        <element name="STMCampaignPicture" positionX="511" positionY="-360" width="128" height="58"/>
+        <element name="STMCampaignPicture" positionX="358" positionY="-391" width="128" height="58"/>
         <element name="STMCashing" positionX="-11" positionY="-18" width="128" height="148"/>
         <element name="STMClientData" positionX="358" positionY="518" width="128" height="238"/>
         <element name="STMClientEntity" positionX="205" positionY="629" width="128" height="73"/>
         <element name="STMComment" positionX="-180" positionY="321" width="128" height="88"/>
         <element name="STMDatum" positionX="-182" positionY="522" width="128" height="178"/>
         <element name="STMDebt" positionX="-218" positionY="-72" width="128" height="178"/>
-        <element name="STMDriver" positionX="-801" positionY="-9" width="128" height="88"/>
+        <element name="STMDriver" positionX="-837" positionY="-7" width="128" height="88"/>
         <element name="STMEntity" positionX="-20" positionY="621" width="128" height="193"/>
         <element name="STMLocation" positionX="-344" positionY="513" width="128" height="238"/>
         <element name="STMLogMessage" positionX="-513" positionY="267" width="128" height="75"/>
         <element name="STMMessage" positionX="475" positionY="324" width="128" height="178"/>
-        <element name="STMMessagePicture" positionX="736" positionY="9" width="128" height="73"/>
+        <element name="STMMessagePicture" positionX="304" positionY="-1" width="128" height="73"/>
         <element name="STMOutlet" positionX="-596" positionY="-225" width="128" height="223"/>
         <element name="STMPartner" positionX="-333" positionY="-271" width="128" height="73"/>
-        <element name="STMPhoto" positionX="556" positionY="-243" width="128" height="58"/>
-        <element name="STMPhotoReport" positionX="360" positionY="-288" width="128" height="88"/>
-        <element name="STMPicture" positionX="718" positionY="-268" width="128" height="133"/>
-        <element name="STMPrice" positionX="-27" positionY="-700" width="128" height="88"/>
-        <element name="STMPriceType" positionX="-315" positionY="-693" width="128" height="73"/>
+        <element name="STMPhoto" positionX="412" positionY="-117" width="128" height="58"/>
+        <element name="STMPhotoReport" positionX="457" positionY="-313" width="128" height="88"/>
+        <element name="STMPicture" positionX="160" positionY="-117" width="128" height="133"/>
+        <element name="STMPrice" positionX="-344" positionY="-736" width="128" height="88"/>
+        <element name="STMPriceType" positionX="-612" positionY="-648" width="128" height="73"/>
         <element name="STMRecordStatus" positionX="216" positionY="441" width="128" height="103"/>
         <element name="STMSaleOrder" positionX="-531" positionY="-495" width="128" height="163"/>
-        <element name="STMSaleOrderPosition" positionX="-182" positionY="-612" width="128" height="133"/>
+        <element name="STMSaleOrderPosition" positionX="-344" positionY="-603" width="128" height="133"/>
         <element name="STMSalesman" positionX="-425" positionY="0" width="128" height="118"/>
         <element name="STMSetting" positionX="-513" positionY="351" width="128" height="88"/>
         <element name="STMShipment" positionX="-794" positionY="-373" width="128" height="193"/>
-        <element name="STMShipmentPosition" positionX="-1017" positionY="-487" width="128" height="253"/>
-        <element name="STMShipmentRoute" positionX="-720" positionY="315" width="128" height="118"/>
-        <element name="STMShipmentRoutePoint" positionX="-972" positionY="378" width="128" height="208"/>
+        <element name="STMShipmentPosition" positionX="-783" positionY="-676" width="128" height="253"/>
+        <element name="STMShipmentRoute" positionX="-650" positionY="251" width="128" height="118"/>
+        <element name="STMShipmentRoutePoint" positionX="-837" positionY="278" width="128" height="208"/>
         <element name="STMShippingLocation" positionX="-740" positionY="639" width="128" height="133"/>
-        <element name="STMShippingLocationPicture" positionX="376" positionY="-160" width="128" height="58"/>
-        <element name="STMStock" positionX="324" positionY="-630" width="128" height="88"/>
+        <element name="STMShippingLocationPicture" positionX="484" positionY="27" width="128" height="58"/>
+        <element name="STMStock" positionX="54" positionY="-673" width="128" height="88"/>
         <element name="STMTrack" positionX="-513" positionY="450" width="128" height="90"/>
         <element name="STMUncashing" positionX="171" positionY="99" width="128" height="148"/>
-        <element name="STMUncashingPicture" positionX="592" positionY="-94" width="128" height="58"/>
+        <element name="STMUncashingPicture" positionX="475" positionY="-207" width="128" height="58"/>
         <element name="STMUncashingPlace" positionX="376" positionY="197" width="128" height="73"/>
         <element name="STMWorkflow" positionX="250" positionY="290" width="128" height="103"/>
     </elements>

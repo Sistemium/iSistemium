@@ -12,6 +12,6 @@
 
 @interface STMActionPopoverNC : UINavigationController <STMTabBarItemControllable>
 
-@property (nonatomic, strong) NSArray *actions;
+@property (nonatomic, strong) NSArray <NSString *> *actions;
 
 @end

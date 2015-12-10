@@ -99,10 +99,29 @@
     
 }
 
++ (NSNumber *)freeDiskSpace {
+    
+    uint64_t freeSpace = [STMFunctions freeDiskspace];
+    
+    freeSpace = ((freeSpace/1024ll)/1024ll); // freeSpace in MiB
+    
+    freeSpace = (freeSpace / FREE_SPACE_PRECISION_MiB) * FREE_SPACE_PRECISION_MiB;
+    
+    if (freeSpace < FREE_SPACE_THRESHOLD) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lowFreeDiskSpace" object:@(FREE_SPACE_THRESHOLD)];
+        
+    }
+    
+    return @(freeSpace);
+    
+}
+
+
 #pragma mark - checking client state
 
 + (void)checkClientData {
-    
+
     STMClientData *clientData = [self clientData];
     
     if (clientData) {
@@ -155,10 +174,7 @@
         STMClientData *clientData = [fetchResult lastObject];
         
         if (!clientData) {
-            
-            clientData = (STMClientData *)[STMObjectsController newObjectForEntityName:entityName];
-            clientData.isFantom = @NO;
-            
+            clientData = (STMClientData *)[STMObjectsController newObjectForEntityName:entityName isFantom:NO];
         }
         
         return clientData;
@@ -180,7 +196,7 @@
         if (clientData) {
             
             NSString *buildVersion = BUILD_VERSION;
-            if (![buildVersion isEqualToString:clientData.appVersion]) {
+            if (![clientData.appVersion isEqualToString:buildVersion]) {
                 clientData.appVersion = buildVersion;
             }
             

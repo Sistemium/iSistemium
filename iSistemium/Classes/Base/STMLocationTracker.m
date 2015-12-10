@@ -940,8 +940,7 @@
 
 - (void)startNewTrack {
     
-    STMTrack *track = (STMTrack *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMTrack class])];
-    track.isFantom = @NO;
+    STMTrack *track = (STMTrack *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMTrack class]) isFantom:NO];
     track.startTime = [NSDate date];
     self.currentTrack = track;
     //    NSLog(@"track %@", track);

@@ -74,8 +74,7 @@
     
     if (!self.shippingLocation) {
         
-        STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class])];
-        shippingLocation.isFantom = @(NO);
+        STMShippingLocation *shippingLocation = (STMShippingLocation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocation class]) isFantom:NO];
         
         self.shippingLocation = shippingLocation;
         

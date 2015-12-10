@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 
 #import "STMAppDelegate.h"
+#import "STMApplication.h"
 
 int main(int argc, char * argv[])
 {
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([STMAppDelegate class]));
+        return UIApplicationMain(argc, argv, NSStringFromClass([STMApplication class]), NSStringFromClass([STMAppDelegate class]));
     }
 }

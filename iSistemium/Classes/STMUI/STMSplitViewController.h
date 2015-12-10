@@ -11,7 +11,7 @@
 
 @interface STMSplitViewController : UISplitViewController <STMTabBarItemControllable>
 
-@property (nonatomic, strong) NSArray *actions;
+@property (nonatomic, strong) NSArray <NSString *> *actions;
 
 
 @end

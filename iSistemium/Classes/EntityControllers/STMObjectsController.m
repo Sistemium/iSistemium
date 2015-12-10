@@ -729,14 +729,22 @@
     
 }
 
-+ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData {
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
+    return [self newObjectForEntityName:entityName andXid:nil isFantom:YES];
+}
 
-// time checking
-//    NSDate *start = [NSDate date];
-// -------------
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName isFantom:(BOOL)isFantom {
+    return [self newObjectForEntityName:entityName andXid:nil isFantom:isFantom];
+}
+
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData {
+    return [self newObjectForEntityName:entityName andXid:xidData isFantom:YES];
+}
+
++ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData isFantom:(BOOL)isFantom {
     
     NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-    [object setValue:@YES forKey:@"isFantom"];
+    [object setValue:@(isFantom) forKey:@"isFantom"];
     
     if (xidData) {
         [object setValue:xidData forKey:@"xid"];
@@ -746,17 +754,8 @@
     
     [self sharedController].objectsCache[xidData] = object;
 
-
-// time checking
-//    [[self sharedController].timesDic[@"9"] addObject:@([start timeIntervalSinceNow])];
-// -------------
-    
     return object;
 
-}
-
-+ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName {
-    return [self newObjectForEntityName:entityName andXid:nil];
 }
 
 + (NSArray *)objectsWithXids:(NSArray *)xids {
@@ -999,15 +998,24 @@
 
 + (void)removeObject:(NSManagedObject *)object inContext:(NSManagedObjectContext *)context {
     
-    if (!context) context = [self document].managedObjectContext;
-    
-    if ([object valueForKey:@"xid"]) {
-        [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
+    if (object) {
+        
+        if (!context) context = [self document].managedObjectContext;
+        
+        if ([object valueForKey:@"xid"]) {
+            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
+        }
+        
+        [context performBlock:^{
+            
+            [context deleteObject:object];
+            
+            [[self document] saveDocument:^(BOOL success) {
+            }];
+            
+        }];
+
     }
-    
-    [context performBlock:^{
-        [context deleteObject:object];
-    }];
     
 }
 
@@ -1022,10 +1030,6 @@
     
     [self removeObject:object];
     
-    [self.document saveDocument:^(BOOL success) {
-//        if (success) [self syncer].syncerState = STMSyncerSendDataOnce;
-    }];
-
     return recordStatus;
 
 }
@@ -1229,8 +1233,13 @@
 
     NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
                              NSStringFromClass([STMArticle class]),
-                             NSStringFromClass([STMArticlePicture class]),
+                             NSStringFromClass([STMArticleBarCode class]),
+                             NSStringFromClass([STMArticleDoc class]),
                              NSStringFromClass([STMArticleGroup class]),
+                             NSStringFromClass([STMArticlePicture class]),
+                             NSStringFromClass([STMArticleProductionInfo class]),
+                             NSStringFromClass([STMBarCodeType class]),
+                             NSStringFromClass([STMBasketPosition class]),
                              NSStringFromClass([STMBatteryStatus class]),
                              NSStringFromClass([STMCampaign class]),
                              NSStringFromClass([STMCampaignGroup class]),
@@ -1239,6 +1248,8 @@
                              NSStringFromClass([STMClientData class]),
                              NSStringFromClass([STMDebt class]),
                              NSStringFromClass([STMDriver class]),
+                             NSStringFromClass([STMInventoryBatch class]),
+                             NSStringFromClass([STMInventoryBatchItem class]),
                              NSStringFromClass([STMLocation class]),
                              NSStringFromClass([STMLogMessage class]),
                              NSStringFromClass([STMMessage class]),
@@ -1246,8 +1257,14 @@
                              NSStringFromClass([STMOutlet class]),
                              NSStringFromClass([STMPartner class]),
                              NSStringFromClass([STMPhotoReport class]),
+                             NSStringFromClass([STMPicker class]),
+                             NSStringFromClass([STMPickingOrder class]),
+                             NSStringFromClass([STMPickingOrderPosition class]),
+                             NSStringFromClass([STMPickingOrderPositionPicked class]),
                              NSStringFromClass([STMPrice class]),
                              NSStringFromClass([STMPriceType class]),
+                             NSStringFromClass([STMProductionInfoType class]),
+                             NSStringFromClass([STMQualityClass class]),
                              NSStringFromClass([STMRecordStatus class]),
                              NSStringFromClass([STMSaleOrder class]),
                              NSStringFromClass([STMSaleOrderPosition class]),
@@ -1260,6 +1277,11 @@
                              NSStringFromClass([STMShippingLocation class]),
                              NSStringFromClass([STMShippingLocationPicture class]),
                              NSStringFromClass([STMStock class]),
+                             NSStringFromClass([STMStockBatch class]),
+                             NSStringFromClass([STMStockBatchBarCode class]),
+                             NSStringFromClass([STMStockBatchOperation class]),
+                             NSStringFromClass([STMSupplyOrder class]),
+                             NSStringFromClass([STMSupplyOrderArticleDoc class]),
                              NSStringFromClass([STMTrack class]),
                              NSStringFromClass([STMUncashing class]),
                              NSStringFromClass([STMUncashingPicture class]),
@@ -1295,12 +1317,13 @@
                               orderBy:@"id"
                             ascending:YES
                            fetchLimit:0
+                          withFantoms:NO
                inManagedObjectContext:[self document].managedObjectContext
                                 error:nil];
     
 }
 
-+ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
++ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
     
     NSString *errorMessage = nil;
     
@@ -1315,6 +1338,11 @@
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
             request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending selector:@selector(compare:)]];
             request.fetchLimit = fetchLimit;
+            
+            if (!withFantoms) {
+                request.predicate = [STMPredicate predicateWithNoFantoms];
+            }
+            
             NSError *error;
             NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
             
@@ -1399,6 +1427,7 @@
                                                   orderBy:orderBy
                                                 ascending:ascending
                                                fetchLimit:size
+                                              withFantoms:YES
                                    inManagedObjectContext:[self document].managedObjectContext
                                                     error:&fetchError];
             
@@ -1490,7 +1519,7 @@
                     
                 } else if ([value isKindOfClass:[NSData class]]) {
                     
-                    if ([@[@"deviceUUID", @"objectXid"] containsObject:key]) {
+                    if ([key isEqualToString:@"deviceUUID"] || [key hasSuffix:@"Xid"]) {
                         
                         value = [STMFunctions UUIDStringFromUUIDData:value];
                         

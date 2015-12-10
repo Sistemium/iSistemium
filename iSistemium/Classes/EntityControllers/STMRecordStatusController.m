@@ -35,8 +35,7 @@
     
     if (!recordStatus) {
         
-        recordStatus = (STMRecordStatus *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMRecordStatus class])];
-        recordStatus.isFantom = @NO;
+        recordStatus = (STMRecordStatus *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMRecordStatus class]) isFantom:NO];
         recordStatus.objectXid = objectXid;
         
     }

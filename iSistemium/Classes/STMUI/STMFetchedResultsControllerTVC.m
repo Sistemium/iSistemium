@@ -29,6 +29,20 @@
     
 }
 
+- (NSString *)cellIdentifier {
+    
+    if (!_cellIdentifier) {
+        
+        NSString *selfClassName = NSStringFromClass([self class]);
+        NSString *cellIdentifier = [selfClassName stringByAppendingString:@"_cellIdentifier"];
+        
+        _cellIdentifier = cellIdentifier;
+        
+    }
+    return _cellIdentifier;
+    
+}
+
 - (NSMutableIndexSet *)deletedSectionIndexes {
     
     if (!_deletedSectionIndexes) {
@@ -87,6 +101,39 @@
     
 }
 
+- (void)performFetch {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    
+    if (![self.resultsController performFetch:&error]) {
+        NSLog(@"performFetch error %@", error);
+    } else {
+        [self.tableView reloadData];
+    }
+    
+}
+
+- (void)performFetchWithCompletionHandler:(void (^)(BOOL success))completionHandler {
+    
+    self.resultsController = nil;
+    
+    NSError *error;
+    
+    if (![self.resultsController performFetch:&error]) {
+        
+        NSLog(@"performFetch error %@", error);
+        completionHandler(NO);
+        
+    } else {
+        
+        [self.tableView reloadData];
+        completionHandler(YES);
+        
+    }
+    
+}
 
 
 #pragma mark - Table view data source

@@ -35,6 +35,7 @@
 
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateNumbersFormatter;
++ (NSDateFormatter *)dateNumbersFormatterTwo;
 + (NSDateFormatter *)dateShortNoTimeFormatter;
 + (NSDateFormatter *)dateShortTimeShortFormatter;
 + (NSDateFormatter *)dateMediumNoTimeFormatter;
@@ -42,6 +43,7 @@
 + (NSDateFormatter *)dateMediumTimeMediumFormatter;
 + (NSDateFormatter *)dateMediumTimeShortFormatter;
 + (NSDateFormatter *)noDateShortTimeFormatter;
++ (NSDateFormatter *)noDateMediumTimeFormatter;
 + (NSDateFormatter *)noDateShortTimeFormatterAllowZero:(BOOL)allowZero;
 
 + (void)NSLogCurrentDateWithMilliseconds;
@@ -84,6 +86,8 @@
 + (NSString *)shortCompanyName:(NSString *)companyName;
 
 + (NSString *)appStateString;
+
++ (uint64_t)freeDiskspace;
 
 
 @end

@@ -15,47 +15,15 @@
 
 @implementation STMSearchableTVC
 
-- (void)performFetch {
-    
-    self.resultsController = nil;
-    
-    NSError *error;
-    
-    if (![self.resultsController performFetch:&error]) {
-        NSLog(@"performFetch error %@", error);
-    } else {
-        [self.tableView reloadData];
-    }
-
-}
-
-- (void)performFetchWithCompletionHandler:(void (^)(BOOL success))completionHandler {
-    
-    self.resultsController = nil;
-    
-    NSError *error;
-    
-    if (![self.resultsController performFetch:&error]) {
-        
-        NSLog(@"performFetch error %@", error);
-        completionHandler(NO);
-        
-    } else {
-        
-        [self.tableView reloadData];
-        completionHandler(YES);
-        
-    }
-    
-}
-
-
 #pragma mark - search & UISearchBarDelegate
 
 - (void)searchButtonPressed {
     
     [self.searchBar becomeFirstResponder];
-    [self.tableView setContentOffset:CGPointZero animated:YES];
+    
+//    [self.tableView setContentOffset:CGPointZero animated:YES];
+    
+    [self.tableView scrollRectToVisible:self.tableView.tableHeaderView.frame animated:NO];
     
     [self hideSearchButton];
     
@@ -63,7 +31,9 @@
 
 - (void)showSearchButton {
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonPressed)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                           target:self
+                                                                                           action:@selector(searchButtonPressed)];
 }
 
 - (void)hideSearchButton {

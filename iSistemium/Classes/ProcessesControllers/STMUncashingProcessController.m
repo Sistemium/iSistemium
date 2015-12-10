@@ -99,8 +99,8 @@
         
     }
     
-    STMUncashing *uncashing = (STMUncashing *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMUncashing class])];
-    uncashing.isFantom = @NO;
+    STMUncashing *uncashing = (STMUncashing *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMUncashing class])
+                                                                                  isFantom:NO];
     
     NSArray *cashings = [self.cashingDictionary allValues];
     
@@ -116,8 +116,8 @@
     
     if (image) {
         
-        STMUncashingPicture *picture = (STMUncashingPicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMUncashingPicture class])];
-        picture.isFantom = @NO;
+        STMUncashingPicture *picture = (STMUncashingPicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMUncashingPicture class])
+                                                                                                  isFantom:NO];
         
         CGFloat jpgQuality = [STMPicturesController jpgQuality];
         

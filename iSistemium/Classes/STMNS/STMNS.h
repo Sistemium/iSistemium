@@ -9,9 +9,9 @@
 #ifndef iSistemium_STMNS_h
 #define iSistemium_STMNS_h
 
-#include "STMEntityDescription.h"
-#include "STMFetchRequest.h"
-#include "STMPredicate.h"
+#import "STMEntityDescription.h"
+#import "STMFetchRequest.h"
+#import "STMPredicate.h"
 
 
 #endif

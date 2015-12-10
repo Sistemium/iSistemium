@@ -10,13 +10,12 @@
 
 #import <AssetsLibrary/AssetsLibrary.h>
 
-#import "STMOutlet+photoReportsArePresent.h"
+#import "STMDataModel.h"
+
 #import "STMDocument.h"
 #import "STMSessionManager.h"
 #import "STMSession.h"
 #import "STMLocationTracker.h"
-#import "STMPhotoReport.h"
-#import "STMPhoto.h"
 #import "STMPhotoReportPVC.h"
 #import "STMFunctions.h"
 #import "STMObjectsController.h"
@@ -313,8 +312,7 @@
     [self cancelButtonPressed:sender];
     
     STMOutlet *outlet = self.selectedOutlet;
-    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
-    photoReport.isFantom = @NO;
+    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class]) isFantom:NO];
     photoReport.outlet = outlet;
     self.selectedPhotoReport = photoReport;
     
@@ -399,8 +397,7 @@
 
 - (STMPhotoReport *)newPhotoReport {
     
-    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
-    photoReport.isFantom = @NO;
+    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class]) isFantom:NO];
     
     return photoReport;
     

@@ -33,6 +33,8 @@
 
 @property (nonatomic, strong) NSMutableDictionary *tabs;
 @property (nonatomic, strong) UIAlertView *authAlert;
+@property (nonatomic, strong) UIAlertView *lowFreeSpaceAlert;
+@property (nonatomic) BOOL lowFreeSpaceAlertWasShown;
 @property (nonatomic, strong) UIAlertView *timeoutAlert;
 @property (nonatomic, strong) STMSession *session;
 
@@ -394,9 +396,10 @@
         [self processTabsArray:stcTabs];
         
 // temporary tab for coding
-//        [self registerTabWithStoryboardParameters:@{@"name": @"STMPhotoReports",
-//                                                    @"title": NSLocalizedString(@"PHOTO REPORTS", nil),
-//                                                    @"imageName": @"photoReports.png"} atIndex:6];
+//        [self registerTabWithStoryboardParameters:@{@"name": @"STMInventory_iphone",
+//                                                    @"title": NSLocalizedString(@"INVENTORY", nil),
+//                                                    @"imageName": @"barcode_scanner.png"}
+//                                          atIndex:stcTabs.count];
 // end of temporary tab
 
     }
@@ -728,6 +731,37 @@
     
 }
 
+- (UIAlertView *)lowFreeSpaceAlert {
+    
+    if (!_lowFreeSpaceAlert) {
+        
+        _lowFreeSpaceAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"WARNING", nil)
+                                                        message:NSLocalizedString(@"LOW FREE SPACE ALERT", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+
+    }
+    return _lowFreeSpaceAlert;
+    
+}
+
+- (void)showLowFreeSpaceAlert {
+    
+    if (!self.lowFreeSpaceAlertWasShown) {
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            self.lowFreeSpaceAlertWasShown = YES;
+            [self.lowFreeSpaceAlert show];
+            
+        }];
+        
+    }
+    
+}
+
+
 - (UIAlertView *)timeoutAlert {
     
     if (!_timeoutAlert) {
@@ -1038,6 +1072,11 @@
                name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:self.session];
 
+    [nc addObserver:self
+           selector:@selector(showLowFreeSpaceAlert)
+               name:@"lowFreeDiskSpace"
+             object:nil];
+    
 }
 
 - (void)removeObservers {

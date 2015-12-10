@@ -491,7 +491,7 @@
     
     if (!stcEntities[stcEntityName]) {
         
-        STMEntity *entity = (STMEntity *)[STMObjectsController newObjectForEntityName:stcEntityName];
+        STMEntity *entity = (STMEntity *)[STMObjectsController newObjectForEntityName:stcEntityName isFantom:NO];
         
         if ([stcEntityName hasPrefix:ISISTEMIUM_PREFIX]) {
             stcEntityName = [stcEntityName substringFromIndex:[ISISTEMIUM_PREFIX length]];
@@ -499,7 +499,6 @@
         
         entity.name = stcEntityName;
         entity.url = self.restServerURI;
-        entity.isFantom = @NO;
         
         [self.document saveDocument:^(BOOL success) {
             completionHandler(success);

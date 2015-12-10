@@ -14,3 +14,8 @@
 @interface STMTableViewCell : UITableViewCell
 
 @end
+
+
+@interface STMTableViewCellStyleSubtitle : STMTableViewCell
+
+@end
