@@ -51,7 +51,7 @@
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
-                                                                   sectionNameKeyPath:@"date"
+                                                                   sectionNameKeyPath:@"dayAsString"
                                                                             cacheName:nil];
         
         _resultsController.delegate = self;
@@ -68,15 +68,9 @@
     
     STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    return cell;
-    
-}
+    [self fillSupplyOrderCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:indexPath];
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if ([cell isKindOfClass:[STMTableViewSubtitleStyleCell class]]) {
-        [self fillSupplyOrderCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:indexPath];
-    }
+    return cell;
     
 }
 

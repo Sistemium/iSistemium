@@ -11,8 +11,17 @@
 #import "STMArticleDoc.h"
 #import "STMSupplyOrder.h"
 
+#import "STMFunctions.h"
+
+
 @implementation STMSupplyOrderArticleDoc
 
-// Insert code here to add functionality to your managed object subclass
+- (NSString *)volumeText {
+    
+    return [STMFunctions volumeStringWithVolume:self.volume.integerValue
+                                  andPackageRel:(self.article.packageRel) ? self.article.packageRel.integerValue : self.articleDoc.article.packageRel.integerValue];
+    
+}
+
 
 @end

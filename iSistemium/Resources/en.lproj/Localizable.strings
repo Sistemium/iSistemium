@@ -407,4 +407,6 @@
 "DISCONNECT HID SCANNER" = "Disconnect HID-scanner";
 "HID SCANNER NOT FOUND" = "HID-scanner not found";
 "SAY HID SCANNER NOT FOUND" = "HID-scanner not found";
+"DATE PRODUCTION" = "Production date";
+"DATE IMPORT" = "Import date";
 

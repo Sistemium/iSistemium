@@ -103,16 +103,10 @@
 
 - (void)performFetch {
     
-    self.resultsController = nil;
-    
-    NSError *error;
-    
-    if (![self.resultsController performFetch:&error]) {
-        NSLog(@"performFetch error %@", error);
-    } else {
-        [self.tableView reloadData];
-    }
-    
+    [self performFetchWithCompletionHandler:^(BOOL success) {
+        
+    }];
+
 }
 
 - (void)performFetchWithCompletionHandler:(void (^)(BOOL success))completionHandler {
@@ -123,7 +117,7 @@
     
     if (![self.resultsController performFetch:&error]) {
         
-        NSLog(@"performFetch error %@", error);
+        NSLog(@"%@ performFetch error %@", NSStringFromClass([self class]), error);
         completionHandler(NO);
         
     } else {

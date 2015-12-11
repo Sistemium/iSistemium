@@ -9,8 +9,31 @@
 #import "STMSupplyOrder.h"
 #import "STMSupplyOrderArticleDoc.h"
 
+#import "STMFunctions.h"
+
+
 @implementation STMSupplyOrder
 
-// Insert code here to add functionality to your managed object subclass
+- (NSString *)dayAsString {
+    
+    if (self.date) {
+        
+        static NSDateFormatter *formatter;
+        static dispatch_once_t onceToken;
+        
+        dispatch_once(&onceToken, ^{
+            formatter = [STMFunctions dateMediumNoTimeFormatter];
+        });
+        
+        return [formatter stringFromDate:(NSDate * _Nonnull)self.date];
+
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
+
 
 @end

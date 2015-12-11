@@ -49,6 +49,12 @@
         
         request.predicate = [NSPredicate predicateWithFormat:@"supplyOrder == %@", self.supplyOrder];
         
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:@"supplyOrder.ndoc"
+                                                                            cacheName:nil];
+        _resultsController.delegate = self;
+        
     }
     return _resultsController;
     
@@ -68,16 +74,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
-    
-    return cell;
-    
-}
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
- 
-    if ([cell isKindOfClass:[STMTableViewSubtitleStyleCell class]]) {
-        [self fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:indexPath];
-    }
+    [self fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:indexPath];
+
+    return cell;
     
 }
 
@@ -85,19 +85,45 @@
     
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = articleDoc.article.name;
+    cell.textLabel.numberOfLines = 0;
+    cell.textLabel.textColor = (articleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
+    cell.textLabel.text = (articleDoc.article.name) ? articleDoc.article.name : articleDoc.articleDoc.article.name;
 
     NSMutableArray *dates = @[].mutableCopy;
 
     if (articleDoc.articleDoc.dateProduction) {
-        [dates addObject:[[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateProduction]];
+        
+        NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateProduction];
+        dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
+        
+        [dates addObject:dateProduction];
+        
     }
     
     if (articleDoc.articleDoc.dateImport) {
-        [dates addObject:[[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateImport]];
+        
+        NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateImport];
+        dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
+        [dates addObject:dateImport];
+        
     }
     
     cell.detailTextLabel.text  = [dates componentsJoinedByString:@" / "];
+    
+    STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 46, 21)];
+    volumeLabel.text = [articleDoc volumeText];
+    volumeLabel.textAlignment = NSTextAlignmentRight;
+    volumeLabel.adjustsFontSizeToFitWidth = YES;
+    
+    cell.accessoryView = volumeLabel;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+//    STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
+//
+//    NSLog(@"");
     
 }
 
