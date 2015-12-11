@@ -1,16 +1,17 @@
 {
     "STMAuth"           : "STMAuth",
-    "STMProfile"        : "STMProfile",
     "STMCampaign"       : null,
     "STMCatalog"        : null,
     "STMDebts"          : null,
+    "STMInventory"      : "STMInventory_iphone"
     "STMLogs"           : null,
     "STMMessages"       : "STMMessages",
     "STMOrders"         : null,
+    "STMPickingOrders"  : "STMPickingOrders",
+    "STMProfile"        : "STMProfile",
     "STMSettings"       : "STMSettings",
+    "STMShipments"      : "STMShipments_iphone",
+    "STMSupplyOrders"   : null,
     "STMUncashing"      : null,
     "STMWebView"        : "STMWebView",
-    "STMShipments"      : "STMShipments_iphone",
-    "STMPickingOrders"  : "STMPickingOrders",
-    "STMInventory"      : "STMInventory_iphone"
 }

@@ -8,11 +8,52 @@
 
 #import "STMSupplyOrdersSVC.h"
 
+
 @interface STMSupplyOrdersSVC ()
+
+@property (nonatomic, strong) UINavigationController *detailNC;
+
 
 @end
 
+
 @implementation STMSupplyOrdersSVC
+
+- (UINavigationController *)detailNC {
+    
+    if (!_detailNC) {
+        if ([self.viewControllers[1] isKindOfClass:[UINavigationController class]]) {
+            _detailNC = self.viewControllers[1];
+        }
+    }
+    return _detailNC;
+    
+}
+
+- (STMSupplyOrderArticleDocsTVC *)detailTVC {
+    
+    if (!_detailTVC) {
+
+        UIViewController *detailTVC = self.detailNC.viewControllers[0];
+        
+        if ([detailTVC isKindOfClass:[STMSupplyOrderArticleDocsTVC class]]) {
+            _detailTVC = (STMSupplyOrderArticleDocsTVC *)detailTVC;
+        }
+
+    }
+    return _detailTVC;
+    
+}
+
+- (void)setSelectedSupplyOrder:(STMSupplyOrder *)selectedSupplyOrder {
+    
+    _selectedSupplyOrder = selectedSupplyOrder;
+    
+    self.detailTVC.supplyOrder = _selectedSupplyOrder;
+    
+}
+
+#pragma mark - view lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];

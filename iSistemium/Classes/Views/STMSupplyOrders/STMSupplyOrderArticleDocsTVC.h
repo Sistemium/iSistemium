@@ -10,4 +10,7 @@
 
 @interface STMSupplyOrderArticleDocsTVC : STMVariableCellsHeightTVC
 
+@property (nonatomic, strong) STMSupplyOrder *supplyOrder;
+
+
 @end

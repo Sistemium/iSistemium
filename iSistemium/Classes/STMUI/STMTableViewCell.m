@@ -61,7 +61,7 @@
 @end
 
 
-@implementation STMTableViewCellStyleSubtitle
+@implementation STMTableViewSubtitleStyleCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

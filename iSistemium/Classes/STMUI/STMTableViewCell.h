@@ -16,6 +16,6 @@
 @end
 
 
-@interface STMTableViewCellStyleSubtitle : STMTableViewCell
+@interface STMTableViewSubtitleStyleCell : STMTableViewCell
 
 @end

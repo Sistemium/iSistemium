@@ -8,11 +8,111 @@
 
 #import "STMSupplyOrderArticleDocsTVC.h"
 
+#import "STMSupplyOrdersSVC.h"
+
+
 @interface STMSupplyOrderArticleDocsTVC ()
+
+@property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+
 
 @end
 
+
 @implementation STMSupplyOrderArticleDocsTVC
+
+@synthesize resultsController =_resultsController;
+
+- (STMSupplyOrdersSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMSupplyOrdersSVC class]]) {
+            _splitVC = (STMSupplyOrdersSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+    
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMSupplyOrderArticleDoc class])];
+        
+        NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord" ascending:YES selector:@selector(compare:)];
+        NSSortDescriptor *articleNameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        
+        request.sortDescriptors = @[ordDescriptor, articleNameDescriptor];
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"supplyOrder == %@", self.supplyOrder];
+        
+    }
+    return _resultsController;
+    
+}
+
+- (void)setSupplyOrder:(STMSupplyOrder *)supplyOrder {
+    
+    _supplyOrder = supplyOrder;
+    
+    [self performFetch];
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+    
+    return cell;
+    
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+ 
+    if ([cell isKindOfClass:[STMTableViewSubtitleStyleCell class]]) {
+        [self fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:indexPath];
+    }
+    
+}
+
+- (void)fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
+    
+    cell.textLabel.text = articleDoc.article.name;
+
+    NSMutableArray *dates = @[].mutableCopy;
+
+    if (articleDoc.articleDoc.dateProduction) {
+        [dates addObject:[[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateProduction]];
+    }
+    
+    if (articleDoc.articleDoc.dateImport) {
+        [dates addObject:[[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateImport]];
+    }
+    
+    cell.detailTextLabel.text  = [dates componentsJoinedByString:@" / "];
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    [super customInit];
+    
+    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
+    
+    [self performFetch];
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
