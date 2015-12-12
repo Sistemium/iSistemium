@@ -389,6 +389,8 @@
 
 - (void)customInit {
     
+    self.clearsSelectionOnViewWillAppear = NO;
+    
 }
 
 - (instancetype)initWithStyle:(UITableViewStyle)style

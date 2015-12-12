@@ -27,5 +27,7 @@
 - (BOOL)isMasterNCForViewController:(UIViewController *)vc;
 - (BOOL)isDetailNCForViewController:(UIViewController *)vc;
 
+- (void)masterBackButtonPressed;
+
 
 @end

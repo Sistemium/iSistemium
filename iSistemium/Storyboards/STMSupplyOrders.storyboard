@@ -67,10 +67,44 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="bFA-3D-cBp"/>
+                    <connections>
+                        <segue destination="zey-pd-gsN" kind="show" identifier="showOperations" id="qcB-0H-qnW"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FLz-vD-vDL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1385" y="641"/>
+        </scene>
+        <!--Supply Order OperationsTVC-->
+        <scene sceneID="4KN-6B-CKA">
+            <objects>
+                <tableViewController id="zey-pd-gsN" customClass="STMSupplyOrderOperationsTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="UJa-XK-vtO">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="operationCell" id="Bam-aW-XnZ">
+                                <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Bam-aW-XnZ" id="tg8-AC-IXZ">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                </tableViewCellContentView>
+                                <animations/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="zey-pd-gsN" id="vz7-g1-wcC"/>
+                            <outlet property="delegate" destination="zey-pd-gsN" id="RJM-wz-jxK"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mWl-kC-z3h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2202" y="641"/>
         </scene>
         <!--Supply Orders MasterNC-->
         <scene sceneID="Dea-bf-imY">

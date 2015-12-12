@@ -122,6 +122,7 @@
 		2C3771B51B5E7038003493FB /* Sync With Cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C3771B41B5E7038003493FB /* Sync With Cloud.png */; };
 		2C3CED691C1C47A000291AAD /* STMSupplyOrdersMasterNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3CED681C1C47A000291AAD /* STMSupplyOrdersMasterNC.m */; };
 		2C3CED6C1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3CED6B1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m */; };
+		2C3CED6F1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3CED6E1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m */; };
 		2C420FC81A4C29B4001C65B9 /* STMMessagesNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C420FC71A4C29B4001C65B9 /* STMMessagesNC.m */; };
 		2C42ECAB1B0A591E00B5C91A /* STMSettingsNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C42ECAA1B0A591E00B5C91A /* STMSettingsNC.m */; };
 		2C42ECAE1B0B1A3300B5C91A /* STMTabBarButtonTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C42ECAD1B0B1A3300B5C91A /* STMTabBarButtonTVC.m */; };
@@ -667,6 +668,8 @@
 		2C3CED681C1C47A000291AAD /* STMSupplyOrdersMasterNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrdersMasterNC.m; sourceTree = "<group>"; };
 		2C3CED6A1C1C47B300291AAD /* STMSupplyOrdersDetailNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSupplyOrdersDetailNC.h; sourceTree = "<group>"; };
 		2C3CED6B1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrdersDetailNC.m; sourceTree = "<group>"; };
+		2C3CED6D1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSupplyOrderOperationsTVC.h; sourceTree = "<group>"; };
+		2C3CED6E1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrderOperationsTVC.m; sourceTree = "<group>"; };
 		2C420FC51A4C24DE001C65B9 /* STMTabBarItemControllable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMTabBarItemControllable.h; sourceTree = "<group>"; };
 		2C420FC61A4C29B4001C65B9 /* STMMessagesNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMessagesNC.h; sourceTree = "<group>"; };
 		2C420FC71A4C29B4001C65B9 /* STMMessagesNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessagesNC.m; sourceTree = "<group>"; };
@@ -2528,6 +2531,8 @@
 				2CF858E81C1AE0D0004D7BD1 /* STMSupplyOrdersTVC.m */,
 				2CF858ED1C1AE11F004D7BD1 /* STMSupplyOrderArticleDocsTVC.h */,
 				2CF858EE1C1AE11F004D7BD1 /* STMSupplyOrderArticleDocsTVC.m */,
+				2C3CED6D1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.h */,
+				2C3CED6E1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m */,
 			);
 			path = STMSupplyOrders;
 			sourceTree = "<group>";
@@ -2988,6 +2993,7 @@
 				2C5764241AA5E1E500B9FD2C /* STMSelectPartnerTVC.m in Sources */,
 				2CEE30371BEBAD10009B229F /* STMShipment.m in Sources */,
 				2C1F75141BFA1B6E003699C8 /* STMPickingOrder.m in Sources */,
+				2C3CED6F1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m in Sources */,
 				2C57641D1AA5E1E500B9FD2C /* STMDebtsCombineVC.m in Sources */,
 				2CF126661B7F2C0C0059701F /* STMSalesmanController.m in Sources */,
 				2CEE30391BEBAD10009B229F /* STMShipmentPosition.m in Sources */,

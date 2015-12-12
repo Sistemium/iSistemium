@@ -11,6 +11,7 @@
 #import "STMSupplyOrdersSVC.h"
 
 #import "STMWorkflowEditablesVC.h"
+#import "STMSupplyOrderOperationsTVC.h"
 
 
 @interface STMSupplyOrderArticleDocsTVC () <UIActionSheetDelegate, STMWorkflowable>
@@ -41,24 +42,6 @@
         
     }
     return _splitVC;
-    
-}
-
-- (BOOL)isMasterNC {
-    
-    if (!_isMasterNC) {
-        _isMasterNC = [self.splitVC isMasterNCForViewController:self];
-    }
-    return _isMasterNC;
-    
-}
-
-- (BOOL)isDetailNC {
-    
-    if (!_isDetailNC) {
-        _isDetailNC = [self.splitVC isDetailNCForViewController:self];
-    }
-    return _isDetailNC;
     
 }
 
@@ -231,7 +214,7 @@
     STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
 
     [self fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:indexPath];
-
+    
     return cell;
     
 }
@@ -272,6 +255,10 @@
     
     cell.accessoryView = volumeLabel;
     
+    if ([articleDoc isEqual:self.splitVC.selectedSupplyOrderArticleDoc]) {
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    }
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -279,6 +266,28 @@
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
 
     self.splitVC.selectedSupplyOrderArticleDoc = articleDoc;
+    
+    if (self.isDetailNC) {
+        [self performSegueWithIdentifier:@"showOperations" sender:articleDoc];
+    }
+    
+}
+
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showOperations"] &&
+        [segue.destinationViewController isKindOfClass:[STMSupplyOrderOperationsTVC class]] &&
+        [sender isKindOfClass:[STMSupplyOrderArticleDoc class]]) {
+        
+        STMSupplyOrderArticleDoc *articleDoc = (STMSupplyOrderArticleDoc *)sender;
+        STMSupplyOrderOperationsTVC *operationsTVC = (STMSupplyOrderOperationsTVC *)segue.destinationViewController;
+        
+        operationsTVC.supplyOrderArticleDoc = articleDoc;
+        
+    }
     
 }
 
@@ -288,6 +297,9 @@
 - (void)customInit {
     
     [super customInit];
+    
+    self.isMasterNC = [self.splitVC isMasterNCForViewController:self];
+    self.isDetailNC = [self.splitVC isDetailNCForViewController:self];
     
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
@@ -301,19 +313,22 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    if (self.isMasterNC && [self isMovingFromParentViewController]) {
+        
+        [self.splitVC masterBackButtonPressed];
+        
+    }
+    
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

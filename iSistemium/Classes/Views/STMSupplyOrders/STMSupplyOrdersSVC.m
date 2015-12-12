@@ -83,6 +83,9 @@
     return [self.detailNC.viewControllers containsObject:vc];
 }
 
+- (void)masterBackButtonPressed {
+    [self.detailNC popToRootViewControllerAnimated:YES];
+}
 
 - (void)setSelectedSupplyOrder:(STMSupplyOrder *)selectedSupplyOrder {
     
