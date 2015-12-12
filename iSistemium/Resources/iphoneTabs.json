@@ -3,7 +3,7 @@
     "STMCampaign"       : null,
     "STMCatalog"        : null,
     "STMDebts"          : null,
-    "STMInventory"      : "STMInventory_iphone"
+    "STMInventory"      : "STMInventory",
     "STMLogs"           : null,
     "STMMessages"       : "STMMessages",
     "STMOrders"         : null,

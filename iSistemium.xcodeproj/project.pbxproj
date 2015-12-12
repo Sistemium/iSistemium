@@ -349,7 +349,7 @@
 		2CE3F51E1C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5191C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m */; };
 		2CE3F51F1C1073D000D8B4F3 /* STMInventoryBatchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F51B1C1073D000D8B4F3 /* STMInventoryBatchItem.m */; };
 		2CE3F5211C10756900D8B4F3 /* barcode_scanner.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CE3F5201C10756900D8B4F3 /* barcode_scanner.png */; };
-		2CE3F5251C10763900D8B4F3 /* STMInventory_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE3F5241C10763900D8B4F3 /* STMInventory_iphone.storyboard */; };
+		2CE3F5251C10763900D8B4F3 /* STMInventory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CE3F5241C10763900D8B4F3 /* STMInventory.storyboard */; };
 		2CE3F5291C12DB8000D8B4F3 /* STMInventoryNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5281C12DB8000D8B4F3 /* STMInventoryNC.m */; };
 		2CE3F52C1C12DBAE00D8B4F3 /* STMInventoryBatchesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F52B1C12DBAE00D8B4F3 /* STMInventoryBatchesTVC.m */; };
 		2CE3F5321C1310F400D8B4F3 /* STMBarCodeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5311C1310F400D8B4F3 /* STMBarCodeController.m */; };
@@ -1063,7 +1063,7 @@
 		2CE3F51A1C1073D000D8B4F3 /* STMInventoryBatchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryBatchItem.h; sourceTree = "<group>"; };
 		2CE3F51B1C1073D000D8B4F3 /* STMInventoryBatchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMInventoryBatchItem.m; sourceTree = "<group>"; };
 		2CE3F5201C10756900D8B4F3 /* barcode_scanner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = barcode_scanner.png; sourceTree = "<group>"; };
-		2CE3F5241C10763900D8B4F3 /* STMInventory_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMInventory_iphone.storyboard; sourceTree = "<group>"; };
+		2CE3F5241C10763900D8B4F3 /* STMInventory.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMInventory.storyboard; sourceTree = "<group>"; };
 		2CE3F5271C12DB8000D8B4F3 /* STMInventoryNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryNC.h; sourceTree = "<group>"; };
 		2CE3F5281C12DB8000D8B4F3 /* STMInventoryNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMInventoryNC.m; sourceTree = "<group>"; };
 		2CE3F52A1C12DBAE00D8B4F3 /* STMInventoryBatchesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryBatchesTVC.h; sourceTree = "<group>"; };
@@ -2431,7 +2431,7 @@
 				2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */,
 				2C5763BB1AA472B700B9FD2C /* STMCatalog.storyboard */,
 				2C8369561986714300DA4316 /* STMDebts.storyboard */,
-				2CE3F5241C10763900D8B4F3 /* STMInventory_iphone.storyboard */,
+				2CE3F5241C10763900D8B4F3 /* STMInventory.storyboard */,
 				2C734B7D19B4E5C400EE33FA /* STMLogs.storyboard */,
 				2C29690319B1B2B50038B122 /* STMMessages.storyboard */,
 				2C5297E71ACECAA2008496AE /* STMMessageVC.storyboard */,
@@ -2647,7 +2647,7 @@
 				2C1AB3121B70B22800BF5C50 /* 3_circle_colored_blue.png in Resources */,
 				2C02F2C51A8B503A00E0E890 /* full_moon-128.png in Resources */,
 				2C1AB30E1B70B22800BF5C50 /* 1_circle_colored_blue.png in Resources */,
-				2CE3F5251C10763900D8B4F3 /* STMInventory_iphone.storyboard in Resources */,
+				2CE3F5251C10763900D8B4F3 /* STMInventory.storyboard in Resources */,
 				2C1AB3021B70AE4400BF5C50 /* 6_circle_filled.png in Resources */,
 				2C1AB2E81B70ADBB00BF5C50 /* 4_circle.png in Resources */,
 				2C1F75181BFA2BB9003699C8 /* STMPickingOrders.storyboard in Resources */,
