@@ -32,10 +32,13 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="ppM-ka-bhB"/>
+                    <connections>
+                        <segue destination="P7A-GT-8V4" kind="show" identifier="showArticleDocs" id="aTi-OS-Ofu"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZmA-66-2sX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1385" y="-102"/>
+            <point key="canvasLocation" x="1385" y="-157"/>
         </scene>
         <!--Supply Order Article DocsTVC-->
         <scene sceneID="Muk-cS-q2o">
@@ -67,12 +70,12 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FLz-vD-vDL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1385" y="559"/>
+            <point key="canvasLocation" x="1385" y="641"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Supply Orders MasterNC-->
         <scene sceneID="Dea-bf-imY">
             <objects>
-                <navigationController id="mmh-pR-MWg" sceneMemberID="viewController">
+                <navigationController id="mmh-pR-MWg" customClass="STMSupplyOrdersMasterNC" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="HAD-bb-tr3">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -84,7 +87,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kbP-HN-gV2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="565" y="-102"/>
+            <point key="canvasLocation" x="565" y="-157"/>
         </scene>
         <!--Supply OrdersSVC-->
         <scene sceneID="bHJ-XG-Wrs">
@@ -99,10 +102,10 @@
             </objects>
             <point key="canvasLocation" x="-255" y="229"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Supply Orders DetailNC-->
         <scene sceneID="9u6-Ie-r8k">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="cqY-iN-HF8" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="cqY-iN-HF8" customClass="STMSupplyOrdersDetailNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="N4R-WC-7FL">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -116,7 +119,10 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vkf-di-sGT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="565" y="559"/>
+            <point key="canvasLocation" x="565" y="641"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="aTi-OS-Ofu"/>
+    </inferredMetricsTieBreakers>
 </document>

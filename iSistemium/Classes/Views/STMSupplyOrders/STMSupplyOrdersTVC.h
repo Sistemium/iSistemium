@@ -10,4 +10,7 @@
 
 @interface STMSupplyOrdersTVC : STMVariableCellsHeightTVC
 
+- (void)segueToArticleDocs;
+
+
 @end

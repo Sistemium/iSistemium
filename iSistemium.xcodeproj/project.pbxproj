@@ -120,6 +120,8 @@
 		2C29691919B1CFAB0038B122 /* STMMessagesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C29691819B1CFAB0038B122 /* STMMessagesTVC.m */; };
 		2C297F9719507A01000D9485 /* STMExtendNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C297F9619507A01000D9485 /* STMExtendNSLog.m */; };
 		2C3771B51B5E7038003493FB /* Sync With Cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C3771B41B5E7038003493FB /* Sync With Cloud.png */; };
+		2C3CED691C1C47A000291AAD /* STMSupplyOrdersMasterNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3CED681C1C47A000291AAD /* STMSupplyOrdersMasterNC.m */; };
+		2C3CED6C1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3CED6B1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m */; };
 		2C420FC81A4C29B4001C65B9 /* STMMessagesNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C420FC71A4C29B4001C65B9 /* STMMessagesNC.m */; };
 		2C42ECAB1B0A591E00B5C91A /* STMSettingsNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C42ECAA1B0A591E00B5C91A /* STMSettingsNC.m */; };
 		2C42ECAE1B0B1A3300B5C91A /* STMTabBarButtonTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C42ECAD1B0B1A3300B5C91A /* STMTabBarButtonTVC.m */; };
@@ -661,6 +663,10 @@
 		2C297F9619507A01000D9485 /* STMExtendNSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMExtendNSLog.m; sourceTree = "<group>"; };
 		2C3771B41B5E7038003493FB /* Sync With Cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Sync With Cloud.png"; sourceTree = "<group>"; };
 		2C3CED621C1C26EE00291AAD /* STMDataModel 85.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 85.xcdatamodel"; sourceTree = "<group>"; };
+		2C3CED671C1C47A000291AAD /* STMSupplyOrdersMasterNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSupplyOrdersMasterNC.h; sourceTree = "<group>"; };
+		2C3CED681C1C47A000291AAD /* STMSupplyOrdersMasterNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrdersMasterNC.m; sourceTree = "<group>"; };
+		2C3CED6A1C1C47B300291AAD /* STMSupplyOrdersDetailNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSupplyOrdersDetailNC.h; sourceTree = "<group>"; };
+		2C3CED6B1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrdersDetailNC.m; sourceTree = "<group>"; };
 		2C420FC51A4C24DE001C65B9 /* STMTabBarItemControllable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMTabBarItemControllable.h; sourceTree = "<group>"; };
 		2C420FC61A4C29B4001C65B9 /* STMMessagesNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMessagesNC.h; sourceTree = "<group>"; };
 		2C420FC71A4C29B4001C65B9 /* STMMessagesNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessagesNC.m; sourceTree = "<group>"; };
@@ -2442,9 +2448,9 @@
 				2CF365AB19EE884D00F078BD /* STMSettings.storyboard */,
 				2CEAC15B1B3BF64C00AD068E /* STMShipments_iphone.storyboard */,
 				2C1727EB1B94440D00C82ACB /* STMShipments.storyboard */,
+				2CF858E11C1ADEAE004D7BD1 /* STMSupplyOrders.storyboard */,
 				2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */,
 				2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */,
-				2CF858E11C1ADEAE004D7BD1 /* STMSupplyOrders.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -2514,6 +2520,10 @@
 			children = (
 				2CF858E41C1AE068004D7BD1 /* STMSupplyOrdersSVC.h */,
 				2CF858E51C1AE068004D7BD1 /* STMSupplyOrdersSVC.m */,
+				2C3CED671C1C47A000291AAD /* STMSupplyOrdersMasterNC.h */,
+				2C3CED681C1C47A000291AAD /* STMSupplyOrdersMasterNC.m */,
+				2C3CED6A1C1C47B300291AAD /* STMSupplyOrdersDetailNC.h */,
+				2C3CED6B1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m */,
 				2CF858E71C1AE0D0004D7BD1 /* STMSupplyOrdersTVC.h */,
 				2CF858E81C1AE0D0004D7BD1 /* STMSupplyOrdersTVC.m */,
 				2CF858ED1C1AE11F004D7BD1 /* STMSupplyOrderArticleDocsTVC.h */,
@@ -2911,6 +2921,7 @@
 				2C1F751E1BFA2DE7003699C8 /* STMPickingOrdersNC.m in Sources */,
 				2C587AAE1BBA851600546A62 /* STMWorkflowEditablesVC.m in Sources */,
 				2C5764931AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.m in Sources */,
+				2C3CED6C1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m in Sources */,
 				2C646F651BCE69C00099F034 /* SocketIOClient.swift in Sources */,
 				2C5763F41AA5E13600B9FD2C /* STMCampaignPicturePVC.m in Sources */,
 				2CEE300A1BEBAD10009B229F /* STMArticle+CoreDataProperties.m in Sources */,
@@ -3104,6 +3115,7 @@
 				2C4BA3C91A41AE8B007F1D0A /* STMOutletController.m in Sources */,
 				2C5764321AA5F86500B9FD2C /* STMArticleGroupController.m in Sources */,
 				2CCD06E81B5B9EF8002591C4 /* STMRegradeArticleVC.m in Sources */,
+				2C3CED691C1C47A000291AAD /* STMSupplyOrdersMasterNC.m in Sources */,
 				2C1C54891BFF6FA20095F1DD /* STMPickingPositionAddInfoVC.m in Sources */,
 				2CEE303A1BEBAD10009B229F /* STMShipmentPosition+custom.m in Sources */,
 				2CEE30331BEBAD10009B229F /* STMSaleOrder.m in Sources */,

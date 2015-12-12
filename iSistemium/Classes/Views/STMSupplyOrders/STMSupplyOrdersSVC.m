@@ -8,10 +8,14 @@
 
 #import "STMSupplyOrdersSVC.h"
 
+#import "STMSupplyOrdersMasterNC.h"
+#import "STMSupplyOrdersDetailNC.h"
+
 
 @interface STMSupplyOrdersSVC ()
 
-@property (nonatomic, strong) UINavigationController *detailNC;
+@property (nonatomic, strong) STMSupplyOrdersMasterNC *masterNC;
+@property (nonatomic, strong) STMSupplyOrdersDetailNC *detailNC;
 
 
 @end
@@ -19,10 +23,36 @@
 
 @implementation STMSupplyOrdersSVC
 
-- (UINavigationController *)detailNC {
+- (STMSupplyOrdersMasterNC *)masterNC {
+    
+    if (!_masterNC) {
+        if ([self.viewControllers[0] isKindOfClass:[STMSupplyOrdersMasterNC class]]) {
+            _masterNC = self.viewControllers[0];
+        }
+    }
+    return _masterNC;
+    
+}
+
+- (STMSupplyOrdersTVC *)masterTVC {
+    
+    if (!_masterTVC) {
+        
+        UIViewController *masterTVC = self.masterNC.viewControllers[0];
+        
+        if ([masterTVC isKindOfClass:[STMSupplyOrdersTVC class]]) {
+            _masterTVC = (STMSupplyOrdersTVC *)masterTVC;
+        }
+
+    }
+    return _masterTVC;
+    
+}
+
+- (STMSupplyOrdersDetailNC *)detailNC {
     
     if (!_detailNC) {
-        if ([self.viewControllers[1] isKindOfClass:[UINavigationController class]]) {
+        if ([self.viewControllers[1] isKindOfClass:[STMSupplyOrdersDetailNC class]]) {
             _detailNC = self.viewControllers[1];
         }
     }
@@ -45,11 +75,28 @@
     
 }
 
+- (BOOL)isMasterNCForViewController:(UIViewController *)vc {
+    return [self.masterNC.viewControllers containsObject:vc];
+}
+
+- (BOOL)isDetailNCForViewController:(UIViewController *)vc {
+    return [self.detailNC.viewControllers containsObject:vc];
+}
+
+
 - (void)setSelectedSupplyOrder:(STMSupplyOrder *)selectedSupplyOrder {
     
     _selectedSupplyOrder = selectedSupplyOrder;
     
     self.detailTVC.supplyOrder = _selectedSupplyOrder;
+    
+}
+
+- (void)setSelectedSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)selectedSupplyOrderArticleDoc {
+    
+    _selectedSupplyOrderArticleDoc = selectedSupplyOrderArticleDoc;
+    
+    [self.masterTVC segueToArticleDocs];
     
 }
 

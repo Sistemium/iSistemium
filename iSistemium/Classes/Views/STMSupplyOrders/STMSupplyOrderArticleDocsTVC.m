@@ -18,6 +18,9 @@
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
 @property (nonatomic, strong) NSString *nextProcessing;
 
+@property (nonatomic) BOOL isMasterNC;
+@property (nonatomic) BOOL isDetailNC;
+
 
 @end
 
@@ -25,6 +28,8 @@
 @implementation STMSupplyOrderArticleDocsTVC
 
 @synthesize resultsController =_resultsController;
+@synthesize supplyOrder = _supplyOrder;
+
 
 - (STMSupplyOrdersSVC *)splitVC {
     
@@ -36,6 +41,24 @@
         
     }
     return _splitVC;
+    
+}
+
+- (BOOL)isMasterNC {
+    
+    if (!_isMasterNC) {
+        _isMasterNC = [self.splitVC isMasterNCForViewController:self];
+    }
+    return _isMasterNC;
+    
+}
+
+- (BOOL)isDetailNC {
+    
+    if (!_isDetailNC) {
+        _isDetailNC = [self.splitVC isDetailNCForViewController:self];
+    }
+    return _isDetailNC;
     
 }
 
@@ -68,6 +91,14 @@
     
 }
 
+- (STMSupplyOrder *)supplyOrder {
+    
+    if (!_supplyOrder) {
+        _supplyOrder = self.splitVC.selectedSupplyOrder;
+    }
+    return _supplyOrder;
+}
+
 - (void)setSupplyOrder:(STMSupplyOrder *)supplyOrder {
     
     _supplyOrder = supplyOrder;
@@ -78,7 +109,9 @@
 }
 
 - (void)updateToolbars {
-    [self addProcessingButton];
+    
+    if (self.isDetailNC) [self addProcessingButton];
+    
 }
 
 #pragma mark - processing button
@@ -243,9 +276,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
-//
-//    NSLog(@"");
+    STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
+
+    self.splitVC.selectedSupplyOrderArticleDoc = articleDoc;
     
 }
 
