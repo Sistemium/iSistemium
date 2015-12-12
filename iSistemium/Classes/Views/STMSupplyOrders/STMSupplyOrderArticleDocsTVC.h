@@ -12,5 +12,7 @@
 
 @property (nonatomic, strong) STMSupplyOrder *supplyOrder;
 
+- (void)selectSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)articleDoc;
+
 
 @end

@@ -17,6 +17,8 @@
 @interface STMSupplyOrderArticleDocsTVC () <UIActionSheetDelegate, STMWorkflowable>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, strong) STMSupplyOrderOperationsTVC *operationsTVC;
+
 @property (nonatomic, strong) NSString *nextProcessing;
 
 @property (nonatomic) BOOL isMasterNC;
@@ -273,6 +275,20 @@
     
 }
 
+- (void)selectSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)articleDoc {
+    
+    NSIndexPath *indexPath = [self.resultsController indexPathForObject:articleDoc];
+    
+    if (indexPath) {
+        
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+        
+        self.operationsTVC.supplyOrderArticleDoc = articleDoc;
+        
+    }
+    
+}
+
 
 #pragma mark - Navigation
 
@@ -283,9 +299,9 @@
         [sender isKindOfClass:[STMSupplyOrderArticleDoc class]]) {
         
         STMSupplyOrderArticleDoc *articleDoc = (STMSupplyOrderArticleDoc *)sender;
-        STMSupplyOrderOperationsTVC *operationsTVC = (STMSupplyOrderOperationsTVC *)segue.destinationViewController;
+        self.operationsTVC = (STMSupplyOrderOperationsTVC *)segue.destinationViewController;
         
-        operationsTVC.supplyOrderArticleDoc = articleDoc;
+        self.operationsTVC.supplyOrderArticleDoc = articleDoc;
         
     }
     
@@ -311,6 +327,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    if (self.isDetailNC && ![self isMovingToParentViewController]) {
+        self.operationsTVC = nil;
+    }
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

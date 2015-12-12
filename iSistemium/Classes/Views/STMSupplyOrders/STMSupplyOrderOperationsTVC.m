@@ -15,10 +15,9 @@
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
 
-@property (nonatomic) BOOL isDetailNC;
-
 
 @end
+
 
 @implementation STMSupplyOrderOperationsTVC
 
@@ -38,13 +37,12 @@
     
 }
 
-- (BOOL)isDetailNC {
+- (void)setSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)supplyOrderArticleDoc {
     
-    if (!_isDetailNC) {
-        _isDetailNC = [self.splitVC isDetailNCForViewController:self];
-    }
-    return _isDetailNC;
+    _supplyOrderArticleDoc = supplyOrderArticleDoc;
     
+    [self performFetch];
+
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -118,7 +116,7 @@
     
     [super customInit];
     
-    if (self.isDetailNC) self.navigationItem.hidesBackButton = YES;
+    self.navigationItem.hidesBackButton = YES;
     self.navigationItem.title = self.supplyOrderArticleDoc.supplyOrder.ndoc;
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
