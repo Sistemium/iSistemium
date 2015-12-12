@@ -53,6 +53,16 @@
     
 }
 
+- (NSString *)supplyOrderWorkflow {
+    
+    if (!_supplyOrderWorkflow) {
+        _supplyOrderWorkflow = [STMWorkflowController workflowForEntityName:NSStringFromClass([STMSupplyOrder class])];
+    }
+    return _supplyOrderWorkflow;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)viewDidLoad {

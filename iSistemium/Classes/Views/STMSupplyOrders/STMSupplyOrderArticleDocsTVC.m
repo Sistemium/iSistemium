@@ -10,10 +10,13 @@
 
 #import "STMSupplyOrdersSVC.h"
 
+#import "STMWorkflowEditablesVC.h"
 
-@interface STMSupplyOrderArticleDocsTVC ()
+
+@interface STMSupplyOrderArticleDocsTVC () <UIActionSheetDelegate, STMWorkflowable>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, strong) NSString *nextProcessing;
 
 
 @end
@@ -35,6 +38,11 @@
     return _splitVC;
     
 }
+
+- (BOOL)orderIsProcessed {
+    return [STMWorkflowController isEditableProcessing:self.supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+}
+
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -64,7 +72,121 @@
     
     _supplyOrder = supplyOrder;
     
+    [self updateToolbars];
     [self performFetch];
+    
+}
+
+- (void)updateToolbars {
+    [self addProcessingButton];
+}
+
+#pragma mark - processing button
+
+- (void)addProcessingButton {
+    
+    NSString *processing = self.supplyOrder.processing;
+    NSString *workflow = self.splitVC.supplyOrderWorkflow;
+    
+    NSString *title = [STMWorkflowController labelForProcessing:processing inWorkflow:workflow];
+    
+    STMBarButtonItem *processingButton = [[STMBarButtonItem alloc] initWithTitle:title
+                                                                           style:UIBarButtonItemStylePlain
+                                                                          target:self
+                                                                          action:@selector(processingButtonPressed)];
+    
+    processingButton.tintColor = [STMWorkflowController colorForProcessing:processing inWorkflow:workflow];
+    
+    self.navigationItem.rightBarButtonItem = processingButton;
+    
+}
+
+- (void)processingButtonPressed {
+    
+    STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:self.supplyOrder.processing
+                                                                                      inWorkflow:self.splitVC.supplyOrderWorkflow
+                                                                                    withDelegate:self];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [workflowActionSheet showInView:self.view];
+    }];
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if ([actionSheet isKindOfClass:[STMWorkflowAS class]] && buttonIndex != actionSheet.cancelButtonIndex) {
+        
+        STMWorkflowAS *workflowAS = (STMWorkflowAS *)actionSheet;
+        
+        NSDictionary *result = [STMWorkflowController workflowActionSheetForProcessing:workflowAS.processing
+                                                              didSelectButtonWithIndex:buttonIndex
+                                                                            inWorkflow:workflowAS.workflow];
+        
+        self.nextProcessing = result[@"nextProcessing"];
+        
+        if (self.nextProcessing) {
+            
+            if ([result[@"editableProperties"] isKindOfClass:[NSArray class]]) {
+                
+                STMWorkflowEditablesVC *editablesVC = [[STMWorkflowEditablesVC alloc] init];
+                
+                editablesVC.workflow = workflowAS.workflow;
+                editablesVC.toProcessing = self.nextProcessing;
+                editablesVC.editableFields = result[@"editableProperties"];
+                editablesVC.parent = self;
+                
+                [self presentViewController:editablesVC animated:YES completion:^{
+                    
+                }];
+                
+            } else {
+                
+                [self updateWorkflowSelectedOrder];
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+- (void)takeEditableValues:(NSDictionary *)editableValues {
+    
+    for (NSString *field in editableValues.allKeys) {
+        
+        if ([self.supplyOrder.entity.propertiesByName.allKeys containsObject:field]) {
+            [self.supplyOrder setValue:editableValues[field] forKey:field];
+        }
+        
+    }
+    
+    [self updateWorkflowSelectedOrder];
+    
+}
+
+- (void)updateWorkflowSelectedOrder {
+    
+    if (self.nextProcessing) {
+        
+        self.supplyOrder.processing = self.nextProcessing;
+        [self orderProcessingChanged];
+        
+    }
+    
+}
+
+- (void)orderProcessingChanged {
+    
+//    [self checkIfBarcodeScanerIsNeeded];
+    [self updateToolbars];
+//    [self.tableView reloadData];
+    
+    [self.document saveDocument:^(BOOL success) {
+    }];
     
 }
 
@@ -136,6 +258,7 @@
     
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
+    [self updateToolbars];
     [self performFetch];
     
 }

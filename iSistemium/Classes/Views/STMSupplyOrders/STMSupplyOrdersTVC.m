@@ -95,6 +95,25 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:indexPath];
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    
+    [[cell.contentView viewWithTag:1] removeFromSuperview];
+    
+    CGFloat fillWidth = 5;
+    
+    CGRect rect = CGRectMake(1, 1, fillWidth, cell.frame.size.height-2);
+    UIView *view = [[UIView alloc] initWithFrame:rect];
+    view.tag = 1;
+    view.backgroundColor = (processingColor) ? processingColor : [UIColor blackColor];
+    
+    [cell.contentView addSubview:view];
+    [cell.contentView sendSubviewToBack:view];
+    
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:indexPath];
