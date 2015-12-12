@@ -2,7 +2,7 @@
 //  STMSupplyOrderArticleDoc+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 02/12/15.
+//  Created by Maxim Grigoriev on 12/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,6 +15,7 @@
 
 @dynamic ord;
 @dynamic volume;
+@dynamic code;
 @dynamic article;
 @dynamic articleDoc;
 @dynamic supplyOrder;
