@@ -194,7 +194,7 @@
         
         STMStockBatch *stockBatch = stockBatches.firstObject;
         
-        if ([stockBatch.article isEqual:self.currentArticle]) {
+        if (!stockBatch || [stockBatch.article isEqual:self.currentArticle]) {
             
             [self finishInventoryBatchWithStockBatch:stockBatch responder:responder];
 
