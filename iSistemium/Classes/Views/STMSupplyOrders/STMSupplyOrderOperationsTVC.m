@@ -12,6 +12,8 @@
 #import "STMBarCodeScanner.h"
 #import "STMSoundController.h"
 
+#import "STMSupplyOperationVC.h"
+
 
 @interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate>
 
@@ -224,7 +226,23 @@
 }
 
 
-#pragma mark - 
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if ([segue.identifier isEqualToString:@"showSupplyOperation"] &&
+        [segue.destinationViewController isKindOfClass:[STMSupplyOperationVC class]] &&
+        [sender isKindOfClass:[NSString class]]) {
+        
+        NSString *barcode = (NSString *)sender;
+        STMSupplyOperationVC *operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
+        
+        operationVC.initialBarcode = barcode;
+        operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
+        
+    }
+
+}
 
 
 #pragma mark - view lifecycle
@@ -270,14 +288,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

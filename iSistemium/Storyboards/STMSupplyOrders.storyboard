@@ -143,7 +143,7 @@
                                 <rect key="frame" x="20" y="304" width="560" height="252"/>
                                 <animations/>
                                 <connections>
-                                    <segue destination="kFR-TV-uet" kind="embed" id="yjo-s4-0FS"/>
+                                    <segue destination="kFR-TV-uet" kind="embed" identifier="stockBatchCodes" id="yjo-s4-0FS"/>
                                 </connections>
                             </containerView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zlx-Zo-J3h">
@@ -213,7 +213,7 @@
                         <animations/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="yzu-cM-c6c">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="stockBatchCodeCell" id="yzu-cM-c6c">
                                 <rect key="frame" x="0.0" y="49.5" width="560" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yzu-cM-c6c" id="JIw-A5-wHl">

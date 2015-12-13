@@ -10,4 +10,7 @@
 
 @interface STMStockBatchCodesTVC : STMVariableCellsHeightTVC
 
+- (void)addStockBatchCode:(NSString *)code;
+
+
 @end

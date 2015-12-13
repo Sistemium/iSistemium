@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+#import "STMDataModel.h"
+
+
 @interface STMSupplyOperationVC : UIViewController
+
+@property (nonatomic, strong) STMSupplyOrderArticleDoc *supplyOrderArticleDoc;
+
+@property (nonatomic, strong) NSString *initialBarcode;
+
 
 @end

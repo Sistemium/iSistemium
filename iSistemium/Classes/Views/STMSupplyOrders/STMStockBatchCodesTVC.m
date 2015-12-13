@@ -10,9 +10,76 @@
 
 @interface STMStockBatchCodesTVC ()
 
+@property (nonatomic, strong) NSMutableArray *stockBatchCodes;
+
+
 @end
 
 @implementation STMStockBatchCodesTVC
+
+- (NSMutableArray *)stockBatchCodes {
+    
+    if (!_stockBatchCodes) {
+        _stockBatchCodes = @[].mutableCopy;
+    }
+    return _stockBatchCodes;
+    
+}
+
+- (void)addStockBatchCode:(NSString *)code {
+    
+    if (code) {
+        
+        [self.stockBatchCodes addObject:@{
+                                          @"ts": [NSDate date],
+                                          @"code": code
+                                          }];
+    }
+    
+    NSSortDescriptor *tsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ts" ascending:NO selector:@selector(compare:)];
+    self.stockBatchCodes = [self.stockBatchCodes sortedArrayUsingDescriptors:@[tsDescriptor]].mutableCopy;
+    
+    [self.tableView reloadData];
+    
+}
+
+
+#pragma mark - table view data
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.stockBatchCodes.count;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    return NSLocalizedString(@"STOCK BATCH CODES", nil);
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    
+    cell.textLabel.text = self.stockBatchCodes[indexPath.row][@"code"];
+    
+    return cell;
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    [super customInit];
+    
+    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];

@@ -8,6 +8,8 @@
 
 #import "STMSupplyOperationVC.h"
 
+#import "STMStockBatchCodesTVC.h"
+
 
 @interface STMSupplyOperationVC ()
 
@@ -17,6 +19,8 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+
+@property (nonatomic, strong) STMStockBatchCodesTVC *codesTVC;
 
 
 @end
@@ -37,11 +41,35 @@
 }
 
 
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"stockBatchCodes"] &&
+        [segue.destinationViewController isKindOfClass:[STMStockBatchCodesTVC class]]) {
+        
+        self.codesTVC = (STMStockBatchCodesTVC *)segue.destinationViewController;
+        
+        [self.codesTVC addStockBatchCode:self.initialBarcode];
+        
+    }
+    
+}
+
+
 #pragma mark - view lifecycle
 
+- (void)customInit {
+    
+    self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
+    
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -49,14 +77,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
