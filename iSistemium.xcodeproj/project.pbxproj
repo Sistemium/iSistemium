@@ -271,6 +271,7 @@
 		2C7678371B4193E10085C514 /* STMMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7678351B4193E10085C514 /* STMMapAnnotation.m */; };
 		2C774C5D1C1DA3A90091222C /* STMSupplyOperationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C774C5C1C1DA3A90091222C /* STMSupplyOperationVC.m */; };
 		2C774C601C1DA3C10091222C /* STMStockBatchCodesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C774C5F1C1DA3C10091222C /* STMStockBatchCodesTVC.m */; };
+		2C774C651C1DB0A70091222C /* STMVolumePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C774C641C1DB0A70091222C /* STMVolumePicker.m */; };
 		2C7E7DA41ABCA77800A26185 /* STMCustom2TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */; };
 		2C7E7DA71ABCA94700A26185 /* STMCustom2TVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */; };
 		2C802A6C1BC95B3E006F55CA /* STMSocketController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C802A6B1BC95B3E006F55CA /* STMSocketController.m */; };
@@ -929,6 +930,8 @@
 		2C774C5C1C1DA3A90091222C /* STMSupplyOperationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOperationVC.m; sourceTree = "<group>"; };
 		2C774C5E1C1DA3C10091222C /* STMStockBatchCodesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMStockBatchCodesTVC.h; sourceTree = "<group>"; };
 		2C774C5F1C1DA3C10091222C /* STMStockBatchCodesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMStockBatchCodesTVC.m; sourceTree = "<group>"; };
+		2C774C631C1DB0A70091222C /* STMVolumePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMVolumePicker.h; sourceTree = "<group>"; };
+		2C774C641C1DB0A70091222C /* STMVolumePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMVolumePicker.m; sourceTree = "<group>"; };
 		2C7E7DA31ABCA77800A26185 /* STMCustom2TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom2TVCell.xib; sourceTree = "<group>"; };
 		2C7E7DA51ABCA94700A26185 /* STMCustom2TVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCustom2TVCell.h; sourceTree = "<group>"; };
 		2C7E7DA61ABCA94700A26185 /* STMCustom2TVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCustom2TVCell.m; sourceTree = "<group>"; };
@@ -1496,6 +1499,8 @@
 				2C587AA61BB2DAFD00546A62 /* STMWorkflowAS.h */,
 				2C587AA71BB2DAFD00546A62 /* STMWorkflowAS.m */,
 				2CF858C81C1854A0004D7BD1 /* STMDatePicker.swift */,
+				2C774C631C1DB0A70091222C /* STMVolumePicker.h */,
+				2C774C641C1DB0A70091222C /* STMVolumePicker.m */,
 			);
 			path = STMUI;
 			sourceTree = "<group>";
@@ -3064,6 +3069,7 @@
 				2C5764171AA5E1E500B9FD2C /* STMAddDebtVC.m in Sources */,
 				2C1F750E1BFA1B6E003699C8 /* STMPicker.m in Sources */,
 				2C646F6B1BCE69C00099F034 /* SocketTypes.swift in Sources */,
+				2C774C651C1DB0A70091222C /* STMVolumePicker.m in Sources */,
 				2CC194401BDF7340001F8E48 /* STMCustom1CVCell.m in Sources */,
 				2C81AD591AD1154C00246666 /* STMMessageController.m in Sources */,
 				2CE3F4E51C0C88D100D8B4F3 /* STMClientData+CoreDataProperties.m in Sources */,

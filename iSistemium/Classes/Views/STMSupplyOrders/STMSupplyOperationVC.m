@@ -14,7 +14,7 @@
 @interface STMSupplyOperationVC ()
 
 @property (weak, nonatomic) IBOutlet UILabel *articleLabel;
-@property (weak, nonatomic) IBOutlet UIPickerView *volumePicker;
+@property (weak, nonatomic) IBOutlet STMVolumePicker *volumePicker;
 @property (weak, nonatomic) IBOutlet UIView *barcodesTableContainer;
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
@@ -62,6 +62,11 @@
 - (void)customInit {
     
     self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
+    
+    self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
+
+    self.volumePicker.volume = self.supplyOrderArticleDoc.volume.integerValue;
+    self.volumePicker.selectedVolume = self.supplyOrderArticleDoc.volume.integerValue;
     
 }
 
