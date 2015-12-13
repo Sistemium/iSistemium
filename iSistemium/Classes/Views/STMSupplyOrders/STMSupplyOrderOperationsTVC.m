@@ -18,9 +18,9 @@
 @interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, strong) STMSupplyOperationVC *operationVC;
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
-@property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
 
 
 @end
@@ -73,8 +73,9 @@
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
-                                                                   sectionNameKeyPath:@"sourceAgent"
+                                                                   sectionNameKeyPath:nil
                                                                             cacheName:nil];
+        _resultsController.delegate = self;
         
     }
     return _resultsController;
@@ -85,13 +86,7 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-
-    if (self.resultsController.fetchedObjects.count > 0) {
-        return [super numberOfSectionsInTableView:tableView];
-    } else {
-        return 1;
-    }
-
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -114,9 +109,15 @@
     
     if (self.resultsController.fetchedObjects.count > 0) {
         
+        STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
+        
+        cell.textLabel.text = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:operation.deviceCts];
+        cell.detailTextLabel.text = operation.volume.stringValue;
+        
     } else {
         
         cell.textLabel.text = @"";
+        cell.detailTextLabel.text = @"";
         
     }
     
@@ -137,8 +138,6 @@
     
     [self startIOSModeScanner];
     
-    [self startHIDModeScanner];
-
 //    ([self.iOSModeBarCodeScanner isDeviceConnected]) ? [self addBarcodeImage] : [self removeBarcodeImage];
     
 }
@@ -151,19 +150,8 @@
     
 }
 
-- (void)startHIDModeScanner {
-    
-    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
-    self.HIDBarCodeScanner.delegate = self;
-    [self.HIDBarCodeScanner startScan];
-    
-}
-
-
 - (void)stopBarcodeScanning {
 
-    [self stopHIDModeScanner];
-    
     [self stopIOSModeScanner];
     
 }
@@ -172,13 +160,6 @@
     
     [self.iOSModeBarCodeScanner stopScan];
     self.iOSModeBarCodeScanner = nil;
-    
-}
-
-- (void)stopHIDModeScanner {
-    
-    [self.HIDBarCodeScanner stopScan];
-    self.HIDBarCodeScanner = nil;
     
 }
 
@@ -194,7 +175,17 @@
     NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
     
     if (type == STMBarCodeTypeStockBatch) {
-        [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
+
+        if ([self.presentedViewController isEqual:self.operationVC]) {
+            
+            [self.operationVC addStockBatchCode:barcode];
+            
+        } else {
+        
+            [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
+
+        }
+        
     }
     
 }
@@ -235,10 +226,10 @@
         [sender isKindOfClass:[NSString class]]) {
         
         NSString *barcode = (NSString *)sender;
-        STMSupplyOperationVC *operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
+        self.operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
         
-        operationVC.initialBarcode = barcode;
-        operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
+        self.operationVC.initialBarcode = barcode;
+        self.operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
         
     }
 

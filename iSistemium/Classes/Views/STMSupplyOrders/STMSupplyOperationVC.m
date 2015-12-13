@@ -9,6 +9,7 @@
 #import "STMSupplyOperationVC.h"
 
 #import "STMStockBatchCodesTVC.h"
+#import "STMObjectsController.h"
 
 
 @interface STMSupplyOperationVC ()
@@ -36,8 +37,52 @@
 
 - (IBAction)doneButtonPressed:(id)sender {
     
+    [self saveData];
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 
+}
+
+- (void)addStockBatchCode:(NSString *)code {
+    [self.codesTVC addStockBatchCode:code];
+}
+
+- (void)saveData {
+    
+    STMStockBatch *stockBatch = (STMStockBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMStockBatch class])
+                                                                                     isFantom:NO];
+    
+    stockBatch.article = [self.supplyOrderArticleDoc operatingArticle];
+    
+    for (NSString *code in [self.codesTVC.stockBatchCodes valueForKeyPath:@"code"]) {
+        
+        STMStockBatchBarCode *barCode = (STMStockBatchBarCode *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMStockBatchBarCode class])
+                                                                                                    isFantom:NO];
+        barCode.code = code;
+        barCode.stockBatch = stockBatch;
+        
+    }
+    
+    STMStockBatchOperation *operation = (STMStockBatchOperation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMStockBatchOperation class])
+                                                                                                      isFantom:NO];
+    
+    operation.volume = @(self.volumePicker.selectedVolume);
+    
+    NSString *sourceEntity = [NSStringFromClass([STMSupplyOrderArticleDoc class]) stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
+    NSString *destinationEntity = [NSStringFromClass([STMStockBatch class]) stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
+
+    operation.sourceAgent = self.supplyOrderArticleDoc;
+    operation.sourceXid = self.supplyOrderArticleDoc.xid;
+    operation.sourceEntity = sourceEntity;
+    
+    operation.destinationAgent = stockBatch;
+    operation.destinationXid = stockBatch.xid;
+    operation.destinationEntity = destinationEntity;
+    
+    [[STMObjectsController document] saveDocument:^(BOOL success) {
+        
+    }];
+    
 }
 
 

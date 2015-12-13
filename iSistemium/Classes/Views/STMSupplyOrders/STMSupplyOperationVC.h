@@ -17,5 +17,7 @@
 
 @property (nonatomic, strong) NSString *initialBarcode;
 
+- (void)addStockBatchCode:(NSString *)code;
+
 
 @end

@@ -10,8 +10,6 @@
 
 @interface STMStockBatchCodesTVC ()
 
-@property (nonatomic, strong) NSMutableArray *stockBatchCodes;
-
 
 @end
 
@@ -28,7 +26,7 @@
 
 - (void)addStockBatchCode:(NSString *)code {
     
-    if (code) {
+    if (code && ![[self.stockBatchCodes valueForKeyPath:@"code"] containsObject:code]) {
         
         [self.stockBatchCodes addObject:@{
                                           @"ts": [NSDate date],

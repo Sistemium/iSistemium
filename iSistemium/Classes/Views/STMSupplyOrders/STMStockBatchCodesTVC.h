@@ -12,5 +12,7 @@
 
 - (void)addStockBatchCode:(NSString *)code;
 
+@property (nonatomic, strong) NSMutableArray *stockBatchCodes;
+
 
 @end

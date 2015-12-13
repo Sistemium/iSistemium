@@ -23,5 +23,9 @@
     
 }
 
+- (STMArticle *)operatingArticle {
+    return (self.article) ? (STMArticle * _Nonnull)self.article : self.articleDoc.article;
+}
+
 
 @end
