@@ -12,5 +12,7 @@
 
 @property (nonatomic, strong) STMSupplyOrderArticleDoc *supplyOrderArticleDoc;
 
+- (void)orderProcessingChanged;
+
 
 @end

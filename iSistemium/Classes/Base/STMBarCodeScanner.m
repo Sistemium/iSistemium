@@ -315,9 +315,20 @@
 
     
     self.hiddenBarCodeTextField = [[UITextField alloc] init];
+    
     self.hiddenBarCodeTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.hiddenBarCodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
+    
+    if ([self.hiddenBarCodeTextField respondsToSelector:@selector(inputAssistantItem)]) {
+        
+        UITextInputAssistantItem *inputAssistantItem = self.hiddenBarCodeTextField.inputAssistantItem;
+        inputAssistantItem.leadingBarButtonGroups = @[];
+        inputAssistantItem.trailingBarButtonGroups = @[];
+        
+    }
+
     [self.hiddenBarCodeTextField becomeFirstResponder];
+    
     self.hiddenBarCodeTextField.delegate = self;
     
     [[self.delegate viewForScanner:self] addSubview:self.hiddenBarCodeTextField];

@@ -14,5 +14,7 @@
 
 - (void)selectSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)articleDoc;
 
+- (void)orderProcessingChanged;
+
 
 @end

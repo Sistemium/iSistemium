@@ -95,8 +95,9 @@
 
 - (void)updateToolbars {
     
-    if (self.isDetailNC) [self addProcessingButton];
-    
+//    if (self.isDetailNC) [self addProcessingButton];
+  
+    [self addProcessingButton];
 }
 
 #pragma mark - processing button
@@ -191,17 +192,21 @@
     if (self.nextProcessing) {
         
         self.supplyOrder.processing = self.nextProcessing;
-        [self orderProcessingChanged];
         
+        [self orderProcessingChanged];
+
+        if (self.isMasterNC) {
+            [self.splitVC orderProcessingChanged];
+        }
+
     }
     
 }
 
 - (void)orderProcessingChanged {
     
-//    [self checkIfBarcodeScanerIsNeeded];
     [self updateToolbars];
-//    [self.tableView reloadData];
+    [self.operationsTVC orderProcessingChanged];
     
     [self.document saveDocument:^(BOOL success) {
     }];

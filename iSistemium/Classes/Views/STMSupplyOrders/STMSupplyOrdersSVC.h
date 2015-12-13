@@ -29,5 +29,7 @@
 
 - (void)masterBackButtonPressed;
 
+- (void)orderProcessingChanged;
+
 
 @end

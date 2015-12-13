@@ -98,8 +98,23 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:indexPath];
-    UIColor *processingColor = [STMWorkflowController colorForProcessing:supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
     
+    [self addProcessingColorStripeForSupplyOrder:supplyOrder forCell:cell];
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:indexPath];
+
+    self.splitVC.selectedSupplyOrder = supplyOrder;
+
+}
+
+- (void)addProcessingColorStripeForSupplyOrder:(STMSupplyOrder *)supplyOrder forCell:(UITableViewCell *)cell {
+    
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+
     [[cell.contentView viewWithTag:1] removeFromSuperview];
     
     CGFloat fillWidth = 5;
@@ -111,15 +126,7 @@
     
     [cell.contentView addSubview:view];
     [cell.contentView sendSubviewToBack:view];
-    
-}
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:indexPath];
-
-    self.splitVC.selectedSupplyOrder = supplyOrder;
-    
 }
 
 

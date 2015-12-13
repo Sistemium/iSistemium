@@ -87,6 +87,10 @@
     [self.detailNC popToRootViewControllerAnimated:YES];
 }
 
+- (void)orderProcessingChanged {
+    [self.detailTVC orderProcessingChanged];
+}
+
 - (void)setSelectedSupplyOrder:(STMSupplyOrder *)selectedSupplyOrder {
     
     _selectedSupplyOrder = selectedSupplyOrder;

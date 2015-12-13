@@ -9,11 +9,16 @@
 #import "STMSupplyOrderOperationsTVC.h"
 
 #import "STMSupplyOrdersSVC.h"
+#import "STMBarCodeScanner.h"
+#import "STMSoundController.h"
 
 
-@interface STMSupplyOrderOperationsTVC ()
+@interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+
+@property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
+@property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
 
 
 @end
@@ -43,6 +48,14 @@
     
     [self performFetch];
 
+}
+
+- (BOOL)orderIsProcessed {
+    return [STMWorkflowController isEditableProcessing:self.supplyOrderArticleDoc.supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+}
+
+- (void)orderProcessingChanged {
+    [self checkIfBarcodeScanerIsNeeded];
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -101,13 +114,117 @@
         
     } else {
         
-        cell.textLabel.text = @"TEST";
+        cell.textLabel.text = @"";
         
     }
     
     return cell;
     
 }
+
+
+#pragma mark - barcode scanning
+
+- (void)checkIfBarcodeScanerIsNeeded {
+    
+    ([self orderIsProcessed]) ? [self startBarcodeScanning] : [self stopBarcodeScanning];
+    
+}
+
+- (void)startBarcodeScanning {
+    
+    [self startIOSModeScanner];
+    
+    [self startHIDModeScanner];
+
+//    ([self.iOSModeBarCodeScanner isDeviceConnected]) ? [self addBarcodeImage] : [self removeBarcodeImage];
+    
+}
+
+- (void)startIOSModeScanner {
+    
+    self.iOSModeBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerIOSMode];
+    self.iOSModeBarCodeScanner.delegate = self;
+    [self.iOSModeBarCodeScanner startScan];
+    
+}
+
+- (void)startHIDModeScanner {
+    
+    self.HIDBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerHIDKeyboardMode];
+    self.HIDBarCodeScanner.delegate = self;
+    [self.HIDBarCodeScanner startScan];
+    
+}
+
+
+- (void)stopBarcodeScanning {
+
+    [self stopHIDModeScanner];
+    
+    [self stopIOSModeScanner];
+    
+}
+
+- (void)stopIOSModeScanner {
+    
+    [self.iOSModeBarCodeScanner stopScan];
+    self.iOSModeBarCodeScanner = nil;
+    
+}
+
+- (void)stopHIDModeScanner {
+    
+    [self.HIDBarCodeScanner stopScan];
+    self.HIDBarCodeScanner = nil;
+    
+}
+
+
+#pragma mark - STMBarCodeScannerDelegate
+
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+    
+    NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
+    
+    if (type == STMBarCodeTypeStockBatch) {
+        [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
+    }
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
+    NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
+}
+
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
+//        [self addBarcodeImage];
+        
+    }
+    
+}
+
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
+//        [self removeBarcodeImage];
+        
+    }
+    
+}
+
+
+#pragma mark - 
 
 
 #pragma mark - view lifecycle
@@ -127,6 +244,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self checkIfBarcodeScanerIsNeeded];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    if ([self isMovingFromParentViewController]) {
+        
+        [self stopBarcodeScanning];
+        
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {
