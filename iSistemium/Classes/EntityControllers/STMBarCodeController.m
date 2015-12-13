@@ -80,9 +80,7 @@
         
     } else {
         
-        [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
         NSLog(@"unknown barcode %@", barcode);
-        
         return nil;
         
     }

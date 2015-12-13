@@ -218,8 +218,17 @@
 - (void)finishInventoryBatchWithStockBatch:(STMStockBatch *)stockBatch responder:(id <STMInventoryControlling>)responder {
     
     [STMSoundController playOk];
+    
+    if (!stockBatch) {
+        
+        [STMSoundController alertSay:NSLocalizedString(@"NEW STOCK BATCH CODE", nil)];
 
-    self.currentBatch.stockBatch = stockBatch;
+    } else {
+
+        self.currentBatch.stockBatch = stockBatch;
+
+    }
+
     self.currentBatch.stockBatchCode = self.currentStockBatchCode;
     
     [responder finishInventoryBatch:self.currentBatch withStockBatch:stockBatch];
