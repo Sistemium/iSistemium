@@ -112,8 +112,37 @@
         STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
         
         cell.textLabel.text = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:operation.deviceCts];
-        cell.detailTextLabel.text = operation.volume.stringValue;
         
+        if ([operation.destinationAgent isKindOfClass:[STMStockBatch class]]) {
+            
+            NSMutableArray *codes = @[].mutableCopy;
+            
+            STMStockBatch *stockBatch = (STMStockBatch *)operation.destinationAgent;
+            
+            for (STMStockBatchBarCode *barcode in stockBatch.barCodes) {
+                if (barcode.code) [codes addObject:(NSString * _Nonnull)barcode.code];
+            }
+            
+            NSString *codesString = [codes componentsJoinedByString:@", "];
+            
+            cell.detailTextLabel.text = codesString;
+            
+        } else {
+            
+            cell.detailTextLabel.text = @"";
+            
+        }
+        
+        NSString *volumeString = [STMFunctions volumeStringWithVolume:operation.volume.integerValue
+                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+
+        STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 46, 21)];
+        volumeLabel.text = volumeString;
+        volumeLabel.textAlignment = NSTextAlignmentRight;
+        volumeLabel.adjustsFontSizeToFitWidth = YES;
+        
+        cell.accessoryView = volumeLabel;
+
     } else {
         
         cell.textLabel.text = @"";
