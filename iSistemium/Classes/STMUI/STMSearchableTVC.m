@@ -107,6 +107,8 @@
 
 - (void)customInit {
     
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 44)];
     self.tableView.tableHeaderView = self.searchBar;
     self.searchBar.delegate = self;
