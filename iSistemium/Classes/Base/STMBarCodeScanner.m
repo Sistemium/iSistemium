@@ -411,17 +411,91 @@
     
 }
 
+- (void)postGetSymbology:(id)sender {
+
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+     
+        SKTRESULT result = [[scanObj Msg] Result];
+        
+        if (SKTSUCCESS(result)) {
+            
+            DeviceInfo* deviceInfo=[self.iOSScanHelper getDeviceInfoFromScanObject:scanObj];
+            
+            if (deviceInfo){
+                
+                ISktScanSymbology *symbology = [[scanObj Property] Symbology];
+                
+                enum ESktScanSymbologyID symbologyID = [symbology getID];
+                
+                NSLog(@"%@", [symbology getName]);
+                
+                switch (symbologyID) {
+                        
+                    case kSktScanSymbologyCode128:
+                    case kSktScanSymbologyEan13:
+                    case kSktScanSymbologyPdf417: {
+                        
+                        if ([symbology getStatus] == kSktScanSymbologyStatusDisable) {
+                            
+                            [self.iOSScanHelper postSetSymbologyInfo:deviceInfo
+                                                         SymbologyId:[symbology getID]
+                                                              Status:TRUE
+                                                              Target:nil
+                                                            Response:nil];
+                            
+                        }
+                        
+                    }
+                    break;
+                        
+                    default: {
+                        
+                        if ([symbology getStatus] == kSktScanSymbologyStatusEnable) {
+                            
+                            [self.iOSScanHelper postSetSymbologyInfo:deviceInfo
+                                                         SymbologyId:[symbology getID]
+                                                              Status:FALSE
+                                                              Target:nil
+                                                            Response:nil];
+                            
+                        }
+                        
+                    }
+                    break;
+                        
+                }
+                
+            }
+            
+        }
+
+    }
+    
+}
+
+- (void)checkSymbologiesOnDevice:(DeviceInfo *)deviceInfo {
+    
+    for (enum ESktScanSymbologyID symbology = kSktScanSymbologyNotSpecified; symbology < kSktScanSymbologyLastSymbologyID; symbology++) {
+        
+        [self.iOSScanHelper postGetSymbologyInfo:deviceInfo
+                                     SymbologyId:symbology
+                                          Target:self
+                                        Response:@selector(postGetSymbology:)];
+        
+    }
+    
+}
+
 
 #pragma mark ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
     
-//    [self.iOSScanHelper postGetPostambleDevice:deviceInfo Target:self Response:@selector(postGetPostamble:)];
-    
     [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
 
-//    [self.iOSScanHelper postGetPostambleDevice:deviceInfo Target:self Response:@selector(postGetPostamble:)];
-
+    [self checkSymbologiesOnDevice:deviceInfo];
     
     [self.delegate deviceArrivalForBarCodeScanner:self];
     
