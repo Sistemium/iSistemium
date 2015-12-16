@@ -24,7 +24,7 @@
 #define DISCONNECT_HID_SCANNER_ACTION NSLocalizedString(@"DISCONNECT HID SCANNER", nil)
 
 
-@interface STMInventoryNC () <STMBarCodeScannerDelegate, STMInventoryControlling, UIAlertViewDelegate>
+@interface STMInventoryNC () <STMBarCodeScannerDelegate, STMInventoryControlling>
 
 @property (nonatomic, strong) STMBarCodeScanner *cameraBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
@@ -285,12 +285,38 @@
 
 #pragma mark - STMInventoryControlling
 
+- (void)didSelectInventoryBatch:(STMInventoryBatch *)inventoryBatch {
+    
+    self.currentlyProcessedBatch = inventoryBatch;
+    
+    if (self.itemsVC) {
+        
+        self.itemsVC.inventoryBatch = self.currentlyProcessedBatch;
+        
+    } else {
+        
+        STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];
+        itemsVC.productionInfo = self.currentlyProcessedBatch.productionInfo;
+        itemsVC.inventoryBatch = self.currentlyProcessedBatch;
+        
+        [self pushViewController:itemsVC animated:YES];
+        
+    }
+
+}
+
+- (void)requestForArticleBarcode {
+
+    [STMSoundController say:NSLocalizedString(@"CREATE NEW STOCK BATCH WITH ARTICLE BARCODE", nil)];
+
+}
+
 - (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles lookingForBarcode:(NSString *)barcode {
     
     [self popToRootViewControllerAnimated:YES];
     
     [STMSoundController say:NSLocalizedString(@"SELECT ARTICLE", nil)];
-
+    
     STMInventoryArticleSelectTVC *articleSelectTVC = [[STMInventoryArticleSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
     articleSelectTVC.articles = articles;
     articleSelectTVC.parentNC = self;
@@ -309,101 +335,13 @@
     infoSelectTVC.parentNC = self;
     
     [self pushViewController:infoSelectTVC animated:YES];
-
+    
 }
 
-- (void)didSuccessfullySelectArticle:(STMArticle *)article withProductionInfo:(NSString *)productionInfo {
+- (void)finishInventoryBatch {
     
     self.currentlyProcessedBatch = nil;
-    
-    if (article) {
-        
-        if (self.itemsVC) {
-            
-            self.itemsVC.inventoryArticle = article;
-            self.itemsVC.inventoryBatch = nil;
-            
-        } else {
-            
-            STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];
-            itemsVC.inventoryArticle = article;
-            itemsVC.productionInfo = productionInfo;
-            itemsVC.inventoryBatch = nil;
-            
-            [self pushViewController:itemsVC animated:YES];
-            
-        }
-
-    } else {
-        
-    }
-    
-}
-
-- (void)itemWasAdded:(STMInventoryBatchItem *)item {
-    
-    if (self.itemsVC) {
-        
-        if (![self.itemsVC.inventoryBatch isEqual:item.inventoryBatch]) {
-            
-            self.currentlyProcessedBatch = item.inventoryBatch;
-            self.itemsVC.inventoryBatch = item.inventoryBatch;
-            
-        }
-        
-    }
-    
-}
-
-- (void)shouldConfirmArticleMismatchForStockBatch:(STMStockBatch *)stockBatch withInventoryBatch:(STMInventoryBatch *)inventoryBatch {
-    
-    self.mismatchedStockBatch = stockBatch;
-    
-    [STMSoundController playAlert];
-    
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        
-        NSString *message = [NSString stringWithFormat:NSLocalizedString(@"ARTICLE MISMATCH ALERT MESSAGE", nil), inventoryBatch.article.name, stockBatch.article.name];
-       
-        UIAlertView *mismatchArticleAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"WARNING", nil)
-                                                                       message:message
-                                                                      delegate:self
-                                                             cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                                             otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-        mismatchArticleAlert.tag = 342;
-        [mismatchArticleAlert show];
-        
-    }];
-    
-}
-
-- (void)finishInventoryBatch:(STMInventoryBatch *)inventoryBatch withStockBatch:(STMStockBatch *)stockBatch {
     [self popToRootViewControllerAnimated:YES];
-}
-
-
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    
-    switch (alertView.tag) {
-        case 342:
-            
-            switch (buttonIndex) {
-                case 1:
-                    [STMInventoryProcessController articleMismatchConfirmedForStockBatch:self.mismatchedStockBatch source:self];
-                    break;
-
-                default:
-                    break;
-            }
-            
-            self.mismatchedStockBatch = nil;
-            break;
-            
-        default:
-            break;
-    }
     
 }
 
@@ -433,11 +371,11 @@
 }
 
 - (void)cancelCurrentInventoryProcessing {
-    [STMInventoryProcessController cancelCurrentInventoryProcessing];
+    [STMInventoryProcessController cancelCurrentInventoryProcessingWithSource:self];
 }
 
 - (void)doneCurrentInventoryProcessing {
-    [STMInventoryProcessController doneCurrentInventoryProcessing];
+    [STMInventoryProcessController doneCurrentInventoryProcessingWithSource:self];
 }
 
 

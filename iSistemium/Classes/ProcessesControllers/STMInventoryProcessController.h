@@ -17,9 +17,6 @@
 + (void)receiveBarcode:(NSString *)barcode withType:(STMBarCodeScannedType)type
                 source:(id <STMInventoryControlling>)source;
 
-
-// old
-
 + (void)selectArticle:(STMArticle *)article
                source:(id <STMInventoryControlling>)source;
 
@@ -27,10 +24,9 @@
          setForArticle:(STMArticle *)article
                 source:(id <STMInventoryControlling>)source;
 
-+ (void)cancelCurrentInventoryProcessing;
-+ (void)doneCurrentInventoryProcessing;
++ (void)cancelCurrentInventoryProcessingWithSource:(id <STMInventoryControlling>)source;
 
-+ (void)articleMismatchConfirmedForStockBatch:(STMStockBatch *)stockBatch source:(id <STMInventoryControlling>)source;
++ (void)doneCurrentInventoryProcessingWithSource:(id <STMInventoryControlling>)source;
 
 
 @end

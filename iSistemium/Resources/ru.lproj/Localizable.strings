@@ -399,7 +399,7 @@
 "LOW FREE SPACE ALERT" = "На устройстве осталось мало свободного места, это может привести к некорректной работе программ. Проверить занятый объём можно через Настройки - Основные - Статистика - Место хранения - Хранилище";
 "INVENTORY" = "Инвентаризация";
 "INVENTORY INFO TITLE" = "Информация";
-"INVENTORY INFO MESSAGE" = "Просканируйте штрих-код партии";
+"INVENTORY INFO MESSAGE" = "Просканируйте штрих код партии";
 "THIS EXCISE STAMP ALREADY SCANNED" = "Эта акцизная марка уже обработана";
 "ARTICLE MISMATCH ALERT MESSAGE" = "Сканируемый товар:\n\n%@\n\nне совпадает с товаром партии:\n\n%@\n\n\nПривязать эту партию\nк сканируемому товару?";
 "SELECT ARTICLE" = "Выберите товар";
@@ -410,7 +410,11 @@
 "DATE PRODUCTION" = "Произведено";
 "DATE IMPORT" = "Импортировано";
 "SUPPLY ORDERS" = "Приходы";
-"STOCK BATCH CODES" = "Штрих-коды партии:";
+"STOCK BATCH CODES" = "Штрих коды партии:";
 "NEW STOCK BATCH CODE" = "Новая наклейка";
+"CREATE NEW STOCK BATCH WITH ARTICLE BARCODE" = "Для создания новой партии отсканируйте штрих код товара";
+"SCAN EXCISE MARK" = "Отсканируйте акцизную марку";
+"PARTIAL BOX CONFIRM" = "Если короб неполный, то подтвердите это повторным сканом наклейки";
+"FULL BOX SCANNED" = "Короб обработан";
 
 

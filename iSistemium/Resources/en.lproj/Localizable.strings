@@ -412,4 +412,8 @@
 "SUPPLY ORDERS" = "Supplies";
 "STOCK BATCH CODES" = "Stock batch codes";
 "NEW STOCK BATCH CODE" = "New stock batch code";
+"CREATE NEW STOCK BATCH WITH ARTICLE BARCODE" = "For creating new stock batch scan article barcode";
+"SCAN EXCISE MARK" = "Scan excise mark";
+"PARTIAL BOX CONFIRM" = "Confirm partial box by repeat of scan of stockbatch code";
+"FULL BOX SCANNED" = "Full box scanned";
 

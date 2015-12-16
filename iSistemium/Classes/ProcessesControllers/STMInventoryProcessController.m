@@ -21,6 +21,8 @@
 @property (nonatomic, strong) NSString *currentStockBatchCode;
 @property (nonatomic, strong) NSString *selectedProductionInfo;
 
+@property (nonatomic, strong) NSString *partialBoxConfirmationCode;
+
 
 @end
 
@@ -49,15 +51,14 @@
             break;
         }
         case STMBarCodeTypeArticle: {
-//            [[self sharedInstance] prepareToCreateNewBatchOfArticlesWithCode:barcode responder:source];
+            [[self sharedInstance] receiveArticleCode:barcode responder:source];
             break;
         }
         case STMBarCodeTypeExciseStamp: {
-//            [[self sharedInstance] currentBatchAddItemWithCode:barcode responder:source];
+            [[self sharedInstance] receiveExciseMarkCode:barcode responder:source];
             break;
         }
         case STMBarCodeTypeStockBatch: {
-//            [[self sharedInstance] currentBatchDoneWithStockBatchCode:barcode responder:source];
             [[self sharedInstance] receiveStockBatchCode:barcode responder:source];
             break;
         }
@@ -81,12 +82,31 @@
     
     if (result.count > 1) {
         
-        NSString *logMessage = [NSString stringWithFormat:@"More than one not done inventoryBatch for stockBatch: %@", stockBatch.barCodes.anyObject];
+        NSString *logMessage = [NSString stringWithFormat:@"More than one not done inventoryBatch for stockBatch: %@", [stockBatch.barCodes.anyObject valueForKey:@"code"]];
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
 
     }
     
     return result;
+    
+}
+
++ (void)cancelCurrentInventoryProcessingWithSource:(id<STMInventoryControlling>)source {
+    [[self sharedInstance] nullifyCurrentProperties];
+}
+
++ (void)doneCurrentInventoryProcessingWithSource:(id<STMInventoryControlling>)source {
+    [[self sharedInstance] doneCurrentInventoryProcessingWithResponder:source];
+}
+
++ (void)selectArticle:(STMArticle *)article source:(id <STMInventoryControlling>)source {
+    [[self sharedInstance] checkArticleProductionInfo:article responder:source];
+}
+
++ (void)productionInfo:(NSString *)productionInfo setForArticle:(STMArticle *)article source:(id <STMInventoryControlling>)source {
+    
+    [self sharedInstance].selectedProductionInfo = productionInfo;
+    [[self sharedInstance] didSuccessfullySelectArticle:article responder:source];
     
 }
 
@@ -96,7 +116,7 @@
 #pragma mark stockBatchCodes
 
 - (void)receiveStockBatchCode:(NSString *)stockBatchCode responder:(id <STMInventoryControlling>)responder {
-    
+
     if (!self.currentInventoryBatch) {
 
         [STMSoundController playOk];
@@ -104,7 +124,16 @@
 
     } else {
         
-        
+        if ([self.partialBoxConfirmationCode isEqualToString:stockBatchCode]) {
+
+            [self doneCurrentInventoryProcessingWithResponder:responder];
+            
+        } else {
+            
+            [STMSoundController say:NSLocalizedString(@"PARTIAL BOX CONFIRM", nil)];
+            self.partialBoxConfirmationCode = stockBatchCode;
+            
+        }
         
     }
     
@@ -122,10 +151,7 @@
         [self selectInventoryBatchForStockBatch:self.currentStockBatch responder:responder];
         
     } else {
-        
-        self.currentInventoryBatch = (STMInventoryBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatch class])
-                                                                                              isFantom:NO];
-        
+
         [responder requestForArticleBarcode];
         
     }
@@ -136,7 +162,7 @@
     
     NSArray <STMInventoryBatch *> *inventoryBatches = [[self class] notDoneInventoryBatchesForStockBatch:self.currentStockBatch];
     
-    if (inventoryBatches > 0) {
+    if (inventoryBatches.count > 0) {
         
         self.currentInventoryBatch = inventoryBatches.firstObject;
         
@@ -144,7 +170,8 @@
         
         self.currentInventoryBatch = (STMInventoryBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatch class])
                                                                                               isFantom:NO];
-        self.currentInventoryBatch.stockBatchCode = stockBatchCode;
+        self.currentInventoryBatch.stockBatchCode = self.currentStockBatchCode;
+        self.currentInventoryBatch.stockBatch = stockBatch;
         
     }
     
@@ -156,14 +183,24 @@
 
 - (void)receiveArticleCode:(NSString *)articleCode responder:(id <STMInventoryControlling>)responder {
     
-    if (!self.currentInventoryBatch) {
+    self.partialBoxConfirmationCode = nil;
+    
+    if (!self.currentStockBatchCode) {
         
         [STMSoundController alertSay:NSLocalizedString(@"INVENTORY INFO MESSAGE", nil)];
         
     } else {
 
-        [self processArticleCode:articleCode responder:responder];
+        if (self.currentInventoryBatch) {
 
+            [STMSoundController alertSay:NSLocalizedString(@"SCAN EXCISE MARK", nil)];
+            
+        } else {
+        
+            [self processArticleCode:articleCode responder:responder];
+
+        }
+        
     }
     
 }
@@ -212,13 +249,16 @@
     
     [STMSoundController playOk];
     
+    self.currentInventoryBatch = (STMInventoryBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatch class])
+                                                                                          isFantom:NO];
     self.currentInventoryBatch.article = article;
     self.currentInventoryBatch.productionInfo = self.selectedProductionInfo;
     self.currentInventoryBatch.code = self.currentArticleCode;
+    self.currentInventoryBatch.stockBatchCode = self.currentStockBatchCode;
 
     [self createNewStockBatchForArticle:article];
     
-    [responder didSuccessfullySelectArticle:self.currentArticle withProductionInfo:self.selectedProductionInfo];
+    [responder didSelectInventoryBatch:self.currentInventoryBatch];
     
 }
 
@@ -247,23 +287,15 @@
 
 - (void)receiveExciseMarkCode:(NSString *)exciseMarkCode responder:(id <STMInventoryControlling>)responder {
     
+    self.partialBoxConfirmationCode = nil;
+    
     if (!self.currentInventoryBatch) {
         
         [STMSoundController alertSay:NSLocalizedString(@"INVENTORY INFO MESSAGE", nil)];
 
     } else {
         
-        if (self.currentInventoryBatch.inventoryBatchItems.count < [self.currentInventoryBatch operatingArticle].packageRel.integerValue) {
-            
-            [self addItemWithCode:exciseMarkCode responder:responder];
-            
-        } else {
-            
-            self.currentInventoryBatch.isDone = YES;
-            
-            [self selectInventoryBatchForStockBatch:self.currentStockBatch responder:responder];
-            
-        }
+        [self addItemWithCode:exciseMarkCode responder:responder];
         
     }
     
@@ -271,149 +303,32 @@
 
 - (void)addItemWithCode:(NSString *)itemCode responder:(id <STMInventoryControlling>)responder {
 
-    NSSet *itemsCodes = [self.currentBatch.inventoryBatchItems valueForKeyPath:@"@distinctUnionOfObjects.code"];
+    NSSet *itemsCodes = [self.currentInventoryBatch.inventoryBatchItems valueForKeyPath:@"@distinctUnionOfObjects.code"];
     
     if ([itemsCodes containsObject:itemCode]) {
         
         [STMSoundController alertSay:NSLocalizedString(@"THIS EXCISE STAMP ALREADY SCANNED", nil)];
         
     } else {
-        
+
         [STMSoundController playOk];
         
         STMInventoryBatchItem *item = (STMInventoryBatchItem *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatchItem class])
                                                                                                    isFantom:NO];
         item.code = itemCode;
         item.inventoryBatch = self.currentInventoryBatch;
-        
-        [responder itemWasAdded:item];
-        
+
         [[[self class] document] saveDocument:^(BOOL success) {
             
         }];
-        
-    }
-    
-}
 
-
-#pragma mark - old algorithm (article - excise - stockBatch)
-
-+ (void)selectArticle:(STMArticle *)article source:(id <STMInventoryControlling>)source {
-    [[self sharedInstance] checkArticleProductionInfo:article responder:source];
-}
-
-+ (void)productionInfo:(NSString *)productionInfo setForArticle:(STMArticle *)article source:(id <STMInventoryControlling>)source {
-    
-    [self sharedInstance].selectedProductionInfo = productionInfo;
-    [[self sharedInstance] didSuccessfullySelectArticle:article responder:source];
-    
-}
-
-+ (void)cancelCurrentInventoryProcessing {
-    [[self sharedInstance] cancelCurrentProcess];
-}
-
-+ (void)doneCurrentInventoryProcessing {
-    [[self sharedInstance] currentBatchDoneWithStockBatchCode:nil responder:nil];
-}
-
-+ (void)articleMismatchConfirmedForStockBatch:(STMStockBatch *)stockBatch source:(id<STMInventoryControlling>)source {
-    [[self sharedInstance] articleMismatchConfirmedForStockBatch:stockBatch source:source];
-}
-
-- (void)prepareToCreateNewBatchOfArticlesWithCode:(NSString *)articleCode responder:(id <STMInventoryControlling>)responder {
-
-    [self nullifyCurrentProperties];
-    
-    self.currentArticleCode = articleCode;
-
-    NSArray *articles = [STMBarCodeController articlesForBarcode:articleCode];
-    
-    if (articles.count > 1) {
-        
-        [responder shouldSelectArticleFromArray:articles lookingForBarcode:nil];
-        
-    } else if (articles.count == 1) {
-        
-        [self checkArticleProductionInfo:articles.firstObject responder:responder];
-        
-    } else {
-        
-        articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
-                                                      orderBy:@"name"
-                                                    ascending:YES
-                                                   fetchLimit:0
-                                                  withFantoms:NO
-                                       inManagedObjectContext:nil
-                                                        error:nil];
-        
-        [responder shouldSelectArticleFromArray:articles lookingForBarcode:articleCode];
-        
-    }
-    
-}
-
-- (void)currentBatchAddItemWithCode:(NSString *)itemCode responder:(id <STMInventoryControlling>)responder {
-    
-    if (self.currentArticle) {
-        
-        if (!self.currentInventoryBatch) {
+        if (self.currentInventoryBatch.inventoryBatchItems.count >= [self.currentInventoryBatch operatingArticle].packageRel.integerValue) {
             
-            self.currentInventoryBatch = (STMInventoryBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatch class]) isFantom:NO];
-            self.currentInventoryBatch.article = self.currentArticle;
-            self.currentInventoryBatch.productionInfo = self.selectedProductionInfo;
-            self.currentInventoryBatch.code = self.currentArticleCode;
+            self.currentInventoryBatch.isDone = @(YES);
             
-        }
-        
-        NSSet *itemsCodes = [self.currentBatch.inventoryBatchItems valueForKeyPath:@"@distinctUnionOfObjects.code"];
-        
-        if ([itemsCodes containsObject:itemCode]) {
+            [STMSoundController say:NSLocalizedString(@"FULL BOX SCANNED", nil)];
             
-            [STMSoundController alertSay:NSLocalizedString(@"THIS EXCISE STAMP ALREADY SCANNED", nil)];
-            
-        } else {
-            
-            [STMSoundController playOk];
-
-            STMInventoryBatchItem *item = (STMInventoryBatchItem *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatchItem class]) isFantom:NO];
-            item.code = itemCode;
-            item.inventoryBatch = self.currentInventoryBatch;
-            
-            [responder itemWasAdded:item];
-            
-            [[[self class] document] saveDocument:^(BOOL success) {
-                
-            }];
-
-        }
-        
-    }
-    
-}
-
-- (void)currentBatchDoneWithStockBatchCode:(NSString *)stockBatchCode responder:(id <STMInventoryControlling>)responder {
-    
-    if (self.currentInventoryBatch) {
-        
-        self.currentStockBatchCode = stockBatchCode;
-        
-        NSArray *stockBatches = [STMBarCodeController stockBatchForBarcode:stockBatchCode];
-        
-        if (stockBatches.count > 1) {
-            NSLog(@"!!! something wrong - more than 1 stockBatch for barcode %@ !!!", stockBatchCode);
-        }
-        
-        STMStockBatch *stockBatch = stockBatches.firstObject;
-        
-        if (!stockBatch || [stockBatch.article isEqual:self.currentArticle]) {
-            
-            [self finishInventoryBatchWithStockBatch:stockBatch responder:responder];
-
-        } else {
-            
-            [responder shouldConfirmArticleMismatchForStockBatch:stockBatch withInventoryBatch:self.currentInventoryBatch];
+            [self doneCurrentInventoryProcessingWithResponder:responder];
             
         }
         
@@ -421,37 +336,19 @@
     
 }
 
-- (void)articleMismatchConfirmedForStockBatch:(STMStockBatch *)stockBatch source:(id<STMInventoryControlling>)source {
-    
-    [[STMLogger sharedLogger] saveLogMessageWithText:@"articleMismatch" type:@"error" owner:self.currentInventoryBatch];
-    [self finishInventoryBatchWithStockBatch:stockBatch responder:source];
-    
-}
 
-- (void)finishInventoryBatchWithStockBatch:(STMStockBatch *)stockBatch responder:(id <STMInventoryControlling>)responder {
+- (void)doneCurrentInventoryProcessingWithResponder:(id <STMInventoryControlling>)responder {
     
-    [STMSoundController playOk];
+    self.currentInventoryBatch.isDone = @(YES);
     
-    if (!stockBatch) {
-        
-        [STMSoundController alertSay:NSLocalizedString(@"NEW STOCK BATCH CODE", nil)];
-
-    } else {
-
-        self.currentBatch.stockBatch = stockBatch;
-
-    }
-
-    self.currentInventoryBatch.stockBatchCode = self.currentStockBatchCode;
-    
-    [responder finishInventoryBatch:self.currentInventoryBatch withStockBatch:stockBatch];
+    [responder finishInventoryBatch];
     
     [self nullifyCurrentProperties];
     
     [[[self class] document] saveDocument:^(BOOL success) {
         
     }];
-
+    
 }
 
 
@@ -460,18 +357,15 @@
 - (void)nullifyCurrentProperties {
     
     self.currentInventoryBatch = nil;
-    self.currentArticle = nil;
     self.currentArticleCode = nil;
     self.currentStockBatchCode = nil;
     self.selectedProductionInfo = nil;
+    self.partialBoxConfirmationCode = nil;
 
 }
 
 - (void)cancelCurrentProcess {
-    
     self.currentInventoryBatch = nil;
-    self.currentArticle = nil;
-    
 }
 
 

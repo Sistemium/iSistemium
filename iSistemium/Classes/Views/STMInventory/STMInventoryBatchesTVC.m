@@ -114,14 +114,16 @@
     attributes = @{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize - 2],
                    NSForegroundColorAttributeName: textLabel.textColor};
 
-    if (batch.article.name) {
+    STMArticle *operatingArticle = [batch operatingArticle];
+    
+    if (operatingArticle.name) {
         
         [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
         
-        NSString *articleNameString = batch.article.name;
+        NSString *articleNameString = operatingArticle.name;
         
-        if (batch.article.extraLabel) {
-            articleNameString = [NSString stringWithFormat:@"%@ %@", articleNameString, batch.article.extraLabel];
+        if (operatingArticle.extraLabel) {
+            articleNameString = [NSString stringWithFormat:@"%@ %@", articleNameString, operatingArticle.extraLabel];
         }
         
         NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:articleNameString
@@ -202,7 +204,6 @@
         
         STMInventoryItemsVC *inventoryItemsVC = (STMInventoryItemsVC *)segue.destinationViewController;
         inventoryItemsVC.inventoryBatch = inventoryBatch;
-        inventoryItemsVC.inventoryArticle = inventoryBatch.article;
         inventoryItemsVC.productionInfo = [inventoryBatch displayProductionInfo];
         
     }

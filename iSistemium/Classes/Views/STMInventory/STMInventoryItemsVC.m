@@ -38,12 +38,12 @@
     
 }
 
-- (void)setInventoryArticle:(STMArticle *)inventoryArticle {
-    
-    _inventoryArticle = inventoryArticle;
-    self.articleVC.article = _inventoryArticle;
-
-}
+//- (void)setInventoryArticle:(STMArticle *)inventoryArticle {
+//    
+//    _inventoryArticle = inventoryArticle;
+//    self.articleVC.article = _inventoryArticle;
+//
+//}
 
 - (void)setProductionInfo:(NSString *)productionInfo {
     
@@ -55,7 +55,9 @@
 - (void)setInventoryBatch:(STMInventoryBatch *)inventoryBatch {
     
     _inventoryBatch = inventoryBatch;
+    
     self.itemsTVC.batch = _inventoryBatch;
+    self.articleVC.article = [_inventoryBatch operatingArticle];
     
     [self updateButtons];
     
@@ -63,7 +65,7 @@
 
 - (void)updateButtons {
  
-    (!_inventoryBatch || [self.inventoryNC.currentlyProcessedBatch isEqual:_inventoryBatch]) ? [self showButtonsForProcessing] : [self hideButtonsForProcessing];
+    (!self.inventoryBatch || [self.inventoryNC.currentlyProcessedBatch isEqual:self.inventoryBatch]) ? [self showButtonsForProcessing] : [self hideButtonsForProcessing];
 
 }
 
@@ -125,7 +127,7 @@
         [segue.destinationViewController isKindOfClass:[STMInventoryArticleVC class]]) {
         
         self.articleVC = (STMInventoryArticleVC *)segue.destinationViewController;
-        self.articleVC.article = self.inventoryArticle;
+        self.articleVC.article = [self.inventoryBatch operatingArticle];
         self.articleVC.productionInfo = self.productionInfo;
         self.articleVC.parentVC = self;
         
