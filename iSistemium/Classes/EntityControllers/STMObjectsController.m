@@ -996,6 +996,10 @@
 
 #pragma mark - flushing
 
++ (void)removeObject:(NSManagedObject *)object {
+    [self removeObject:object inContext:nil];
+}
+
 + (void)removeObject:(NSManagedObject *)object inContext:(NSManagedObjectContext *)context {
     
     if (object) {
@@ -1017,10 +1021,6 @@
 
     }
     
-}
-
-+ (void)removeObject:(NSManagedObject *)object {
-    [self removeObject:object inContext:nil];
 }
 
 + (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object {

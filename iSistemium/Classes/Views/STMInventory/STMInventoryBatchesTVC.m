@@ -9,6 +9,7 @@
 #import "STMInventoryBatchesTVC.h"
 
 #import "STMInventoryItemsVC.h"
+#import "STMInventoryProcessController.h"
 
 
 @interface STMInventoryBatchesTVC ()
@@ -186,6 +187,21 @@
     } else {
         
         detailTextLabel.text = NSLocalizedString(bottleString, nil);
+        
+    }
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMInventoryBatch *batch = [self.resultsController objectAtIndexPath:indexPath];
+        [STMInventoryProcessController removeInventoryBatch:batch];
         
     }
     

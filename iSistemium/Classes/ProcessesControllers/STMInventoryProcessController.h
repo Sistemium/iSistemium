@@ -28,5 +28,8 @@
 
 + (void)doneCurrentInventoryProcessingWithSource:(id <STMInventoryControlling>)source;
 
++ (void)removeInventoryBatch:(STMInventoryBatch *)inventoryBatch;
++ (void)removeInventoryBatchItem:(STMInventoryBatchItem *)inventoryBatchItem;
+
 
 @end

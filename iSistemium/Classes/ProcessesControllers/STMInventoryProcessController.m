@@ -91,14 +91,6 @@
     
 }
 
-+ (void)cancelCurrentInventoryProcessingWithSource:(id<STMInventoryControlling>)source {
-    [[self sharedInstance] nullifyCurrentProperties];
-}
-
-+ (void)doneCurrentInventoryProcessingWithSource:(id<STMInventoryControlling>)source {
-    [[self sharedInstance] doneCurrentInventoryProcessingWithResponder:source];
-}
-
 + (void)selectArticle:(STMArticle *)article source:(id <STMInventoryControlling>)source {
     [[self sharedInstance] checkArticleProductionInfo:article responder:source];
 }
@@ -108,6 +100,23 @@
     [self sharedInstance].selectedProductionInfo = productionInfo;
     [[self sharedInstance] didSuccessfullySelectArticle:article responder:source];
     
+}
+
+
++ (void)cancelCurrentInventoryProcessingWithSource:(id<STMInventoryControlling>)source {
+    [[self sharedInstance] nullifyCurrentProperties];
+}
+
++ (void)doneCurrentInventoryProcessingWithSource:(id<STMInventoryControlling>)source {
+    [[self sharedInstance] doneCurrentInventoryProcessingWithResponder:source];
+}
+
++ (void)removeInventoryBatch:(STMInventoryBatch *)inventoryBatch {
+    [STMObjectsController createRecordStatusAndRemoveObject:inventoryBatch];
+}
+
++ (void)removeInventoryBatchItem:(STMInventoryBatchItem *)inventoryBatchItem {
+    [STMObjectsController createRecordStatusAndRemoveObject:inventoryBatchItem];
 }
 
 

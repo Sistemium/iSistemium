@@ -8,6 +8,8 @@
 
 #import "STMInventoryBatchItemsTVC.h"
 
+#import "STMInventoryProcessController.h"
+
 
 @interface STMInventoryBatchItemsTVC ()
 
@@ -63,6 +65,21 @@
     cell.detailTextLabel.text = item.code;
     
     return cell;
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMInventoryBatchItem *item = [self.resultsController objectAtIndexPath:indexPath];
+        [STMInventoryProcessController removeInventoryBatchItem:item];
+        
+    }
     
 }
 
