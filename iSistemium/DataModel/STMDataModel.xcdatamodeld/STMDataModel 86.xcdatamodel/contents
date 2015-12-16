@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="15B42" minimumToolsVersion="Xcode 4.1">
+    <entity name="STMArticle" representedClassName="STMArticle" parentEntity="STMComment" syncable="YES">
+        <attribute name="barcode" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="extraLabel" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="factor" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="packageRel" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="pieceVolume" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="pieceWeight" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="articleDocs" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMArticleDoc" inverseName="article" inverseEntity="STMArticleDoc" syncable="YES"/>
+        <relationship name="articleGroup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articles" inverseEntity="STMArticleGroup" syncable="YES"/>
+        <relationship name="articleProductionInfo" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMArticleProductionInfo" inverseName="article" inverseEntity="STMArticleProductionInfo" syncable="YES"/>
+        <relationship name="barCodes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMArticleBarCode" inverseName="article" inverseEntity="STMArticleBarCode" syncable="YES"/>
+        <relationship name="basketPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMBasketPosition" inverseName="article" inverseEntity="STMBasketPosition" syncable="YES"/>
+        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="articles" inverseEntity="STMCampaign" syncable="YES"/>
+        <relationship name="factShipmentPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMShipmentPosition" inverseName="articleFact" inverseEntity="STMShipmentPosition" syncable="YES"/>
+        <relationship name="inventoryBatches" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMInventoryBatch" inverseName="article" inverseEntity="STMInventoryBatch" syncable="YES"/>
+        <relationship name="pickingOrderPositions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPickingOrderPosition" inverseName="article" inverseEntity="STMPickingOrderPosition" syncable="YES"/>
+        <relationship name="pickingOrderPositionsPicked" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPickingOrderPositionPicked" inverseName="article" inverseEntity="STMPickingOrderPositionPicked" syncable="YES"/>
+        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticlePicture" inverseName="articles" inverseEntity="STMArticlePicture" syncable="YES"/>
+        <relationship name="prices" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMPrice" inverseName="article" inverseEntity="STMPrice" syncable="YES"/>
+        <relationship name="productionInfoType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMProductionInfoType" inverseName="articles" inverseEntity="STMProductionInfoType" syncable="YES"/>
+        <relationship name="saleOrderPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSaleOrderPosition" inverseName="article" inverseEntity="STMSaleOrderPosition" syncable="YES"/>
+        <relationship name="shipmentPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMShipmentPosition" inverseName="article" inverseEntity="STMShipmentPosition" syncable="YES"/>
+        <relationship name="stock" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStock" inverseName="article" inverseEntity="STMStock" syncable="YES"/>
+        <relationship name="stockBatches" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMStockBatch" inverseName="article" inverseEntity="STMStockBatch" syncable="YES"/>
+        <relationship name="supplyOrderArticleDocs" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSupplyOrderArticleDoc" inverseName="article" inverseEntity="STMSupplyOrderArticleDoc" syncable="YES"/>
+    </entity>
+    <entity name="STMArticleBarCode" representedClassName="STMArticleBarCode" parentEntity="STMBarCode" syncable="YES">
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="barCodes" inverseEntity="STMArticle" syncable="YES"/>
+    </entity>
+    <entity name="STMArticleDoc" representedClassName="STMArticleDoc" parentEntity="STMComment" syncable="YES">
+        <attribute name="dateImport" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateProduction" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="articleDocs" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="supplyOrderArticleDocs" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSupplyOrderArticleDoc" inverseName="articleDoc" inverseEntity="STMSupplyOrderArticleDoc" syncable="YES"/>
+    </entity>
+    <entity name="STMArticleGroup" representedClassName="STMArticleGroup" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="articleGroup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articleGroups" inverseEntity="STMArticleGroup" syncable="YES"/>
+        <relationship name="articleGroups" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articleGroup" inverseEntity="STMArticleGroup" syncable="YES"/>
+        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="articleGroup" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="parents" inverseEntity="STMArticleGroup" syncable="YES"/>
+        <relationship name="parents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="children" inverseEntity="STMArticleGroup" syncable="YES"/>
+    </entity>
+    <entity name="STMArticlePicture" representedClassName="STMArticlePicture" parentEntity="STMPicture" syncable="YES">
+        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="pictures" inverseEntity="STMArticle" syncable="YES"/>
+    </entity>
+    <entity name="STMArticleProductionInfo" representedClassName="STMArticleProductionInfo" parentEntity="STMComment" syncable="YES">
+        <attribute name="info" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="articleProductionInfo" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="productionInfoType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMProductionInfoType" inverseName="articleProductionInfo" inverseEntity="STMProductionInfoType" syncable="YES"/>
+    </entity>
+    <entity name="STMBarCode" representedClassName="STMBarCode" parentEntity="STMComment" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="STMBarCodeType" representedClassName="STMBarCodeType" parentEntity="STMComment" syncable="YES">
+        <attribute name="mask" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="symbology" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMBasketPosition" representedClassName="STMBasketPosition" parentEntity="STMComment" syncable="YES">
+        <attribute name="volumeOne" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="volumeTwo" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="basketPositions" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="basketPositions" inverseEntity="STMOutlet" syncable="YES"/>
+    </entity>
+    <entity name="STMBatteryStatus" representedClassName="STMBatteryStatus" parentEntity="STMComment" syncable="YES">
+        <attribute name="batteryLevel" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="batteryState" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMCampaign" representedClassName="STMCampaign" parentEntity="STMComment" syncable="YES">
+        <attribute name="gain" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="goal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="campaigns" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="campaignGroup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMCampaignGroup" inverseName="campaigns" inverseEntity="STMCampaignGroup" syncable="YES"/>
+        <relationship name="outlets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="campaigns" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="photoReports" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMPhotoReport" inverseName="campaign" inverseEntity="STMPhotoReport" syncable="YES"/>
+        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMCampaignPicture" inverseName="campaigns" inverseEntity="STMCampaignPicture" syncable="YES"/>
+    </entity>
+    <entity name="STMCampaignGroup" representedClassName="STMCampaignGroup" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="campaignGroup" inverseEntity="STMCampaign" syncable="YES"/>
+    </entity>
+    <entity name="STMCampaignPicture" representedClassName="STMCampaignPicture" parentEntity="STMPicture" syncable="YES">
+        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="pictures" inverseEntity="STMCampaign" syncable="YES"/>
+    </entity>
+    <entity name="STMCashing" representedClassName="STMCashing" parentEntity="STMComment" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isProcessed" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="ndoc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="summ" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="debt" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMDebt" inverseName="cashings" inverseEntity="STMDebt" syncable="YES"/>
+        <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="cashings" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="uncashing" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMUncashing" inverseName="cashings" inverseEntity="STMUncashing" syncable="YES"/>
+    </entity>
+    <entity name="STMClientData" representedClassName="STMClientData" parentEntity="STMComment" syncable="YES">
+        <attribute name="appVersion" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="buildType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bundleVersion" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="deviceName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="devicePlatform" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="deviceToken" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="deviceTokenError" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="deviceUUID" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="freeDiskSpace" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastAuth" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="locationServiceStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notificationTypes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="systemVersion" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tokenHash" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMClientEntity" representedClassName="STMClientEntity" parentEntity="STMComment" syncable="YES">
+        <attribute name="eTag" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMComment" representedClassName="STMComment" parentEntity="STMDatum" syncable="YES">
+        <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="owner" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STMDatum" inverseName="comments" inverseEntity="STMDatum" syncable="YES"/>
+    </entity>
+    <entity name="STMDatum" representedClassName="STMDatum" isAbstract="YES" syncable="YES">
+        <attribute name="deviceCts" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="deviceTs" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="isFantom" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMComment" inverseName="owner" inverseEntity="STMComment" syncable="YES"/>
+    </entity>
+    <entity name="STMDebt" representedClassName="STMDebt" parentEntity="STMComment" syncable="YES">
+        <attribute name="calculatedSum" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateE" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="ndoc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="responsibility" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="summ" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="summOrigin" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="cashings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCashing" inverseName="debt" inverseEntity="STMCashing" syncable="YES"/>
+        <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="debts" inverseEntity="STMOutlet" syncable="YES"/>
+    </entity>
+    <entity name="STMDriver" representedClassName="STMDriver" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="shipmentRoutes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShipmentRoute" inverseName="driver" inverseEntity="STMShipmentRoute" syncable="YES"/>
+        <relationship name="shipments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShipment" inverseName="driver" inverseEntity="STMShipment" syncable="YES"/>
+    </entity>
+    <entity name="STMEntity" representedClassName="STMEntity" parentEntity="STMComment" syncable="YES">
+        <attribute name="eTag" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isUploadable" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lifeTime" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="lifeTimeDateField" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleOwner" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="workflow" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="wf" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMWorkflow" inverseName="entities" inverseEntity="STMWorkflow" syncable="YES"/>
+    </entity>
+    <entity name="STMInventoryBatch" representedClassName="STMInventoryBatch" parentEntity="STMComment" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="isDone" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="productionInfo" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="stockBatchCode" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="inventoryBatches" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="inventoryBatchItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMInventoryBatchItem" inverseName="inventoryBatch" inverseEntity="STMInventoryBatchItem" syncable="YES"/>
+        <relationship name="stockBatch" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStockBatch" inverseName="inventoryBatches" inverseEntity="STMStockBatch" syncable="YES"/>
+    </entity>
+    <entity name="STMInventoryBatchItem" representedClassName="STMInventoryBatchItem" parentEntity="STMComment" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="inventoryBatch" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMInventoryBatch" inverseName="inventoryBatchItems" inverseEntity="STMInventoryBatch" syncable="YES"/>
+    </entity>
+    <entity name="STMLocation" representedClassName="STMLocation" parentEntity="STMComment" syncable="YES">
+        <attribute name="altitude" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="course" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="horizontalAccuracy" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="lastSeenAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="speed" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="verticalAccuracy" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="photos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPhoto" inverseName="location" inverseEntity="STMPhoto" syncable="YES"/>
+        <relationship name="shipmentRoutePoint" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMShipmentRoutePoint" inverseName="reachedAtLocation" inverseEntity="STMShipmentRoutePoint" syncable="YES"/>
+        <relationship name="shippings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShippingLocation" inverseName="location" inverseEntity="STMShippingLocation" syncable="YES"/>
+        <relationship name="track" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMTrack" inverseName="locations" inverseEntity="STMTrack" syncable="YES"/>
+    </entity>
+    <entity name="STMLogMessage" representedClassName="STMLogMessage" parentEntity="STMComment" syncable="YES">
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMMessage" representedClassName="STMMessage" parentEntity="STMComment" syncable="YES">
+        <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="cts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="processing" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="processingMessage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="schedule" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="showOnEnterForeground" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMMessagePicture" inverseName="message" inverseEntity="STMMessagePicture" syncable="YES"/>
+        <relationship name="workflow" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMWorkflow" inverseName="messages" inverseEntity="STMWorkflow" syncable="YES"/>
+    </entity>
+    <entity name="STMMessagePicture" representedClassName="STMMessagePicture" parentEntity="STMPicture" syncable="YES">
+        <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="message" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMMessage" inverseName="pictures" inverseEntity="STMMessage" syncable="YES"/>
+    </entity>
+    <entity name="STMOutlet" representedClassName="STMOutlet" parentEntity="STMComment" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isActive" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="shortName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="basketPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMBasketPosition" inverseName="outlet" inverseEntity="STMBasketPosition" syncable="YES"/>
+        <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="outlets" inverseEntity="STMCampaign" syncable="YES"/>
+        <relationship name="cashings" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMCashing" inverseName="outlet" inverseEntity="STMCashing" syncable="YES"/>
+        <relationship name="debts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMDebt" inverseName="outlet" inverseEntity="STMDebt" syncable="YES"/>
+        <relationship name="partner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPartner" inverseName="outlets" inverseEntity="STMPartner" syncable="YES"/>
+        <relationship name="photoReports" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMPhotoReport" inverseName="outlet" inverseEntity="STMPhotoReport" syncable="YES"/>
+        <relationship name="saleOrders" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSaleOrder" inverseName="outlet" inverseEntity="STMSaleOrder" syncable="YES"/>
+        <relationship name="salesman" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="outlets" inverseEntity="STMSalesman" syncable="YES"/>
+        <relationship name="shipments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMShipment" inverseName="outlet" inverseEntity="STMShipment" syncable="YES"/>
+    </entity>
+    <entity name="STMPartner" representedClassName="STMPartner" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="outlets" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMOutlet" inverseName="partner" inverseEntity="STMOutlet" syncable="YES"/>
+    </entity>
+    <entity name="STMPhoto" representedClassName="STMPhoto" parentEntity="STMPicture" syncable="YES">
+        <relationship name="location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMLocation" inverseName="photos" inverseEntity="STMLocation" syncable="YES"/>
+    </entity>
+    <entity name="STMPhotoReport" representedClassName="STMPhotoReport" parentEntity="STMPhoto" syncable="YES">
+        <relationship name="campaign" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="photoReports" inverseEntity="STMCampaign" syncable="YES"/>
+        <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="photoReports" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="salesman" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="photoReports" inverseEntity="STMSalesman" syncable="YES"/>
+    </entity>
+    <entity name="STMPicker" representedClassName="STMPicker" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="pickingOrders" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPickingOrder" inverseName="picker" inverseEntity="STMPickingOrder" syncable="YES"/>
+    </entity>
+    <entity name="STMPickingOrder" representedClassName="STMPickingOrder" parentEntity="STMComment" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="ndoc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="processing" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="picker" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPicker" inverseName="pickingOrders" inverseEntity="STMPicker" syncable="YES"/>
+        <relationship name="pickingOrderPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMPickingOrderPosition" inverseName="pickingOrder" inverseEntity="STMPickingOrderPosition" syncable="YES"/>
+    </entity>
+    <entity name="STMPickingOrderPosition" representedClassName="STMPickingOrderPosition" parentEntity="STMComment" syncable="YES">
+        <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="pickingOrderPositions" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="pickingOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPickingOrder" inverseName="pickingOrderPositions" inverseEntity="STMPickingOrder" syncable="YES"/>
+        <relationship name="pickingOrderPositionsPicked" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMPickingOrderPositionPicked" inverseName="pickingOrderPosition" inverseEntity="STMPickingOrderPositionPicked" syncable="YES"/>
+        <relationship name="qualityClass" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMQualityClass" inverseName="pickingOrderPositions" inverseEntity="STMQualityClass" syncable="YES"/>
+    </entity>
+    <entity name="STMPickingOrderPositionPicked" representedClassName="STMPickingOrderPositionPicked" parentEntity="STMStockBatchOperationAgent" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="productionInfo" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="pickingOrderPositionsPicked" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="pickingOrderPosition" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPickingOrderPosition" inverseName="pickingOrderPositionsPicked" inverseEntity="STMPickingOrderPosition" syncable="YES"/>
+        <relationship name="stockBatch" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStockBatch" inverseName="pickingOrderPositionsPicked" inverseEntity="STMStockBatch" syncable="YES"/>
+    </entity>
+    <entity name="STMPicture" representedClassName="STMPicture" parentEntity="STMComment" syncable="YES">
+        <attribute name="href" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageFormat" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imagePath" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="imageThumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" storedInTruthFile="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="resizedImagePath" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+    </entity>
+    <entity name="STMPrice" representedClassName="STMPrice" parentEntity="STMComment" syncable="YES">
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="prices" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="priceType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPriceType" inverseName="prices" inverseEntity="STMPriceType" syncable="YES"/>
+    </entity>
+    <entity name="STMPriceType" representedClassName="STMPriceType" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="prices" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPrice" inverseName="priceType" inverseEntity="STMPrice" syncable="YES"/>
+    </entity>
+    <entity name="STMProductionInfoType" representedClassName="STMProductionInfoType" parentEntity="STMComment" syncable="YES">
+        <attribute name="datatype" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mask" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="separator" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="articleProductionInfo" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMArticleProductionInfo" inverseName="productionInfoType" inverseEntity="STMArticleProductionInfo" syncable="YES"/>
+        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="productionInfoType" inverseEntity="STMArticle" syncable="YES"/>
+    </entity>
+    <entity name="STMQualityClass" representedClassName="STMQualityClass" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="pickingOrderPositions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPickingOrderPosition" inverseName="qualityClass" inverseEntity="STMPickingOrderPosition" syncable="YES"/>
+        <relationship name="stockBatches" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMStockBatch" inverseName="qualityClass" inverseEntity="STMStockBatch" syncable="YES"/>
+    </entity>
+    <entity name="STMRecordStatus" representedClassName="STMRecordStatus" parentEntity="STMComment" syncable="YES">
+        <attribute name="isRead" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isRemoved" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isTemporary" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="objectXid" optional="YES" attributeType="Binary" syncable="YES"/>
+    </entity>
+    <entity name="STMSaleOrder" representedClassName="STMSaleOrder" parentEntity="STMComment" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="processing" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="processingMessage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalCost" optional="YES" attributeType="Decimal" defaultValueString="0.0" indexed="YES" syncable="YES"/>
+        <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="saleOrders" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="saleOrderPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSaleOrderPosition" inverseName="saleOrder" inverseEntity="STMSaleOrderPosition" syncable="YES"/>
+        <relationship name="salesman" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="saleOrders" inverseEntity="STMSalesman" syncable="YES"/>
+        <relationship name="shipments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShipment" inverseName="saleOrder" inverseEntity="STMShipment" syncable="YES"/>
+    </entity>
+    <entity name="STMSaleOrderPosition" representedClassName="STMSaleOrderPosition" parentEntity="STMComment" syncable="YES">
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="priceDoc" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="priceOrigin" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="saleOrderPositions" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="saleOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSaleOrder" inverseName="saleOrderPositions" inverseEntity="STMSaleOrder" syncable="YES"/>
+    </entity>
+    <entity name="STMSalesman" representedClassName="STMSalesman" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="outlets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="salesman" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="photoReports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPhotoReport" inverseName="salesman" inverseEntity="STMPhotoReport" syncable="YES"/>
+        <relationship name="saleOrders" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSaleOrder" inverseName="salesman" inverseEntity="STMSaleOrder" syncable="YES"/>
+        <relationship name="shipments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShipment" inverseName="salesman" inverseEntity="STMShipment" syncable="YES"/>
+    </entity>
+    <entity name="STMSetting" representedClassName="STMSetting" parentEntity="STMComment" syncable="YES">
+        <attribute name="group" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="STMShipment" representedClassName="STMShipment" parentEntity="STMComment" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShipped" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="ndoc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="needCashing" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="driver" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMDriver" inverseName="shipments" inverseEntity="STMDriver" syncable="YES"/>
+        <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="shipments" inverseEntity="STMOutlet" syncable="YES"/>
+        <relationship name="saleOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSaleOrder" inverseName="shipments" inverseEntity="STMSaleOrder" syncable="YES"/>
+        <relationship name="salesman" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="shipments" inverseEntity="STMSalesman" syncable="YES"/>
+        <relationship name="shipmentPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMShipmentPosition" inverseName="shipment" inverseEntity="STMShipmentPosition" syncable="YES"/>
+        <relationship name="shipmentRoutePoints" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShipmentRoutePoint" inverseName="shipments" inverseEntity="STMShipmentRoutePoint" syncable="YES"/>
+    </entity>
+    <entity name="STMShipmentPosition" representedClassName="STMShipmentPosition" parentEntity="STMComment" syncable="YES">
+        <attribute name="badVolume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="brokenVolume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="doneVolume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="excessVolume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="isProcessed" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="priceDoc" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="regradeVolume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="shortageVolume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="shipmentPositions" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="articleFact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="factShipmentPositions" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="shipment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMShipment" inverseName="shipmentPositions" inverseEntity="STMShipment" syncable="YES"/>
+    </entity>
+    <entity name="STMShipmentRoute" representedClassName="STMShipmentRoute" parentEntity="STMComment" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="processing" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="processingMessage" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="driver" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMDriver" inverseName="shipmentRoutes" inverseEntity="STMDriver" syncable="YES"/>
+        <relationship name="shipmentRoutePoints" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMShipmentRoutePoint" inverseName="shipmentRoute" inverseEntity="STMShipmentRoutePoint" syncable="YES"/>
+    </entity>
+    <entity name="STMShipmentRoutePoint" representedClassName="STMShipmentRoutePoint" parentEntity="STMComment" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isReached" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="processing" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="processingMessage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shortName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="reachedAtLocation" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="STMLocation" inverseName="shipmentRoutePoint" inverseEntity="STMLocation" syncable="YES"/>
+        <relationship name="shipmentRoute" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMShipmentRoute" inverseName="shipmentRoutePoints" inverseEntity="STMShipmentRoute" syncable="YES"/>
+        <relationship name="shipments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShipment" inverseName="shipmentRoutePoints" inverseEntity="STMShipment" syncable="YES"/>
+        <relationship name="shippingLocation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMShippingLocation" inverseName="shipmentRoutePoints" inverseEntity="STMShippingLocation" syncable="YES"/>
+    </entity>
+    <entity name="STMShippingLocation" representedClassName="STMShippingLocation" parentEntity="STMComment" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isLocationConfirmed" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMLocation" inverseName="shippings" inverseEntity="STMLocation" syncable="YES"/>
+        <relationship name="shipmentRoutePoints" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShipmentRoutePoint" inverseName="shippingLocation" inverseEntity="STMShipmentRoutePoint" syncable="YES"/>
+        <relationship name="shippingLocationPictures" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMShippingLocationPicture" inverseName="shippingLocation" inverseEntity="STMShippingLocationPicture" syncable="YES"/>
+    </entity>
+    <entity name="STMShippingLocationPicture" representedClassName="STMShippingLocationPicture" parentEntity="STMPhoto" syncable="YES">
+        <relationship name="shippingLocation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMShippingLocation" inverseName="shippingLocationPictures" inverseEntity="STMShippingLocation" syncable="YES"/>
+    </entity>
+    <entity name="STMStock" representedClassName="STMStock" parentEntity="STMComment" syncable="YES">
+        <attribute name="displayVolume" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="stock" inverseEntity="STMArticle" syncable="YES"/>
+    </entity>
+    <entity name="STMStockBatch" representedClassName="STMStockBatch" parentEntity="STMStockBatchOperationAgent" syncable="YES">
+        <attribute name="processing" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="stockBatches" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="barCodes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMStockBatchBarCode" inverseName="stockBatch" inverseEntity="STMStockBatchBarCode" syncable="YES"/>
+        <relationship name="inventoryBatches" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMInventoryBatch" inverseName="stockBatch" inverseEntity="STMInventoryBatch" syncable="YES"/>
+        <relationship name="pickingOrderPositionsPicked" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPickingOrderPositionPicked" inverseName="stockBatch" inverseEntity="STMPickingOrderPositionPicked" syncable="YES"/>
+        <relationship name="qualityClass" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMQualityClass" inverseName="stockBatches" inverseEntity="STMQualityClass" syncable="YES"/>
+    </entity>
+    <entity name="STMStockBatchBarCode" representedClassName="STMStockBatchBarCode" parentEntity="STMBarCode" syncable="YES">
+        <relationship name="stockBatch" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStockBatch" inverseName="barCodes" inverseEntity="STMStockBatch" syncable="YES"/>
+    </entity>
+    <entity name="STMStockBatchOperation" representedClassName="STMStockBatchOperation" parentEntity="STMComment" syncable="YES">
+        <attribute name="destinationEntity" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="destinationXid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <attribute name="isProcessed" optional="YES" attributeType="Boolean" indexed="YES" syncable="YES"/>
+        <attribute name="sourceEntity" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="sourceXid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="destinationAgent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStockBatchOperationAgent" inverseName="destinationOperations" inverseEntity="STMStockBatchOperationAgent" syncable="YES"/>
+        <relationship name="sourceAgent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStockBatchOperationAgent" inverseName="sourceOperations" inverseEntity="STMStockBatchOperationAgent" syncable="YES"/>
+    </entity>
+    <entity name="STMStockBatchOperationAgent" representedClassName="STMStockBatchOperationAgent" parentEntity="STMComment" syncable="YES">
+        <relationship name="destinationOperations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMStockBatchOperation" inverseName="destinationAgent" inverseEntity="STMStockBatchOperation" syncable="YES"/>
+        <relationship name="sourceOperations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMStockBatchOperation" inverseName="sourceAgent" inverseEntity="STMStockBatchOperation" syncable="YES"/>
+    </entity>
+    <entity name="STMSupplyOrder" representedClassName="STMSupplyOrder" parentEntity="STMComment" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="ndoc" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="processing" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="supplyOrderArticleDocs" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSupplyOrderArticleDoc" inverseName="supplyOrder" inverseEntity="STMSupplyOrderArticleDoc" syncable="YES"/>
+    </entity>
+    <entity name="STMSupplyOrderArticleDoc" representedClassName="STMSupplyOrderArticleDoc" parentEntity="STMStockBatchOperationAgent" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="supplyOrderArticleDocs" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="articleDoc" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleDoc" inverseName="supplyOrderArticleDocs" inverseEntity="STMArticleDoc" syncable="YES"/>
+        <relationship name="supplyOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSupplyOrder" inverseName="supplyOrderArticleDocs" inverseEntity="STMSupplyOrder" syncable="YES"/>
+    </entity>
+    <entity name="STMTrack" representedClassName="STMTrack" parentEntity="STMComment" syncable="YES">
+        <attribute name="finishTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMLocation" inverseName="track" inverseEntity="STMLocation" syncable="YES"/>
+    </entity>
+    <entity name="STMUncashing" representedClassName="STMUncashing" parentEntity="STMComment" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="summ" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="summOrigin" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="cashings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCashing" inverseName="uncashing" inverseEntity="STMCashing" syncable="YES"/>
+        <relationship name="pictures" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMUncashingPicture" inverseName="uncashing" inverseEntity="STMUncashingPicture" syncable="YES"/>
+        <relationship name="uncashingPlace" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMUncashingPlace" inverseName="uncashings" inverseEntity="STMUncashingPlace" syncable="YES"/>
+    </entity>
+    <entity name="STMUncashingPicture" representedClassName="STMUncashingPicture" parentEntity="STMPhoto" syncable="YES">
+        <relationship name="uncashing" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMUncashing" inverseName="pictures" inverseEntity="STMUncashing" syncable="YES"/>
+    </entity>
+    <entity name="STMUncashingPlace" representedClassName="STMUncashingPlace" parentEntity="STMComment" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="uncashings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMUncashing" inverseName="uncashingPlace" inverseEntity="STMUncashing" syncable="YES"/>
+    </entity>
+    <entity name="STMWorkflow" representedClassName="STMWorkflow" parentEntity="STMComment" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="workflow" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="entities" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMEntity" inverseName="wf" inverseEntity="STMEntity" syncable="YES"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMMessage" inverseName="workflow" inverseEntity="STMMessage" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="STMArticle" positionX="142" positionY="-958" width="128" height="448"/>
+        <element name="STMArticleBarCode" positionX="358" positionY="-850" width="128" height="58"/>
+        <element name="STMArticleDoc" positionX="-110" positionY="-1009" width="128" height="118"/>
+        <element name="STMArticleGroup" positionX="-83" positionY="-468" width="128" height="148"/>
+        <element name="STMArticlePicture" positionX="727" positionY="-373" width="128" height="58"/>
+        <element name="STMArticleProductionInfo" positionX="360" positionY="-628" width="128" height="88"/>
+        <element name="STMBarCode" positionX="439" positionY="-927" width="128" height="58"/>
+        <element name="STMBarCodeType" positionX="-108" positionY="-790" width="128" height="103"/>
+        <element name="STMBasketPosition" positionX="-765" positionY="-621" width="128" height="103"/>
+        <element name="STMBatteryStatus" positionX="-513" positionY="186" width="128" height="73"/>
+        <element name="STMCampaign" positionX="-146" positionY="-279" width="128" height="163"/>
+        <element name="STMCampaignGroup" positionX="-299" positionY="-378" width="128" height="88"/>
+        <element name="STMCampaignPicture" positionX="511" positionY="-360" width="128" height="58"/>
+        <element name="STMCashing" positionX="-11" positionY="-18" width="128" height="148"/>
+        <element name="STMClientData" positionX="358" positionY="518" width="128" height="253"/>
+        <element name="STMClientEntity" positionX="205" positionY="629" width="128" height="73"/>
+        <element name="STMComment" positionX="-180" positionY="321" width="128" height="88"/>
+        <element name="STMDatum" positionX="-182" positionY="522" width="128" height="178"/>
+        <element name="STMDebt" positionX="-218" positionY="-72" width="128" height="178"/>
+        <element name="STMDriver" positionX="-801" positionY="-9" width="128" height="88"/>
+        <element name="STMEntity" positionX="-20" positionY="621" width="128" height="193"/>
+        <element name="STMInventoryBatch" positionX="349" positionY="-1224" width="128" height="148"/>
+        <element name="STMInventoryBatchItem" positionX="124" positionY="-1143" width="128" height="73"/>
+        <element name="STMLocation" positionX="-344" positionY="513" width="128" height="238"/>
+        <element name="STMLogMessage" positionX="-513" positionY="267" width="128" height="75"/>
+        <element name="STMMessage" positionX="475" positionY="324" width="128" height="178"/>
+        <element name="STMMessagePicture" positionX="736" positionY="9" width="128" height="73"/>
+        <element name="STMOutlet" positionX="-596" positionY="-225" width="128" height="238"/>
+        <element name="STMPartner" positionX="-333" positionY="-271" width="128" height="73"/>
+        <element name="STMPhoto" positionX="556" positionY="-243" width="128" height="58"/>
+        <element name="STMPhotoReport" positionX="360" positionY="-288" width="128" height="88"/>
+        <element name="STMPicker" positionX="-261" positionY="-1333" width="128" height="73"/>
+        <element name="STMPickingOrder" positionX="99" positionY="-1377" width="128" height="118"/>
+        <element name="STMPickingOrderPosition" positionX="331" positionY="-1366" width="128" height="133"/>
+        <element name="STMPickingOrderPositionPicked" positionX="601" positionY="-1240" width="128" height="133"/>
+        <element name="STMPicture" positionX="718" positionY="-268" width="128" height="133"/>
+        <element name="STMPrice" positionX="-56" positionY="-639" width="128" height="88"/>
+        <element name="STMPriceType" positionX="-362" positionY="-666" width="128" height="73"/>
+        <element name="STMProductionInfoType" positionX="351" positionY="-499" width="128" height="133"/>
+        <element name="STMQualityClass" positionX="567" positionY="-493" width="128" height="103"/>
+        <element name="STMRecordStatus" positionX="216" positionY="441" width="128" height="103"/>
+        <element name="STMSaleOrder" positionX="-531" positionY="-495" width="128" height="163"/>
+        <element name="STMSaleOrderPosition" positionX="-243" positionY="-547" width="128" height="133"/>
+        <element name="STMSalesman" positionX="-425" positionY="0" width="128" height="118"/>
+        <element name="STMSetting" positionX="-513" positionY="351" width="128" height="88"/>
+        <element name="STMShipment" positionX="-794" positionY="-373" width="128" height="193"/>
+        <element name="STMShipmentPosition" positionX="-1017" positionY="-487" width="128" height="253"/>
+        <element name="STMShipmentRoute" positionX="-720" positionY="315" width="128" height="118"/>
+        <element name="STMShipmentRoutePoint" positionX="-972" positionY="378" width="128" height="208"/>
+        <element name="STMShippingLocation" positionX="-740" positionY="639" width="128" height="133"/>
+        <element name="STMShippingLocationPicture" positionX="376" positionY="-160" width="128" height="58"/>
+        <element name="STMStock" positionX="162" positionY="-331" width="128" height="88"/>
+        <element name="STMStockBatch" positionX="619" positionY="-720" width="128" height="148"/>
+        <element name="STMStockBatchBarCode" positionX="432" positionY="-769" width="128" height="58"/>
+        <element name="STMStockBatchOperation" positionX="603" positionY="-1044" width="128" height="163"/>
+        <element name="STMStockBatchOperationAgent" positionX="331" positionY="-1062" width="128" height="73"/>
+        <element name="STMSupplyOrder" positionX="-344" positionY="-1039" width="128" height="103"/>
+        <element name="STMSupplyOrderArticleDoc" positionX="-90" positionY="-1215" width="128" height="133"/>
+        <element name="STMTrack" positionX="-513" positionY="450" width="128" height="90"/>
+        <element name="STMUncashing" positionX="171" positionY="99" width="128" height="148"/>
+        <element name="STMUncashingPicture" positionX="592" positionY="-94" width="128" height="58"/>
+        <element name="STMUncashingPlace" positionX="376" positionY="197" width="128" height="73"/>
+        <element name="STMWorkflow" positionX="250" positionY="290" width="128" height="103"/>
+    </elements>
+</model>
