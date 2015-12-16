@@ -429,42 +429,32 @@
                 
                 enum ESktScanSymbologyID symbologyID = [symbology getID];
                 
-                NSLog(@"%@", [symbology getName]);
+                NSArray *availableSymbologies = [self.barCodeTypesRC.fetchedObjects valueForKeyPath:@"symbology"];
                 
-                switch (symbologyID) {
+                if ([availableSymbologies containsObject:[symbology getName]]) {
+                    
+                    if ([symbology getStatus] == kSktScanSymbologyStatusDisable) {
                         
-                    case kSktScanSymbologyCode128:
-                    case kSktScanSymbologyEan13:
-                    case kSktScanSymbologyPdf417: {
-                        
-                        if ([symbology getStatus] == kSktScanSymbologyStatusDisable) {
-                            
-                            [self.iOSScanHelper postSetSymbologyInfo:deviceInfo
-                                                         SymbologyId:[symbology getID]
-                                                              Status:TRUE
-                                                              Target:nil
-                                                            Response:nil];
-                            
-                        }
+                        [self.iOSScanHelper postSetSymbologyInfo:deviceInfo
+                                                     SymbologyId:symbologyID
+                                                          Status:TRUE
+                                                          Target:nil
+                                                        Response:nil];
                         
                     }
-                    break;
+
+                } else {
+                    
+                    if ([symbology getStatus] == kSktScanSymbologyStatusEnable) {
                         
-                    default: {
-                        
-                        if ([symbology getStatus] == kSktScanSymbologyStatusEnable) {
-                            
-                            [self.iOSScanHelper postSetSymbologyInfo:deviceInfo
-                                                         SymbologyId:[symbology getID]
-                                                              Status:FALSE
-                                                              Target:nil
-                                                            Response:nil];
-                            
-                        }
+                        [self.iOSScanHelper postSetSymbologyInfo:deviceInfo
+                                                     SymbologyId:symbologyID
+                                                          Status:FALSE
+                                                          Target:nil
+                                                        Response:nil];
                         
                     }
-                    break;
-                        
+
                 }
                 
             }
