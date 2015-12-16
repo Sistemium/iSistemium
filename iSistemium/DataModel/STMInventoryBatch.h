@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface STMInventoryBatch : STMComment
 
 - (NSString *)displayProductionInfo;
+- (STMArticle *)operatingArticle;
 
 
 @end

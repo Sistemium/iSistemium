@@ -17,6 +17,9 @@
 + (void)receiveBarcode:(NSString *)barcode withType:(STMBarCodeScannedType)type
                 source:(id <STMInventoryControlling>)source;
 
+
+// old
+
 + (void)selectArticle:(STMArticle *)article
                source:(id <STMInventoryControlling>)source;
 

@@ -37,5 +37,9 @@
 
 }
 
+- (STMArticle *)operatingArticle {
+    return (self.article) ? (STMArticle * _Nonnull)self.article : self.stockBatch.article;
+}
+
 
 @end

@@ -15,6 +15,9 @@
 
 @required
 
+- (void)requestForArticleBarcode;
+- (void)didSelectInventoryBatch:(STMInventoryBatch *)inventoryBatch;
+
 - (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles
                    lookingForBarcode:(NSString *)barcode;
 
@@ -22,6 +25,9 @@
 
 - (void)didSuccessfullySelectArticle:(STMArticle *)article
                   withProductionInfo:(NSString *)productionInfo;
+
+
+// old
 
 - (void)itemWasAdded:(STMInventoryBatchItem *)item;
 
