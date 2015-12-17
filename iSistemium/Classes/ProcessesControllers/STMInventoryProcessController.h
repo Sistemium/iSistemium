@@ -31,5 +31,7 @@
 + (void)removeInventoryBatch:(STMInventoryBatch *)inventoryBatch;
 + (void)removeInventoryBatchItem:(STMInventoryBatchItem *)inventoryBatchItem;
 
++ (void)editInventoryBatch:(STMInventoryBatch *)inventoryBatch;
+
 
 @end

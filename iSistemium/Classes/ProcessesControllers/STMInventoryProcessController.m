@@ -135,6 +135,10 @@
     [STMObjectsController createRecordStatusAndRemoveObject:inventoryBatchItem];
 }
 
++ (void)editInventoryBatch:(STMInventoryBatch *)inventoryBatch {
+    [self sharedInstance].currentInventoryBatch = inventoryBatch;
+}
+
 
 #pragma mark - instance methods
 
@@ -328,42 +332,50 @@
 }
 
 - (void)addItemWithCode:(NSString *)itemCode responder:(id <STMInventoryControlling>)responder {
-
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMInventoryBatchItem class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-
-    NSArray *itemsCodes = [[[self class] document].managedObjectContext executeFetchRequest:request error:nil];
-    itemsCodes = [itemsCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
     
-//    NSSet *itemsCodes = [self.currentInventoryBatch.inventoryBatchItems valueForKeyPath:@"@distinctUnionOfObjects.code"];
-    
-    if ([itemsCodes containsObject:itemCode]) {
+    NSInteger packageRel = [self.currentInventoryBatch operatingArticle].packageRel.integerValue;
+
+    if (self.currentInventoryBatch.inventoryBatchItems.count >= 2) {
         
-        [STMSoundController alertSay:NSLocalizedString(@"THIS EXCISE STAMP ALREADY SCANNED", nil)];
+        [STMSoundController say:NSLocalizedString(@"THIS BOX IS FULL", nil)];
         
     } else {
 
-        [STMSoundController playOk];
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMInventoryBatchItem class])];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
         
-        STMInventoryBatchItem *item = (STMInventoryBatchItem *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatchItem class])
-                                                                                                   isFantom:NO];
-        item.code = itemCode;
-        item.inventoryBatch = self.currentInventoryBatch;
-
-        [[[self class] document] saveDocument:^(BOOL success) {
+        NSArray *itemsCodes = [[[self class] document].managedObjectContext executeFetchRequest:request error:nil];
+        itemsCodes = [itemsCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
+        
+        if ([itemsCodes containsObject:itemCode]) {
             
-        }];
-
-        if (self.currentInventoryBatch.inventoryBatchItems.count >= [self.currentInventoryBatch operatingArticle].packageRel.integerValue) {
+            [STMSoundController alertSay:NSLocalizedString(@"THIS EXCISE STAMP ALREADY SCANNED", nil)];
             
-            self.currentInventoryBatch.isDone = @(YES);
+        } else {
             
-            [STMSoundController say:NSLocalizedString(@"FULL BOX SCANNED", nil)];
+            [STMSoundController playOk];
             
-            [self doneCurrentInventoryProcessingWithResponder:responder];
+            STMInventoryBatchItem *item = (STMInventoryBatchItem *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMInventoryBatchItem class])
+                                                                                                       isFantom:NO];
+            item.code = itemCode;
+            item.inventoryBatch = self.currentInventoryBatch;
+            
+            [[[self class] document] saveDocument:^(BOOL success) {
+                
+            }];
+            
+            if (self.currentInventoryBatch.inventoryBatchItems.count >= packageRel) {
+                
+                self.currentInventoryBatch.isDone = @(YES);
+                
+                [STMSoundController say:NSLocalizedString(@"FULL BOX SCANNED", nil)];
+                
+                [self doneCurrentInventoryProcessingWithResponder:responder];
+                
+            }
             
         }
-        
+
     }
     
 }

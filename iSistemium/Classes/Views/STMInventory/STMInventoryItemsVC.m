@@ -64,43 +64,32 @@
 }
 
 - (void)updateButtons {
- 
-    (!self.inventoryBatch || [self.inventoryNC.currentlyProcessedBatch isEqual:self.inventoryBatch]) ? [self showButtonsForProcessing] : [self hideButtonsForProcessing];
 
-}
-
-- (void)showButtonsForProcessing {
-
-    self.navigationItem.hidesBackButton = YES;
     self.navigationController.toolbarHidden = NO;
 
-    if (self.inventoryBatch) {
+    STMBarButtonItemDone *toolBarButton = nil;
+    
+    if (self.inventoryBatch.isDone.boolValue) {
+        
+        self.navigationItem.hidesBackButton = NO;
 
-        STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
-                                                                                 style:UIBarButtonItemStyleDone
-                                                                                target:self
-                                                                                action:@selector(doneButtonPressed)];
-
-        [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], doneButton, [STMBarButtonItem flexibleSpace]]];
+        toolBarButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"EDIT", nil)
+                                                              style:UIBarButtonItemStyleDone
+                                                             target:self
+                                                             action:@selector(editButtonPressed)];
 
     } else {
-    
-        STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil)
-                                                                                       style:UIBarButtonItemStylePlain
-                                                                                      target:self
-                                                                                      action:@selector(cancelButtonPressed)];
+
+        self.navigationItem.hidesBackButton = YES;
         
-        [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], cancelButton, [STMBarButtonItem flexibleSpace]]];
+        toolBarButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
+                                                              style:UIBarButtonItemStyleDone
+                                                             target:self
+                                                             action:@selector(doneButtonPressed)];
 
     }
-    
-}
 
-- (void)hideButtonsForProcessing {
-
-    [self setToolbarItems:nil];
-    self.navigationController.toolbarHidden = YES;
-    self.navigationItem.hidesBackButton = NO;
+    [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], toolBarButton, [STMBarButtonItem flexibleSpace]]];
 
 }
 
@@ -108,6 +97,13 @@
     
     [self.inventoryNC cancelCurrentInventoryProcessing];
     [self.navigationController popViewControllerAnimated:YES];
+    
+}
+
+- (void)editButtonPressed {
+    
+    [self.inventoryNC editInventoryBatch:self.inventoryBatch];
+    [self updateButtons];
     
 }
 

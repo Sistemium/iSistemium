@@ -382,6 +382,13 @@
     [STMInventoryProcessController doneCurrentInventoryProcessingWithSource:self];
 }
 
+- (void)editInventoryBatch:(STMInventoryBatch *)inventoryBatch {
+    
+    inventoryBatch.isDone = @(NO);
+    [STMInventoryProcessController editInventoryBatch:inventoryBatch];
+    
+}
+
 
 #pragma mark - view lifecycle
 

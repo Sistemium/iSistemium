@@ -69,7 +69,7 @@
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return UITableViewCellEditingStyleDelete;
+    return (self.parentVC.inventoryBatch.isDone.boolValue) ? UITableViewCellEditingStyleNone : UITableViewCellEditingStyleDelete;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
