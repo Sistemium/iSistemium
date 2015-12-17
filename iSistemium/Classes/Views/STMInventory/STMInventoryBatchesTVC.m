@@ -167,8 +167,10 @@
     
     if (productionInfo) {
         
-        [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
 
+        productionInfo = [NSString stringWithFormat:@"(%@)", productionInfo];
+        
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:productionInfo
                                                                                attributes:attributes];
         
