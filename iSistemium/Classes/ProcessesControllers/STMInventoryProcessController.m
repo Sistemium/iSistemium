@@ -300,6 +300,7 @@
     STMStockBatch *stockBatch = (STMStockBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMStockBatch class])
                                                                                      isFantom:NO];
     stockBatch.article = article;
+    stockBatch.productionInfo = self.selectedProductionInfo;
 
     STMStockBatchBarCode *barCode = (STMStockBatchBarCode *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMStockBatchBarCode class])
                                                                                                 isFantom:NO];

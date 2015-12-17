@@ -143,10 +143,10 @@
         
         NSString *codeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"ARTICLE", nil), batch.code];
         
-        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:codeString
-                                                                          attributes:attributes];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:codeString
+                                                                               attributes:attributes];
         
-        [labelText appendAttributedString:articleName];
+        [labelText appendAttributedString:attributedString];
 
     }
     
@@ -156,10 +156,23 @@
 
         NSString *stockBatchCodeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"STOCK BATCH", nil), batch.stockBatchCode];
         
-        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:stockBatchCodeString
-                                                                          attributes:attributes];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:stockBatchCodeString
+                                                                               attributes:attributes];
         
-        [labelText appendAttributedString:articleName];
+        [labelText appendAttributedString:attributedString];
+
+    }
+    
+    NSString *productionInfo = [batch.stockBatch displayProductionInfo];
+    
+    if (productionInfo) {
+        
+        [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:productionInfo
+                                                                               attributes:attributes];
+        
+        [labelText appendAttributedString:attributedString];
 
     }
     
@@ -220,7 +233,9 @@
         
         STMInventoryItemsVC *inventoryItemsVC = (STMInventoryItemsVC *)segue.destinationViewController;
         inventoryItemsVC.inventoryBatch = inventoryBatch;
-        inventoryItemsVC.productionInfo = [inventoryBatch displayProductionInfo];
+        inventoryItemsVC.productionInfo = [inventoryBatch.stockBatch displayProductionInfo];
+        
+        NSLog(@"inventoryItemsVC.productionInfo %@", inventoryItemsVC.productionInfo);
         
     }
     

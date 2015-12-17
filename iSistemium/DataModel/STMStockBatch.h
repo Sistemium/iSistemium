@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface STMStockBatch : STMStockBatchOperationAgent
 
 - (NSInteger)localVolume;
+- (NSString *)displayProductionInfo;
 
 
 @end
