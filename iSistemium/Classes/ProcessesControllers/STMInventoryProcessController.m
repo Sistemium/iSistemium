@@ -29,6 +29,8 @@
 
 @implementation STMInventoryProcessController
 
+#pragma mark - singleton
+
 + (STMInventoryProcessController *)sharedInstance {
     
     static dispatch_once_t pred = 0;
@@ -41,6 +43,20 @@
     return _sharedInstance;
     
 }
+
+- (instancetype)init {
+    
+    self = [super init];
+    
+    if (self) {
+
+    }
+    return self;
+    
+}
+
+
+#pragma mark - class methods
 
 + (void)receiveBarcode:(NSString *)barcode withType:(STMBarCodeScannedType)type source:(id <STMInventoryControlling>)source {
     
@@ -312,7 +328,13 @@
 
 - (void)addItemWithCode:(NSString *)itemCode responder:(id <STMInventoryControlling>)responder {
 
-    NSSet *itemsCodes = [self.currentInventoryBatch.inventoryBatchItems valueForKeyPath:@"@distinctUnionOfObjects.code"];
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMInventoryBatchItem class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+
+    NSArray *itemsCodes = [[[self class] document].managedObjectContext executeFetchRequest:request error:nil];
+    itemsCodes = [itemsCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
+    
+//    NSSet *itemsCodes = [self.currentInventoryBatch.inventoryBatchItems valueForKeyPath:@"@distinctUnionOfObjects.code"];
     
     if ([itemsCodes containsObject:itemCode]) {
         
