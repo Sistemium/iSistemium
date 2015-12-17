@@ -20,7 +20,7 @@
     
     NSString *info = nil;
     
-    if ([self.article.productionInfoType.datatype isEqualToString:@"date"]) {
+    if ([[self operatingArticle].productionInfoType.datatype isEqualToString:@"date"]) {
         
         NSString *separator = @"/";
         NSArray *infoParts = [self.productionInfo componentsSeparatedByString:separator];
