@@ -418,5 +418,6 @@
 "FULL BOX SCANNED" = "Короб обработан";
 "THIS BOX IS FULL" = "Этот короб полон";
 "EDIT" = "Редактировать";
+"DELETE INVENTORY BATCH?" = "Удалить инвентаризационный короб?";
 
 

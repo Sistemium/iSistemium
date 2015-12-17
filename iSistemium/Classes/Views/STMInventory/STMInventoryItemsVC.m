@@ -13,7 +13,7 @@
 #import "STMInventoryBatchItemsTVC.h"
 
 
-@interface STMInventoryItemsVC ()
+@interface STMInventoryItemsVC () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) STMInventoryArticleVC *articleVC;
 @property (nonatomic, strong) STMInventoryBatchItemsTVC *itemsTVC;
@@ -114,9 +114,19 @@
 
 - (void)deleteButtonPressed {
     
-    [self.inventoryNC deleteInventoryBatch:self.inventoryBatch];
-    [self.navigationController popToRootViewControllerAnimated:YES];
-    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:NSLocalizedString(@"DELETE INVENTORY BATCH?", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        alert.tag = 342;
+        
+        [alert show];
+        
+    }];
+
 }
 
 - (void)doneButtonPressed {
@@ -124,6 +134,33 @@
     [self.inventoryNC doneCurrentInventoryProcessing];
     [self.navigationController popViewControllerAnimated:YES];
 
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+
+    switch (alertView.tag) {
+        case 342:
+
+            switch (buttonIndex) {
+                case 1:
+                    
+                    [self.inventoryNC deleteInventoryBatch:self.inventoryBatch];
+                    [self.navigationController popToRootViewControllerAnimated:YES];
+
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
 }
 
 
