@@ -293,6 +293,10 @@
         
         self.itemsVC.inventoryBatch = self.currentlyProcessedBatch;
         
+        if (![self.topViewController isEqual:self.itemsVC]) {
+            [self pushViewController:self.itemsVC animated:YES];
+        }
+        
     } else {
         
         STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];

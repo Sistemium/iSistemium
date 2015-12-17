@@ -152,6 +152,7 @@
         if ([self.partialBoxConfirmationCode isEqualToString:stockBatchCode]) {
 
             [self doneCurrentInventoryProcessingWithResponder:responder];
+            [self receiveStockBatchCode:stockBatchCode responder:responder];
             
         } else {
             
