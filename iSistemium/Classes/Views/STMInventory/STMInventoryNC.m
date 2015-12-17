@@ -292,6 +292,7 @@
     if (self.itemsVC) {
         
         self.itemsVC.inventoryBatch = self.currentlyProcessedBatch;
+        self.itemsVC.productionInfo = [self.currentlyProcessedBatch.stockBatch displayProductionInfo];
         
         if (![self.topViewController isEqual:self.itemsVC]) {
             [self pushViewController:self.itemsVC animated:YES];
@@ -300,7 +301,7 @@
     } else {
         
         STMInventoryItemsVC *itemsVC = (STMInventoryItemsVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"inventoryItemsVC"];
-        itemsVC.productionInfo = self.currentlyProcessedBatch.productionInfo;
+        itemsVC.productionInfo = [self.currentlyProcessedBatch.stockBatch displayProductionInfo];
         itemsVC.inventoryBatch = self.currentlyProcessedBatch;
         
         [self pushViewController:itemsVC animated:YES];
