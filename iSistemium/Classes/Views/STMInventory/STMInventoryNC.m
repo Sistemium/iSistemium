@@ -389,6 +389,10 @@
     
 }
 
+- (void)deleteInventoryBatch:(STMInventoryBatch *)inventoryBatch {
+    [STMInventoryProcessController removeInventoryBatch:inventoryBatch];
+}
+
 
 #pragma mark - view lifecycle
 

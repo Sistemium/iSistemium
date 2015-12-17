@@ -66,30 +66,35 @@
 - (void)updateButtons {
 
     self.navigationController.toolbarHidden = NO;
-
-    STMBarButtonItemDone *toolBarButton = nil;
     
     if (self.inventoryBatch.isDone.boolValue) {
         
         self.navigationItem.hidesBackButton = NO;
 
-        toolBarButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"EDIT", nil)
-                                                              style:UIBarButtonItemStyleDone
-                                                             target:self
-                                                             action:@selector(editButtonPressed)];
+        STMBarButtonItemEdit *editButton = [[STMBarButtonItemEdit alloc] initWithTitle:NSLocalizedString(@"EDIT", nil)
+                                                                                 style:UIBarButtonItemStyleDone
+                                                                                target:self
+                                                                                action:@selector(editButtonPressed)];
+
+        [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], editButton, [STMBarButtonItem flexibleSpace]]];
 
     } else {
 
         self.navigationItem.hidesBackButton = YES;
         
-        toolBarButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
-                                                              style:UIBarButtonItemStyleDone
-                                                             target:self
-                                                             action:@selector(doneButtonPressed)];
+        STMBarButtonItemDelete *deleteButton = [[STMBarButtonItemDelete alloc] initWithTitle:NSLocalizedString(@"DELETE", nil)
+                                                                                       style:UIBarButtonItemStyleDone
+                                                                                      target:self
+                                                                                      action:@selector(deleteButtonPressed)];
+
+        STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
+                                                                                 style:UIBarButtonItemStyleDone
+                                                                                target:self
+                                                                                action:@selector(doneButtonPressed)];
+
+        [self setToolbarItems:@[deleteButton, [STMBarButtonItem flexibleSpace], doneButton]];
 
     }
-
-    [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], toolBarButton, [STMBarButtonItem flexibleSpace]]];
 
 }
 
@@ -104,6 +109,13 @@
     
     [self.inventoryNC editInventoryBatch:self.inventoryBatch];
     [self updateButtons];
+    
+}
+
+- (void)deleteButtonPressed {
+    
+    [self.inventoryNC deleteInventoryBatch:self.inventoryBatch];
+    [self.navigationController popToRootViewControllerAnimated:YES];
     
 }
 

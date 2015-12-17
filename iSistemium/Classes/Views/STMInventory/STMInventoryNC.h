@@ -24,6 +24,7 @@
 - (void)cancelCurrentInventoryProcessing;
 - (void)doneCurrentInventoryProcessing;
 - (void)editInventoryBatch:(STMInventoryBatch *)inventoryBatch;
+- (void)deleteInventoryBatch:(STMInventoryBatch *)inventoryBatch;
 
 
 @end

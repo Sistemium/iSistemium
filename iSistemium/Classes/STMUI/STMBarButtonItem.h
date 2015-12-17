@@ -16,11 +16,17 @@
 
 @end
 
+@interface STMBarButtonItemEdit : STMBarButtonItem
+
+@end
+
+@interface STMBarButtonItemDelete : STMBarButtonItem
+
+@end
 
 @interface STMBarButtonItemDone : STMBarButtonItem
 
 @end
-
 
 @interface STMBarButtonItemCancel : STMBarButtonItem
 

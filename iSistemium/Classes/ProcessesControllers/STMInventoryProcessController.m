@@ -128,7 +128,10 @@
 }
 
 + (void)removeInventoryBatch:(STMInventoryBatch *)inventoryBatch {
+    
+    [[self sharedInstance] nullifyCurrentProperties];
     [STMObjectsController createRecordStatusAndRemoveObject:inventoryBatch];
+    
 }
 
 + (void)removeInventoryBatchItem:(STMInventoryBatchItem *)inventoryBatchItem {
@@ -335,7 +338,7 @@
     
     NSInteger packageRel = [self.currentInventoryBatch operatingArticle].packageRel.integerValue;
 
-    if (self.currentInventoryBatch.inventoryBatchItems.count >= 2) {
+    if (self.currentInventoryBatch.inventoryBatchItems.count >= packageRel) {
         
         [STMSoundController say:NSLocalizedString(@"THIS BOX IS FULL", nil)];
         

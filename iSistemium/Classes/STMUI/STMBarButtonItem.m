@@ -19,6 +19,16 @@
 @end
 
 
+@implementation STMBarButtonItemEdit
+
+@end
+
+
+@implementation STMBarButtonItemDelete
+
+@end
+
+
 @implementation STMBarButtonItem
 
 + (STMBarButtonItem *)flexibleSpace {
@@ -83,7 +93,6 @@
 
     } else if ([self isKindOfClass:[STMBarButtonItemCancel class]]) {
         
-//        UIColor *color = [UIColor redColor];
         UIColor *color = ACTIVE_BLUE_COLOR;
         
         NSDictionary *textAttributes = @{
@@ -91,7 +100,26 @@
                                          };
         
         [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
-
+        
+    } else if ([self isKindOfClass:[STMBarButtonItemEdit class]]) {
+        
+        UIColor *color = ACTIVE_BLUE_COLOR;
+        
+        NSDictionary *textAttributes = @{
+                                         NSForegroundColorAttributeName:color
+                                         };
+        
+        [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+        
+    } else if ([self isKindOfClass:[STMBarButtonItemDelete class]]) {
+        
+        UIColor *color = [UIColor redColor];
+        
+        NSDictionary *textAttributes = @{
+                                         NSForegroundColorAttributeName:color
+                                         };
+        
+        [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
         
     }
     
