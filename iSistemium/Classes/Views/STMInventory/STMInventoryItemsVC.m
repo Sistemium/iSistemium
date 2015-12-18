@@ -9,13 +9,15 @@
 #import "STMInventoryItemsVC.h"
 
 #import "STMInventoryNC.h"
-#import "STMInventoryArticleVC.h"
+#import "STMInventoryInfoTVC.h"
 #import "STMInventoryBatchItemsTVC.h"
 
 
 @interface STMInventoryItemsVC () <UIAlertViewDelegate>
 
-@property (nonatomic, strong) STMInventoryArticleVC *articleVC;
+@property (weak, nonatomic) IBOutlet UIView *infoTVCContainer;
+
+@property (nonatomic, strong) STMInventoryInfoTVC *infoTVC;
 @property (nonatomic, strong) STMInventoryBatchItemsTVC *itemsTVC;
 @property (nonatomic, weak) STMInventoryNC *inventoryNC;
 
@@ -38,17 +40,11 @@
     
 }
 
-//- (void)setInventoryArticle:(STMArticle *)inventoryArticle {
-//    
-//    _inventoryArticle = inventoryArticle;
-//    self.articleVC.article = _inventoryArticle;
-//
-//}
-
 - (void)setProductionInfo:(NSString *)productionInfo {
     
     _productionInfo = productionInfo;
-    self.articleVC.productionInfo = _productionInfo;
+    self.infoTVC.productionInfo = _productionInfo;
+    [self.infoTVC refreshInfo];
     
 }
 
@@ -57,7 +53,8 @@
     _inventoryBatch = inventoryBatch;
     
     self.itemsTVC.batch = _inventoryBatch;
-    self.articleVC.article = [_inventoryBatch operatingArticle];
+    self.infoTVC.inventoryBatch = _inventoryBatch;
+    [self.infoTVC refreshInfo];
     
     [self updateButtons];
     
@@ -110,6 +107,8 @@
     [self.inventoryNC editInventoryBatch:self.inventoryBatch];
     [self updateButtons];
     
+    [self.infoTVC refreshInfo];
+
 }
 
 - (void)deleteButtonPressed {
@@ -168,14 +167,14 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"articleVC"] &&
-        [segue.destinationViewController isKindOfClass:[STMInventoryArticleVC class]]) {
+    if ([segue.identifier isEqualToString:@"infoTVC"] &&
+        [segue.destinationViewController isKindOfClass:[STMInventoryInfoTVC class]]) {
         
-        self.articleVC = (STMInventoryArticleVC *)segue.destinationViewController;
-        self.articleVC.article = [self.inventoryBatch operatingArticle];
-        self.articleVC.productionInfo = self.productionInfo;
-        self.articleVC.parentVC = self;
-        
+        self.infoTVC = (STMInventoryInfoTVC *)segue.destinationViewController;
+        self.infoTVC.inventoryBatch = self.inventoryBatch;
+        self.infoTVC.productionInfo = self.productionInfo;
+        self.infoTVC.parentVC = self;
+
     } else if ([segue.identifier isEqualToString:@"itemsTVC"] &&
                [segue.destinationViewController isKindOfClass:[STMInventoryBatchItemsTVC class]]) {
         

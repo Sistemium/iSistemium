@@ -420,5 +420,6 @@
 "EDIT" = "Редактировать";
 "DELETE INVENTORY BATCH?" = "Удалить инвентаризационный короб?";
 "STOCK BATCH IS INVENTARIZED" = "Эту партию не нужно инвентаризировать";
+"EXCISE MARKS" = "Акцизные марки";
 
 
