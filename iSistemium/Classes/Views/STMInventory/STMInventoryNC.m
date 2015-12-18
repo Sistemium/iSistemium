@@ -384,10 +384,7 @@
 }
 
 - (void)editInventoryBatch:(STMInventoryBatch *)inventoryBatch {
-    
-    inventoryBatch.isDone = @(NO);
     [STMInventoryProcessController editInventoryBatch:inventoryBatch];
-    
 }
 
 - (void)deleteInventoryBatch:(STMInventoryBatch *)inventoryBatch {

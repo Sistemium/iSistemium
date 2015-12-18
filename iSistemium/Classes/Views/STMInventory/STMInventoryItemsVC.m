@@ -11,6 +11,7 @@
 #import "STMInventoryNC.h"
 #import "STMInventoryInfoTVC.h"
 #import "STMInventoryBatchItemsTVC.h"
+#import "STMStockBatchInfoTVC.h"
 
 
 @interface STMInventoryItemsVC () <UIAlertViewDelegate>
@@ -55,6 +56,10 @@
     self.itemsTVC.batch = _inventoryBatch;
     self.infoTVC.inventoryBatch = _inventoryBatch;
     [self.infoTVC refreshInfo];
+    
+    if (!_inventoryBatch.isDone.boolValue) {
+        [self.inventoryNC editInventoryBatch:_inventoryBatch];
+    }
     
     [self updateButtons];
     
@@ -182,15 +187,30 @@
         self.itemsTVC.batch = self.inventoryBatch;
         self.itemsTVC.parentVC = self;
         
+    } else if ([segue.identifier isEqualToString:@"showStockBatchInfo"] &&
+               [segue.destinationViewController isKindOfClass:[STMStockBatchInfoTVC class]]) {
+        
+        STMStockBatchInfoTVC *stockBatchInfoTVC = (STMStockBatchInfoTVC *)segue.destinationViewController;
+        stockBatchInfoTVC.stockBatch = self.inventoryBatch.stockBatch;
+        
     }
     
 }
 
+- (void)showStockBatchInfo {
+    [self performSegueWithIdentifier:@"showStockBatchInfo" sender:nil];
+}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
     [self updateButtons];
+    
+    if (!self.inventoryBatch.isDone.boolValue) {
+        [self.inventoryNC editInventoryBatch:self.inventoryBatch];
+    }
+
 }
 
 - (void)viewDidLoad {

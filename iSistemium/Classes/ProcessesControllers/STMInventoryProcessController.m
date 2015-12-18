@@ -139,7 +139,10 @@
 }
 
 + (void)editInventoryBatch:(STMInventoryBatch *)inventoryBatch {
+    
     [self sharedInstance].currentInventoryBatch = inventoryBatch;
+    [self sharedInstance].currentInventoryBatch.isDone = @(NO);
+    
 }
 
 

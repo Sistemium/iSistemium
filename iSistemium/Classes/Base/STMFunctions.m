@@ -209,10 +209,14 @@
 
 #pragma mark - number formatters
 
++ (NSString *)trueMinus {
+    return @"\u2212"; // U+2212 TRUE MINUS SIGN
+}
+
 + (NSNumberFormatter *)trueMinusFormatter {
 
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.minusSign = @"\u2212"; // U+2212 TRUE MINUS SIGN
+    numberFormatter.minusSign = [self trueMinus];
     
     return numberFormatter;
 

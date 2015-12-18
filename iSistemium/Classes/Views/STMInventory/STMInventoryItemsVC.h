@@ -16,5 +16,7 @@
 @property (nonatomic, strong) STMInventoryBatch *inventoryBatch;
 @property (nonatomic, strong) NSString *productionInfo;
 
+- (void)showStockBatchInfo;
+
 
 @end

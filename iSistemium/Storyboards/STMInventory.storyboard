@@ -82,11 +82,40 @@
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <connections>
                         <outlet property="infoTVCContainer" destination="WYk-cw-FGQ" id="Ngq-8H-BHW"/>
+                        <segue destination="MoK-88-E6Z" kind="show" identifier="showStockBatchInfo" id="4ao-jt-Ksy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z9r-xQ-ywR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2130" y="341"/>
+        </scene>
+        <!--Stock Batch InfoTVC-->
+        <scene sceneID="Pd5-OO-eLc">
+            <objects>
+                <tableViewController id="MoK-88-E6Z" customClass="STMStockBatchInfoTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="8mR-nV-jUz">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="stockBatchCell" id="Ss4-Uz-6Dh">
+                                <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ss4-Uz-6Dh" id="pkK-b7-NPU">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="MoK-88-E6Z" id="bIi-DJ-7iF"/>
+                            <outlet property="delegate" destination="MoK-88-E6Z" id="VWi-3a-dsg"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="slH-9j-IJO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2930" y="341"/>
         </scene>
         <!--InventoryNC-->
         <scene sceneID="FBt-LY-4Pj">

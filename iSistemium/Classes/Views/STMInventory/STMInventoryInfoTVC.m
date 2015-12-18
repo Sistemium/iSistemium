@@ -77,6 +77,14 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (!self.inventoryBatch.isDone.boolValue) {
+        [self.parentVC showStockBatchInfo];
+    }
+    
+}
+
 
 #pragma mark - view lifecycle
 

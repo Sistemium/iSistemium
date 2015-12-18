@@ -88,15 +88,14 @@
     [self fillCellTextLabel:cell.textLabel withInventoryBatch:batch];
     [self fillCellDetailLabel:cell.detailTextLabel withInventoryBatch:batch];
     
+    UIColor *color = (batch.isDone.boolValue) ? [UIColor grayColor] : [UIColor blackColor];
+    
+    cell.textLabel.textColor = color;
+    cell.detailTextLabel.textColor = color;
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
-    
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    [self performSegueWithIdentifier:@"showItems" sender:indexPath];
     
 }
 
@@ -207,6 +206,12 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self performSegueWithIdentifier:@"showItems" sender:indexPath];
+    
+}
+
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
     return UITableViewCellEditingStyleDelete;
 }
@@ -236,8 +241,6 @@
         STMInventoryItemsVC *inventoryItemsVC = (STMInventoryItemsVC *)segue.destinationViewController;
         inventoryItemsVC.inventoryBatch = inventoryBatch;
         inventoryItemsVC.productionInfo = [inventoryBatch.stockBatch displayProductionInfo];
-        
-        NSLog(@"inventoryItemsVC.productionInfo %@", inventoryItemsVC.productionInfo);
         
     }
     

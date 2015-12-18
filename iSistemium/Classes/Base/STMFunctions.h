@@ -51,6 +51,8 @@
 + (NSDate *)dateFromDouble:(double)time;
 + (double)currentTimeInDouble;
 
++ (NSString *)trueMinus;
+
 + (NSNumberFormatter *)decimalFormatter;
 + (NSNumberFormatter *)decimalMaxTwoDigitFormatter;
 + (NSNumberFormatter *)decimalMinTwoDigitFormatter;
