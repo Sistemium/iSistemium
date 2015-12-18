@@ -180,8 +180,19 @@
     
     if (stockBatches.count > 0) {
         
-        self.currentStockBatch = stockBatches.firstObject;
-        [self selectInventoryBatchForStockBatch:self.currentStockBatch responder:responder];
+        STMStockBatch *stockBatch = stockBatches.firstObject;
+        
+        if (stockBatch.isInventarized.boolValue) {
+            
+            [STMSoundController say:NSLocalizedString(@"STOCK BATCH IS INVENTARIZED", nil)];
+            [self nullifyCurrentProperties];
+            
+        } else {
+            
+            self.currentStockBatch = stockBatch;
+            [self selectInventoryBatchForStockBatch:self.currentStockBatch responder:responder];
+
+        }
         
     } else {
 

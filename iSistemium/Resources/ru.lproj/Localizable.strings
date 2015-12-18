@@ -419,5 +419,6 @@
 "THIS BOX IS FULL" = "Этот короб полон";
 "EDIT" = "Редактировать";
 "DELETE INVENTORY BATCH?" = "Удалить инвентаризационный короб?";
+"STOCK BATCH IS INVENTARIZED" = "Эту партию не нужно инвентаризировать";
 
 

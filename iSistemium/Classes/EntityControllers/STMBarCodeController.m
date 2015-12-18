@@ -59,7 +59,7 @@
         
         if (barcodesArray.count > 1) {
             
-            NSString *logMessage = [NSString stringWithFormat:@"More than one stockbatch for barcode: %@", barcode];
+            NSString *logMessage = [NSString stringWithFormat:@"More than one stockbatch barcodes for barcode: %@", barcode];
             [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
             
         }

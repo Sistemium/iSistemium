@@ -127,7 +127,7 @@
 
     } else {
 
-        NSLog(@"Document currently is saving");
+//        NSLog(@"Document currently is saving");
         completionHandler(YES);
 
 //        double delayInSeconds = 3;
