@@ -103,6 +103,9 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
+    UIFont *font = [[UITableViewCell alloc] init].textLabel.font;
+    cell.textLabel.font = [UIFont systemFontOfSize:font.pointSize];
+
     switch (indexPath.section) {
         case 0:
             [self fillArticleNameCell:cell];
@@ -162,6 +165,9 @@
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     cell.textLabel.textColor = (self.selectedProductionInfo) ? ACTIVE_BLUE_COLOR : [UIColor lightGrayColor];
     
+    UIFont *font = cell.textLabel.font;
+    cell.textLabel.font = [UIFont boldSystemFontOfSize:font.pointSize];
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -189,7 +195,10 @@
             
         case 2:
             if (self.selectedProductionInfo) {
+                
+                [self.navigationController popViewControllerAnimated:YES];
                 [self infoSelected];
+                
             }
             break;
             

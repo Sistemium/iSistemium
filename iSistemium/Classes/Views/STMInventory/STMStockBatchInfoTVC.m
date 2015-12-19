@@ -85,9 +85,19 @@
 - (void)selectArticle:(STMArticle *)article withSearchedBarcode:(NSString *)barcode {
     
     [self.parentNC popToViewController:self animated:YES];
-
+    
     self.replacingArticle = article;
+    self.replacingInfo = nil;
+
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+
+    if (article.productionInfoType) {
+        
+        [self showInfoSelectTVC];
+        
+    }
+    
+    [self updateToolbar];
     
 }
 
@@ -96,10 +106,9 @@
 
 - (void)selectInfo:(STMArticleProductionInfo *)info {
     
-    [self.parentNC popToViewController:self animated:YES];
-
     self.replacingInfo = info;
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    [self updateToolbar];
 
 }
 
@@ -114,10 +123,15 @@
     
     switch (section) {
         case 0:
-            if (self.stockBatch.productionInfo || self.replacingInfo) {
-                return 2;
+            
+            if (self.replacingArticle) {
+                return (self.replacingArticle.productionInfoType) ? 2 : 1;
             } else {
-                return 1;
+                if (self.stockBatch.productionInfo || self.replacingInfo) {
+                    return 2;
+                } else {
+                    return 1;
+                }
             }
             break;
 
@@ -164,6 +178,7 @@
     
     cell.textLabel.text = @"";
     cell.textLabel.numberOfLines = 0;
+    cell.textLabel.textColor = [UIColor blackColor];
     
     cell.detailTextLabel.text = @"";
     
@@ -213,7 +228,32 @@
 
         case 1:
             
-            cell.textLabel.text = (self.replacingInfo) ? [self.replacingInfo displayInfo] : [self.stockBatch displayProductionInfo];
+            if (self.replacingArticle) {
+                
+                if (self.replacingInfo) {
+                    
+                    cell.textLabel.text = [self.replacingInfo displayInfo];
+                    
+                } else {
+                    
+                    cell.textLabel.text = NSLocalizedString(@"ENTER PRODUCTION INFO", nil);
+                    cell.textLabel.textColor = [UIColor redColor];
+                    
+                }
+                
+            } else {
+                
+                if (self.replacingInfo) {
+                    
+                    cell.textLabel.text = [self.replacingInfo displayInfo];
+                    
+                } else {
+                    
+                    cell.textLabel.text = [self.stockBatch displayProductionInfo];
+                    
+                }
+                
+            }
             
             break;
             
@@ -284,17 +324,8 @@
             }
                 break;
 
-            case 1: {
-                
-                STMInventoryInfoSelectTVC *infoSelectTVC = [[STMInventoryInfoSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
-                infoSelectTVC.article = (self.replacingArticle) ? self.replacingArticle : self.stockBatch.article;
-                infoSelectTVC.currentProductionInfo = (self.replacingInfo) ? self.replacingInfo.info : self.stockBatch.productionInfo;
-                infoSelectTVC.ownerVC = self;
-                
-                [self.navigationController pushViewController:infoSelectTVC animated:YES];
-                
-            }
-                
+            case 1:
+                [self showInfoSelectTVC];
                 break;
 
             default:
@@ -305,12 +336,62 @@
     
 }
 
+- (void)showInfoSelectTVC {
+    
+    STMInventoryInfoSelectTVC *infoSelectTVC = [[STMInventoryInfoSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    infoSelectTVC.article = (self.replacingArticle) ? self.replacingArticle : self.stockBatch.article;
+    infoSelectTVC.currentProductionInfo = (self.replacingInfo) ? self.replacingInfo.info : self.stockBatch.productionInfo;
+    infoSelectTVC.ownerVC = self;
+    
+    [self.navigationController pushViewController:infoSelectTVC animated:YES];
+
+}
+
+
+#pragma mark - toolbar setup
+
+- (void)updateToolbar {
+    
+    self.navigationController.toolbarHidden = NO;
+    
+    STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil)
+                                                                                   style:UIBarButtonItemStylePlain
+                                                                                  target:self
+                                                                                  action:@selector(cancelButtonPressed)];
+
+    STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
+                                                                             style:UIBarButtonItemStyleDone
+                                                                            target:self
+                                                                            action:@selector(doneButtonPressed)];
+
+    if (!self.replacingArticle && !self.replacingInfo) {
+        doneButton.enabled = NO;
+    }
+
+    if (self.replacingArticle && self.replacingArticle.productionInfoType && !self.replacingInfo) {
+        doneButton.enabled = NO;
+    }
+    
+    [self setToolbarItems:@[cancelButton, [STMBarButtonItem flexibleSpace], doneButton]];
+
+}
+
+- (void)cancelButtonPressed {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)doneButtonPressed {
+    
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     [super customInit];
+
+    [self updateToolbar];
     
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
@@ -325,6 +406,8 @@
     
     [super viewDidAppear:animated];
     
+    self.navigationController.toolbarHidden = NO;
+
     if ([self isMovingToParentViewController]) {
         self.parentNC.scanEnabled = NO;
     }
@@ -336,11 +419,7 @@
     [super viewWillDisappear:animated];
     
     if ([self isMovingFromParentViewController]) {
-        
         self.parentNC.scanEnabled = YES;
-        
-        self.navigationController.toolbarHidden = YES;
-        
     }
     
 }

@@ -224,6 +224,8 @@
     
     [super viewDidAppear:animated];
     
+    self.navigationController.toolbarHidden = NO;
+
     if ([self isMovingToParentViewController]) {
         self.inventoryNC.itemsVC = self;
     }

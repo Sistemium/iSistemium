@@ -11,7 +11,7 @@
 
 @interface STMInventoryArticleSelectTVC ()
 
-@property (nonatomic, strong) STMBarButtonItem *doneButton;
+@property (nonatomic, strong) STMBarButtonItemDone *doneButton;
 @property (nonatomic, strong) NSArray *tableData;
 
 
@@ -156,10 +156,10 @@
     
     self.navigationController.toolbarHidden = NO;
     
-    self.doneButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
-                                                                   style:UIBarButtonItemStylePlain
-                                                                  target:self
-                                                                  action:@selector(doneButtonPressed)];
+    self.doneButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
+                                                            style:UIBarButtonItemStyleDone
+                                                           target:self
+                                                           action:@selector(doneButtonPressed)];
     
     [self updateDoneButton];
     
