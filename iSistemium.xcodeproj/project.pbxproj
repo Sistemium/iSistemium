@@ -1008,6 +1008,7 @@
 		2C92B6D61B9CAC5C00BF77EB /* circle_colored_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle_colored_red.png; sourceTree = "<group>"; };
 		2C98359E1C24550600CA231D /* STMStockBatchInfoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMStockBatchInfoTVC.h; sourceTree = "<group>"; };
 		2C98359F1C24550600CA231D /* STMStockBatchInfoTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMStockBatchInfoTVC.m; sourceTree = "<group>"; };
+		2C9835A11C25539200CA231D /* STMArticleSelecting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticleSelecting.h; sourceTree = "<group>"; };
 		2C9D04B41ADBC01800D0421D /* STMRemoteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRemoteController.h; sourceTree = "<group>"; };
 		2C9D04B51ADBC01800D0421D /* STMRemoteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRemoteController.m; sourceTree = "<group>"; };
 		2C9D04B81ADE549400D0421D /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
@@ -1721,6 +1722,7 @@
 				2CEE305C1BF0CFB7009B229F /* STMBarCodeScannerDelegate.h */,
 				2CE3F53C1C14287200D8B4F3 /* STMInventoryControlling.h */,
 				2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */,
+				2C9835A11C25539200CA231D /* STMArticleSelecting.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";

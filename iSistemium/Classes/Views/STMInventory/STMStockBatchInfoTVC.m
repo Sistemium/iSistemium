@@ -8,6 +8,8 @@
 
 #import "STMStockBatchInfoTVC.h"
 
+#import "STMInventoryNC.h"
+
 #import "STMInventoryArticleSelectTVC.h"
 #import "STMInventoryInfoSelectTVC.h"
 
@@ -16,14 +18,31 @@
 
 @interface STMStockBatchInfoTVC ()
 
+@property (nonatomic, weak) STMInventoryNC *parentNC;
+
 @property (nonatomic, strong) NSArray *operations;
 @property (nonatomic, strong) NSArray *barcodes;
+
+@property (nonatomic, strong) STMArticle *replacingArticle;
 
 
 @end
 
 
 @implementation STMStockBatchInfoTVC
+
+- (STMInventoryNC *)parentNC {
+
+    if (!_parentNC) {
+    
+        if ([self.navigationController isKindOfClass:[STMInventoryNC class]]) {
+            _parentNC = (STMInventoryNC *)self.navigationController;
+        }
+        
+    }
+    return _parentNC;
+
+}
 
 - (NSArray *)operations {
     
@@ -56,6 +75,18 @@
         
     }
     return _barcodes;
+    
+}
+
+
+#pragma mark - STMArticleSelecting protocol
+
+- (void)selectArticle:(STMArticle *)article withSearchedBarcode:(NSString *)barcode {
+    
+    [self.parentNC popToViewController:self animated:YES];
+
+    self.replacingArticle = article;
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
     
 }
 
@@ -154,7 +185,7 @@
     switch (indexPath.row) {
         case 0: {
          
-            STMArticle *article = self.stockBatch.article;
+            STMArticle *article = (self.replacingArticle) ? self.replacingArticle : self.stockBatch.article;
             
             NSString *labelText = article.name;
             
@@ -232,7 +263,8 @@
             
                 STMInventoryArticleSelectTVC *articleSelectTVC = [[STMInventoryArticleSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
                 articleSelectTVC.articles = articles;
-                articleSelectTVC.selectedArticle = self.stockBatch.article;
+                articleSelectTVC.selectedArticle = (self.replacingArticle) ? self.replacingArticle : self.stockBatch.article;
+                articleSelectTVC.ownerVC = self;
                 
                 [self.navigationController pushViewController:articleSelectTVC animated:YES];
 
@@ -274,6 +306,31 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if ([self isMovingToParentViewController]) {
+        self.parentNC.scanEnabled = NO;
+    }
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    if ([self isMovingFromParentViewController]) {
+        
+        self.parentNC.scanEnabled = YES;
+        
+        self.navigationController.toolbarHidden = YES;
+        
+    }
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

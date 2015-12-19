@@ -326,6 +326,7 @@
     STMInventoryArticleSelectTVC *articleSelectTVC = [[STMInventoryArticleSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
     articleSelectTVC.articles = articles;
     articleSelectTVC.parentNC = self;
+    articleSelectTVC.ownerVC = self;
     articleSelectTVC.searchedBarcode = barcode;
     
     [self pushViewController:articleSelectTVC animated:YES];

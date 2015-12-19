@@ -63,7 +63,8 @@
             if (indexPath) {
                 
                 [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
-                [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+                UITableViewScrollPosition scrollPosition = (![self.searchBar.text isEqualToString:@""]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
+                [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
                 [self tableView:self.tableView didSelectRowAtIndexPath:indexPath];
                 
             }
@@ -186,7 +187,7 @@
         
         STMArticle *article = self.tableData[selectedIndexPath.row];
         
-        [self.parentNC selectArticle:article withSearchedBarcode:self.searchedBarcode];
+        [self.ownerVC selectArticle:article withSearchedBarcode:self.searchedBarcode];
         
     }
     

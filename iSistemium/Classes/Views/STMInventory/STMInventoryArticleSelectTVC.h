@@ -9,6 +9,7 @@
 #import "STMSearchableTVC.h"
 
 #import "STMInventoryNC.h"
+#import "STMArticleSelecting.h"
 
 
 @interface STMInventoryArticleSelectTVC : STMSearchableTVC
@@ -17,6 +18,8 @@
 @property (nonatomic, weak) STMInventoryNC *parentNC;
 @property (nonatomic, weak) NSString *searchedBarcode;
 @property (nonatomic, weak) STMArticle *selectedArticle;
+
+@property (nonatomic, weak) id <STMArticleSelecting> ownerVC;
 
 
 @end
