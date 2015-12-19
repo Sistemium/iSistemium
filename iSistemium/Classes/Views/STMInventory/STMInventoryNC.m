@@ -340,6 +340,7 @@
     STMInventoryInfoSelectTVC *infoSelectTVC = [[STMInventoryInfoSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
     infoSelectTVC.article = article;
     infoSelectTVC.parentNC = self;
+    infoSelectTVC.ownerVC = self;
     
     [self pushViewController:infoSelectTVC animated:YES];
     

@@ -205,7 +205,7 @@
         [self.navigationController popToViewController:self animated:YES];
     }
     
-    [self.parentNC selectInfo:self.selectedProductionInfo];
+    [self.ownerVC selectInfo:self.selectedProductionInfo];
     
 }
 

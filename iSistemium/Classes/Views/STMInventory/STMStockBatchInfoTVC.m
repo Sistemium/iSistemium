@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSArray *barcodes;
 
 @property (nonatomic, strong) STMArticle *replacingArticle;
+@property (nonatomic, strong) STMArticleProductionInfo *replacingInfo;
 
 
 @end
@@ -86,8 +87,20 @@
     [self.parentNC popToViewController:self animated:YES];
 
     self.replacingArticle = article;
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
     
+}
+
+
+#pragma mark - STMProductionInfoSelecting protocol
+
+- (void)selectInfo:(STMArticleProductionInfo *)info {
+    
+    [self.parentNC popToViewController:self animated:YES];
+
+    self.replacingInfo = info;
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+
 }
 
 
@@ -101,7 +114,7 @@
     
     switch (section) {
         case 0:
-            if (self.stockBatch.productionInfo) {
+            if (self.stockBatch.productionInfo || self.replacingInfo) {
                 return 2;
             } else {
                 return 1;
@@ -200,7 +213,7 @@
 
         case 1:
             
-            cell.textLabel.text = [self.stockBatch displayProductionInfo];
+            cell.textLabel.text = (self.replacingInfo) ? [self.replacingInfo displayInfo] : [self.stockBatch displayProductionInfo];
             
             break;
             
@@ -274,8 +287,9 @@
             case 1: {
                 
                 STMInventoryInfoSelectTVC *infoSelectTVC = [[STMInventoryInfoSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
-                infoSelectTVC.article = self.stockBatch.article;
-                infoSelectTVC.currentProductionInfo = self.stockBatch.productionInfo;
+                infoSelectTVC.article = (self.replacingArticle) ? self.replacingArticle : self.stockBatch.article;
+                infoSelectTVC.currentProductionInfo = (self.replacingInfo) ? self.replacingInfo.info : self.stockBatch.productionInfo;
+                infoSelectTVC.ownerVC = self;
                 
                 [self.navigationController pushViewController:infoSelectTVC animated:YES];
                 

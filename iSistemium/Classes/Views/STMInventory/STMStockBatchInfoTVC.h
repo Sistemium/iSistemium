@@ -9,9 +9,10 @@
 #import "STMVariableCellsHeightTVC.h"
 
 #import "STMArticleSelecting.h"
+#import "STMProductionInfoSelecting.h"
 
 
-@interface STMStockBatchInfoTVC : STMVariableCellsHeightTVC <STMArticleSelecting>
+@interface STMStockBatchInfoTVC : STMVariableCellsHeightTVC <STMArticleSelecting, STMProductionInfoSelecting>
 
 @property (nonatomic, strong) STMStockBatch *stockBatch;
 
