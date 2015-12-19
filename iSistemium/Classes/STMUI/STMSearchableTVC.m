@@ -57,9 +57,7 @@
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    
     [self performFetch];
-    
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {

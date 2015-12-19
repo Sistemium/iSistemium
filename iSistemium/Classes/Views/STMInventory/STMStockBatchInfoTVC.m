@@ -8,6 +8,11 @@
 
 #import "STMStockBatchInfoTVC.h"
 
+#import "STMInventoryArticleSelectTVC.h"
+#import "STMInventoryInfoSelectTVC.h"
+
+#import "STMObjectsController.h"
+
 
 @interface STMStockBatchInfoTVC ()
 
@@ -206,6 +211,52 @@
     
     cell.accessoryView = volumeLabel;
 
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        switch (indexPath.row) {
+
+            case 0: {
+                
+                NSArray *articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
+                                                                       orderBy:@"name"
+                                                                     ascending:YES
+                                                                    fetchLimit:0
+                                                                   withFantoms:NO
+                                                        inManagedObjectContext:nil
+                                                                         error:nil];
+
+            
+                STMInventoryArticleSelectTVC *articleSelectTVC = [[STMInventoryArticleSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
+                articleSelectTVC.articles = articles;
+                articleSelectTVC.selectedArticle = self.stockBatch.article;
+                
+                [self.navigationController pushViewController:articleSelectTVC animated:YES];
+
+            }
+                break;
+
+            case 1: {
+                
+                STMInventoryInfoSelectTVC *infoSelectTVC = [[STMInventoryInfoSelectTVC alloc] initWithStyle:UITableViewStyleGrouped];
+                infoSelectTVC.article = self.stockBatch.article;
+                infoSelectTVC.currentProductionInfo = self.stockBatch.productionInfo;
+                
+                [self.navigationController pushViewController:infoSelectTVC animated:YES];
+                
+            }
+                
+                break;
+
+            default:
+                break;
+        }
+        
+    }
+    
 }
 
 

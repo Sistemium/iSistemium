@@ -218,6 +218,17 @@
     
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
+    if (self.currentProductionInfo) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"info == %@", self.currentProductionInfo];
+        NSArray *currentInfo = [self.productionInfo filteredArrayUsingPredicate:predicate];
+        
+        if (currentInfo.count == 1) {
+            self.selectedProductionInfo = currentInfo.firstObject;
+        }
+        
+    }
+
 }
 
 - (void)viewDidLoad {

@@ -18,6 +18,7 @@
 @property (nonatomic, weak) STMInventoryNC *parentNC;
 
 @property (nonatomic, strong) STMArticleProductionInfo *selectedProductionInfo;
+@property (nonatomic, weak) NSString *currentProductionInfo;
 
 - (void)infoSelected;
 

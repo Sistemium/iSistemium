@@ -20,6 +20,7 @@
 #import "STMInventoryArticleSelectTVC.h"
 #import "STMInventoryInfoSelectTVC.h"
 
+
 #define CONNECT_HID_SCANNER_ACTION NSLocalizedString(@"CONNECT HID SCANNER", nil)
 #define DISCONNECT_HID_SCANNER_ACTION NSLocalizedString(@"DISCONNECT HID SCANNER", nil)
 

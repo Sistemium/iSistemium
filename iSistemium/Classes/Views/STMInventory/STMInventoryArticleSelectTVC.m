@@ -42,11 +42,36 @@
     
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+- (void)performFetch {
     
     self.tableData = nil;
     [self.tableView reloadData];
+    [self selectSelectedArticleCell];
     
+}
+
+- (void)selectSelectedArticleCell {
+    
+    if (self.selectedArticle) {
+        
+        NSInteger index = [self.tableData indexOfObject:(STMArticle * _Nonnull)self.selectedArticle];
+        
+        if (index != NSNotFound) {
+            
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+            
+            if (indexPath) {
+                
+                [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+                [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+                [self tableView:self.tableView didSelectRowAtIndexPath:indexPath];
+                
+            }
+            
+        }
+        
+    }
+
 }
 
 
@@ -72,6 +97,8 @@
     cell.detailTextLabel.text = article.extraLabel;
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+    cell.accessoryType = ([article isEqual:self.selectedArticle]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     
     return cell;
     
@@ -98,6 +125,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    self.selectedArticle = self.tableData[indexPath.row];
     
     [self updateDoneButton];
     
@@ -173,6 +202,7 @@
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
 
     [self setupToolbar];
+    [self selectSelectedArticleCell];
     
 }
 
