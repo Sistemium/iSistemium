@@ -11,10 +11,14 @@
 #import "STMArticleSelecting.h"
 #import "STMProductionInfoSelecting.h"
 
+#import "STMInventoryItemsVC.h"
+
 
 @interface STMStockBatchInfoTVC : STMVariableCellsHeightTVC <STMArticleSelecting, STMProductionInfoSelecting>
 
 @property (nonatomic, strong) STMStockBatch *stockBatch;
+
+@property (nonatomic, weak) STMInventoryItemsVC *parentVC;
 
 
 @end

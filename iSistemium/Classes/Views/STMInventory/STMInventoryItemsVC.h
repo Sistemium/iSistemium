@@ -17,6 +17,6 @@
 @property (nonatomic, strong) NSString *productionInfo;
 
 - (void)showStockBatchInfo;
-
+- (void)updateStockBatchInfo;
 
 @end

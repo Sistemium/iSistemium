@@ -79,7 +79,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (!self.inventoryBatch.isDone.boolValue) {
+    if (!self.inventoryBatch.isDone.boolValue && indexPath.row == 1) {
         [self.parentVC showStockBatchInfo];
     }
     

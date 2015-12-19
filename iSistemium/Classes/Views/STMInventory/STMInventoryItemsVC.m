@@ -192,6 +192,7 @@
         
         STMStockBatchInfoTVC *stockBatchInfoTVC = (STMStockBatchInfoTVC *)segue.destinationViewController;
         stockBatchInfoTVC.stockBatch = self.inventoryBatch.stockBatch;
+        stockBatchInfoTVC.parentVC = self;
         
     }
     
@@ -199,6 +200,14 @@
 
 - (void)showStockBatchInfo {
     [self performSegueWithIdentifier:@"showStockBatchInfo" sender:nil];
+}
+
+- (void)updateStockBatchInfo {
+    
+    self.inventoryBatch.article = self.inventoryBatch.stockBatch.article;
+    self.infoTVC.productionInfo = [self.inventoryBatch.stockBatch displayProductionInfo];
+    [self.infoTVC refreshInfo];
+    
 }
 
 #pragma mark - view lifecycle

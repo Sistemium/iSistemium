@@ -382,6 +382,22 @@
 
 - (void)doneButtonPressed {
     
+    if (self.replacingArticle) {
+        
+        self.stockBatch.article = self.replacingArticle;
+        
+        self.stockBatch.productionInfo = (self.replacingArticle.productionInfoType) ? self.replacingInfo.info : nil;
+        
+    }
+    
+    if (self.replacingInfo) {
+        self.stockBatch.productionInfo = self.replacingInfo.info;
+    }
+    
+    [self.parentVC updateStockBatchInfo];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+
 }
 
 
