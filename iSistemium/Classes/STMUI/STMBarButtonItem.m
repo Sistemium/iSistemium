@@ -97,4 +97,18 @@
 
 }
 
+- (void)setTintColor:(UIColor *)tintColor {
+    
+    [super setTintColor:tintColor];
+    
+    if (tintColor) {
+        
+        NSDictionary *textAttributes = @{NSForegroundColorAttributeName:tintColor};
+        [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+
+    }
+    
+}
+
+
 @end

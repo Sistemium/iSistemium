@@ -214,7 +214,7 @@
 }
 
 
-#pragma mark - view lifecycle
+#pragma mark - table view data
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
