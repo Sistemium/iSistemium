@@ -62,10 +62,10 @@
             
             if (indexPath) {
                 
-                [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+//                [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
                 UITableViewScrollPosition scrollPosition = (![self.searchBar.text isEqualToString:@""]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
                 [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
-                [self tableView:self.tableView didSelectRowAtIndexPath:indexPath];
+//                [self tableView:self.tableView didSelectRowAtIndexPath:indexPath];
                 
             }
             
@@ -126,6 +126,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     
     self.selectedArticle = self.tableData[indexPath.row];
     

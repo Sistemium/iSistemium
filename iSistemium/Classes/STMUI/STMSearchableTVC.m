@@ -90,16 +90,20 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
     self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchBar.frame.size.height);
-    
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    
     [self hideKeyboard];
-    
 }
+
+
+#pragma mark - table view delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self hideKeyboard];
+}
+
 
 #pragma mark - view lifecycle
 
