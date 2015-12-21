@@ -22,6 +22,8 @@
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
+@property (nonatomic) NSInteger remainingVolume;
+
 
 @end
 
@@ -48,6 +50,7 @@
     
     _supplyOrderArticleDoc = supplyOrderArticleDoc;
     
+    [self setupToolbar];
     [self performFetch];
 
 }
@@ -147,6 +150,7 @@
         
         cell.textLabel.text = @"";
         cell.detailTextLabel.text = @"";
+        cell.accessoryView = nil;
         
     }
     
@@ -162,7 +166,10 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
     [self.tableView reloadData];
+    [self setupToolbar];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -271,6 +278,30 @@
 }
 
 
+#pragma mark - toolbar
+
+- (void)setupToolbar {
+    
+    NSInteger minusVolume = [[self.supplyOrderArticleDoc.sourceOperations valueForKeyPath:@"@sum.volume"] integerValue];
+    self.remainingVolume = self.supplyOrderArticleDoc.volume.integerValue - minusVolume;
+    
+    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
+    
+    STMBarButtonItem *infoLabel = [[STMBarButtonItem alloc] initWithTitle:title
+                                                                    style:UIBarButtonItemStylePlain
+                                                                   target:nil
+                                                                   action:nil];
+    
+    infoLabel.enabled = NO;
+    infoLabel.tintColor = [UIColor blackColor];
+    
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+    
+    [self setToolbarItems:@[flexibleSpace, infoLabel, flexibleSpace] animated:NO];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -280,6 +311,8 @@
     self.navigationItem.hidesBackButton = YES;
     self.navigationItem.title = self.supplyOrderArticleDoc.supplyOrder.ndoc;
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
+    
+    [self setupToolbar];
     
     [self performFetch];
     

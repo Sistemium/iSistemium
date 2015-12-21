@@ -31,13 +31,18 @@
     
     NSInteger volume = self.volume.integerValue;
     
-    for (STMStockBatchOperation *operation in nonProcessedSourceOperations) {
-        volume -= operation.volume.integerValue;
-    }
+    NSInteger minusVolume = [[nonProcessedSourceOperations valueForKeyPath:@"@sum.volume"] integerValue];
+    NSInteger plusVolume = [[nonProcessedDestinationOperations valueForKeyPath:@"@sum.volume"] integerValue];
 
-    for (STMStockBatchOperation *operation in nonProcessedDestinationOperations) {
-        volume += operation.volume.integerValue;
-    }
+    volume = volume - minusVolume + plusVolume;
+    
+//    for (STMStockBatchOperation *operation in nonProcessedSourceOperations) {
+//        volume -= operation.volume.integerValue;
+//    }
+//
+//    for (STMStockBatchOperation *operation in nonProcessedDestinationOperations) {
+//        volume += operation.volume.integerValue;
+//    }
     
     return volume;
     
