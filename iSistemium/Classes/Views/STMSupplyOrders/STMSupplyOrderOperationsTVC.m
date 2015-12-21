@@ -178,17 +178,11 @@
 #pragma mark - barcode scanning
 
 - (void)checkIfBarcodeScanerIsNeeded {
-    
     ([self orderIsProcessed]) ? [self startBarcodeScanning] : [self stopBarcodeScanning];
-    
 }
 
 - (void)startBarcodeScanning {
-    
     [self startIOSModeScanner];
-    
-//    ([self.iOSModeBarCodeScanner isDeviceConnected]) ? [self addBarcodeImage] : [self removeBarcodeImage];
-    
 }
 
 - (void)startIOSModeScanner {
@@ -200,9 +194,7 @@
 }
 
 - (void)stopBarcodeScanning {
-
     [self stopIOSModeScanner];
-    
 }
 
 - (void)stopIOSModeScanner {
@@ -246,10 +238,7 @@
 - (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
     
     if (scanner == self.iOSModeBarCodeScanner) {
-        
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
-//        [self addBarcodeImage];
-        
     }
     
 }
@@ -257,10 +246,7 @@
 - (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
     
     if (scanner == self.iOSModeBarCodeScanner) {
-        
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
-//        [self removeBarcodeImage];
-        
     }
     
 }

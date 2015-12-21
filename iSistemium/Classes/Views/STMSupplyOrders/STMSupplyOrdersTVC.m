@@ -372,7 +372,7 @@
 }
 
 - (void)toolBarLayoutDone {
-    [self setupToolbar];
+    if ([self.navigationController.topViewController isEqual:self]) [self setupToolbar];
 }
 
 
