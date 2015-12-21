@@ -282,8 +282,7 @@
 
 - (void)setupToolbar {
     
-    NSInteger minusVolume = [[self.supplyOrderArticleDoc.sourceOperations valueForKeyPath:@"@sum.volume"] integerValue];
-    self.remainingVolume = self.supplyOrderArticleDoc.volume.integerValue - minusVolume;
+    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
     
     NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
     

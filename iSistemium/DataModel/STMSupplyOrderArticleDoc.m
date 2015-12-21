@@ -11,6 +11,8 @@
 #import "STMArticleDoc.h"
 #import "STMSupplyOrder.h"
 
+#import "STMStockBatchOperation.h"
+
 #import "STMFunctions.h"
 
 
@@ -25,6 +27,27 @@
 
 - (STMArticle *)operatingArticle {
     return (self.article) ? (STMArticle * _Nonnull)self.article : self.articleDoc.article;
+}
+
+- (NSInteger)volumeRemainingToSupply {
+
+    NSInteger minusVolume = [[self.sourceOperations valueForKeyPath:@"@sum.volume"] integerValue];
+    return self.volume.integerValue - minusVolume;
+
+}
+
+- (NSInteger)lastSourceOperationVolume {
+    
+    NSSortDescriptor *deviceCtsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
+                                                                          ascending:NO
+                                                                           selector:@selector(compare:)];
+    
+    NSArray *operations = [self.sourceOperations sortedArrayUsingDescriptors:@[deviceCtsDescriptor]];
+    
+    STMStockBatchOperation *operation = operations.firstObject;
+    
+    return operation.volume.integerValue;
+    
 }
 
 

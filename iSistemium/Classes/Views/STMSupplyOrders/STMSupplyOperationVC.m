@@ -110,8 +110,11 @@
     
     self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
 
-    self.volumePicker.volume = self.supplyOrderArticleDoc.volume.integerValue;
-    self.volumePicker.selectedVolume = self.supplyOrderArticleDoc.volume.integerValue;
+    NSInteger remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+    
+    self.volumePicker.volume = remainingVolume;
+    
+    self.volumePicker.selectedVolume = (self.supplyOrderArticleDoc.sourceOperations.count > 0) ? [self.supplyOrderArticleDoc lastSourceOperationVolume] : remainingVolume;
     
 }
 
