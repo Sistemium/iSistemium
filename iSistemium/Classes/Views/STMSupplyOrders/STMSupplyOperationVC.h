@@ -9,11 +9,15 @@
 #import <UIKit/UIKit.h>
 
 #import "STMDataModel.h"
+#import "STMSupplyOrderOperationsTVC.h"
 
 
 @interface STMSupplyOperationVC : UIViewController
 
 @property (nonatomic, strong) STMSupplyOrderArticleDoc *supplyOrderArticleDoc;
+@property (nonatomic, strong) STMStockBatchOperation *supplyOperation;
+
+@property (nonatomic, weak) STMSupplyOrderOperationsTVC *parentTVC;
 
 @property (nonatomic, strong) NSString *initialBarcode;
 

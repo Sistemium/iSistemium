@@ -11,6 +11,7 @@
 #import "STMArticleDoc.h"
 #import "STMSupplyOrder.h"
 
+#import "STMStockBatch.h"
 #import "STMStockBatchOperation.h"
 
 #import "STMFunctions.h"
@@ -38,6 +39,32 @@
 
 - (NSInteger)lastSourceOperationVolume {
     
+    STMStockBatchOperation *operation = [self lastOperation];
+    
+    return operation.volume.integerValue;
+    
+}
+
+- (NSInteger)lastSourceOperationNumberOfBarcodes {
+    
+    STMStockBatchOperation *operation = [self lastOperation];
+    
+    if ([operation.destinationAgent isKindOfClass:[STMStockBatch class]]) {
+        
+        STMStockBatch *stockBatch = (STMStockBatch *)operation.destinationAgent;
+        
+        return stockBatch.barCodes.count;
+        
+    } else {
+        
+        return 0;
+        
+    }
+    
+}
+
+- (STMStockBatchOperation *)lastOperation {
+    
     NSSortDescriptor *deviceCtsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
                                                                           ascending:NO
                                                                            selector:@selector(compare:)];
@@ -45,8 +72,8 @@
     NSArray *operations = [self.sourceOperations sortedArrayUsingDescriptors:@[deviceCtsDescriptor]];
     
     STMStockBatchOperation *operation = operations.firstObject;
-    
-    return operation.volume.integerValue;
+
+    return operation;
     
 }
 

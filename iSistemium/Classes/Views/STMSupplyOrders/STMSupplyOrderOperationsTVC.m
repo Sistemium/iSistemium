@@ -13,6 +13,7 @@
 #import "STMSoundController.h"
 
 #import "STMSupplyOperationVC.h"
+#import "STMSupplyOrdersProcessController.h"
 
 
 @interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate>
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 @property (nonatomic) NSInteger remainingVolume;
+@property (nonatomic, strong) NSMutableArray *stockBatchCodes;
 
 
 @end
@@ -53,6 +55,15 @@
     [self setupToolbar];
     [self performFetch];
 
+}
+
+- (NSMutableArray *)stockBatchCodes {
+    
+    if (!_stockBatchCodes) {
+        _stockBatchCodes = @[].mutableCopy;
+    }
+    return _stockBatchCodes;
+    
 }
 
 - (BOOL)orderIsProcessed {
@@ -158,6 +169,14 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([self orderIsProcessed]) {
+        [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
+    }
+    
+}
+
 
 #pragma mark - NSFetchedResultsController delegate
 
@@ -229,9 +248,30 @@
             [self.operationVC addStockBatchCode:barcode];
             
         } else {
-        
-            [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
 
+            if ([self.supplyOrderArticleDoc volumeRemainingToSupply] < [self.supplyOrderArticleDoc lastSourceOperationVolume]) {
+                self.repeatLastOperation = NO;
+            }
+            
+            if (self.repeatLastOperation) {
+
+                [self.stockBatchCodes addObject:barcode];
+                
+                if (self.stockBatchCodes.count >= [self.supplyOrderArticleDoc lastSourceOperationNumberOfBarcodes]) {
+                    
+                    [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
+                                                                                    withCodes:self.stockBatchCodes
+                                                                                    andVolume:[self.supplyOrderArticleDoc lastSourceOperationVolume]];
+                    self.stockBatchCodes = nil;
+                    
+                }
+                
+            } else {
+            
+                [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
+
+            }
+            
         }
         
     }
@@ -264,14 +304,26 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 
     if ([segue.identifier isEqualToString:@"showSupplyOperation"] &&
-        [segue.destinationViewController isKindOfClass:[STMSupplyOperationVC class]] &&
-        [sender isKindOfClass:[NSString class]]) {
+        [segue.destinationViewController isKindOfClass:[STMSupplyOperationVC class]]) {
         
-        NSString *barcode = (NSString *)sender;
-        self.operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
-        
-        self.operationVC.initialBarcode = barcode;
-        self.operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
+        if ([sender isKindOfClass:[NSString class]]) {
+            
+            NSString *barcode = (NSString *)sender;
+            self.operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
+            
+            self.operationVC.initialBarcode = barcode;
+            self.operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
+
+        } else if ([sender isKindOfClass:[NSIndexPath class]]) {
+            
+            NSIndexPath *indexPath = (NSIndexPath *)sender;
+            STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
+            
+            self.operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
+            self.operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
+            self.operationVC.supplyOperation = operation;
+            
+        }
         
     }
 

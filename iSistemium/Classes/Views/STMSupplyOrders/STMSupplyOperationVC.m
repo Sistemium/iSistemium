@@ -11,6 +11,8 @@
 #import "STMStockBatchCodesTVC.h"
 #import "STMObjectsController.h"
 
+#import "STMSupplyOrdersProcessController.h"
+
 
 @interface STMSupplyOperationVC ()
 
@@ -20,6 +22,7 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *repeatButton;
 
 @property (nonatomic, strong) STMStockBatchCodesTVC *codesTVC;
 
@@ -30,15 +33,21 @@
 @implementation STMSupplyOperationVC
 
 - (IBAction)cancelButtonPressed:(id)sender {
-    
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)repeatButtonPressed:(id)sender {
     
+    self.parentTVC.repeatLastOperation = YES;
+    [self saveData];
+    [self dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 - (IBAction)doneButtonPressed:(id)sender {
     
+    self.parentTVC.repeatLastOperation = NO;
     [self saveData];
-    
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
@@ -49,39 +58,18 @@
 
 - (void)saveData {
     
-    STMStockBatch *stockBatch = (STMStockBatch *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMStockBatch class])
-                                                                                     isFantom:NO];
-    
-    stockBatch.article = [self.supplyOrderArticleDoc operatingArticle];
-    
-    for (NSString *code in [self.codesTVC.stockBatchCodes valueForKeyPath:@"code"]) {
+    if (self.supplyOperation) {
         
-        STMStockBatchBarCode *barCode = (STMStockBatchBarCode *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMStockBatchBarCode class])
-                                                                                                    isFantom:NO];
-        barCode.code = code;
-        barCode.stockBatch = stockBatch;
+        [STMSupplyOrdersProcessController changeOperation:self.supplyOperation
+                                                newVolume:self.volumePicker.selectedVolume];
         
-    }
+    } else if (self.supplyOrderArticleDoc) {
     
-    STMStockBatchOperation *operation = (STMStockBatchOperation *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMStockBatchOperation class])
-                                                                                                      isFantom:NO];
-    
-    operation.volume = @(self.volumePicker.selectedVolume);
-    
-    NSString *sourceEntity = [NSStringFromClass([STMSupplyOrderArticleDoc class]) stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-    NSString *destinationEntity = [NSStringFromClass([STMStockBatch class]) stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
+        [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
+                                                                        withCodes:[self.codesTVC.stockBatchCodes valueForKeyPath:@"code"]
+                                                                        andVolume:self.volumePicker.selectedVolume];
 
-    operation.sourceAgent = self.supplyOrderArticleDoc;
-    operation.sourceXid = self.supplyOrderArticleDoc.xid;
-    operation.sourceEntity = sourceEntity;
-    
-    operation.destinationAgent = stockBatch;
-    operation.destinationXid = stockBatch.xid;
-    operation.destinationEntity = destinationEntity;
-    
-    [[STMObjectsController document] saveDocument:^(BOOL success) {
-        
-    }];
+    }
     
 }
 
@@ -95,7 +83,19 @@
         
         self.codesTVC = (STMStockBatchCodesTVC *)segue.destinationViewController;
         
-        [self.codesTVC addStockBatchCode:self.initialBarcode];
+        if (self.supplyOperation && [self.supplyOperation.destinationAgent isKindOfClass:[STMStockBatch class]]) {
+            
+            STMStockBatch *stockBatch = (STMStockBatch *)self.supplyOperation.destinationAgent;
+            
+            for (STMStockBatchBarCode *barCode in stockBatch.barCodes) {
+                [self.codesTVC addStockBatchCode:barCode.code];
+            }
+            
+        } else if (self.initialBarcode) {
+            
+            [self.codesTVC addStockBatchCode:self.initialBarcode];
+
+        }
         
     }
     
@@ -106,15 +106,34 @@
 
 - (void)customInit {
     
-    self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
-    
-    self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
+    if (self.supplyOperation && [self.supplyOperation.sourceAgent isKindOfClass:[STMSupplyOrderArticleDoc class]]) {
+        
+        NSMutableArray *toolbarButtons = [self.toolbarItems mutableCopy];
+        
+        [toolbarButtons removeObject:self.repeatButton];
+        [self setToolbarItems:toolbarButtons animated:YES];
 
-    NSInteger remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
-    
-    self.volumePicker.volume = remainingVolume;
-    
-    self.volumePicker.selectedVolume = (self.supplyOrderArticleDoc.sourceOperations.count > 0) ? [self.supplyOrderArticleDoc lastSourceOperationVolume] : remainingVolume;
+        self.supplyOrderArticleDoc = (STMSupplyOrderArticleDoc *)self.supplyOperation.sourceAgent;
+        
+        self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
+        
+        self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
+
+        self.volumePicker.volume = MAX([self.supplyOrderArticleDoc volumeRemainingToSupply], self.supplyOperation.volume.integerValue);
+        
+        self.volumePicker.selectedVolume = self.supplyOperation.volume.integerValue;
+
+    } else if (self.supplyOrderArticleDoc) {
+
+        self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
+        
+        self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
+
+        self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+        
+        self.volumePicker.selectedVolume = (self.supplyOrderArticleDoc.sourceOperations.count > 0) ? [self.supplyOrderArticleDoc lastSourceOperationVolume] : 0;
+
+    }
     
 }
 

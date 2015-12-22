@@ -12,6 +12,8 @@
 
 @property (nonatomic, strong) STMSupplyOrderArticleDoc *supplyOrderArticleDoc;
 
+@property (nonatomic) BOOL repeatLastOperation;
+
 - (void)orderProcessingChanged;
 
 

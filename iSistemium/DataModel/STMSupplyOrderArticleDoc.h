@@ -17,8 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)volumeText;
 - (STMArticle *)operatingArticle;
+
 - (NSInteger)volumeRemainingToSupply;
+
 - (NSInteger)lastSourceOperationVolume;
+- (NSInteger)lastSourceOperationNumberOfBarcodes;
 
 
 @end
