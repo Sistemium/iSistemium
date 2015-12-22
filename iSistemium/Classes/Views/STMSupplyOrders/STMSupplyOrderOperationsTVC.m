@@ -105,26 +105,105 @@
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (self.resultsController.fetchedObjects.count > 0) {
-        return [super tableView:tableView numberOfRowsInSection:section];
-    } else {
-        return 1;
+    switch (section) {
+        case 0:
+            return 1;
+            break;
+
+        case 1:
+            if (self.resultsController.fetchedObjects.count > 0) {
+                return [super tableView:tableView numberOfRowsInSection:section];
+            } else {
+                return 1;
+            }
+            break;
+
+        default:
+            return 0;
+            break;
     }
     
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
+
+    switch (section) {
+        case 0:
+            return NSLocalizedString(@"ARTICLE", nil);
+            break;
+
+        case 1:
+            return NSLocalizedString(@"OPERATIONS", nil);
+            break;
+
+        default:
+            return nil;
+            break;
+    }
+    
+    //    return (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    
+    switch (indexPath.section) {
+        case 0:
+            [self fillArticleCell:cell];
+            break;
+
+        case 1:
+            [self fillOperationCell:cell atIndexPath:indexPath];
+            break;
+
+        default:
+            break;
+    }
+    
+    return cell;
+    
+}
+
+- (void)fillArticleCell:(STMTableViewSubtitleStyleCell *)cell {
+    
+    STMArticle *article = [self.supplyOrderArticleDoc operatingArticle];
+    
+    cell.textLabel.numberOfLines = 0;
+    cell.textLabel.textColor = (self.supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
+    cell.textLabel.text = article.name;
+    
+    NSMutableArray *dates = @[].mutableCopy;
+    
+    if (self.supplyOrderArticleDoc.articleDoc.dateProduction) {
+        
+        NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateProduction];
+        dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
+        
+        [dates addObject:dateProduction];
+        
+    }
+    
+    if (self.supplyOrderArticleDoc.articleDoc.dateImport) {
+        
+        NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateImport];
+        dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
+        [dates addObject:dateImport];
+        
+    }
+    
+    cell.detailTextLabel.text  = [dates componentsJoinedByString:@" / "];
+    
+}
+
+- (void)fillOperationCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
     
     if (self.resultsController.fetchedObjects.count > 0) {
         
@@ -154,36 +233,49 @@
         
         NSString *volumeString = [STMFunctions volumeStringWithVolume:operation.volume.integerValue
                                                         andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
-
+        
         STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 46, 21)];
         volumeLabel.text = volumeString;
         volumeLabel.textAlignment = NSTextAlignmentRight;
         volumeLabel.adjustsFontSizeToFitWidth = YES;
         
         cell.accessoryView = volumeLabel;
-
-    } else {
-        
-        cell.textLabel.text = @"";
-        cell.detailTextLabel.text = @"";
-        cell.accessoryView = nil;
         
     }
-    
-    return cell;
-    
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if ([self orderIsProcessed]) {
-        [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
+     
+        if (indexPath.section == 0) {
+            
+            if (!self.supplyOrderArticleDoc.article) {
+                [self showArticleSelectionPopoverWithArticles:nil];
+            }
+            
+        } else if (indexPath.section == 1) {
+            
+            [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
+            
+        }
     }
     
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return ([self orderIsProcessed] && self.resultsController.fetchedObjects.count > 0) ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
+    
+    if ([self orderIsProcessed] && self.resultsController.fetchedObjects.count > 0  && indexPath.section == 1) {
+        
+        return UITableViewCellEditingStyleDelete;
+        
+    } else {
+        
+        return UITableViewCellEditingStyleNone;
+        
+    }
+    
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -265,14 +357,6 @@
             
         } else {
             
-            if (articles.count == 0) articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
-                                                                                   orderBy:@"name"
-                                                                                 ascending:YES
-                                                                                fetchLimit:0
-                                                                               withFantoms:NO
-                                                                    inManagedObjectContext:nil
-                                                                                     error:nil];
-            
             [self showArticleSelectionPopoverWithArticles:articles];
             
         }
@@ -326,6 +410,14 @@
 
 - (void)showArticleSelectionPopoverWithArticles:(NSArray *)articles {
     
+    if (articles.count == 0) articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
+                                                                           orderBy:@"name"
+                                                                         ascending:YES
+                                                                        fetchLimit:0
+                                                                       withFantoms:NO
+                                                            inManagedObjectContext:nil
+                                                                             error:nil];
+
     STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
     articleSelectionTVC.articles = articles;
 

@@ -58,6 +58,17 @@
     // Configure the view for the selected state
 }
 
+- (void)prepareForReuse {
+    
+    [super prepareForReuse];
+    
+    self.textLabel.text = @"";
+    self.textLabel.textColor = [UIColor blackColor];
+    self.detailTextLabel.text = @"";
+    self.accessoryView = nil;
+
+}
+
 @end
 
 
