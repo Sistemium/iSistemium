@@ -9,11 +9,14 @@
 #import "STMSupplyOrderOperationsTVC.h"
 
 #import "STMSupplyOrdersSVC.h"
+#import "STMSupplyOperationVC.h"
+#import "STMArticleSelectionTVC.h"
+
 #import "STMBarCodeScanner.h"
 #import "STMSoundController.h"
-
-#import "STMSupplyOperationVC.h"
 #import "STMSupplyOrdersProcessController.h"
+#import "STMBarCodeController.h"
+#import "STMObjectsController.h"
 
 
 @interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate>
@@ -25,6 +28,8 @@
 
 @property (nonatomic) NSInteger remainingVolume;
 @property (nonatomic, strong) NSMutableArray *stockBatchCodes;
+
+@property (nonatomic, strong) UIPopoverController *articleSelectionPopover;
 
 
 @end
@@ -245,31 +250,57 @@
     
 }
 
+- (void)receiveArticleBarcode:(NSString *)barcode {
+    
+    if (self.supplyOrderArticleDoc.article) {
+        
+    } else {
+    
+        NSArray *articles = [STMBarCodeController articlesForBarcode:barcode];
+        
+        if (articles.count == 1) {
+            
+            STMArticle *article = articles.firstObject;
+            self.supplyOrderArticleDoc.article = article;
+            
+        } else {
+            
+            if (articles.count == 0) articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
+                                                                                   orderBy:@"name"
+                                                                                 ascending:YES
+                                                                                fetchLimit:0
+                                                                               withFantoms:NO
+                                                                    inManagedObjectContext:nil
+                                                                                     error:nil];
+            
+            [self showArticleSelectionPopoverWithArticles:articles];
+            
+        }
 
-#pragma mark - STMBarCodeScannerDelegate
-
-- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
-    return self.view;
+    }
+    
 }
 
-- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+- (void)receiveStockBatchBarcode:(NSString *)barcode {
     
-    NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
+    if (!self.supplyOrderArticleDoc.article) {
+        
+        [STMSoundController alertSay:NSLocalizedString(@"CONFIRM ARTICLE FOR START", nil)];
+        
+    } else {
     
-    if (type == STMBarCodeTypeStockBatch) {
-
         if ([self.presentedViewController isEqual:self.operationVC]) {
             
             [self.operationVC addStockBatchCode:barcode];
             
         } else {
-
+            
             if ([self.supplyOrderArticleDoc volumeRemainingToSupply] < [self.supplyOrderArticleDoc lastSourceOperationVolume]) {
                 self.repeatLastOperation = NO;
             }
             
             if (self.repeatLastOperation) {
-
+                
                 [self.stockBatchCodes addObject:barcode];
                 
                 if (self.stockBatchCodes.count >= [self.supplyOrderArticleDoc lastSourceOperationNumberOfBarcodes]) {
@@ -282,15 +313,61 @@
                 }
                 
             } else {
-            
+                
                 [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
-
+                
             }
             
         }
-        
+
     }
     
+}
+
+- (void)showArticleSelectionPopoverWithArticles:(NSArray *)articles {
+    
+    STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    articleSelectionTVC.articles = articles;
+
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
+
+    self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
+    
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+
+}
+
+
+#pragma mark - STMBarCodeScannerDelegate
+
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+    
+    NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
+    
+    switch (type) {
+        case STMBarCodeTypeUnknown: {
+            
+            break;
+        }
+        case STMBarCodeTypeArticle: {
+            [self receiveArticleBarcode:barcode];
+            break;
+        }
+        case STMBarCodeTypeExciseStamp: {
+            
+            break;
+        }
+        case STMBarCodeTypeStockBatch: {
+            [self receiveStockBatchBarcode:barcode];
+            break;
+        }
+    }
+
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
