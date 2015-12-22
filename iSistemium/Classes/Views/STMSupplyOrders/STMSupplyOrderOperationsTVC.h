@@ -15,6 +15,7 @@
 @property (nonatomic) BOOL repeatLastOperation;
 
 - (void)orderProcessingChanged;
+- (void)confirmArticle:(STMArticle *)article;
 
 
 @end

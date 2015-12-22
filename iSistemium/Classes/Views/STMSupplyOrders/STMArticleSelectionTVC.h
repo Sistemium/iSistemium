@@ -7,12 +7,13 @@
 //
 
 #import "STMSearchableTVC.h"
+#import "STMSupplyOrderOperationsTVC.h"
+
 
 @interface STMArticleSelectionTVC : STMSearchableTVC
 
 @property (nonatomic, strong) NSArray *articles;
-
-@property (nonatomic, weak) STMArticle *selectedArticle;
+@property (nonatomic, weak) STMSupplyOrderOperationsTVC *parentVC;
 
 
 @end

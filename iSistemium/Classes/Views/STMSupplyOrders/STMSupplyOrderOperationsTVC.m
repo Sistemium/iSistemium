@@ -28,6 +28,7 @@
 
 @property (nonatomic) NSInteger remainingVolume;
 @property (nonatomic, strong) NSMutableArray *stockBatchCodes;
+@property (nonatomic, strong) NSString *articleBarCode;
 
 @property (nonatomic, strong) UIPopoverController *articleSelectionPopover;
 
@@ -57,6 +58,8 @@
     
     _supplyOrderArticleDoc = supplyOrderArticleDoc;
     
+    self.repeatLastOperation = NO;
+    
     [self setupToolbar];
     [self performFetch];
 
@@ -77,6 +80,13 @@
 
 - (void)orderProcessingChanged {
     [self checkIfBarcodeScanerIsNeeded];
+}
+
+- (void)confirmArticle:(STMArticle *)article {
+    
+    self.supplyOrderArticleDoc.article = article;
+    self.supplyOrderArticleDoc.code = self.articleBarCode;
+    
 }
 
 - (NSFetchedResultsController *)resultsController {
@@ -117,7 +127,7 @@
 
         case 1:
             if (self.resultsController.fetchedObjects.count > 0) {
-                return [super tableView:tableView numberOfRowsInSection:section];
+                return [super tableView:tableView numberOfRowsInSection:section-1];
             } else {
                 return 1;
             }
@@ -203,7 +213,7 @@
 
 - (void)fillOperationCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
     
     if (self.resultsController.fetchedObjects.count > 0) {
         
@@ -260,6 +270,7 @@
             [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
             
         }
+        
     }
     
 }
@@ -348,12 +359,14 @@
         
     } else {
     
+        self.articleBarCode = barcode;
+        
         NSArray *articles = [STMBarCodeController articlesForBarcode:barcode];
         
         if (articles.count == 1) {
             
             STMArticle *article = articles.firstObject;
-            self.supplyOrderArticleDoc.article = article;
+            [self confirmArticle:article];
             
         } else {
             
@@ -420,6 +433,7 @@
 
     STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
     articleSelectionTVC.articles = articles;
+    articleSelectionTVC.parentVC = self;
 
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
 

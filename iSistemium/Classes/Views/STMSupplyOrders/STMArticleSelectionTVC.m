@@ -15,6 +15,8 @@
 @property (nonatomic, strong) STMBarButtonItemDone *doneButton;
 @property (nonatomic, strong) STMBarButtonItemCancel *cancelButton;
 
+@property (nonatomic, weak) STMArticle *selectedArticle;
+
 
 @end
 
@@ -169,7 +171,7 @@
                                                                target:self
                                                                action:@selector(cancelButtonPressed)];
     
-    [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], self.doneButton]];
+    [self setToolbarItems:@[self.cancelButton, [STMBarButtonItem flexibleSpace], self.doneButton]];
     
 }
 
@@ -193,8 +195,9 @@
         
         STMArticle *article = self.tableData[selectedIndexPath.row];
         
-//        [self.ownerVC selectArticle:article withSearchedBarcode:self.searchedBarcode];
-        
+        [self.parentVC confirmArticle:article];
+        [self dismissViewControllerAnimated:NO completion:nil];
+
     }
     
 }
