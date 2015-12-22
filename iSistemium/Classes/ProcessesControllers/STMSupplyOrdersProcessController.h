@@ -17,5 +17,7 @@
 + (void)changeOperation:(STMStockBatchOperation *)operation
               newVolume:(NSInteger)newVolume;
 
++ (void)removeOperation:(STMStockBatchOperation *)operation;
+
 
 @end

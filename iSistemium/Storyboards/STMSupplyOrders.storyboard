@@ -189,6 +189,7 @@
                         <outlet property="cancelButton" destination="xNP-8o-hmC" id="hiN-Xu-gMl"/>
                         <outlet property="doneButton" destination="Xv8-hf-TIe" id="i4L-az-A3e"/>
                         <outlet property="repeatButton" destination="s7l-dU-Ev0" id="YCB-Pn-7HK"/>
+                        <outlet property="toolbar" destination="Zlx-Zo-J3h" id="byc-Mu-kdJ"/>
                         <outlet property="volumePicker" destination="6fw-Rk-NdU" id="NZ1-Nr-aih"/>
                     </connections>
                 </viewController>

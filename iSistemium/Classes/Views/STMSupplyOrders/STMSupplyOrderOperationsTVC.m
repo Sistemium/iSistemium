@@ -177,6 +177,21 @@
     
 }
 
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return ([self orderIsProcessed] && self.resultsController.fetchedObjects.count > 0) ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
+        [STMSupplyOrdersProcessController removeOperation:operation];
+        
+    }
+    
+}
+
 
 #pragma mark - NSFetchedResultsController delegate
 
@@ -305,22 +320,20 @@
 
     if ([segue.identifier isEqualToString:@"showSupplyOperation"] &&
         [segue.destinationViewController isKindOfClass:[STMSupplyOperationVC class]]) {
-        
+
+        self.operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
+        self.operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
+        self.operationVC.parentTVC = self;
+
         if ([sender isKindOfClass:[NSString class]]) {
             
             NSString *barcode = (NSString *)sender;
-            self.operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
-            
             self.operationVC.initialBarcode = barcode;
-            self.operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
 
         } else if ([sender isKindOfClass:[NSIndexPath class]]) {
             
             NSIndexPath *indexPath = (NSIndexPath *)sender;
             STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
-            
-            self.operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
-            self.operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
             self.operationVC.supplyOperation = operation;
             
         }

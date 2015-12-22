@@ -47,5 +47,12 @@
     
 }
 
++ (void)removeOperation:(STMStockBatchOperation *)operation {
+
+    [STMObjectsController createRecordStatusAndRemoveObject:operation.destinationAgent];
+    [STMObjectsController createRecordStatusAndRemoveObject:operation];
+    
+}
+
 
 @end

@@ -23,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *repeatButton;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 
 @property (nonatomic, strong) STMStockBatchCodesTVC *codesTVC;
 
@@ -108,10 +109,10 @@
     
     if (self.supplyOperation && [self.supplyOperation.sourceAgent isKindOfClass:[STMSupplyOrderArticleDoc class]]) {
         
-        NSMutableArray *toolbarButtons = [self.toolbarItems mutableCopy];
+        NSMutableArray *toolbarButtons = [self.toolbar.items mutableCopy];
         
         [toolbarButtons removeObject:self.repeatButton];
-        [self setToolbarItems:toolbarButtons animated:YES];
+        [self.toolbar setItems:toolbarButtons animated:YES];
 
         self.supplyOrderArticleDoc = (STMSupplyOrderArticleDoc *)self.supplyOperation.sourceAgent;
         
@@ -119,12 +120,14 @@
         
         self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
 
-        self.volumePicker.volume = MAX([self.supplyOrderArticleDoc volumeRemainingToSupply], self.supplyOperation.volume.integerValue);
+        self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
         
         self.volumePicker.selectedVolume = self.supplyOperation.volume.integerValue;
 
     } else if (self.supplyOrderArticleDoc) {
 
+        self.repeatButton.title = NSLocalizedString(@"SUPPLY REPEAT BUTTON TITLE", nil);
+        
         self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
         
         self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
