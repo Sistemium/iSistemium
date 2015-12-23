@@ -411,38 +411,46 @@
         [STMSoundController alertSay:NSLocalizedString(@"CONFIRM ARTICLE FOR START", nil)];
         
     } else {
-    
-        if ([self.presentedViewController isEqual:self.operationVC]) {
+        
+        if ([STMBarCodeController stockBatchForBarcode:barcode]) {
             
-            [self.operationVC addStockBatchCode:barcode];
+            [STMSoundController alertSay:NSLocalizedString(@"THIS STOCK BATCH ALREADY EXIST", nil)];
             
         } else {
-            
-            if ([self.supplyOrderArticleDoc volumeRemainingToSupply] < self.lastSourceOperationVolume) {
-                self.repeatLastOperation = NO;
-            }
-            
-            if (self.repeatLastOperation) {
+    
+            if ([self.presentedViewController isEqual:self.operationVC]) {
                 
-                [self.stockBatchCodes addObject:barcode];
-                
-                if (self.stockBatchCodes.count >= self.lastSourceOperationNumberOfBarcodes) {
-                    
-                    [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
-                                                                                    withCodes:self.stockBatchCodes
-                                                                                    andVolume:self.lastSourceOperationVolume];
-                    self.stockBatchCodes = nil;
-                    
-                }
+                [self.operationVC addStockBatchCode:barcode];
                 
             } else {
                 
-                [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
+                if ([self.supplyOrderArticleDoc volumeRemainingToSupply] < self.lastSourceOperationVolume) {
+                    self.repeatLastOperation = NO;
+                }
+                
+                if (self.repeatLastOperation) {
+                    
+                    [self.stockBatchCodes addObject:barcode];
+                    
+                    if (self.stockBatchCodes.count >= self.lastSourceOperationNumberOfBarcodes) {
+                        
+                        [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
+                                                                                        withCodes:self.stockBatchCodes
+                                                                                        andVolume:self.lastSourceOperationVolume];
+                        self.stockBatchCodes = nil;
+                        
+                    }
+                    
+                } else {
+                    
+                    [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
+                    
+                }
                 
             }
-            
-        }
 
+        }
+    
     }
     
 }
