@@ -19,7 +19,7 @@
 #import "STMObjectsController.h"
 
 
-@interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate>
+@interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
 @property (nonatomic, strong) STMSupplyOperationVC *operationVC;
@@ -31,6 +31,10 @@
 @property (nonatomic, strong) NSString *articleBarCode;
 
 @property (nonatomic, strong) UIPopoverController *articleSelectionPopover;
+
+@property (nonatomic, strong) STMBarButtonItem *stopRepeatingButton;
+@property (nonatomic) NSInteger lastSourceOperationNumberOfBarcodes;
+@property (nonatomic) NSInteger lastSourceOperationVolume;
 
 
 @end
@@ -63,6 +67,26 @@
     [self setupToolbar];
     [self performFetch];
 
+}
+
+- (void)setRepeatLastOperation:(BOOL)repeatLastOperation {
+    
+    _repeatLastOperation = repeatLastOperation;
+    
+    if (_repeatLastOperation) {
+        
+        self.lastSourceOperationNumberOfBarcodes = [self.supplyOrderArticleDoc lastSourceOperationNumberOfBarcodes];
+        self.lastSourceOperationVolume = [self.supplyOrderArticleDoc lastSourceOperationVolume];
+        
+    } else {
+        
+        self.lastSourceOperationNumberOfBarcodes = 0;
+        self.lastSourceOperationVolume = 0;
+        
+    }
+    
+    [self setupToolbar];
+    
 }
 
 - (NSMutableArray *)stockBatchCodes {
@@ -293,6 +317,8 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
+
         STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
         [STMSupplyOrdersProcessController removeOperation:operation];
         
@@ -392,7 +418,7 @@
             
         } else {
             
-            if ([self.supplyOrderArticleDoc volumeRemainingToSupply] < [self.supplyOrderArticleDoc lastSourceOperationVolume]) {
+            if ([self.supplyOrderArticleDoc volumeRemainingToSupply] < self.lastSourceOperationVolume) {
                 self.repeatLastOperation = NO;
             }
             
@@ -400,11 +426,11 @@
                 
                 [self.stockBatchCodes addObject:barcode];
                 
-                if (self.stockBatchCodes.count >= [self.supplyOrderArticleDoc lastSourceOperationNumberOfBarcodes]) {
+                if (self.stockBatchCodes.count >= self.lastSourceOperationNumberOfBarcodes) {
                     
                     [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
                                                                                     withCodes:self.stockBatchCodes
-                                                                                    andVolume:[self.supplyOrderArticleDoc lastSourceOperationVolume]];
+                                                                                    andVolume:self.lastSourceOperationVolume];
                     self.stockBatchCodes = nil;
                     
                 }
@@ -544,7 +570,77 @@
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
-    [self setToolbarItems:@[flexibleSpace, infoLabel, flexibleSpace] animated:NO];
+    if (self.repeatLastOperation) {
+        
+        NSString *volumeString = [STMFunctions volumeStringWithVolume:self.lastSourceOperationVolume
+                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+        
+        NSString *pluralType = [STMFunctions pluralTypeForCount:self.lastSourceOperationNumberOfBarcodes];
+        NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
+        
+        NSString *numberOfBarcodesString = nil;
+        
+        if (self.lastSourceOperationNumberOfBarcodes > 0) {
+            numberOfBarcodesString = [NSString stringWithFormat:@"%@ %@", @(self.lastSourceOperationNumberOfBarcodes), NSLocalizedString(pluralString, nil)];
+        } else {
+            numberOfBarcodesString = NSLocalizedString(pluralString, nil);
+        }
+        
+        NSString *repeatingButtonTitle = [NSString stringWithFormat:@"%@ (%@, %@)", NSLocalizedString(@"STOP REPEATING BUTTON TITLE", nil), volumeString, numberOfBarcodesString];
+        
+        self.stopRepeatingButton = [[STMBarButtonItem alloc] initWithTitle:repeatingButtonTitle
+                                                                     style:UIBarButtonItemStyleDone
+                                                                    target:self
+                                                                    action:@selector(stopRepeatingButtonPressed)];
+
+        [self setToolbarItems:@[infoLabel, flexibleSpace, self.stopRepeatingButton] animated:NO];
+
+    } else {
+    
+        [self setToolbarItems:@[flexibleSpace, infoLabel, flexibleSpace] animated:NO];
+
+    }
+    
+}
+
+- (void)stopRepeatingButtonPressed {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:[NSLocalizedString(@"STOP REPEATING?", nil) stringByAppendingString:@"?"]
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        
+        alert.tag = 341;
+        
+        [alert show];
+        
+    }];
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 341:
+            switch (buttonIndex) {
+                case 1:
+                    self.repeatLastOperation = NO;
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
     
 }
 

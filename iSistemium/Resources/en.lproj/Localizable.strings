@@ -424,7 +424,13 @@
 "BARCODES" = "Barcodes";
 "OPERATIONS" = "Operations";
 "ENTER PRODUCTION INFO" = "Enter production info";
-"REMAIN TO SUPPLY" = "Remain to supply";
+"REMAIN TO SUPPLY" = "Remain";
 "SUPPLY REPEAT BUTTON TITLE" = "Repeat";
 "CONFIRM ARTICLE FOR START" = "You should confirm article for start";
+"STOP REPEATING?" = "Stop repeating?";
+"STOP REPEATING BUTTON TITLE" = "Repeating";
+"0CODES" = "no codes";
+"1CODES" = "code";
+"2CODES" = "codes";
+"5CODES" = "codes";
 

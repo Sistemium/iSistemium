@@ -424,8 +424,13 @@
 "BARCODES" = "Штрих-коды";
 "OPERATIONS" = "Операции";
 "ENTER PRODUCTION INFO" = "Введите информацию о товаре";
-"REMAIN TO SUPPLY" = "Осталось принять";
+"REMAIN TO SUPPLY" = "Осталось";
 "SUPPLY REPEAT BUTTON TITLE" = "Повторять";
 "CONFIRM ARTICLE FOR START" = "Сначала отсканируйте товар";
-
+"STOP REPEATING?" = "Остановить повтор?";
+"STOP REPEATING BUTTON TITLE" = "Повтор";
+"0CODES" = "нет кодов";
+"1CODES" = "код";
+"2CODES" = "кода";
+"5CODES" = "кодов";
 

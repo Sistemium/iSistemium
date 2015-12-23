@@ -39,16 +39,16 @@
 
 - (IBAction)repeatButtonPressed:(id)sender {
     
-    self.parentTVC.repeatLastOperation = YES;
     [self saveData];
+    self.parentTVC.repeatLastOperation = YES;
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
 
 - (IBAction)doneButtonPressed:(id)sender {
     
-    self.parentTVC.repeatLastOperation = NO;
     [self saveData];
+    self.parentTVC.repeatLastOperation = NO;
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
