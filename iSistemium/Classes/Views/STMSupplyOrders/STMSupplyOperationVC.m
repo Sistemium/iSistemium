@@ -82,6 +82,11 @@
     BOOL volumeIsGood = (self.volumePicker.selectedVolume > 0);
         
     self.doneButton.enabled = volumeIsGood;
+
+    if (self.volumePicker.selectedVolume > [self.supplyOrderArticleDoc volumeRemainingToSupply] / 2) {
+        volumeIsGood = NO;
+    }
+    
     self.repeatButton.enabled = volumeIsGood;
 
 }
