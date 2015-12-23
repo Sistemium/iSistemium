@@ -15,6 +15,7 @@
 #import "STMNS.h"
 #import "STMDataModel.h"
 #import "STMSessionManager.h"
+#import "STMLogger.h"
 
 
 @interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, ScanApiHelperDelegate>
@@ -405,6 +406,9 @@
 
 }
 
+
+#pragma mark - Scan API callbacks
+
 - (void)postGetPostamble:(id)sender {
     
     NSLog(@"%@", sender);
@@ -478,10 +482,25 @@
     
 }
 
+- (void)getBatteryCallback:(id)sender {
+    
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+
+        NSLog(@"%@", scanObj);
+    }
+}
+
 
 #pragma mark ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
+    
+    NSString *logMessage = [NSString stringWithFormat:@"Connect scanner: %@", [deviceInfo getName]];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+    
+//    [self.iOSScanHelper postGetBattery:deviceInfo Target:self Response:@selector(getBatteryCallback:)];
     
     [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
 
@@ -492,7 +511,12 @@
 }
 
 - (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
+    
+    NSString *logMessage = [NSString stringWithFormat:@"Disconnect scanner: %@", [deviceRemoved getName]];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+
     [self.delegate deviceRemovalForBarCodeScanner:self];
+    
 }
 
 - (void)onDecodedDataResult:(long)result device:(DeviceInfo *)device decodedData:(ISktScanDecodedData *)decodedData {
