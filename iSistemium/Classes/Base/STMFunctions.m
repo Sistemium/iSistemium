@@ -36,6 +36,17 @@
 
 @implementation STMFunctions
 
++ (NSString *)displayDateInfo:(NSString *)dateInfo {
+    
+    NSString *separator = @"-";
+    NSArray *infoParts = [dateInfo componentsSeparatedByString:separator];
+    infoParts = [[infoParts reverseObjectEnumerator] allObjects];
+    separator = @"/";
+    return [infoParts componentsJoinedByString:separator];
+
+}
+
+
 #pragma mark - date formatters
 
 + (STMDateFormatter *)dateFormatter {

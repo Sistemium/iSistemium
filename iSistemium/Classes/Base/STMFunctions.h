@@ -33,6 +33,8 @@
 
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
++ (NSString *)displayDateInfo:(NSString *)dateInfo;
+
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateNumbersFormatter;
 + (NSDateFormatter *)dateNumbersFormatterTwo;

@@ -12,6 +12,7 @@
 #import "STMStockBatch.h"
 
 #import "STMProductionInfoType.h"
+#import "STMFunctions.h"
 
 
 @implementation STMPickingOrderPositionPicked
@@ -22,11 +23,8 @@
     
     if ([self.article.productionInfoType.datatype isEqualToString:@"date"]) {
         
-        NSString *separator = @"/";
-        NSArray *infoParts = [self.productionInfo componentsSeparatedByString:separator];
-        infoParts = [[infoParts reverseObjectEnumerator] allObjects];
-        info = [infoParts componentsJoinedByString:separator];
-        
+        info = [STMFunctions displayDateInfo:self.productionInfo];
+
     } else {
         
         info = self.productionInfo;

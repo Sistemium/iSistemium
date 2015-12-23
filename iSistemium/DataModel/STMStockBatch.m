@@ -18,6 +18,7 @@
 
 #import "STMNS.h"
 #import "STMSessionManager.h"
+#import "STMFunctions.h"
 
 
 @implementation STMStockBatch
@@ -54,11 +55,8 @@
     
     if ([self.article.productionInfoType.datatype isEqualToString:@"date"]) {
         
-        NSString *separator = @"/";
-        NSArray *infoParts = [self.productionInfo componentsSeparatedByString:separator];
-        infoParts = [[infoParts reverseObjectEnumerator] allObjects];
-        info = [infoParts componentsJoinedByString:separator];
-        
+        info = [STMFunctions displayDateInfo:self.productionInfo];
+
     } else {
         
         info = self.productionInfo;
