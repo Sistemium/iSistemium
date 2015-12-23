@@ -81,6 +81,7 @@
         
         self.lastSourceOperationNumberOfBarcodes = 0;
         self.lastSourceOperationVolume = 0;
+        self.stockBatchCodes = nil;
         
     }
     
@@ -412,7 +413,7 @@
         
     } else {
         
-        if ([STMBarCodeController stockBatchForBarcode:barcode]) {
+        if ([STMBarCodeController stockBatchForBarcode:barcode] || [self.stockBatchCodes containsObject:barcode]) {
             
             [STMSoundController alertSay:NSLocalizedString(@"THIS STOCK BATCH ALREADY EXIST", nil)];
             
