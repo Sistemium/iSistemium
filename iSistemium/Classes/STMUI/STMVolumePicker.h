@@ -8,12 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+#import "STMVolumePickerOwner.h"
+
+
 @interface STMVolumePicker : UIPickerView
 
 @property (nonatomic) NSInteger packageRel;
 @property (nonatomic) NSInteger volume;
 
 @property (nonatomic) NSInteger selectedVolume;
+
+@property (nonatomic, strong) id <STMVolumePickerOwner> owner;
 
 
 @end

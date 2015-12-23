@@ -146,6 +146,8 @@
             break;
     }
     
+    [self.owner volumeSelected];
+    
 }
 
 

@@ -1024,6 +1024,7 @@
 		2CAFB2541C293FBC00BBEDC1 /* STMStockBatchOperationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMStockBatchOperationController.m; sourceTree = "<group>"; };
 		2CAFB2561C297FE600BBEDC1 /* STMArticleSelectionTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticleSelectionTVC.h; sourceTree = "<group>"; };
 		2CAFB2571C297FE600BBEDC1 /* STMArticleSelectionTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMArticleSelectionTVC.m; sourceTree = "<group>"; };
+		2CAFB2591C2ADC3E00BBEDC1 /* STMVolumePickerOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMVolumePickerOwner.h; sourceTree = "<group>"; };
 		2CB3FD451C230B94004090CE /* STMDataModel 87.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 87.xcdatamodel"; sourceTree = "<group>"; };
 		2CB3FD461C24342C004090CE /* STMDataModel 88.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 88.xcdatamodel"; sourceTree = "<group>"; };
 		2CB3FD471C244024004090CE /* STMInventoryInfoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMInventoryInfoTVC.h; sourceTree = "<group>"; };
@@ -1736,6 +1737,7 @@
 				2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */,
 				2C9835A11C25539200CA231D /* STMArticleSelecting.h */,
 				2C42D8E31C25591F005C857F /* STMProductionInfoSelecting.h */,
+				2CAFB2591C2ADC3E00BBEDC1 /* STMVolumePickerOwner.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";

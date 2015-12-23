@@ -32,7 +32,6 @@
 
 @property (nonatomic, strong) UIPopoverController *articleSelectionPopover;
 
-@property (nonatomic, strong) STMBarButtonItem *stopRepeatingButton;
 @property (nonatomic) NSInteger lastSourceOperationNumberOfBarcodes;
 @property (nonatomic) NSInteger lastSourceOperationVolume;
 
@@ -291,6 +290,7 @@
             
         } else if (indexPath.section == 1) {
             
+            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
             [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
             
         }
@@ -588,12 +588,12 @@
         
         NSString *repeatingButtonTitle = [NSString stringWithFormat:@"%@ (%@, %@)", NSLocalizedString(@"STOP REPEATING BUTTON TITLE", nil), volumeString, numberOfBarcodesString];
         
-        self.stopRepeatingButton = [[STMBarButtonItem alloc] initWithTitle:repeatingButtonTitle
-                                                                     style:UIBarButtonItemStyleDone
-                                                                    target:self
-                                                                    action:@selector(stopRepeatingButtonPressed)];
+        STMBarButtonItem *stopRepeatingButton = [[STMBarButtonItem alloc] initWithTitle:repeatingButtonTitle
+                                                                                  style:UIBarButtonItemStyleDone
+                                                                                 target:self
+                                                                                 action:@selector(stopRepeatingButtonPressed)];
 
-        [self setToolbarItems:@[infoLabel, flexibleSpace, self.stopRepeatingButton] animated:NO];
+        [self setToolbarItems:@[infoLabel, flexibleSpace, stopRepeatingButton] animated:NO];
 
     } else {
     

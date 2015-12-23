@@ -14,7 +14,7 @@
 #import "STMSupplyOrdersProcessController.h"
 
 
-@interface STMSupplyOperationVC ()
+@interface STMSupplyOperationVC () <STMVolumePickerOwner>
 
 @property (weak, nonatomic) IBOutlet UILabel *articleLabel;
 @property (weak, nonatomic) IBOutlet STMVolumePicker *volumePicker;
@@ -75,6 +75,18 @@
 }
 
 
+#pragma mark - STMVolumePickerOwner
+
+- (void)volumeSelected {
+    
+    BOOL volumeIsGood = (self.volumePicker.selectedVolume > 0);
+        
+    self.doneButton.enabled = volumeIsGood;
+    self.repeatButton.enabled = volumeIsGood;
+
+}
+
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -107,6 +119,8 @@
 
 - (void)customInit {
     
+    self.volumePicker.owner = self;
+    
     if (self.supplyOperation && [self.supplyOperation.sourceAgent isKindOfClass:[STMSupplyOrderArticleDoc class]]) {
         
         NSMutableArray *toolbarButtons = [self.toolbar.items mutableCopy];
@@ -137,6 +151,8 @@
         self.volumePicker.selectedVolume = (self.supplyOrderArticleDoc.sourceOperations.count > 0) ? [self.supplyOrderArticleDoc lastSourceOperationVolume] : 0;
 
     }
+
+    [self volumeSelected];
     
 }
 
