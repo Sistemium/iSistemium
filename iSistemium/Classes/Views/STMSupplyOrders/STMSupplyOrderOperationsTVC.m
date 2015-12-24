@@ -18,6 +18,8 @@
 #import "STMBarCodeController.h"
 #import "STMObjectsController.h"
 
+#define POPOVER_SIZE 512
+
 
 @interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate, UIAlertViewDelegate>
 
@@ -484,14 +486,37 @@
     STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
     articleSelectionTVC.articles = articles;
     articleSelectionTVC.parentVC = self;
-
+    
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
 
     self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
+    self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
     
     CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
     [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
 
+}
+
+- (void)dismissArticleSelectionPopover {
+    
+    [self.articleSelectionPopover dismissPopoverAnimated:YES];
+    self.articleSelectionPopover = nil;
+    
+}
+
+
+#pragma mark - rotation
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    
+    if (self.articleSelectionPopover.popoverVisible) {
+        [self dismissArticleSelectionPopover];
+    }
+    
 }
 
 
