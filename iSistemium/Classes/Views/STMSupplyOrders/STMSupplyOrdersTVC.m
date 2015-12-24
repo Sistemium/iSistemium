@@ -208,11 +208,15 @@
 
 - (void)setupToolbar {
     
-    NSString *propertyName = @"processing";
-    
-    NSArray *toolbarItems = [self toolbarItemsForPropertyName:propertyName];
-    
-    [self setScrollViewForToolbar:self.navigationController.toolbar withItems:toolbarItems];
+    if ([self.navigationController.topViewController isEqual:self]) {
+
+        NSString *propertyName = @"processing";
+        
+        NSArray *toolbarItems = [self toolbarItemsForPropertyName:propertyName];
+        
+        [self setScrollViewForToolbar:self.navigationController.toolbar withItems:toolbarItems];
+
+    }
     
 }
 
@@ -372,7 +376,7 @@
 }
 
 - (void)toolBarLayoutDone {
-    if ([self.navigationController.topViewController isEqual:self]) [self setupToolbar];
+    [self setupToolbar];
 }
 
 
