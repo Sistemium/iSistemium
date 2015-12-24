@@ -95,7 +95,7 @@
     if ([barcodeClass isSubclassOfClass:[STMBarCode class]]) {
         
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass(barcodeClass)];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
         if (barcodeValue) request.predicate = [NSPredicate predicateWithFormat:@"code == %@", barcodeValue];
         
         NSArray *barcodesArray = [[self document].managedObjectContext executeFetchRequest:request error:nil];

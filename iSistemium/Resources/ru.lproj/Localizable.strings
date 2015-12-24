@@ -421,6 +421,7 @@
 "DELETE INVENTORY BATCH?" = "Удалить инвентаризационный короб?";
 "STOCK BATCH IS INVENTARIZED" = "Эту партию не нужно инвентаризировать";
 "EXCISE MARKS" = "Акцизные марки";
+"BARCODE" = "Штрих-код";
 "BARCODES" = "Штрих-коды";
 "OPERATIONS" = "Операции";
 "ENTER PRODUCTION INFO" = "Введите информацию о товаре";

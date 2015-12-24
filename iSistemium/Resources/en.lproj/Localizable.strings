@@ -421,6 +421,7 @@
 "DELETE INVENTORY BATCH?" = "Delete inventory batch?";
 "STOCK BATCH IS INVENTARIZED" = "Stock batch is inventarized";
 "EXCISE MARKS" = "Excise marks";
+"BARCODE" = "Barcode";
 "BARCODES" = "Barcodes";
 "OPERATIONS" = "Operations";
 "ENTER PRODUCTION INFO" = "Enter production info";

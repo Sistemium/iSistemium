@@ -205,33 +205,48 @@
 }
 
 - (void)fillArticleCell:(STMTableViewSubtitleStyleCell *)cell {
-    
-    STMArticle *article = [self.supplyOrderArticleDoc operatingArticle];
-    
+
     cell.textLabel.numberOfLines = 0;
-    cell.textLabel.textColor = (self.supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
-    cell.textLabel.text = article.name;
     
-    NSMutableArray *dates = @[].mutableCopy;
-    
-    if (self.supplyOrderArticleDoc.articleDoc.dateProduction) {
+    if (self.supplyOrderArticleDoc.article) {
+     
+        cell.textLabel.textColor = [UIColor blackColor];
+        cell.textLabel.text = self.supplyOrderArticleDoc.article.name;
         
-        NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateProduction];
-        dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
+        NSMutableArray *detailTexts = @[].mutableCopy;
+
+        if (self.supplyOrderArticleDoc.code) {
+            
+            NSString *codeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BARCODE", nil), self.supplyOrderArticleDoc.code];
+            [detailTexts addObject:codeString];
+            
+        }
         
-        [dates addObject:dateProduction];
+        if (self.supplyOrderArticleDoc.articleDoc.dateProduction) {
+            
+            NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateProduction];
+            dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
+            
+            [detailTexts addObject:dateProduction];
+            
+        }
         
+        if (self.supplyOrderArticleDoc.articleDoc.dateImport) {
+            
+            NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateImport];
+            dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
+            [detailTexts addObject:dateImport];
+            
+        }
+        
+        cell.detailTextLabel.text  = [detailTexts componentsJoinedByString:@" / "];
+        
+    } else {
+        
+        cell.textLabel.textColor = [UIColor redColor];
+        cell.textLabel.text = NSLocalizedString(@"CONFIRM ARTICLE FOR START", nil);
+
     }
-    
-    if (self.supplyOrderArticleDoc.articleDoc.dateImport) {
-        
-        NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateImport];
-        dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
-        [dates addObject:dateImport];
-        
-    }
-    
-    cell.detailTextLabel.text  = [dates componentsJoinedByString:@" / "];
     
 }
 
@@ -285,7 +300,7 @@
      
         if (indexPath.section == 0) {
             
-            if (!self.supplyOrderArticleDoc.article) {
+            if (self.supplyOrderArticleDoc.article) {
                 [self showArticleSelectionPopoverWithArticles:nil];
             }
             
