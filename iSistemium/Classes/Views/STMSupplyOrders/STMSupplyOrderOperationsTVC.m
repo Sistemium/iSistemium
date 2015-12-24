@@ -486,6 +486,7 @@
     STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
     articleSelectionTVC.articles = articles;
     articleSelectionTVC.parentVC = self;
+    articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
     
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
 

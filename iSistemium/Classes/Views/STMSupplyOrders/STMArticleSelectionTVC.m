@@ -76,6 +76,20 @@
     
 }
 
+- (void)showVisibleArticle {
+    
+    if (self.visibleArticle && [self.tableData containsObject:self.visibleArticle]) {
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.tableData indexOfObject:self.visibleArticle] inSection:0];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];    
+        }];
+        
+    }
+    
+}
+
 
 #pragma mark - table view data
 
@@ -216,7 +230,9 @@
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
     [self setupToolbar];
-    [self selectSelectedArticleCell];
+//    [self selectSelectedArticleCell];
+    [self showVisibleArticle];
+    
     
 }
 

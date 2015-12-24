@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) NSArray *articles;
 @property (nonatomic, weak) STMSupplyOrderOperationsTVC *parentVC;
+@property (nonatomic, strong) STMArticle *visibleArticle;
 
 
 @end
