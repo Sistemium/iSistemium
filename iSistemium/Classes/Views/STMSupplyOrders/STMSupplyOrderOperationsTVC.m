@@ -465,62 +465,8 @@
                 [self.operationVC addStockBatchCode:barcode];
                 
             } else {
-                
-                if ([self.supplyOrderArticleDoc volumeRemainingToSupply] < self.lastSourceOperationVolume) {
-                    self.repeatLastOperation = NO;
-                }
-                
-                if (self.repeatLastOperation) {
-                    
-                    [self.stockBatchCodes addObject:barcode];
-                    
-                    if (self.stockBatchCodes.count >= self.lastSourceOperationNumberOfBarcodes) {
-                        
-                        if (self.remainingBarcodesAlert.isVisible) {
-                            [self.remainingBarcodesAlert dismissWithClickedButtonIndex:-1 animated:NO];
-                        }
-                        
-                        [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
-                                                                                        withCodes:self.stockBatchCodes
-                                                                                        andVolume:self.lastSourceOperationVolume];
-                        self.stockBatchCodes = nil;
-                        
-                        [STMSoundController playOk];
-                        
-                    } else {
-                        
-                        NSInteger remainingBarcodesToScan = self.lastSourceOperationNumberOfBarcodes - self.stockBatchCodes.count;
-                        
-                        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                            
-                            NSString *alertMessage = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BARCODES REMAIN TO SCAN", nil), @(remainingBarcodesToScan)];
-                            
-                            if (self.remainingBarcodesAlert.isVisible) {
-                                
-                                self.remainingBarcodesAlert.message = alertMessage;
-                                
-                            } else {
 
-                                self.remainingBarcodesAlert = [[UIAlertView alloc] initWithTitle:@""
-                                                                                         message:alertMessage
-                                                                                        delegate:self
-                                                                               cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                                                               otherButtonTitles:nil];
-                                self.remainingBarcodesAlert.tag = 341341;
-                                
-                                [self.remainingBarcodesAlert show];
-
-                            }
-                            
-                        }];
-                        
-                    }
-                    
-                } else {
-                    
-                    [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
-                    
-                }
+                [self processStockBatchBarcode:barcode];
                 
             }
 
@@ -528,6 +474,78 @@
     
     }
     
+}
+
+- (void)processStockBatchBarcode:(NSString *)barcode {
+    
+    if ([self.supplyOrderArticleDoc volumeRemainingToSupply] < self.lastSourceOperationVolume) {
+        self.repeatLastOperation = NO;
+    }
+    
+    if (self.repeatLastOperation) {
+        
+        [self.stockBatchCodes addObject:barcode];
+        
+        if (self.stockBatchCodes.count >= self.lastSourceOperationNumberOfBarcodes) {
+            
+            [self repeatOperationComplete];
+            
+        } else {
+            
+            [self showRemainingBarcodesAlert];
+            
+        }
+        
+    } else {
+        
+        [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
+        
+    }
+
+}
+
+- (void)repeatOperationComplete {
+    
+    if (self.remainingBarcodesAlert.isVisible) {
+        [self.remainingBarcodesAlert dismissWithClickedButtonIndex:-1 animated:NO];
+    }
+    
+    [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
+                                                                    withCodes:self.stockBatchCodes
+                                                                    andVolume:self.lastSourceOperationVolume];
+    self.stockBatchCodes = nil;
+    
+    [STMSoundController playOk];
+
+}
+
+- (void)showRemainingBarcodesAlert {
+    
+    NSInteger remainingBarcodesToScan = self.lastSourceOperationNumberOfBarcodes - self.stockBatchCodes.count;
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        NSString *alertMessage = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BARCODES REMAIN TO SCAN", nil), @(remainingBarcodesToScan)];
+        
+        if (self.remainingBarcodesAlert.isVisible) {
+            
+            self.remainingBarcodesAlert.message = alertMessage;
+            
+        } else {
+            
+            self.remainingBarcodesAlert = [[UIAlertView alloc] initWithTitle:@""
+                                                                     message:alertMessage
+                                                                    delegate:self
+                                                           cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                           otherButtonTitles:nil];
+            self.remainingBarcodesAlert.tag = 341341;
+            
+            [self.remainingBarcodesAlert show];
+            
+        }
+        
+    }];
+
 }
 
 - (void)showArticleSelectionPopoverWithArticles:(NSArray *)articles {
