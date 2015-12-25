@@ -118,6 +118,12 @@
     self.supplyOrderArticleDoc.article = article;
     self.supplyOrderArticleDoc.code = self.articleBarCode;
     
+    [STMSoundController playOk];
+    
+    [self.document saveDocument:^(BOOL success) {
+        
+    }];
+    
     [self.tableView reloadData];
     
 }
