@@ -54,7 +54,10 @@
 }
 
 - (void)addStockBatchCode:(NSString *)code {
+    
     [self.codesTVC addStockBatchCode:code];
+    [self updateRepeatButtonTitle];
+
 }
 
 - (void)saveData {
@@ -89,6 +92,8 @@
     
     self.repeatButton.enabled = volumeIsGood;
 
+    [self updateRepeatButtonTitle];
+    
 }
 
 
@@ -119,6 +124,39 @@
     
 }
 
+- (void)updateRepeatButtonTitle {
+    
+    if (self.repeatButton.enabled) {
+        
+        NSInteger barcodesCount = self.codesTVC.stockBatchCodes.count;
+        
+        NSString *volumeString = [STMFunctions volumeStringWithVolume:self.volumePicker.selectedVolume
+                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+        
+        NSString *pluralType = [STMFunctions pluralTypeForCount:barcodesCount];
+        NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
+        
+        NSString *numberOfBarcodesString = nil;
+        
+        if (barcodesCount > 0) {
+            numberOfBarcodesString = [NSString stringWithFormat:@"%@ %@", @(barcodesCount), NSLocalizedString(pluralString, nil)];
+        } else {
+            numberOfBarcodesString = NSLocalizedString(pluralString, nil);
+        }
+        
+        NSString *repeatParameters = [NSString stringWithFormat:@"(%@, %@)", volumeString, numberOfBarcodesString];
+
+        
+        NSString *repeatButtonTitle = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"SUPPLY REPEAT BUTTON TITLE", nil), repeatParameters];
+        self.repeatButton.title = repeatButtonTitle;
+
+    } else {
+
+        self.repeatButton.title = NSLocalizedString(@"SUPPLY REPEAT BUTTON TITLE", nil);
+
+    }
+    
+}
 
 #pragma mark - view lifecycle
 
@@ -144,8 +182,6 @@
         self.volumePicker.selectedVolume = self.supplyOperation.volume.integerValue;
 
     } else if (self.supplyOrderArticleDoc) {
-
-        self.repeatButton.title = NSLocalizedString(@"SUPPLY REPEAT BUTTON TITLE", nil);
         
         self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
         
@@ -154,6 +190,8 @@
         self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
         
         self.volumePicker.selectedVolume = (self.supplyOrderArticleDoc.sourceOperations.count > 0) ? [self.supplyOrderArticleDoc lastSourceOperationVolume] : 0;
+
+        [self updateRepeatButtonTitle];
 
     }
 

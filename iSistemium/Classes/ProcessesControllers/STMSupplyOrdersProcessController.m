@@ -33,7 +33,7 @@
     [STMStockBatchOperationController stockBatchOperationWithSource:supplyOrderArticleDoc
                                                         destination:stockBatch
                                                              volume:@(volume)
-                                                               save:NO];
+                                                               save:YES];
 
 }
 
@@ -42,7 +42,13 @@
     BOOL volumeIsChanged = ![operation.volume isEqualToNumber:@(newVolume)];
 
     if (volumeIsChanged) {
+        
         operation.volume = @(newVolume);
+        
+        [[self document] saveDocument:^(BOOL success) {
+            
+        }];
+        
     }
     
 }

@@ -119,6 +119,7 @@
     self.supplyOrderArticleDoc.code = self.articleBarCode;
     
     [STMSoundController playOk];
+    [self setupToolbar];
     
     [self.document saveDocument:^(BOOL success) {
         
@@ -429,7 +430,9 @@
 
 - (void)receiveArticleBarcode:(NSString *)barcode {
     
-    if (self.supplyOrderArticleDoc.article) {
+    if (self.stockBatchCodes.count > 0 || [self.presentedViewController isEqual:self.operationVC]) {
+        
+        [STMSoundController playAlert];
         
     } else {
     
@@ -711,21 +714,7 @@
     
     if (self.repeatLastOperation) {
         
-        NSString *volumeString = [STMFunctions volumeStringWithVolume:self.lastSourceOperationVolume
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
-        
-        NSString *pluralType = [STMFunctions pluralTypeForCount:self.lastSourceOperationNumberOfBarcodes];
-        NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
-        
-        NSString *numberOfBarcodesString = nil;
-        
-        if (self.lastSourceOperationNumberOfBarcodes > 0) {
-            numberOfBarcodesString = [NSString stringWithFormat:@"%@ %@", @(self.lastSourceOperationNumberOfBarcodes), NSLocalizedString(pluralString, nil)];
-        } else {
-            numberOfBarcodesString = NSLocalizedString(pluralString, nil);
-        }
-        
-        NSString *repeatingButtonTitle = [NSString stringWithFormat:@"%@ (%@, %@)", NSLocalizedString(@"STOP REPEATING BUTTON TITLE", nil), volumeString, numberOfBarcodesString];
+        NSString *repeatingButtonTitle = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"STOP REPEATING BUTTON TITLE", nil), [self repeatParameters]];
         
         STMBarButtonItem *stopRepeatingButton = [[STMBarButtonItem alloc] initWithTitle:repeatingButtonTitle
                                                                                   style:UIBarButtonItemStyleDone
@@ -739,6 +728,28 @@
         [self setToolbarItems:@[flexibleSpace, infoLabel, flexibleSpace] animated:NO];
 
     }
+    
+}
+
+- (NSString *)repeatParameters {
+    
+    NSString *volumeString = [STMFunctions volumeStringWithVolume:self.lastSourceOperationVolume
+                                                    andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+    
+    NSString *pluralType = [STMFunctions pluralTypeForCount:self.lastSourceOperationNumberOfBarcodes];
+    NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
+    
+    NSString *numberOfBarcodesString = nil;
+    
+    if (self.lastSourceOperationNumberOfBarcodes > 0) {
+        numberOfBarcodesString = [NSString stringWithFormat:@"%@ %@", @(self.lastSourceOperationNumberOfBarcodes), NSLocalizedString(pluralString, nil)];
+    } else {
+        numberOfBarcodesString = NSLocalizedString(pluralString, nil);
+    }
+    
+    NSString *repeatParameters = [NSString stringWithFormat:@"(%@, %@)", volumeString, numberOfBarcodesString];
+
+    return repeatParameters;
     
 }
 
