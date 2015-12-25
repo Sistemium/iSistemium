@@ -435,4 +435,7 @@
 "2CODES" = "codes";
 "5CODES" = "codes";
 "THIS STOCK BATCH ALREADY EXIST" = "This stock batch already exist";
+"SCAN STOCK BATCH CODE" = "Scan stock batch code";
+"START SUPPLY PROCESS" = "Start supply process";
+
 

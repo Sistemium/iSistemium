@@ -226,10 +226,8 @@
 - (void)fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
-    
-    cell.textLabel.numberOfLines = 0;
-    cell.textLabel.textColor = (articleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
-    cell.textLabel.text = (articleDoc.article.name) ? articleDoc.article.name : articleDoc.articleDoc.article.name;
+
+    [self fillTextLabelForCell:cell withSupplyOrderArticleDoc:articleDoc];
 
     NSMutableArray *dates = @[].mutableCopy;
 
@@ -261,6 +259,44 @@
     
     if ([articleDoc isEqual:self.splitVC.selectedSupplyOrderArticleDoc]) {
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    }
+    
+}
+
+- (void)fillTextLabelForCell:(STMTableViewSubtitleStyleCell *)cell withSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)supplyOrderArticleDoc {
+    
+    cell.textLabel.numberOfLines = 0;
+    cell.textLabel.textColor = (supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
+    
+    if (supplyOrderArticleDoc.article && ![supplyOrderArticleDoc.article isEqual:supplyOrderArticleDoc.articleDoc.article]) {
+        
+        UIFont *font = cell.textLabel.font;
+        
+        NSDictionary *attributes = @{NSForegroundColorAttributeName     : [UIColor blackColor],
+                                     NSFontAttributeName                : font};
+
+        NSString *articleName = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
+        
+        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:articleName attributes:attributes];
+        
+        [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+
+        font = [UIFont systemFontOfSize:font.pointSize - 4];
+        
+        attributes = @{NSForegroundColorAttributeName     : [UIColor grayColor],
+                       NSStrikethroughStyleAttributeName  : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle),
+                       NSFontAttributeName                : font};
+
+        NSString *articleDocName = (supplyOrderArticleDoc.articleDoc.article.name) ? supplyOrderArticleDoc.articleDoc.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
+
+        [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:articleDocName attributes:attributes]];
+        
+        cell.textLabel.attributedText = labelTitle;
+
+    } else {
+
+        cell.textLabel.text = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : supplyOrderArticleDoc.articleDoc.article.name;
+
     }
     
 }

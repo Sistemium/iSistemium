@@ -105,13 +105,18 @@
 }
 
 - (void)orderProcessingChanged {
+    
+    [self.tableView reloadData];
     [self checkIfBarcodeScanerIsNeeded];
+    
 }
 
 - (void)confirmArticle:(STMArticle *)article {
     
     self.supplyOrderArticleDoc.article = article;
     self.supplyOrderArticleDoc.code = self.articleBarCode;
+    
+    [self.tableView reloadData];
     
 }
 
@@ -246,7 +251,7 @@
     } else {
         
         cell.textLabel.textColor = [UIColor redColor];
-        cell.textLabel.text = NSLocalizedString(@"CONFIRM ARTICLE FOR START", nil);
+        cell.textLabel.text = ([self orderIsProcessed]) ? NSLocalizedString(@"CONFIRM ARTICLE FOR START", nil) : NSLocalizedString(@"START SUPPLY PROCESS", nil);
 
     }
     
@@ -258,6 +263,8 @@
     
     if (self.resultsController.fetchedObjects.count > 0) {
         
+        cell.textLabel.textColor = [UIColor blackColor];
+
         STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
         
         cell.textLabel.text = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:operation.deviceCts];
@@ -292,6 +299,11 @@
         
         cell.accessoryView = volumeLabel;
         
+    } else {
+        
+        cell.textLabel.textColor = [UIColor redColor];
+        cell.textLabel.text = (self.supplyOrderArticleDoc.article) ? NSLocalizedString(@"SCAN STOCK BATCH CODE", nil) : @"";
+        
     }
 
 }
@@ -303,7 +315,17 @@
         if (indexPath.section == 0) {
             
             if (self.supplyOrderArticleDoc.article) {
-                [self showArticleSelectionPopoverWithArticles:nil];
+                
+                if (self.stockBatchCodes.count > 0) {
+
+                    NSLog(@"should finish stockbatch codes scan");
+                    
+                } else {
+            
+                    [self showArticleSelectionPopoverWithArticles:nil];
+
+                }
+
             }
             
         } else if (indexPath.section == 1) {
