@@ -438,4 +438,6 @@
 "SCAN STOCK BATCH CODE" = "Scan stock batch code";
 "START SUPPLY PROCESS" = "Start supply process";
 "BARCODES REMAIN TO SCAN" = "Barcodes remain to scan";
+"SUPPLY POSITION COMPLETE" = "Supply position complete";
+
 

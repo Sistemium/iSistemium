@@ -438,4 +438,5 @@
 "SCAN STOCK BATCH CODE" = "Отсканируйте штрих-код партии";
 "START SUPPLY PROCESS" = "Начните приёмку товара";
 "BARCODES REMAIN TO SCAN" = "Осталось отсканировать наклеек";
+"SUPPLY POSITION COMPLETE" = "Позиция принята полностью";
 

@@ -454,24 +454,32 @@
         
     } else {
         
-        if ([STMBarCodeController stockBatchForBarcode:barcode] || [self.stockBatchCodes containsObject:barcode]) {
-            
-            [STMSoundController alertSay:NSLocalizedString(@"THIS STOCK BATCH ALREADY EXIST", nil)];
-            
-        } else {
-    
-            if ([self.presentedViewController isEqual:self.operationVC]) {
+        if ([self.supplyOrderArticleDoc volumeRemainingToSupply] > 0) {
+        
+            if ([STMBarCodeController stockBatchForBarcode:barcode] || [self.stockBatchCodes containsObject:barcode]) {
                 
-                [self.operationVC addStockBatchCode:barcode];
+                [STMSoundController alertSay:NSLocalizedString(@"THIS STOCK BATCH ALREADY EXIST", nil)];
                 
             } else {
-
-                [self processStockBatchBarcode:barcode];
+                
+                if ([self.presentedViewController isEqual:self.operationVC]) {
+                    
+                    [self.operationVC addStockBatchCode:barcode];
+                    
+                } else {
+                    
+                    [self processStockBatchBarcode:barcode];
+                    
+                }
                 
             }
 
+        } else {
+            
+            [STMSoundController alertSay:NSLocalizedString(@"SUPPLY POSITION COMPLETE", nil)];
+            
         }
-    
+        
     }
     
 }
