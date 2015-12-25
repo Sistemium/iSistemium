@@ -437,4 +437,5 @@
 "THIS STOCK BATCH ALREADY EXIST" = "Эта партия уже существует";
 "SCAN STOCK BATCH CODE" = "Отсканируйте штрих-код партии";
 "START SUPPLY PROCESS" = "Начните приёмку товара";
+"BARCODES REMAIN TO SCAN" = "Осталось отсканировать наклеек";
 

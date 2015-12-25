@@ -37,6 +37,8 @@
 @property (nonatomic) NSInteger lastSourceOperationNumberOfBarcodes;
 @property (nonatomic) NSInteger lastSourceOperationVolume;
 
+@property (nonatomic, strong) UIAlertView *remainingBarcodesAlert;
+
 
 @end
 
@@ -474,10 +476,43 @@
                     
                     if (self.stockBatchCodes.count >= self.lastSourceOperationNumberOfBarcodes) {
                         
+                        if (self.remainingBarcodesAlert.isVisible) {
+                            [self.remainingBarcodesAlert dismissWithClickedButtonIndex:-1 animated:NO];
+                        }
+                        
                         [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
                                                                                         withCodes:self.stockBatchCodes
                                                                                         andVolume:self.lastSourceOperationVolume];
                         self.stockBatchCodes = nil;
+                        
+                        [STMSoundController playOk];
+                        
+                    } else {
+                        
+                        NSInteger remainingBarcodesToScan = self.lastSourceOperationNumberOfBarcodes - self.stockBatchCodes.count;
+                        
+                        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                            
+                            NSString *alertMessage = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BARCODES REMAIN TO SCAN", nil), @(remainingBarcodesToScan)];
+                            
+                            if (self.remainingBarcodesAlert.isVisible) {
+                                
+                                self.remainingBarcodesAlert.message = alertMessage;
+                                
+                            } else {
+
+                                self.remainingBarcodesAlert = [[UIAlertView alloc] initWithTitle:@""
+                                                                                         message:alertMessage
+                                                                                        delegate:self
+                                                                               cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                                               otherButtonTitles:nil];
+                                self.remainingBarcodesAlert.tag = 341341;
+                                
+                                [self.remainingBarcodesAlert show];
+
+                            }
+                            
+                        }];
                         
                     }
                     
@@ -709,7 +744,18 @@
                     break;
             }
             break;
-            
+
+        case 341341:
+            switch (buttonIndex) {
+                case 0:
+                    self.stockBatchCodes = nil;
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+
         default:
             break;
     }
