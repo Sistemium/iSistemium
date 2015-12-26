@@ -430,7 +430,7 @@
 
 - (void)receiveArticleBarcode:(NSString *)barcode {
     
-    if (self.stockBatchCodes.count > 0 || [self.presentedViewController isEqual:self.operationVC]) {
+    if (self.stockBatchCodes.count > 0 || [self.presentedViewController isEqual:self.operationVC] || self.supplyOrderArticleDoc.sourceOperations.count > 0) {
         
         [STMSoundController playAlert];
         
