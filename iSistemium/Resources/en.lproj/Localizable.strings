@@ -439,5 +439,6 @@
 "START SUPPLY PROCESS" = "Start supply process";
 "BARCODES REMAIN TO SCAN" = "Barcodes remain to scan";
 "SUPPLY POSITION COMPLETE" = "Supply position complete";
+"ILLEGAL ARTICLE CHANGE ATTEMPT" = "Delete all operations before change article";
 
 

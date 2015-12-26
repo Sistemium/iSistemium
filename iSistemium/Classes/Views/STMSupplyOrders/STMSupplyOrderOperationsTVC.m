@@ -38,6 +38,7 @@
 @property (nonatomic) NSInteger lastSourceOperationVolume;
 
 @property (nonatomic, strong) UIAlertView *remainingBarcodesAlert;
+@property (nonatomic, strong) UIAlertView *illegalArticleChangeAlert;
 
 
 @end
@@ -321,6 +322,7 @@
                 if (self.supplyOrderArticleDoc.sourceOperations.count > 0) {
 
                     NSLog(@"should delete all operations before changing article");
+                    [self showIllegalArticleChangeAlert];
                     
                 } else {
             
@@ -433,6 +435,7 @@
     if (self.stockBatchCodes.count > 0 || [self.presentedViewController isEqual:self.operationVC] || self.supplyOrderArticleDoc.sourceOperations.count > 0) {
         
         [STMSoundController playAlert];
+        [self showIllegalArticleChangeAlert];
         
     } else {
     
@@ -456,6 +459,8 @@
 }
 
 - (void)receiveStockBatchBarcode:(NSString *)barcode {
+    
+    [self.illegalArticleChangeAlert dismissWithClickedButtonIndex:-1 animated:NO];
     
     if (!self.supplyOrderArticleDoc.article) {
         
@@ -595,6 +600,29 @@
     [self.articleSelectionPopover dismissPopoverAnimated:YES];
     self.articleSelectionPopover = nil;
     
+}
+
+- (void)showIllegalArticleChangeAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        NSString *alertMessage = NSLocalizedString(@"ILLEGAL ARTICLE CHANGE ATTEMPT", nil);
+        
+        if (!self.illegalArticleChangeAlert.isVisible) {
+            
+            self.illegalArticleChangeAlert = [[UIAlertView alloc] initWithTitle:@""
+                                                                     message:alertMessage
+                                                                    delegate:self
+                                                           cancelButtonTitle:NSLocalizedString(@"CLOSE", nil)
+                                                           otherButtonTitles:nil];
+            self.illegalArticleChangeAlert.tag = 334411;
+            
+            [self.illegalArticleChangeAlert show];
+            
+        }
+        
+    }];
+
 }
 
 
