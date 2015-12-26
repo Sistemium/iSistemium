@@ -228,7 +228,12 @@
     if (self.supplyOrderArticleDoc.article) {
      
         cell.textLabel.textColor = [UIColor blackColor];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", self.supplyOrderArticleDoc.code, self.supplyOrderArticleDoc.article.name];
+        
+        if (self.supplyOrderArticleDoc.code) {
+            cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", self.supplyOrderArticleDoc.code, self.supplyOrderArticleDoc.article.name];
+        } else {
+            cell.textLabel.text = [NSString stringWithFormat:@"%@", self.supplyOrderArticleDoc.article.name];
+        }
         
         NSMutableArray *detailTexts = @[].mutableCopy;
         
