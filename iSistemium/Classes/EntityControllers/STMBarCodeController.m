@@ -110,4 +110,59 @@
     
 }
 
++ (STMBarCodeScannedType)barcodeTypeFromTypes:(NSArray <STMBarCodeType *> *)types forBarcode:(NSString *)barcode {
+    
+    NSString *matchedType = nil;
+    
+    for (STMBarCodeType *barCodeType in types) {
+        
+        if (barCodeType.mask) {
+            
+            NSError *error = nil;
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:(NSString * _Nonnull)barCodeType.mask
+                                                                                   options:NSRegularExpressionCaseInsensitive
+                                                                                     error:&error];
+            
+            NSUInteger numberOfMatches = [regex numberOfMatchesInString:barcode
+                                                                options:0
+                                                                  range:NSMakeRange(0, barcode.length)];
+            
+            if (numberOfMatches > 0) {
+                
+                matchedType = barCodeType.type;
+                break;
+                
+            }
+            
+        }
+        
+    }
+    
+    return [self barCodeScannedTypeForStringType:matchedType];
+
+}
+
++ (STMBarCodeScannedType)barCodeScannedTypeForStringType:(NSString *)type {
+    
+    if ([type isEqualToString:@"Article"]) {
+        
+        return STMBarCodeTypeArticle;
+        
+    } else if ([type isEqualToString:@"StockBatch"]) {
+        
+        return STMBarCodeTypeStockBatch;
+        
+    } else if ([type isEqualToString:@"ExciseStamp"]) {
+        
+        return STMBarCodeTypeExciseStamp;
+        
+    } else {
+        
+        return STMBarCodeTypeUnknown;
+        
+    }
+    
+}
+
+
 @end

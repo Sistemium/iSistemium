@@ -8,6 +8,8 @@
 
 #import "STMArticlesTVC.h"
 
+#import "STMArticleCodesTVC.h"
+
 
 @interface STMArticlesTVC ()
 
@@ -59,10 +61,36 @@
     STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.textLabel.numberOfLines = 0;
-    cell.textLabel.text = article.name;
-    cell.detailTextLabel.text = article.extraLabel;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", article.name, (article.extraLabel) ? article.extraLabel : @""];
+    cell.detailTextLabel.text = @(article.barCodes.count).stringValue;
     
     return cell;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (IPHONE) {
+        [self performSegueWithIdentifier:@"showCodes" sender:indexPath];
+    }
+    
+}
+
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showCodes"] &&
+        [segue.destinationViewController isKindOfClass:[STMArticleCodesTVC class]] &&
+        [sender isKindOfClass:[NSIndexPath class]]) {
+        
+        STMArticle *article = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+        
+        STMArticleCodesTVC *codesTVC = (STMArticleCodesTVC *)segue.destinationViewController;
+        codesTVC.article = article;
+        
+    }
     
 }
 
@@ -120,14 +148,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
