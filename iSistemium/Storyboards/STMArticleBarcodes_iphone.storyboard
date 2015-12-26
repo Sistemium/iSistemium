@@ -8,7 +8,7 @@
         <!--Root View Controller-->
         <scene sceneID="uF0-kW-Bcp">
             <objects>
-                <tableViewController id="V8v-9l-ymM" sceneMemberID="viewController">
+                <tableViewController id="V8v-9l-ymM" customClass="STMArticlesTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="u1X-hM-wwT">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -34,14 +34,18 @@
             </objects>
             <point key="canvasLocation" x="318" y="226"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--ArticlesNC-->
         <scene sceneID="KtS-cU-6Nr">
             <objects>
-                <navigationController id="JuZ-Tg-3vZ" sceneMemberID="viewController">
+                <navigationController toolbarHidden="NO" id="JuZ-Tg-3vZ" customClass="STMArticlesNC" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="p9w-pT-5Qx">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ukJ-EH-aLz">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="V8v-9l-ymM" kind="relationship" relationship="rootViewController" id="r7P-Ng-cva"/>
                     </connections>

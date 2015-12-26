@@ -31,3 +31,7 @@
 @interface STMBarButtonItemCancel : STMBarButtonItem
 
 @end
+
+@interface STMBarButtonItemLabel : STMBarButtonItem
+
+@end

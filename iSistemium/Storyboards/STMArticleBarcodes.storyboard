@@ -8,7 +8,7 @@
         <!--Root View Controller-->
         <scene sceneID="KXH-dH-i9V">
             <objects>
-                <tableViewController clearsSelectionOnViewWillAppear="NO" id="8gU-NN-wHj" sceneMemberID="viewController">
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="8gU-NN-wHj" customClass="STMArticlesTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="th2-P5-qgx">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -66,11 +66,15 @@
         <!--Navigation Controller-->
         <scene sceneID="Fr7-q6-SF8">
             <objects>
-                <navigationController id="b0w-He-DPQ" sceneMemberID="viewController">
+                <navigationController toolbarHidden="NO" id="b0w-He-DPQ" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="eqt-tI-tgq">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="JAw-gL-G48">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="8gU-NN-wHj" kind="relationship" relationship="rootViewController" id="5hb-B5-wMd"/>
                     </connections>
@@ -79,10 +83,10 @@
             </objects>
             <point key="canvasLocation" x="641" y="-281"/>
         </scene>
-        <!--Split View Controller-->
+        <!--ArticlesSVC-->
         <scene sceneID="d8G-Qm-LLW">
             <objects>
-                <splitViewController id="cPB-cR-cx9" sceneMemberID="viewController">
+                <splitViewController id="cPB-cR-cx9" customClass="STMArticlesSVC" sceneMemberID="viewController">
                     <connections>
                         <segue destination="b0w-He-DPQ" kind="relationship" relationship="masterViewController" id="cEH-X6-Hzl"/>
                         <segue destination="hAY-Bd-j82" kind="relationship" relationship="detailViewController" id="thX-yX-l1j"/>
@@ -95,13 +99,17 @@
         <!--Navigation Controller-->
         <scene sceneID="18J-NI-OJ7">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hAY-Bd-j82" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="hAY-Bd-j82" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="D8S-tY-LZG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="DnI-xU-dU0">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="mmo-i9-jMX" kind="relationship" relationship="rootViewController" id="3iH-SC-ZMz"/>
                     </connections>
