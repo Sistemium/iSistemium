@@ -415,10 +415,17 @@
     self.iOSModeBarCodeScanner.delegate = self;
     [self.iOSModeBarCodeScanner startScan];
     
+    if ([self.iOSModeBarCodeScanner isDeviceConnected]) {
+        [self addBarcodeImage];
+    }
+    
 }
 
 - (void)stopBarcodeScanning {
+    
     [self stopIOSModeScanner];
+    [self removeBarcodeImage];
+    
 }
 
 - (void)stopIOSModeScanner {
@@ -651,7 +658,10 @@
 - (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
     
     if (scanner == self.iOSModeBarCodeScanner) {
+        
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
+        [self addBarcodeImage];
+        
     }
     
 }
@@ -659,7 +669,10 @@
 - (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
     
     if (scanner == self.iOSModeBarCodeScanner) {
+        
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
+        [self removeBarcodeImage];
+        
     }
     
 }
@@ -694,7 +707,7 @@
 }
 
 
-#pragma mark - toolbar
+#pragma mark - toolbars
 
 - (void)setupToolbar {
     
@@ -770,6 +783,18 @@
     }];
     
 }
+
+- (void)addBarcodeImage {
+    
+    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"barcode.png"] toSize:CGSizeMake(25, 25)];
+    self.navigationItem.rightBarButtonItem = [[STMBarButtonItem alloc] initWithCustomView:[[UIImageView alloc] initWithImage:image]];
+    
+}
+
+- (void)removeBarcodeImage {
+    self.navigationItem.rightBarButtonItem = nil;
+}
+
 
 
 #pragma mark - UIAlertViewDelegate
