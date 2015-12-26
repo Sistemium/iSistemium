@@ -227,16 +227,9 @@
     if (self.supplyOrderArticleDoc.article) {
      
         cell.textLabel.textColor = [UIColor blackColor];
-        cell.textLabel.text = self.supplyOrderArticleDoc.article.name;
+        cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", self.supplyOrderArticleDoc.code, self.supplyOrderArticleDoc.article.name];
         
         NSMutableArray *detailTexts = @[].mutableCopy;
-
-        if (self.supplyOrderArticleDoc.code) {
-            
-            NSString *codeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"BARCODE", nil), self.supplyOrderArticleDoc.code];
-            [detailTexts addObject:codeString];
-            
-        }
         
         if (self.supplyOrderArticleDoc.articleDoc.dateProduction) {
             
