@@ -325,9 +325,9 @@
             
             if (self.supplyOrderArticleDoc.article) {
                 
-                if (self.stockBatchCodes.count > 0) {
+                if (self.supplyOrderArticleDoc.sourceOperations.count > 0) {
 
-                    NSLog(@"should finish stockbatch codes scan");
+                    NSLog(@"should delete all operations before changing article");
                     
                 } else {
             
