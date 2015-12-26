@@ -8,11 +8,56 @@
 
 #import "STMArticlesSVC.h"
 
+#import "STMArticleCodesTVC.h"
+
+
 @interface STMArticlesSVC ()
+
+@property (nonatomic, strong) UINavigationController *detailNC;
+@property (nonatomic, strong) STMArticleCodesTVC *detailTVC;
+
 
 @end
 
+
 @implementation STMArticlesSVC
+
+- (UINavigationController *)detailNC {
+    
+    if (!_detailNC) {
+        if ([self.viewControllers[1] isKindOfClass:[UINavigationController class]]) {
+            _detailNC = self.viewControllers[1];
+        }
+    }
+    return _detailNC;
+    
+}
+
+- (STMArticleCodesTVC *)detailTVC {
+    
+    if (!_detailTVC) {
+        
+        UIViewController *detailVC = self.detailNC.viewControllers[0];
+        
+        if ([detailVC isKindOfClass:[STMArticleCodesTVC class]]) {
+            _detailTVC = (STMArticleCodesTVC *)detailVC;
+        }
+        
+    }
+    return _detailTVC;
+    
+}
+
+- (void)setSelectedArticle:(STMArticle *)selectedArticle {
+    
+    _selectedArticle = selectedArticle;
+    
+    self.detailTVC.article = _selectedArticle;
+    
+}
+
+
+#pragma mark - view lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];

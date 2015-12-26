@@ -8,10 +8,13 @@
 
 #import "STMArticlesTVC.h"
 
+#import "STMArticlesSVC.h"
 #import "STMArticleCodesTVC.h"
 
 
 @interface STMArticlesTVC ()
+
+@property (nonatomic, weak) STMArticlesSVC *splitVC;
 
 
 @end
@@ -21,6 +24,19 @@
 
 @synthesize resultsController = _resultsController;
 
+
+- (STMArticlesSVC *)splitVC {
+    
+    if (!_splitVC) {
+    
+        if ([self.splitViewController isKindOfClass:[STMArticlesSVC class]]) {
+            _splitVC = (STMArticlesSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSFetchedResultsController *)resultsController {
     
@@ -72,6 +88,10 @@
 
     if (IPHONE) {
         [self performSegueWithIdentifier:@"showCodes" sender:indexPath];
+    }
+    
+    if (IPAD) {
+        self.splitVC.selectedArticle = [self.resultsController objectAtIndexPath:indexPath];
     }
     
 }

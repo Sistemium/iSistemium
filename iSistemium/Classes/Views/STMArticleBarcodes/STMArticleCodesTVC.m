@@ -45,6 +45,14 @@
     
 }
 
+- (void)setArticle:(STMArticle *)article {
+    
+    _article = article;
+    
+    [self performFetch];
+    
+}
+
 
 #pragma mark - table view data
 

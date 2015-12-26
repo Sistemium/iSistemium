@@ -10,4 +10,7 @@
 
 @interface STMArticlesSVC : STMSplitViewController
 
+@property (nonatomic, strong) STMArticle *selectedArticle;
+
+
 @end
