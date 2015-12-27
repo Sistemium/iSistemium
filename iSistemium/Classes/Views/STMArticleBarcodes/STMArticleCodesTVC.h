@@ -11,6 +11,7 @@
 @interface STMArticleCodesTVC : STMFetchedResultsControllerTVC
 
 @property (nonatomic, weak) STMArticle *article;
+@property (nonatomic, weak) NSString *scannedBarcode;
 
 
 @end

@@ -152,6 +152,20 @@
     
 }
 
+- (BOOL)isInActiveTab {
+    
+    if (IPHONE) {
+        return [self.tabBarController.selectedViewController isEqual:self.navigationController];
+    }
+    
+    if (IPAD) {
+        return [self.tabBarController.selectedViewController isEqual:self.splitViewController];
+    }
+    
+    return NO;
+    
+}
+
 
 #pragma mark - table view data
 
@@ -656,25 +670,29 @@
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
     
-    NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
-    
-    switch (type) {
-        case STMBarCodeTypeUnknown: {
-            
-            break;
+    if ([self isInActiveTab]) {
+        
+        NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
+        
+        switch (type) {
+            case STMBarCodeTypeUnknown: {
+                
+                break;
+            }
+            case STMBarCodeTypeArticle: {
+                [self receiveArticleBarcode:barcode];
+                break;
+            }
+            case STMBarCodeTypeExciseStamp: {
+                
+                break;
+            }
+            case STMBarCodeTypeStockBatch: {
+                [self receiveStockBatchBarcode:barcode];
+                break;
+            }
         }
-        case STMBarCodeTypeArticle: {
-            [self receiveArticleBarcode:barcode];
-            break;
-        }
-        case STMBarCodeTypeExciseStamp: {
-            
-            break;
-        }
-        case STMBarCodeTypeStockBatch: {
-            [self receiveStockBatchBarcode:barcode];
-            break;
-        }
+        
     }
 
 }
