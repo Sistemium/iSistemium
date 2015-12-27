@@ -153,6 +153,16 @@
 }
 
 
+#pragma mark - NSFetchedResultsController delegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+
+    [super controllerDidChangeContent:controller];
+    [self updateToolbar];
+    
+}
+
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -356,7 +366,7 @@
         articleCountString = NSLocalizedString(articlePluralString, nil);
         
         if (self.scannedBarcode) {
-            [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+            [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
         }
 
     } else {

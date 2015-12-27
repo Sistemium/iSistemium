@@ -8,19 +8,37 @@
 
 #import "STMArticleCodesTVC.h"
 
+#import "STMArticlesSVC.h"
+
 #import "STMObjectsController.h"
 #import "STMBarCodeController.h"
 
 
-@interface STMArticleCodesTVC ()
+@interface STMArticleCodesTVC () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSArray *tableData;
+@property (nonatomic, strong) STMBarCode *barcodeToRemove;
+
+@property (nonatomic, weak) STMArticlesSVC *splitVC;
 
 
 @end
 
 
 @implementation STMArticleCodesTVC
+
+- (STMArticlesSVC *)splitVC {
+    
+    if (!_splitVC) {
+        
+        if ([self.splitViewController isKindOfClass:[STMArticlesSVC class]]) {
+            _splitVC = (STMArticlesSVC *)self.splitViewController;
+        }
+        
+    }
+    return _splitVC;
+    
+}
 
 - (NSArray *)tableData {
     
@@ -73,6 +91,69 @@
     cell.textLabel.text = barcode.code;
     
     return cell;
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        self.barcodeToRemove = self.tableData[indexPath.row];
+        [self showRemoveBarcodeAlert];
+        
+    }
+    
+}
+
+
+- (void)showRemoveBarcodeAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       
+        NSString *alertMessage = [NSString stringWithFormat:NSLocalizedString(@"REMOVE BARCODE FROM ARTICLE?", nil), self.barcodeToRemove.code, self.article.name];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:alertMessage
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        alert.tag = 678;
+        [alert show];
+        
+    }];
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case 678:
+            
+            switch (buttonIndex) {
+                case 1:
+
+                    self.splitVC.selectedArticle = nil;
+                    
+                    [STMObjectsController createRecordStatusAndRemoveObject:self.barcodeToRemove];
+                    [self performFetch];
+                
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            self.barcodeToRemove = nil;
+
+            break;
+            
+        default:
+            break;
+    }
     
 }
 
