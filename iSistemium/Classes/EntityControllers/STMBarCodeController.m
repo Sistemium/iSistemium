@@ -43,7 +43,9 @@
 
     } else {
 
-        [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+        [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
+
+//        [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
         NSLog(@"unknown barcode %@", barcode);
         
         return nil;

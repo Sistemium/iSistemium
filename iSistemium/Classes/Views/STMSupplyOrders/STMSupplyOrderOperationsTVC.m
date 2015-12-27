@@ -457,19 +457,23 @@
         [self showIllegalArticleChangeAlert];
         
     } else {
-    
-        self.articleBarCode = barcode;
         
         NSArray *articles = [STMBarCodeController articlesForBarcode:barcode];
         
-        if (articles.count == 1) {
-            
-            STMArticle *article = articles.firstObject;
-            [self confirmArticle:article];
-            
-        } else {
-            
-            [self showArticleSelectionPopoverWithArticles:articles];
+        if (articles.count > 0) {
+    
+            self.articleBarCode = barcode;
+
+            if (articles.count == 1) {
+                
+                STMArticle *article = articles.firstObject;
+                [self confirmArticle:article];
+                
+            } else {
+                
+                [self showArticleSelectionPopoverWithArticles:articles];
+                
+            }
             
         }
 
@@ -591,28 +595,26 @@
 
 - (void)showArticleSelectionPopoverWithArticles:(NSArray *)articles {
     
-    if (articles.count == 0) articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
-                                                                           orderBy:@"name"
-                                                                         ascending:YES
-                                                                        fetchLimit:0
-                                                                       withFantoms:NO
-                                                            inManagedObjectContext:nil
-                                                                             error:nil];
+    if (articles.count == 0) articles = [STMBarCodeController articlesForBarcode:self.articleBarCode];
 
-    STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    articleSelectionTVC.articles = articles;
-    articleSelectionTVC.parentVC = self;
-    articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
-    articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
-    articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
-    
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
-
-    self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
-    self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
-    
-    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-    [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+    if (articles.count > 0) {
+     
+        STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
+        articleSelectionTVC.articles = articles;
+        articleSelectionTVC.parentVC = self;
+        articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
+        articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
+        articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
+        
+        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
+        
+        self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
+        self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
+        
+        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+        [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+        
+    }
 
 }
 
