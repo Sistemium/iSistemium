@@ -15,8 +15,6 @@
 @property (nonatomic, strong) STMBarButtonItemDone *doneButton;
 @property (nonatomic, strong) STMBarButtonItemCancel *cancelButton;
 
-@property (nonatomic, weak) STMArticle *selectedArticle;
-
 
 @end
 
@@ -78,9 +76,9 @@
 
 - (void)showVisibleArticle {
     
-    if (self.visibleArticle && [self.tableData containsObject:self.visibleArticle]) {
+    if (self.visibleArticle && [self.tableData containsObject:(STMArticle * _Nonnull)self.visibleArticle]) {
         
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.tableData indexOfObject:self.visibleArticle] inSection:0];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.tableData indexOfObject:(STMArticle * _Nonnull)self.visibleArticle] inSection:0];
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];    
@@ -107,10 +105,25 @@
     
     STMArticle *article = self.tableData[indexPath.row];
     
-    cell.textLabel.text = article.name;
     cell.textLabel.numberOfLines = 0;
+    cell.textLabel.text = (article.extraLabel) ? [NSString stringWithFormat:@"%@ %@", article.name, article.extraLabel] : article.name;
     
-    cell.detailTextLabel.text = article.extraLabel;
+    UIColor *textColor = nil;
+    
+    if ([self.articleDocArticle isEqual:article]) {
+
+        cell.detailTextLabel.text = NSLocalizedString(@"DOC ARTICLE", nil);
+        textColor = STM_DARK_GREEN_COLOR;
+    
+    } else {
+        
+        cell.detailTextLabel.text = nil;
+        textColor = [UIColor blackColor];
+
+    }
+    
+    cell.textLabel.textColor = textColor;
+    cell.detailTextLabel.textColor = textColor;
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -230,9 +243,8 @@
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
     [self setupToolbar];
-//    [self selectSelectedArticleCell];
+    [self selectSelectedArticleCell];
     [self showVisibleArticle];
-    
     
 }
 
