@@ -90,8 +90,10 @@
     
     if (!_resetFilterButton) {
 
-//        _resetFilterButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"RESET FILTER", nil) style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
-        _resetFilterButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Clear Filters-25"] style:UIBarButtonItemStylePlain target:self action:@selector(resetFilter)];
+        _resetFilterButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Clear Filters-25"]
+                                                              style:UIBarButtonItemStylePlain
+                                                             target:self
+                                                             action:@selector(resetFilter)];
 
     }
     return _resetFilterButton;

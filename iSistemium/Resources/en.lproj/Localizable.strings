@@ -442,4 +442,5 @@
 "SUPPLY POSITION COMPLETE" = "Supply position complete";
 "ILLEGAL ARTICLE CHANGE ATTEMPT" = "Delete all operations before change article";
 "DOC ARTICLE" = "Doc article";
+"ADD BARCODE TO ARTICLE?" = "Add barcode\n\n%@\n\nto article\n\n%@\n\n?";
 

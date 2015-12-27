@@ -15,12 +15,13 @@
 #import "STMSoundController.h"
 
 
-@interface STMArticlesTVC () <STMBarCodeScannerDelegate>
+@interface STMArticlesTVC () <STMBarCodeScannerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMArticlesSVC *splitVC;
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 @property (nonatomic, strong) NSString *scannedBarcode;
+@property (nonatomic, strong) UIAlertView *addBarcodeAlert;
 
 
 @end
@@ -91,7 +92,7 @@
     }
 
     [super performFetch];
-    [self updateArticleCountInfo];
+    [self updateToolbar];
     
 }
 
@@ -133,7 +134,20 @@
     }
     
     if (IPAD) {
-        self.splitVC.selectedArticle = [self.resultsController objectAtIndexPath:indexPath];
+
+        STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+        
+        if ([self.splitVC.selectedArticle isEqual:article]) {
+            
+            self.splitVC.selectedArticle = nil;
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            
+        } else {
+            
+            self.splitVC.selectedArticle = article;
+
+        }
+
     }
     
 }
@@ -189,9 +203,64 @@
 
 - (void)receiveArticleBarcode:(NSString *)barcode {
     
-    [self searchBarCancelButtonClicked:self.searchBar];
     self.scannedBarcode = barcode;
-    [self performFetch];
+
+    if (self.splitVC.selectedArticle) {
+        
+        NSArray *articleBarcodes = [self.splitVC.selectedArticle.barCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
+        
+        if ([articleBarcodes containsObject:self.scannedBarcode]) {
+            [STMSoundController say:@""];
+        } else {
+            [self showAddBarcodeAlertForBarcode:self.scannedBarcode andArticle:self.splitVC.selectedArticle];
+        }
+        
+    } else {
+    
+        [self searchBarCancelButtonClicked:self.searchBar];
+
+    }
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)showAddBarcodeAlertForBarcode:(NSString *)barcode andArticle:(STMArticle *)article {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        if (self.addBarcodeAlert.isVisible) {
+            [self.addBarcodeAlert dismissWithClickedButtonIndex:-1 animated:NO];
+        }
+        
+        NSString *alertMessage = [NSString stringWithFormat:NSLocalizedString(@"ADD BARCODE TO ARTICLE?", nil), barcode, article.name];
+       
+        self.addBarcodeAlert = [[UIAlertView alloc] initWithTitle:@""
+                                                          message:alertMessage
+                                                         delegate:self
+                                                cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        [self.addBarcodeAlert show];
+        
+    }];
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+
+    if ([alertView isEqual:self.addBarcodeAlert]) {
+        
+        switch (buttonIndex) {
+            case 1:
+                NSLog(@"add barcode");
+                break;
+                
+            default:
+                break;
+        }
+        
+    }
     
 }
 
@@ -260,6 +329,13 @@
 
 #pragma mark - toolbars
 
+- (void)updateToolbar {
+    
+    [self updateArticleCountInfo];
+    [self updateClearFilterButton];
+    
+}
+
 - (void)updateArticleCountInfo {
     
     NSInteger articleCount = self.resultsController.fetchedObjects.count;
@@ -275,7 +351,7 @@
         if (self.scannedBarcode) {
             [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
         }
-        
+
     } else {
         
         articleCountString = [NSString stringWithFormat:@"%@ %@", @(articleCount), NSLocalizedString(articlePluralString, nil)];
@@ -290,6 +366,31 @@
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
     [self setToolbarItems:@[flexibleSpace, label, flexibleSpace] animated:NO];
+    
+}
+
+- (void)updateClearFilterButton {
+    
+    if (self.scannedBarcode || self.splitVC.selectedArticle) {
+        
+        STMBarButtonItem *clearFilterButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Clear Filters-25"]
+                                                                                style:UIBarButtonItemStylePlain
+                                                                               target:self
+                                                                               action:@selector(clearFilter)];
+        
+        NSMutableArray *toolbarItems = self.toolbarItems.mutableCopy;
+        [toolbarItems addObject:clearFilterButton];
+        [self setToolbarItems:toolbarItems animated:NO];
+        
+    }
+    
+}
+
+- (void)clearFilter {
+    
+    self.scannedBarcode = nil;
+    self.splitVC.selectedArticle = nil;
+    [self performFetch];
     
 }
 
