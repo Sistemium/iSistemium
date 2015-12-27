@@ -589,6 +589,8 @@
     articleSelectionTVC.articles = articles;
     articleSelectionTVC.parentVC = self;
     articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
+    articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
+    articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
     
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
 

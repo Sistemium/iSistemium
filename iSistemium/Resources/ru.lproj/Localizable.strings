@@ -441,4 +441,5 @@
 "BARCODES REMAIN TO SCAN" = "Осталось отсканировать наклеек";
 "SUPPLY POSITION COMPLETE" = "Позиция принята полностью";
 "ILLEGAL ARTICLE CHANGE ATTEMPT" = "Удалите все операции для данной позиции если хотите поменять товар";
+"DOC ARTICLE" = "Товар по справке";
 
