@@ -9,6 +9,7 @@
 #import "STMBarCodeController.h"
 
 #import "STMSoundController.h"
+#import "STMObjectsController.h"
 
 
 @implementation STMBarCodeController
@@ -161,6 +162,19 @@
         return STMBarCodeTypeUnknown;
         
     }
+    
+}
+
++ (void)addBarcode:(NSString *)barcode toArticle:(STMArticle *)article {
+    
+    STMArticleBarCode *articleBarcode = (STMArticleBarCode *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMArticleBarCode class]) isFantom:NO];
+    
+    articleBarcode.code = barcode;
+    articleBarcode.article = article;
+    
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
     
 }
 

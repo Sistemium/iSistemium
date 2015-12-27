@@ -24,5 +24,7 @@ typedef NS_ENUM(NSUInteger, STMBarCodeScannedType) {
 + (STMBarCodeScannedType)barcodeTypeFromTypes:(NSArray <STMBarCodeType *> *)types
                                    forBarcode:(NSString *)barcode;
 
++ (void)addBarcode:(NSString *)barcode toArticle:(STMArticle *)article;
+
 
 @end

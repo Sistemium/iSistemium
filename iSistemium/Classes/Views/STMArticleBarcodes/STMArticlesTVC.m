@@ -210,7 +210,7 @@
         NSArray *articleBarcodes = [self.splitVC.selectedArticle.barCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
         
         if ([articleBarcodes containsObject:self.scannedBarcode]) {
-            [STMSoundController say:@""];
+            [STMSoundController say:NSLocalizedString(@"THIS BARCODE ALREADY LINKED WITH CURRENT ARTICLE", nil)];
         } else {
             [self showAddBarcodeAlertForBarcode:self.scannedBarcode andArticle:self.splitVC.selectedArticle];
         }
@@ -253,7 +253,7 @@
         
         switch (buttonIndex) {
             case 1:
-                NSLog(@"add barcode");
+                [self addBarcode:self.scannedBarcode toArticle:self.splitVC.selectedArticle];
                 break;
                 
             default:
@@ -262,6 +262,13 @@
         
     }
     
+}
+
+- (void)addBarcode:(NSString *)barcode toArticle:(STMArticle *)article {
+
+    [STMBarCodeController addBarcode:barcode toArticle:article];
+    self.splitVC.selectedArticle = article;
+
 }
 
 
