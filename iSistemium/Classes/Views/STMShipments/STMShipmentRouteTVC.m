@@ -472,16 +472,16 @@
     
     if (indexPath.section == 1) {
         
-        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
+        NSIndexPath *rcIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
 
         if ([self.splitVC isMasterNCForViewController:self]) {
             
-            STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:indexPath];
+            STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:rcIndexPath];
             [self.splitVC didSelectPoint:point inVC:self];
             
         } else {
             
-            [self performSegueWithIdentifier:@"showShipments" sender:indexPath];
+            [self performSegueWithIdentifier:@"showShipments" sender:rcIndexPath];
 
         }
         
