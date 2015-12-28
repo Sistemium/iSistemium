@@ -595,6 +595,8 @@
 
 - (void)showArticleSelectionPopoverWithArticles:(NSArray *)articles {
     
+    if (!self.articleBarCode) self.articleBarCode = self.supplyOrderArticleDoc.code;
+    
     if (articles.count == 0) articles = [STMBarCodeController articlesForBarcode:self.articleBarCode];
 
     if (articles.count > 0) {
