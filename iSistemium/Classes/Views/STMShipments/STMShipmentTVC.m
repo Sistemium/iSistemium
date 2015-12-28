@@ -806,7 +806,10 @@
 }
 
 - (void)shippingDidDone {
+    
     [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+    [self.navigationController popViewControllerAnimated:YES];
+    
 }
 
 - (void)popToSelf {
