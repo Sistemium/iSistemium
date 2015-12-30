@@ -73,10 +73,15 @@
         if (changedKeysArray.count > 0) {
             
             NSDate *newDeviceTs = [NSDate date];
+  
+            self.deviceTs = newDeviceTs;
             
+/*
             [self willChangeValueForKey:@"deviceTs"];
             [self setPrimitiveValue:newDeviceTs forKey:@"deviceTs"];
             [self didChangeValueForKey:@"deviceTs"];
+*/
+            
             
 //            if ([STMSaleOrderController sharedInstance].processingDidChanged && [self isKindOfClass:[STMSaleOrder class]]) {
 //                
@@ -108,16 +113,27 @@
 //                NSLog(@"self.changedValues %@", self.changedValues);
 //                
 //            }
+         
             
+/*
             [self setPrimitiveValue:newDeviceTs forKey:@"deviceTs"];
-
+*/
+/*
             NSDate *lts = [self primitiveValueForKey:@"lts"];
             NSDate *deviceTs = [self primitiveValueForKey:@"deviceTs"];
             NSDate *deviceCts = [self primitiveValueForKey:@"deviceCts"];
             NSDate *sqts = lts ? deviceTs : deviceCts;
+*/
+            
+            self.sqts = (self.lts) ? self.deviceTs : self.deviceCts;
+            
             
 //            [self willChangeValueForKey:@"sqts"];
+            
+/*
             [self setPrimitiveValue:sqts forKey:@"sqts"];
+*/
+            
 //            [self didChangeValueForKey:@"sqts"];
             
 //            [self setPrimitiveValue:sqts forKey:@"sqts"];
