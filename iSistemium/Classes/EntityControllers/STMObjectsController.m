@@ -120,8 +120,8 @@
              object:nil];
 
     [nc addObserver:self
-           selector:@selector(saveDocumentSuccessfully)
-               name:@"saveDocumentSuccessfully"
+           selector:@selector(documentSavedSuccessfully)
+               name:@"documentSavedSuccessfully"
              object:nil];
     
 }
@@ -168,7 +168,7 @@
     
 }
 
-- (void)saveDocumentSuccessfully {
+- (void)documentSavedSuccessfully {
     
 }
 

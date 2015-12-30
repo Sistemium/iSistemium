@@ -714,6 +714,11 @@
                name:NSManagedObjectContextDidSaveNotification
              object:nil];
 
+    [nc addObserver:self
+           selector:@selector(documentSavedSuccessfully:)
+               name:@"documentSavedSuccessfully"
+             object:nil];
+
 }
 
 - (void)removeObservers {
@@ -772,23 +777,45 @@
 
 - (void)objectContextDidSave:(NSNotification *)notification {
     
-    if (self.controllersDidChangeContent && [notification.object isKindOfClass:[NSManagedObjectContext class]]) {
-        
-        NSManagedObjectContext *context = (NSManagedObjectContext *)notification.object;
-        
-        if ([context isEqual:[STMSocketController document].managedObjectContext]) {
-            
-            self.controllersDidChangeContent = NO;
-            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
-
-        }
-        
-    }
+    NSLogMethodName;
+    
+//    if (self.controllersDidChangeContent && [notification.object isKindOfClass:[NSManagedObjectContext class]]) {
+//        
+//        NSManagedObjectContext *context = (NSManagedObjectContext *)notification.object;
+//        
+//        if ([context isEqual:[STMSocketController document].managedObjectContext]) {
+//
+//            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+//
+//        }
+//        
+//    }
     
 }
 
+- (void)documentSavedSuccessfully:(NSNotification *)notification {
+    
+    NSLogMethodName;
+
+    if (self.controllersDidChangeContent && [notification.object isKindOfClass:[STMDocument class]]) {
+        
+        NSManagedObjectContext *context = [(STMDocument *)notification.object managedObjectContext];
+        
+        if ([context isEqual:[STMSocketController document].managedObjectContext]) {
+            
+            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+            
+        }
+        
+    }
+
+}
+
 - (void)sendUnsyncedObjects {
+
+    self.controllersDidChangeContent = NO;
     [STMSocketController sendUnsyncedObjects:self];
+    
 }
 
 - (void)performFetches {
