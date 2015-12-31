@@ -1584,20 +1584,19 @@
         [[self session].logger saveLogMessageWithText:errorMessage type:@"error"];
         
     } else {
+
+        NSManagedObject *syncedObject = [self objectForXid:xidData];
         
-//        __weak __block
-        NSManagedObject *object = [self objectForXid:xidData];
-        
-//        __weak NSManagedObjectContext *context = object.managedObjectContext;
-//        
-//        [context performBlock:^{
+        if ([syncedObject isKindOfClass:[STMDatum class]]) {
+            
+            STMDatum *object = (STMDatum *)syncedObject;
         
             if (object) {
                 
                 if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
                     [self removeObject:object];
                 } else {
-                    [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
+                    object.lts = object.sts;
                 }
                 
                 NSString *entityName = object.entity.name;
@@ -1605,28 +1604,14 @@
                 NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
                 NSLog(logMessage);
                 
-//                if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
-//
-//                    STMEntity *entity = (STMEntity *)object;
-//                    
-//                    if ([entity.name isEqualToString:@"Salesman"]) {
-//                        NSLog(@"object %@", object);
-//                    }
-//                    
-//                    NSLog(@"object %@", object);
-//                
-//                }
-                
             } else {
                 
                 NSString *logMessage = [NSString stringWithFormat:@"Sync: no object with xid: %@", xid];
                 NSLog(logMessage);
-
-//                [[self session].logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
                 
             }
-            
-//        }];
+
+        }
         
     }
 
