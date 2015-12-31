@@ -822,6 +822,16 @@
 
     NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
 
+//    for (NSManagedObject *object in allObjects) {
+//        
+//        if ([object isKindOfClass:[STMShippingLocation class]]) {
+//            [self removeObject:object];
+//        }
+//        
+//    }
+//    
+//    allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
+    
     NSLog(@"fetch existing objects for initObjectsCache");
     TOCK;
     
