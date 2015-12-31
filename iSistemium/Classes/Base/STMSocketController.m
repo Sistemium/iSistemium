@@ -616,7 +616,7 @@
 }
 
 + (void)receiveEventDataAckWithData:(NSArray *)data {
-    
+
     NSDictionary *response = data.firstObject;
     
     NSString *errorString = nil;
@@ -641,7 +641,7 @@
         }
 
     } else {
-
+        
         NSArray *dataArray = response[@"data"];
         
         for (NSDictionary *datum in dataArray) {
@@ -653,9 +653,9 @@
 //    NSLog(@"receiveEventDataAckWithData %@", data);
 
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-        [self performSelector:@selector(sendFinishedWithError:) withObject:errorString afterDelay:0];
+        [self performSelector:@selector(sendFinishedWithError:) withObject:errorString afterDelay:1];
     }];
-    
+
 }
 
 + (void)sendFinishedWithError:(NSString *)errorString {
@@ -777,7 +777,7 @@
 
 - (void)objectContextDidSave:(NSNotification *)notification {
     
-    NSLogMethodName;
+//    NSLogMethodName;
     
 //    if (self.controllersDidChangeContent && [notification.object isKindOfClass:[NSManagedObjectContext class]]) {
 //        
