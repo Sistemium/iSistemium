@@ -277,8 +277,10 @@
     
     UIColor *color = (operation.isProcessed.boolValue) ? [UIColor grayColor] : [UIColor blackColor];
     
-    cell.textLabel.text = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:operation.deviceCts];
-    cell.textLabel.textColor = color;
+    if (operation.deviceCts) {
+        cell.textLabel.text = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:(NSDate * _Nonnull)operation.deviceCts];
+        cell.textLabel.textColor = color;
+    }
     
     NSString *volumeString = [STMFunctions volumeStringWithVolume:operation.volume.integerValue
                                                     andPackageRel:self.stockBatch.article.packageRel.integerValue];

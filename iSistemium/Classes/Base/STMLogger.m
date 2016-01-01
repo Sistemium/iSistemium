@@ -421,7 +421,7 @@
         cell.textLabel.textColor = [UIColor blackColor];
     }
     
-    cell.detailTextLabel.text = [startDateFormatter stringFromDate:logMessage.deviceCts];
+    cell.detailTextLabel.text = (logMessage.deviceCts) ? [startDateFormatter stringFromDate:(NSDate * _Nonnull)logMessage.deviceCts] : @"";
     
     return cell;
 

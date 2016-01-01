@@ -64,7 +64,9 @@
     
     STMInventoryBatchItem *item = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:item.deviceCts];
+    if (item.deviceCts) {
+        cell.textLabel.text = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:(NSDate * _Nonnull)item.deviceCts];
+    }
     
     cell.detailTextLabel.text = item.code;
     
