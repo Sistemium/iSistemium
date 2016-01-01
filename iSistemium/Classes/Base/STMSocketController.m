@@ -250,11 +250,11 @@
 + (BOOL)haveToSyncObjects {
     
     NSArray *unsyncedObjectsArray = [self unsyncedObjects];
-    
-    if (unsyncedObjectsArray.count > 0) {
-        
-        NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
-        
+
+    NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
+
+    if (syncDataArray.count > 0) {
+
         NSLog(@"%d objects to send via Socket", syncDataArray.count);
         [self sendEvent:STMSocketEventData withValue:syncDataArray];
         
@@ -272,11 +272,16 @@
     
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
-    for (NSManagedObject *unsyncedObject in unsyncedObjectsArray) {
+    for (STMDatum *unsyncedObject in unsyncedObjectsArray) {
         
-//        if ([unsyncedObject isKindOfClass:[STMLocation class]]) {
+        NSString *currentChecksum = [unsyncedObject currentChecksum];
+        
+        if (![unsyncedObject.checksum isEqualToString:currentChecksum]) {
+            
+            unsyncedObject.checksum = currentChecksum;
             [self addObject:unsyncedObject toSyncDataArray:syncDataArray];
-//        }
+            
+        }
         
         if (syncDataArray.count >= 100) {
             

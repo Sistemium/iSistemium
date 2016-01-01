@@ -1484,14 +1484,14 @@
 
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object {
     
-    if (object) {
+    if ([object isKindOfClass:[STMDatum class]]) {
         
         NSString *entityName = object.entity.name;
         NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""]];
         NSData *xidData = [object valueForKey:@"xid"];
         NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
         
-        NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+        NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:(STMDatum *)object];
         
         return @{@"name":name, @"xid":xid, @"properties":propertiesDictionary};
 
@@ -1501,53 +1501,21 @@
     
 }
 
-+ (NSDictionary *)propertiesDictionaryForObject:(NSManagedObject *)object {
++ (NSDictionary *)propertiesDictionaryForObject:(STMDatum *)object {
     
-    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
-    
-    NSArray *allKeys;
+    NSMutableArray *allKeys = @[].mutableCopy;
     
     if ([object.entity.name isEqualToString:NSStringFromClass([STMEntity class])]) {
-        allKeys = @[@"eTag", @"name", @"deviceCts", @"deviceTs"];
+        allKeys = @[@"eTag", @"name", @"deviceCts", @"deviceTs"].mutableCopy;
     } else {
-        allKeys = object.entity.attributesByName.allKeys;
+        allKeys = object.entity.attributesByName.allKeys.mutableCopy;
     }
     
-    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail"];
+    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail", @"checksum"];
     
-    for (NSString *key in allKeys) {
-        
-        if (![notSyncableProperties containsObject:key]) {
-            
-            id value = [object valueForKey:key];
-            
-            if (value) {
-                
-                if ([value isKindOfClass:[NSDate class]]) {
-                    
-                    value = [[STMFunctions dateFormatter] stringFromDate:value];
-                    
-                } else if ([value isKindOfClass:[NSData class]]) {
-                    
-                    if ([key isEqualToString:@"deviceUUID"] || [key hasSuffix:@"Xid"]) {
-                        
-                        value = [STMFunctions UUIDStringFromUUIDData:value];
-                        
-                    } else {
-                        
-                        value = [STMFunctions hexStringFromData:value];
-                        
-                    }
-                    
-                }
-                
-                propertiesDictionary[key] = [NSString stringWithFormat:@"%@", value];
-                
-            }
-            
-        }
-        
-    }
+    [allKeys removeObjectsInArray:notSyncableProperties];
+    
+    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionaryWithDictionary:[object propertiesForKeys:allKeys]];
     
     for (NSString *key in object.entity.relationshipsByName.allKeys) {
         
