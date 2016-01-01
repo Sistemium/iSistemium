@@ -800,7 +800,7 @@
     if (self.controllersDidChangeContent && [notification.object isKindOfClass:[STMDocument class]]) {
         
         NSManagedObjectContext *context = [(STMDocument *)notification.object managedObjectContext];
-        
+
         if ([context isEqual:[STMSocketController document].managedObjectContext]) {
             
             [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];

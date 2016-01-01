@@ -16,10 +16,17 @@
 + (void)load {
     
     @autoreleasepool {
+        
         [[NSNotificationCenter defaultCenter] addObserver:(id)[self class]
                                                  selector:@selector(objectContextWillSave:)
                                                      name:NSManagedObjectContextWillSaveNotification
                                                    object:nil];
+
+//        [[NSNotificationCenter defaultCenter] addObserver:(id)[self class]
+//                                                 selector:@selector(objectContextObjectsDidChange:)
+//                                                     name:NSManagedObjectContextObjectsDidChangeNotification
+//                                                   object:nil];
+        
     }
     
 }
@@ -29,7 +36,7 @@
     NSManagedObjectContext *context = [notification object];
     
     if (context.parentContext) {
-    
+
         NSSet *modifiedObjects = [context.insertedObjects setByAddingObjectsFromSet:context.updatedObjects];
         [modifiedObjects makeObjectsPerformSelector:@selector(setLastModifiedTimestamp)];
 
@@ -37,46 +44,64 @@
     
 }
 
-- (void)setLastModifiedTimestamp{
-    
-//    if (/*[STMSaleOrderController sharedInstance].processingDidChanged && */[self isKindOfClass:[STMShipmentRoutePoint class]]) {
+//+ (void)objectContextObjectsDidChange:(NSNotification *)notification {
+//    
+//    NSManagedObjectContext *context = [notification object];
+//    
+//    if (context.parentContext) {
 //        
-//        NSString *xidString = [STMFunctions UUIDStringFromUUIDData:self.xid];
-//        NSDictionary *objectDic = @{@"saleOrderXid":xidString, @"saleOrderChangedValues":self.changedValues};
-//        NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
-//        [[STMLogger sharedLogger] saveLogMessageWithText:JSONString type:@"important"];
-//
-//        NSLog(@"changedValues %@", self.changedValues);
-//        
+//        NSSet *modifiedObjects = [context.insertedObjects setByAddingObjectsFromSet:context.updatedObjects];
+//        [modifiedObjects makeObjectsPerformSelector:@selector(setLastModifiedTimestamp)];
+//                
 //    }
-    
-    NSArray *excludeProperties = @[@"lts",
-                                   @"sts",
-                                   @"sqts",
-                                   @"deviceTs",
-                                   @"imagePath",
-                                   @"resizedImagePath",
-                                   @"calculatedSum",
-                                   @"imageThumbnail"];
-    
-    NSMutableArray *changedKeysArray = self.changedValues.allKeys.mutableCopy;
-    [changedKeysArray removeObjectsInArray:excludeProperties];
-    
-    NSMutableArray *relationshipsToMany = [NSMutableArray array];
-    
-    for (NSRelationshipDescription *relationship in self.entity.relationshipsByName.allValues) {
-        if (relationship.isToMany) [relationshipsToMany addObject:relationship.name];
+//
+//}
+
+- (void)setLastModifiedTimestamp{
+
+    if ([self isKindOfClass:[STMShipmentRoutePoint class]] || [self isKindOfClass:[STMShippingLocation class]]) {
+        
+        NSLog(@"%@", NSStringFromClass([self class]));
+        NSLog(@"%@", self.xid);
+        NSLog(@"changedValues %@", self.changedValues);
+        NSLog(@"changedValuesForCurrentEvent %@", self.changedValuesForCurrentEvent);
+        NSLog(@"------------------------");
+        
     }
     
-    [changedKeysArray removeObjectsInArray:relationshipsToMany];
-    
-    if (changedKeysArray.count > 0) {
-        
-        NSDate *newDeviceTs = [NSDate date];
+//    NSDictionary *changedValues = (self.changedValuesForCurrentEvent.count > 0) ? self.changedValuesForCurrentEvent : self.changedValues;
+//    NSDictionary *changedValues = self.changedValuesForCurrentEvent;
+    NSDictionary *changedValues = self.changedValues;
 
-        self.deviceTs = newDeviceTs;
+
+    if (![changedValues.allKeys containsObject:@"lts"]) { //?????
+    
+        NSArray *excludeProperties = @[@"lts",
+                                       @"sts",
+                                       @"sqts",
+                                       @"deviceTs",
+                                       @"imagePath",
+                                       @"resizedImagePath",
+                                       @"calculatedSum",
+                                       @"imageThumbnail"];
         
-        self.sqts = (self.lts) ? self.deviceTs : self.deviceCts;
+        NSMutableArray *changedKeysArray = changedValues.allKeys.mutableCopy;
+        [changedKeysArray removeObjectsInArray:excludeProperties];
+        
+        NSMutableArray *relationshipsToMany = [NSMutableArray array];
+        
+        for (NSRelationshipDescription *relationship in self.entity.relationshipsByName.allValues) {
+            if (relationship.isToMany) [relationshipsToMany addObject:relationship.name];
+        }
+        
+        [changedKeysArray removeObjectsInArray:relationshipsToMany];
+
+        if (changedKeysArray.count > 0) {
+            
+            self.deviceTs = [NSDate date];
+            self.sqts = (self.lts) ? self.deviceTs : self.deviceCts;
+            
+        }
         
     }
     
