@@ -1264,7 +1264,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     }
 
     if (self.parentVC.shipment) {
-        [self.parentVC shippingDidDone];
+        [self.parentVC.parentVC shippingDidDone];
     }
     
     if (IPHONE) {

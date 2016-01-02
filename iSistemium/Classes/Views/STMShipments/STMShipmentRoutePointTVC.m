@@ -206,7 +206,10 @@
 
         }
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:nil
+                                                                            cacheName:nil];
         
         _resultsController.delegate = self;
         
@@ -1265,6 +1268,20 @@
                                               otherButtonTitles:nil];
         
         [alert show];
+
+    }];
+    
+}
+
+- (void)shippingDidDone {
+    
+    [self.navigationController popToViewController:self animated:YES];
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]
+                              atScrollPosition:UITableViewScrollPositionTop
+                                      animated:YES];
 
     }];
     
