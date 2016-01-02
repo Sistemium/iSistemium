@@ -1130,7 +1130,10 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView reloadData];
+    
+//    [self.tableView reloadData];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationNone];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo

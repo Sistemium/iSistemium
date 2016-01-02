@@ -681,7 +681,7 @@
     
 //    NSLog(@"receiveEventDataAckWithData %@", data);
     
-    NSTimeInterval delay = [response[@"data"] count] * 0.1;
+//    NSTimeInterval delay = [response[@"data"] count] * 0.1;
     
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
         [self performSelector:@selector(sendFinishedWithError:) withObject:errorString afterDelay:0];
