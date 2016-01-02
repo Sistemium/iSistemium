@@ -90,7 +90,12 @@
         
         if (changedKeysArray.count > 0) {
             
-            self.deviceTs = [NSDate date];
+            NSDate *currentDate = [NSDate date];
+            
+//            self.deviceTs = currentDate;
+            
+            [self setPrimitiveValue:currentDate forKey:@"deviceTs"];
+            
             self.sqts = (self.lts) ? self.deviceTs : self.deviceCts;
             
         }
