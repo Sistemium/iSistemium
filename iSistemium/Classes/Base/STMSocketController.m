@@ -29,6 +29,7 @@
 @property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSString *socketUrl;
 @property (nonatomic) BOOL isRunning;
+@property (nonatomic, strong) NSMutableDictionary *syncDataDictionary;
 @property (nonatomic, strong) NSMutableArray *resultsControllers;
 @property (nonatomic) BOOL controllersDidChangeContent;
 @property (nonatomic) BOOL isAuthorized;
@@ -251,7 +252,7 @@
     
     NSArray *unsyncedObjectsArray = [self unsyncedObjects];
 
-    NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
+    NSArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
 
     if (syncDataArray.count > 0) {
 
@@ -273,14 +274,21 @@
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
     for (STMDatum *unsyncedObject in unsyncedObjectsArray) {
-        
-        NSString *currentChecksum = [unsyncedObject currentChecksum];
-        
-        if (![unsyncedObject.checksum isEqualToString:currentChecksum]) {
+
+        if (unsyncedObject.xid) {
             
-            unsyncedObject.checksum = currentChecksum;
-            [self addObject:unsyncedObject toSyncDataArray:syncDataArray];
+            NSData *xid = unsyncedObject.xid;
             
+            if (![[self sharedInstance].syncDataDictionary.allKeys containsObject:xid]) {
+                
+                [self addObject:unsyncedObject toSyncDataArray:syncDataArray];
+                
+                if (unsyncedObject.deviceTs) {
+                    [self sharedInstance].syncDataDictionary[xid] = unsyncedObject.deviceTs;
+                }
+                
+            }
+
         }
         
         if (syncDataArray.count >= 100) {
@@ -298,14 +306,26 @@
 
 + (void)addObject:(NSManagedObject *)object toSyncDataArray:(NSMutableArray *)syncDataArray {
     
-    NSDate *currentDate = [NSDate date];
-    [object setValue:currentDate forKey:@"sts"];
+//    NSDate *currentDate = [NSDate date];
+//    [object setValue:currentDate forKey:@"sts"];
     
     NSDictionary *objectDictionary = [STMObjectsController dictionaryForObject:object];
     
     [syncDataArray addObject:objectDictionary];
 
 }
+
++ (NSDate *)deviceTsForSyncedObjectXid:(NSData *)xid {
+
+    NSDate *deviceTs = [self sharedInstance].syncDataDictionary[xid];
+    return deviceTs;
+    
+}
+
++ (void)successfullySyncObjectWithXid:(NSData *)xid {
+    if (xid) [[self sharedInstance].syncDataDictionary removeObjectForKey:xid];
+}
+
 
 + (void)reloadResultsControllers {
     [[self sharedInstance] reloadResultsControllers];
@@ -650,15 +670,21 @@
         NSArray *dataArray = response[@"data"];
         
         for (NSDictionary *datum in dataArray) {
-            [STMObjectsController syncObject:datum];
+            
+            [[self document].managedObjectContext performBlockAndWait:^{
+                [STMObjectsController syncObject:datum];
+            }];
+            
         }
 
     }
     
 //    NSLog(@"receiveEventDataAckWithData %@", data);
-
+    
+    NSTimeInterval delay = [response[@"data"] count] * 0.1;
+    
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
-        [self performSelector:@selector(sendFinishedWithError:) withObject:errorString afterDelay:1];
+        [self performSelector:@selector(sendFinishedWithError:) withObject:errorString afterDelay:0];
     }];
 
 }
@@ -680,6 +706,7 @@
             
             [self sharedInstance].isSendingData = NO;
             [[self syncer] sendFinishedWithError:nil];
+            [self sharedInstance].syncDataDictionary = nil;
 
         }
 
@@ -851,6 +878,15 @@
     
 }
 
+- (NSMutableDictionary *)syncDataDictionary {
+    
+    if (!_syncDataDictionary) {
+        _syncDataDictionary = @{}.mutableCopy;
+    }
+    return _syncDataDictionary;
+    
+}
+
 
 #pragma mark - NSFetchedResultsController
 
@@ -900,6 +936,10 @@
     
     self.controllersDidChangeContent = YES;
     
+//    NSArray *fetchedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
+//
+//    NSLog(@"fetchedObjects.count %@", @(fetchedObjects.count));
+    
     [[STMSocketController document] saveDocument:^(BOOL success) {
         
     }];
@@ -923,9 +963,9 @@
         
         NSArray *fetchedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"checksum != currentChecksum"];
+//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"checksum != currentChecksum"];
         
-        fetchedObjects = [fetchedObjects filteredArrayUsingPredicate:predicate];
+//        fetchedObjects = [fetchedObjects filteredArrayUsingPredicate:predicate];
         
         return fetchedObjects;
         

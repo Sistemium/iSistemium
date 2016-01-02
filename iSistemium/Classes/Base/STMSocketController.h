@@ -41,4 +41,8 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 + (BOOL)socketIsAvailable;
 + (BOOL)isSendingData;
 
++ (NSDate *)deviceTsForSyncedObjectXid:(NSData *)xid;
++ (void)successfullySyncObjectWithXid:(NSData *)xid;
+
+
 @end

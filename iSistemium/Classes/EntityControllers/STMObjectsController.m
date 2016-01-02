@@ -14,6 +14,7 @@
 #import "STMClientDataController.h"
 #import "STMPicturesController.h"
 #import "STMRecordStatusController.h"
+#import "STMSocketController.h"
 
 #import "STMConstants.h"
 
@@ -1568,19 +1569,33 @@
         if ([syncedObject isKindOfClass:[STMDatum class]]) {
             
             STMDatum *object = (STMDatum *)syncedObject;
-        
+            
             if (object) {
                 
-                if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
-                    [self removeObject:object];
-                } else {
-                    object.lts = object.sts;
-                }
+                [object.managedObjectContext performBlockAndWait:^{
                 
-                NSString *entityName = object.entity.name;
-                
-                NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
-                NSLog(logMessage);
+                    if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
+                        
+                        [self removeObject:object];
+                        
+                    } else {
+                        
+                        NSDate *deviceTs = [STMSocketController deviceTsForSyncedObjectXid:xidData];
+                        object.lts = deviceTs;
+                        [object willChangeValueForKey:@"lts"];
+                        [object setPrimitiveValue:deviceTs forKey:@"lts"];
+                        [object didChangeValueForKey:@"lts"];
+                        
+                    }
+                    
+                    //                [STMSocketController successfullySyncObjectWithXid:xidData];
+                    
+                    NSString *entityName = object.entity.name;
+                    
+                    NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
+                    NSLog(logMessage);
+
+                }];
                 
             } else {
                 
