@@ -106,7 +106,7 @@
     NSDictionary *attributes = @{NSFontAttributeName: font,
                                  NSForegroundColorAttributeName: textLabel.textColor};
 
-    NSString *deviceCtsString = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:batch.deviceCts];
+    NSString *deviceCtsString = (batch.deviceCts) ? [[STMFunctions noDateMediumTimeFormatter] stringFromDate:(NSDate * _Nonnull)batch.deviceCts] : @"";
     
     NSMutableAttributedString *labelText = [[NSMutableAttributedString alloc] initWithString:deviceCtsString
                                                                                   attributes:attributes];

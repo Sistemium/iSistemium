@@ -128,25 +128,31 @@
             
             self.debtInfoLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
 
-            NSDecimalNumber *cashingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[selectedDebt.xid][1];
-            
-            NSMutableString *cashingSumString = [[numberFormatter stringFromNumber:cashingSum] mutableCopy];
-            
-            self.debtSummTextField.text = [NSString stringWithFormat:@"%@", cashingSumString];
-            self.debtSummTextField.hidden = NO;
-            self.debtSumLabel.hidden = NO;
-            self.commentTextView.hidden = NO;
-            
-            NSString *commentText = ([STMCashingProcessController sharedInstance].commentsDictionary)[selectedDebt.xid];
-            
-            if (commentText) {
+            if (selectedDebt.xid) {
                 
-                self.commentTextView.textColor = [UIColor blackColor];
-                self.commentTextView.text = commentText;
+                NSData *selectedXid = selectedDebt.xid;
+             
+                NSDecimalNumber *cashingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[selectedXid][1];
                 
-            } else {
+                NSMutableString *cashingSumString = [[numberFormatter stringFromNumber:cashingSum] mutableCopy];
                 
-                [self wipeCommentText];
+                self.debtSummTextField.text = [NSString stringWithFormat:@"%@", cashingSumString];
+                self.debtSummTextField.hidden = NO;
+                self.debtSumLabel.hidden = NO;
+                self.commentTextView.hidden = NO;
+                
+                NSString *commentText = ([STMCashingProcessController sharedInstance].commentsDictionary)[selectedXid];
+                
+                if (commentText) {
+                    
+                    self.commentTextView.textColor = [UIColor blackColor];
+                    self.commentTextView.text = commentText;
+                    
+                } else {
+                    
+                    [self wipeCommentText];
+                    
+                }
                 
             }
 
@@ -297,9 +303,9 @@
     self.remainderLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAINDER", nil), remainderSumString];
     self.remainderLabel.textColor = [UIColor blackColor];
 
-    if ([[STMCashingProcessController sharedInstance].remainderSumm doubleValue] <= 0) {
+    if ([[STMCashingProcessController sharedInstance].remainderSumm doubleValue] <= 0 && self.selectedDebt.xid) {
 
-        NSDecimalNumber *fillingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[self.selectedDebt.xid][1];
+        NSDecimalNumber *fillingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[(NSData * _Nonnull)self.selectedDebt.xid][1];
         
         numberFormatter = [STMFunctions decimalMinTwoDigitFormatter];
         self.debtSummTextField.text = [numberFormatter stringFromNumber:fillingSum];

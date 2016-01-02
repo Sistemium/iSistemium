@@ -118,8 +118,12 @@
     
     if (self.splitVC.selectedSalesman) {
         
-        NSIndexPath *indexPath = [self.resultsController indexPathForObject:(STMSalesman * _Nonnull)self.splitVC.selectedSalesman];
-        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+            NSIndexPath *indexPath = [self.resultsController indexPathForObject:(STMSalesman * _Nonnull)self.splitVC.selectedSalesman];
+            [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+
+        }];
         
     }
     

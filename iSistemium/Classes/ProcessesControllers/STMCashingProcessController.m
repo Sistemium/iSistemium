@@ -192,7 +192,7 @@
             
             STMDebt *previousDebt = (self.debtsArray.lastObject) ? self.debtsArray.lastObject : [NSNull null];
             
-            (self.debtsDictionary)[debt.xid] = @[debt, debt.calculatedSum];
+            (self.debtsDictionary)[(NSData * _Nonnull)debt.xid] = @[debt, debt.calculatedSum];
             [self.debtsArray addObject:debt];
             
             if ([self.cashingSummLimit doubleValue] > 0) {
@@ -218,7 +218,7 @@
     
     if (cashingSum && debt && debt.xid) {
         
-        (self.debtsDictionary)[debt.xid] = @[debt, cashingSum];
+        (self.debtsDictionary)[(NSData * _Nonnull)debt.xid] = @[debt, cashingSum];
         
         if ([self.cashingSummLimit doubleValue] > 0) {
             self.remainderSumm = [self.cashingSummLimit decimalNumberBySubtracting:[self debtsSumm]];
@@ -238,7 +238,7 @@
 
     if (debt.xid && [self.debtsArray containsObject:debt]) {
         
-        [self.debtsDictionary removeObjectForKey:debt.xid];
+        [self.debtsDictionary removeObjectForKey:(NSData * _Nonnull)debt.xid];
         [self.debtsArray removeObject:debt];
         
         STMDebt *selectedDebt = (self.debtsArray.lastObject) ? self.debtsArray.lastObject : [NSNull null];
@@ -279,7 +279,7 @@
         
         STMDebt *debt = debtArray[0];
         NSDecimalNumber *summ = debtArray[1];
-        NSString *commentText = (self.commentsDictionary)[debt.xid];
+        NSString *commentText = (debt.xid) ? (self.commentsDictionary)[(NSData * _Nonnull)debt.xid] : @"";
         
         [STMCashingController addCashingWithSum:summ ndoc:nil date:date comment:commentText debt:debt outlet:self.outlet];
         
@@ -303,11 +303,11 @@
 
         if (comment) {
             
-            (self.commentsDictionary)[debt.xid] = comment;
+            (self.commentsDictionary)[(NSData * _Nonnull)debt.xid] = comment;
             
         } else {
 
-            [self.commentsDictionary removeObjectForKey:debt.xid];
+            [self.commentsDictionary removeObjectForKey:(NSData * _Nonnull)debt.xid];
 
         }
 
@@ -319,9 +319,9 @@
 
     STMDebt *lastDebt = [self.debtsArray lastObject];
     
-    if (lastDebt) {
+    if (lastDebt && lastDebt.xid) {
         
-        NSDecimalNumber *cashingSum = (self.debtsDictionary)[lastDebt.xid][1];
+        NSDecimalNumber *cashingSum = (self.debtsDictionary)[(NSData * _Nonnull)lastDebt.xid][1];
         NSDecimalNumber *fillingSumm = [self.remainderSumm decimalNumberByAdding:cashingSum];
     
         if ([fillingSumm doubleValue] < 0) {

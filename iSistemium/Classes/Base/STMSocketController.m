@@ -29,6 +29,7 @@
 @property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSString *socketUrl;
 @property (nonatomic) BOOL isRunning;
+@property (nonatomic, strong) NSMutableDictionary *syncDataDictionary;
 @property (nonatomic, strong) NSMutableArray *resultsControllers;
 @property (nonatomic) BOOL controllersDidChangeContent;
 @property (nonatomic) BOOL isAuthorized;
@@ -250,11 +251,11 @@
 + (BOOL)haveToSyncObjects {
     
     NSArray *unsyncedObjectsArray = [self unsyncedObjects];
-    
-    if (unsyncedObjectsArray.count > 0) {
-        
-        NSMutableArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
-        
+
+    NSArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
+
+    if (syncDataArray.count > 0) {
+
         NSLog(@"%d objects to send via Socket", syncDataArray.count);
         [self sendEvent:STMSocketEventData withValue:syncDataArray];
         
@@ -272,11 +273,23 @@
     
     NSMutableArray *syncDataArray = [NSMutableArray array];
     
-    for (NSManagedObject *unsyncedObject in unsyncedObjectsArray) {
-        
-//        if ([unsyncedObject isKindOfClass:[STMLocation class]]) {
-            [self addObject:unsyncedObject toSyncDataArray:syncDataArray];
-//        }
+    for (STMDatum *unsyncedObject in unsyncedObjectsArray) {
+
+        if (unsyncedObject.xid) {
+            
+            NSData *xid = unsyncedObject.xid;
+            
+            if (![[self sharedInstance].syncDataDictionary.allKeys containsObject:xid]) {
+                
+                [self addObject:unsyncedObject toSyncDataArray:syncDataArray];
+                
+                if (unsyncedObject.deviceTs) {
+                    [self sharedInstance].syncDataDictionary[xid] = unsyncedObject.deviceTs;
+                }
+                
+            }
+
+        }
         
         if (syncDataArray.count >= 100) {
             
@@ -293,14 +306,26 @@
 
 + (void)addObject:(NSManagedObject *)object toSyncDataArray:(NSMutableArray *)syncDataArray {
     
-    NSDate *currentDate = [NSDate date];
-    [object setValue:currentDate forKey:@"sts"];
+//    NSDate *currentDate = [NSDate date];
+//    [object setValue:currentDate forKey:@"sts"];
     
     NSDictionary *objectDictionary = [STMObjectsController dictionaryForObject:object];
     
     [syncDataArray addObject:objectDictionary];
 
 }
+
++ (NSDate *)deviceTsForSyncedObjectXid:(NSData *)xid {
+
+    NSDate *deviceTs = [self sharedInstance].syncDataDictionary[xid];
+    return deviceTs;
+    
+}
+
++ (void)successfullySyncObjectWithXid:(NSData *)xid {
+    if (xid) [[self sharedInstance].syncDataDictionary removeObjectForKey:xid];
+}
+
 
 + (void)reloadResultsControllers {
     [[self sharedInstance] reloadResultsControllers];
@@ -616,7 +641,7 @@
 }
 
 + (void)receiveEventDataAckWithData:(NSArray *)data {
-    
+
     NSDictionary *response = data.firstObject;
     
     NSString *errorString = nil;
@@ -641,21 +666,27 @@
         }
 
     } else {
-
+        
         NSArray *dataArray = response[@"data"];
         
         for (NSDictionary *datum in dataArray) {
-            [STMObjectsController syncObject:datum];
+            
+            [[self document].managedObjectContext performBlockAndWait:^{
+                [STMObjectsController syncObject:datum];
+            }];
+            
         }
 
     }
     
 //    NSLog(@"receiveEventDataAckWithData %@", data);
-
+    
+//    NSTimeInterval delay = [response[@"data"] count] * 0.1;
+    
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
         [self performSelector:@selector(sendFinishedWithError:) withObject:errorString afterDelay:0];
     }];
-    
+
 }
 
 + (void)sendFinishedWithError:(NSString *)errorString {
@@ -675,6 +706,7 @@
             
             [self sharedInstance].isSendingData = NO;
             [[self syncer] sendFinishedWithError:nil];
+            [self sharedInstance].syncDataDictionary = nil;
 
         }
 
@@ -712,6 +744,11 @@
     [nc addObserver:self
            selector:@selector(objectContextDidSave:)
                name:NSManagedObjectContextDidSaveNotification
+             object:nil];
+
+    [nc addObserver:self
+           selector:@selector(documentSavedSuccessfully:)
+               name:@"documentSavedSuccessfully"
              object:nil];
 
 }
@@ -772,23 +809,45 @@
 
 - (void)objectContextDidSave:(NSNotification *)notification {
     
-    if (self.controllersDidChangeContent && [notification.object isKindOfClass:[NSManagedObjectContext class]]) {
-        
-        NSManagedObjectContext *context = (NSManagedObjectContext *)notification.object;
-        
-        if ([context isEqual:[STMSocketController document].managedObjectContext]) {
-            
-            self.controllersDidChangeContent = NO;
-            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
-
-        }
-        
-    }
+//    NSLogMethodName;
+    
+//    if (self.controllersDidChangeContent && [notification.object isKindOfClass:[NSManagedObjectContext class]]) {
+//        
+//        NSManagedObjectContext *context = (NSManagedObjectContext *)notification.object;
+//        
+//        if ([context isEqual:[STMSocketController document].managedObjectContext]) {
+//
+//            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+//
+//        }
+//        
+//    }
     
 }
 
+- (void)documentSavedSuccessfully:(NSNotification *)notification {
+    
+    NSLogMethodName;
+
+    if (self.controllersDidChangeContent && [notification.object isKindOfClass:[STMDocument class]]) {
+        
+        NSManagedObjectContext *context = [(STMDocument *)notification.object managedObjectContext];
+
+        if ([context isEqual:[STMSocketController document].managedObjectContext]) {
+            
+            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+            
+        }
+        
+    }
+
+}
+
 - (void)sendUnsyncedObjects {
+
+    self.controllersDidChangeContent = NO;
     [STMSocketController sendUnsyncedObjects:self];
+    
 }
 
 - (void)performFetches {
@@ -816,6 +875,15 @@
     
     self.resultsControllers = nil;
     [self performFetches];
+    
+}
+
+- (NSMutableDictionary *)syncDataDictionary {
+    
+    if (!_syncDataDictionary) {
+        _syncDataDictionary = @{}.mutableCopy;
+    }
+    return _syncDataDictionary;
     
 }
 
@@ -868,6 +936,10 @@
     
     self.controllersDidChangeContent = YES;
     
+//    NSArray *fetchedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
+//
+//    NSLog(@"fetchedObjects.count %@", @(fetchedObjects.count));
+    
     [[STMSocketController document] saveDocument:^(BOOL success) {
         
     }];
@@ -888,7 +960,15 @@
 - (NSArray *)unsyncedObjectsArray {
     
     if (self.isAuthorized && [STMSocketController document].managedObjectContext) {
-        return [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
+        
+        NSArray *fetchedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
+        
+//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"checksum != currentChecksum"];
+        
+//        fetchedObjects = [fetchedObjects filteredArrayUsingPredicate:predicate];
+        
+        return fetchedObjects;
+        
     } else {
         return nil;
     }

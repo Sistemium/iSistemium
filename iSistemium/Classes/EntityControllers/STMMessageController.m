@@ -158,12 +158,12 @@
         
         STMMessage *message = picture.message;
         
-        if (![STMMessageController messageIsRead:message]) {
+        if (message.xid && ![STMMessageController messageIsRead:message]) {
             
-            NSMutableArray *shownPicturesArray = self.shownPictures[message.xid];
+            NSMutableArray *shownPicturesArray = self.shownPictures[(NSData * _Nonnull)message.xid];
             if (!shownPicturesArray) shownPicturesArray = @[].mutableCopy;
-            [shownPicturesArray addObject:picture.xid];
-            self.shownPictures[message.xid] = shownPicturesArray;
+            if (picture.xid) [shownPicturesArray addObject:(NSData * _Nonnull)picture.xid];
+            self.shownPictures[(NSData * _Nonnull)message.xid] = shownPicturesArray;
             
             NSSet *picturesXids = [message valueForKeyPath:@"pictures.xid"];
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (self IN %@)", shownPicturesArray];
@@ -172,7 +172,7 @@
             if (unshownPicturesCount == 0) {
                 
                 [STMMessageController markMessageAsRead:message];
-                [self.shownPictures removeObjectForKey:message.xid];
+                [self.shownPictures removeObjectForKey:(NSData * _Nonnull)message.xid];
                 
             }
             

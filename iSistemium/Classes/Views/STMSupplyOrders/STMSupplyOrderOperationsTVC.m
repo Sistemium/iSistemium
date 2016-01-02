@@ -289,7 +289,7 @@
 
         STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
         
-        cell.textLabel.text = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:operation.deviceCts];
+        if (operation.deviceCts) cell.textLabel.text = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:(NSDate * _Nonnull)operation.deviceCts];
         
         if ([operation.destinationAgent isKindOfClass:[STMStockBatch class]]) {
             

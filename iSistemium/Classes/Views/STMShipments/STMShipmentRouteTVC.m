@@ -36,6 +36,8 @@
 
 @property (nonatomic, strong) NSString *routePointCellIdentifier;
 
+@property (nonatomic, strong) NSMutableArray *waitGeocodingPoints;
+
 
 @end
 
@@ -54,6 +56,15 @@
         
     }
     return _splitVC;
+    
+}
+
+- (NSMutableArray *)waitGeocodingPoints {
+    
+    if (!_waitGeocodingPoints) {
+        _waitGeocodingPoints = @[].mutableCopy;
+    }
+    return _waitGeocodingPoints;
     
 }
 
@@ -160,7 +171,9 @@
     
     for (STMShipmentRoutePoint *point in self.resultsController.fetchedObjects) {
         
-        if (!point.shippingLocation.location && point.address) {
+        if (![self.waitGeocodingPoints containsObject:point] && !point.shippingLocation.location && point.address) {
+            
+            [self.waitGeocodingPoints addObject:point];
             
             [[[CLGeocoder alloc] init] geocodeAddressString:point.address completionHandler:^(NSArray *placemarks, NSError *error) {
                 
@@ -176,6 +189,8 @@
                     [self setupNavBar];
                     
                 }
+                
+                [self.waitGeocodingPoints removeObject:point];
                 
             }];
             
