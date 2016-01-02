@@ -341,9 +341,9 @@
         
         CGFloat fillWidth = 0;
         
-        if ([[[STMCashingProcessController sharedInstance].debtsDictionary allKeys] containsObject:debt.xid]) {
+        if (debt.xid && [[[STMCashingProcessController sharedInstance].debtsDictionary allKeys] containsObject:(NSData * _Nonnull)debt.xid]) {
             
-            NSDecimalNumber *cashingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[debt.xid][1];
+            NSDecimalNumber *cashingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[(NSData * _Nonnull)debt.xid][1];
             
             fillWidth = [[cashingSum decimalNumberByDividingBy:debt.calculatedSum] doubleValue];
             

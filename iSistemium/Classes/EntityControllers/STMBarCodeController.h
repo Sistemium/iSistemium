@@ -8,10 +8,23 @@
 
 #import "STMController.h"
 
+typedef NS_ENUM(NSUInteger, STMBarCodeScannedType) {
+    STMBarCodeTypeUnknown,
+    STMBarCodeTypeArticle,
+    STMBarCodeTypeExciseStamp,
+    STMBarCodeTypeStockBatch
+};
+
+
 @interface STMBarCodeController : STMController
 
 + (NSArray <STMArticle *> *)articlesForBarcode:(NSString *)barcode;
 + (NSArray <STMStockBatch *> *)stockBatchForBarcode:(NSString *)barcode;
+
++ (STMBarCodeScannedType)barcodeTypeFromTypes:(NSArray <STMBarCodeType *> *)types
+                                   forBarcode:(NSString *)barcode;
+
++ (void)addBarcode:(NSString *)barcode toArticle:(STMArticle *)article;
 
 
 @end

@@ -152,6 +152,20 @@
     
 }
 
+- (BOOL)isInActiveTab {
+    
+    if (IPHONE) {
+        return [self.tabBarController.selectedViewController isEqual:self.navigationController];
+    }
+    
+    if (IPAD) {
+        return [self.tabBarController.selectedViewController isEqual:self.splitViewController];
+    }
+    
+    return NO;
+    
+}
+
 
 #pragma mark - table view data
 
@@ -275,7 +289,7 @@
 
         STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
         
-        cell.textLabel.text = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:operation.deviceCts];
+        if (operation.deviceCts) cell.textLabel.text = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:(NSDate * _Nonnull)operation.deviceCts];
         
         if ([operation.destinationAgent isKindOfClass:[STMStockBatch class]]) {
             
@@ -443,19 +457,23 @@
         [self showIllegalArticleChangeAlert];
         
     } else {
-    
-        self.articleBarCode = barcode;
         
         NSArray *articles = [STMBarCodeController articlesForBarcode:barcode];
         
-        if (articles.count == 1) {
-            
-            STMArticle *article = articles.firstObject;
-            [self confirmArticle:article];
-            
-        } else {
-            
-            [self showArticleSelectionPopoverWithArticles:articles];
+        if (articles.count > 0) {
+    
+            self.articleBarCode = barcode;
+
+            if (articles.count == 1) {
+                
+                STMArticle *article = articles.firstObject;
+                [self confirmArticle:article];
+                
+            } else {
+                
+                [self showArticleSelectionPopoverWithArticles:articles];
+                
+            }
             
         }
 
@@ -577,28 +595,28 @@
 
 - (void)showArticleSelectionPopoverWithArticles:(NSArray *)articles {
     
-    if (articles.count == 0) articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
-                                                                           orderBy:@"name"
-                                                                         ascending:YES
-                                                                        fetchLimit:0
-                                                                       withFantoms:NO
-                                                            inManagedObjectContext:nil
-                                                                             error:nil];
-
-    STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    articleSelectionTVC.articles = articles;
-    articleSelectionTVC.parentVC = self;
-    articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
-    articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
-    articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
+    if (!self.articleBarCode) self.articleBarCode = self.supplyOrderArticleDoc.code;
     
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
+    if (articles.count == 0) articles = [STMBarCodeController articlesForBarcode:self.articleBarCode];
 
-    self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
-    self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
-    
-    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-    [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+    if (articles.count > 0) {
+     
+        STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
+        articleSelectionTVC.articles = articles;
+        articleSelectionTVC.parentVC = self;
+        articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
+        articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
+        articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
+        
+        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
+        
+        self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
+        self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
+        
+        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+        [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+        
+    }
 
 }
 
@@ -656,25 +674,29 @@
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
     
-    NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
-    
-    switch (type) {
-        case STMBarCodeTypeUnknown: {
-            
-            break;
+    if ([self isInActiveTab]) {
+        
+        NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
+        
+        switch (type) {
+            case STMBarCodeTypeUnknown: {
+                
+                break;
+            }
+            case STMBarCodeTypeArticle: {
+                [self receiveArticleBarcode:barcode];
+                break;
+            }
+            case STMBarCodeTypeExciseStamp: {
+                
+                break;
+            }
+            case STMBarCodeTypeStockBatch: {
+                [self receiveStockBatchBarcode:barcode];
+                break;
+            }
         }
-        case STMBarCodeTypeArticle: {
-            [self receiveArticleBarcode:barcode];
-            break;
-        }
-        case STMBarCodeTypeExciseStamp: {
-            
-            break;
-        }
-        case STMBarCodeTypeStockBatch: {
-            [self receiveStockBatchBarcode:barcode];
-            break;
-        }
+        
     }
 
 }

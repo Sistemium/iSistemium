@@ -395,6 +395,7 @@
 "SCANNER DEVICE REMOVAL" = "Scanner device removal";
 "STOCK BATCH" = "Stock batch";
 "ARTICLE" = "Article";
+"ARTICLES" = "Articles";
 "WARNING" = "Warning";
 "LOW FREE SPACE ALERT" = "Low free space alert";
 "INVENTORY" = "Inventory";
@@ -441,4 +442,8 @@
 "SUPPLY POSITION COMPLETE" = "Supply position complete";
 "ILLEGAL ARTICLE CHANGE ATTEMPT" = "Delete all operations before change article";
 "DOC ARTICLE" = "Doc article";
+"ADD BARCODE TO ARTICLE?" = "Add barcode\n\n%@\n\nto article\n\n%@\n\n?";
+"REMOVE BARCODE FROM ARTICLE?" = "Remove barcode\n\n%@\n\nfrom article\n\n%@\n\n?";
+"THIS BARCODE ALREADY LINKED WITH CURRENT ARTICLE" = "This barcode already linked with current article";
+"NO ARTICLES FOR THIS BARCODE" = "No articles for this barcode";
 

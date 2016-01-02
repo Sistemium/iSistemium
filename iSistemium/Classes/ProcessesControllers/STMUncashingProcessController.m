@@ -60,7 +60,7 @@
     
     for (STMCashing *cashing in cashings) {
         
-        (self.cashingDictionary)[cashing.xid] = cashing;
+        if (cashing.xid) (self.cashingDictionary)[(NSData * _Nonnull)cashing.xid] = cashing;
         
     }
     
@@ -155,7 +155,7 @@
 
     if (cashing && cashing.xid) {
         
-        (self.cashingDictionary)[cashing.xid] = cashing;
+        (self.cashingDictionary)[(NSData * _Nonnull)cashing.xid] = cashing;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
 
     }
@@ -172,7 +172,7 @@
     
     if (cashing.xid) {
         
-        [self.cashingDictionary removeObjectForKey:cashing.xid];
+        [self.cashingDictionary removeObjectForKey:(NSData * _Nonnull)cashing.xid];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingDictionaryChanged" object:self];
 
     }

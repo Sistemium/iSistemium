@@ -397,9 +397,9 @@
         
 // temporary tab for coding
 //        [self registerTabWithStoryboardParameters:
-//                                                    @{@"name": @"STMSupplyOrders",
-//                                                      @"title": @"SupplyOrders",
-//                                                      @"imageName": @"truck_checked.png"}
+//                                                    @{@"name": @"STMArticleBarcodes",
+//                                                      @"title": @"TAB TITLE",
+//                                                      @"imageName": @"refresh_barcode.png"}
 //         
 //                                          atIndex:stcTabs.count];
 // end of temporary tab

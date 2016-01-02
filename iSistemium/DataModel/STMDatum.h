@@ -2,8 +2,8 @@
 //  STMDatum.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 17/03/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 01/01/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,24 +11,16 @@
 
 @class STMComment;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface STMDatum : NSManagedObject
 
-@property (nonatomic, retain) NSDate * deviceCts;
-@property (nonatomic, retain) NSDate * deviceTs;
-@property (nonatomic, retain) NSNumber * id;
-@property (nonatomic, retain) NSNumber * isFantom;
-@property (nonatomic, retain) NSDate * lts;
-@property (nonatomic, retain) NSDate * sqts;
-@property (nonatomic, retain) NSDate * sts;
-@property (nonatomic, retain) NSData * xid;
-@property (nonatomic, retain) NSSet *comments;
-@end
+- (NSString *)currentChecksum;
+- (NSDictionary *)propertiesForKeys:(NSArray *)keys;
 
-@interface STMDatum (CoreDataGeneratedAccessors)
-
-- (void)addCommentsObject:(STMComment *)value;
-- (void)removeCommentsObject:(STMComment *)value;
-- (void)addComments:(NSSet *)values;
-- (void)removeComments:(NSSet *)values;
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMDatum+CoreDataProperties.h"

@@ -76,11 +76,11 @@
     
     STMArticleGroup *parentGroup = articleGroup.articleGroup;
     
-    if (parentGroup) {
+    if (parentGroup && parentGroup.xid && articleGroup.xid) {
         
         NSMutableSet *parents = [NSMutableSet setWithObject:parentGroup];
 
-        NSSet *cachedParents = [self sharedInstance].articleGroupParentsDic[parentGroup.xid];
+        NSSet *cachedParents = [self sharedInstance].articleGroupParentsDic[(NSData * _Nonnull)parentGroup.xid];
         
         if (cachedParents) {
             [parents unionSet:cachedParents];
@@ -88,7 +88,7 @@
             [parents unionSet:[self parentsForArticleGroup:parentGroup]];
         }
         
-        [self sharedInstance].articleGroupParentsDic[articleGroup.xid] = parents;
+        [self sharedInstance].articleGroupParentsDic[(NSData * _Nonnull)articleGroup.xid] = parents;
         [articleGroup addParents:parents];
         
         return parents;
@@ -97,7 +97,7 @@
         
         NSSet *emptySet = [NSSet set];
         
-        [self sharedInstance].articleGroupParentsDic[articleGroup.xid] = emptySet;
+        [self sharedInstance].articleGroupParentsDic[(NSData * _Nonnull)articleGroup.xid] = emptySet;
         [articleGroup addParents:emptySet];
         
         return emptySet;

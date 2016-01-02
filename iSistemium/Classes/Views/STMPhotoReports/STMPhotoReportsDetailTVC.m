@@ -385,7 +385,7 @@
     cell.pictureView.clipsToBounds = YES;
     cell.pictureView.image = [UIImage imageWithData:photoReport.imageThumbnail];
 
-    cell.titleLabel.text = [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:photoReport.deviceCts];
+    cell.titleLabel.text = (photoReport.deviceCts) ? [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:(NSDate * _Nonnull)photoReport.deviceCts] : @"";
 
     switch (self.currentGrouping) {
         case STMPhotoReportGroupingCampaign: {

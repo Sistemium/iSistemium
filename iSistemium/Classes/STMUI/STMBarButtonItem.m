@@ -29,6 +29,11 @@
 @end
 
 
+@implementation STMBarButtonItemLabel
+
+@end
+
+
 @implementation STMBarButtonItem
 
 + (STMBarButtonItem *)flexibleSpace {
@@ -92,6 +97,16 @@
         UIColor *color = [UIColor redColor];
         NSDictionary *textAttributes = @{NSForegroundColorAttributeName:color};
         [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+        
+    } else if ([self isKindOfClass:[STMBarButtonItemLabel class]]) {
+        
+        UIColor *color = [UIColor blackColor];
+        NSDictionary *textAttributes = @{NSForegroundColorAttributeName:color};
+        [self setTitleTextAttributes:textAttributes forState:UIControlStateDisabled];
+        
+        self.tintColor = color;
+        
+        self.enabled = NO;
         
     }
 

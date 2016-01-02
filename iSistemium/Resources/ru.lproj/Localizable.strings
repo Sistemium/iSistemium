@@ -395,6 +395,7 @@
 "SCANNER DEVICE REMOVAL" = "Сканер штрих кодов отключён";
 "STOCK BATCH" = "Партия";
 "ARTICLE" = "Товар";
+"ARTICLES" = "Товары";
 "WARNING" = "Предупреждение";
 "LOW FREE SPACE ALERT" = "На устройстве осталось мало свободного места, это может привести к некорректной работе программ. Проверить занятый объём можно через Настройки - Основные - Статистика - Место хранения - Хранилище";
 "INVENTORY" = "Инвентаризация";
@@ -441,4 +442,8 @@
 "SUPPLY POSITION COMPLETE" = "Позиция принята полностью";
 "ILLEGAL ARTICLE CHANGE ATTEMPT" = "Удалите все операции для данной позиции если хотите поменять товар";
 "DOC ARTICLE" = "Товар по справке";
+"ADD BARCODE TO ARTICLE?" = "Добавить штрих-код\n\n%@\n\nк товару\n\n%@\n\n?";
+"REMOVE BARCODE FROM ARTICLE?" = "Удалить шрих-код\n\n%@\n\nу товара\n\n%@\n\n?";
+"THIS BARCODE ALREADY LINKED WITH CURRENT ARTICLE" = "Этот штрих код уже привязан к выбранному товару";
+"NO ARTICLES FOR THIS BARCODE" = "Нет товаров с таким штрих кодом";
 

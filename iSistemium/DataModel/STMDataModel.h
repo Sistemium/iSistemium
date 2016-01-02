@@ -29,7 +29,7 @@
 #import "STMClientEntity.h"
 #import "STMComment.h"
 
-#import "STMDatum+init.h"
+#import "STMDatum.h"
 #import "STMDebt+Cashing.h"
 #import "STMDriver.h"
 

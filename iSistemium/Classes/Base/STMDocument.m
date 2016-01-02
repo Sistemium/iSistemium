@@ -101,7 +101,7 @@
 
 //                    NSLog(@"UIDocumentSaveForOverwriting success");
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"saveDocumentSuccessfully" object:self];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"documentSavedSuccessfully" object:self];
                     
                     completionHandler(YES);
 
