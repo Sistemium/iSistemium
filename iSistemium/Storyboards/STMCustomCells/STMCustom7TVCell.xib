@@ -27,8 +27,8 @@
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xYX-eJ-f7A">
-                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="43.5"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xYX-eJ-f7A" userLabel="height limiter">
+                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="width" id="WtV-9p-y8b"/>
