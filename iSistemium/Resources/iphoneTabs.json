@@ -15,4 +15,5 @@
     "STMSupplyOrders"       : null,
     "STMUncashing"          : null,
     "STMWebView"            : "STMWebView",
+    "STMShippingLocations"  : "STMShippingLocations",
 }
