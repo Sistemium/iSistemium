@@ -122,7 +122,11 @@
 }
 
 - (void)updateToolbars {
+    
+    [[self.navigationController.toolbar viewWithTag:1] removeFromSuperview];
+
     [self addProcessingButton];
+    
 }
 
 #pragma mark - processing button
@@ -397,9 +401,7 @@
     self.isDetailNC = [self.splitVC isDetailNCForViewController:self];
     
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
-    
-    [[self.navigationController.toolbar viewWithTag:1] removeFromSuperview];
-    
+
     [self updateToolbars];
     [self performFetch];
     

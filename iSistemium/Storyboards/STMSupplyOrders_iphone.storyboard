@@ -99,11 +99,15 @@
         <!--Supply OrdersNC-->
         <scene sceneID="ysz-3w-c2M">
             <objects>
-                <navigationController id="rjc-9l-5vC" customClass="STMSupplyOrdersNC" sceneMemberID="viewController">
+                <navigationController toolbarHidden="NO" id="rjc-9l-5vC" customClass="STMSupplyOrdersNC" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="sDW-ts-SuF">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="8hb-ph-V3R">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="sxQ-n2-VGH" kind="relationship" relationship="rootViewController" id="mIV-T1-wRq"/>
                     </connections>
