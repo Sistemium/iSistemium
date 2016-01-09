@@ -9,11 +9,15 @@
 #import "STMSupplyOrdersTVC.h"
 
 #import "STMSupplyOrdersSVC.h"
+#import "STMSupplyOrdersNC.h"
 
 
 @interface STMSupplyOrdersTVC ()
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, weak) STMSupplyOrdersNC *rootNC;
+
+@property (nonatomic, strong) NSString *supplyOrderWorkflow;
 
 @property (nonatomic, strong) NSMutableDictionary *filterButtons;
 @property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
@@ -36,6 +40,30 @@
         
     }
     return _splitVC;
+    
+}
+
+- (STMSupplyOrdersNC *)rootNC {
+    
+    if (!_rootNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMSupplyOrdersNC class]]) {
+            _rootNC = (STMSupplyOrdersNC *)self.navigationController;
+        }
+    }
+    return _rootNC;
+    
+}
+
+- (NSString *)supplyOrderWorkflow {
+    
+    if (!_supplyOrderWorkflow) {
+        
+        if (IPAD) return self.splitVC.supplyOrderWorkflow;
+        if (IPHONE) return self.rootNC.supplyOrderWorkflow;
+        
+    }
+    return _supplyOrderWorkflow;
     
 }
 
@@ -157,7 +185,7 @@
 
     [[cell.contentView viewWithTag:1] removeFromSuperview];
 
-    UIColor *processingColor = [STMWorkflowController colorForProcessing:supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:supplyOrder.processing inWorkflow:self.supplyOrderWorkflow];
 
     if (processingColor) {
         
@@ -274,7 +302,7 @@
     for (NSDictionary *processing in processings) {
         
         NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:processing];
-        dic[@"label"] = [STMWorkflowController labelForProcessing:processing[propertyName] inWorkflow:self.splitVC.supplyOrderWorkflow];
+        dic[@"label"] = [STMWorkflowController labelForProcessing:processing[propertyName] inWorkflow:self.supplyOrderWorkflow];
         
         [processingLabels addObject:dic];
         
@@ -404,7 +432,7 @@
 
 - (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
     
-    NSString *filterProcessedLabel = [STMWorkflowController labelForProcessing:processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    NSString *filterProcessedLabel = [STMWorkflowController labelForProcessing:processing inWorkflow:self.supplyOrderWorkflow];
     
     filterProcessedLabel = (filterProcessedLabel) ? filterProcessedLabel : processing;
     
@@ -484,7 +512,7 @@
 - (NSString *)processingForSegmentedControl:(STMSegmentedControl *)segmentedControl {
     
     NSString *title = [segmentedControl titleForSegmentAtIndex:0];
-    NSString *processing = [STMWorkflowController processingForLabel:title inWorkflow:self.splitVC.supplyOrderWorkflow];
+    NSString *processing = [STMWorkflowController processingForLabel:title inWorkflow:self.supplyOrderWorkflow];
     
     return processing;
     

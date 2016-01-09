@@ -8,6 +8,7 @@
 
 #import "STMSupplyOrderArticleDocsTVC.h"
 
+#import "STMSupplyOrdersNC.h"
 #import "STMSupplyOrdersSVC.h"
 
 #import "STMWorkflowEditablesVC.h"
@@ -17,7 +18,10 @@
 @interface STMSupplyOrderArticleDocsTVC () <UIActionSheetDelegate, STMWorkflowable>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, weak) STMSupplyOrdersNC *rootNC;
 @property (nonatomic, strong) STMSupplyOrderOperationsTVC *operationsTVC;
+
+@property (nonatomic, strong) NSString *supplyOrderWorkflow;
 
 @property (nonatomic, strong) NSString *nextProcessing;
 
@@ -47,8 +51,32 @@
     
 }
 
+- (STMSupplyOrdersNC *)rootNC {
+    
+    if (!_rootNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMSupplyOrdersNC class]]) {
+            _rootNC = (STMSupplyOrdersNC *)self.navigationController;
+        }
+    }
+    return _rootNC;
+    
+}
+
+- (NSString *)supplyOrderWorkflow {
+    
+    if (!_supplyOrderWorkflow) {
+        
+        if (IPAD) return self.splitVC.supplyOrderWorkflow;
+        if (IPHONE) return self.rootNC.supplyOrderWorkflow;
+        
+    }
+    return _supplyOrderWorkflow;
+
+}
+
 - (BOOL)orderIsProcessed {
-    return [STMWorkflowController isEditableProcessing:self.supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    return [STMWorkflowController isEditableProcessing:self.supplyOrder.processing inWorkflow:self.supplyOrderWorkflow];
 }
 
 
@@ -102,7 +130,7 @@
 - (void)addProcessingButton {
     
     NSString *processing = self.supplyOrder.processing;
-    NSString *workflow = self.splitVC.supplyOrderWorkflow;
+    NSString *workflow = self.supplyOrderWorkflow;
     
     NSString *title = [STMWorkflowController labelForProcessing:processing inWorkflow:workflow];
     
@@ -120,7 +148,7 @@
 - (void)processingButtonPressed {
     
     STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:self.supplyOrder.processing
-                                                                                      inWorkflow:self.splitVC.supplyOrderWorkflow
+                                                                                      inWorkflow:self.supplyOrderWorkflow
                                                                                     withDelegate:self];
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [workflowActionSheet showInView:self.view];
@@ -307,7 +335,7 @@
 
     self.splitVC.selectedSupplyOrderArticleDoc = articleDoc;
     
-    if (self.isDetailNC) {
+    if (self.isDetailNC || IPHONE) {
         [self performSegueWithIdentifier:@"showOperations" sender:articleDoc];
     }
     
@@ -389,6 +417,8 @@
     if (self.isDetailNC && ![self isMovingToParentViewController]) {
         self.operationsTVC = nil;
     }
+    
+    if (IPHONE) [self updateToolbars];
     
 }
 

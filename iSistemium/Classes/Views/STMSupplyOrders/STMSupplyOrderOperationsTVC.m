@@ -8,6 +8,7 @@
 
 #import "STMSupplyOrderOperationsTVC.h"
 
+#import "STMSupplyOrdersNC.h"
 #import "STMSupplyOrdersSVC.h"
 #import "STMSupplyOperationVC.h"
 #import "STMArticleSelectionTVC.h"
@@ -24,6 +25,7 @@
 @interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, weak) STMSupplyOrdersNC *rootNC;
 @property (nonatomic, strong) STMSupplyOperationVC *operationVC;
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
@@ -40,6 +42,8 @@
 @property (nonatomic, strong) UIAlertView *remainingBarcodesAlert;
 @property (nonatomic, strong) UIAlertView *illegalArticleChangeAlert;
 
+@property (nonatomic, strong) NSString *supplyOrderWorkflow;
+
 
 @end
 
@@ -48,6 +52,18 @@
 
 @synthesize resultsController = _resultsController;
 
+
+- (STMSupplyOrdersNC *)rootNC {
+
+    if (!_rootNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMSupplyOrdersNC class]]) {
+            _rootNC = (STMSupplyOrdersNC *)self.navigationController;
+        }
+    }
+    return _rootNC;
+    
+}
 
 - (STMSupplyOrdersSVC *)splitVC {
     
@@ -103,8 +119,20 @@
     
 }
 
+- (NSString *)supplyOrderWorkflow {
+    
+    if (!_supplyOrderWorkflow) {
+    
+        if (IPAD) return self.splitVC.supplyOrderWorkflow;
+        if (IPHONE) return self.rootNC.supplyOrderWorkflow;
+        
+    }
+    return _supplyOrderWorkflow;
+    
+}
+
 - (BOOL)orderIsProcessed {
-    return [STMWorkflowController isEditableProcessing:self.supplyOrderArticleDoc.supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    return [STMWorkflowController isEditableProcessing:self.supplyOrderArticleDoc.supplyOrder.processing inWorkflow:self.supplyOrderWorkflow];
 }
 
 - (void)orderProcessingChanged {
@@ -199,7 +227,7 @@
 
     switch (section) {
         case 0:
-            return NSLocalizedString(@"ARTICLE", nil);
+            return (IPAD) ? NSLocalizedString(@"ARTICLE", nil) : self.supplyOrderArticleDoc.supplyOrder.ndoc;
             break;
 
         case 1:
@@ -887,7 +915,7 @@
     
     [super customInit];
     
-    self.navigationItem.hidesBackButton = YES;
+    self.navigationItem.hidesBackButton = IPAD;
     self.navigationItem.title = self.supplyOrderArticleDoc.supplyOrder.ndoc;
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     

@@ -10,4 +10,7 @@
 
 @interface STMSupplyOrdersNC : STMActionPopoverNC
 
+@property (nonatomic, strong) NSString *supplyOrderWorkflow;
+
+
 @end

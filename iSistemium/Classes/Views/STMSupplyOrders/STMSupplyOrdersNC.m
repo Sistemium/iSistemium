@@ -8,11 +8,29 @@
 
 #import "STMSupplyOrdersNC.h"
 
+#import "STMWorkflowController.h"
+
+
 @interface STMSupplyOrdersNC ()
+
 
 @end
 
+
 @implementation STMSupplyOrdersNC
+
+
+- (NSString *)supplyOrderWorkflow {
+    
+    if (!_supplyOrderWorkflow) {
+        _supplyOrderWorkflow = [STMWorkflowController workflowForEntityName:NSStringFromClass([STMSupplyOrder class])];
+    }
+    return _supplyOrderWorkflow;
+    
+}
+
+
+#pragma mark - view lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
