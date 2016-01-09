@@ -9,6 +9,7 @@
 #import "STMArticleCodesTVC.h"
 
 #import "STMArticlesSVC.h"
+#import "STMArticlesNC.h"
 
 #import "STMObjectsController.h"
 #import "STMBarCodeController.h"
@@ -20,12 +21,16 @@
 @property (nonatomic, strong) STMBarCode *barcodeToRemove;
 
 @property (nonatomic, weak) STMArticlesSVC *splitVC;
+@property (nonatomic, weak) STMArticlesNC *articlesNC;
 
 
 @end
 
 
 @implementation STMArticleCodesTVC
+
+@synthesize selectedArticle = _selectedArticle;
+
 
 - (STMArticlesSVC *)splitVC {
     
@@ -40,6 +45,45 @@
     
 }
 
+- (STMArticlesNC *)articlesNC {
+    
+    if (!_articlesNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMArticlesNC class]]) {
+            _articlesNC = (STMArticlesNC *)self.navigationController;
+        }
+        
+    }
+    return _articlesNC;
+}
+
+- (STMArticle *)selectedArticle {
+    
+    if (IPAD) {
+        return self.splitVC.selectedArticle;
+    }
+    if (IPHONE) {
+        return self.articlesNC.selectedArticle;
+    }
+    
+    return nil;
+    
+}
+
+- (void)setSelectedArticle:(STMArticle *)selectedArticle {
+
+    if (IPAD) {
+        self.splitVC.selectedArticle = selectedArticle;
+    }
+    
+    if (IPHONE) {
+        self.articlesNC.selectedArticle = selectedArticle;
+    }
+    
+    [self performFetch];
+    
+}
+
 - (NSArray *)tableData {
     
     if (!_tableData) {
@@ -48,7 +92,7 @@
                                                                          ascending:YES
                                                                           selector:@selector(caseInsensitiveCompare:)];
         
-        _tableData = [self.article.barCodes sortedArrayUsingDescriptors:@[sortDescriptor]];
+        _tableData = [self.selectedArticle.barCodes sortedArrayUsingDescriptors:@[sortDescriptor]];
         
     }
     return _tableData;
@@ -63,39 +107,75 @@
     
 }
 
-- (void)setArticle:(STMArticle *)article {
-    
-    _article = article;
-    
-    [self performFetch];
-    
-}
-
 
 #pragma mark - table view data
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return (IPHONE) ? 2 : 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.tableData.count;
+    
+    if (IPHONE) {
+        
+        switch (section) {
+            case 0:
+                return 1;
+                break;
+                
+            case 1:
+                return self.tableData.count;
+                break;
+                
+            default:
+                return 0;
+                break;
+        }
+        
+    } else {
+
+        return self.tableData.count;
+
+    }
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+
+    cell.textLabel.numberOfLines = 0;
+
+    if (IPHONE) {
+        
+        switch (indexPath.section) {
+            case 0:
+                cell.textLabel.text = self.selectedArticle.name;
+                break;
+                
+            case 1: {
+                STMBarCode *barcode = self.tableData[indexPath.row];
+                cell.textLabel.text = barcode.code;
+            }
+                break;
+                
+            default:
+                break;
+        }
+        
+    } else {
     
-    STMBarCode *barcode = self.tableData[indexPath.row];
-    
-    cell.textLabel.text = barcode.code;
+        STMBarCode *barcode = self.tableData[indexPath.row];
+        cell.textLabel.text = barcode.code;
+
+    }
     
     return cell;
     
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return UITableViewCellEditingStyleDelete;
+    return (IPHONE && indexPath.section == 0) ? UITableViewCellEditingStyleNone : UITableViewCellEditingStyleDelete;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -114,7 +194,7 @@
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        
-        NSString *alertMessage = [NSString stringWithFormat:NSLocalizedString(@"REMOVE BARCODE FROM ARTICLE?", nil), self.barcodeToRemove.code, self.article.name];
+        NSString *alertMessage = [NSString stringWithFormat:NSLocalizedString(@"REMOVE BARCODE FROM ARTICLE?", nil), self.barcodeToRemove.code, self.selectedArticle.name];
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
                                                         message:alertMessage
@@ -128,19 +208,43 @@
     
 }
 
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+
+    switch (alertView.tag) {
+        case 678:
+            
+            switch (buttonIndex) {
+                case 1:
+                    [STMObjectsController createRecordStatusAndRemoveObject:self.barcodeToRemove];
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+
+}
+
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     switch (alertView.tag) {
         case 678:
             
             switch (buttonIndex) {
-                case 1:
-
-                    self.splitVC.selectedArticle = nil;
+                case 1: {
                     
-                    [STMObjectsController createRecordStatusAndRemoveObject:self.barcodeToRemove];
                     [self performFetch];
-                
+
+                    if (IPAD) {
+                        self.selectedArticle = nil;
+                    }
+
+                }
                     break;
                     
                 default:

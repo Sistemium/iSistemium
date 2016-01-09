@@ -26,6 +26,7 @@
 @property (nonatomic, strong) UIAlertView *addBarcodeAlert;
 
 @property (nonatomic, strong) STMArticle *selectedArticle;
+@property (nonatomic, strong) STMArticleCodesTVC *codesTVC;
 
 
 @end
@@ -64,23 +65,18 @@
 
 - (STMArticle *)selectedArticle {
     
-    if (!_selectedArticle) {
-        
-        if (IPAD) {
-            _selectedArticle = self.splitVC.selectedArticle;
-        }
-        if (IPHONE) {
-            _selectedArticle = self.articlesNC.selectedArticle;
-        }
-        
+    if (IPAD) {
+        return self.splitVC.selectedArticle;
     }
-    return _selectedArticle;
+    if (IPHONE) {
+        return self.articlesNC.selectedArticle;
+    }
+
+    return nil;
     
 }
 
 - (void)setSelectedArticle:(STMArticle *)selectedArticle {
-    
-    _selectedArticle = selectedArticle;
     
     if (IPAD) {
         self.splitVC.selectedArticle = selectedArticle;
@@ -134,9 +130,7 @@
 
 - (void)performFetch {
     
-    if (IPAD) {
-        self.selectedArticle = nil;
-    }
+    self.selectedArticle = nil;
 
     [super performFetch];
     [self updateToolbar];
@@ -176,24 +170,43 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+    
+    if ([self.selectedArticle isEqual:article]) {
+        
+        self.selectedArticle = nil;
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        
+    } else {
+        
+        self.selectedArticle = article;
+        
+    }
+
     if (IPHONE) {
-        [self performSegueWithIdentifier:@"showCodes" sender:indexPath];
+        
+        if ([self.articlesNC.topViewController isEqual:self.codesTVC]) {
+            self.codesTVC.selectedArticle = self.selectedArticle;
+        } else {
+            [self performSegueWithIdentifier:@"showCodes" sender:indexPath];
+        }
+        
     }
     
     if (IPAD) {
 
-        STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
-        
-        if ([self.selectedArticle isEqual:article]) {
-            
-            self.selectedArticle = nil;
-            [tableView deselectRowAtIndexPath:indexPath animated:NO];
-            
-        } else {
-            
-            self.selectedArticle = article;
-
-        }
+//        STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+//        
+//        if ([self.selectedArticle isEqual:article]) {
+//            
+//            self.selectedArticle = nil;
+//            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+//            
+//        } else {
+//            
+//            self.selectedArticle = article;
+//
+//        }
 
     }
     
@@ -220,8 +233,8 @@
         
         STMArticle *article = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
         
-        STMArticleCodesTVC *codesTVC = (STMArticleCodesTVC *)segue.destinationViewController;
-        codesTVC.article = article;
+        self.codesTVC = (STMArticleCodesTVC *)segue.destinationViewController;
+        self.codesTVC.selectedArticle = article;
         
     }
     
@@ -304,13 +317,32 @@
     
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
 
     if ([alertView isEqual:self.addBarcodeAlert]) {
         
         switch (buttonIndex) {
             case 1:
                 [self addBarcode:self.scannedBarcode toArticle:self.selectedArticle];
+                break;
+                
+            default:
+                break;
+        }
+        
+    }
+
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+
+    if ([alertView isEqual:self.addBarcodeAlert]) {
+        
+        switch (buttonIndex) {
+            case 1:
+                if (self.codesTVC) {
+                    self.codesTVC.selectedArticle = self.selectedArticle;
+                }
                 break;
                 
             default:
@@ -495,6 +527,10 @@
     
     [super viewDidAppear:animated];
     [self startBarcodeScanning];
+    
+    if (IPHONE) {
+        self.selectedArticle = nil;
+    }
     
 }
 
