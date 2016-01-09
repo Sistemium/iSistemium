@@ -8,6 +8,7 @@
 
 #import "STMArticlesTVC.h"
 
+#import "STMArticlesNC.h"
 #import "STMArticlesSVC.h"
 #import "STMArticleCodesTVC.h"
 
@@ -18,10 +19,13 @@
 @interface STMArticlesTVC () <STMBarCodeScannerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMArticlesSVC *splitVC;
+@property (nonatomic, weak) STMArticlesNC *articlesNC;
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 @property (nonatomic, strong) NSString *scannedBarcode;
 @property (nonatomic, strong) UIAlertView *addBarcodeAlert;
+
+@property (nonatomic, strong) STMArticle *selectedArticle;
 
 
 @end
@@ -29,6 +33,7 @@
 
 @implementation STMArticlesTVC
 
+@synthesize selectedArticle = _selectedArticle;
 @synthesize resultsController = _resultsController;
 
 
@@ -42,6 +47,48 @@
         
     }
     return _splitVC;
+    
+}
+
+- (STMArticlesNC *)articlesNC {
+    
+    if (!_articlesNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMArticlesNC class]]) {
+            _articlesNC = (STMArticlesNC *)self.navigationController;
+        }
+        
+    }
+    return _articlesNC;
+}
+
+- (STMArticle *)selectedArticle {
+    
+    if (!_selectedArticle) {
+        
+        if (IPAD) {
+            _selectedArticle = self.splitVC.selectedArticle;
+        }
+        if (IPHONE) {
+            _selectedArticle = self.articlesNC.selectedArticle;
+        }
+        
+    }
+    return _selectedArticle;
+    
+}
+
+- (void)setSelectedArticle:(STMArticle *)selectedArticle {
+    
+    _selectedArticle = selectedArticle;
+    
+    if (IPAD) {
+        self.splitVC.selectedArticle = selectedArticle;
+    }
+    
+    if (IPHONE) {
+        self.articlesNC.selectedArticle = selectedArticle;
+    }
     
 }
 
@@ -88,7 +135,7 @@
 - (void)performFetch {
     
     if (IPAD) {
-        self.splitVC.selectedArticle = nil;
+        self.selectedArticle = nil;
     }
 
     [super performFetch];
@@ -137,14 +184,14 @@
 
         STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
         
-        if ([self.splitVC.selectedArticle isEqual:article]) {
+        if ([self.selectedArticle isEqual:article]) {
             
-            self.splitVC.selectedArticle = nil;
+            self.selectedArticle = nil;
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             
         } else {
             
-            self.splitVC.selectedArticle = article;
+            self.selectedArticle = article;
 
         }
 
@@ -215,14 +262,14 @@
     
     self.scannedBarcode = barcode;
 
-    if (self.splitVC.selectedArticle) {
+    if (self.selectedArticle) {
         
-        NSArray *articleBarcodes = [self.splitVC.selectedArticle.barCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
+        NSArray *articleBarcodes = [self.selectedArticle.barCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
         
         if ([articleBarcodes containsObject:self.scannedBarcode]) {
             [STMSoundController say:NSLocalizedString(@"THIS BARCODE ALREADY LINKED WITH CURRENT ARTICLE", nil)];
         } else {
-            [self showAddBarcodeAlertForBarcode:self.scannedBarcode andArticle:self.splitVC.selectedArticle];
+            [self showAddBarcodeAlertForBarcode:self.scannedBarcode andArticle:self.selectedArticle];
         }
         
     } else {
@@ -263,7 +310,7 @@
         
         switch (buttonIndex) {
             case 1:
-                [self addBarcode:self.scannedBarcode toArticle:self.splitVC.selectedArticle];
+                [self addBarcode:self.scannedBarcode toArticle:self.selectedArticle];
                 break;
                 
             default:
@@ -277,7 +324,7 @@
 - (void)addBarcode:(NSString *)barcode toArticle:(STMArticle *)article {
 
     [STMBarCodeController addBarcode:barcode toArticle:article];
-    self.splitVC.selectedArticle = article;
+    self.selectedArticle = article;
 
 }
 
@@ -388,7 +435,7 @@
 
 - (void)updateClearFilterButton {
     
-    if (self.scannedBarcode || self.splitVC.selectedArticle) {
+    if (self.scannedBarcode || self.selectedArticle) {
         
         STMBarButtonItem *clearFilterButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Clear Filters-25"]
                                                                                 style:UIBarButtonItemStylePlain
@@ -406,7 +453,7 @@
 - (void)clearFilter {
     
     self.scannedBarcode = nil;
-    self.splitVC.selectedArticle = nil;
+    self.selectedArticle = nil;
     [self performFetch];
     
 }
