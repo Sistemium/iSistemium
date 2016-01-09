@@ -102,6 +102,8 @@
 		2C1F751E1BFA2DE7003699C8 /* STMPickingOrdersNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1F751D1BFA2DE7003699C8 /* STMPickingOrdersNC.m */; };
 		2C1F75211BFA2E36003699C8 /* STMPickingOrdersTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1F75201BFA2E36003699C8 /* STMPickingOrdersTVC.m */; };
 		2C1F75251BFB538F003699C8 /* STMPickingOrderPositionsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1F75241BFB538F003699C8 /* STMPickingOrderPositionsTVC.m */; };
+		2C2264571C41467A006F3C16 /* STMSupplyOrders_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2264561C41467A006F3C16 /* STMSupplyOrders_iphone.storyboard */; };
+		2C22645A1C414701006F3C16 /* STMSupplyOrdersNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2264591C414701006F3C16 /* STMSupplyOrdersNC.m */; };
 		2C2949721BDCD0390099F24F /* No connection Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949711BDCD0390099F24F /* No connection Cloud-100.png */; };
 		2C2949781BDCFBF30099F24F /* STMPhotoReportsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */; };
 		2C29497A1BDCFC110099F24F /* STMPhotoReports.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C2949791BDCFC110099F24F /* STMPhotoReports.storyboard */; };
@@ -650,6 +652,9 @@
 		2C1F75221BFB52FC003699C8 /* STMDataModel 75.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 75.xcdatamodel"; sourceTree = "<group>"; };
 		2C1F75231BFB538F003699C8 /* STMPickingOrderPositionsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPickingOrderPositionsTVC.h; sourceTree = "<group>"; };
 		2C1F75241BFB538F003699C8 /* STMPickingOrderPositionsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPickingOrderPositionsTVC.m; sourceTree = "<group>"; };
+		2C2264561C41467A006F3C16 /* STMSupplyOrders_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMSupplyOrders_iphone.storyboard; sourceTree = "<group>"; };
+		2C2264581C414701006F3C16 /* STMSupplyOrdersNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSupplyOrdersNC.h; sourceTree = "<group>"; };
+		2C2264591C414701006F3C16 /* STMSupplyOrdersNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrdersNC.m; sourceTree = "<group>"; };
 		2C2949711BDCD0390099F24F /* No connection Cloud-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No connection Cloud-100.png"; sourceTree = "<group>"; };
 		2C2949761BDCFBF30099F24F /* STMPhotoReportsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPhotoReportsSVC.h; sourceTree = "<group>"; };
 		2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPhotoReportsSVC.m; sourceTree = "<group>"; };
@@ -2528,6 +2533,7 @@
 				2CEAC15B1B3BF64C00AD068E /* STMShipments_iphone.storyboard */,
 				2C1727EB1B94440D00C82ACB /* STMShipments.storyboard */,
 				2CF858E11C1ADEAE004D7BD1 /* STMSupplyOrders.storyboard */,
+				2C2264561C41467A006F3C16 /* STMSupplyOrders_iphone.storyboard */,
 				2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */,
 				2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */,
 			);
@@ -2597,6 +2603,8 @@
 		2CF858E31C1ADF32004D7BD1 /* STMSupplyOrders */ = {
 			isa = PBXGroup;
 			children = (
+				2C2264581C414701006F3C16 /* STMSupplyOrdersNC.h */,
+				2C2264591C414701006F3C16 /* STMSupplyOrdersNC.m */,
 				2CF858E41C1AE068004D7BD1 /* STMSupplyOrdersSVC.h */,
 				2CF858E51C1AE068004D7BD1 /* STMSupplyOrdersSVC.m */,
 				2C3CED671C1C47A000291AAD /* STMSupplyOrdersMasterNC.h */,
@@ -2821,6 +2829,7 @@
 				2C73A9241AF8F59F00FB7662 /* iphoneTabs.json in Resources */,
 				2C88F1BE1B18947700E30418 /* STMCustom6TVCell.xib in Resources */,
 				2C761BBB1B00CA02001DA33E /* STMCustom4TVCell.xib in Resources */,
+				2C2264571C41467A006F3C16 /* STMSupplyOrders_iphone.storyboard in Resources */,
 				2C81AD501AD01FA300246666 /* STMCustom3TVCell.xib in Resources */,
 				2C2968EE19A0BFD10038B122 /* STMUncashing.storyboard in Resources */,
 				2C1AB3151B70B22800BF5C50 /* 7_circle_colored_blue.png in Resources */,
@@ -3038,6 +3047,7 @@
 				2C587AB21BBBD53100546A62 /* STMShipmentsNC.m in Sources */,
 				2C02F2D01A8E1FE100E0E890 /* STMCashingController.m in Sources */,
 				2C57642C1AA5E9C400B9FD2C /* STMTableViewCell.m in Sources */,
+				2C22645A1C414701006F3C16 /* STMSupplyOrdersNC.m in Sources */,
 				2CCD06E31B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m in Sources */,
 				2CAFB2521C293B8800BBEDC1 /* STMSupplyOrdersProcessController.m in Sources */,
 				2CEE30551BECEF1F009B229F /* STMBarCodeScanVC.m in Sources */,

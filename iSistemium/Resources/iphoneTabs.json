@@ -12,7 +12,7 @@
     "STMProfile"            : "STMProfile",
     "STMSettings"           : "STMSettings",
     "STMShipments"          : "STMShipments_iphone",
-    "STMSupplyOrders"       : null,
+    "STMSupplyOrders"       : "STMSupplyOrders_iphone",
     "STMUncashing"          : null,
     "STMWebView"            : "STMWebView",
 }
