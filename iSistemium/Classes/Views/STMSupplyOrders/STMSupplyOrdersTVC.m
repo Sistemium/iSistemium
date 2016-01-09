@@ -147,6 +147,10 @@
 
     self.splitVC.selectedSupplyOrder = supplyOrder;
 
+    if (IPHONE) {
+        [self performSegueWithIdentifier:@"showArticleDocs" sender:indexPath];
+    }
+    
 }
 
 - (void)addProcessingColorStripeForSupplyOrder:(STMSupplyOrder *)supplyOrder forCell:(UITableViewCell *)cell {
@@ -196,8 +200,15 @@
     
     if ([segue.identifier isEqualToString:@"showArticleDocs"] &&
         [segue.destinationViewController isKindOfClass:[STMSupplyOrderArticleDocsTVC class]]) {
-        
-        
+
+        if ([sender isKindOfClass:[NSIndexPath class]]) {
+            
+            STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+            
+            STMSupplyOrderArticleDocsTVC *articleDocsTVC = (STMSupplyOrderArticleDocsTVC *)segue.destinationViewController;
+            articleDocsTVC.supplyOrder = supplyOrder;
+            
+        }
         
     }
     
