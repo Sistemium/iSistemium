@@ -162,7 +162,19 @@
     
     cell.textLabel.numberOfLines = 0;
     cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", article.name, (article.extraLabel) ? article.extraLabel : @""];
-    cell.detailTextLabel.text = @(article.barCodes.count).stringValue;
+    
+    NSString *pluralType = [STMFunctions pluralTypeForCount:article.barCodes.count];
+    NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
+    
+    NSString *numberOfBarcodesString = nil;
+    
+    if (article.barCodes.count > 0) {
+        numberOfBarcodesString = [NSString stringWithFormat:@"%@ %@", @(article.barCodes.count), NSLocalizedString(pluralString, nil)];
+    } else {
+        numberOfBarcodesString = NSLocalizedString(pluralString, nil);
+    }
+
+    cell.detailTextLabel.text = numberOfBarcodesString;
     
     return cell;
     
