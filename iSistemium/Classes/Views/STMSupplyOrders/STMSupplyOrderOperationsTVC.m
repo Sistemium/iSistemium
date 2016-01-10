@@ -205,7 +205,7 @@
     
     switch (section) {
         case 0:
-            return 1;
+            return (self.supplyOrderArticleDoc.article) ? 2 : 1;
             break;
 
         case 1:
@@ -248,7 +248,7 @@
     
     switch (indexPath.section) {
         case 0:
-            [self fillArticleCell:cell];
+            [self fillArticleCell:cell atIndexPath:indexPath];
             break;
 
         case 1:
@@ -260,6 +260,23 @@
     }
     
     return cell;
+    
+}
+
+- (void)fillArticleCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.row) {
+        case 0:
+            [self fillArticleCell:cell];
+            break;
+            
+        case 1:
+            [self fillRemainingCell:cell];
+            break;
+            
+        default:
+            break;
+    }
     
 }
 
@@ -305,6 +322,19 @@
 
     }
     
+}
+
+- (void)fillRemainingCell:(STMTableViewSubtitleStyleCell *)cell {
+    
+    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+    
+    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
+
+    cell.textLabel.textColor = [UIColor blackColor];
+    cell.textLabel.text = title;
+
+    cell.detailTextLabel.text = @"";
+
 }
 
 - (void)fillOperationCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -805,17 +835,19 @@
 
 - (void)setupToolbar {
     
-    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
     
-    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
-    
-    STMBarButtonItem *infoLabel = [[STMBarButtonItem alloc] initWithTitle:title
-                                                                    style:UIBarButtonItemStylePlain
-                                                                   target:nil
-                                                                   action:nil];
-    
-    infoLabel.enabled = NO;
-    infoLabel.tintColor = [UIColor blackColor];
+//    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+//    
+//    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
+//    
+//    STMBarButtonItem *infoLabel = [[STMBarButtonItem alloc] initWithTitle:title
+//                                                                    style:UIBarButtonItemStylePlain
+//                                                                   target:nil
+//                                                                   action:nil];
+//    
+//    infoLabel.enabled = NO;
+//    infoLabel.tintColor = [UIColor blackColor];
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
@@ -828,11 +860,12 @@
                                                                                  target:self
                                                                                  action:@selector(stopRepeatingButtonPressed)];
 
-        [self setToolbarItems:@[infoLabel, flexibleSpace, stopRepeatingButton] animated:NO];
+//        [self setToolbarItems:@[infoLabel, flexibleSpace, stopRepeatingButton] animated:NO];
+        [self setToolbarItems:@[flexibleSpace, stopRepeatingButton, flexibleSpace] animated:NO];
 
     } else {
     
-        [self setToolbarItems:@[flexibleSpace, infoLabel, flexibleSpace] animated:NO];
+        [self setToolbarItems:@[] animated:NO];
 
     }
     
