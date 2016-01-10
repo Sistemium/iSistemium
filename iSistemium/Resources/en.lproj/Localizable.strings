@@ -446,4 +446,6 @@
 "REMOVE BARCODE FROM ARTICLE?" = "Remove barcode\n\n%@\n\nfrom article\n\n%@\n\n?";
 "THIS BARCODE ALREADY LINKED WITH CURRENT ARTICLE" = "This barcode already linked with current article";
 "NO ARTICLES FOR THIS BARCODE" = "No articles for this barcode";
+"ONE MORE CODE" = "One more code";
+"OPERATION COMPLETE" = "Operation complete";
 

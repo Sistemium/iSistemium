@@ -446,4 +446,6 @@
 "REMOVE BARCODE FROM ARTICLE?" = "Удалить шрих-код\n\n%@\n\nу товара\n\n%@\n\n?";
 "THIS BARCODE ALREADY LINKED WITH CURRENT ARTICLE" = "Этот штрих код уже привязан к выбранному товару";
 "NO ARTICLES FOR THIS BARCODE" = "Нет товаров с таким штрих кодом";
+"ONE MORE CODE" = "Еще наклейка";
+"OPERATION COMPLETE" = "Партия принята";
 

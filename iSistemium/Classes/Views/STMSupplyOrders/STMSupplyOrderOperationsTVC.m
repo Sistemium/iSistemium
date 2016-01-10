@@ -593,10 +593,12 @@
         
         if (self.stockBatchCodes.count >= self.lastSourceOperationNumberOfBarcodes) {
             
+            [STMSoundController say:NSLocalizedString(@"OPERATION COMPLETE", nil)];
             [self repeatOperationComplete];
             
         } else {
             
+            [STMSoundController say:NSLocalizedString(@"ONE MORE CODE", nil)];
             [self showRemainingBarcodesAlert];
             
         }
