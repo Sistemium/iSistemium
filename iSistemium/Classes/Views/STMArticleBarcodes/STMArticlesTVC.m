@@ -486,10 +486,16 @@
                                                                                target:self
                                                                                action:@selector(clearFilter)];
         
-        NSMutableArray *toolbarItems = self.toolbarItems.mutableCopy;
-        [toolbarItems addObject:clearFilterButton];
-        [self setToolbarItems:toolbarItems animated:NO];
+//        NSMutableArray *toolbarItems = self.toolbarItems.mutableCopy;
+//        [toolbarItems addObject:clearFilterButton];
+//        [self setToolbarItems:toolbarItems animated:NO];
+
+        self.navigationItem.leftBarButtonItem = clearFilterButton;
         
+    } else {
+        
+        self.navigationItem.leftBarButtonItem = nil;
+
     }
     
 }
