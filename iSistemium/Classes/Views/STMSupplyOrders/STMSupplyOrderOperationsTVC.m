@@ -372,9 +372,7 @@
                     [self showIllegalArticleChangeAlert];
                     
                 } else {
-            
-                    [self showArticleSelectionPopoverWithArticles:nil];
-
+                    [self showArticleSelectionWithArticles:nil];
                 }
 
             }
@@ -499,7 +497,7 @@
                 
             } else {
                 
-                [self showArticleSelectionPopoverWithArticles:articles];
+                [self showArticleSelectionWithArticles:articles];
                 
             }
             
@@ -621,30 +619,44 @@
 
 }
 
-- (void)showArticleSelectionPopoverWithArticles:(NSArray *)articles {
+
+#pragma mark - article selection
+
+- (void)showArticleSelectionWithArticles:(NSArray *)articles {
     
     if (!self.articleBarCode) self.articleBarCode = self.supplyOrderArticleDoc.code;
     
     if (articles.count == 0) articles = [STMBarCodeController articlesForBarcode:self.articleBarCode];
-
+    
     if (articles.count > 0) {
-     
+        
         STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
         articleSelectionTVC.articles = articles;
         articleSelectionTVC.parentVC = self;
         articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
         articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
         articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
-        
-        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
-        
-        self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
-        self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
-        
-        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-        [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+
+        if (IPAD) [self showArticleSelectionPopoverWithTVC:articleSelectionTVC];
+        if (IPHONE) [self showArticleSelectionTVC:articleSelectionTVC];
         
     }
+
+}
+
+- (void)showArticleSelectionTVC:(STMArticleSelectionTVC *)articleSelectionTVC {
+    [self.navigationController pushViewController:articleSelectionTVC animated:YES];
+}
+
+- (void)showArticleSelectionPopoverWithTVC:(STMArticleSelectionTVC *)articleSelectionTVC {
+
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
+    
+    self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
+    self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
+    
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
 
 }
 
@@ -849,7 +861,7 @@
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
-                                                        message:[NSLocalizedString(@"STOP REPEATING?", nil) stringByAppendingString:@"?"]
+                                                        message:NSLocalizedString(@"STOP REPEATING?", nil)
                                                        delegate:self
                                               cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
                                               otherButtonTitles:NSLocalizedString(@"OK", nil), nil];

@@ -223,14 +223,21 @@
         STMArticle *article = self.tableData[selectedIndexPath.row];
         
         [self.parentVC confirmArticle:article];
-        [self dismissViewControllerAnimated:NO completion:nil];
+        [self dismissSelf];
 
     }
     
 }
 
 - (void)cancelButtonPressed {
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self dismissSelf];
+}
+
+- (void)dismissSelf {
+    
+    if (IPAD) [self dismissViewControllerAnimated:NO completion:nil];
+    if (IPHONE) [self.navigationController popViewControllerAnimated:YES];
+    
 }
 
 
@@ -258,7 +265,7 @@
     [super viewDidAppear:animated];
     
     if ([self isMovingToParentViewController]) {
-//        self.parentNC.scanEnabled = NO;
+
     }
     
 }
@@ -269,9 +276,7 @@
     
     if ([self isMovingFromParentViewController]) {
         
-//        self.parentNC.scanEnabled = YES;
-        
-        self.navigationController.toolbarHidden = YES;
+        self.navigationController.toolbarHidden = IPAD;
         
     }
     
