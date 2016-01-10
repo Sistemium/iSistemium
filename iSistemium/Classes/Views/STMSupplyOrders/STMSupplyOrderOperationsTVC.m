@@ -227,7 +227,7 @@
 
     switch (section) {
         case 0:
-            return (IPAD) ? NSLocalizedString(@"ARTICLE", nil) : self.supplyOrderArticleDoc.supplyOrder.ndoc;
+            return NSLocalizedString(@"ARTICLE", nil);
             break;
 
         case 1:

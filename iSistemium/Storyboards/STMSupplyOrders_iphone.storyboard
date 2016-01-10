@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -91,6 +92,9 @@
                             <outlet property="delegate" destination="AID-3O-GjZ" id="0eJ-Gz-IKg"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="Bf5-2d-7ls" kind="presentation" identifier="showSupplyOperation" id="xI0-rU-Z34"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1h3-gT-ZYQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -115,6 +119,130 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1R2-ym-Sg9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-288" y="478"/>
+        </scene>
+        <!--Supply OperationVC-->
+        <scene sceneID="GGZ-PO-sJe">
+            <objects>
+                <viewController id="Bf5-2d-7ls" customClass="STMSupplyOperationVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ZCW-Lh-S1I"/>
+                        <viewControllerLayoutGuide type="bottom" id="aqf-OM-ZzA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="mBr-u4-pIb">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0AT-hp-ugB" customClass="STMVolumePicker">
+                                <rect key="frame" x="20" y="80" width="560" height="216"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="216" id="avc-MY-tsm"/>
+                                </constraints>
+                            </pickerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FuW-GN-17u">
+                                <rect key="frame" x="20" y="28" width="560" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="YBU-vl-a4X"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nzR-Go-3kN">
+                                <rect key="frame" x="20" y="304" width="560" height="252"/>
+                                <connections>
+                                    <segue destination="yOb-rE-O7S" kind="embed" identifier="stockBatchCodes" id="bno-HW-yA1"/>
+                                </connections>
+                            </containerView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="05g-Lh-cZd">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="B4B-z6-LGt"/>
+                                </constraints>
+                                <items>
+                                    <barButtonItem systemItem="cancel" id="Nok-VF-aaU">
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="Bf5-2d-7ls" id="0Ne-Ct-sIC"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="8i8-5n-c9Y"/>
+                                    <barButtonItem title="Repeat" style="done" id="41e-By-3ya">
+                                        <connections>
+                                            <action selector="repeatButtonPressed:" destination="Bf5-2d-7ls" id="1Wb-Ab-WzJ"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="KBc-KZ-5xh"/>
+                                    <barButtonItem systemItem="done" id="16H-1t-6hD">
+                                        <connections>
+                                            <action selector="doneButtonPressed:" destination="Bf5-2d-7ls" id="ubs-jc-QwW"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="0AT-hp-ugB" firstAttribute="top" secondItem="FuW-GN-17u" secondAttribute="bottom" constant="8" id="4wY-Os-A0p"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="0AT-hp-ugB" secondAttribute="leading" id="9d5-eo-gvE"/>
+                            <constraint firstItem="aqf-OM-ZzA" firstAttribute="top" secondItem="nzR-Go-3kN" secondAttribute="bottom" constant="20" id="C00-PA-oKk"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="FuW-GN-17u" secondAttribute="leading" id="DFu-Nx-3a9"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="nzR-Go-3kN" secondAttribute="trailing" id="Eoj-dE-w0k"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="FuW-GN-17u" secondAttribute="trailing" id="GeE-dp-IeL"/>
+                            <constraint firstItem="05g-Lh-cZd" firstAttribute="top" secondItem="nzR-Go-3kN" secondAttribute="bottom" id="JR0-fG-ZUe"/>
+                            <constraint firstItem="05g-Lh-cZd" firstAttribute="leading" secondItem="mBr-u4-pIb" secondAttribute="leadingMargin" constant="-20" id="Nqz-dY-d9b"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="0AT-hp-ugB" secondAttribute="trailing" id="O8E-bd-9Gx"/>
+                            <constraint firstItem="FuW-GN-17u" firstAttribute="top" secondItem="ZCW-Lh-S1I" secondAttribute="bottom" constant="8" id="Zjl-dL-8n7"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="05g-Lh-cZd" secondAttribute="trailing" constant="-20" id="kjL-Xg-Q2a"/>
+                            <constraint firstItem="nzR-Go-3kN" firstAttribute="top" secondItem="0AT-hp-ugB" secondAttribute="bottom" constant="8" id="qaC-2T-tDV"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="nzR-Go-3kN" secondAttribute="leading" id="v7u-bG-H2a"/>
+                            <constraint firstItem="aqf-OM-ZzA" firstAttribute="top" secondItem="05g-Lh-cZd" secondAttribute="bottom" id="wlh-xX-DPn"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="C00-PA-oKk"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="articleLabel" destination="FuW-GN-17u" id="Uak-kM-pKn"/>
+                        <outlet property="barcodesTableContainer" destination="nzR-Go-3kN" id="Q92-K1-NJ3"/>
+                        <outlet property="cancelButton" destination="Nok-VF-aaU" id="sMn-7E-fG1"/>
+                        <outlet property="doneButton" destination="16H-1t-6hD" id="39t-QU-Z7B"/>
+                        <outlet property="repeatButton" destination="41e-By-3ya" id="iUg-xX-YKS"/>
+                        <outlet property="toolbar" destination="05g-Lh-cZd" id="Y8H-ns-6k6"/>
+                        <outlet property="volumePicker" destination="0AT-hp-ugB" id="Jxt-dz-FfO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="R75-LI-6f2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2821" y="478"/>
+        </scene>
+        <!--Stock Batch CodesTVC-->
+        <scene sceneID="ieB-hY-r2b">
+            <objects>
+                <tableViewController id="yOb-rE-O7S" customClass="STMStockBatchCodesTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="kxc-AG-lIF">
+                        <rect key="frame" x="0.0" y="0.0" width="560" height="252"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="stockBatchCodeCell" id="Cg7-4F-2YP">
+                                <rect key="frame" x="0.0" y="49.5" width="560" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Cg7-4F-2YP" id="DKn-gd-oo9">
+                                    <rect key="frame" x="0.0" y="0.0" width="560" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="yOb-rE-O7S" id="rHJ-EE-asQ"/>
+                            <outlet property="delegate" destination="yOb-rE-O7S" id="dE2-Ts-me3"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2tD-Fp-4fe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3599" y="478"/>
         </scene>
     </scenes>
 </document>
