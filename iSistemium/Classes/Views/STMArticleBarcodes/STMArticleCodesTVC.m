@@ -72,13 +72,13 @@
 
 - (void)setSelectedArticle:(STMArticle *)selectedArticle {
 
-    if (IPAD) {
-        self.splitVC.selectedArticle = selectedArticle;
-    }
-    
-    if (IPHONE) {
-        self.articlesNC.selectedArticle = selectedArticle;
-    }
+//    if (IPAD) {
+//        self.splitVC.selectedArticle = selectedArticle;
+//    }
+//    
+//    if (IPHONE) {
+//        self.articlesNC.selectedArticle = selectedArticle;
+//    }
     
     [self performFetch];
     
