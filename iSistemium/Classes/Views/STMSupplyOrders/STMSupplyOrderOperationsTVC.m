@@ -379,8 +379,12 @@
             
         } else if (indexPath.section == 1) {
             
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
-            [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
+            if (self.resultsController.fetchedObjects.count > 0) {
+
+                indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
+                [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
+
+            }
             
         }
         
