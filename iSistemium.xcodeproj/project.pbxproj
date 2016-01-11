@@ -320,6 +320,8 @@
 		2C9D04B61ADBC01800D0421D /* STMRemoteController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C9D04B51ADBC01800D0421D /* STMRemoteController.m */; };
 		2C9D04B91ADE549400D0421D /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C9D04B81ADE549400D0421D /* Crashlytics.framework */; };
 		2CA611EC19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */; };
+		2CA9AFE41C439B930071D429 /* error.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2CA9AFE21C439B930071D429 /* error.mp3 */; };
+		2CA9AFE61C43A8E40071D429 /* ok.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2CA9AFE51C43A8E40071D429 /* ok.mp3 */; };
 		2CAFB2521C293B8800BBEDC1 /* STMSupplyOrdersProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CAFB2511C293B8800BBEDC1 /* STMSupplyOrdersProcessController.m */; };
 		2CAFB2551C293FBC00BBEDC1 /* STMStockBatchOperationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CAFB2541C293FBC00BBEDC1 /* STMStockBatchOperationController.m */; };
 		2CAFB2581C297FE600BBEDC1 /* STMArticleSelectionTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CAFB2571C297FE600BBEDC1 /* STMArticleSelectionTVC.m */; };
@@ -1030,6 +1032,8 @@
 		2C9D04B81ADE549400D0421D /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		2CA611EA19FB7B1A0046ECF4 /* STMUncashingHandOverVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMUncashingHandOverVC.h; sourceTree = "<group>"; };
 		2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingHandOverVC.m; sourceTree = "<group>"; };
+		2CA9AFE21C439B930071D429 /* error.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = error.mp3; sourceTree = "<group>"; };
+		2CA9AFE51C43A8E40071D429 /* ok.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ok.mp3; sourceTree = "<group>"; };
 		2CAFB2501C293B8800BBEDC1 /* STMSupplyOrdersProcessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSupplyOrdersProcessController.h; sourceTree = "<group>"; };
 		2CAFB2511C293B8800BBEDC1 /* STMSupplyOrdersProcessController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrdersProcessController.m; sourceTree = "<group>"; };
 		2CAFB2531C293FBC00BBEDC1 /* STMStockBatchOperationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMStockBatchOperationController.h; sourceTree = "<group>"; };
@@ -2352,6 +2356,7 @@
 		2C8EF5E0194086450021D202 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2CA9AFE01C439B740071D429 /* Sounds */,
 				2CD443EF195AD741004ADE58 /* Images */,
 				2C53B88819409E42002298A5 /* settings_schema.json */,
 				2C53B88919409E42002298A5 /* settings.json */,
@@ -2382,6 +2387,15 @@
 				2C646F5D1BCE69C00099F034 /* WebSocket.swift */,
 			);
 			name = SocketIOClientSwift;
+			sourceTree = "<group>";
+		};
+		2CA9AFE01C439B740071D429 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				2CA9AFE51C43A8E40071D429 /* ok.mp3 */,
+				2CA9AFE21C439B930071D429 /* error.mp3 */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 		2CAFB2601C2EC1F700BBEDC1 /* STMArticleBarcodes */ = {
@@ -2756,6 +2770,7 @@
 				2C1AB30E1B70B22800BF5C50 /* 1_circle_colored_blue.png in Resources */,
 				2CE3F5251C10763900D8B4F3 /* STMInventory.storyboard in Resources */,
 				2C1AB3021B70AE4400BF5C50 /* 6_circle_filled.png in Resources */,
+				2CA9AFE41C439B930071D429 /* error.mp3 in Resources */,
 				2C1AB2E81B70ADBB00BF5C50 /* 4_circle.png in Resources */,
 				2C1F75181BFA2BB9003699C8 /* STMPickingOrders.storyboard in Resources */,
 				2C1AB2EE1B70ADBB00BF5C50 /* 2_circle.png in Resources */,
@@ -2788,6 +2803,7 @@
 				2CF858E21C1ADEAE004D7BD1 /* STMSupplyOrders.storyboard in Resources */,
 				2C1AB3011B70AE4400BF5C50 /* 1_circle_filled.png in Resources */,
 				2C1AB3181B70B47D00BF5C50 /* circle_colored_blue.png in Resources */,
+				2CA9AFE61C43A8E40071D429 /* ok.mp3 in Resources */,
 				2CF126631B7CB4F50059701F /* uncheckmark_filled.png in Resources */,
 				2CEE305F1BF24086009B229F /* camera.png in Resources */,
 				2C761BB91B00833F001DA33E /* Picture Filled-100.png in Resources */,

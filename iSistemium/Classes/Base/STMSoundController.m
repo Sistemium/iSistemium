@@ -18,7 +18,9 @@
 
 @end
 
+
 @implementation STMSoundController
+
 
 + (STMSoundController *)sharedController {
     
@@ -61,14 +63,41 @@
 //     List of Predefined sounds and it's IDs
 //     http://iphonedevwiki.net/index.php/AudioServices
     
-    AudioServicesPlayAlertSound(1033);
+//    AudioServicesPlayAlertSound(1033);
 //    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
 
+    NSString *path  = [[NSBundle mainBundle] pathForResource:@"error" ofType:@"mp3"];
+    NSURL *pathURL = [NSURL fileURLWithPath:path];
+    [self playSoundAtURL:pathURL];
+    
 }
 
 + (void)playOk {
-    AudioServicesPlaySystemSound(1003);
+    
+//    AudioServicesPlaySystemSound(1003);
+    
+    NSString *path  = [[NSBundle mainBundle] pathForResource:@"ok" ofType:@"mp3"];
+    NSURL *pathURL = [NSURL fileURLWithPath:path];
+    [self playSoundAtURL:pathURL];
+    
 }
+
++ (void)playSoundAtURL:(NSURL *)pathURL {
+    
+    SystemSoundID sysSound;
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef) pathURL, &sysSound);
+    AudioServicesAddSystemSoundCompletion(sysSound, NULL, NULL, completionCallback, NULL);
+    AudioServicesPlaySystemSound(sysSound);
+
+}
+
+static void completionCallback (SystemSoundID sysSound, void *data) {
+    
+    AudioServicesRemoveSystemSoundCompletion(sysSound);
+    AudioServicesDisposeSystemSoundID(sysSound);
+
+}
+
 
 + (void)say:(NSString *)string {
     

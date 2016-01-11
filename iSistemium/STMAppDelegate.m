@@ -11,7 +11,6 @@
 #import <AdSupport/AdSupport.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
-#import <AVFoundation/AVFoundation.h>
 
 #import "STMAuthController.h"
 #import "STMRemoteController.h"
@@ -51,27 +50,11 @@
         }
 
     }
-    
-    NSError *error = NULL;
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-    if(error) {
-        // Do some error handling
-    }
-    [session setActive:YES error:&error];
-    if (error) {
-        // Do some error handling
-    }
-    
+
     [self setupWindow];
 
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
-//    AVSpeechSynthesizer *synthesizer = [[AVSpeechSynthesizer alloc] init];
-//    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:@"Добро пожаловать в Sistemium!"];
-//    utterance.rate = AVSpeechUtteranceMinimumSpeechRate;
-//    [synthesizer speakUtterance:utterance];
-    
     return YES;
     
 }
