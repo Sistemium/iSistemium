@@ -260,27 +260,27 @@
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
 
     [self fillTextLabelForCell:cell withSupplyOrderArticleDoc:articleDoc];
-
-    NSMutableArray *dates = @[].mutableCopy;
-
-    if (articleDoc.articleDoc.dateProduction) {
-        
-        NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateProduction];
-        dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
-        
-        [dates addObject:dateProduction];
-        
-    }
     
     if (articleDoc.articleDoc.dateImport) {
         
         NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateImport];
         dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
-        [dates addObject:dateImport];
         
+        cell.detailTextLabel.text = dateImport;
+        
+    } else if (articleDoc.articleDoc.dateProduction) {
+        
+        
+        NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateProduction];
+        dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
+
+        cell.detailTextLabel.text = dateProduction;
+        
+    } else {
+
+        cell.detailTextLabel.text = @"";
+
     }
-    
-    cell.detailTextLabel.text  = [dates componentsJoinedByString:@" / "];
     
     STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 46, 21)];
     volumeLabel.text = [articleDoc volumeText];
