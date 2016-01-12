@@ -948,21 +948,16 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     cell.detailLabel.text = [self detailedTextForArticle:price.article];
     cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
     
-<<<<<<< HEAD
+    cell.accessoryView = nil;
+    
+    [self addBuyImageToCell:cell];
+
     if (SYSTEM_VERSION < 8.0) {
         
         [cell setNeedsUpdateConstraints];
         [cell updateConstraintsIfNeeded];
 
     }
-=======
-    cell.accessoryView = nil;
-    
-    [self addBuyImageToCell:cell];
-    
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
->>>>>>> saleOrderBasket
 
 }
 
