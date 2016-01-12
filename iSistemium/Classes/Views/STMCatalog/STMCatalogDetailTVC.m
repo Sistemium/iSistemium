@@ -7,36 +7,44 @@
 //
 
 #import "STMCatalogDetailTVC.h"
+
 #import "STMArticleInfoVC.h"
 #import "STMPicturesController.h"
 #import "STMArticlePicturePVC.h"
 #import "STMCatalogSettingsNC.h"
+#import "STMBasketNC.h"
+
+#define CART_IMAGE_SIZE 25
+#define SELECT_OUTLET_ALERT_TAG 199
 
 
 static NSString *Custom4CellIdentifier = @"STMCustom4TVCell";
 static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 
-@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate>
+@interface STMCatalogDetailTVC () <UIPopoverControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMCatalogSVC *splitVC;
 
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *infoLabel;
 @property (weak, nonatomic) IBOutlet STMBarButtonItem *settingsButton;
+@property (weak, nonatomic) IBOutlet STMBarButtonItem *outletCartButton;
 
 @property (nonatomic, strong) NSArray *searchResults;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
 
-@property (nonatomic, strong) UIPopoverController *articleInfoPopover;
-@property (nonatomic) BOOL articleInfoPopoverWasVisible;
+@property (nonatomic, strong) UITableView *currentTableView;
 
+@property (nonatomic, strong) UIPopoverController *articleInfoPopover;
 @property (nonatomic, strong) UIPopoverController *catalogSettingsPopover;
+@property (nonatomic, strong) UIPopoverController *basketPopover;
+
+@property (nonatomic) BOOL articleInfoPopoverWasVisible;
 
 @property (nonatomic, strong) STMArticle *selectedArticle;
 
-@property (nonatomic, strong) UITableView *currentTableView;
-
+@property (nonatomic, strong) UIImage *buyImage;
 
 @end
 
@@ -56,6 +64,46 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
         
     }
     return _splitVC;
+    
+}
+
+- (void)setSelectedOutlet:(STMOutlet *)selectedOutlet {
+    
+    if (![_selectedOutlet isEqual:selectedOutlet]) {
+        
+        [_selectedOutlet removeObserver:self forKeyPath:@"basketPositions"];
+        
+        _selectedOutlet = selectedOutlet;
+
+        [_selectedOutlet addObserver:self forKeyPath:@"basketPositions" options:NSKeyValueObservingOptionNew context:nil];
+
+        self.title = _selectedOutlet.name;
+        [self outletCartButtonUpdate];
+        
+    }
+    
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    
+    if ([object isEqual:self.selectedOutlet]) {
+        [self outletCartButtonUpdate];
+    }
+    
+}
+
+- (UIImage *)buyImage {
+    
+    if (!_buyImage) {
+
+        UIImage *image = [UIImage imageNamed:@"buy-100.png"];
+        image = [STMFunctions resizeImage:image toSize:CGSizeMake(CART_IMAGE_SIZE, CART_IMAGE_SIZE)];
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+        _buyImage = image;
+        
+    }
+    return _buyImage;
     
 }
 
@@ -336,9 +384,35 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 }
 
 - (IBAction)catalogSettingsButtonPressed:(id)sender {
-    
     [self showCatalogSettingsPopover];
+}
+
+- (void)outletCartButtonSetup {
+    [self outletCartButtonUpdate];
+}
+
+- (void)outletCartButtonUpdate {
     
+    if (self.selectedOutlet) {
+        
+        self.outletCartButton.title = nil;
+        
+        NSString *imageName = (self.selectedOutlet.basketPositions.count > 0) ? @"shopping_cart_loaded-100.png" : @"shopping_cart-100.png";
+        UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:imageName] toSize:CGSizeMake(CART_IMAGE_SIZE, CART_IMAGE_SIZE)];
+
+        self.outletCartButton.image = image;
+        
+    } else {
+        
+        self.outletCartButton.image = nil;
+        self.outletCartButton.title = NSLocalizedString(@"SELECT_OUTLET", nil);
+        
+    }
+    
+}
+
+- (IBAction)outletCartButtonPressed:(id)sender {
+    [self showBasketPopover];
 }
 
 
@@ -425,6 +499,43 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
     }
 
+}
+
+
+#pragma mark - selectOutletPopover
+
+- (UIPopoverController *)basketPopover {
+    
+    if (!_basketPopover) {
+        
+        STMBasketNC *basketNC = [[STMBasketNC alloc] initWithParent:self];
+//        basketNC.parentVC = self;
+        
+        _basketPopover = [[UIPopoverController alloc] initWithContentViewController:basketNC];
+        _basketPopover.delegate = self;
+        _basketPopover.popoverContentSize = CGSizeMake(basketNC.view.frame.size.width, basketNC.view.frame.size.height);
+        
+    }
+    return _basketPopover;
+    
+}
+
+- (void)showBasketPopover {
+    
+    if (!self.basketPopover.isPopoverVisible) {
+        
+        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+        [self.basketPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+        
+    }
+    
+}
+
+- (void)dismissBasketPopover {
+    
+    [self.basketPopover dismissPopoverAnimated:YES];
+    self.basketPopover = nil;
+    
 }
 
 
@@ -600,6 +711,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     [self hideKeyboard];
     
     [self dismissCatalogSettingsPopover];
+    [self dismissBasketPopover];
     
 }
 
@@ -614,6 +726,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     self.articleInfoPopover = nil;
     self.catalogSettingsPopover = nil;
+    self.basketPopover = nil;
     
 }
 
@@ -835,12 +948,36 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     cell.detailLabel.text = [self detailedTextForArticle:price.article];
     cell.infoLabel.text = [self infoLabelTextForArticle:price.article];
     
+<<<<<<< HEAD
     if (SYSTEM_VERSION < 8.0) {
         
         [cell setNeedsUpdateConstraints];
         [cell updateConstraintsIfNeeded];
 
     }
+=======
+    cell.accessoryView = nil;
+    
+    [self addBuyImageToCell:cell];
+    
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+>>>>>>> saleOrderBasket
+
+}
+
+- (void)addBuyImageToCell:(UITableViewCell *)cell {
+    
+    UIImage *image = self.buyImage;
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0.0, 0.0, image.size.width, image.size.height);
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    
+    [button addTarget:self action:@selector(cartButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+    button.backgroundColor = [UIColor clearColor];
+
+    cell.accessoryView = button;
 
 }
 
@@ -923,7 +1060,106 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
 }
 
-#pragma mark - UISearchDisplayDelegate / deprecated in >8.0
+- (void)cartButtonTapped:(id)sender event:(id)event {
+    
+    NSSet *touches = [event allTouches];
+    UITouch *touch = [touches anyObject];
+    CGPoint currentTouchPosition = [touch locationInView:self.tableView];
+    
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+    
+    if (indexPath != nil) {
+        
+        if (!self.selectedOutlet) {
+            
+            [self showSelectOutletAlert];
+
+        } else {
+            
+            STMPrice *price = [self.resultsController objectAtIndexPath:indexPath];
+            if (price.article) [self addBasketPositionWithArticle:price.article];
+
+        }
+        
+    }
+    
+}
+
+- (void)showSelectOutletAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SELECT_OUTLET", nil)
+                                                        message:nil
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        alert.tag = SELECT_OUTLET_ALERT_TAG;
+        [alert show];
+        
+    }];
+
+}
+
+- (void)addBasketPositionWithArticle:(STMArticle *)article {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article == %@", article];
+    
+    NSSet *filteredBasketPositions = [self.selectedOutlet.basketPositions filteredSetUsingPredicate:predicate];
+    
+    if (filteredBasketPositions.count == 1) {
+        
+        STMBasketPosition *basketPosition = filteredBasketPositions.anyObject;
+        basketPosition.volumeOne = @(basketPosition.volumeOne.integerValue + 1);
+//        basketPosition.volumeTwo = @(basketPosition.volumeOne.integerValue + 2);
+        
+    } else {
+
+        if (filteredBasketPositions.count > 1) NSLog(@"more than 1 basketPosition with same article");
+        
+        NSNumber *volumesSum = [filteredBasketPositions valueForKeyPath:@"@sum.volumeOne"];
+        
+        for (STMBasketPosition *bp in filteredBasketPositions) [STMObjectsController removeObject:bp];
+        
+        STMBasketPosition *basketPosition = (STMBasketPosition *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBasketPosition class])
+                                                                                                     isFantom:NO];
+        basketPosition.article = article;
+        basketPosition.outlet = self.selectedOutlet;
+        basketPosition.volumeOne = @(volumesSum.integerValue + 1);
+
+    }
+    
+    [self.document saveDocument:^(BOOL success) {
+        
+    }];
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    switch (alertView.tag) {
+        case SELECT_OUTLET_ALERT_TAG:
+            switch (buttonIndex) {
+                case 1:
+                    [self showBasketPopover];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+
+#pragma mark - UISearchDisplayDelegate / deprecated in >= 8.0
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
     
@@ -1023,33 +1259,34 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 }
 
-- (NSArray *)scopeButtonTitles {
-    
-    TICK;
-    
-    NSMutableArray *volumes = [NSMutableArray array];
-    
-    for (STMArticle *article in self.resultsController.fetchedObjects) {
-        if (article.pieceVolume) [volumes addObject:(NSDecimalNumber * _Nonnull)article.pieceVolume];
-    }
-    
-    NSSet *volumesSet = [NSSet setWithArray:volumes];
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES selector:@selector(compare:)];
-
-    volumes = [[volumesSet sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
-    volumes = [volumes valueForKey:@"stringValue"];
-
-    TOCK;
-    
-    NSLog(@"volumes %@", volumes);
-    
-    return volumes;
-    
-}
+//- (NSArray *)scopeButtonTitles {
+//    
+//    TICK;
+//    
+//    NSMutableArray *volumes = [NSMutableArray array];
+//    
+//    for (STMArticle *article in self.resultsController.fetchedObjects) {
+//        if (article.pieceVolume) [volumes addObject:(NSDecimalNumber * _Nonnull)article.pieceVolume];
+//    }
+//    
+//    NSSet *volumesSet = [NSSet setWithArray:volumes];
+//    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES selector:@selector(compare:)];
+//
+//    volumes = [[volumesSet sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
+//    volumes = [volumes valueForKey:@"stringValue"];
+//
+//    TOCK;
+//    
+//    NSLog(@"volumes %@", volumes);
+//    
+//    return volumes;
+//    
+//}
 
 - (void)setupToolbar {
     
     [self infoLabelSetup];
+    [self outletCartButtonSetup];
     
 }
 

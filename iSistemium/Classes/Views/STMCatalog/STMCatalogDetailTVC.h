@@ -7,13 +7,12 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
-#import "STMPriceType.h"
-#import "STMArticle.h"
 
 
 @interface STMCatalogDetailTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, strong) STMPriceType *selectedPriceType;
+@property (nonatomic, strong) STMOutlet *selectedOutlet;
 
 - (void)refreshTable;
 
@@ -21,6 +20,7 @@
 - (void)showFullscreen;
 
 - (void)dismissCatalogSettingsPopover;
+- (void)dismissBasketPopover;
 
 - (void)hideKeyboard;
 
