@@ -247,15 +247,15 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+    STMCustom9TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
 
-    [self fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:indexPath];
+    [self fillArticleDocCell:(STMCustom9TVCell *)cell atIndexPath:indexPath];
     
     return cell;
     
 }
 
-- (void)fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillArticleDocCell:(STMCustom9TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
 
@@ -266,7 +266,7 @@
         NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateImport];
         dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
         
-        cell.detailTextLabel.text = dateImport;
+        cell.detailLabel.text = dateImport;
         
     } else if (articleDoc.articleDoc.dateProduction) {
         
@@ -274,11 +274,11 @@
         NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateProduction];
         dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
 
-        cell.detailTextLabel.text = dateProduction;
+        cell.detailLabel.text = dateProduction;
         
     } else {
 
-        cell.detailTextLabel.text = @"";
+        cell.detailLabel.text = @"";
 
     }
     
@@ -293,12 +293,20 @@
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
     
+//    UIImage *ordImage = [UIImage imageWithData:[NSData data]];
+//    
+//    ordImage = [STMFunctions drawText:articleDoc.ord.stringValue withFont:nil color:nil inImage:nil atCenter:YES];
+//    
+//    cell.imageView.image = ordImage;
+
+    cell.infoLabel.text = articleDoc.ord.stringValue;
+    
 }
 
-- (void)fillTextLabelForCell:(STMTableViewSubtitleStyleCell *)cell withSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)supplyOrderArticleDoc {
+- (void)fillTextLabelForCell:(STMCustom9TVCell *)cell withSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)supplyOrderArticleDoc {
     
-    cell.textLabel.numberOfLines = 0;
-    cell.textLabel.textColor = (supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
+//    cell.textLabel.numberOfLines = 0;
+    cell.titleLabel.textColor = (supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
     
     if (supplyOrderArticleDoc.article && ![supplyOrderArticleDoc.article isEqual:supplyOrderArticleDoc.articleDoc.article]) {
         
@@ -323,11 +331,11 @@
 
         [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:articleDocName attributes:attributes]];
         
-        cell.textLabel.attributedText = labelTitle;
+        cell.titleLabel.attributedText = labelTitle;
 
     } else {
 
-        cell.textLabel.text = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : supplyOrderArticleDoc.articleDoc.article.name;
+        cell.titleLabel.text = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : supplyOrderArticleDoc.articleDoc.article.name;
 
     }
     
@@ -400,7 +408,8 @@
     self.isMasterNC = [self.splitVC isMasterNCForViewController:self];
     self.isDetailNC = [self.splitVC isDetailNCForViewController:self];
     
-    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
+//    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:NSStringFromClass([STMCustom9TVCell class]) bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
 
     [self updateToolbars];
     [self performFetch];
