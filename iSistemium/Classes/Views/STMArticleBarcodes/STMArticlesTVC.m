@@ -541,6 +541,7 @@
     
     [super customInit];
     
+    self.searchBar.returnKeyType = UIReturnKeyDone;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];

@@ -97,6 +97,10 @@
     [self hideKeyboard];
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self hideKeyboard];
+}
+
 
 #pragma mark - table view delegate
 
