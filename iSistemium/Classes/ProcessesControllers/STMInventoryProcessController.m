@@ -268,6 +268,8 @@
         
     } else {
         
+        [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
+
         articles = [STMObjectsController objectsForEntityName:NSStringFromClass([STMArticle class])
                                                       orderBy:@"name"
                                                     ascending:YES

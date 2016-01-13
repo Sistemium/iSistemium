@@ -531,6 +531,7 @@
                 
             } else {
                 
+                [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
                 [self showArticleSelectionWithArticles:articles];
                 
             }
