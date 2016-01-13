@@ -8,17 +8,16 @@
 
 import UIKit
 
-class STMShippingLocationsTVC: STMSearchableTVC{
+class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
     
     private var _resultsController:NSFetchedResultsController?
     
     override var resultsController : NSFetchedResultsController? {
         get {
             if (_resultsController == nil) {
-                NSLog("STMShippingLocationsTVC.resultsController")
                 let shippingFetchRequest = NSFetchRequest(entityName: "STMShippingLocation")
-                shippingFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name",ascending:true, selector: "caseInsensitiveCompare:")]
-                //shippingFetchRequest.predicate = self.predicate
+                shippingFetchRequest.sortDescriptors = [NSSortDescriptor(key: "deviceTs",ascending:false)]
+                shippingFetchRequest.predicate = self.predicate
                 _resultsController = NSFetchedResultsController(fetchRequest: shippingFetchRequest, managedObjectContext: self.document.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
                 _resultsController!.delegate = self
             }
@@ -29,32 +28,95 @@ class STMShippingLocationsTVC: STMSearchableTVC{
             _resultsController = newValue
         }
     }
-        
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.estimatedRowHeight = tableView.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+    
+    private var predicate:NSPredicate? {
+        if self.searchBar?.text != nil && self.searchBar.text! == ""{
+            return NSPredicate(format: "name != %@", self.searchBar.text!)
+        }
+        if self.searchBar?.text != nil {
+            return NSPredicate(format: "(name contains[c] %@) OR (address contains[c] %@)", self.searchBar.text!,self.searchBar.text!)
+        }
+        return nil;
     }
     
-    override func customInit() {
-        super.customInit()
-        cellIdentifier = "ShippingLocation"
-        //self.edgesForExtendedLayout = UIRectEdgeNone;
-        self.tableView.registerClass(STMCustom9TVCell.self, forCellReuseIdentifier:self.cellIdentifier)
-        //self.navigationItem.title = NSLocalizedString(@"ARTICLES", nil);
-        self.performFetch()
-    }
+    // MARK: table view data
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return resultsController!.fetchedObjects!.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(self.cellIdentifier, forIndexPath:indexPath) as! STMCustom9TVCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(self.cellIdentifier, forIndexPath:indexPath) as! STMCustom7TVCell
         let location = self.resultsController!.objectAtIndexPath(indexPath) as! STMShippingLocation
-        cell.textLabel!.numberOfLines = 0
-        cell.textLabel!.text = location.deviceCts?.description
+        cell.titleLabel!.text = location.name
+        cell.detailLabel!.text = location.address
+        cell.accessoryType = .DisclosureIndicator
         return cell;
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("showLocation", sender: indexPath)
+    }
+    
+    // MARK: Navigation
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        super.prepareForSegue(segue, sender: sender)
+        if segue.destinationViewController as? STMShippingLocationTVC != nil && segue.identifier == "showLocation" {
+            (segue.destinationViewController as! STMShippingLocationTVC).shippingLocation = self.resultsController!.objectAtIndexPath(sender as! NSIndexPath) as? STMShippingLocation
+        }
+    }
+    
+    // MARK: search & UISearchBarDelegate
+    
+    override func searchButtonPressed() {
+        self.searchBar.becomeFirstResponder()
+        self.tableView.setContentOffset(CGPointZero, animated:true)
+    }
+    
+    override func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        performFetch()
+    }
+    
+    override func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
+    override func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        searchBar.text = nil;
+        hideKeyboard()
+        performFetch()
+    }
+    
+    func hideKeyboard() {
+        if searchBar.isFirstResponder() {
+            searchBar.resignFirstResponder()
+        }
+    }
+    
+    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        hideKeyboard()
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        hideKeyboard()
+    }
+    
+    // MARK: view lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        searchBar.delegate = self
+    }
+    
+    override func customInit() {
+        super.customInit()
+        self.cellIdentifier = "shippingLocationCell"
+        title = navigationController?.navigationItem.title
+        let cellNib = UINib(nibName: NSStringFromClass(STMCustom7TVCell.self), bundle:nil)
+        self.tableView.registerNib(cellNib, forCellReuseIdentifier:self.cellIdentifier)
+        performFetch()
     }
     
 }

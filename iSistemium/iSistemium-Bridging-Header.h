@@ -5,3 +5,8 @@
 #import "STMSessionManager.h"
 #import "STMShippingLocation.h"
 #import "STMSearchableTVC.h"
+#import "STMConstants.h"
+#import "STMShippingLocationPicturesPVC.h"
+#import "STMShippingLocationMapVC.h"
+#import "STMObjectsController.h"
+#import "STMPicturesController.h"
