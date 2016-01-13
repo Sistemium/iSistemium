@@ -535,6 +535,16 @@
                 
             }
             
+        } else {
+            
+            STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
+            
+            if (article && article.barCodes.count == 0) {
+                [self confirmArticle:article];
+            } else {
+                [STMSoundController say:NSLocalizedString(@"MANUAL LINK BARCODE TO ARTICLE", nil)];
+            }
+            
         }
 
     }
