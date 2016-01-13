@@ -101,28 +101,12 @@
 }
 
 - (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route {
-    
+
+    cell.accessoryType = (route.shipmentRoutePoints.count > 0) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+
     cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
     
-    NSUInteger pointsCount = route.shipmentRoutePoints.count;
-    NSString *pluralType = [STMFunctions pluralTypeForCount:pointsCount];
-    NSString *localizedString = [NSString stringWithFormat:@"%@SRPOINTS", pluralType];
-    
-    NSString *detailText;
-    
-    if (pointsCount > 0) {
-        
-        detailText = [NSString stringWithFormat:@"%lu %@", (unsigned long)pointsCount, NSLocalizedString(localizedString, nil)];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        
-    } else {
-        
-        detailText = NSLocalizedString(localizedString, nil);
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        
-    }
-    
-    detailText = [route planSummary];
+    NSString *detailText = [route planSummary];
     
     if (!self.driver && route.driver.name) {
         detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@", %@", route.driver.name]];
