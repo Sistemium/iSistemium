@@ -150,15 +150,7 @@
     
     if (!_accessKey) {
         
-        NSString *accessKey = [self.s3keychainItem objectForKey:(__bridge id)(kSecAttrAccount)];
-        
-        if (![accessKey boolValue]) {
-            
-            accessKey = [self.settings valueForKey:@"S3.AccessKeyID"];
-            
-            [self.s3keychainItem setObject:accessKey forKey:(__bridge id)(kSecAttrAccount)];
-            
-        }
+        NSString *accessKey = [self.settings valueForKey:@"S3.AccessKeyID"];
         
         _accessKey = accessKey;
         
@@ -172,7 +164,6 @@
     
     if (accessKey != _accessKey) {
         
-        [self.s3keychainItem setObject:accessKey forKey:(__bridge id)(kSecAttrAccount)];
         _accessKey = accessKey;
         
     }
@@ -183,15 +174,7 @@
     
     if (!_secretKey) {
         
-        NSString *secretKey = [self.s3keychainItem objectForKey:(__bridge id)(kSecValueData)];
-        
-        if (![secretKey boolValue]) {
-            
-            secretKey = [self.settings valueForKey:@"S3.SecretAccessKey"];
-            
-            [self.s3keychainItem setObject:secretKey forKey:(__bridge id)(kSecValueData)];
-            
-        }
+        NSString *secretKey = [self.settings valueForKey:@"S3.SecretAccessKey"];
         
         _secretKey = secretKey;
         
@@ -205,7 +188,6 @@
     
     if (secretKey != _secretKey) {
         
-        [self.s3keychainItem setObject:secretKey forKey:(__bridge id)(kSecValueData)];
         _secretKey = secretKey;
         
     }

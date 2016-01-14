@@ -28,9 +28,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         }
     }
     
-    private let spinner = STMSpinnerView()
+    private var spinner = STMSpinnerView()
     
-    private var cameraOverlayView = UIView()
+    var cameraOverlayView = UIView()
     
     private var selectedSourceType : UIImagePickerControllerSourceType?
     
@@ -66,7 +66,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         case 0:
             return 2
         case 1:
-            return shippingLocation!.isLocationConfirmed.boolValue ? 1 : 2
+            return (shippingLocation?.isLocationConfirmed ?? 0).boolValue ? 1 : 2
         case 2:
             return resultsController?.fetchedObjects?.count ?? 0
         default :
@@ -79,7 +79,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         case 0:
             return NSLocalizedString("SHIPPING LOCATION", comment: "")
         case 2:
-            return NSLocalizedString("SHIPMENT ROUTE POINT", comment: "")
+            return NSLocalizedString("SHIPMENT ROUTE POINTS", comment: "")
         default:
             return nil
         }
@@ -117,7 +117,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                         
                         cell.titleLabel!.text = NSLocalizedString("SHOW MAP", comment: "");
                         
-                        if (!shippingLocation!.isLocationConfirmed.boolValue) {
+                        if (!(shippingLocation?.isLocationConfirmed ?? 0).boolValue ) {
                             
                             cell.detailLabel!.text = NSLocalizedString("LOCATION NEEDS CONFIRMATION", comment: "");
                             cell.detailLabel!.textColor = UIColor.redColor()
@@ -272,10 +272,8 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     func photoButtonPressed(sender:AnyObject) {
     
     if sender.isKindOfClass(UITapGestureRecognizer){
-    
         let tappedView = (sender as! UIGestureRecognizer).view
-        //performSegueWithIdentifier("showPhotos",sender:tappedView)
-    
+        performSegueWithIdentifier("showPhotos",sender:tappedView)
     }
     
     }
@@ -283,51 +281,59 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     func showImagePickerForSourceType( imageSourceType:UIImagePickerControllerSourceType ){
     if UIImagePickerController.isSourceTypeAvailable(imageSourceType) {
         self.selectedSourceType = imageSourceType;
-        self.presentViewController(self.imagePickerController, animated: true, completion: nil)
+        self.presentViewController(self.imagePickerController!, animated: true, completion: nil)
         }
     
     }
     
-    private var imagePickerController:STMImagePickerController {
+    private var _imagePickerController:STMImagePickerController?
     
-    let imagePickerController = STMImagePickerController()
-    imagePickerController.delegate = self;
+    var imagePickerController:STMImagePickerController? {
+        get{
+            if _imagePickerController == nil{
+                _imagePickerController = STMImagePickerController()
+                _imagePickerController!.delegate = self;
+                
+                _imagePickerController!.sourceType = self.selectedSourceType!;
+                
+                if _imagePickerController!.sourceType == .Camera {
+                    
+                    
+                    _imagePickerController!.showsCameraControls = false
+                    NSBundle.mainBundle().loadNibNamed("STMCameraOverlayView", owner: self, options: nil)
+                    self.cameraOverlayView.backgroundColor = UIColor.clearColor()
+                    self.cameraOverlayView.autoresizesSubviews = true
+                    self.cameraOverlayView.autoresizingMask = [.FlexibleWidth , .FlexibleHeight]
+                    
+                    //        if (SYSTEM_VERSION >= 8.0) {
+                    let rootView = UIApplication.sharedApplication().keyWindow!.rootViewController!.view;
+                    let originalFrame = UIScreen.mainScreen().bounds
+                    let screenFrame = rootView.convertRect(originalFrame, fromView:nil)
+                    self.cameraOverlayView.frame = screenFrame;
+                    //        }
+                    _imagePickerController!.cameraOverlayView = self.cameraOverlayView;
+                }
+            }
+            
+            return _imagePickerController
     
-    imagePickerController.sourceType = self.selectedSourceType!;
-    
-    if imagePickerController.sourceType == .Camera {
-    
-        imagePickerController.showsCameraControls = false
-        print("______________________________________________")
-        NSBundle.mainBundle().loadNibNamed("STMCameraOverlayView", owner: self, options: nil)
-        self.cameraOverlayView.backgroundColor = UIColor.clearColor()
-        self.cameraOverlayView.autoresizesSubviews = true
-        self.cameraOverlayView.autoresizingMask = [.FlexibleWidth , .FlexibleHeight]
-        
-//        if (SYSTEM_VERSION >= 8.0) {
-//        UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
-//        CGRect originalFrame = [[UIScreen mainScreen] bounds];
-//        CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
-//        self.cameraOverlayView.frame = screenFrame;
-//        }
-        imagePickerController.cameraOverlayView = self.cameraOverlayView;
-    
+        }
+        set{
+            _imagePickerController = nil
+        }
     }
     
-    return imagePickerController
-    
-    }
     
     func saveImage(image:UIImage) {
     
         let shippingLocationPicture = STMObjectsController.newObjectForEntityName(NSStringFromClass(STMShippingLocationPicture), isFantom:false) as! STMShippingLocationPicture
+        
+        let jpgQuality = STMPicturesController.jpgQuality()
+        
+        STMPicturesController.setImagesFromData(UIImageJPEGRepresentation(image, jpgQuality),forPicture: shippingLocationPicture ,andUpload:true)
     
-    let jpgQuality = STMPicturesController.jpgQuality()
-    
-    STMPicturesController.setImagesFromData(UIImageJPEGRepresentation(image, jpgQuality),forPicture: shippingLocationPicture ,andUpload:true)
-    
-    shippingLocationPicture.shippingLocation = self.shippingLocation;
-        document.saveDocument{
+    shippingLocationPicture.shippingLocation = self.shippingLocation
+        self.document.saveDocument{
             if ($0) {
                 self.spinner.removeFromSuperview()
                 self.tableView.reloadData()
@@ -336,38 +342,28 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     }
     
+    func photoWasDeleted(photo:STMShippingLocationPicture) {
+        tableView.reloadData()
+    }
+    
     // MARK: Camera buttons
     
     
+    @IBAction func cameraButtonPressed(sender:AnyObject) {
+    self.spinner = STMSpinnerView(frame: self.view.bounds)
+    self.view.addSubview(self.spinner)
+    self.imagePickerController!.cameraOverlayView!.addSubview(STMSpinnerView(frame: self.imagePickerController!.cameraOverlayView!.bounds))
+    self.imagePickerController!.takePicture()
+    }
     
+    @IBAction func cancelButtonPressed(sender:AnyObject) {
+    self.imagePickerControllerDidCancel(self.imagePickerController!)
+    }
     
-//    - (IBAction)cameraButtonPressed:(id)sender {
-//    
-//    //    NSLog(@"cameraButtonPressed");
-//    
-//    self.spinner = [STMSpinnerView spinnerViewWithFrame:self.view.bounds];
-//    [self.view addSubview:self.spinner];
-//    
-//    [self.imagePickerController.cameraOverlayView addSubview:[STMSpinnerView spinnerViewWithFrame:self.imagePickerController.cameraOverlayView.bounds]];
-//    
-//    [self.imagePickerController takePicture];
-//    
-//    }
-//    
-//    - (IBAction)cancelButtonPressed:(id)sender {
-//    
-//    //    NSLog(@"cancelButtonPressed");
-//    
-//    [self imagePickerControllerDidCancel:self.imagePickerController];
-//    
-//    }
-//    
-//    - (IBAction)photoLibraryButtonPressed:(id)sender {
-//    
-//    [self cancelButtonPressed:sender];
-//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-//    
-//    }
+    @IBAction func photoLibraryButtonPressed(sender:AnyObject) {
+    self.cancelButtonPressed(sender)
+    self.showImagePickerForSourceType(.PhotoLibrary)
+    }
     
     // MARK:  Navigation
     
@@ -379,10 +375,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
             let photoArray = (shippingLocation!.shippingLocationPictures as NSSet).sortedArrayUsingDescriptors([sortDesriptor])
             
             picturesPVC.photoArray =  NSMutableArray(array: photoArray)
-//            picturesPVC.currentIndex = picturesView.subviews.indexOf(){
-//                return $0 == $1
-//            }
-//            picturesPVC.parentVC = self
+            let index = picturesView.subviews.indexOf(sender as! UIView)
+            picturesPVC.currentIndex = UInt(index ?? 0)
+            picturesPVC.parentVC = self as STMVariableCellsHeightTVC as? STMShipmentRoutePointTVC
         }
         if segue.identifier == "showShippingLocationMap" {
             
@@ -398,13 +393,15 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         picker.dismissViewControllerAnimated(false){
-//            [self saveImage:info[UIImagePickerControllerOriginalImage]];
+            self.saveImage(info[UIImagePickerControllerOriginalImage] as! UIImage)
+            self.imagePickerController = nil
         }
         
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         picker.dismissViewControllerAnimated(false,completion: nil)
+            imagePickerController = nil
     }
     
     // MARK: view lifecycle
