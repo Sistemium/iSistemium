@@ -144,7 +144,7 @@
     
     STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = supplyOrder.ndoc;
+    [self fillTextLabelForCell:cell withSupplyOrder:supplyOrder];
     
     NSUInteger positionsCount = supplyOrder.supplyOrderArticleDocs.count;
     NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];
@@ -158,6 +158,43 @@
     }
 
     cell.detailTextLabel.text = positionsCountString;
+    
+}
+
+- (void)fillTextLabelForCell:(STMTableViewSubtitleStyleCell *)cell withSupplyOrder:(STMSupplyOrder *)supplyOrder {
+    
+    cell.textLabel.text = nil;
+    cell.textLabel.attributedText = nil;
+
+    NSString *partnerName = supplyOrder.partner.name;
+
+    if (partnerName) {
+        
+        CGFloat fontSize = cell.textLabel.font.pointSize;
+        
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize]};
+        
+        NSMutableAttributedString *labelText = [[NSMutableAttributedString alloc] initWithString:partnerName
+                                                                                      attributes:attributes];
+
+        NSString *ndoc = supplyOrder.ndoc;
+        
+        if (ndoc) {
+            
+            [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+            
+            attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize - 4]};
+            
+            [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:ndoc attributes:attributes]];
+            
+        }
+        
+        
+    } else {
+    
+        cell.textLabel.text = supplyOrder.ndoc;
+
+    }
     
 }
 
