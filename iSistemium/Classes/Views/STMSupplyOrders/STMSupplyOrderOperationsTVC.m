@@ -532,7 +532,6 @@
                 
             } else {
                 
-                [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
                 [self showArticleSelectionWithArticles:articles];
                 
             }
@@ -540,6 +539,7 @@
         } else {
             
             [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+//            [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
             
             STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
             
@@ -976,8 +976,13 @@
     if ([alertView isEqual:self.addBarcodeAlert]) {
         
         switch (buttonIndex) {
-            case 1:
-                [self confirmArticle:self.supplyOrderArticleDoc.articleDoc.article];
+            case 1: {
+
+                STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
+                [STMBarCodeController addBarcode:self.articleBarCode toArticle:article];
+                [self confirmArticle:article];
+                
+            }
                 break;
                 
             default:
