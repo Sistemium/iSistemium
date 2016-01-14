@@ -41,6 +41,7 @@
 
 @property (nonatomic, strong) UIAlertView *remainingBarcodesAlert;
 @property (nonatomic, strong) UIAlertView *illegalArticleChangeAlert;
+@property (nonatomic, strong) UIAlertView *addBarcodeAlert;
 
 @property (nonatomic, strong) NSString *supplyOrderWorkflow;
 
@@ -538,12 +539,15 @@
             
         } else {
             
+            [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+            
             STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
             
             if (article && article.barCodes.count == 0) {
                 
                 self.articleBarCode = barcode;
-                [self confirmArticle:article];
+//                [self confirmArticle:article];
+                [self showAddBarcodeAlertForBarcode:barcode andArticle:article];
                 
             } else {
                 
@@ -944,33 +948,72 @@
 
 #pragma mark - UIAlertViewDelegate
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+#pragma mark - UIAlertViewDelegate
+
+- (void)showAddBarcodeAlertForBarcode:(NSString *)barcode andArticle:(STMArticle *)article {
     
-    switch (alertView.tag) {
-        case 341:
-            switch (buttonIndex) {
-                case 1:
-                    self.repeatLastOperation = NO;
-                    break;
-                    
-                default:
-                    break;
-            }
-            break;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        if (self.addBarcodeAlert.isVisible) {
+            [self.addBarcodeAlert dismissWithClickedButtonIndex:-1 animated:NO];
+        }
+        
+        NSString *alertMessage = [NSString stringWithFormat:NSLocalizedString(@"ADD BARCODE TO ARTICLE?", nil), barcode, article.name];
+        
+        self.addBarcodeAlert = [[UIAlertView alloc] initWithTitle:@""
+                                                          message:alertMessage
+                                                         delegate:self
+                                                cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        [self.addBarcodeAlert show];
+        
+    }];
+    
+}
 
-        case 341341:
-            switch (buttonIndex) {
-                case 0:
-                    self.stockBatchCodes = nil;
-                    break;
-                    
-                default:
-                    break;
-            }
-            break;
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
-        default:
-            break;
+    if ([alertView isEqual:self.addBarcodeAlert]) {
+        
+        switch (buttonIndex) {
+            case 1:
+                [self confirmArticle:self.supplyOrderArticleDoc.articleDoc.article];
+                break;
+                
+            default:
+                self.articleBarCode = nil;
+                break;
+        }
+        
+    } else {
+
+        switch (alertView.tag) {
+            case 341:
+                switch (buttonIndex) {
+                    case 1:
+                        self.repeatLastOperation = NO;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+                
+            case 341341:
+                switch (buttonIndex) {
+                    case 0:
+                        self.stockBatchCodes = nil;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+                
+            default:
+                break;
+        }
+
     }
     
 }
