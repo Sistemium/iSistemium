@@ -1,5 +1,5 @@
 //
-//  STMSupplyOrder+CoreDataProperties.m
+//  STMPartner+CoreDataProperties.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 14/01/16.
@@ -9,14 +9,12 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "STMSupplyOrder+CoreDataProperties.h"
+#import "STMPartner+CoreDataProperties.h"
 
-@implementation STMSupplyOrder (CoreDataProperties)
+@implementation STMPartner (CoreDataProperties)
 
-@dynamic date;
-@dynamic ndoc;
-@dynamic processing;
-@dynamic supplyOrderArticleDocs;
-@dynamic partner;
+@dynamic name;
+@dynamic outlets;
+@dynamic supplyOrders;
 
 @end

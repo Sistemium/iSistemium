@@ -2,27 +2,23 @@
 //  STMPartner.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 14/01/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
 
-@class STMOutlet;
+@class STMOutlet, STMSupplyOrder;
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface STMPartner : STMComment
 
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSSet *outlets;
-@end
-
-@interface STMPartner (CoreDataGeneratedAccessors)
-
-- (void)addOutletsObject:(STMOutlet *)value;
-- (void)removeOutletsObject:(STMOutlet *)value;
-- (void)addOutlets:(NSSet *)values;
-- (void)removeOutlets:(NSSet *)values;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMPartner+CoreDataProperties.h"

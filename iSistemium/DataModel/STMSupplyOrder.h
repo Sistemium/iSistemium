@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "STMComment.h"
 
-@class STMSupplyOrderArticleDoc;
+@class STMPartner, STMSupplyOrderArticleDoc;
 
 NS_ASSUME_NONNULL_BEGIN
 

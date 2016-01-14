@@ -2,17 +2,16 @@
 //  STMPartner.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 14/01/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import "STMPartner.h"
 #import "STMOutlet.h"
-
+#import "STMSupplyOrder.h"
 
 @implementation STMPartner
 
-@dynamic name;
-@dynamic outlets;
+// Insert code here to add functionality to your managed object subclass
 
 @end
