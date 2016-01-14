@@ -163,6 +163,7 @@
 
 - (void)fillTextLabelForCell:(STMTableViewSubtitleStyleCell *)cell withSupplyOrder:(STMSupplyOrder *)supplyOrder {
     
+    cell.textLabel.numberOfLines = 0;
     cell.textLabel.text = nil;
     cell.textLabel.attributedText = nil;
 
@@ -188,6 +189,8 @@
             [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:ndoc attributes:attributes]];
             
         }
+        
+        cell.textLabel.attributedText = labelText;
         
         
     } else {

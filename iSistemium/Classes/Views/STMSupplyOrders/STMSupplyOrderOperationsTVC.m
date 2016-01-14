@@ -1031,7 +1031,7 @@
     [super customInit];
     
     self.navigationItem.hidesBackButton = IPAD;
-    self.navigationItem.title = self.supplyOrderArticleDoc.supplyOrder.ndoc;
+    self.navigationItem.title = [self.supplyOrderArticleDoc.supplyOrder title];
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
     [self setupToolbar];

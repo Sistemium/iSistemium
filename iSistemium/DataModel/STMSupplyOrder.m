@@ -10,6 +10,7 @@
 #import "STMSupplyOrderArticleDoc.h"
 
 #import "STMFunctions.h"
+#import "STMPartner.h"
 
 
 @implementation STMSupplyOrder
@@ -35,5 +36,31 @@
     
 }
 
+- (NSString *)title {
+    
+    NSString *partnerName = self.partner.name;
+    
+    if (partnerName) {
+
+        NSMutableString *title = partnerName.mutableCopy;
+        
+        NSString *ndoc = self.ndoc;
+        
+        if (ndoc) {
+            
+            [title appendString:@"\n"];
+            [title appendString:ndoc];
+            
+        }
+        
+        return title;
+        
+    } else {
+        
+        return (self.ndoc) ? (NSString * _Nonnull)self.ndoc : @"";
+        
+    }
+    
+}
 
 @end

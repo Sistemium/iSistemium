@@ -95,7 +95,7 @@
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
-                                                                   sectionNameKeyPath:@"supplyOrder.ndoc"
+                                                                   sectionNameKeyPath:@"supplyOrder.title"
                                                                             cacheName:nil];
         _resultsController.delegate = self;
         
