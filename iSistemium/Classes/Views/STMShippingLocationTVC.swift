@@ -8,18 +8,12 @@
 
 import Foundation
 
-class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
-    
-    let LIMIT_COUNT = 4
-    
-    let IMAGE_PADDING : CGFloat = 6
-    
-    let CELL_IMAGES_SIZE:CGFloat = 54.0
+class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDelegate,UINavigationControllerDelegate,STMPicturesViewerDelegate {
     
     private var picturesView = UIView()
     
     var THUMB_SIZE:CGSize {
-        return CGSizeMake(CELL_IMAGES_SIZE, CELL_IMAGES_SIZE)
+        return CGSizeMake(Constants.CELL_IMAGES_SIZE, Constants.CELL_IMAGES_SIZE)
     }
 
     var shippingLocation: STMShippingLocation?{
@@ -66,7 +60,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         case 0:
             return 2
         case 1:
-            return (shippingLocation?.isLocationConfirmed ?? 0).boolValue ? 1 : 2
+            return 2
         case 2:
             return resultsController?.fetchedObjects?.count ?? 0
         default :
@@ -138,13 +132,13 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     
                     let blankPicture = self.blankPicture
                     
-                    blankPicture.frame = CGRectMake(0, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+                    blankPicture.frame = CGRectMake(0, 0, Constants.CELL_IMAGES_SIZE, Constants.CELL_IMAGES_SIZE);
                     
                     picturesView.addSubview(blankPicture)
                     
                 } else {
                     
-                    let showCount = (shippingLocation!.shippingLocationPictures.count > LIMIT_COUNT) ? LIMIT_COUNT : shippingLocation!.shippingLocationPictures.count;
+                    let showCount = (shippingLocation!.shippingLocationPictures.count > Constants.LIMIT_COUNT) ? Constants.LIMIT_COUNT : shippingLocation!.shippingLocationPictures.count;
                     
                     let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: "compare:")
                     let range = NSMakeRange(0, showCount)
@@ -156,9 +150,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                         let pictureButton = self.pictureButtonWithPicture(picture as! STMPicture)
                         
                         let count = CGFloat(self.picturesView.subviews.count);
-                        let x = (count > 0) ? count * (CELL_IMAGES_SIZE + IMAGE_PADDING) : 0;
+                        let x = (count > 0) ? count * (Constants.CELL_IMAGES_SIZE + Constants.IMAGE_PADDING) : 0;
                         
-                        pictureButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+                        pictureButton.frame = CGRectMake(x, 0, Constants.CELL_IMAGES_SIZE, Constants.CELL_IMAGES_SIZE);
                         
                         self.picturesView.addSubview(pictureButton)
                         
@@ -169,17 +163,17 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 
                 let addButton = self.addPhotoButton
                 
-                var x = CGFloat(self.picturesView.subviews.count) * (CELL_IMAGES_SIZE + IMAGE_PADDING);
+                var x = CGFloat(self.picturesView.subviews.count) * (Constants.CELL_IMAGES_SIZE + Constants.IMAGE_PADDING);
                 
-                addButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+                addButton.frame = CGRectMake(x, 0, Constants.CELL_IMAGES_SIZE, Constants.CELL_IMAGES_SIZE);
                 
                 self.picturesView.addSubview(addButton)
                 
-                let picturesWidth = CELL_IMAGES_SIZE * CGFloat(self.picturesView.subviews.count) + IMAGE_PADDING * CGFloat(self.picturesView.subviews.count - 1)
+                let picturesWidth = Constants.CELL_IMAGES_SIZE * CGFloat(self.picturesView.subviews.count) + Constants.IMAGE_PADDING * CGFloat(self.picturesView.subviews.count - 1)
                 x = ceil((cell.contentView.frame.size.width - picturesWidth) / 2);
-                let y = ceil((cell.contentView.frame.size.height - CELL_IMAGES_SIZE) / 2);
+                let y = ceil((cell.contentView.frame.size.height - Constants.CELL_IMAGES_SIZE) / 2);
                 
-                self.picturesView.frame = CGRectMake(x, y, picturesWidth, CELL_IMAGES_SIZE);
+                self.picturesView.frame = CGRectMake(x, y, picturesWidth, Constants.CELL_IMAGES_SIZE);
                 
                 cell.contentView.addSubview(self.picturesView)
                 
@@ -188,7 +182,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 break
             }
         case 2:
-            cell.titleLabel?.text = (resultsController!.fetchedObjects![indexPath.row] as! STMShipmentRoutePoint).shipmentRoute.date?.description
+            let formatter = NSDateFormatter()
+            formatter.dateStyle = .LongStyle
+            cell.titleLabel?.text = formatter.stringFromDate((resultsController!.fetchedObjects![indexPath.row] as! STMShipmentRoutePoint).shipmentRoute.date!)
             cell.detailLabel?.text = (resultsController!.fetchedObjects![indexPath.row] as! STMShipmentRoutePoint).shortInfo()
         default:
             break
@@ -203,7 +199,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         case 1:
             switch (indexPath.row) {
             case 1:
-                return CELL_IMAGES_SIZE + IMAGE_PADDING * 2;
+                return Constants.CELL_IMAGES_SIZE + Constants.IMAGE_PADDING * 2;
             default:
                 break;
             }
@@ -305,12 +301,12 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     self.cameraOverlayView.autoresizesSubviews = true
                     self.cameraOverlayView.autoresizingMask = [.FlexibleWidth , .FlexibleHeight]
                     
-                    //        if (SYSTEM_VERSION >= 8.0) {
-                    let rootView = UIApplication.sharedApplication().keyWindow!.rootViewController!.view;
-                    let originalFrame = UIScreen.mainScreen().bounds
-                    let screenFrame = rootView.convertRect(originalFrame, fromView:nil)
-                    self.cameraOverlayView.frame = screenFrame;
-                    //        }
+                    if  Constants.SYSTEM_VERSION > 8.0 {
+                        let rootView = UIApplication.sharedApplication().keyWindow!.rootViewController!.view;
+                        let originalFrame = UIScreen.mainScreen().bounds
+                        let screenFrame = rootView.convertRect(originalFrame, fromView:nil)
+                        self.cameraOverlayView.frame = screenFrame;
+                    }
                     _imagePickerController!.cameraOverlayView = self.cameraOverlayView;
                 }
             }
@@ -342,7 +338,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     }
     
-    func photoWasDeleted(photo:STMShippingLocationPicture) {
+    func photoWasDeleted(photo:STMPhoto) {
         tableView.reloadData()
     }
     
@@ -377,7 +373,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
             picturesPVC.photoArray =  NSMutableArray(array: photoArray)
             let index = picturesView.subviews.indexOf(sender as! UIView)
             picturesPVC.currentIndex = UInt(index ?? 0)
-            picturesPVC.parentVC = self as STMVariableCellsHeightTVC as? STMShipmentRoutePointTVC
+            picturesPVC.parentVC = self
         }
         if segue.identifier == "showShippingLocationMap" {
             

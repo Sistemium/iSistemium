@@ -10,3 +10,4 @@
 #import "STMShippingLocationMapVC.h"
 #import "STMObjectsController.h"
 #import "STMPicturesController.h"
+#import "STMPicturesViewerDelegate.h"

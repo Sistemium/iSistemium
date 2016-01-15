@@ -10,7 +10,7 @@
 
 #import "STMDataModel.h"
 #import "STMShipmentRoutePointTVC.h"
-
+#import "STMPicturesViewerDelegate.h"
 
 @interface STMShippingLocationPicturesPVC : UIPageViewController
 
@@ -18,7 +18,7 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic, strong) NSMutableArray *photoArray;
 
-@property (nonatomic, weak) STMShipmentRoutePointTVC *parentVC;
+@property (nonatomic, weak) id <STMPicturesViewerDelegate> parentVC;
 
 
 @end

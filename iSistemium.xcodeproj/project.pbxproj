@@ -486,6 +486,7 @@
 		2CFF9A8A1A67DE8A002B6392 /* STMClientDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A891A67DE8A002B6392 /* STMClientDataController.m */; };
 		2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8C1A67DF2B002B6392 /* STMController.m */; };
 		2CFF9A901A67F2ED002B6392 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */; };
+		6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* SwiftConstants.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
 		6DFDA3901C3AB15B00409C4A /* STMShippingLocations.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */; };
@@ -1415,6 +1416,8 @@
 		2CFF9A8C1A67DF2B002B6392 /* STMController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMController.m; sourceTree = "<group>"; };
 		2CFF9A8E1A67F2ED002B6392 /* STMObjectsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMObjectsController.h; sourceTree = "<group>"; };
 		2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMObjectsController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesViewerDelegate.h; sourceTree = "<group>"; };
+		6D814A9D1C490362001B56A3 /* SwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftConstants.swift; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
 		6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMShippingLocations.storyboard; sourceTree = "<group>"; };
@@ -1766,6 +1769,7 @@
 				2C9835A11C25539200CA231D /* STMArticleSelecting.h */,
 				2C42D8E31C25591F005C857F /* STMProductionInfoSelecting.h */,
 				2CAFB2591C2ADC3E00BBEDC1 /* STMVolumePickerOwner.h */,
+				6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -2632,6 +2636,7 @@
 			children = (
 				6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */,
 				6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */,
+				6D814A9D1C490362001B56A3 /* SwiftConstants.swift */,
 			);
 			name = STMShippingLocations;
 			sourceTree = "<group>";
@@ -3163,6 +3168,7 @@
 				2C5797F51A436A4300EEFBA7 /* STMEntityController.m in Sources */,
 				2CAFB2731C36A9C700BBEDC1 /* STMDatum.m in Sources */,
 				2CEE30211BEBAD10009B229F /* STMEntity.m in Sources */,
+				6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */,
 				2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */,
 				2C1F75061BFA1B6E003699C8 /* STMArticleProductionInfo.m in Sources */,
 				2C5764171AA5E1E500B9FD2C /* STMAddDebtVC.m in Sources */,

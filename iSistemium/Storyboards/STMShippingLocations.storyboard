@@ -63,7 +63,7 @@
                     </tableView>
                     <connections>
                         <segue destination="9UZ-u3-gxy" kind="show" identifier="showShippingLocationMap" id="62f-yF-tk6"/>
-                        <segue destination="obs-7b-9rk" kind="show" identifier="showPhotos" id="Eyw-1P-iiJ"/>
+                        <segue destination="obs-7b-9rk" kind="presentation" identifier="showPhotos" id="Eyw-1P-iiJ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jcz-1g-6tG" userLabel="First Responder" sceneMemberID="firstResponder"/>
