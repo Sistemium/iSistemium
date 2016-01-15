@@ -186,7 +186,7 @@ class STMDatePicker: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource 
         let numberFormatter: NSNumberFormatter = NSNumberFormatter.init()
         numberFormatter.minimumIntegerDigits = 2
         
-        return String(year) + "/" + numberFormatter.stringFromNumber(month)! + "/" + numberFormatter.stringFromNumber(day)!
+        return String(year) + "-" + numberFormatter.stringFromNumber(month)! + "-" + numberFormatter.stringFromNumber(day)!
         
     }
     

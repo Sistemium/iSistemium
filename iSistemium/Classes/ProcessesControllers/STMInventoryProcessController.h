@@ -24,10 +24,14 @@
          setForArticle:(STMArticle *)article
                 source:(id <STMInventoryControlling>)source;
 
-+ (void)cancelCurrentInventoryProcessing;
-+ (void)doneCurrentInventoryProcessing;
++ (void)cancelCurrentInventoryProcessingWithSource:(id <STMInventoryControlling>)source;
 
-+ (void)articleMismatchConfirmedForStockBatch:(STMStockBatch *)stockBatch source:(id <STMInventoryControlling>)source;
++ (void)doneCurrentInventoryProcessingWithSource:(id <STMInventoryControlling>)source;
+
++ (void)removeInventoryBatch:(STMInventoryBatch *)inventoryBatch;
++ (void)removeInventoryBatchItem:(STMInventoryBatchItem *)inventoryBatchItem;
+
++ (void)editInventoryBatch:(STMInventoryBatch *)inventoryBatch;
 
 
 @end

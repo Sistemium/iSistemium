@@ -23,6 +23,7 @@
 
 - (void)showArriveConfirmationAlert;
 - (void)shippingProcessWasInterrupted;
+- (void)shippingDidDone;
 
 - (void)photoWasDeleted:(STMShippingLocationPicture *)photo;
 

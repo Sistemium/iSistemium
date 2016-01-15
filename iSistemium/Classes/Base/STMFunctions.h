@@ -33,6 +33,8 @@
 
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
++ (NSString *)displayDateInfo:(NSString *)dateInfo;
+
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateNumbersFormatter;
 + (NSDateFormatter *)dateNumbersFormatterTwo;
@@ -50,6 +52,8 @@
 
 + (NSDate *)dateFromDouble:(double)time;
 + (double)currentTimeInDouble;
+
++ (NSString *)trueMinus;
 
 + (NSNumberFormatter *)decimalFormatter;
 + (NSNumberFormatter *)decimalMaxTwoDigitFormatter;

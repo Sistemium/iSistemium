@@ -17,6 +17,7 @@
 #define STM_SUPERLIGHT_BLUE_COLOR [UIColor colorWithRed:0.92 green:0.96 blue:1 alpha:1]
 #define STM_YELLOW_COLOR [UIColor colorWithRed:1 green:0.98 blue:0 alpha:1]
 #define STM_LIGHT_LIGHT_GREY_COLOR [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1]
+#define STM_DARK_GREEN_COLOR [UIColor colorWithRed:0 green:0.7 blue:0.2 alpha:1]
 
 #define STM_SECTION_HEADER_COLOR [UIColor colorWithRed:239.0/255 green:239.0/255 blue:244.0/255 alpha:1.0];
 

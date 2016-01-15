@@ -36,6 +36,17 @@
 
 @implementation STMFunctions
 
++ (NSString *)displayDateInfo:(NSString *)dateInfo {
+    
+    NSString *separator = @"-";
+    NSArray *infoParts = [dateInfo componentsSeparatedByString:separator];
+    infoParts = [[infoParts reverseObjectEnumerator] allObjects];
+    separator = @"/";
+    return [infoParts componentsJoinedByString:separator];
+
+}
+
+
 #pragma mark - date formatters
 
 + (STMDateFormatter *)dateFormatter {
@@ -209,10 +220,14 @@
 
 #pragma mark - number formatters
 
++ (NSString *)trueMinus {
+    return @"\u2212"; // U+2212 TRUE MINUS SIGN
+}
+
 + (NSNumberFormatter *)trueMinusFormatter {
 
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    numberFormatter.minusSign = @"\u2212"; // U+2212 TRUE MINUS SIGN
+    numberFormatter.minusSign = [self trueMinus];
     
     return numberFormatter;
 
@@ -483,6 +498,17 @@
 }
 
 + (UIImage *)drawText:(NSString *)text withFont:(UIFont *)font color:(UIColor *)color inImage:(UIImage *)image atCenter:(BOOL)atCenter {
+    
+    if (!font) font = [UIFont systemFontOfSize:14];
+    if (!color) color = [UIColor blackColor];
+    
+    if (!image) {
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(20, 20), NO, 0.0);
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+    }
     
     NSDictionary *attributes = @{NSFontAttributeName:font,
                                  NSForegroundColorAttributeName:color};

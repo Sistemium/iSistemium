@@ -206,7 +206,10 @@
 
         }
         
-        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:nil
+                                                                            cacheName:nil];
         
         _resultsController.delegate = self;
         
@@ -786,8 +789,9 @@
 - (void)fillPointNumberCell:(UITableViewCell *)cell {
     
     UIColor *textColor = ACTIVE_BLUE_COLOR; //cell.textLabel.textColor
+    UIFont *font = (cell.textLabel.font) ? cell.textLabel.font : [UIFont systemFontOfSize:14];
     
-    NSDictionary *attributes = @{NSFontAttributeName: cell.textLabel.font,
+    NSDictionary *attributes = @{NSFontAttributeName: font,
                                  NSForegroundColorAttributeName: textColor};
     
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"POINT NUMBER", nil) attributes:attributes];
@@ -1127,7 +1131,10 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView reloadData];
+    
+//    [self.tableView reloadData];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationNone];
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -1265,6 +1272,20 @@
                                               otherButtonTitles:nil];
         
         [alert show];
+
+    }];
+    
+}
+
+- (void)shippingDidDone {
+    
+    [self.navigationController popToViewController:self animated:YES];
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:3]
+                              atScrollPosition:UITableViewScrollPositionTop
+                                      animated:YES];
 
     }];
     

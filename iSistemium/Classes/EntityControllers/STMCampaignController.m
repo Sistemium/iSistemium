@@ -148,7 +148,7 @@
 
     for (STMCampaignPicture *picture in campaign.pictures) {
         
-        if (![readCampaignPicturesArray containsObject:picture.xid]) {
+        if (picture.xid && ![readCampaignPicturesArray containsObject:(NSData * _Nonnull)picture.xid]) {
             
             result = YES;
             break;

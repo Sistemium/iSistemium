@@ -20,7 +20,7 @@
         formatter = [STMFunctions dateNumbersFormatter];
     });
     
-    return [formatter stringFromDate:self.deviceCts];
+    return (self.deviceCts) ? [formatter stringFromDate:(NSDate * _Nonnull)self.deviceCts] : @"";
     
 }
 

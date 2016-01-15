@@ -868,9 +868,7 @@
 }
 
 - (void)toolBarLayoutDone {
-
     [self setupToolbar];
-
 }
 
 #pragma mark - device orientation

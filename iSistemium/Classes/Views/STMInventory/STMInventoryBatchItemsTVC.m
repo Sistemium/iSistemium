@@ -8,6 +8,8 @@
 
 #import "STMInventoryBatchItemsTVC.h"
 
+#import "STMInventoryProcessController.h"
+
 
 @interface STMInventoryBatchItemsTVC ()
 
@@ -52,17 +54,38 @@
 
 #pragma mark - table view data
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return NSLocalizedString(@"EXCISE MARKS", nil);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMTableViewCellStyleSubtitle *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     STMInventoryBatchItem *item = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:item.deviceCts];
+    if (item.deviceCts) {
+        cell.textLabel.text = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:(NSDate * _Nonnull)item.deviceCts];
+    }
     
     cell.detailTextLabel.text = item.code;
     
     return cell;
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return (self.parentVC.inventoryBatch.isDone.boolValue) ? UITableViewCellEditingStyleNone : UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMInventoryBatchItem *item = [self.resultsController objectAtIndexPath:indexPath];
+        [STMInventoryProcessController removeInventoryBatchItem:item];
+        
+    }
     
 }
 
@@ -73,7 +96,7 @@
     
     [super customInit];
     
-    [self.tableView registerClass:[STMTableViewCellStyleSubtitle class] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
     [self performFetch];
     

@@ -36,7 +36,7 @@
                                                  verticalAccuracy:[locationObject.verticalAccuracy doubleValue]
                                                            course:[locationObject.course doubleValue]
                                                             speed:[locationObject.speed doubleValue]
-                                                        timestamp:locationObject.deviceCts];
+                                                        timestamp:(locationObject.deviceCts) ? (NSDate * _Nonnull)locationObject.deviceCts : [NSDate dateWithTimeIntervalSince1970:0]];
     return location;
     
 }

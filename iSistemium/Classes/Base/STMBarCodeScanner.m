@@ -15,6 +15,7 @@
 #import "STMNS.h"
 #import "STMDataModel.h"
 #import "STMSessionManager.h"
+#import "STMLogger.h"
 
 
 @interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, ScanApiHelperDelegate>
@@ -153,56 +154,10 @@
 
 - (void)checkScannedBarcode:(NSString *)barcode {
     
-    NSString *matchedType = nil;
-
-    for (STMBarCodeType *barCodeType in self.barCodeTypesRC.fetchedObjects) {
-        
-        if (barCodeType.mask) {
-            
-            NSError *error = nil;
-            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:(NSString * _Nonnull)barCodeType.mask
-                                                                                   options:NSRegularExpressionCaseInsensitive
-                                                                                     error:&error];
-            
-            NSUInteger numberOfMatches = [regex numberOfMatchesInString:barcode
-                                                                options:0
-                                                                  range:NSMakeRange(0, barcode.length)];
-            
-            if (numberOfMatches > 0) {
-                
-                matchedType = barCodeType.type;
-                break;
-                
-            }
-
-        }
-        
-    }
+    STMBarCodeScannedType type = [STMBarCodeController barcodeTypeFromTypes:self.barCodeTypesRC.fetchedObjects forBarcode:barcode];
     
-    [self.delegate barCodeScanner:self receiveBarCode:barcode withType:[self barCodeScannedTypeForStringType:matchedType]];
+    [self.delegate barCodeScanner:self receiveBarCode:barcode withType:type];
 
-}
-
-- (STMBarCodeScannedType)barCodeScannedTypeForStringType:(NSString *)type {
-    
-    if ([type isEqualToString:@"Article"]) {
-        
-        return STMBarCodeTypeArticle;
-        
-    } else if ([type isEqualToString:@"StockBatch"]) {
-        
-        return STMBarCodeTypeStockBatch;
-        
-    } else if ([type isEqualToString:@"ExciseStamp"]) {
-        
-        return STMBarCodeTypeExciseStamp;
-        
-    } else {
-        
-        return STMBarCodeTypeUnknown;
-        
-    }
-    
 }
 
 
@@ -315,9 +270,20 @@
 
     
     self.hiddenBarCodeTextField = [[UITextField alloc] init];
+    
     self.hiddenBarCodeTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.hiddenBarCodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
+    
+    if ([self.hiddenBarCodeTextField respondsToSelector:@selector(inputAssistantItem)]) {
+        
+        UITextInputAssistantItem *inputAssistantItem = self.hiddenBarCodeTextField.inputAssistantItem;
+        inputAssistantItem.leadingBarButtonGroups = @[];
+        inputAssistantItem.trailingBarButtonGroups = @[];
+        
+    }
+
     [self.hiddenBarCodeTextField becomeFirstResponder];
+    
     self.hiddenBarCodeTextField.delegate = self;
     
     [[self.delegate viewForScanner:self] addSubview:self.hiddenBarCodeTextField];
@@ -394,10 +360,90 @@
 
 }
 
+
+#pragma mark - Scan API callbacks
+
 - (void)postGetPostamble:(id)sender {
     
     NSLog(@"%@", sender);
     
+}
+
+- (void)postGetSymbology:(id)sender {
+
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+     
+        SKTRESULT result = [[scanObj Msg] Result];
+        
+        if (SKTSUCCESS(result)) {
+            
+            DeviceInfo* deviceInfo=[self.iOSScanHelper getDeviceInfoFromScanObject:scanObj];
+            
+            if (deviceInfo){
+                
+                ISktScanSymbology *symbology = [[scanObj Property] Symbology];
+                
+                enum ESktScanSymbologyID symbologyID = [symbology getID];
+                
+                NSArray *availableSymbologies = [self.barCodeTypesRC.fetchedObjects valueForKeyPath:@"symbology"];
+                
+                if ([availableSymbologies containsObject:[symbology getName]]) {
+                    
+                    if ([symbology getStatus] == kSktScanSymbologyStatusDisable) {
+                        
+                        [self.iOSScanHelper postSetSymbologyInfo:deviceInfo
+                                                     SymbologyId:symbologyID
+                                                          Status:TRUE
+                                                          Target:nil
+                                                        Response:nil];
+                        
+                    }
+
+                } else {
+                    
+                    if ([symbology getStatus] == kSktScanSymbologyStatusEnable) {
+                        
+                        [self.iOSScanHelper postSetSymbologyInfo:deviceInfo
+                                                     SymbologyId:symbologyID
+                                                          Status:FALSE
+                                                          Target:nil
+                                                        Response:nil];
+                        
+                    }
+
+                }
+                
+            }
+            
+        }
+
+    }
+    
+}
+
+- (void)checkSymbologiesOnDevice:(DeviceInfo *)deviceInfo {
+    
+    for (enum ESktScanSymbologyID symbology = kSktScanSymbologyNotSpecified; symbology < kSktScanSymbologyLastSymbologyID; symbology++) {
+        
+        [self.iOSScanHelper postGetSymbologyInfo:deviceInfo
+                                     SymbologyId:symbology
+                                          Target:self
+                                        Response:@selector(postGetSymbology:)];
+        
+    }
+    
+}
+
+- (void)getBatteryCallback:(id)sender {
+    
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+
+        NSLog(@"%@", scanObj);
+    }
 }
 
 
@@ -405,19 +451,26 @@
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
     
-//    [self.iOSScanHelper postGetPostambleDevice:deviceInfo Target:self Response:@selector(postGetPostamble:)];
+    NSString *logMessage = [NSString stringWithFormat:@"Connect scanner: %@", [deviceInfo getName]];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+    
+//    [self.iOSScanHelper postGetBattery:deviceInfo Target:self Response:@selector(getBatteryCallback:)];
     
     [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
 
-//    [self.iOSScanHelper postGetPostambleDevice:deviceInfo Target:self Response:@selector(postGetPostamble:)];
-
+    [self checkSymbologiesOnDevice:deviceInfo];
     
     [self.delegate deviceArrivalForBarCodeScanner:self];
     
 }
 
 - (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
+    
+    NSString *logMessage = [NSString stringWithFormat:@"Disconnect scanner: %@", [deviceRemoved getName]];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+
     [self.delegate deviceRemovalForBarCodeScanner:self];
+    
 }
 
 - (void)onDecodedDataResult:(long)result device:(DeviceInfo *)device decodedData:(ISktScanDecodedData *)decodedData {

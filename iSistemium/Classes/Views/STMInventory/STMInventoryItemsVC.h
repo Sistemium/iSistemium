@@ -13,8 +13,10 @@
 
 @interface STMInventoryItemsVC : UIViewController
 
-@property (nonatomic, weak) STMArticle *inventoryArticle;
-@property (nonatomic, weak) STMInventoryBatch *inventoryBatch;
-@property (nonatomic, weak) NSString *productionInfo;
+@property (nonatomic, strong) STMInventoryBatch *inventoryBatch;
+@property (nonatomic, strong) NSString *productionInfo;
+
+- (void)showStockBatchInfo;
+- (void)updateStockBatchInfo;
 
 @end

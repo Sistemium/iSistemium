@@ -9,6 +9,7 @@
 #import "STMBarCodeController.h"
 
 #import "STMSoundController.h"
+#import "STMObjectsController.h"
 
 
 @implementation STMBarCodeController
@@ -42,7 +43,9 @@
 
     } else {
 
-        [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+//        [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
+
+//        [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
         NSLog(@"unknown barcode %@", barcode);
         
         return nil;
@@ -58,7 +61,10 @@
     if (barcodesArray.count > 0) {
         
         if (barcodesArray.count > 1) {
-            NSLog(@"barcodesArray.count > 1");
+            
+            NSString *logMessage = [NSString stringWithFormat:@"More than one stockbatch barcodes for barcode: %@", barcode];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+            
         }
         
         NSMutableArray *result = @[].mutableCopy;
@@ -80,9 +86,7 @@
         
     } else {
         
-        [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
         NSLog(@"unknown barcode %@", barcode);
-        
         return nil;
         
     }
@@ -94,7 +98,7 @@
     if ([barcodeClass isSubclassOfClass:[STMBarCode class]]) {
         
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass(barcodeClass)];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
         if (barcodeValue) request.predicate = [NSPredicate predicateWithFormat:@"code == %@", barcodeValue];
         
         NSArray *barcodesArray = [[self document].managedObjectContext executeFetchRequest:request error:nil];
@@ -108,5 +112,73 @@
     }
     
 }
+
++ (STMBarCodeScannedType)barcodeTypeFromTypes:(NSArray <STMBarCodeType *> *)types forBarcode:(NSString *)barcode {
+    
+    NSString *matchedType = nil;
+    
+    for (STMBarCodeType *barCodeType in types) {
+        
+        if (barCodeType.mask) {
+            
+            NSError *error = nil;
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:(NSString * _Nonnull)barCodeType.mask
+                                                                                   options:NSRegularExpressionCaseInsensitive
+                                                                                     error:&error];
+            
+            NSUInteger numberOfMatches = [regex numberOfMatchesInString:barcode
+                                                                options:0
+                                                                  range:NSMakeRange(0, barcode.length)];
+            
+            if (numberOfMatches > 0) {
+                
+                matchedType = barCodeType.type;
+                break;
+                
+            }
+            
+        }
+        
+    }
+    
+    return [self barCodeScannedTypeForStringType:matchedType];
+
+}
+
++ (STMBarCodeScannedType)barCodeScannedTypeForStringType:(NSString *)type {
+    
+    if ([type isEqualToString:@"Article"]) {
+        
+        return STMBarCodeTypeArticle;
+        
+    } else if ([type isEqualToString:@"StockBatch"]) {
+        
+        return STMBarCodeTypeStockBatch;
+        
+    } else if ([type isEqualToString:@"ExciseStamp"]) {
+        
+        return STMBarCodeTypeExciseStamp;
+        
+    } else {
+        
+        return STMBarCodeTypeUnknown;
+        
+    }
+    
+}
+
++ (void)addBarcode:(NSString *)barcode toArticle:(STMArticle *)article {
+    
+    STMArticleBarCode *articleBarcode = (STMArticleBarCode *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMArticleBarCode class]) isFantom:NO];
+    
+    articleBarcode.code = barcode;
+    articleBarcode.article = article;
+    
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+    
+}
+
 
 @end

@@ -10,6 +10,9 @@
 #import "STMArticle.h"
 #import "STMProductionInfoType.h"
 
+#import "STMFunctions.h"
+
+
 @implementation STMArticleProductionInfo
 
 - (NSString *)displayInfo {
@@ -18,10 +21,7 @@
     
     if ([self.productionInfoType.datatype isEqualToString:@"date"]) {
         
-        NSString *separator = @"/";
-        NSArray *infoParts = [self.info componentsSeparatedByString:separator];
-        infoParts = [[infoParts reverseObjectEnumerator] allObjects];
-        info = [infoParts componentsJoinedByString:separator];
+        info = [STMFunctions displayDateInfo:self.info];
         
     } else {
         

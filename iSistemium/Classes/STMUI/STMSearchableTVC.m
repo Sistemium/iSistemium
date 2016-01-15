@@ -57,9 +57,7 @@
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    
     [self performFetch];
-    
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
@@ -92,21 +90,31 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
     self.searchFieldIsScrolledAway = (scrollView.contentOffset.y > self.searchBar.frame.size.height);
-    
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    
     [self hideKeyboard];
-    
 }
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self hideKeyboard];
+}
+
+
+#pragma mark - table view delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self hideKeyboard];
+}
+
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 44)];
     self.tableView.tableHeaderView = self.searchBar;
     self.searchBar.delegate = self;

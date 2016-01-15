@@ -8,12 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSUInteger, STMBarCodeScannedType) {
-    STMBarCodeTypeUnknown,
-    STMBarCodeTypeArticle,
-    STMBarCodeTypeExciseStamp,
-    STMBarCodeTypeStockBatch
-};
+#import "STMBarCodeController.h"
 
 @class STMBarCodeScanner;
 

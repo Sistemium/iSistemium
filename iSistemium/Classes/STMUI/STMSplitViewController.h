@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "STMTabBarItemControllable.h"
 
+#import "STMDataModel.h"
+
+
 @interface STMSplitViewController : UISplitViewController <STMTabBarItemControllable>
 
 @property (nonatomic, strong) NSArray <NSString *> *actions;

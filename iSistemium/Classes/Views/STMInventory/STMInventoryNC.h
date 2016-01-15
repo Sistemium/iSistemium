@@ -9,20 +9,20 @@
 #import "STMActionPopoverNC.h"
 
 #import "STMInventoryItemsVC.h"
+#import "STMArticleSelecting.h"
+#import "STMProductionInfoSelecting.h"
 
 
-@interface STMInventoryNC : STMActionPopoverNC
+@interface STMInventoryNC : STMActionPopoverNC <STMArticleSelecting, STMProductionInfoSelecting>
 
 @property (nonatomic, strong) STMInventoryItemsVC *itemsVC;
 @property (nonatomic) BOOL scanEnabled;
 @property (nonatomic, strong) STMInventoryBatch *currentlyProcessedBatch;
 
-
-- (void)selectArticle:(STMArticle *)article withSearchedBarcode:(NSString *)barcode;
-- (void)selectInfo:(STMArticleProductionInfo *)info;
-
 - (void)cancelCurrentInventoryProcessing;
 - (void)doneCurrentInventoryProcessing;
+- (void)editInventoryBatch:(STMInventoryBatch *)inventoryBatch;
+- (void)deleteInventoryBatch:(STMInventoryBatch *)inventoryBatch;
 
 
 @end

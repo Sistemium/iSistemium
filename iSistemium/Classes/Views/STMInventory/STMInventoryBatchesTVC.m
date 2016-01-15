@@ -9,6 +9,7 @@
 #import "STMInventoryBatchesTVC.h"
 
 #import "STMInventoryItemsVC.h"
+#import "STMInventoryProcessController.h"
 
 
 @interface STMInventoryBatchesTVC ()
@@ -80,22 +81,21 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMTableViewCellStyleSubtitle *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     STMInventoryBatch *batch = [self.resultsController objectAtIndexPath:indexPath];
 
     [self fillCellTextLabel:cell.textLabel withInventoryBatch:batch];
     [self fillCellDetailLabel:cell.detailTextLabel withInventoryBatch:batch];
     
+    UIColor *color = (batch.isDone.boolValue) ? [UIColor grayColor] : [UIColor blackColor];
+    
+    cell.textLabel.textColor = color;
+    cell.detailTextLabel.textColor = color;
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
-    
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    [self performSegueWithIdentifier:@"showItems" sender:indexPath];
     
 }
 
@@ -106,7 +106,7 @@
     NSDictionary *attributes = @{NSFontAttributeName: font,
                                  NSForegroundColorAttributeName: textLabel.textColor};
 
-    NSString *deviceCtsString = [[STMFunctions noDateMediumTimeFormatter] stringFromDate:batch.deviceCts];
+    NSString *deviceCtsString = (batch.deviceCts) ? [[STMFunctions noDateMediumTimeFormatter] stringFromDate:(NSDate * _Nonnull)batch.deviceCts] : @"";
     
     NSMutableAttributedString *labelText = [[NSMutableAttributedString alloc] initWithString:deviceCtsString
                                                                                   attributes:attributes];
@@ -114,14 +114,16 @@
     attributes = @{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize - 2],
                    NSForegroundColorAttributeName: textLabel.textColor};
 
-    if (batch.article.name) {
+    STMArticle *operatingArticle = [batch operatingArticle];
+    
+    if (operatingArticle.name) {
         
         [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
         
-        NSString *articleNameString = batch.article.name;
+        NSString *articleNameString = operatingArticle.name;
         
-        if (batch.article.extraLabel) {
-            articleNameString = [NSString stringWithFormat:@"%@ %@", articleNameString, batch.article.extraLabel];
+        if (operatingArticle.extraLabel) {
+            articleNameString = [NSString stringWithFormat:@"%@ %@", articleNameString, operatingArticle.extraLabel];
         }
         
         NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:articleNameString
@@ -140,10 +142,10 @@
         
         NSString *codeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"ARTICLE", nil), batch.code];
         
-        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:codeString
-                                                                          attributes:attributes];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:codeString
+                                                                               attributes:attributes];
         
-        [labelText appendAttributedString:articleName];
+        [labelText appendAttributedString:attributedString];
 
     }
     
@@ -153,10 +155,25 @@
 
         NSString *stockBatchCodeString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"STOCK BATCH", nil), batch.stockBatchCode];
         
-        NSAttributedString *articleName = [[NSAttributedString alloc] initWithString:stockBatchCodeString
-                                                                          attributes:attributes];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:stockBatchCodeString
+                                                                               attributes:attributes];
         
-        [labelText appendAttributedString:articleName];
+        [labelText appendAttributedString:attributedString];
+
+    }
+    
+    NSString *productionInfo = [batch.stockBatch displayProductionInfo];
+    
+    if (productionInfo) {
+        
+        [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+
+        productionInfo = [NSString stringWithFormat:@"(%@)", productionInfo];
+        
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:productionInfo
+                                                                               attributes:attributes];
+        
+        [labelText appendAttributedString:attributedString];
 
     }
     
@@ -189,6 +206,27 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self performSegueWithIdentifier:@"showItems" sender:indexPath];
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMInventoryBatch *batch = [self.resultsController objectAtIndexPath:indexPath];
+        [STMInventoryProcessController removeInventoryBatch:batch];
+        
+    }
+    
+}
+
 
 #pragma mark - Navigation
 
@@ -202,8 +240,7 @@
         
         STMInventoryItemsVC *inventoryItemsVC = (STMInventoryItemsVC *)segue.destinationViewController;
         inventoryItemsVC.inventoryBatch = inventoryBatch;
-        inventoryItemsVC.inventoryArticle = inventoryBatch.article;
-        inventoryItemsVC.productionInfo = [inventoryBatch displayProductionInfo];
+        inventoryItemsVC.productionInfo = [inventoryBatch.stockBatch displayProductionInfo];
         
     }
     
@@ -220,7 +257,7 @@
         [self showInfoAlert];
     }
     
-    [self.tableView registerClass:[STMTableViewCellStyleSubtitle class] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
     [self performFetch];
     
@@ -229,6 +266,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    self.navigationController.toolbarHidden = YES;
+
 }
 
 - (void)didReceiveMemoryWarning {

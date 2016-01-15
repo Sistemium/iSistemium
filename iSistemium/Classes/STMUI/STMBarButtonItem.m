@@ -19,6 +19,21 @@
 @end
 
 
+@implementation STMBarButtonItemEdit
+
+@end
+
+
+@implementation STMBarButtonItemDelete
+
+@end
+
+
+@implementation STMBarButtonItemLabel
+
+@end
+
+
 @implementation STMBarButtonItem
 
 + (STMBarButtonItem *)flexibleSpace {
@@ -43,11 +58,8 @@
     self = [super init];
     
     if (self) {
-        
         [self customInit];
-        
     }
-    
     return self;
     
 }
@@ -62,39 +74,56 @@
 
 - (void)customInit {
 
+    UIColor *color = ACTIVE_BLUE_COLOR;
+    NSDictionary *textAttributes = @{NSForegroundColorAttributeName:color};
+    [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+
+    color = GREY_LINE_COLOR;
+    textAttributes = @{NSForegroundColorAttributeName:color};
+    [self setTitleTextAttributes:textAttributes forState:UIControlStateDisabled];
+
     if ([self isKindOfClass:[STMBarButtonItemDone class]]) {
         
         UIFont *font = [UIFont boldSystemFontOfSize:17];
-        UIColor *color = ACTIVE_BLUE_COLOR;
-        
-        NSDictionary *textAttributes = @{
-                                         NSFontAttributeName:font,
-                                         NSForegroundColorAttributeName:color
-                                         };
-
+        NSDictionary *textAttributes = @{NSFontAttributeName:font};
         [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
         
-        color = GREY_LINE_COLOR;
-        textAttributes = @{
-                           NSForegroundColorAttributeName:color
-                           };
-
-        [self setTitleTextAttributes:textAttributes forState:UIControlStateDisabled];
-
     } else if ([self isKindOfClass:[STMBarButtonItemCancel class]]) {
         
-//        UIColor *color = [UIColor redColor];
-        UIColor *color = ACTIVE_BLUE_COLOR;
+    } else if ([self isKindOfClass:[STMBarButtonItemEdit class]]) {
         
-        NSDictionary *textAttributes = @{
-                                         NSForegroundColorAttributeName:color
-                                         };
+    } else if ([self isKindOfClass:[STMBarButtonItemDelete class]]) {
         
+        UIColor *color = [UIColor redColor];
+        NSDictionary *textAttributes = @{NSForegroundColorAttributeName:color};
+        [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+        
+    } else if ([self isKindOfClass:[STMBarButtonItemLabel class]]) {
+        
+        UIColor *color = [UIColor blackColor];
+        NSDictionary *textAttributes = @{NSForegroundColorAttributeName:color};
+        [self setTitleTextAttributes:textAttributes forState:UIControlStateDisabled];
+        
+        self.tintColor = color;
+        
+        self.enabled = NO;
+        
+    }
+
+}
+
+- (void)setTintColor:(UIColor *)tintColor {
+    
+    [super setTintColor:tintColor];
+    
+    if (tintColor) {
+        
+        NSDictionary *textAttributes = @{NSForegroundColorAttributeName:tintColor};
         [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
 
-        
     }
     
 }
+
 
 @end

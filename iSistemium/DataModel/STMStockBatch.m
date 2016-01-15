@@ -14,9 +14,11 @@
 #import "STMStockBatchBarCode.h"
 
 #import "STMStockBatchOperation.h"
+#import "STMProductionInfoType.h"
 
 #import "STMNS.h"
 #import "STMSessionManager.h"
+#import "STMFunctions.h"
 
 
 @implementation STMStockBatch
@@ -30,42 +32,38 @@
     
     NSInteger volume = self.volume.integerValue;
     
-    for (STMStockBatchOperation *operation in nonProcessedSourceOperations) {
-        volume -= operation.volume.integerValue;
-    }
+    NSInteger minusVolume = [[nonProcessedSourceOperations valueForKeyPath:@"@sum.volume"] integerValue];
+    NSInteger plusVolume = [[nonProcessedDestinationOperations valueForKeyPath:@"@sum.volume"] integerValue];
 
-    for (STMStockBatchOperation *operation in nonProcessedDestinationOperations) {
-        volume += operation.volume.integerValue;
-    }
+    volume = volume - minusVolume + plusVolume;
+    
+//    for (STMStockBatchOperation *operation in nonProcessedSourceOperations) {
+//        volume -= operation.volume.integerValue;
+//    }
+//
+//    for (STMStockBatchOperation *operation in nonProcessedDestinationOperations) {
+//        volume += operation.volume.integerValue;
+//    }
     
     return volume;
+    
+}
 
-//    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchOperation class])];
-//    
-//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-//    request.predicate = [NSPredicate predicateWithFormat:@"(isProcessed == NO OR isProcessed == nil) AND (sourceXid == %@ OR destinationXid == %@)", self.xid, self.xid];
-//    
-//    NSArray *result = [[[STMSessionManager sharedManager].currentSession document].managedObjectContext executeFetchRequest:request error:nil];
-//    
-//    NSInteger volume = self.volume.integerValue;
-//    
-//    for (STMStockBatchOperation *operation in result) {
-//        
-//        if ([operation.sourceXid isEqualToData:self.xid]) {
-//            
-//            volume -= operation.volume.integerValue;
-//        
-//        }
-//
-//        if ([operation.destinationXid isEqualToData:self.xid]) {
-//            
-//            volume += operation.volume.integerValue;
-//            
-//        }
-//
-//    }
-//    
-//    return volume;
+- (NSString *)displayProductionInfo {
+    
+    NSString *info = nil;
+    
+    if ([self.article.productionInfoType.datatype isEqualToString:@"date"]) {
+        
+        info = [STMFunctions displayDateInfo:self.productionInfo];
+
+    } else {
+        
+        info = self.productionInfo;
+        
+    }
+    
+    return info;
     
 }
 

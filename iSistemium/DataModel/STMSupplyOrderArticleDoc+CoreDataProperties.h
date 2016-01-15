@@ -2,7 +2,7 @@
 //  STMSupplyOrderArticleDoc+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 02/12/15.
+//  Created by Maxim Grigoriev on 12/12/15.
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nullable, nonatomic, retain) NSNumber *ord;
 @property (nullable, nonatomic, retain) NSNumber *volume;
+@property (nullable, nonatomic, retain) NSString *code;
 @property (nullable, nonatomic, retain) STMArticle *article;
 @property (nullable, nonatomic, retain) STMArticleDoc *articleDoc;
 @property (nullable, nonatomic, retain) STMSupplyOrder *supplyOrder;

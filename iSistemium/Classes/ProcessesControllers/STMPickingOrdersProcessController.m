@@ -9,6 +9,7 @@
 #import "STMPickingOrdersProcessController.h"
 
 #import "STMObjectsController.h"
+#import "STMStockBatchOperationController.h"
 
 
 @implementation STMPickingOrdersProcessController
@@ -28,32 +29,6 @@
     if (save) [self.document saveDocument:^(BOOL success) {}];
 
     return pickedPosition;
-    
-}
-
-+ (STMStockBatchOperation *)stockBatchOperationWithSource:(STMStockBatchOperationAgent *)source destination:(STMStockBatchOperationAgent *)destination volume:(NSNumber *)volume save:(BOOL)save {
-    
-    NSString *stockBatchOperationClassName = NSStringFromClass([STMStockBatchOperation class]);
-    
-    STMStockBatchOperation *stockBatchOperation = (STMStockBatchOperation *)[STMObjectsController newObjectForEntityName:stockBatchOperationClassName
-                                                                                                                isFantom:NO];
-    
-    NSString *sourceEntity = [NSStringFromClass([source class]) stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-    NSString *destinationEntity= [NSStringFromClass([destination class]) stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""];
-    
-    stockBatchOperation.sourceEntity = sourceEntity;
-    stockBatchOperation.sourceXid = [source valueForKey:@"xid"];
-    stockBatchOperation.sourceAgent = source;
-    
-    stockBatchOperation.destinationEntity = destinationEntity;
-    stockBatchOperation.destinationXid = [destination valueForKey:@"xid"];
-    stockBatchOperation.destinationAgent = destination;
-    
-    stockBatchOperation.volume = volume;
-
-    if (save) [self.document saveDocument:^(BOOL success) {}];
-
-    return stockBatchOperation;
     
 }
 
@@ -81,10 +56,10 @@
                                                                barcode:barcode
                                                                   save:NO];
     
-    [self stockBatchOperationWithSource:stockBatch
-                            destination:pickedPosition
-                                 volume:pickedPosition.volume
-                                   save:YES];
+    [STMStockBatchOperationController stockBatchOperationWithSource:stockBatch
+                                                        destination:pickedPosition
+                                                             volume:pickedPosition.volume
+                                                               save:YES];
 
 }
 
@@ -112,7 +87,8 @@
                 
                 pickedPosition.volume = @(newVolume);
                 
-                STMStockBatchOperation *operation = [self findStockBatchOperationWithSource:pickedPosition.stockBatch andDestination:pickedPosition];
+                STMStockBatchOperation *operation = [STMStockBatchOperationController findStockBatchOperationWithSource:pickedPosition.stockBatch
+                                                                                                         andDestination:pickedPosition];
                 
                 if (operation.sts) {
                     
@@ -133,10 +109,10 @@
                         
                     }
                     
-                    [self stockBatchOperationWithSource:source
-                                            destination:destination
-                                                 volume:@(diff)
-                                                   save:NO];
+                    [STMStockBatchOperationController stockBatchOperationWithSource:source
+                                                                        destination:destination
+                                                                             volume:@(diff)
+                                                                               save:NO];
                     
                 } else {
                     
@@ -168,14 +144,15 @@
 
     if (pickedPosition.stockBatch) {
         
-        STMStockBatchOperation *operation = [self findStockBatchOperationWithSource:pickedPosition.stockBatch andDestination:pickedPosition];
+        STMStockBatchOperation *operation = [STMStockBatchOperationController findStockBatchOperationWithSource:pickedPosition.stockBatch
+                                                                                                 andDestination:pickedPosition];
         
         if (operation.sts) {
         
-            [self stockBatchOperationWithSource:pickedPosition
-                                    destination:pickedPosition.stockBatch
-                                         volume:pickedPosition.volume
-                                           save:NO];
+            [STMStockBatchOperationController stockBatchOperationWithSource:pickedPosition
+                                                                destination:pickedPosition.stockBatch
+                                                                     volume:pickedPosition.volume
+                                                                       save:NO];
 
         } else {
             
@@ -190,31 +167,6 @@
     } else {
         [STMObjectsController removeObject:pickedPosition];
     }
-    
-}
-
-+ (STMStockBatchOperation *)findStockBatchOperationWithSource:(STMStockBatchOperationAgent *)source andDestination:(STMStockBatchOperationAgent *)destination {
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"destinationAgent == %@", destination];
-    
-    NSArray *result = [source.sourceOperations filteredSetUsingPredicate:predicate].allObjects;
-    
-    if (result.count == 0) {
-        
-//        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchOperation class])];
-//    
-//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-//        request.predicate = [NSPredicate predicateWithFormat:@"sourceXid == %@ AND destinationXid == %@", [source valueForKey:@"xid"], [destination valueForKey:@"xid"]];
-//    
-//        result = [[self document].managedObjectContext executeFetchRequest:request error:nil];
-
-    }
-    
-    if (result.count > 1) {
-        NSLog(@"Something wrong, stockBatchOperation not unique, return first one");
-    }
-    
-    return result.firstObject;
     
 }
 

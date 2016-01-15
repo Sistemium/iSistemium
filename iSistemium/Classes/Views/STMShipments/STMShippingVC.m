@@ -347,51 +347,65 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return [self heightForCellAtIndexPath:indexPath];
-    
+    return self.standardCellHeight;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
-    
-    return height;
+    if (SYSTEM_VERSION >= 8.0) {
+        
+        return UITableViewAutomaticDimension;
+        
+    } else {
+        
+        NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
+        CGFloat height = (cachedHeight) ? cachedHeight.floatValue : [self heightForCellAtIndexPath:indexPath];
+        
+        return height;
+        
+    }
     
 }
 
 - (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
-    
-    if (cachedHeight) {
+    if (SYSTEM_VERSION >= 8.0) {
         
-        return cachedHeight.floatValue;
+        return UITableViewAutomaticDimension;
         
     } else {
         
-        static UITableViewCell *cell = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
-        });
+        NSNumber *cachedHeight = [self getCachedHeightForIndexPath:indexPath];
         
-        [self fillCell:cell atIndexPath:indexPath];
-        
-        cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
-        
-        [cell setNeedsLayout];
-        [cell layoutIfNeeded];
-        
-        CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-        CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
-        
-        height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
-        
-        [self putCachedHeight:height forIndexPath:indexPath];
-        
-        return height;
+        if (cachedHeight) {
+            
+            return cachedHeight.floatValue;
+            
+        } else {
+            
+            static UITableViewCell *cell = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+            });
+            
+            [self fillCell:cell atIndexPath:indexPath];
+            
+            cell.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.tableView.bounds) - MAGIC_NUMBER_FOR_CELL_WIDTH, CGRectGetHeight(cell.bounds));
+            
+            [cell setNeedsLayout];
+            [cell layoutIfNeeded];
+            
+            CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+            CGFloat height = size.height + 1.0f; // Add 1.0f for the cell separator height
+            
+            height = (height < self.standardCellHeight) ? self.standardCellHeight : height;
+            
+            [self putCachedHeight:height forIndexPath:indexPath];
+            
+            return height;
+            
+        }
         
     }
     
@@ -433,8 +447,12 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    [cell setNeedsUpdateConstraints];
-    [cell updateConstraintsIfNeeded];
+    if (SYSTEM_VERSION < 8.0) {
+        
+        [cell setNeedsUpdateConstraints];
+        [cell updateConstraintsIfNeeded];
+        
+    }
     
 }
 
@@ -1246,7 +1264,7 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     }
 
     if (self.parentVC.shipment) {
-        [self.parentVC shippingDidDone];
+        [self.parentVC.parentVC shippingDidDone];
     }
     
     if (IPHONE) {

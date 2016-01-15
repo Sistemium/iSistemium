@@ -14,6 +14,7 @@
 #import "STMClientDataController.h"
 #import "STMPicturesController.h"
 #import "STMRecordStatusController.h"
+#import "STMSocketController.h"
 
 #import "STMConstants.h"
 
@@ -120,8 +121,8 @@
              object:nil];
 
     [nc addObserver:self
-           selector:@selector(saveDocumentSuccessfully)
-               name:@"saveDocumentSuccessfully"
+           selector:@selector(documentSavedSuccessfully)
+               name:@"documentSavedSuccessfully"
              object:nil];
     
 }
@@ -168,7 +169,7 @@
     
 }
 
-- (void)saveDocumentSuccessfully {
+- (void)documentSavedSuccessfully {
     
 }
 
@@ -822,6 +823,16 @@
 
     NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
 
+//    for (NSManagedObject *object in allObjects) {
+//        
+//        if ([object isKindOfClass:[STMShippingLocation class]]) {
+//            [self removeObject:object];
+//        }
+//        
+//    }
+//    
+//    allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
+    
     NSLog(@"fetch existing objects for initObjectsCache");
     TOCK;
     
@@ -996,6 +1007,10 @@
 
 #pragma mark - flushing
 
++ (void)removeObject:(NSManagedObject *)object {
+    [self removeObject:object inContext:nil];
+}
+
 + (void)removeObject:(NSManagedObject *)object inContext:(NSManagedObjectContext *)context {
     
     if (object) {
@@ -1017,10 +1032,6 @@
 
     }
     
-}
-
-+ (void)removeObject:(NSManagedObject *)object {
-    [self removeObject:object inContext:nil];
 }
 
 + (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object {
@@ -1474,14 +1485,14 @@
 
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object {
     
-    if (object) {
+    if ([object isKindOfClass:[STMDatum class]]) {
         
         NSString *entityName = object.entity.name;
         NSString *name = [@"stc." stringByAppendingString:[entityName stringByReplacingOccurrencesOfString:ISISTEMIUM_PREFIX withString:@""]];
         NSData *xidData = [object valueForKey:@"xid"];
         NSString *xid = [STMFunctions UUIDStringFromUUIDData:xidData];
         
-        NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:object];
+        NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:(STMDatum *)object];
         
         return @{@"name":name, @"xid":xid, @"properties":propertiesDictionary};
 
@@ -1491,53 +1502,21 @@
     
 }
 
-+ (NSDictionary *)propertiesDictionaryForObject:(NSManagedObject *)object {
++ (NSDictionary *)propertiesDictionaryForObject:(STMDatum *)object {
     
-    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
-    
-    NSArray *allKeys;
+    NSMutableArray *allKeys;
     
     if ([object.entity.name isEqualToString:NSStringFromClass([STMEntity class])]) {
-        allKeys = @[@"eTag", @"name", @"deviceCts", @"deviceTs"];
+        allKeys = @[@"eTag", @"name", @"deviceCts", @"deviceTs"].mutableCopy;
     } else {
-        allKeys = object.entity.attributesByName.allKeys;
+        allKeys = object.entity.attributesByName.allKeys.mutableCopy;
     }
     
-    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail"];
+    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail", @"checksum"];
     
-    for (NSString *key in allKeys) {
-        
-        if (![notSyncableProperties containsObject:key]) {
-            
-            id value = [object valueForKey:key];
-            
-            if (value) {
-                
-                if ([value isKindOfClass:[NSDate class]]) {
-                    
-                    value = [[STMFunctions dateFormatter] stringFromDate:value];
-                    
-                } else if ([value isKindOfClass:[NSData class]]) {
-                    
-                    if ([key isEqualToString:@"deviceUUID"] || [key hasSuffix:@"Xid"]) {
-                        
-                        value = [STMFunctions UUIDStringFromUUIDData:value];
-                        
-                    } else {
-                        
-                        value = [STMFunctions hexStringFromData:value];
-                        
-                    }
-                    
-                }
-                
-                propertiesDictionary[key] = [NSString stringWithFormat:@"%@", value];
-                
-            }
-            
-        }
-        
-    }
+    [allKeys removeObjectsInArray:notSyncableProperties];
+    
+    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionaryWithDictionary:[object propertiesForKeys:allKeys]];
     
     for (NSString *key in object.entity.relationshipsByName.allKeys) {
         
@@ -1584,49 +1563,48 @@
         [[self session].logger saveLogMessageWithText:errorMessage type:@"error"];
         
     } else {
+
+        NSManagedObject *syncedObject = [self objectForXid:xidData];
         
-//        __weak __block
-        NSManagedObject *object = [self objectForXid:xidData];
-        
-//        __weak NSManagedObjectContext *context = object.managedObjectContext;
-//        
-//        [context performBlock:^{
-        
+        if ([syncedObject isKindOfClass:[STMDatum class]]) {
+            
+            STMDatum *object = (STMDatum *)syncedObject;
+            
             if (object) {
                 
-                if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
-                    [self removeObject:object];
-                } else {
-                    [object setValue:[object valueForKey:@"sts"] forKey:@"lts"];
-                }
+                [object.managedObjectContext performBlockAndWait:^{
                 
-                NSString *entityName = object.entity.name;
-                
-                NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
-                NSLog(logMessage);
-                
-//                if ([entityName isEqualToString:NSStringFromClass([STMEntity class])]) {
-//
-//                    STMEntity *entity = (STMEntity *)object;
-//                    
-//                    if ([entity.name isEqualToString:@"Salesman"]) {
-//                        NSLog(@"object %@", object);
-//                    }
-//                    
-//                    NSLog(@"object %@", object);
-//                
-//                }
+                    if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
+                        
+                        [self removeObject:object];
+                        
+                    } else {
+                        
+                        NSDate *deviceTs = [STMSocketController deviceTsForSyncedObjectXid:xidData];
+                        object.lts = deviceTs;
+                        [object willChangeValueForKey:@"lts"];
+                        [object setPrimitiveValue:deviceTs forKey:@"lts"];
+                        [object didChangeValueForKey:@"lts"];
+                        
+                    }
+                    
+                    //                [STMSocketController successfullySyncObjectWithXid:xidData];
+                    
+                    NSString *entityName = object.entity.name;
+                    
+                    NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
+                    NSLog(logMessage);
+
+                }];
                 
             } else {
                 
                 NSString *logMessage = [NSString stringWithFormat:@"Sync: no object with xid: %@", xid];
                 NSLog(logMessage);
-
-//                [[self session].logger saveLogMessageWithText:[NSString stringWithFormat:@"Sync: no object with xid: %@", xid] type:@"error"];
                 
             }
-            
-//        }];
+
+        }
         
     }
 

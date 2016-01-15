@@ -11,7 +11,7 @@
 
 @interface STMInventoryArticleSelectTVC ()
 
-@property (nonatomic, strong) STMBarButtonItem *doneButton;
+@property (nonatomic, strong) STMBarButtonItemDone *doneButton;
 @property (nonatomic, strong) NSArray *tableData;
 
 
@@ -42,11 +42,37 @@
     
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+- (void)performFetch {
     
     self.tableData = nil;
     [self.tableView reloadData];
+    [self selectSelectedArticleCell];
     
+}
+
+- (void)selectSelectedArticleCell {
+    
+    if (self.selectedArticle) {
+        
+        NSInteger index = [self.tableData indexOfObject:(STMArticle * _Nonnull)self.selectedArticle];
+        
+        if (index != NSNotFound) {
+            
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+            
+            if (indexPath) {
+                
+//                [self tableView:self.tableView willSelectRowAtIndexPath:indexPath];
+                UITableViewScrollPosition scrollPosition = (![self.searchBar.text isEqualToString:@""]) ? UITableViewScrollPositionNone : UITableViewScrollPositionTop;
+                [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:scrollPosition];
+//                [self tableView:self.tableView didSelectRowAtIndexPath:indexPath];
+                
+            }
+            
+        }
+        
+    }
+
 }
 
 
@@ -62,7 +88,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMTableViewCellStyleSubtitle *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     STMArticle *article = self.tableData[indexPath.row];
     
@@ -72,6 +98,8 @@
     cell.detailTextLabel.text = article.extraLabel;
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+    cell.accessoryType = ([article isEqual:self.selectedArticle]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     
     return cell;
     
@@ -98,6 +126,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    
+    self.selectedArticle = self.tableData[indexPath.row];
     
     [self updateDoneButton];
     
@@ -126,10 +158,10 @@
     
     self.navigationController.toolbarHidden = NO;
     
-    self.doneButton = [[STMBarButtonItem alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
-                                                                   style:UIBarButtonItemStylePlain
-                                                                  target:self
-                                                                  action:@selector(doneButtonPressed)];
+    self.doneButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
+                                                            style:UIBarButtonItemStyleDone
+                                                           target:self
+                                                           action:@selector(doneButtonPressed)];
     
     [self updateDoneButton];
     
@@ -157,7 +189,7 @@
         
         STMArticle *article = self.tableData[selectedIndexPath.row];
         
-        [self.parentNC selectArticle:article withSearchedBarcode:self.searchedBarcode];
+        [self.ownerVC selectArticle:article withSearchedBarcode:self.searchedBarcode];
         
     }
     
@@ -170,9 +202,10 @@
     
     [super customInit];
 
-    [self.tableView registerClass:[STMTableViewCellStyleSubtitle class] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
 
     [self setupToolbar];
+    [self selectSelectedArticleCell];
     
 }
 

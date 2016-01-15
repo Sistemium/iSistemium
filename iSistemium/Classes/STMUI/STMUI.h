@@ -48,6 +48,8 @@
 
 #import "UIToolbar+custom.h"
 
+#import "STMVolumePicker.h"
+
 #import "STMWorkflowAS.h"
 
 

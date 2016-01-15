@@ -9,13 +9,16 @@
 #import "STMInventoryItemsVC.h"
 
 #import "STMInventoryNC.h"
-#import "STMInventoryArticleVC.h"
+#import "STMInventoryInfoTVC.h"
 #import "STMInventoryBatchItemsTVC.h"
+#import "STMStockBatchInfoTVC.h"
 
 
-@interface STMInventoryItemsVC ()
+@interface STMInventoryItemsVC () <UIAlertViewDelegate>
 
-@property (nonatomic, strong) STMInventoryArticleVC *articleVC;
+@property (weak, nonatomic) IBOutlet UIView *infoTVCContainer;
+
+@property (nonatomic, strong) STMInventoryInfoTVC *infoTVC;
 @property (nonatomic, strong) STMInventoryBatchItemsTVC *itemsTVC;
 @property (nonatomic, weak) STMInventoryNC *inventoryNC;
 
@@ -38,67 +41,62 @@
     
 }
 
-- (void)setInventoryArticle:(STMArticle *)inventoryArticle {
-    
-    _inventoryArticle = inventoryArticle;
-    self.articleVC.article = _inventoryArticle;
-
-}
-
 - (void)setProductionInfo:(NSString *)productionInfo {
     
     _productionInfo = productionInfo;
-    self.articleVC.productionInfo = _productionInfo;
+    self.infoTVC.productionInfo = _productionInfo;
+    [self.infoTVC refreshInfo];
     
 }
 
 - (void)setInventoryBatch:(STMInventoryBatch *)inventoryBatch {
     
     _inventoryBatch = inventoryBatch;
+    
     self.itemsTVC.batch = _inventoryBatch;
+    self.infoTVC.inventoryBatch = _inventoryBatch;
+    [self.infoTVC refreshInfo];
+    
+    if (!_inventoryBatch.isDone.boolValue) {
+        [self.inventoryNC editInventoryBatch:_inventoryBatch];
+    }
     
     [self updateButtons];
     
 }
 
 - (void)updateButtons {
- 
-    (!_inventoryBatch || [self.inventoryNC.currentlyProcessedBatch isEqual:_inventoryBatch]) ? [self showButtonsForProcessing] : [self hideButtonsForProcessing];
 
-}
-
-- (void)showButtonsForProcessing {
-
-    self.navigationItem.hidesBackButton = YES;
     self.navigationController.toolbarHidden = NO;
+    
+    if (self.inventoryBatch.isDone.boolValue) {
+        
+        self.navigationItem.hidesBackButton = NO;
 
-    if (self.inventoryBatch) {
+        STMBarButtonItemEdit *editButton = [[STMBarButtonItemEdit alloc] initWithTitle:NSLocalizedString(@"EDIT", nil)
+                                                                                 style:UIBarButtonItemStyleDone
+                                                                                target:self
+                                                                                action:@selector(editButtonPressed)];
+
+        [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], editButton, [STMBarButtonItem flexibleSpace]]];
+
+    } else {
+
+        self.navigationItem.hidesBackButton = YES;
+        
+        STMBarButtonItemDelete *deleteButton = [[STMBarButtonItemDelete alloc] initWithTitle:NSLocalizedString(@"DELETE", nil)
+                                                                                       style:UIBarButtonItemStyleDone
+                                                                                      target:self
+                                                                                      action:@selector(deleteButtonPressed)];
 
         STMBarButtonItemDone *doneButton = [[STMBarButtonItemDone alloc] initWithTitle:NSLocalizedString(@"DONE", nil)
                                                                                  style:UIBarButtonItemStyleDone
                                                                                 target:self
                                                                                 action:@selector(doneButtonPressed)];
 
-        [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], doneButton, [STMBarButtonItem flexibleSpace]]];
-
-    } else {
-    
-        STMBarButtonItemCancel *cancelButton = [[STMBarButtonItemCancel alloc] initWithTitle:NSLocalizedString(@"CANCEL", nil)
-                                                                                       style:UIBarButtonItemStylePlain
-                                                                                      target:self
-                                                                                      action:@selector(cancelButtonPressed)];
-        
-        [self setToolbarItems:@[[STMBarButtonItem flexibleSpace], cancelButton, [STMBarButtonItem flexibleSpace]]];
+        [self setToolbarItems:@[deleteButton, [STMBarButtonItem flexibleSpace], doneButton]];
 
     }
-    
-}
-
-- (void)hideButtonsForProcessing {
-
-    [self setToolbarItems:nil];
-    self.navigationController.toolbarHidden = YES;
-    self.navigationItem.hidesBackButton = NO;
 
 }
 
@@ -109,6 +107,32 @@
     
 }
 
+- (void)editButtonPressed {
+    
+    [self.inventoryNC editInventoryBatch:self.inventoryBatch];
+    [self updateButtons];
+    
+    [self.infoTVC refreshInfo];
+
+}
+
+- (void)deleteButtonPressed {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:NSLocalizedString(@"DELETE INVENTORY BATCH?", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                              otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        alert.tag = 342;
+        
+        [alert show];
+        
+    }];
+
+}
+
 - (void)doneButtonPressed {
 
     [self.inventoryNC doneCurrentInventoryProcessing];
@@ -117,18 +141,45 @@
 }
 
 
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+
+    switch (alertView.tag) {
+        case 342:
+
+            switch (buttonIndex) {
+                case 1:
+                    
+                    [self.inventoryNC deleteInventoryBatch:self.inventoryBatch];
+                    [self.navigationController popToRootViewControllerAnimated:YES];
+
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"articleVC"] &&
-        [segue.destinationViewController isKindOfClass:[STMInventoryArticleVC class]]) {
+    if ([segue.identifier isEqualToString:@"infoTVC"] &&
+        [segue.destinationViewController isKindOfClass:[STMInventoryInfoTVC class]]) {
         
-        self.articleVC = (STMInventoryArticleVC *)segue.destinationViewController;
-        self.articleVC.article = self.inventoryArticle;
-        self.articleVC.productionInfo = self.productionInfo;
-        self.articleVC.parentVC = self;
-        
+        self.infoTVC = (STMInventoryInfoTVC *)segue.destinationViewController;
+        self.infoTVC.inventoryBatch = self.inventoryBatch;
+        self.infoTVC.productionInfo = self.productionInfo;
+        self.infoTVC.parentVC = self;
+
     } else if ([segue.identifier isEqualToString:@"itemsTVC"] &&
                [segue.destinationViewController isKindOfClass:[STMInventoryBatchItemsTVC class]]) {
         
@@ -136,15 +187,39 @@
         self.itemsTVC.batch = self.inventoryBatch;
         self.itemsTVC.parentVC = self;
         
+    } else if ([segue.identifier isEqualToString:@"showStockBatchInfo"] &&
+               [segue.destinationViewController isKindOfClass:[STMStockBatchInfoTVC class]]) {
+        
+        STMStockBatchInfoTVC *stockBatchInfoTVC = (STMStockBatchInfoTVC *)segue.destinationViewController;
+        stockBatchInfoTVC.stockBatch = self.inventoryBatch.stockBatch;
+        stockBatchInfoTVC.parentVC = self;
+        
     }
     
 }
 
+- (void)showStockBatchInfo {
+    [self performSegueWithIdentifier:@"showStockBatchInfo" sender:nil];
+}
+
+- (void)updateStockBatchInfo {
+    
+    self.inventoryBatch.article = self.inventoryBatch.stockBatch.article;
+    self.infoTVC.productionInfo = [self.inventoryBatch.stockBatch displayProductionInfo];
+    [self.infoTVC refreshInfo];
+    
+}
 
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
     [self updateButtons];
+    
+    if (!self.inventoryBatch.isDone.boolValue) {
+        [self.inventoryNC editInventoryBatch:self.inventoryBatch];
+    }
+
 }
 
 - (void)viewDidLoad {
@@ -158,6 +233,8 @@
     
     [super viewDidAppear:animated];
     
+    self.navigationController.toolbarHidden = NO;
+
     if ([self isMovingToParentViewController]) {
         self.inventoryNC.itemsVC = self;
     }

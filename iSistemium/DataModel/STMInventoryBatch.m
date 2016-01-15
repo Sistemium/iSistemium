@@ -12,6 +12,7 @@
 #import "STMStockBatch.h"
 
 #import "STMProductionInfoType.h"
+#import "STMFunctions.h"
 
 
 @implementation STMInventoryBatch
@@ -20,12 +21,9 @@
     
     NSString *info = nil;
     
-    if ([self.article.productionInfoType.datatype isEqualToString:@"date"]) {
+    if ([[self operatingArticle].productionInfoType.datatype isEqualToString:@"date"]) {
         
-        NSString *separator = @"/";
-        NSArray *infoParts = [self.productionInfo componentsSeparatedByString:separator];
-        infoParts = [[infoParts reverseObjectEnumerator] allObjects];
-        info = [infoParts componentsJoinedByString:separator];
+        info = [STMFunctions displayDateInfo:self.productionInfo];
         
     } else {
         
@@ -35,6 +33,10 @@
     
     return info;
 
+}
+
+- (STMArticle *)operatingArticle {
+    return (self.article) ? (STMArticle * _Nonnull)self.article : self.stockBatch.article;
 }
 
 

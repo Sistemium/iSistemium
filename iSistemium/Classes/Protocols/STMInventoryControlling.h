@@ -15,21 +15,16 @@
 
 @required
 
+- (void)requestForArticleBarcode;
+
+- (void)didSelectInventoryBatch:(STMInventoryBatch *)inventoryBatch;
+
 - (void)shouldSelectArticleFromArray:(NSArray <STMArticle *>*)articles
                    lookingForBarcode:(NSString *)barcode;
 
 - (void)shouldSetProductionInfoForArticle:(STMArticle *)article;
 
-- (void)didSuccessfullySelectArticle:(STMArticle *)article
-                  withProductionInfo:(NSString *)productionInfo;
-
-- (void)itemWasAdded:(STMInventoryBatchItem *)item;
-
-- (void)finishInventoryBatch:(STMInventoryBatch *)inventoryBatch
-              withStockBatch:(STMStockBatch *)stockBatch;
-
-- (void)shouldConfirmArticleMismatchForStockBatch:(STMStockBatch *)stockBatch
-                               withInventoryBatch:(STMInventoryBatch *)inventoryBatch;
+- (void)finishInventoryBatch;
 
 
 @end
