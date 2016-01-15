@@ -487,6 +487,7 @@
 		2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8C1A67DF2B002B6392 /* STMController.m */; };
 		2CFF9A901A67F2ED002B6392 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */; };
 		6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* SwiftConstants.swift */; };
+		6D814AA01C4938E5001B56A3 /* STMNewSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
 		6DFDA3901C3AB15B00409C4A /* STMShippingLocations.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */; };
@@ -1418,6 +1419,7 @@
 		2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMObjectsController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesViewerDelegate.h; sourceTree = "<group>"; };
 		6D814A9D1C490362001B56A3 /* SwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftConstants.swift; sourceTree = "<group>"; };
+		6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMNewSplitViewController.swift; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
 		6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMShippingLocations.storyboard; sourceTree = "<group>"; };
@@ -2637,6 +2639,7 @@
 				6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */,
 				6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */,
 				6D814A9D1C490362001B56A3 /* SwiftConstants.swift */,
+				6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */,
 			);
 			name = STMShippingLocations;
 			sourceTree = "<group>";
@@ -3252,6 +3255,7 @@
 				2C761BBE1B00CCD4001DA33E /* STMCustom4TVCell.m in Sources */,
 				2CEE30401BEBAD10009B229F /* STMShippingLocationPicture.m in Sources */,
 				2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */,
+				6D814AA01C4938E5001B56A3 /* STMNewSplitViewController.swift in Sources */,
 				2CEE303F1BEBAD10009B229F /* STMShippingLocation.m in Sources */,
 				2CEE30291BEBAD10009B229F /* STMOutlet+CoreDataProperties.m in Sources */,
 				2CEE30321BEBAD10009B229F /* STMRecordStatus.m in Sources */,

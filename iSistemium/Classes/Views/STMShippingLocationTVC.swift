@@ -34,7 +34,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     override var resultsController : NSFetchedResultsController? {
         get {
-            if (_resultsController == nil) {
+            if (_resultsController == nil && shippingLocation != nil) {
                 let shippingFetchRequest = NSFetchRequest(entityName: "STMShipmentRoutePoint")
                 shippingFetchRequest.sortDescriptors = [NSSortDescriptor(key: "deviceTs",ascending:false)]
                 shippingFetchRequest.predicate = NSPredicate(format: "shippingLocation.name == %@", shippingLocation!.name)
@@ -52,7 +52,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     //MARK: table view data
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 3
+        return shippingLocation != nil ? 3 : 0
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

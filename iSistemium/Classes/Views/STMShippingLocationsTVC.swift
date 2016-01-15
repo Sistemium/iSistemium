@@ -62,8 +62,10 @@ class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         super.prepareForSegue(segue, sender: sender)
-        if segue.destinationViewController as? STMShippingLocationTVC != nil && segue.identifier == "showLocation" {
-            (segue.destinationViewController as! STMShippingLocationTVC).shippingLocation = self.resultsController!.objectAtIndexPath(sender as! NSIndexPath) as? STMShippingLocation
+        if let destination = (segue.destinationViewController as? UINavigationController)?.visibleViewController as? STMShippingLocationTVC  {
+            if segue.identifier == "showLocation"{
+            destination.shippingLocation = self.resultsController!.objectAtIndexPath(sender as! NSIndexPath) as? STMShippingLocation
+            }
         }
     }
     
@@ -113,7 +115,7 @@ class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
     override func customInit() {
         super.customInit()
         self.cellIdentifier = "shippingLocationCell"
-        title = navigationController?.navigationItem.title
+        title = self.splitViewController?.navigationItem.title
         let cellNib = UINib(nibName: NSStringFromClass(STMCustom7TVCell.self), bundle:nil)
         self.tableView.registerNib(cellNib, forCellReuseIdentifier:self.cellIdentifier)
         performFetch()
