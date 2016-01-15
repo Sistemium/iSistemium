@@ -14,9 +14,9 @@
 #import <MapKit/MapKit.h>
 
 #import "STMShipmentsSVC.h"
+#import "STMPicturesViewerDelegate.h"
 
-
-@interface STMShipmentRoutePointTVC : STMVariableCellsHeightTVC
+@interface STMShipmentRoutePointTVC : STMVariableCellsHeightTVC <STMPicturesViewerDelegate>
 
 @property (nonatomic, strong) STMShipmentRoutePoint *point;
 

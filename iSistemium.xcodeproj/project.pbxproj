@@ -491,6 +491,11 @@
 		2CFF9A8A1A67DE8A002B6392 /* STMClientDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A891A67DE8A002B6392 /* STMClientDataController.m */; };
 		2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8C1A67DF2B002B6392 /* STMController.m */; };
 		2CFF9A901A67F2ED002B6392 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */; };
+		6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* SwiftConstants.swift */; };
+		6D814AA01C4938E5001B56A3 /* STMNewSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */; };
+		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
+		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
+		6DFDA3901C3AB15B00409C4A /* STMShippingLocations.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */; };
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
 		D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */; };
 		D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC56B198BC6A300D8CD63 /* password2-128.png */; };
@@ -1049,7 +1054,7 @@
 		2CAFB2561C297FE600BBEDC1 /* STMArticleSelectionTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticleSelectionTVC.h; sourceTree = "<group>"; };
 		2CAFB2571C297FE600BBEDC1 /* STMArticleSelectionTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMArticleSelectionTVC.m; sourceTree = "<group>"; };
 		2CAFB2591C2ADC3E00BBEDC1 /* STMVolumePickerOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMVolumePickerOwner.h; sourceTree = "<group>"; };
-		2CAFB25A1C2EBEEE00BBEDC1 /* STMArticleBarcodes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMArticleBarcodes.storyboard; sourceTree = "<group>"; };
+		2CAFB25A1C2EBEEE00BBEDC1 /* STMArticleBarcodes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = STMArticleBarcodes.storyboard; path = ../STMArticleBarcodes.storyboard; sourceTree = "<group>"; };
 		2CAFB25C1C2EBF7200BBEDC1 /* STMArticleBarcodes_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMArticleBarcodes_iphone.storyboard; sourceTree = "<group>"; };
 		2CAFB25E1C2EC08700BBEDC1 /* refresh_barcode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = refresh_barcode.png; sourceTree = "<group>"; };
 		2CAFB2611C2EC40A00BBEDC1 /* STMArticlesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticlesTVC.h; sourceTree = "<group>"; };
@@ -1425,6 +1430,13 @@
 		2CFF9A8C1A67DF2B002B6392 /* STMController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMController.m; sourceTree = "<group>"; };
 		2CFF9A8E1A67F2ED002B6392 /* STMObjectsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMObjectsController.h; sourceTree = "<group>"; };
 		2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMObjectsController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesViewerDelegate.h; sourceTree = "<group>"; };
+		6D814A9D1C490362001B56A3 /* SwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftConstants.swift; sourceTree = "<group>"; };
+		6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMNewSplitViewController.swift; sourceTree = "<group>"; };
+		6D814AA11C494F00001B56A3 /* STMDataModel 91.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 91.xcdatamodel"; sourceTree = "<group>"; };
+		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
+		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
+		6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMShippingLocations.storyboard; sourceTree = "<group>"; };
 		85E24A798D258E2910066983 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2CCBEEC9AB2F5CD81CE0373 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
@@ -1675,8 +1687,9 @@
 				2CC1945C1BE272F8001F8E48 /* STMCustom10TVCell.xib */,
 				2C4620531B67B30C007FD646 /* STMVolumeTVCell.xib */,
 				2C4620651B6911DE007FD646 /* STMVolumeControlsTVCell.xib */,
-				2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */,
 				2CC194461BDFAD35001F8E48 /* STMCustom1CVHeader.xib */,
+				2CAFB25A1C2EBEEE00BBEDC1 /* STMArticleBarcodes.storyboard */,
+				2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */,
 			);
 			path = STMCustomCells;
 			sourceTree = "<group>";
@@ -1726,6 +1739,7 @@
 		2C53B88419409D64002298A5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6DF12A2E1C3AB80300E94C3E /* STMShippingLocations */,
 				2CE8B513195475F400C84A6D /* STMRootTBC.h */,
 				2CE8B514195475F400C84A6D /* STMRootTBC.m */,
 				2C2968FA19A208FB0038B122 /* STMDatePickerVC.h */,
@@ -1771,6 +1785,7 @@
 				2C9835A11C25539200CA231D /* STMArticleSelecting.h */,
 				2C42D8E31C25591F005C857F /* STMProductionInfoSelecting.h */,
 				2CAFB2591C2ADC3E00BBEDC1 /* STMVolumePickerOwner.h */,
+				6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -2533,10 +2548,10 @@
 			children = (
 				2C1D72DD1AB99D6200C97599 /* STMCustomCells */,
 				2C42ECBB1B13893F00B5C91A /* STMArticlePicturePVC.storyboard */,
-				2CAFB25A1C2EBEEE00BBEDC1 /* STMArticleBarcodes.storyboard */,
 				2CAFB25C1C2EBF7200BBEDC1 /* STMArticleBarcodes_iphone.storyboard */,
 				2C02F2AD1A8A307A00E0E890 /* STMAuth.storyboard */,
 				2CEE30501BECEE78009B229F /* STMBarCodeScan_iphone.storyboard */,
+				6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */,
 				2CBD25A619656CBC001613A7 /* STMCameraOverlayView.xib */,
 				2CE8B51919547AF100C84A6D /* STMCampaigns.storyboard */,
 				2C5763BB1AA472B700B9FD2C /* STMCatalog.storyboard */,
@@ -2645,6 +2660,17 @@
 				2CAFB2571C297FE600BBEDC1 /* STMArticleSelectionTVC.m */,
 			);
 			path = STMSupplyOrders;
+			sourceTree = "<group>";
+		};
+		6DF12A2E1C3AB80300E94C3E /* STMShippingLocations */ = {
+			isa = PBXGroup;
+			children = (
+				6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */,
+				6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */,
+				6D814A9D1C490362001B56A3 /* SwiftConstants.swift */,
+				6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */,
+			);
+			name = STMShippingLocations;
 			sourceTree = "<group>";
 		};
 		C2F565BFB1515E69445A0A71 /* Pods */ = {
@@ -2849,6 +2875,7 @@
 				2C1AB3111B70B22800BF5C50 /* 2_circle_colored_blue.png in Resources */,
 				2C1AB2FE1B70AE4400BF5C50 /* 3_circle_filled.png in Resources */,
 				2C73A9241AF8F59F00FB7662 /* iphoneTabs.json in Resources */,
+				6DFDA3901C3AB15B00409C4A /* STMShippingLocations.storyboard in Resources */,
 				2C88F1BE1B18947700E30418 /* STMCustom6TVCell.xib in Resources */,
 				2C761BBB1B00CA02001DA33E /* STMCustom4TVCell.xib in Resources */,
 				2C2264571C41467A006F3C16 /* STMSupplyOrders_iphone.storyboard in Resources */,
@@ -2966,6 +2993,7 @@
 			files = (
 				2CE3F5021C0F2AC400D8B4F3 /* STMSupplyOrder.m in Sources */,
 				2C42ECB11B0B641E00B5C91A /* STMActionPopoverNC.m in Sources */,
+				6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */,
 				2C57641C1AA5E1E500B9FD2C /* STMCashingControlsVC.m in Sources */,
 				2CEE30271BEBAD10009B229F /* STMMessagePicture.m in Sources */,
 				2C57648E1AB1B1EE00B9FD2C /* STMEntityDescription.m in Sources */,
@@ -3067,6 +3095,7 @@
 				2CEE30251BEBAD10009B229F /* STMLogMessage+dayAsString.m in Sources */,
 				2C42ECBA1B1342ED00B5C91A /* STMArticlePictureVC.m in Sources */,
 				2C587AB21BBBD53100546A62 /* STMShipmentsNC.m in Sources */,
+				6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */,
 				2C02F2D01A8E1FE100E0E890 /* STMCashingController.m in Sources */,
 				2C57642C1AA5E9C400B9FD2C /* STMTableViewCell.m in Sources */,
 				2C22645A1C414701006F3C16 /* STMSupplyOrdersNC.m in Sources */,
@@ -3176,6 +3205,7 @@
 				2C5797F51A436A4300EEFBA7 /* STMEntityController.m in Sources */,
 				2CAFB2731C36A9C700BBEDC1 /* STMDatum.m in Sources */,
 				2CEE30211BEBAD10009B229F /* STMEntity.m in Sources */,
+				6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */,
 				2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */,
 				2C1F75061BFA1B6E003699C8 /* STMArticleProductionInfo.m in Sources */,
 				2C5764171AA5E1E500B9FD2C /* STMAddDebtVC.m in Sources */,
@@ -3259,6 +3289,7 @@
 				2C761BBE1B00CCD4001DA33E /* STMCustom4TVCell.m in Sources */,
 				2CEE30401BEBAD10009B229F /* STMShippingLocationPicture.m in Sources */,
 				2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */,
+				6D814AA01C4938E5001B56A3 /* STMNewSplitViewController.swift in Sources */,
 				2CEE303F1BEBAD10009B229F /* STMShippingLocation.m in Sources */,
 				2CEE30291BEBAD10009B229F /* STMOutlet+CoreDataProperties.m in Sources */,
 				2CEE30321BEBAD10009B229F /* STMRecordStatus.m in Sources */,
@@ -3574,6 +3605,7 @@
 		2CEE2F691BEBAD10009B229F /* STMDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				6D814AA11C494F00001B56A3 /* STMDataModel 91.xcdatamodel */,
 				2C8ECD2B1C47AA1F002BB614 /* STMDataModel 90.xcdatamodel */,
 				2CAFB26D1C36A91000BBEDC1 /* STMDataModel 89.xcdatamodel */,
 				2CB3FD461C24342C004090CE /* STMDataModel 88.xcdatamodel */,
@@ -3665,7 +3697,7 @@
 				2CEE2FAF1BEBAD10009B229F /* STMDataModel 9.xcdatamodel */,
 				2CEE2FB01BEBAD10009B229F /* STMDataModel.xcdatamodel */,
 			);
-			currentVersion = 2C8ECD2B1C47AA1F002BB614 /* STMDataModel 90.xcdatamodel */;
+			currentVersion = 6D814AA11C494F00001B56A3 /* STMDataModel 91.xcdatamodel */;
 			path = STMDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

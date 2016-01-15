@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="P4y-AH-dIp">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Shipping LocationsTVC-->
+        <scene sceneID="64e-bG-cre">
+            <objects>
+                <tableViewController id="seR-aQ-gA7" customClass="STMShippingLocationsTVC" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="cIp-9H-O7E">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shippingLocationCell" id="GPz-P3-N63">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GPz-P3-N63" id="G11-R4-NRv">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="seR-aQ-gA7" id="U0t-6b-aXC"/>
+                            <outlet property="delegate" destination="seR-aQ-gA7" id="twX-dK-bug"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="f9k-Bp-E6q"/>
+                    <connections>
+                        <segue destination="Jsc-to-Anf" kind="showDetail" identifier="showLocation" action="showViewController:sender:" id="tdD-Cx-fvG"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lYV-lx-4j2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2058" y="1158"/>
+        </scene>
+        <!--NewSTM Split View Controller-->
+        <scene sceneID="GON-N1-BXf">
+            <objects>
+                <splitViewController id="P4y-AH-dIp" customClass="NewSTMSplitViewController" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                    <connections>
+                        <segue destination="dgL-fc-jkU" kind="relationship" relationship="masterViewController" id="T4p-NS-zEs"/>
+                        <segue destination="Jsc-to-Anf" kind="relationship" relationship="detailViewController" id="CHy-DA-vye"/>
+                    </connections>
+                </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hV2-Qc-PTX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="430" y="1879"/>
+        </scene>
+        <!--Shipping LocationTVC-->
+        <scene sceneID="ZUs-gg-EZC">
+            <objects>
+                <tableViewController id="gZt-Po-wDw" customClass="STMShippingLocationTVC" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="L0u-8a-BFp">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shippingLocationCell" id="uWw-HV-WXO">
+                                <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uWw-HV-WXO" id="okc-ph-QIl">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="gZt-Po-wDw" id="Gwa-we-wMN"/>
+                            <outlet property="delegate" destination="gZt-Po-wDw" id="bTT-an-DSP"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="pLp-69-Yez"/>
+                    <connections>
+                        <segue destination="9UZ-u3-gxy" kind="show" identifier="showShippingLocationMap" id="62f-yF-tk6"/>
+                        <segue destination="obs-7b-9rk" kind="presentation" identifier="showPhotos" id="Eyw-1P-iiJ"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jcz-1g-6tG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2035" y="2658"/>
+        </scene>
+        <!--Action PopoverNC-->
+        <scene sceneID="HhN-vG-LfO">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dgL-fc-jkU" customClass="STMActionPopoverNC" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Aiu-AZ-CqF">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="seR-aQ-gA7" kind="relationship" relationship="rootViewController" id="g6F-gt-wjw"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OGB-Cl-KsO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1223" y="1158"/>
+        </scene>
+        <!--Shipping Location MapVC-->
+        <scene sceneID="Ujh-f6-KgZ">
+            <objects>
+                <viewController id="9UZ-u3-gxy" customClass="STMShippingLocationMapVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Sh9-FY-WxT"/>
+                        <viewControllerLayoutGuide type="bottom" id="J1y-q5-ych"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="61D-kd-4RA">
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="YPv-aS-Zeu">
+                                <rect key="frame" x="4" y="0.0" width="592" height="536"/>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ACU-BO-pf2">
+                                <rect key="frame" x="156" y="486" width="288" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="288" id="0zi-9H-lAr"/>
+                                </constraints>
+                                <state key="normal" title="Location button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="locationButtonPressed:" destination="9UZ-u3-gxy" eventType="touchUpInside" id="kj7-cL-92u"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="YPv-aS-Zeu" firstAttribute="top" secondItem="Sh9-FY-WxT" secondAttribute="bottom" id="D4t-dC-HYi"/>
+                            <constraint firstItem="ACU-BO-pf2" firstAttribute="top" secondItem="YPv-aS-Zeu" secondAttribute="bottom" constant="-50" id="M9w-6G-SKF"/>
+                            <constraint firstItem="YPv-aS-Zeu" firstAttribute="leading" secondItem="61D-kd-4RA" secondAttribute="leadingMargin" constant="-16" id="Od6-dE-1jG"/>
+                            <constraint firstItem="J1y-q5-ych" firstAttribute="top" secondItem="YPv-aS-Zeu" secondAttribute="bottom" id="aGN-gX-CcT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="YPv-aS-Zeu" secondAttribute="trailing" constant="-16" id="dDk-Ky-EYH"/>
+                            <constraint firstItem="ACU-BO-pf2" firstAttribute="centerX" secondItem="YPv-aS-Zeu" secondAttribute="centerX" id="ebV-WE-tO0"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" id="LdI-ne-bEF"/>
+                    <connections>
+                        <outlet property="locationButton" destination="ACU-BO-pf2" id="Wwd-Uh-M0g"/>
+                        <outlet property="mapView" destination="YPv-aS-Zeu" id="ElN-Uy-hop"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8US-F8-Nsm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2035" y="3634"/>
+        </scene>
+        <!--Shipping Location PicturesPVC-->
+        <scene sceneID="A4v-AT-R4h">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="obs-7b-9rk" customClass="STMShippingLocationPicturesPVC" sceneMemberID="viewController">
+                    <nil key="simulatedTopBarMetrics"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cdA-ab-iMD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3139" y="2658"/>
+        </scene>
+        <!--Shipping Location PictureVC-->
+        <scene sceneID="3Kh-p4-hdL">
+            <objects>
+                <viewController storyboardIdentifier="photoVC" id="3cn-4X-iob" customClass="STMShippingLocationPictureVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Vwp-H1-QpT"/>
+                        <viewControllerLayoutGuide type="bottom" id="NrG-fo-jdN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9dF-hQ-a8c">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PeT-RM-sHQ">
+                                <rect key="frame" x="20" y="64" width="560" height="516"/>
+                            </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mbv-hP-wqx">
+                                <rect key="frame" x="4" y="20" width="592" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="y5q-Cm-HdZ"/>
+                                    <barButtonItem systemItem="trash" id="0jW-Ar-ztL">
+                                        <connections>
+                                            <action selector="deleteButtonPressed:" destination="3cn-4X-iob" id="n4p-nQ-lvZ"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="mbv-hP-wqx" firstAttribute="leading" secondItem="9dF-hQ-a8c" secondAttribute="leadingMargin" constant="-16" id="4LJ-DF-0Nz"/>
+                            <constraint firstItem="PeT-RM-sHQ" firstAttribute="leading" secondItem="9dF-hQ-a8c" secondAttribute="leadingMargin" id="5vF-aY-JPq"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="mbv-hP-wqx" secondAttribute="trailing" constant="-16" id="7gX-H9-1lp"/>
+                            <constraint firstItem="PeT-RM-sHQ" firstAttribute="top" secondItem="mbv-hP-wqx" secondAttribute="bottom" id="HPC-TM-MFX"/>
+                            <constraint firstItem="mbv-hP-wqx" firstAttribute="top" secondItem="Vwp-H1-QpT" secondAttribute="bottom" id="UYT-mJ-Ruv"/>
+                            <constraint firstItem="PeT-RM-sHQ" firstAttribute="trailing" secondItem="9dF-hQ-a8c" secondAttribute="trailingMargin" id="fui-wQ-hXB"/>
+                            <constraint firstItem="NrG-fo-jdN" firstAttribute="top" secondItem="PeT-RM-sHQ" secondAttribute="bottom" constant="20" id="v0C-ga-1p1"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="deletePhotoButton" destination="0jW-Ar-ztL" id="SHx-tk-s41"/>
+                        <outlet property="photoView" destination="PeT-RM-sHQ" id="ESH-or-R3h"/>
+                        <outlet property="toolbar" destination="mbv-hP-wqx" id="pxm-vs-7X3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QPa-oE-ghd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3159" y="3634"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="lSh-zL-RzG">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Jsc-to-Anf" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="a4F-3e-aHT">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="gZt-Po-wDw" kind="relationship" relationship="rootViewController" id="Iib-79-Bbs"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LIL-fc-QK9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1223" y="2658"/>
+        </scene>
+    </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="tdD-Cx-fvG"/>
+    </inferredMetricsTieBreakers>
+</document>
