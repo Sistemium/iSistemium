@@ -451,9 +451,11 @@
     
     NSString *minBuild = parameters[@"minBuild"];
     NSString *maxBuild = parameters[@"maxBuild"];
+    NSString *minOS = parameters[@"minOs"];
     
     if (minBuild && ([BUILD_VERSION integerValue] < [minBuild integerValue])) return;
     if (maxBuild && ([BUILD_VERSION integerValue] > [maxBuild integerValue])) return;
+    if (minOS && (SYSTEM_VERSION < [minOS integerValue])) return;
 
     BOOL isDebug = [parameters[@"ifdef"] isEqualToString:@"DEBUG"];
 

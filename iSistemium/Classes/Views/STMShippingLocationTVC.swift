@@ -22,7 +22,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         }
     }
     
-    private var spinner = STMSpinnerView()
+    var spinner : STMSpinnerView?
     
     var cameraOverlayView = UIView()
     
@@ -331,7 +331,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     shippingLocationPicture.shippingLocation = self.shippingLocation
         self.document.saveDocument{
             if ($0) {
-                self.spinner.removeFromSuperview()
+                self.spinner?.removeFromSuperview()
                 self.tableView.reloadData()
             }
         }
@@ -346,9 +346,10 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     
     @IBAction func cameraButtonPressed(sender:AnyObject) {
-    self.spinner = STMSpinnerView(frame: self.view.bounds)
-    self.view.addSubview(self.spinner)
-    self.imagePickerController!.cameraOverlayView!.addSubview(STMSpinnerView(frame: self.imagePickerController!.cameraOverlayView!.bounds))
+        
+    self.spinner = STMSpinnerView(frame: self.view.bounds, indicatorStyle: .WhiteLarge, backgroundColor:UIColor.grayColor(), alfa:0.75)
+    self.view.addSubview(self.spinner!)
+    self.imagePickerController!.cameraOverlayView!.addSubview(STMSpinnerView(frame: self.imagePickerController!.cameraOverlayView!.bounds, indicatorStyle: .WhiteLarge, backgroundColor:UIColor.grayColor(), alfa:0.75))
     self.imagePickerController!.takePicture()
     }
     
