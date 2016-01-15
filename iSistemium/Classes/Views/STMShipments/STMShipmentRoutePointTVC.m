@@ -789,8 +789,9 @@
 - (void)fillPointNumberCell:(UITableViewCell *)cell {
     
     UIColor *textColor = ACTIVE_BLUE_COLOR; //cell.textLabel.textColor
+    UIFont *font = (cell.textLabel.font) ? cell.textLabel.font : [UIFont systemFontOfSize:14];
     
-    NSDictionary *attributes = @{NSFontAttributeName: cell.textLabel.font,
+    NSDictionary *attributes = @{NSFontAttributeName: font,
                                  NSForegroundColorAttributeName: textColor};
     
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"POINT NUMBER", nil) attributes:attributes];

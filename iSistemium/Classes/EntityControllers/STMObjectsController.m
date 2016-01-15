@@ -1504,7 +1504,7 @@
 
 + (NSDictionary *)propertiesDictionaryForObject:(STMDatum *)object {
     
-    NSMutableArray *allKeys = @[].mutableCopy;
+    NSMutableArray *allKeys;
     
     if ([object.entity.name isEqualToString:NSStringFromClass([STMEntity class])]) {
         allKeys = @[@"eTag", @"name", @"deviceCts", @"deviceTs"].mutableCopy;

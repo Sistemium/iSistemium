@@ -398,6 +398,9 @@
 
 - (void)startSession {
 
+    NSLog(@"serviceUri %@", self.serviceUri);
+    NSLog(@"apiURL %@", self.apiURL);
+
     NSArray *trackers = @[@"battery", @"location"];
     
     NSDictionary *startSettings = nil;
@@ -780,7 +783,7 @@
             //#warning Switch comment line when server give correct apiURL
             self.apiURL = responseJSON[@"apiUrl"];
             //self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
-            
+
             self.userID = responseJSON[@"ID"];
             self.userName = responseJSON[@"name"];
             self.accessToken = responseJSON[@"accessToken"];

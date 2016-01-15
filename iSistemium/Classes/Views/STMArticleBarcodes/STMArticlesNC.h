@@ -8,6 +8,12 @@
 
 #import "STMActionPopoverNC.h"
 
+#import "STMDataModel.h"
+
+
 @interface STMArticlesNC : STMActionPopoverNC
+
+@property (nonatomic, strong) STMArticle *selectedArticle;
+
 
 @end

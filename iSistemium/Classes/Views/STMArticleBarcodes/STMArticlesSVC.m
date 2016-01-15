@@ -52,7 +52,7 @@
     
     _selectedArticle = selectedArticle;
     
-    self.detailTVC.article = _selectedArticle;
+    self.detailTVC.selectedArticle = _selectedArticle;
     
 }
 

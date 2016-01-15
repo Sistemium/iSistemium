@@ -8,6 +8,7 @@
 
 #import "STMSupplyOrderOperationsTVC.h"
 
+#import "STMSupplyOrdersNC.h"
 #import "STMSupplyOrdersSVC.h"
 #import "STMSupplyOperationVC.h"
 #import "STMArticleSelectionTVC.h"
@@ -24,6 +25,7 @@
 @interface STMSupplyOrderOperationsTVC () <STMBarCodeScannerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, weak) STMSupplyOrdersNC *rootNC;
 @property (nonatomic, strong) STMSupplyOperationVC *operationVC;
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
@@ -39,6 +41,9 @@
 
 @property (nonatomic, strong) UIAlertView *remainingBarcodesAlert;
 @property (nonatomic, strong) UIAlertView *illegalArticleChangeAlert;
+@property (nonatomic, strong) UIAlertView *addBarcodeAlert;
+
+@property (nonatomic, strong) NSString *supplyOrderWorkflow;
 
 
 @end
@@ -48,6 +53,18 @@
 
 @synthesize resultsController = _resultsController;
 
+
+- (STMSupplyOrdersNC *)rootNC {
+
+    if (!_rootNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMSupplyOrdersNC class]]) {
+            _rootNC = (STMSupplyOrdersNC *)self.navigationController;
+        }
+    }
+    return _rootNC;
+    
+}
 
 - (STMSupplyOrdersSVC *)splitVC {
     
@@ -103,8 +120,20 @@
     
 }
 
+- (NSString *)supplyOrderWorkflow {
+    
+    if (!_supplyOrderWorkflow) {
+    
+        if (IPAD) return self.splitVC.supplyOrderWorkflow;
+        if (IPHONE) return self.rootNC.supplyOrderWorkflow;
+        
+    }
+    return _supplyOrderWorkflow;
+    
+}
+
 - (BOOL)orderIsProcessed {
-    return [STMWorkflowController isEditableProcessing:self.supplyOrderArticleDoc.supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    return [STMWorkflowController isEditableProcessing:self.supplyOrderArticleDoc.supplyOrder.processing inWorkflow:self.supplyOrderWorkflow];
 }
 
 - (void)orderProcessingChanged {
@@ -177,7 +206,7 @@
     
     switch (section) {
         case 0:
-            return 1;
+            return (self.supplyOrderArticleDoc.article) ? 2 : 1;
             break;
 
         case 1:
@@ -220,7 +249,7 @@
     
     switch (indexPath.section) {
         case 0:
-            [self fillArticleCell:cell];
+            [self fillArticleCell:cell atIndexPath:indexPath];
             break;
 
         case 1:
@@ -232,6 +261,23 @@
     }
     
     return cell;
+    
+}
+
+- (void)fillArticleCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    switch (indexPath.row) {
+        case 0:
+            [self fillArticleCell:cell];
+            break;
+            
+        case 1:
+            [self fillRemainingCell:cell];
+            break;
+            
+        default:
+            break;
+    }
     
 }
 
@@ -277,6 +323,19 @@
 
     }
     
+}
+
+- (void)fillRemainingCell:(STMTableViewSubtitleStyleCell *)cell {
+    
+    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+    
+    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
+
+    cell.textLabel.textColor = [UIColor blackColor];
+    cell.textLabel.text = title;
+
+    cell.detailTextLabel.text = @"";
+
 }
 
 - (void)fillOperationCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -344,17 +403,19 @@
                     [self showIllegalArticleChangeAlert];
                     
                 } else {
-            
-                    [self showArticleSelectionPopoverWithArticles:nil];
-
+                    [self showArticleSelectionWithArticles:nil];
                 }
 
             }
             
         } else if (indexPath.section == 1) {
             
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
-            [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
+            if (self.resultsController.fetchedObjects.count > 0) {
+
+                indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
+                [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
+
+            }
             
         }
         
@@ -471,7 +532,26 @@
                 
             } else {
                 
-                [self showArticleSelectionPopoverWithArticles:articles];
+                [self showArticleSelectionWithArticles:articles];
+                
+            }
+            
+        } else {
+            
+            [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+//            [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
+            
+            STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
+            
+            if (article && article.barCodes.count == 0) {
+                
+                self.articleBarCode = barcode;
+//                [self confirmArticle:article];
+                [self showAddBarcodeAlertForBarcode:barcode andArticle:article];
+                
+            } else {
+                
+                [STMSoundController say:NSLocalizedString(@"MANUAL LINK BARCODE TO ARTICLE", nil)];
                 
             }
             
@@ -533,10 +613,12 @@
         
         if (self.stockBatchCodes.count >= self.lastSourceOperationNumberOfBarcodes) {
             
+            [STMSoundController say:NSLocalizedString(@"OPERATION COMPLETE", nil)];
             [self repeatOperationComplete];
             
         } else {
             
+            [STMSoundController say:NSLocalizedString(@"ONE MORE CODE", nil)];
             [self showRemainingBarcodesAlert];
             
         }
@@ -593,30 +675,44 @@
 
 }
 
-- (void)showArticleSelectionPopoverWithArticles:(NSArray *)articles {
+
+#pragma mark - article selection
+
+- (void)showArticleSelectionWithArticles:(NSArray *)articles {
     
     if (!self.articleBarCode) self.articleBarCode = self.supplyOrderArticleDoc.code;
     
     if (articles.count == 0) articles = [STMBarCodeController articlesForBarcode:self.articleBarCode];
-
+    
     if (articles.count > 0) {
-     
+        
         STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
         articleSelectionTVC.articles = articles;
         articleSelectionTVC.parentVC = self;
         articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
         articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
         articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
-        
-        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
-        
-        self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
-        self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
-        
-        CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-        [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+
+        if (IPAD) [self showArticleSelectionPopoverWithTVC:articleSelectionTVC];
+        if (IPHONE) [self showArticleSelectionTVC:articleSelectionTVC];
         
     }
+
+}
+
+- (void)showArticleSelectionTVC:(STMArticleSelectionTVC *)articleSelectionTVC {
+    [self.navigationController pushViewController:articleSelectionTVC animated:YES];
+}
+
+- (void)showArticleSelectionPopoverWithTVC:(STMArticleSelectionTVC *)articleSelectionTVC {
+
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
+    
+    self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
+    self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
+    
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
 
 }
 
@@ -761,17 +857,19 @@
 
 - (void)setupToolbar {
     
-    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
     
-    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
-    
-    STMBarButtonItem *infoLabel = [[STMBarButtonItem alloc] initWithTitle:title
-                                                                    style:UIBarButtonItemStylePlain
-                                                                   target:nil
-                                                                   action:nil];
-    
-    infoLabel.enabled = NO;
-    infoLabel.tintColor = [UIColor blackColor];
+//    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+//    
+//    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
+//    
+//    STMBarButtonItem *infoLabel = [[STMBarButtonItem alloc] initWithTitle:title
+//                                                                    style:UIBarButtonItemStylePlain
+//                                                                   target:nil
+//                                                                   action:nil];
+//    
+//    infoLabel.enabled = NO;
+//    infoLabel.tintColor = [UIColor blackColor];
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
@@ -784,11 +882,12 @@
                                                                                  target:self
                                                                                  action:@selector(stopRepeatingButtonPressed)];
 
-        [self setToolbarItems:@[infoLabel, flexibleSpace, stopRepeatingButton] animated:NO];
+//        [self setToolbarItems:@[infoLabel, flexibleSpace, stopRepeatingButton] animated:NO];
+        [self setToolbarItems:@[flexibleSpace, stopRepeatingButton, flexibleSpace] animated:NO];
 
     } else {
     
-        [self setToolbarItems:@[flexibleSpace, infoLabel, flexibleSpace] animated:NO];
+        [self setToolbarItems:@[] animated:NO];
 
     }
     
@@ -821,7 +920,7 @@
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
-                                                        message:[NSLocalizedString(@"STOP REPEATING?", nil) stringByAppendingString:@"?"]
+                                                        message:NSLocalizedString(@"STOP REPEATING?", nil)
                                                        delegate:self
                                               cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
                                               otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
@@ -849,33 +948,77 @@
 
 #pragma mark - UIAlertViewDelegate
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+#pragma mark - UIAlertViewDelegate
+
+- (void)showAddBarcodeAlertForBarcode:(NSString *)barcode andArticle:(STMArticle *)article {
     
-    switch (alertView.tag) {
-        case 341:
-            switch (buttonIndex) {
-                case 1:
-                    self.repeatLastOperation = NO;
-                    break;
-                    
-                default:
-                    break;
-            }
-            break;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        if (self.addBarcodeAlert.isVisible) {
+            [self.addBarcodeAlert dismissWithClickedButtonIndex:-1 animated:NO];
+        }
+        
+        NSString *alertMessage = [NSString stringWithFormat:NSLocalizedString(@"ADD BARCODE TO ARTICLE?", nil), barcode, article.name];
+        
+        self.addBarcodeAlert = [[UIAlertView alloc] initWithTitle:@""
+                                                          message:alertMessage
+                                                         delegate:self
+                                                cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        [self.addBarcodeAlert show];
+        
+    }];
+    
+}
 
-        case 341341:
-            switch (buttonIndex) {
-                case 0:
-                    self.stockBatchCodes = nil;
-                    break;
-                    
-                default:
-                    break;
-            }
-            break;
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
-        default:
-            break;
+    if ([alertView isEqual:self.addBarcodeAlert]) {
+        
+        switch (buttonIndex) {
+            case 1: {
+
+                STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
+                [STMBarCodeController addBarcode:self.articleBarCode toArticle:article];
+                [self confirmArticle:article];
+                
+            }
+                break;
+                
+            default:
+                self.articleBarCode = nil;
+                break;
+        }
+        
+    } else {
+
+        switch (alertView.tag) {
+            case 341:
+                switch (buttonIndex) {
+                    case 1:
+                        self.repeatLastOperation = NO;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+                
+            case 341341:
+                switch (buttonIndex) {
+                    case 0:
+                        self.stockBatchCodes = nil;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+                
+            default:
+                break;
+        }
+
     }
     
 }
@@ -887,8 +1030,8 @@
     
     [super customInit];
     
-    self.navigationItem.hidesBackButton = YES;
-    self.navigationItem.title = self.supplyOrderArticleDoc.supplyOrder.ndoc;
+    self.navigationItem.hidesBackButton = IPAD;
+    self.navigationItem.title = [self.supplyOrderArticleDoc.supplyOrder title];
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
     
     [self setupToolbar];

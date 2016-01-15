@@ -9,11 +9,15 @@
 #import "STMSupplyOrdersTVC.h"
 
 #import "STMSupplyOrdersSVC.h"
+#import "STMSupplyOrdersNC.h"
 
 
 @interface STMSupplyOrdersTVC ()
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, weak) STMSupplyOrdersNC *rootNC;
+
+@property (nonatomic, strong) NSString *supplyOrderWorkflow;
 
 @property (nonatomic, strong) NSMutableDictionary *filterButtons;
 @property (nonatomic, strong) NSMutableArray *currentFilterProcessings;
@@ -36,6 +40,30 @@
         
     }
     return _splitVC;
+    
+}
+
+- (STMSupplyOrdersNC *)rootNC {
+    
+    if (!_rootNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMSupplyOrdersNC class]]) {
+            _rootNC = (STMSupplyOrdersNC *)self.navigationController;
+        }
+    }
+    return _rootNC;
+    
+}
+
+- (NSString *)supplyOrderWorkflow {
+    
+    if (!_supplyOrderWorkflow) {
+        
+        if (IPAD) return self.splitVC.supplyOrderWorkflow;
+        if (IPHONE) return self.rootNC.supplyOrderWorkflow;
+        
+    }
+    return _supplyOrderWorkflow;
     
 }
 
@@ -116,7 +144,7 @@
     
     STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = supplyOrder.ndoc;
+    [self fillTextLabelForCell:cell withSupplyOrder:supplyOrder];
     
     NSUInteger positionsCount = supplyOrder.supplyOrderArticleDocs.count;
     NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];
@@ -130,6 +158,46 @@
     }
 
     cell.detailTextLabel.text = positionsCountString;
+    
+}
+
+- (void)fillTextLabelForCell:(STMTableViewSubtitleStyleCell *)cell withSupplyOrder:(STMSupplyOrder *)supplyOrder {
+    
+    cell.textLabel.numberOfLines = 0;
+    cell.textLabel.text = nil;
+    cell.textLabel.attributedText = nil;
+
+    NSString *partnerName = supplyOrder.partner.name;
+
+    if (partnerName) {
+        
+        CGFloat fontSize = cell.textLabel.font.pointSize;
+        
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize]};
+        
+        NSMutableAttributedString *labelText = [[NSMutableAttributedString alloc] initWithString:partnerName
+                                                                                      attributes:attributes];
+
+        NSString *ndoc = supplyOrder.ndoc;
+        
+        if (ndoc) {
+            
+            [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+            
+            attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize - 4]};
+            
+            [labelText appendAttributedString:[[NSAttributedString alloc] initWithString:ndoc attributes:attributes]];
+            
+        }
+        
+        cell.textLabel.attributedText = labelText;
+        
+        
+    } else {
+    
+        cell.textLabel.text = supplyOrder.ndoc;
+
+    }
     
 }
 
@@ -147,13 +215,17 @@
 
     self.splitVC.selectedSupplyOrder = supplyOrder;
 
+    if (IPHONE) {
+        [self performSegueWithIdentifier:@"showArticleDocs" sender:indexPath];
+    }
+    
 }
 
 - (void)addProcessingColorStripeForSupplyOrder:(STMSupplyOrder *)supplyOrder forCell:(UITableViewCell *)cell {
 
     [[cell.contentView viewWithTag:1] removeFromSuperview];
 
-    UIColor *processingColor = [STMWorkflowController colorForProcessing:supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:supplyOrder.processing inWorkflow:self.supplyOrderWorkflow];
 
     if (processingColor) {
         
@@ -196,8 +268,15 @@
     
     if ([segue.identifier isEqualToString:@"showArticleDocs"] &&
         [segue.destinationViewController isKindOfClass:[STMSupplyOrderArticleDocsTVC class]]) {
-        
-        
+
+        if ([sender isKindOfClass:[NSIndexPath class]]) {
+            
+            STMSupplyOrder *supplyOrder = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
+            
+            STMSupplyOrderArticleDocsTVC *articleDocsTVC = (STMSupplyOrderArticleDocsTVC *)segue.destinationViewController;
+            articleDocsTVC.supplyOrder = supplyOrder;
+            
+        }
         
     }
     
@@ -263,7 +342,7 @@
     for (NSDictionary *processing in processings) {
         
         NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:processing];
-        dic[@"label"] = [STMWorkflowController labelForProcessing:processing[propertyName] inWorkflow:self.splitVC.supplyOrderWorkflow];
+        dic[@"label"] = [STMWorkflowController labelForProcessing:processing[propertyName] inWorkflow:self.supplyOrderWorkflow];
         
         [processingLabels addObject:dic];
         
@@ -393,7 +472,7 @@
 
 - (STMBarButtonItem *)filterButtonForProcessing:(NSString *)processing {
     
-    NSString *filterProcessedLabel = [STMWorkflowController labelForProcessing:processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    NSString *filterProcessedLabel = [STMWorkflowController labelForProcessing:processing inWorkflow:self.supplyOrderWorkflow];
     
     filterProcessedLabel = (filterProcessedLabel) ? filterProcessedLabel : processing;
     
@@ -473,7 +552,7 @@
 - (NSString *)processingForSegmentedControl:(STMSegmentedControl *)segmentedControl {
     
     NSString *title = [segmentedControl titleForSegmentAtIndex:0];
-    NSString *processing = [STMWorkflowController processingForLabel:title inWorkflow:self.splitVC.supplyOrderWorkflow];
+    NSString *processing = [STMWorkflowController processingForLabel:title inWorkflow:self.supplyOrderWorkflow];
     
     return processing;
     

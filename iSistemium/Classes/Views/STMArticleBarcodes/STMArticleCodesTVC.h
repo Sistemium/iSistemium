@@ -6,12 +6,12 @@
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMFetchedResultsControllerTVC.h"
+#import "STMVariableCellsHeightTVC.h"
 
-@interface STMArticleCodesTVC : STMFetchedResultsControllerTVC
+@interface STMArticleCodesTVC : STMVariableCellsHeightTVC
 
-@property (nonatomic, weak) STMArticle *article;
 @property (nonatomic, weak) NSString *scannedBarcode;
+@property (nonatomic, weak) STMArticle *selectedArticle;
 
 
 @end

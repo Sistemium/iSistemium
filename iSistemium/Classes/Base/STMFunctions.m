@@ -499,6 +499,17 @@
 
 + (UIImage *)drawText:(NSString *)text withFont:(UIFont *)font color:(UIColor *)color inImage:(UIImage *)image atCenter:(BOOL)atCenter {
     
+    if (!font) font = [UIFont systemFontOfSize:14];
+    if (!color) color = [UIColor blackColor];
+    
+    if (!image) {
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(20, 20), NO, 0.0);
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+    }
+    
     NSDictionary *attributes = @{NSFontAttributeName:font,
                                  NSForegroundColorAttributeName:color};
     

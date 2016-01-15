@@ -66,6 +66,7 @@
     self.textLabel.textColor = [UIColor blackColor];
     self.detailTextLabel.text = @"";
     self.accessoryView = nil;
+    self.imageView.image = nil;
 
 }
 
@@ -74,13 +75,21 @@
 
 @implementation STMTableViewSubtitleStyleCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
     }
     return self;
+    
+}
+
+- (void)layoutSubviews {
+    
+    [super layoutSubviews];
+//    self.imageView.bounds = CGRectMake(0,0,20,20);
+    
 }
 
 

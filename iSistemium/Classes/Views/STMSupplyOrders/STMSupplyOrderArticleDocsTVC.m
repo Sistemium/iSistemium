@@ -8,6 +8,7 @@
 
 #import "STMSupplyOrderArticleDocsTVC.h"
 
+#import "STMSupplyOrdersNC.h"
 #import "STMSupplyOrdersSVC.h"
 
 #import "STMWorkflowEditablesVC.h"
@@ -17,7 +18,10 @@
 @interface STMSupplyOrderArticleDocsTVC () <UIActionSheetDelegate, STMWorkflowable>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
+@property (nonatomic, weak) STMSupplyOrdersNC *rootNC;
 @property (nonatomic, strong) STMSupplyOrderOperationsTVC *operationsTVC;
+
+@property (nonatomic, strong) NSString *supplyOrderWorkflow;
 
 @property (nonatomic, strong) NSString *nextProcessing;
 
@@ -47,8 +51,32 @@
     
 }
 
+- (STMSupplyOrdersNC *)rootNC {
+    
+    if (!_rootNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMSupplyOrdersNC class]]) {
+            _rootNC = (STMSupplyOrdersNC *)self.navigationController;
+        }
+    }
+    return _rootNC;
+    
+}
+
+- (NSString *)supplyOrderWorkflow {
+    
+    if (!_supplyOrderWorkflow) {
+        
+        if (IPAD) return self.splitVC.supplyOrderWorkflow;
+        if (IPHONE) return self.rootNC.supplyOrderWorkflow;
+        
+    }
+    return _supplyOrderWorkflow;
+
+}
+
 - (BOOL)orderIsProcessed {
-    return [STMWorkflowController isEditableProcessing:self.supplyOrder.processing inWorkflow:self.splitVC.supplyOrderWorkflow];
+    return [STMWorkflowController isEditableProcessing:self.supplyOrder.processing inWorkflow:self.supplyOrderWorkflow];
 }
 
 
@@ -67,7 +95,7 @@
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
-                                                                   sectionNameKeyPath:@"supplyOrder.ndoc"
+                                                                   sectionNameKeyPath:@"supplyOrder.title"
                                                                             cacheName:nil];
         _resultsController.delegate = self;
         
@@ -94,7 +122,11 @@
 }
 
 - (void)updateToolbars {
+    
+    [[self.navigationController.toolbar viewWithTag:1] removeFromSuperview];
+
     [self addProcessingButton];
+    
 }
 
 #pragma mark - processing button
@@ -102,7 +134,7 @@
 - (void)addProcessingButton {
     
     NSString *processing = self.supplyOrder.processing;
-    NSString *workflow = self.splitVC.supplyOrderWorkflow;
+    NSString *workflow = self.supplyOrderWorkflow;
     
     NSString *title = [STMWorkflowController labelForProcessing:processing inWorkflow:workflow];
     
@@ -120,7 +152,7 @@
 - (void)processingButtonPressed {
     
     STMWorkflowAS *workflowActionSheet = [STMWorkflowController workflowActionSheetForProcessing:self.supplyOrder.processing
-                                                                                      inWorkflow:self.splitVC.supplyOrderWorkflow
+                                                                                      inWorkflow:self.supplyOrderWorkflow
                                                                                     withDelegate:self];
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [workflowActionSheet showInView:self.view];
@@ -215,40 +247,40 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+    STMCustom9TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
 
-    [self fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:indexPath];
+    [self fillArticleDocCell:(STMCustom9TVCell *)cell atIndexPath:indexPath];
     
     return cell;
     
 }
 
-- (void)fillArticleDocCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)fillArticleDocCell:(STMCustom9TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
 
     [self fillTextLabelForCell:cell withSupplyOrderArticleDoc:articleDoc];
-
-    NSMutableArray *dates = @[].mutableCopy;
-
-    if (articleDoc.articleDoc.dateProduction) {
-        
-        NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateProduction];
-        dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
-        
-        [dates addObject:dateProduction];
-        
-    }
     
     if (articleDoc.articleDoc.dateImport) {
         
         NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateImport];
         dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
-        [dates addObject:dateImport];
         
+        cell.detailLabel.text = dateImport;
+        
+    } else if (articleDoc.articleDoc.dateProduction) {
+        
+        
+        NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)articleDoc.articleDoc.dateProduction];
+        dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
+
+        cell.detailLabel.text = dateProduction;
+        
+    } else {
+
+        cell.detailLabel.text = @"";
+
     }
-    
-    cell.detailTextLabel.text  = [dates componentsJoinedByString:@" / "];
     
     STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 46, 21)];
     volumeLabel.text = [articleDoc volumeText];
@@ -261,12 +293,20 @@
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
     
+//    UIImage *ordImage = [UIImage imageWithData:[NSData data]];
+//    
+//    ordImage = [STMFunctions drawText:articleDoc.ord.stringValue withFont:nil color:nil inImage:nil atCenter:YES];
+//    
+//    cell.imageView.image = ordImage;
+
+    cell.infoLabel.text = articleDoc.ord.stringValue;
+    
 }
 
-- (void)fillTextLabelForCell:(STMTableViewSubtitleStyleCell *)cell withSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)supplyOrderArticleDoc {
+- (void)fillTextLabelForCell:(STMCustom9TVCell *)cell withSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)supplyOrderArticleDoc {
     
-    cell.textLabel.numberOfLines = 0;
-    cell.textLabel.textColor = (supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
+//    cell.textLabel.numberOfLines = 0;
+    cell.titleLabel.textColor = (supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
     
     if (supplyOrderArticleDoc.article && ![supplyOrderArticleDoc.article isEqual:supplyOrderArticleDoc.articleDoc.article]) {
         
@@ -291,11 +331,11 @@
 
         [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:articleDocName attributes:attributes]];
         
-        cell.textLabel.attributedText = labelTitle;
+        cell.titleLabel.attributedText = labelTitle;
 
     } else {
 
-        cell.textLabel.text = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : supplyOrderArticleDoc.articleDoc.article.name;
+        cell.titleLabel.text = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : supplyOrderArticleDoc.articleDoc.article.name;
 
     }
     
@@ -307,7 +347,7 @@
 
     self.splitVC.selectedSupplyOrderArticleDoc = articleDoc;
     
-    if (self.isDetailNC) {
+    if (self.isDetailNC || IPHONE) {
         [self performSegueWithIdentifier:@"showOperations" sender:articleDoc];
     }
     
@@ -368,10 +408,9 @@
     self.isMasterNC = [self.splitVC isMasterNCForViewController:self];
     self.isDetailNC = [self.splitVC isDetailNCForViewController:self];
     
-    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
-    
-    [[self.navigationController.toolbar viewWithTag:1] removeFromSuperview];
-    
+//    [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:NSStringFromClass([STMCustom9TVCell class]) bundle:nil] forCellReuseIdentifier:self.cellIdentifier];
+
     [self updateToolbars];
     [self performFetch];
     
@@ -389,6 +428,8 @@
     if (self.isDetailNC && ![self isMovingToParentViewController]) {
         self.operationsTVC = nil;
     }
+    
+    if (IPHONE) [self updateToolbars];
     
 }
 

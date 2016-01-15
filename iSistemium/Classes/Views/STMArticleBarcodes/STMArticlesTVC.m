@@ -8,6 +8,7 @@
 
 #import "STMArticlesTVC.h"
 
+#import "STMArticlesNC.h"
 #import "STMArticlesSVC.h"
 #import "STMArticleCodesTVC.h"
 
@@ -18,10 +19,14 @@
 @interface STMArticlesTVC () <STMBarCodeScannerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) STMArticlesSVC *splitVC;
+@property (nonatomic, weak) STMArticlesNC *articlesNC;
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 @property (nonatomic, strong) NSString *scannedBarcode;
 @property (nonatomic, strong) UIAlertView *addBarcodeAlert;
+
+@property (nonatomic, strong) STMArticle *selectedArticle;
+@property (nonatomic, strong) STMArticleCodesTVC *codesTVC;
 
 
 @end
@@ -29,6 +34,7 @@
 
 @implementation STMArticlesTVC
 
+@synthesize selectedArticle = _selectedArticle;
 @synthesize resultsController = _resultsController;
 
 
@@ -42,6 +48,43 @@
         
     }
     return _splitVC;
+    
+}
+
+- (STMArticlesNC *)articlesNC {
+    
+    if (!_articlesNC) {
+        
+        if ([self.navigationController isKindOfClass:[STMArticlesNC class]]) {
+            _articlesNC = (STMArticlesNC *)self.navigationController;
+        }
+        
+    }
+    return _articlesNC;
+}
+
+- (STMArticle *)selectedArticle {
+    
+    if (IPAD) {
+        return self.splitVC.selectedArticle;
+    }
+    if (IPHONE) {
+        return self.articlesNC.selectedArticle;
+    }
+
+    return nil;
+    
+}
+
+- (void)setSelectedArticle:(STMArticle *)selectedArticle {
+    
+    if (IPAD) {
+        self.splitVC.selectedArticle = selectedArticle;
+    }
+    
+    if (IPHONE) {
+        self.articlesNC.selectedArticle = selectedArticle;
+    }
     
 }
 
@@ -68,11 +111,26 @@
 - (NSPredicate *)predicate {
     
     if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
-        return [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text];
+        
+        NSString *trimmedSearchString = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        NSArray *searchStringComponents = [trimmedSearchString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        NSMutableArray *subpredicates = @[].mutableCopy;
+        
+        for (NSString *searchString in searchStringComponents) {
+            [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchString]];
+        }
+        
+        return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+        
     } else if (self.scannedBarcode) {
+        
         return [NSPredicate predicateWithFormat:@"ANY barCodes.code == %@", self.scannedBarcode];
+        
     } else {
+        
         return nil;
+        
     }
 
 }
@@ -87,9 +145,7 @@
 
 - (void)performFetch {
     
-    if (IPAD) {
-        self.splitVC.selectedArticle = nil;
-    }
+    self.selectedArticle = nil;
 
     [super performFetch];
     [self updateToolbar];
@@ -121,7 +177,19 @@
     
     cell.textLabel.numberOfLines = 0;
     cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", article.name, (article.extraLabel) ? article.extraLabel : @""];
-    cell.detailTextLabel.text = @(article.barCodes.count).stringValue;
+    
+    NSString *pluralType = [STMFunctions pluralTypeForCount:article.barCodes.count];
+    NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
+    
+    NSString *numberOfBarcodesString = nil;
+    
+    if (article.barCodes.count > 0) {
+        numberOfBarcodesString = [NSString stringWithFormat:@"%@ %@", @(article.barCodes.count), NSLocalizedString(pluralString, nil)];
+    } else {
+        numberOfBarcodesString = NSLocalizedString(pluralString, nil);
+    }
+
+    cell.detailTextLabel.text = numberOfBarcodesString;
     
     return cell;
     
@@ -129,24 +197,43 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+    
+    if ([self.selectedArticle isEqual:article]) {
+        
+        self.selectedArticle = nil;
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        
+    } else {
+        
+        self.selectedArticle = article;
+        
+    }
+
     if (IPHONE) {
-        [self performSegueWithIdentifier:@"showCodes" sender:indexPath];
+        
+        if ([self.articlesNC.topViewController isEqual:self.codesTVC]) {
+            self.codesTVC.selectedArticle = self.selectedArticle;
+        } else {
+            [self performSegueWithIdentifier:@"showCodes" sender:indexPath];
+        }
+        
     }
     
     if (IPAD) {
 
-        STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
-        
-        if ([self.splitVC.selectedArticle isEqual:article]) {
-            
-            self.splitVC.selectedArticle = nil;
-            [tableView deselectRowAtIndexPath:indexPath animated:NO];
-            
-        } else {
-            
-            self.splitVC.selectedArticle = article;
-
-        }
+//        STMArticle *article = [self.resultsController objectAtIndexPath:indexPath];
+//        
+//        if ([self.selectedArticle isEqual:article]) {
+//            
+//            self.selectedArticle = nil;
+//            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+//            
+//        } else {
+//            
+//            self.selectedArticle = article;
+//
+//        }
 
     }
     
@@ -173,8 +260,8 @@
         
         STMArticle *article = [self.resultsController objectAtIndexPath:(NSIndexPath *)sender];
         
-        STMArticleCodesTVC *codesTVC = (STMArticleCodesTVC *)segue.destinationViewController;
-        codesTVC.article = article;
+        self.codesTVC = (STMArticleCodesTVC *)segue.destinationViewController;
+        self.codesTVC.selectedArticle = article;
         
     }
     
@@ -215,14 +302,14 @@
     
     self.scannedBarcode = barcode;
 
-    if (self.splitVC.selectedArticle) {
+    if (self.selectedArticle) {
         
-        NSArray *articleBarcodes = [self.splitVC.selectedArticle.barCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
+        NSArray *articleBarcodes = [self.selectedArticle.barCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
         
         if ([articleBarcodes containsObject:self.scannedBarcode]) {
             [STMSoundController say:NSLocalizedString(@"THIS BARCODE ALREADY LINKED WITH CURRENT ARTICLE", nil)];
         } else {
-            [self showAddBarcodeAlertForBarcode:self.scannedBarcode andArticle:self.splitVC.selectedArticle];
+            [self showAddBarcodeAlertForBarcode:self.scannedBarcode andArticle:self.selectedArticle];
         }
         
     } else {
@@ -257,13 +344,32 @@
     
 }
 
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+
+    if ([alertView isEqual:self.addBarcodeAlert]) {
+        
+        switch (buttonIndex) {
+            case 1:
+                [self addBarcode:self.scannedBarcode toArticle:self.selectedArticle];
+                break;
+                
+            default:
+                break;
+        }
+        
+    }
+
+}
+
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
     if ([alertView isEqual:self.addBarcodeAlert]) {
         
         switch (buttonIndex) {
             case 1:
-                [self addBarcode:self.scannedBarcode toArticle:self.splitVC.selectedArticle];
+                if (self.codesTVC) {
+                    self.codesTVC.selectedArticle = self.selectedArticle;
+                }
                 break;
                 
             default:
@@ -277,7 +383,7 @@
 - (void)addBarcode:(NSString *)barcode toArticle:(STMArticle *)article {
 
     [STMBarCodeController addBarcode:barcode toArticle:article];
-    self.splitVC.selectedArticle = article;
+    self.selectedArticle = article;
 
 }
 
@@ -388,17 +494,23 @@
 
 - (void)updateClearFilterButton {
     
-    if (self.scannedBarcode || self.splitVC.selectedArticle) {
+    if (self.scannedBarcode || self.selectedArticle) {
         
         STMBarButtonItem *clearFilterButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Clear Filters-25"]
                                                                                 style:UIBarButtonItemStylePlain
                                                                                target:self
                                                                                action:@selector(clearFilter)];
         
-        NSMutableArray *toolbarItems = self.toolbarItems.mutableCopy;
-        [toolbarItems addObject:clearFilterButton];
-        [self setToolbarItems:toolbarItems animated:NO];
+//        NSMutableArray *toolbarItems = self.toolbarItems.mutableCopy;
+//        [toolbarItems addObject:clearFilterButton];
+//        [self setToolbarItems:toolbarItems animated:NO];
+
+        self.navigationItem.leftBarButtonItem = clearFilterButton;
         
+    } else {
+        
+        self.navigationItem.leftBarButtonItem = nil;
+
     }
     
 }
@@ -406,7 +518,7 @@
 - (void)clearFilter {
     
     self.scannedBarcode = nil;
-    self.splitVC.selectedArticle = nil;
+    self.selectedArticle = nil;
     [self performFetch];
     
 }
@@ -429,6 +541,7 @@
     
     [super customInit];
     
+    self.searchBar.returnKeyType = UIReturnKeyDone;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self.tableView registerClass:[STMTableViewSubtitleStyleCell class] forCellReuseIdentifier:self.cellIdentifier];
@@ -448,6 +561,10 @@
     
     [super viewDidAppear:animated];
     [self startBarcodeScanning];
+    
+    if (IPHONE) {
+        self.selectedArticle = nil;
+    }
     
 }
 
