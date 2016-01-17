@@ -858,7 +858,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
     } else {
 
-        cell.pictureView.image = [UIImage imageWithData:picture.imageThumbnail];
+        cell.pictureView.image = [UIImage imageWithData:(NSData * _Nonnull)picture.imageThumbnail];
         
     }
     

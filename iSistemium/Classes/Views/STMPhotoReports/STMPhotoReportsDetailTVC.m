@@ -383,7 +383,7 @@
     
     cell.pictureView.contentMode = UIViewContentModeScaleAspectFill;
     cell.pictureView.clipsToBounds = YES;
-    cell.pictureView.image = [UIImage imageWithData:photoReport.imageThumbnail];
+    cell.pictureView.image = [UIImage imageWithData:(NSData * _Nonnull)photoReport.imageThumbnail];
 
     cell.titleLabel.text = (photoReport.deviceCts) ? [[STMFunctions dateMediumTimeShortFormatter] stringFromDate:(NSDate * _Nonnull)photoReport.deviceCts] : @"";
 

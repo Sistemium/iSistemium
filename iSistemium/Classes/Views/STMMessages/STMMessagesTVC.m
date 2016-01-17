@@ -240,7 +240,7 @@
             
         } else {
             
-            UIImage *image = [UIImage imageWithData:picture.imageThumbnail];
+            UIImage *image = [UIImage imageWithData:(NSData * _Nonnull)picture.imageThumbnail];
             [[cell.pictureView viewWithTag:555] removeFromSuperview];
             cell.pictureView.image = image;
             
