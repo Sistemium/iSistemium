@@ -15,7 +15,7 @@ class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
     override var resultsController : NSFetchedResultsController? {
         get {
             if (_resultsController == nil) {
-                let shippingFetchRequest = NSFetchRequest(entityName: "STMShippingLocation")
+                let shippingFetchRequest = NSFetchRequest(entityName: NSStringFromClass(STMShippingLocation))
                 shippingFetchRequest.sortDescriptors = [NSSortDescriptor(key: "deviceTs",ascending:false)]
                 shippingFetchRequest.predicate = self.predicate
                 _resultsController = NSFetchedResultsController(fetchRequest: shippingFetchRequest, managedObjectContext: self.document.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
@@ -64,7 +64,12 @@ class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
         super.prepareForSegue(segue, sender: sender)
         if let destination = (segue.destinationViewController as? UINavigationController)?.visibleViewController as? STMShippingLocationTVC  {
             if segue.identifier == "showLocation"{
-            destination.shippingLocation = self.resultsController!.objectAtIndexPath(sender as! NSIndexPath) as? STMShippingLocation
+                
+                let shippingLocation = self.resultsController!.objectAtIndexPath(sender as! NSIndexPath) as? STMShippingLocation
+                
+                destination.shippingLocation = shippingLocation
+                
+//            destination.shippingLocation = self.resultsController!.objectAtIndexPath(sender as! NSIndexPath) as? STMShippingLocation
             }
         }
     }
