@@ -2,20 +2,33 @@
 //  STMPicture.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 28/06/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 17/01/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import "STMPicture.h"
 
+#import "STMPicturesController.h"
+#import "STMPhotosController.h"
+
 
 @implementation STMPicture
 
-@dynamic href;
-@dynamic imagePath;
-@dynamic imageFormat;
-@dynamic resizedImagePath;
-@dynamic imageThumbnail;
-@dynamic name;
+- (void)willSave {
+    
+    if (self.isDeleted) {
+        
+        if ([self isKindOfClass:[STMPhotoReport class]]) {
+            [[STMPhotosController sharedController] photoReportWasDeleted:(STMPhotoReport *)self];
+        }
+        
+        [STMPicturesController removeImageFilesForPicture:self];
+        
+    }
+    
+    [super willSave];
+    
+}
+
 
 @end

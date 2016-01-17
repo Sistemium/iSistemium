@@ -238,7 +238,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     private func pictureButtonWithPicture(picture : STMPicture) -> UIView{
     
-    let imageView = UIImageView(image: UIImage(data: picture.imageThumbnail))
+    let imageView = UIImageView(image: UIImage(data: picture.imageThumbnail!))
     
     let tap = UITapGestureRecognizer(target: self, action: "photoButtonPressed:")
     imageView.gestureRecognizers = [tap]

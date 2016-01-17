@@ -155,7 +155,7 @@
 //        NSLog(@"self.campaign.name %@, picture.href %@", self.campaign.name, picture.href);
         
         imageView.contentMode = UIViewContentModeScaleAspectFit;
-        imageView.image = [UIImage imageWithData:picture.imageThumbnail];
+        imageView.image = [UIImage imageWithData:(NSData * _Nonnull)picture.imageThumbnail];
         
     }
     

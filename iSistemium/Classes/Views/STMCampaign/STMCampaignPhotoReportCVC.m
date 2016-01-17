@@ -700,7 +700,7 @@
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     
-    imageView.image = [UIImage imageWithData:photoReport.imageThumbnail];
+    imageView.image = [UIImage imageWithData:(NSData * _Nonnull)photoReport.imageThumbnail];
     imageView.tag = 1;
     [cell.contentView addSubview:imageView];
     

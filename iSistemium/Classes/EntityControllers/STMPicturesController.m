@@ -451,8 +451,8 @@
             
             NSLog(@"! new resizedImagePath for picture %@", picture.xid);
 
-            if ([fileManager fileExistsAtPath:picture.resizedImagePath]) {
-                [fileManager removeItemAtPath:picture.resizedImagePath error:nil];
+            if ([fileManager fileExistsAtPath:(NSString * _Nonnull)picture.resizedImagePath]) {
+                [fileManager removeItemAtPath:(NSString * _Nonnull)picture.resizedImagePath error:nil];
             }
 
             NSLog(@"save new resizedImage file for picture %@", picture.xid);
