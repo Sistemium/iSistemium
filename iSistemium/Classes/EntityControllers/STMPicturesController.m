@@ -807,108 +807,152 @@
 }
 
 - (void)addUploadOperationForPicture:(STMPicture *)picture withFileName:(NSString *)filename data:(NSData *)data {
+    NSURL *imsURL = [NSURL URLWithString:@"https://api.sistemium.com/ims/dr50"];
+    NSMutableURLRequest *request = [[[STMAuthController authController] authenticateRequest:[NSURLRequest requestWithURL:imsURL]] mutableCopy];
+    [request setHTTPMethod:@"POST"];
+    [request addValue: @"image/jpeg" forHTTPHeaderField:@"content-type"];
+    [request setValue: @"test" forHTTPHeaderField:@"folder"];
+    [request setHTTPBody:data];
     
-    if ([self s3Init]) {
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         
-        NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
-        
-        NSString *entityName = picture.entity.name;
-        
-        NSDate *currentDate = [NSDate date];
-        
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateFormat = @"yyyy";
-        
-        NSString *year = [dateFormatter stringFromDate:currentDate];
-        
-        dateFormatter.dateFormat = @"MM";
-        
-        NSString *month = [dateFormatter stringFromDate:currentDate];
-        
-        dateFormatter.dateFormat = @"dd";
-        
-        NSString *day = [dateFormatter stringFromDate:currentDate];
-        
-        bucket = [bucket stringByAppendingString:[NSString stringWithFormat:@"/%@/%@/%@/%@", entityName, year, month, day]];
-        
-        if (bucket) {
+        if (!error) {
             
-            [self.uploadQueue addOperationWithBlock:^{
-                
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                
-                [AWSS3 registerS3WithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration  forKey: @"EUWest1S3"];
-                AWSS3 *transferManager = [AWSS3 S3ForKey:@"EUWest1S3"];
-                
-                AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
-                photoRequest.bucket = bucket;
-                photoRequest.key = filename;
-                photoRequest.contentType = @"image/jpeg";
-                photoRequest.body = data;
-                photoRequest.contentLength = @((int)data.length);
-                
-                [[transferManager putObject:photoRequest] continueWithBlock:^id(AWSTask *task) {
+            NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+            
+            if (statusCode == 200){
+                NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                if (!error) {
                     
-                    if (task.error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        for (NSDictionary* dict in dictionary[@"pictures"]){
+                            if ([dict[@"name"]  isEqual: @"original"]){
+                                picture.href = dict[@"src"];
+                            }
+                        }
+                        picture.picturesInfo = dictionary.description;
+                        NSLog(picture.picturesInfo);
+
+                        __block STMSession *session = [STMSessionManager sharedManager].currentSession;
+
+                        [session.document saveDocument:^(BOOL success) {
+                        }];
                         
-                        NSLog(@"Upload error: %@", task.error);
-                        
-                        NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
-                        });
-                        
-                    } else {
-                        
-                        //                    NSLog(@"Got here: %@", task.result);
-                        
-                        NSArray *urlArray = @[transferManager.configuration.endpoint.URL, bucket, filename];
-                        NSString *href = [urlArray componentsJoinedByString:@"/"];
-                        
-                        NSLog(@"%@ upload successefully", href);
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            
-                            picture.href = href;
-                            
-#warning - does it needed to set deviceTs here?
-                            picture.deviceTs = [NSDate date];
-                            
-                            __block STMSession *session = [STMSessionManager sharedManager].currentSession;
-                            
-                            [session.document saveDocument:^(BOOL success) {
-//                                if (success) [session.syncer setSyncerState:STMSyncerSendDataOnce];
-                            }];
-                            
-                        });
-                        
-                    }
-                    
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    
-                    return nil;
-                    
-                }];
-                
-            }];
+                    });
+                }
+            } else {
+                NSLog(@"StatusCode: %d", statusCode);
+            }
             
             
         } else {
             
-            NSLog(@"have no S3.IMGUploadBucket");
-            
+            NSLog(@"connectionError %@", error.localizedDescription);
         }
         
-        
-    } else {
-        
-        NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
-        });
-        
-    }
+    }];
+
+//    if ([self s3Init]) {
+//        
+//        NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
+//        
+//        NSString *entityName = picture.entity.name;
+//        
+//        NSDate *currentDate = [NSDate date];
+//        
+//        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//        dateFormatter.dateFormat = @"yyyy";
+//        
+//        NSString *year = [dateFormatter stringFromDate:currentDate];
+//        
+//        dateFormatter.dateFormat = @"MM";
+//        
+//        NSString *month = [dateFormatter stringFromDate:currentDate];
+//        
+//        dateFormatter.dateFormat = @"dd";
+//        
+//        NSString *day = [dateFormatter stringFromDate:currentDate];
+//        
+//        bucket = [bucket stringByAppendingString:[NSString stringWithFormat:@"/%@/%@/%@/%@", entityName, year, month, day]];
+//        
+//        if (bucket) {
+//            
+//            [self.uploadQueue addOperationWithBlock:^{
+//                
+//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+//                
+//                [AWSS3 registerS3WithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration  forKey: @"EUWest1S3"];
+//                AWSS3 *transferManager = [AWSS3 S3ForKey:@"EUWest1S3"];
+//                
+//                AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
+//                photoRequest.bucket = bucket;
+//                photoRequest.key = filename;
+//                photoRequest.contentType = @"image/jpeg";
+//                photoRequest.body = data;
+//                photoRequest.contentLength = @((int)data.length);
+//                
+//                [[transferManager putObject:photoRequest] continueWithBlock:^id(AWSTask *task) {
+//                    
+//                    if (task.error) {
+//                        
+//                        NSLog(@"Upload error: %@", task.error);
+//                        
+//                        NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
+//                        
+//                        dispatch_async(dispatch_get_main_queue(), ^{
+//                            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
+//                        });
+//                        
+//                    } else {
+//                        
+//                        //                    NSLog(@"Got here: %@", task.result);
+//                        
+//                        NSArray *urlArray = @[transferManager.configuration.endpoint.URL, bucket, filename];
+//                        NSString *href = [urlArray componentsJoinedByString:@"/"];
+//                        
+//                        NSLog(@"%@ upload successefully", href);
+//                        
+//                        dispatch_async(dispatch_get_main_queue(), ^{
+//                            
+//                            picture.href = href;
+//                            
+//#warning - does it needed to set deviceTs here?
+//                            picture.deviceTs = [NSDate date];
+//                            
+//                            __block STMSession *session = [STMSessionManager sharedManager].currentSession;
+//                            
+//                            [session.document saveDocument:^(BOOL success) {
+////                                if (success) [session.syncer setSyncerState:STMSyncerSendDataOnce];
+//                            }];
+//                            
+//                        });
+//                        
+//                    }
+//                    
+//                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+//                    
+//                    return nil;
+//                    
+//                }];
+//                
+//            }];
+//            
+//            
+//        } else {
+//            
+//            NSLog(@"have no S3.IMGUploadBucket");
+//            
+//        }
+//        
+//        
+//    } else {
+//        
+//        NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
+//        });
+//        
+//    }
     
     
     
