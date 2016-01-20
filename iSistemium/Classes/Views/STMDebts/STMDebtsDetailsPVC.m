@@ -229,8 +229,16 @@
         
         if (self.outlet) {
             
-            UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-            [self setToolbarItems:@[self.editDebtsButton, flexibleSpace, self.addDebtButton] animated:YES];
+            if (self.enableDebtsEditing) {
+            
+                UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+                self.toolbarItems = @[self.editDebtsButton, flexibleSpace, self.addDebtButton];
+
+            } else {
+                
+                self.toolbarItems = nil;
+                
+            }
             
             self.navigationItem.rightBarButtonItem = self.cashingButton;
             
@@ -493,9 +501,9 @@
     [self addObservers];
 
     NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
-    BOOL toolbarHidden = ![[settings valueForKey:@"enableDebtsEditing"] boolValue];
+    self.enableDebtsEditing = [[settings valueForKey:@"enableDebtsEditing"] boolValue];
     
-    self.navigationController.toolbarHidden = toolbarHidden;
+    self.navigationController.toolbarHidden = !self.enableDebtsEditing;
     
     [self setToolbarItems:nil];
     [self.addDebtButton setTitle:NSLocalizedString(@"ADD DEBT", nil)];
