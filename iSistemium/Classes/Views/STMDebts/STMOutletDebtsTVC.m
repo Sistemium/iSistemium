@@ -455,7 +455,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
+    if (editingStyle == UITableViewCellEditingStyleDelete && self.parentVC.enableDebtsEditing) {
 
         STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
 
@@ -468,7 +468,6 @@
             [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
             
         }
-    
         
     }
     

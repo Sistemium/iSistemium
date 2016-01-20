@@ -15,6 +15,7 @@
 @property (nonatomic, strong) STMOutlet *outlet;
 @property (nonatomic, strong) STMDebtsDetailsVC *debtsCombineVC;
 @property (nonatomic, strong) STMDebtsDetailsVC *outletCashingVC;
+@property (nonatomic) BOOL enableDebtsEditing;
 
 - (void)cashingButtonPressed;
 
