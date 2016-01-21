@@ -51,7 +51,13 @@ class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
         cell.titleLabel!.text = location.name
         cell.detailLabel!.text = location.address
         cell.accessoryType = .DisclosureIndicator
+        //as for 2016-01-21 without "cell.layoutIfNeeded()" occurs some weird xcode bug on real device (http://stackoverflow.com/questions/27842764/uitableviewautomaticdimension-not-working-until-scroll)
+        cell.layoutIfNeeded()
         return cell;
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -110,6 +116,11 @@ class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBar.delegate = self
+        customInit()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     override func customInit() {

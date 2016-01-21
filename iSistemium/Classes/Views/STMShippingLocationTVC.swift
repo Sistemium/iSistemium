@@ -190,6 +190,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
             break
         }
         cell.selectionStyle = .None
+        cell.layoutIfNeeded()
         return cell
     }
     
@@ -300,13 +301,10 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     self.cameraOverlayView.backgroundColor = UIColor.clearColor()
                     self.cameraOverlayView.autoresizesSubviews = true
                     self.cameraOverlayView.autoresizingMask = [.FlexibleWidth , .FlexibleHeight]
-                    
-                    if  Constants.SYSTEM_VERSION > 8.0 {
-                        let rootView = UIApplication.sharedApplication().keyWindow!.rootViewController!.view;
-                        let originalFrame = UIScreen.mainScreen().bounds
-                        let screenFrame = rootView.convertRect(originalFrame, fromView:nil)
-                        self.cameraOverlayView.frame = screenFrame;
-                    }
+                    let rootView = UIApplication.sharedApplication().keyWindow!.rootViewController!.view;
+                    let originalFrame = UIScreen.mainScreen().bounds
+                    let screenFrame = rootView.convertRect(originalFrame, fromView:nil)
+                    self.cameraOverlayView.frame = screenFrame;
                     _imagePickerController!.cameraOverlayView = self.cameraOverlayView;
                 }
             }
@@ -328,7 +326,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         
         STMPicturesController.setImagesFromData(UIImageJPEGRepresentation(image, jpgQuality),forPicture: shippingLocationPicture ,andUpload:true)
     
-    shippingLocationPicture.shippingLocation = self.shippingLocation
+        shippingLocationPicture.shippingLocation = self.shippingLocation
         self.document.saveDocument{
             if ($0) {
                 self.spinner?.removeFromSuperview()
