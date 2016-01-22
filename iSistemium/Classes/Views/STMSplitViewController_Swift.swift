@@ -9,14 +9,13 @@
 import UIKit
 
 @available(iOS 8.0, *)
-class NewSTMSplitViewController: UISplitViewController, UISplitViewControllerDelegate {
+class STMSplitViewController_Swift: STMSplitViewController, UISplitViewControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         preferredDisplayMode = .AllVisible
         self.delegate = self
         //use this to config split size
-        
         //minimumPrimaryColumnWidth = CGFloat(0.25)
         //preferredPrimaryColumnWidthFraction = CGFloat(0.25)
         //maximumPrimaryColumnWidth = view.bounds.size.width
@@ -25,6 +24,5 @@ class NewSTMSplitViewController: UISplitViewController, UISplitViewControllerDel
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool{
         return true
     }
-
     
 }

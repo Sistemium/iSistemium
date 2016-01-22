@@ -362,19 +362,35 @@
     NSArray *nullKeys = [iPhoneTabsJSON allKeysForObject:[NSNull null]];
     [iPhoneTabsJSON removeObjectsForKeys:nullKeys];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name IN %@", iPhoneTabsJSON.allKeys];
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSObject *object, NSDictionary *bindings) {
+        if ([object isKindOfClass:[NSDictionary class]]){
+            return [iPhoneTabsJSON.allKeys containsObject: (id _Nonnull) ((NSDictionary*) object)[@"name"] ];
+        }else{
+            return[(NSArray*) object filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name IN %@", iPhoneTabsJSON.allKeys]].count == ((NSArray*) object).count;
+        }
+    }];
     stcTabs = [stcTabs filteredArrayUsingPredicate:predicate];
     
     NSMutableArray *iPhoneStcTabs = [NSMutableArray array];
     
-    for (NSDictionary *stcTab in stcTabs) {
+    for (NSObject *element in stcTabs) {
         
-        if (stcTab[@"name"]) {
-            
-            NSMutableDictionary *tab = [stcTab mutableCopy];
-            tab[@"name"] = iPhoneTabsJSON[(id _Nonnull)stcTab[@"name"]];
+        if ([element isKindOfClass:[NSArray class]]){
+            NSMutableArray *tab = [NSMutableArray array];
+            for (NSDictionary *stcTab in (NSArray*) element){
+                NSMutableDictionary *tabElement = [stcTab mutableCopy];
+                tabElement[@"name"] = iPhoneTabsJSON[(id _Nonnull)stcTab[@"name"]];
+                [tab addObject:tabElement];
+            }
             [iPhoneStcTabs addObject:tab];
-
+        }else{
+            NSDictionary* stcTab = (NSDictionary*) element;
+            if (((NSDictionary*) stcTab)[@"name"]) {
+                NSMutableDictionary *tab = [stcTab mutableCopy];
+                tab[@"name"] = iPhoneTabsJSON[(id _Nonnull)stcTab[@"name"]];
+                [iPhoneStcTabs addObject:tab];
+                
+            }
         }
 
     }

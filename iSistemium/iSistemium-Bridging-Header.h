@@ -11,3 +11,4 @@
 #import "STMObjectsController.h"
 #import "STMPicturesController.h"
 #import "STMPicturesViewerDelegate.h"
+#import "STMRootTBC.h"

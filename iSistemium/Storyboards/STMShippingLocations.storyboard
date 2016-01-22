@@ -38,10 +38,10 @@
             </objects>
             <point key="canvasLocation" x="2058" y="1158"/>
         </scene>
-        <!--NewSTM Split View Controller-->
+        <!--Split View Controller Swift-->
         <scene sceneID="GON-N1-BXf">
             <objects>
-                <splitViewController id="P4y-AH-dIp" customClass="NewSTMSplitViewController" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                <splitViewController id="P4y-AH-dIp" customClass="STMSplitViewController_Swift" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <connections>
                         <segue destination="dgL-fc-jkU" kind="relationship" relationship="masterViewController" id="ENg-vp-M4f"/>
                         <segue destination="Jsc-to-Anf" kind="relationship" relationship="detailViewController" id="BCa-bl-WBd"/>
@@ -229,6 +229,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="tdD-Cx-fvG"/>
+        <segue reference="BCa-bl-WBd"/>
     </inferredMetricsTieBreakers>
 </document>

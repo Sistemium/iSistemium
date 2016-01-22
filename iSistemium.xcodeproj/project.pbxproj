@@ -491,8 +491,10 @@
 		2CFF9A8A1A67DE8A002B6392 /* STMClientDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A891A67DE8A002B6392 /* STMClientDataController.m */; };
 		2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8C1A67DF2B002B6392 /* STMController.m */; };
 		2CFF9A901A67F2ED002B6392 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */; };
+		6D720E641C5134CA008BC9F7 /* STMDebts_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */; };
+		6D720E681C5235AB008BC9F7 /* STMUncashing_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */; };
 		6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* SwiftConstants.swift */; };
-		6D814AA01C4938E5001B56A3 /* STMNewSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */; };
+		6D814AA01C4938E5001B56A3 /* STMSplitViewController_Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
 		6DFDA3901C3AB15B00409C4A /* STMShippingLocations.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */; };
@@ -1430,9 +1432,11 @@
 		2CFF9A8C1A67DF2B002B6392 /* STMController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMController.m; sourceTree = "<group>"; };
 		2CFF9A8E1A67F2ED002B6392 /* STMObjectsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMObjectsController.h; sourceTree = "<group>"; };
 		2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMObjectsController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts_iphone.storyboard; sourceTree = "<group>"; };
+		6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMUncashing_iphone.storyboard; sourceTree = "<group>"; };
 		6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesViewerDelegate.h; sourceTree = "<group>"; };
 		6D814A9D1C490362001B56A3 /* SwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftConstants.swift; sourceTree = "<group>"; };
-		6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMNewSplitViewController.swift; sourceTree = "<group>"; };
+		6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = STMSplitViewController_Swift.swift; path = ../Views/STMSplitViewController_Swift.swift; sourceTree = "<group>"; };
 		6D814AA11C494F00001B56A3 /* STMDataModel 91.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 91.xcdatamodel"; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
@@ -1543,6 +1547,7 @@
 				2C5764911AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.h */,
 				2C5764921AB1BCB600B9FD2C /* STMFetchedResultsControllerTVC.m */,
 				2C88F1CC1B1ED0E000E30418 /* STMVariableCellsHeightTVC.h */,
+				6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */,
 				2C88F1CD1B1ED0E000E30418 /* STMVariableCellsHeightTVC.m */,
 				2C88F1CF1B1EDCF900E30418 /* STMSearchableTVC.h */,
 				2C88F1D01B1EDCF900E30418 /* STMSearchableTVC.m */,
@@ -2571,6 +2576,8 @@
 				2C2264561C41467A006F3C16 /* STMSupplyOrders_iphone.storyboard */,
 				2C2968ED19A0BFD10038B122 /* STMUncashing.storyboard */,
 				2C5797EC1A432CDF00EEFBA7 /* STMWebView.storyboard */,
+				6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */,
+				6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -2668,7 +2675,6 @@
 				6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */,
 				6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */,
 				6D814A9D1C490362001B56A3 /* SwiftConstants.swift */,
-				6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */,
 			);
 			name = STMShippingLocations;
 			sourceTree = "<group>";
@@ -2822,12 +2828,14 @@
 				2C42ECBF1B15996100B5C91A /* Settings-25.png in Resources */,
 				2C02F2C71A8B95F600E0E890 /* exit-128.png in Resources */,
 				2C761BC61B01F2D0001DA33E /* Down4-25.png in Resources */,
+				6D720E641C5134CA008BC9F7 /* STMDebts_iphone.storyboard in Resources */,
 				2C5764981AB4713B00B9FD2C /* checked_user-128.png in Resources */,
 				2C1AB2931B6F925100BF5C50 /* reordering.png in Resources */,
 				2CEAC15E1B3BF78200AD068E /* truck_filled.png in Resources */,
 				2C1AB2E51B70ADBB00BF5C50 /* 3_circle.png in Resources */,
 				2C1AB30D1B70B22800BF5C50 /* 0_circle_colored_blue.png in Resources */,
 				D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */,
+				6D720E681C5235AB008BC9F7 /* STMUncashing_iphone.storyboard in Resources */,
 				2C53B88B19409E42002298A5 /* settings.json in Resources */,
 				2C761BAF1B008185001DA33E /* Picture-100.png in Resources */,
 				2C734B7E19B4E5C400EE33FA /* STMLogs.storyboard in Resources */,
@@ -3289,7 +3297,7 @@
 				2C761BBE1B00CCD4001DA33E /* STMCustom4TVCell.m in Sources */,
 				2CEE30401BEBAD10009B229F /* STMShippingLocationPicture.m in Sources */,
 				2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */,
-				6D814AA01C4938E5001B56A3 /* STMNewSplitViewController.swift in Sources */,
+				6D814AA01C4938E5001B56A3 /* STMSplitViewController_Swift.swift in Sources */,
 				2CEE303F1BEBAD10009B229F /* STMShippingLocation.m in Sources */,
 				2CEE30291BEBAD10009B229F /* STMOutlet+CoreDataProperties.m in Sources */,
 				2CEE30321BEBAD10009B229F /* STMRecordStatus.m in Sources */,

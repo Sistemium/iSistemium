@@ -3,7 +3,7 @@
     "STMArticleBarcodes"    : "STMArticleBarcodes_iphone",
     "STMCampaign"           : null,
     "STMCatalog"            : null,
-    "STMDebts"              : null,
+    "STMDebts"              : "STMDebts_iphone",
     "STMInventory"          : "STMInventory",
     "STMLogs"               : null,
     "STMMessages"           : "STMMessages",
@@ -13,7 +13,7 @@
     "STMSettings"           : "STMSettings",
     "STMShipments"          : "STMShipments_iphone",
     "STMSupplyOrders"       : "STMSupplyOrders_iphone",
-    "STMUncashing"          : null,
+    "STMUncashing"          : "STMUncashing_iphone",
     "STMWebView"            : "STMWebView",
     "STMShippingLocations"  : "STMShippingLocations",
 }
