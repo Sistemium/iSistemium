@@ -12,3 +12,5 @@
 #import "STMPicturesController.h"
 #import "STMPicturesViewerDelegate.h"
 #import "STMRootTBC.h"
+#import "STMDebtsDetailsPVC.h"
+#import "STMOutletsTVC.h"

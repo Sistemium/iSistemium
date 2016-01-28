@@ -29,10 +29,7 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
-@property (nonatomic, strong) UIBarButtonItem *addDebtButton;
-@property (nonatomic, strong) UIBarButtonItem *editDebtsButton;
 @property (nonatomic, strong) UIPopoverController *addDebtPopover;
-@property (nonatomic, strong) STMBarButtonItemDone *cashingButton;
 
 @end
 
@@ -101,7 +98,9 @@
 //        }
         
 //        [self editButtonForVC:self.viewControllers[0]];
-        [self buttonsForVC:self.viewControllers[0]];
+        if (self.viewControllers.count > 0){
+            [self buttonsForVC:self.viewControllers[0]];
+        }
 
 //        [self.popover dismissPopoverAnimated:YES];
 

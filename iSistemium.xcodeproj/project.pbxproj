@@ -496,6 +496,8 @@
 		6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* SwiftConstants.swift */; };
 		6D814AA01C4938E5001B56A3 /* STMSplitViewController_Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
+		6DEB6C811C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift */; };
+		6DEB6C831C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
 		6DFDA3901C3AB15B00409C4A /* STMShippingLocations.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */; };
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
@@ -1439,6 +1441,8 @@
 		6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = STMSplitViewController_Swift.swift; path = ../Views/STMSplitViewController_Swift.swift; sourceTree = "<group>"; };
 		6D814AA11C494F00001B56A3 /* STMDataModel 91.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 91.xcdatamodel"; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
+		6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMOutletsTVC_Iphone.swift; sourceTree = "<group>"; };
+		6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMDebtsPVC_Iphone.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
 		6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMShippingLocations.storyboard; sourceTree = "<group>"; };
 		85E24A798D258E2910066983 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2066,6 +2070,7 @@
 		2C5763FA1AA5E16200B9FD2C /* STMDebts */ = {
 			isa = PBXGroup;
 			children = (
+				6DEB6C7D1C578FC2009BBE91 /* Iphone */,
 				2C57640D1AA5E1E500B9FD2C /* STMDebtsSVC.h */,
 				2C57640E1AA5E1E500B9FD2C /* STMDebtsSVC.m */,
 				2C5764131AA5E1E500B9FD2C /* STMOutletsTVC.h */,
@@ -2669,6 +2674,15 @@
 			path = STMSupplyOrders;
 			sourceTree = "<group>";
 		};
+		6DEB6C7D1C578FC2009BBE91 /* Iphone */ = {
+			isa = PBXGroup;
+			children = (
+				6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift */,
+				6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift */,
+			);
+			name = Iphone;
+			sourceTree = "<group>";
+		};
 		6DF12A2E1C3AB80300E94C3E /* STMShippingLocations */ = {
 			isa = PBXGroup;
 			children = (
@@ -3194,6 +3208,7 @@
 				2C14D4411A3B73A000747844 /* STMLogMessagesMasterTVC.m in Sources */,
 				2C1F75121BFA1B6E003699C8 /* STMStockBatch.m in Sources */,
 				2CE3F51E1C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m in Sources */,
+				6DEB6C831C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift in Sources */,
 				2C8ECD361C47AB2D002BB614 /* STMPartner.m in Sources */,
 				2C646F5E1BCE69C00099F034 /* SocketAckEmitter.swift in Sources */,
 				2CB3FD491C244024004090CE /* STMInventoryInfoTVC.m in Sources */,
@@ -3203,6 +3218,7 @@
 				2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */,
 				2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */,
 				2CEE30161BEBAD10009B229F /* STMCashing.m in Sources */,
+				6DEB6C811C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift in Sources */,
 				2CC194601BE2731F001F8E48 /* STMCustom10TVCell.m in Sources */,
 				2CEE300F1BEBAD10009B229F /* STMBasketPosition+CoreDataProperties.m in Sources */,
 				2CEE30311BEBAD10009B229F /* STMPriceType.m in Sources */,
