@@ -132,16 +132,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0AT-hp-ugB" customClass="STMVolumePicker">
-                                <rect key="frame" x="20" y="80" width="560" height="216"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FuW-GN-17u">
+                                <rect key="frame" x="20" y="28" width="560" height="69"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="216" id="avc-MY-tsm"/>
-                                </constraints>
-                            </pickerView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FuW-GN-17u">
-                                <rect key="frame" x="20" y="28" width="560" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="YBU-vl-a4X"/>
+                                    <constraint firstAttribute="height" constant="69" id="YBU-vl-a4X"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -178,11 +172,24 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="goo-nV-ntc">
+                                <rect key="frame" x="20" y="275" width="560" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0AT-hp-ugB" customClass="STMVolumePicker">
+                                <rect key="frame" x="20" y="105" width="560" height="162"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="162" id="avc-MY-tsm"/>
+                                </constraints>
+                            </pickerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="0AT-hp-ugB" firstAttribute="top" secondItem="FuW-GN-17u" secondAttribute="bottom" constant="8" id="4wY-Os-A0p"/>
                             <constraint firstAttribute="leadingMargin" secondItem="0AT-hp-ugB" secondAttribute="leading" id="9d5-eo-gvE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="goo-nV-ntc" secondAttribute="trailing" id="A9b-Eh-n3V"/>
                             <constraint firstItem="aqf-OM-ZzA" firstAttribute="top" secondItem="nzR-Go-3kN" secondAttribute="bottom" constant="20" id="C00-PA-oKk"/>
                             <constraint firstAttribute="leadingMargin" secondItem="FuW-GN-17u" secondAttribute="leading" id="DFu-Nx-3a9"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nzR-Go-3kN" secondAttribute="trailing" id="Eoj-dE-w0k"/>
@@ -190,14 +197,18 @@
                             <constraint firstItem="05g-Lh-cZd" firstAttribute="top" secondItem="nzR-Go-3kN" secondAttribute="bottom" id="JR0-fG-ZUe"/>
                             <constraint firstItem="05g-Lh-cZd" firstAttribute="leading" secondItem="mBr-u4-pIb" secondAttribute="leadingMargin" constant="-20" id="Nqz-dY-d9b"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0AT-hp-ugB" secondAttribute="trailing" id="O8E-bd-9Gx"/>
+                            <constraint firstItem="nzR-Go-3kN" firstAttribute="top" secondItem="goo-nV-ntc" secondAttribute="bottom" constant="8" id="TVf-h4-dq2"/>
                             <constraint firstItem="FuW-GN-17u" firstAttribute="top" secondItem="ZCW-Lh-S1I" secondAttribute="bottom" constant="8" id="Zjl-dL-8n7"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="goo-nV-ntc" secondAttribute="leading" id="kUF-S4-rFN"/>
                             <constraint firstAttribute="trailingMargin" secondItem="05g-Lh-cZd" secondAttribute="trailing" constant="-20" id="kjL-Xg-Q2a"/>
-                            <constraint firstItem="nzR-Go-3kN" firstAttribute="top" secondItem="0AT-hp-ugB" secondAttribute="bottom" constant="8" id="qaC-2T-tDV"/>
+                            <constraint firstItem="nzR-Go-3kN" firstAttribute="top" secondItem="0AT-hp-ugB" secondAttribute="bottom" constant="62" id="qaC-2T-tDV"/>
                             <constraint firstAttribute="leadingMargin" secondItem="nzR-Go-3kN" secondAttribute="leading" id="v7u-bG-H2a"/>
                             <constraint firstItem="aqf-OM-ZzA" firstAttribute="top" secondItem="05g-Lh-cZd" secondAttribute="bottom" id="wlh-xX-DPn"/>
+                            <constraint firstItem="goo-nV-ntc" firstAttribute="top" secondItem="0AT-hp-ugB" secondAttribute="bottom" constant="8" id="xtt-En-Gy1"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="qaC-2T-tDV"/>
                                 <exclude reference="C00-PA-oKk"/>
                             </mask>
                         </variation>
@@ -207,6 +218,7 @@
                         <outlet property="barcodesTableContainer" destination="nzR-Go-3kN" id="Q92-K1-NJ3"/>
                         <outlet property="cancelButton" destination="Nok-VF-aaU" id="sMn-7E-fG1"/>
                         <outlet property="doneButton" destination="16H-1t-6hD" id="39t-QU-Z7B"/>
+                        <outlet property="expectedNumberOfBatchesLabel" destination="goo-nV-ntc" id="LIf-wQ-3hL"/>
                         <outlet property="repeatButton" destination="41e-By-3ya" id="iUg-xX-YKS"/>
                         <outlet property="toolbar" destination="05g-Lh-cZd" id="Y8H-ns-6k6"/>
                         <outlet property="volumePicker" destination="0AT-hp-ugB" id="Jxt-dz-FfO"/>

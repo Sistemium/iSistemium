@@ -450,3 +450,7 @@
 "ONE MORE CODE" = "One more code";
 "OPERATION COMPLETE" = "Operation complete";
 "MANUAL LINK BARCODE TO ARTICLE" = "Manual link barcode to article";
+"0BATCHES" = "no batches";
+"1BATCHES" = "batch";
+"2BATCHES" = "batches";
+"5BATCHES" = "batches";

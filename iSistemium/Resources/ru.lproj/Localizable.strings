@@ -450,4 +450,8 @@
 "ONE MORE CODE" = "Ещё наклейку";
 "OPERATION COMPLETE" = "Партия принята";
 "MANUAL LINK BARCODE TO ARTICLE" = "Привяжите штрих код к товару вручную";
+"0BATCHES" = "нет партий";
+"1BATCHES" = "партия";
+"2BATCHES" = "партии";
+"5BATCHES" = "партий";
 

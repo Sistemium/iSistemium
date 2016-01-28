@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *articleLabel;
 @property (weak, nonatomic) IBOutlet STMVolumePicker *volumePicker;
 @property (weak, nonatomic) IBOutlet UIView *barcodesTableContainer;
+@property (weak, nonatomic) IBOutlet UILabel *expectedNumberOfBatchesLabel;
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
@@ -82,16 +83,52 @@
 
 - (void)volumeSelected {
     
-    BOOL volumeIsGood = (self.volumePicker.selectedVolume > 0);
+    NSInteger selectedVolume = self.volumePicker.selectedVolume;
+    NSInteger remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+    
+    BOOL volumeIsGoodForRepeating = (selectedVolume > 0);
         
-    self.doneButton.enabled = volumeIsGood;
+    self.doneButton.enabled = volumeIsGoodForRepeating;
 
-    if (self.volumePicker.selectedVolume > [self.supplyOrderArticleDoc volumeRemainingToSupply] / 2) {
-        volumeIsGood = NO;
+    if (selectedVolume > remainingVolume / 2) {
+        volumeIsGoodForRepeating = NO;
     }
     
-    self.repeatButton.enabled = volumeIsGood;
+    self.repeatButton.enabled = volumeIsGoodForRepeating;
+    
+    if (selectedVolume > 0) {
+        
+        NSInteger expectedNumberOfBatches = remainingVolume / selectedVolume;
+        
+        NSString *pluralType = [STMFunctions pluralTypeForCount:expectedNumberOfBatches];
+        NSString *pluralString = [pluralType stringByAppendingString:@"BATCHES"];
+        
+        NSString *expectedNumberOfBatchesLabelText = [NSString stringWithFormat:@"%@ %@", @(expectedNumberOfBatches), NSLocalizedString(pluralString, nil)];
 
+        NSInteger remainder = remainingVolume % selectedVolume;
+        
+        if (remainder > 0) {
+            
+            expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:@" + "];
+            
+            NSString *remainderString = [STMFunctions volumeStringWithVolume:remainder
+                                                               andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+
+            expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:remainderString];
+            
+        }
+        
+        self.expectedNumberOfBatchesLabel.text = expectedNumberOfBatchesLabelText;
+
+    } else {
+        
+        NSString *remainingVolumeString = [STMFunctions volumeStringWithVolume:remainingVolume
+                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+
+        self.expectedNumberOfBatchesLabel.text = remainingVolumeString;
+        
+    }
+    
     [self updateRepeatButtonTitle];
     
 }
