@@ -1133,6 +1133,7 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
 //    [self.tableView reloadData];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationNone];
     
 }
