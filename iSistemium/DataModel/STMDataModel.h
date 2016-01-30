@@ -53,7 +53,7 @@
 #import "STMPickingOrder.h"
 #import "STMPickingOrderPosition.h"
 #import "STMPickingOrderPositionPicked.h"
-#import "STMPicture+customs.h"
+#import "STMPicture.h"
 #import "STMPrice.h"
 #import "STMPriceType.h"
 #import "STMProductionInfoType.h"

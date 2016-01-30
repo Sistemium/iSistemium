@@ -446,7 +446,12 @@
 "REMOVE BARCODE FROM ARTICLE?" = "Удалить шрих-код\n\n%@\n\nу товара\n\n%@\n\n?";
 "THIS BARCODE ALREADY LINKED WITH CURRENT ARTICLE" = "Этот штрих код уже привязан к выбранному товару";
 "NO ARTICLES FOR THIS BARCODE" = "Нет товаров с таким штрих кодом";
+"SHIPPING LOCATION" = "Точка доставки";
 "ONE MORE CODE" = "Ещё наклейку";
 "OPERATION COMPLETE" = "Партия принята";
 "MANUAL LINK BARCODE TO ARTICLE" = "Привяжите штрих код к товару вручную";
+"0BATCHES" = "нет партий";
+"1BATCHES" = "партия";
+"2BATCHES" = "партии";
+"5BATCHES" = "партий";
 

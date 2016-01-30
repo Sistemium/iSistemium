@@ -259,7 +259,7 @@
 
 - (UIView *)pictureButtonWithPicture:(STMPicture *)picture {
     
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:picture.imageThumbnail]];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:(NSData * _Nonnull)picture.imageThumbnail]];
 
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
     imageView.gestureRecognizers = @[tap];

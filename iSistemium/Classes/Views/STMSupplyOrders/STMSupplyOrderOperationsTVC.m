@@ -206,7 +206,7 @@
     
     switch (section) {
         case 0:
-            return (self.supplyOrderArticleDoc.article) ? 2 : 1;
+            return 2;
             break;
 
         case 1:
@@ -272,7 +272,7 @@
             break;
             
         case 1:
-            [self fillRemainingCell:cell];
+            (self.supplyOrderArticleDoc.article) ? [self fillRemainingCell:cell] : [self fillArticleDocNameCell:cell];
             break;
             
         default:
@@ -320,9 +320,18 @@
         
         cell.textLabel.textColor = [UIColor redColor];
         cell.textLabel.text = ([self orderIsProcessed]) ? NSLocalizedString(@"CONFIRM ARTICLE FOR START", nil) : NSLocalizedString(@"START SUPPLY PROCESS", nil);
-
+        
     }
     
+}
+
+- (void)fillArticleDocNameCell:(STMTableViewSubtitleStyleCell *)cell {
+    
+    NSString *articleDocName = (self.supplyOrderArticleDoc.articleDoc.article.name) ? self.supplyOrderArticleDoc.articleDoc.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
+
+    cell.textLabel.text = articleDocName;
+    cell.textLabel.numberOfLines = 0;
+
 }
 
 - (void)fillRemainingCell:(STMTableViewSubtitleStyleCell *)cell {

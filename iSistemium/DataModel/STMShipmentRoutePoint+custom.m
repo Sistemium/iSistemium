@@ -86,6 +86,8 @@
 
     self.shippingLocation.location = locationObject;
     self.shippingLocation.isLocationConfirmed = @(confirmed);
+    self.shippingLocation.name = self.shortName;
+    self.shippingLocation.address = self.address;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"shippingLocationUpdated" object:self];
     

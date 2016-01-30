@@ -88,7 +88,7 @@
         
         STMUncashingPicture *picture = [[self.uncashing.pictures sortedArrayUsingDescriptors:@[sortDescriptor]] lastObject];
         
-        image = [UIImage imageWithData:picture.imageThumbnail];
+        image = [UIImage imageWithData:(NSData * _Nonnull)picture.imageThumbnail];
         
         placeName = self.uncashing.uncashingPlace.name;
         

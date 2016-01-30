@@ -16,8 +16,6 @@
 #import "STMUncashingPicture.h"
 #import "STMPhoto.h"
 
-#import <AWSCore/AWSCore.h>
-#import <AWSS3/AWSS3.h>
 #import <objc/runtime.h>
 
 #import <Security/Security.h>
@@ -28,10 +26,6 @@
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
 @property (nonatomic, strong) NSMutableArray *secondAttempt;
-@property (nonatomic, strong) KeychainItemWrapper *s3keychainItem;
-@property (nonatomic, strong) NSString *accessKey;
-@property (nonatomic, strong) NSString *secretKey;
-@property (nonatomic) BOOL s3Initialized;
 @property (nonatomic, strong) STMSession *session;
 @property (nonatomic, strong) NSMutableDictionary *settings;
 
@@ -41,9 +35,6 @@
 @end
 
 @implementation STMPicturesController
-
-@synthesize accessKey = _accessKey;
-@synthesize secretKey = _secretKey;
 
 
 + (STMPicturesController *)sharedController {
@@ -104,10 +95,6 @@
         
         self.hrefDictionary = nil;
         self.secondAttempt = nil;
-        self.s3keychainItem = nil;
-        self.accessKey = nil;
-        self.secretKey = nil;
-        self.s3Initialized = NO;
         self.session = nil;
         self.settings = nil;
         self.nonloadedPicturesResultsController = nil;
@@ -117,110 +104,15 @@
 }
 
 - (STMSession *)session {
-    
     return [STMSessionManager sharedManager].currentSession;
-    
-}
-
-- (NSMutableDictionary *)settings {
-    if (!_settings) {
-        _settings = [self.session.settingsController currentSettingsForGroup:@"amazon"];
-    }
-    return _settings;
-}
-
-- (KeychainItemWrapper *)s3keychainItem {
-    
-    if (!_s3keychainItem) {
-        
-        if ([NSBundle mainBundle].bundleIdentifier) {
-        
-            NSString *bundleIdentifier = [@"S3." stringByAppendingString:(NSString * _Nonnull)[NSBundle mainBundle].bundleIdentifier];
-            _s3keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
-
-        }
-        
-    }
-    
-    return _s3keychainItem;
-    
-}
-
-- (NSString *)accessKey {
-    
-    if (!_accessKey) {
-        
-        NSString *accessKey = [self.s3keychainItem objectForKey:(__bridge id)(kSecAttrAccount)];
-        
-        if (![accessKey boolValue]) {
-            
-            accessKey = [self.settings valueForKey:@"S3.AccessKeyID"];
-            
-            [self.s3keychainItem setObject:accessKey forKey:(__bridge id)(kSecAttrAccount)];
-            
-        }
-        
-        _accessKey = accessKey;
-        
-    }
-    
-    return _accessKey;
-    
-}
-
-- (void)setAccessKey:(NSString *)accessKey {
-    
-    if (accessKey != _accessKey) {
-        
-        [self.s3keychainItem setObject:accessKey forKey:(__bridge id)(kSecAttrAccount)];
-        _accessKey = accessKey;
-        
-    }
-    
-}
-
-- (NSString *)secretKey {
-    
-    if (!_secretKey) {
-        
-        NSString *secretKey = [self.s3keychainItem objectForKey:(__bridge id)(kSecValueData)];
-        
-        if (![secretKey boolValue]) {
-            
-            secretKey = [self.settings valueForKey:@"S3.SecretAccessKey"];
-            
-            [self.s3keychainItem setObject:secretKey forKey:(__bridge id)(kSecValueData)];
-            
-        }
-        
-        _secretKey = secretKey;
-        
-    }
-    
-    return _secretKey;
-    
-}
-
-- (void)setSecretKey:(NSString *)secretKey {
-    
-    if (secretKey != _secretKey) {
-        
-        [self.s3keychainItem setObject:secretKey forKey:(__bridge id)(kSecValueData)];
-        _secretKey = secretKey;
-        
-    }
-    
 }
 
 
 - (NSMutableDictionary *)hrefDictionary {
     
     if (!_hrefDictionary) {
-        
         _hrefDictionary = [NSMutableDictionary dictionary];
-        
     }
-    
     return _hrefDictionary;
     
 }
@@ -228,11 +120,8 @@
 - (NSMutableArray *)secondAttempt {
     
     if (!_secondAttempt) {
-        
         _secondAttempt = [NSMutableArray array];
-        
     }
-    
     return _secondAttempt;
     
 }
@@ -246,7 +135,6 @@
         _downloadQueue.suspended = YES;
         
     }
-    
     return _downloadQueue;
     
 }
@@ -254,28 +142,9 @@
 - (NSOperationQueue *)uploadQueue {
     
     if (!_uploadQueue) {
-        
         _uploadQueue = [[NSOperationQueue alloc] init];
-        
     }
-    
     return _uploadQueue;
-    
-}
-
-- (BOOL)s3Init {
-    
-    if (self.accessKey && self.secretKey && !self.s3Initialized) {
-        
-        AWSStaticCredentialsProvider *credentialsProvider = [[AWSStaticCredentialsProvider alloc] initWithAccessKey:self.accessKey secretKey:self.secretKey];
-        AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUWest1 credentialsProvider:credentialsProvider];
-        [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
-        
-        self.s3Initialized = YES;
-        
-    }
-    
-    return self.s3Initialized;
     
 }
 
@@ -364,9 +233,7 @@
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"nonloadedPicturesCountDidChange" object:self];
-    
 }
 
 
@@ -469,8 +336,8 @@
             
             NSLog(@"! new resizedImagePath for picture %@", picture.xid);
 
-            if ([fileManager fileExistsAtPath:picture.resizedImagePath]) {
-                [fileManager removeItemAtPath:picture.resizedImagePath error:nil];
+            if ([fileManager fileExistsAtPath:(NSString * _Nonnull)picture.resizedImagePath]) {
+                [fileManager removeItemAtPath:(NSString * _Nonnull)picture.resizedImagePath error:nil];
             }
 
             NSLog(@"save new resizedImage file for picture %@", picture.xid);
@@ -566,14 +433,11 @@
         
         if (!picture.objectID.temporaryID) {
             
-            NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
-            NSString *fileName = [xid stringByAppendingString:@".jpg"];
-            
             NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
             if (photoData && photoData.length > 0) {
                 
-                [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:photoData];
+                [[self sharedController] addUploadOperationForPicture:picture data:photoData];
                 
             } else {
                 
@@ -630,7 +494,7 @@
 //        fileName = [xid stringByAppendingString:@".jpg"];
         
         if (shouldUpload) {
-            [[self sharedController] addUploadOperationForPicture:picture withFileName:fileName data:weakData];
+            [[self sharedController] addUploadOperationForPicture:picture data:weakData];
         }
 
     } else if ([picture isKindOfClass:[STMPicture class]]) {
@@ -813,122 +677,85 @@
         
         STMPicture *picture = (STMPicture *)object;
         
-        NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
-        NSString *fileName = [xid stringByAppendingString:@".jpg"];
-        
         NSData *data = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
 
-        [self addUploadOperationForPicture:picture withFileName:fileName data:data];
+        [self addUploadOperationForPicture:picture data:data];
         
     }
     
 }
 
-- (void)addUploadOperationForPicture:(STMPicture *)picture withFileName:(NSString *)filename data:(NSData *)data {
+- (void)addUploadOperationForPicture:(STMPicture *)picture data:(NSData *)data {
     
-    if ([self s3Init]) {
+    NSDictionary *appSettings = [self.session.settingsController currentSettingsForGroup:@"appSettings"];
+    NSString *url = [[appSettings valueForKey:@"IMS.url"] stringByAppendingString:@"?folder="];
+    
+    NSString *entityName = picture.entity.name;
+    
+    NSDate *currentDate = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy";
+    NSString *year = [dateFormatter stringFromDate:currentDate];
+    dateFormatter.dateFormat = @"MM";
+    NSString *month = [dateFormatter stringFromDate:currentDate];
+    dateFormatter.dateFormat = @"dd";
+    NSString *day = [dateFormatter stringFromDate:currentDate];
+    
+    NSURL *imsURL = [NSURL URLWithString:[url stringByAppendingString:[NSString stringWithFormat:@"%@/%@/%@/%@", entityName, year, month, day]]];
+    
+    NSMutableURLRequest *request = [[[STMAuthController authController] authenticateRequest:[NSURLRequest requestWithURL:imsURL]] mutableCopy];
+    [request setHTTPMethod:@"POST"];
+    [request setValue: @"image/jpeg" forHTTPHeaderField:@"content-type"];
+    [request setHTTPBody:data];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         
-        NSString *bucket = [self.settings valueForKey:@"S3.IMGUploadBucket"];
-        
-        NSString *entityName = picture.entity.name;
-        
-        NSDate *currentDate = [NSDate date];
-        
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateFormat = @"yyyy";
-        
-        NSString *year = [dateFormatter stringFromDate:currentDate];
-        
-        dateFormatter.dateFormat = @"MM";
-        
-        NSString *month = [dateFormatter stringFromDate:currentDate];
-        
-        dateFormatter.dateFormat = @"dd";
-        
-        NSString *day = [dateFormatter stringFromDate:currentDate];
-        
-        bucket = [bucket stringByAppendingString:[NSString stringWithFormat:@"/%@/%@/%@/%@", entityName, year, month, day]];
-        
-        if (bucket) {
+        if (!error) {
             
-            [self.uploadQueue addOperationWithBlock:^{
-                
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                
-                [AWSS3 registerS3WithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration  forKey: @"EUWest1S3"];
-                AWSS3 *transferManager = [AWSS3 S3ForKey:@"EUWest1S3"];
-                
-                AWSS3PutObjectRequest *photoRequest = [[AWSS3PutObjectRequest alloc] init];
-                photoRequest.bucket = bucket;
-                photoRequest.key = filename;
-                photoRequest.contentType = @"image/jpeg";
-                photoRequest.body = data;
-                photoRequest.contentLength = @((int)data.length);
-                
-                [[transferManager putObject:photoRequest] continueWithBlock:^id(AWSTask *task) {
-                    
-                    if (task.error) {
-                        
-                        NSLog(@"Upload error: %@", task.error);
-                        
-                        NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
-                        });
-                        
-                    } else {
-                        
-                        //                    NSLog(@"Got here: %@", task.result);
-                        
-                        NSArray *urlArray = @[transferManager.configuration.endpoint.URL, bucket, filename];
-                        NSString *href = [urlArray componentsJoinedByString:@"/"];
-                        
-                        NSLog(@"%@ upload successefully", href);
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            
-                            picture.href = href;
-                            
-#warning - does it needed to set deviceTs here?
-                            picture.deviceTs = [NSDate date];
-                            
-                            __block STMSession *session = [STMSessionManager sharedManager].currentSession;
-                            
-                            [session.document saveDocument:^(BOOL success) {
-//                                if (success) [session.syncer setSyncerState:STMSyncerSendDataOnce];
-                            }];
-                            
-                        });
-                        
-                    }
-                    
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    
-                    return nil;
-                    
-                }];
-                
-            }];
+            NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
             
+            if (statusCode == 200){
+                
+                NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                NSData *picturesJson = [NSJSONSerialization dataWithJSONObject: (NSDictionary * _Nonnull) dictionary[@"pictures"] options:0 error: &error];
+                
+                if (!error) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        for (NSDictionary *dict in dictionary[@"pictures"]){
+                            if ([dict[@"name"] isEqual:@"original"]){
+                                picture.href = dict[@"src"];
+                            }
+                        }
+                        
+                        NSString *info = [[NSString alloc] initWithData:picturesJson encoding:NSUTF8StringEncoding];
+                        picture.picturesInfo = [info stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+                        
+                        NSLog(picture.picturesInfo)
+                        
+                        __block STMSession *session = [STMSessionManager sharedManager].currentSession;
+                        
+                        [session.document saveDocument:^(BOOL success) {
+                        }];
+                        
+                    });
+                    
+                }
+                
+            } else {
+                
+                NSLog(@"Request error, statusCode: %d", statusCode);
+                
+            }
             
         } else {
             
-            NSLog(@"have no S3.IMGUploadBucket");
+            NSLog(@"connectionError %@", error.localizedDescription);
             
         }
         
-        
-    } else {
-        
-        NSTimeInterval interval = [(STMSyncer *)[[STMSessionManager sharedManager].currentSession syncer] syncInterval];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSelector:@selector(repeatUploadOperationForObject:) withObject:picture afterDelay:interval];
-        });
-        
-    }
-    
-    
+    }];
     
 }
 

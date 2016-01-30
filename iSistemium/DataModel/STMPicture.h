@@ -2,22 +2,21 @@
 //  STMPicture.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 28/06/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 17/01/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
 @interface STMPicture : STMComment
 
-@property (nonatomic, retain) NSString * href;
-@property (nonatomic, retain) NSString * imagePath;
-@property (nonatomic, retain) NSString * imageFormat;
-@property (nonatomic, retain) NSString * resizedImagePath;
-@property (nonatomic, retain) NSData * imageThumbnail;
-@property (nonatomic, retain) NSString * name;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMPicture+CoreDataProperties.h"

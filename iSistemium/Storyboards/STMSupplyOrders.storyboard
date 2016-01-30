@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ggS-d6-T4i">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ggS-d6-T4i">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -113,16 +113,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6fw-Rk-NdU" customClass="STMVolumePicker">
-                                <rect key="frame" x="20" y="80" width="560" height="216"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="560" translatesAutoresizingMaskIntoConstraints="NO" id="JAx-t4-mmw">
+                                <rect key="frame" x="20" y="28" width="560" height="69"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="216" id="EZA-PY-14A"/>
-                                </constraints>
-                            </pickerView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JAx-t4-mmw">
-                                <rect key="frame" x="20" y="28" width="560" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="XG0-3u-5tp"/>
+                                    <constraint firstAttribute="height" constant="69" id="XG0-3u-5tp"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -159,9 +153,22 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="560" translatesAutoresizingMaskIntoConstraints="NO" id="HtC-Xb-D41">
+                                <rect key="frame" x="20" y="275" width="560" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6fw-Rk-NdU" customClass="STMVolumePicker">
+                                <rect key="frame" x="20" y="105" width="560" height="162"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="162" id="EZA-PY-14A"/>
+                                </constraints>
+                            </pickerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="cqU-0U-cVg" firstAttribute="top" secondItem="HtC-Xb-D41" secondAttribute="bottom" constant="8" id="2dR-97-uSt"/>
                             <constraint firstAttribute="leadingMargin" secondItem="cqU-0U-cVg" secondAttribute="leading" id="2pj-Dw-bIC"/>
                             <constraint firstItem="JAx-t4-mmw" firstAttribute="top" secondItem="ZIM-kj-otn" secondAttribute="bottom" constant="8" id="457-9x-6AL"/>
                             <constraint firstItem="Zlx-Zo-J3h" firstAttribute="top" secondItem="cqU-0U-cVg" secondAttribute="bottom" id="5JM-hF-mhv"/>
@@ -169,16 +176,20 @@
                             <constraint firstAttribute="trailingMargin" secondItem="JAx-t4-mmw" secondAttribute="trailing" id="BIe-89-qbq"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Zlx-Zo-J3h" secondAttribute="trailing" constant="-20" id="E1n-bl-tBS"/>
                             <constraint firstItem="zRG-sn-OzM" firstAttribute="top" secondItem="Zlx-Zo-J3h" secondAttribute="bottom" id="EIF-Zq-kDX"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="HtC-Xb-D41" secondAttribute="trailing" id="PG2-33-JaO"/>
                             <constraint firstItem="zRG-sn-OzM" firstAttribute="top" secondItem="cqU-0U-cVg" secondAttribute="bottom" constant="20" id="T6p-4U-HxC"/>
                             <constraint firstAttribute="trailingMargin" secondItem="6fw-Rk-NdU" secondAttribute="trailing" id="Uz7-c2-LP3"/>
                             <constraint firstItem="6fw-Rk-NdU" firstAttribute="top" secondItem="JAx-t4-mmw" secondAttribute="bottom" constant="8" id="Zpz-b0-pCm"/>
                             <constraint firstAttribute="leadingMargin" secondItem="6fw-Rk-NdU" secondAttribute="leading" id="inA-TX-sus"/>
+                            <constraint firstItem="HtC-Xb-D41" firstAttribute="top" secondItem="6fw-Rk-NdU" secondAttribute="bottom" constant="8" id="jUh-Ty-aB2"/>
                             <constraint firstAttribute="leadingMargin" secondItem="JAx-t4-mmw" secondAttribute="leading" id="omZ-i0-svJ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="cqU-0U-cVg" secondAttribute="trailing" id="pka-Qf-V2m"/>
-                            <constraint firstItem="cqU-0U-cVg" firstAttribute="top" secondItem="6fw-Rk-NdU" secondAttribute="bottom" constant="8" id="uHS-NY-Nbt"/>
+                            <constraint firstItem="cqU-0U-cVg" firstAttribute="top" secondItem="6fw-Rk-NdU" secondAttribute="bottom" constant="62" id="uHS-NY-Nbt"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="HtC-Xb-D41" secondAttribute="leading" id="vOk-iS-0XH"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="uHS-NY-Nbt"/>
                                 <exclude reference="T6p-4U-HxC"/>
                             </mask>
                         </variation>
@@ -188,6 +199,7 @@
                         <outlet property="barcodesTableContainer" destination="cqU-0U-cVg" id="LGJ-YG-X6a"/>
                         <outlet property="cancelButton" destination="xNP-8o-hmC" id="hiN-Xu-gMl"/>
                         <outlet property="doneButton" destination="Xv8-hf-TIe" id="i4L-az-A3e"/>
+                        <outlet property="expectedNumberOfBatchesLabel" destination="HtC-Xb-D41" id="xQn-aU-fcI"/>
                         <outlet property="repeatButton" destination="s7l-dU-Ev0" id="YCB-Pn-7HK"/>
                         <outlet property="toolbar" destination="Zlx-Zo-J3h" id="byc-Mu-kdJ"/>
                         <outlet property="volumePicker" destination="6fw-Rk-NdU" id="NZ1-Nr-aih"/>
