@@ -81,7 +81,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qfp-VC-Hxb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4648" y="1698"/>
+            <point key="canvasLocation" x="4274" y="1308"/>
         </scene>
         <!--Outlet DebtsTVC-->
         <scene sceneID="UeB-HC-0g8">
@@ -129,7 +129,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xo-pW-fP6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5644" y="1698"/>
+            <point key="canvasLocation" x="5095" y="1308"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="Bge-KK-gSu">
@@ -370,7 +370,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pvc-Be-bcq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6675" y="1698"/>
+            <point key="canvasLocation" x="5928" y="1308"/>
         </scene>
     </scenes>
 </document>

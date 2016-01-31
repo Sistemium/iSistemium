@@ -14,3 +14,4 @@
 #import "STMRootTBC.h"
 #import "STMDebtsDetailsPVC.h"
 #import "STMOutletsTVC.h"
+#import "STMOutletCashingVC.h"

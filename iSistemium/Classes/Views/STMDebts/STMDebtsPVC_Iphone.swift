@@ -9,19 +9,25 @@
 import UIKit
 
 class STMDebtsPVC_Iphone: STMDebtsDetailsPVC{
-    override var outlet:STMOutlet?{
-        didSet{
-            
+    
+    private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
+    
+    override func buttonsForVC(vc:UIViewController){
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: false)
+        self.addDebtButton = addDebt
+        self.navigationItem.rightBarButtonItem = self.addDebtButton
+        if vc.isKindOfClass(STMOutletCashingVC){
+            self.navigationItem.rightBarButtonItem = nil
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         setupSegmentedControl()
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        //self.setToolbarItems([self.editDebtsButton, flexibleSpace, self.addDebtButton], animated: true)
-        self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: true)
-        self.addDebtButton = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
-        self.navigationItem.rightBarButtonItem = self.addDebtButton;
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
     }
 }

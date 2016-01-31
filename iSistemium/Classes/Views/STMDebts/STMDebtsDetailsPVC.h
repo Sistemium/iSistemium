@@ -24,6 +24,8 @@
 
 - (void)dismissAddDebt;
 
--(void)setupSegmentedControl;
+- (void)setupSegmentedControl;
+
+- (void)buttonsForVC:(UIViewController *)vc;
 
 @end
