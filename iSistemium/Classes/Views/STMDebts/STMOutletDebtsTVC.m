@@ -28,14 +28,12 @@
 
 
 @interface STMOutletDebtsTVC ()    <NSFetchedResultsControllerDelegate,
-                                    UIActionSheetDelegate,
                                     MFMailComposeViewControllerDelegate,
                                     MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic, weak) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
-@property (nonatomic, strong) STMDebt *selectedDebt;
 
 
 @end
