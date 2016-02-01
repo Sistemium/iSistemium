@@ -52,10 +52,19 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self testScannerCheck];
-}
+    
+    switch (indexPath.row) {
+        case 0:
+            [self.iOSModeBarCodeScanner getBeepStatus];
+            break;
 
-- (void)testScannerCheck {
+        case 1:
+            [self.iOSModeBarCodeScanner getRumbleStatus];
+            break;
+
+        default:
+            break;
+    }
     
 }
 

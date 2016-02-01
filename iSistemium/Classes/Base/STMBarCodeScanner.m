@@ -30,6 +30,7 @@
 
 @property (nonatomic, strong) ScanApiHelper *iOSScanHelper;
 @property (nonatomic, strong) NSTimer* scanApiConsumer;
+@property (nonatomic, strong) DeviceInfo *deviceInfo;
 
 @property (nonatomic, strong) NSFetchedResultsController *barCodeTypesRC;
 
@@ -65,26 +66,9 @@
             break;
         }
         case STMBarCodeScannerIOSMode: {
-            return [self iOSModeScannerName];
+            return ([self.iOSScanHelper isDeviceConnected]) ? [self.deviceInfo getName] : nil;
             break;
         }
-    }
-    
-}
-
-- (NSString *)iOSModeScannerName {
-    
-    if ([self.iOSScanHelper isDeviceConnected]) {
-
-        NSDictionary *devicesList = [self.iOSScanHelper getDevicesList];
-        DeviceInfo *deviceInfo = devicesList.allValues.firstObject;
-        
-        return [deviceInfo getName];
-                
-    } else {
-        
-        return nil;
-        
     }
     
 }
@@ -396,13 +380,46 @@
 
 }
 
+- (void)getBeepStatus {
+    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo Target:self Response:@selector(onGetBeepStatus:)];
+}
+
+- (void)getRumbleStatus {
+    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo Target:self Response:@selector(onGetRumbleStatus:)];
+}
 
 #pragma mark - Scan API callbacks
 
+- (void)onGetBeepStatus:(ISktScanObject *)scanObj {
+    
+    if ([[scanObj Property] getByte] & kSktScanLocalDecodeActionBeep) {
+        
+        NSLog(@"Beep enabled");
+        
+    } else {
+        
+        NSLog(@"Beep disabled");
+        
+    }
+    
+}
+
+- (void)onGetRumbleStatus:(ISktScanObject *)scanObj {
+    
+    if ([[scanObj Property] getByte] & kSktScanLocalDecodeActionRumble) {
+        
+        NSLog(@"Rumble enabled");
+        
+    } else {
+        
+        NSLog(@"Rumble disabled");
+        
+    }
+
+}
+
 - (void)postGetPostamble:(id)sender {
-    
     NSLog(@"%@", sender);
-    
 }
 
 - (void)postGetSymbology:(id)sender {
@@ -415,7 +432,7 @@
         
         if (SKTSUCCESS(result)) {
             
-            DeviceInfo* deviceInfo=[self.iOSScanHelper getDeviceInfoFromScanObject:scanObj];
+            DeviceInfo *deviceInfo=[self.iOSScanHelper getDeviceInfoFromScanObject:scanObj];
             
             if (deviceInfo){
                 
@@ -479,6 +496,7 @@
         ISktScanObject *scanObj = (ISktScanObject *)sender;
 
         NSLog(@"%@", scanObj);
+        
     }
 }
 
@@ -486,6 +504,8 @@
 #pragma mark ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
+    
+    self.deviceInfo = deviceInfo;
     
     NSString *logMessage = [NSString stringWithFormat:@"Connect scanner: %@", [deviceInfo getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
@@ -501,10 +521,12 @@
 }
 
 - (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
-    
+
+    self.deviceInfo = nil;
+
     NSString *logMessage = [NSString stringWithFormat:@"Disconnect scanner: %@", [deviceRemoved getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-
+    
     [self.delegate deviceRemovalForBarCodeScanner:self];
     
 }
