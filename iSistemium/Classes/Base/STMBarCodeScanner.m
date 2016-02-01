@@ -53,6 +53,42 @@
 
 }
 
+- (NSString *)scannerName {
+    
+    switch (self.mode) {
+        case STMBarCodeScannerCameraMode: {
+            return @"Camera scanner";
+            break;
+        }
+        case STMBarCodeScannerHIDKeyboardMode: {
+            return @"HID scanner";
+            break;
+        }
+        case STMBarCodeScannerIOSMode: {
+            return [self iOSModeScannerName];
+            break;
+        }
+    }
+    
+}
+
+- (NSString *)iOSModeScannerName {
+    
+    if ([self.iOSScanHelper isDeviceConnected]) {
+
+        NSDictionary *devicesList = [self.iOSScanHelper getDevicesList];
+        DeviceInfo *deviceInfo = devicesList.allValues.firstObject;
+        
+        return [deviceInfo getName];
+                
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
+
 - (BOOL)isDeviceConnected {
     return (self.mode == STMBarCodeScannerIOSMode) ? [self.iOSScanHelper isDeviceConnected] : NO;
 }
