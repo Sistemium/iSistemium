@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Action PopoverNC-->
@@ -21,7 +22,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eg7-rg-ZiF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4274" y="534.99999999999989"/>
+            <point key="canvasLocation" x="4206" y="534"/>
         </scene>
         <!--OutletsTVC Iphone-->
         <scene sceneID="jT6-9S-auj">
@@ -58,7 +59,7 @@
         <!--Debts CombineVC-->
         <scene sceneID="qRR-7x-igq">
             <objects>
-                <viewController storyboardIdentifier="debtsCombineVC" id="WYP-HZ-IFA" customClass="STMDebtsCombineVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="debtsCombineVC" extendedLayoutIncludesOpaqueBars="YES" id="WYP-HZ-IFA" customClass="STMDebtsCombineVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Upz-H4-WaO"/>
                         <viewControllerLayoutGuide type="bottom" id="Imh-ql-2Mg"/>
@@ -83,7 +84,7 @@
                             <constraint firstItem="9JN-o4-1sZ" firstAttribute="leading" secondItem="Tdz-Ln-lMV" secondAttribute="leading" id="xDu-Xj-7BT"/>
                         </constraints>
                     </view>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qfp-VC-Hxb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -92,7 +93,7 @@
         <!--Outlet DebtsTVC iphone-->
         <scene sceneID="UeB-HC-0g8">
             <objects>
-                <tableViewController id="x8m-zt-HXJ" customClass="STMOutletDebtsTVC_iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="x8m-zt-HXJ" customClass="STMOutletDebtsTVC_iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="xur-9J-vDW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -128,7 +129,7 @@
                             <outlet property="delegate" destination="x8m-zt-HXJ" id="SvO-YP-aGK"/>
                         </connections>
                     </tableView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <keyCommands/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="600"/>
@@ -140,8 +141,8 @@
         <!--DebtsPVC Iphone-->
         <scene sceneID="QUf-as-hpe">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="X1d-yq-5Mi" customClass="STMDebtsPVC_Iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" extendedLayoutIncludesOpaqueBars="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="X1d-yq-5Mi" customClass="STMDebtsPVC_Iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="R3B-Id-Kkp">
                         <nil key="title"/>
@@ -162,10 +163,10 @@
             </objects>
             <point key="canvasLocation" x="5928" y="534"/>
         </scene>
-        <!--Outlet CashingVC-->
+        <!--Outlet CashingVC iphone-->
         <scene sceneID="06x-zj-3VD">
             <objects>
-                <viewController storyboardIdentifier="outletCashingVC" id="AQ8-zd-d2l" customClass="STMOutletCashingVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="outletCashingVC" extendedLayoutIncludesOpaqueBars="YES" id="AQ8-zd-d2l" customClass="STMOutletCashingVC_iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="VjZ-DO-A0O"/>
                         <viewControllerLayoutGuide type="bottom" id="A6s-QP-EH1"/>
@@ -207,7 +208,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <connections>
                         <outlet property="tableView" destination="0FT-xP-suD" id="80d-0U-Eec"/>
                     </connections>
@@ -215,6 +216,182 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pvc-Be-bcq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5928" y="1308"/>
+        </scene>
+        <!--Add DebtVC iphone-->
+        <scene sceneID="aGp-4Z-kA0">
+            <objects>
+                <viewController storyboardIdentifier="addDebtVC" id="nfA-u5-XWd" customClass="STMAddDebtVC_iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Kb1-5I-3xy"/>
+                        <viewControllerLayoutGuide type="bottom" id="l1c-QD-xmT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="OrW-eN-Pfh">
+                        <rect key="frame" x="0.0" y="0.0" width="388" height="256"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k9Z-c2-fKs">
+                                <rect key="frame" x="0.0" y="212" width="388" height="44"/>
+                                <items>
+                                    <barButtonItem systemItem="cancel" id="qkF-Ql-qta">
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="nfA-u5-XWd" id="mjC-y3-Yzj"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Cqv-uS-xyv"/>
+                                    <barButtonItem systemItem="done" id="Gfg-EX-frb">
+                                        <connections>
+                                            <action selector="doneButtonPressed:" destination="nfA-u5-XWd" id="GM6-jM-eHW"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt number label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jx1-bw-bWJ">
+                                <rect key="frame" x="0.0" y="70" width="154.5" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="Hd8-dG-jHM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wzR-Od-CqX">
+                                <rect key="frame" x="162" y="66" width="218" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KDF-TV-R3G">
+                                <rect key="frame" x="162" y="104" width="218" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nIV-rV-KJo">
+                                <rect key="frame" x="162" y="28" width="205.5" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="205.5" id="Vez-Kg-oVB"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Date">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="UWs-PU-OVg" kind="popover" identifier="showDatePicker" popoverAnchorView="nIV-rV-KJo" id="K0l-xP-1k0">
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                    </segue>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t2S-zr-Wr2">
+                                <rect key="frame" x="0.0" y="28" width="154.5" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt comment label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z6V-t9-x4U">
+                                <rect key="frame" x="0.0" y="146" width="154.5" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="6sa-4X-pHJ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IYi-mS-pgs">
+                                <rect key="frame" x="162" y="142" width="218" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt sum label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eil-cA-C39">
+                                <rect key="frame" x="0.0" y="108" width="154.5" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="kBY-aH-2pw"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="t2S-zr-Wr2" firstAttribute="bottom" secondItem="nIV-rV-KJo" secondAttribute="bottom" id="5cv-aX-LtX"/>
+                            <constraint firstItem="k9Z-c2-fKs" firstAttribute="top" secondItem="IYi-mS-pgs" secondAttribute="bottom" constant="40" id="AhJ-Wr-7zW"/>
+                            <constraint firstItem="IYi-mS-pgs" firstAttribute="top" secondItem="KDF-TV-R3G" secondAttribute="bottom" constant="8" symbolic="YES" id="BSP-Ud-P6G"/>
+                            <constraint firstItem="IYi-mS-pgs" firstAttribute="centerY" secondItem="Z6V-t9-x4U" secondAttribute="centerY" id="ICY-y0-yTg"/>
+                            <constraint firstItem="wzR-Od-CqX" firstAttribute="trailing" secondItem="KDF-TV-R3G" secondAttribute="trailing" id="JbK-x0-ZSP"/>
+                            <constraint firstItem="KDF-TV-R3G" firstAttribute="centerY" secondItem="eil-cA-C39" secondAttribute="centerY" id="JiU-Rh-rdo"/>
+                            <constraint firstItem="nIV-rV-KJo" firstAttribute="top" secondItem="t2S-zr-Wr2" secondAttribute="top" id="M6b-Mr-zbR"/>
+                            <constraint firstItem="nIV-rV-KJo" firstAttribute="leading" secondItem="t2S-zr-Wr2" secondAttribute="trailing" constant="8" symbolic="YES" id="M7S-7x-vVa"/>
+                            <constraint firstItem="k9Z-c2-fKs" firstAttribute="bottom" secondItem="l1c-QD-xmT" secondAttribute="top" id="NFz-cv-jT7"/>
+                            <constraint firstAttribute="trailing" secondItem="k9Z-c2-fKs" secondAttribute="trailing" id="STo-wf-PGi"/>
+                            <constraint firstItem="wzR-Od-CqX" firstAttribute="top" secondItem="nIV-rV-KJo" secondAttribute="bottom" constant="8" symbolic="YES" id="WMI-Ty-HMl"/>
+                            <constraint firstItem="wzR-Od-CqX" firstAttribute="leading" secondItem="KDF-TV-R3G" secondAttribute="leading" id="ZO6-th-VhE"/>
+                            <constraint firstItem="nIV-rV-KJo" firstAttribute="leading" secondItem="wzR-Od-CqX" secondAttribute="leading" id="ZVp-IE-1M2"/>
+                            <constraint firstItem="KDF-TV-R3G" firstAttribute="leading" secondItem="eil-cA-C39" secondAttribute="trailing" constant="8" symbolic="YES" id="bqD-Ua-9QC"/>
+                            <constraint firstItem="IYi-mS-pgs" firstAttribute="leading" secondItem="KDF-TV-R3G" secondAttribute="leading" id="f3L-ES-HhL"/>
+                            <constraint firstItem="t2S-zr-Wr2" firstAttribute="top" secondItem="Kb1-5I-3xy" secondAttribute="bottom" constant="8" symbolic="YES" id="gHP-I9-ptC"/>
+                            <constraint firstItem="Z6V-t9-x4U" firstAttribute="leading" secondItem="jx1-bw-bWJ" secondAttribute="leading" id="gcn-Lu-RUg"/>
+                            <constraint firstItem="eil-cA-C39" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leadingMargin" constant="-20" id="gtt-tf-uRC"/>
+                            <constraint firstItem="k9Z-c2-fKs" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leading" id="heI-Jj-VqI"/>
+                            <constraint firstItem="wzR-Od-CqX" firstAttribute="leading" secondItem="jx1-bw-bWJ" secondAttribute="trailing" constant="8" symbolic="YES" id="me9-3t-KUn"/>
+                            <constraint firstItem="t2S-zr-Wr2" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leadingMargin" constant="-20" id="noW-4s-YA6"/>
+                            <constraint firstItem="Z6V-t9-x4U" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leadingMargin" constant="-20" id="pjK-z4-64T"/>
+                            <constraint firstItem="KDF-TV-R3G" firstAttribute="trailing" secondItem="IYi-mS-pgs" secondAttribute="trailing" id="scn-1y-gUF"/>
+                            <constraint firstItem="KDF-TV-R3G" firstAttribute="top" secondItem="wzR-Od-CqX" secondAttribute="bottom" constant="8" symbolic="YES" id="ufI-m6-s4j"/>
+                            <constraint firstItem="IYi-mS-pgs" firstAttribute="leading" secondItem="Z6V-t9-x4U" secondAttribute="trailing" constant="8" symbolic="YES" id="wCU-9H-VYB"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="wzR-Od-CqX" secondAttribute="trailing" constant="-12" id="yqx-zY-TFF"/>
+                            <constraint firstItem="jx1-bw-bWJ" firstAttribute="centerY" secondItem="wzR-Od-CqX" secondAttribute="centerY" id="z69-rf-QMN"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="388" height="256"/>
+                    <connections>
+                        <outlet property="cancelButton" destination="qkF-Ql-qta" id="Ofm-eX-fgW"/>
+                        <outlet property="commentLabel" destination="Z6V-t9-x4U" id="PUg-Yl-6hB"/>
+                        <outlet property="commentTextField" destination="IYi-mS-pgs" id="hVf-K8-Yqy"/>
+                        <outlet property="dateButton" destination="nIV-rV-KJo" id="9ZE-3U-Uqq"/>
+                        <outlet property="dateLabel" destination="t2S-zr-Wr2" id="xhX-cx-PCC"/>
+                        <outlet property="doneButton" destination="Gfg-EX-frb" id="HCi-Kd-o5U"/>
+                        <outlet property="ndocLabel" destination="jx1-bw-bWJ" id="Pqo-4c-i5b"/>
+                        <outlet property="ndocTextField" destination="wzR-Od-CqX" id="ETW-1d-HLa"/>
+                        <outlet property="sumLabel" destination="eil-cA-C39" id="jHi-47-ILw"/>
+                        <outlet property="sumTextField" destination="KDF-TV-R3G" id="AVL-ss-3PW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7B8-Tx-QSK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6636" y="534"/>
+        </scene>
+        <!--Date PickerVC-->
+        <scene sceneID="FT6-l9-jzI">
+            <objects>
+                <viewController id="UWs-PU-OVg" customClass="STMDatePickerVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jLt-7t-Gde"/>
+                        <viewControllerLayoutGuide type="bottom" id="6cB-t7-jo4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Et5-ZH-KO0">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="a5C-dQ-hbc">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+                                <date key="date" timeIntervalSinceReferenceDate="430049474.30765301">
+                                    <!--2014-08-18 10:11:14 +0000-->
+                                </date>
+                                <connections>
+                                    <action selector="dateValueChanged:" destination="UWs-PU-OVg" eventType="valueChanged" id="jYj-JK-pOP"/>
+                                </connections>
+                            </datePicker>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="216"/>
+                    <connections>
+                        <outlet property="datePicker" destination="a5C-dQ-hbc" id="hoP-Mf-h26"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ciu-F6-5RR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7240" y="534"/>
         </scene>
     </scenes>
 </document>

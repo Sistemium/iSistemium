@@ -11,6 +11,7 @@
 #import "STMFunctions.h"
 #import "STMDebtsController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "iSistemium-Swift.h"
 
 @interface STMAddDebtVC () <UITextFieldDelegate>
 
@@ -155,7 +156,9 @@
 - (IBAction)cancelButtonPressed:(id)sender {
     
     [self.view endEditing:YES];
-    [self.parentVC dismissAddDebt];
+    if (![self.parentVC isKindOfClass: STMDebtsPVC_Iphone.class]){
+        [self.parentVC dismissAddDebt];
+    }
     
 }
 
@@ -188,7 +191,9 @@
 //        NSLog(@"self.debtSum %@", self.debtSum);
 
         [STMDebtsController addNewDebtWithSum:self.debtSum ndoc:self.debtNdoc date:self.selectedDate outlet:self.parentVC.outlet comment:self.commentText];
-        [self.parentVC dismissAddDebt];
+        if (![self.parentVC isKindOfClass: STMDebtsPVC_Iphone.class]){
+            [self.parentVC dismissAddDebt];
+        }
 
     }
     

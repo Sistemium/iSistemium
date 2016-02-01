@@ -8,6 +8,7 @@
 
 import UIKit
 
+@available(iOS 8.0, *)
 class STMOutletsTVC_Iphone: STMOutletsTVC {
     override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         let outlet = self.resultsController.objectAtIndexPath(indexPath)

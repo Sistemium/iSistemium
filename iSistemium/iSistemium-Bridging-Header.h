@@ -16,3 +16,5 @@
 #import "STMOutletsTVC.h"
 #import "STMOutletCashingVC.h"
 #import "STMOutletDebtsTVC.h"
+#import "STMAddDebtVC.h"
+#import "STMDebtsController.h"

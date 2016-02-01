@@ -15,4 +15,7 @@
 @property (nonatomic, weak) STMDebtsDetailsPVC *parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
 
+- (IBAction)cancelButtonPressed:(id)sender;
+- (IBAction)doneButtonPressed:(id)sender;
+
 @end

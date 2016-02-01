@@ -28,4 +28,6 @@
 
 - (void)buttonsForVC:(UIViewController *)vc;
 
+- (void)addDebtButtonPressed:(id)sender;
+
 @end
