@@ -47,7 +47,7 @@
     
 }
 
-- (id <STMSession>)startSessionForUID:(NSString *)uid authDelegate:(id<STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings defaultSettingsFileName:(NSString *)defualtSettingsFileName documentPrefix:(NSString *)prefix {
+- (id <STMSession>)startSessionForUID:(NSString *)uid iSisDB:(NSString *)iSisDB authDelegate:(id<STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings defaultSettingsFileName:(NSString *)defualtSettingsFileName documentPrefix:(NSString *)prefix {
     
     if (uid) {
         
@@ -57,7 +57,12 @@
             
             NSDictionary *validSettings = [STMSettingsData settingsFromFileName:defualtSettingsFileName withSchemaName:@"settings_schema"];
             
-            session = [STMSession initWithUID:uid authDelegate:authDelegate trackers:trackers startSettings:startSettings documentPrefix:prefix];
+            session = [STMSession initWithUID:uid
+                                       iSisDB:(NSString *)iSisDB
+                                 authDelegate:authDelegate
+                                     trackers:trackers
+                                startSettings:startSettings
+                               documentPrefix:prefix];
             
             session.defaultSettings = validSettings[@"values"];
             session.settingsControls = validSettings[@"controls"];

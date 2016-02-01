@@ -17,12 +17,13 @@
 
 @implementation STMSession
 
-+(STMSession *)initWithUID:(NSString *)uid authDelegate:(id<STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings documentPrefix:(NSString *)prefix {
++(STMSession *)initWithUID:(NSString *)uid iSisDB:(NSString *)iSisDB authDelegate:(id<STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings documentPrefix:(NSString *)prefix {
     
     if (uid) {
         
         STMSession *session = [[STMSession alloc] init];
         session.uid = uid;
+        session.iSisDB = iSisDB;
         session.status = @"starting";
         session.startSettings = startSettings;
         session.authDelegate = authDelegate;
@@ -55,7 +56,10 @@
             dataModelName = @"STMDataModel";
         }
 
-        session.document = [STMDocument documentWithUID:session.uid dataModelName:dataModelName prefix:prefix];
+        session.document = [STMDocument documentWithUID:session.uid
+                                                 iSisDB:session.iSisDB
+                                          dataModelName:dataModelName
+                                                 prefix:prefix];
 
         return session;
         
