@@ -396,12 +396,12 @@
         [self processTabsArray:stcTabs];
         
 // temporary tab for coding
-//        [self registerTabWithStoryboardParameters:
-//                                                    @{@"name": @"STMArticleBarcodes",
-//                                                      @"title": @"TAB TITLE",
-//                                                      @"imageName": @"refresh_barcode.png"}
-//         
-//                                          atIndex:stcTabs.count];
+        [self registerTabWithStoryboardParameters:
+                                                    @{@"name": @"STMScannerInfo",
+                                                      @"title": @"Scanner Info",
+                                                      @"imageName": @"scanner_info.png"}
+         
+                                          atIndex:stcTabs.count];
 // end of temporary tab
 
     }
