@@ -2694,7 +2694,7 @@
 				6D814A9D1C490362001B56A3 /* SwiftConstants.swift */,
 				6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */,
 			);
-			name = STMShippingLocations;
+			path = STMShippingLocations;
 			sourceTree = "<group>";
 		};
 		C2F565BFB1515E69445A0A71 /* Pods */ = {
