@@ -18,9 +18,11 @@
 
 @property (nonatomic, strong) UISwitch *beepSwitch;
 @property (nonatomic, strong) UISwitch *rumbleSwitch;
+@property (nonatomic, strong) STMLabel *batteryLabel;
 
 @property (nonatomic, strong) NSIndexPath *beepStatusCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *rumbleStatusCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *batteryStatusCellIndexPath;
 
 
 @end
@@ -87,6 +89,15 @@
     
 }
 
+- (NSIndexPath *)batteryStatusCellIndexPath {
+    
+    if (!_batteryStatusCellIndexPath) {
+        _batteryStatusCellIndexPath = [NSIndexPath indexPathForRow:2 inSection:0];
+    }
+    return _batteryStatusCellIndexPath;
+    
+}
+
 
 #pragma mark - table data
 
@@ -113,6 +124,10 @@
     } else if ([indexPath compare:self.rumbleStatusCellIndexPath] == NSOrderedSame) {
         
         [self fillRumbleStatusCell:cell];
+        
+    } else if ([indexPath compare:self.batteryStatusCellIndexPath] == NSOrderedSame) {
+        
+        [self fillBatteryStatusCell:cell];
         
     } else {
         
@@ -160,6 +175,24 @@
     
 }
 
+- (void)fillBatteryStatusCell:(UITableViewCell *)cell {
+    
+    cell.textLabel.text = NSLocalizedString(@"SCANNER BATTERY", nil);
+    
+    if (self.batteryLabel) {
+        
+        cell.accessoryView = self.batteryLabel;
+        
+    } else {
+        
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [spinner startAnimating];
+        cell.accessoryView = spinner;
+        
+    }
+
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 }
@@ -202,6 +235,7 @@
     
     [self.iOSModeBarCodeScanner getBeepStatus];
     [self.iOSModeBarCodeScanner getRumbleStatus];
+    [self.iOSModeBarCodeScanner getBatteryStatus];
     
     [self.tableView reloadData];
 
@@ -211,6 +245,7 @@
 
     self.beepSwitch.enabled = NO;
     self.rumbleSwitch.enabled = NO;
+    self.batteryLabel = nil;
 
     [self removeBarcodeImage];
     [self.tableView reloadData];
@@ -272,6 +307,23 @@
 
     [self.tableView reloadRowsAtIndexPaths:@[self.rumbleStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
 
+}
+
+- (void)receiveBatteryLevel:(NSNumber *)batteryLevel {
+    
+    if (!self.batteryLabel) {
+        
+        self.batteryLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
+        self.batteryLabel.textAlignment = NSTextAlignmentRight;
+        self.batteryLabel.adjustsFontSizeToFitWidth = YES;
+
+    }
+    
+    self.batteryLabel.text = [NSString stringWithFormat:@"%@%%", batteryLevel];
+    self.batteryLabel.textColor = (batteryLevel.intValue <= 20) ? [UIColor redColor] : [UIColor blackColor];
+
+    [self.tableView reloadRowsAtIndexPaths:@[self.batteryStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+    
 }
 
 

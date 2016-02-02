@@ -411,6 +411,14 @@
     
 }
 
+- (void)getBatteryStatus {
+
+    [self.iOSScanHelper postGetBattery:self.deviceInfo
+                                Target:self
+                              Response:@selector(onGetBatteryStatus:)];
+    
+}
+
 
 #pragma mark - Scan API callbacks
 
@@ -424,6 +432,18 @@
 
 - (void)onSetDecodeAction:(ISktScanObject *)scanObj {
 
+}
+
+- (void)onGetBatteryStatus:(ISktScanObject *)scanObj {
+    
+    unsigned long batteryStatus = [[scanObj Property] getUlong];
+    
+    unsigned char currentLevel = SKTBATTERY_GETCURLEVEL(batteryStatus);
+    
+    NSNumber *batteryLevel = [NSNumber numberWithUnsignedChar:currentLevel];
+
+    [self.delegate receiveBatteryLevel:batteryLevel];
+    
 }
 
 - (void)getBeepStatusFrom:(ISktScanObject *)scanObj {
@@ -511,17 +531,6 @@
     
 }
 
-- (void)getBatteryCallback:(id)sender {
-    
-    if ([sender isKindOfClass:[ISktScanObject class]]) {
-        
-        ISktScanObject *scanObj = (ISktScanObject *)sender;
-
-        NSLog(@"%@", scanObj);
-        
-    }
-}
-
 
 #pragma mark ScanApiHelperDelegate
 
@@ -531,9 +540,7 @@
     
     NSString *logMessage = [NSString stringWithFormat:@"Connect scanner: %@", [deviceInfo getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-    
-//    [self.iOSScanHelper postGetBattery:deviceInfo Target:self Response:@selector(getBatteryCallback:)];
-    
+
     [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
 
     [self checkSymbologiesOnDevice:deviceInfo];

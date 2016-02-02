@@ -43,5 +43,7 @@ typedef NS_ENUM(NSUInteger, STMBarCodeScannerStatus) {
 - (void)getRumbleStatus;
 - (void)setBeepStatus:(BOOL)beepStatus andRumbleStatus:(BOOL)rumbleStatus;
 
+- (void)getBatteryStatus;
+
 
 @end
