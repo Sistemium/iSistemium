@@ -14,8 +14,12 @@
 
 @property (nonatomic, weak) STMDebtsDetailsPVC *parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
+@property (nonatomic, strong) NSString *debtNdoc;
+@property (nonatomic, strong) NSDecimalNumber *debtSum;
+@property (nonatomic, strong) NSString *commentText;
 
 - (IBAction)cancelButtonPressed:(id)sender;
 - (IBAction)doneButtonPressed:(id)sender;
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField;
 
 @end

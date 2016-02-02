@@ -17,6 +17,12 @@ class STMAddDebtVC_iphone: STMAddDebtVC {
     
     @IBAction override func doneButtonPressed(sender:AnyObject) {
         super.doneButtonPressed(sender)
-        self.dismissViewControllerAnimated(true, completion: nil)
+        if debtNdoc ?? "" != "" && debtSum ?? 0 != 0 {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+    }
+    
+    override func textFieldShouldBeginEditing(textField: UITextField!) -> Bool {
+        return true
     }
 }

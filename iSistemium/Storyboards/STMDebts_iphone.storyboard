@@ -238,8 +238,86 @@
                         <rect key="frame" x="0.0" y="0.0" width="388" height="256"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt number label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jx1-bw-bWJ">
+                                <rect key="frame" x="0.0" y="60.5" width="154.5" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="Hd8-dG-jHM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Hd8-dG-jHM"/>
+                                    </mask>
+                                </variation>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wzR-Od-CqX">
+                                <rect key="frame" x="162" y="61" width="218" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KDF-TV-R3G">
+                                <rect key="frame" x="162" y="102" width="218" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nIV-rV-KJo">
+                                <rect key="frame" x="162" y="20" width="218" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="218" id="Vez-Kg-oVB"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Date">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="UWs-PU-OVg" kind="show" identifier="showDatePicker" id="K0l-xP-1k0"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t2S-zr-Wr2">
+                                <rect key="frame" x="0.0" y="20" width="154.5" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt comment label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z6V-t9-x4U">
+                                <rect key="frame" x="0.0" y="142.5" width="154.5" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="6sa-4X-pHJ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="6sa-4X-pHJ"/>
+                                    </mask>
+                                </variation>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IYi-mS-pgs">
+                                <rect key="frame" x="162" y="143" width="218" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt sum label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eil-cA-C39">
+                                <rect key="frame" x="0.0" y="101.5" width="154.5" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="kBY-aH-2pw"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="kBY-aH-2pw"/>
+                                    </mask>
+                                </variation>
+                            </label>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k9Z-c2-fKs">
                                 <rect key="frame" x="0.0" y="212" width="388" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="T81-sX-68f"/>
+                                </constraints>
                                 <items>
                                     <barButtonItem systemItem="cancel" id="qkF-Ql-qta">
                                         <connections>
@@ -254,72 +332,15 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt number label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jx1-bw-bWJ">
-                                <rect key="frame" x="0.0" y="70" width="154.5" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="Hd8-dG-jHM"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wzR-Od-CqX">
-                                <rect key="frame" x="162" y="66" width="218" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KDF-TV-R3G">
-                                <rect key="frame" x="162" y="104" width="218" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nIV-rV-KJo">
-                                <rect key="frame" x="162" y="28" width="218" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="218" id="Vez-Kg-oVB"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="Date">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="UWs-PU-OVg" kind="show" identifier="showDatePicker" id="K0l-xP-1k0"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t2S-zr-Wr2">
-                                <rect key="frame" x="0.0" y="28" width="154.5" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt comment label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z6V-t9-x4U">
-                                <rect key="frame" x="0.0" y="146" width="154.5" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="6sa-4X-pHJ"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IYi-mS-pgs">
-                                <rect key="frame" x="162" y="142" width="218" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt sum label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eil-cA-C39">
-                                <rect key="frame" x="0.0" y="108" width="154.5" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="kBY-aH-2pw"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="nIV-rV-KJo" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="3kO-4P-g93"/>
+                            <constraint firstItem="wzR-Od-CqX" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="4XQ-al-yKF"/>
                             <constraint firstItem="t2S-zr-Wr2" firstAttribute="bottom" secondItem="nIV-rV-KJo" secondAttribute="bottom" id="5cv-aX-LtX"/>
-                            <constraint firstItem="k9Z-c2-fKs" firstAttribute="top" secondItem="IYi-mS-pgs" secondAttribute="bottom" constant="40" id="AhJ-Wr-7zW"/>
+                            <constraint firstItem="Z6V-t9-x4U" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="9Vm-JF-177"/>
                             <constraint firstItem="IYi-mS-pgs" firstAttribute="top" secondItem="KDF-TV-R3G" secondAttribute="bottom" constant="8" symbolic="YES" id="BSP-Ud-P6G"/>
+                            <constraint firstItem="eil-cA-C39" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="H4b-DK-Xa3"/>
                             <constraint firstItem="IYi-mS-pgs" firstAttribute="centerY" secondItem="Z6V-t9-x4U" secondAttribute="centerY" id="ICY-y0-yTg"/>
                             <constraint firstItem="wzR-Od-CqX" firstAttribute="trailing" secondItem="KDF-TV-R3G" secondAttribute="trailing" id="JbK-x0-ZSP"/>
                             <constraint firstItem="KDF-TV-R3G" firstAttribute="centerY" secondItem="eil-cA-C39" secondAttribute="centerY" id="JiU-Rh-rdo"/>
@@ -327,16 +348,19 @@
                             <constraint firstItem="nIV-rV-KJo" firstAttribute="leading" secondItem="t2S-zr-Wr2" secondAttribute="trailing" constant="8" symbolic="YES" id="M7S-7x-vVa"/>
                             <constraint firstItem="k9Z-c2-fKs" firstAttribute="bottom" secondItem="l1c-QD-xmT" secondAttribute="top" id="NFz-cv-jT7"/>
                             <constraint firstAttribute="trailing" secondItem="k9Z-c2-fKs" secondAttribute="trailing" id="STo-wf-PGi"/>
+                            <constraint firstItem="IYi-mS-pgs" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="WIg-uC-pqq"/>
                             <constraint firstItem="wzR-Od-CqX" firstAttribute="top" secondItem="nIV-rV-KJo" secondAttribute="bottom" constant="8" symbolic="YES" id="WMI-Ty-HMl"/>
                             <constraint firstItem="wzR-Od-CqX" firstAttribute="leading" secondItem="KDF-TV-R3G" secondAttribute="leading" id="ZO6-th-VhE"/>
                             <constraint firstItem="nIV-rV-KJo" firstAttribute="leading" secondItem="wzR-Od-CqX" secondAttribute="leading" id="ZVp-IE-1M2"/>
                             <constraint firstItem="KDF-TV-R3G" firstAttribute="leading" secondItem="eil-cA-C39" secondAttribute="trailing" constant="8" symbolic="YES" id="bqD-Ua-9QC"/>
+                            <constraint firstItem="KDF-TV-R3G" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="dlm-w5-n0l"/>
                             <constraint firstItem="IYi-mS-pgs" firstAttribute="leading" secondItem="KDF-TV-R3G" secondAttribute="leading" id="f3L-ES-HhL"/>
-                            <constraint firstItem="t2S-zr-Wr2" firstAttribute="top" secondItem="Kb1-5I-3xy" secondAttribute="bottom" constant="8" symbolic="YES" id="gHP-I9-ptC"/>
+                            <constraint firstItem="t2S-zr-Wr2" firstAttribute="top" secondItem="Kb1-5I-3xy" secondAttribute="bottom" id="gHP-I9-ptC"/>
                             <constraint firstItem="Z6V-t9-x4U" firstAttribute="leading" secondItem="jx1-bw-bWJ" secondAttribute="leading" id="gcn-Lu-RUg"/>
                             <constraint firstItem="eil-cA-C39" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leadingMargin" constant="-20" id="gtt-tf-uRC"/>
                             <constraint firstItem="k9Z-c2-fKs" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leading" id="heI-Jj-VqI"/>
                             <constraint firstItem="wzR-Od-CqX" firstAttribute="leading" secondItem="jx1-bw-bWJ" secondAttribute="trailing" constant="8" symbolic="YES" id="me9-3t-KUn"/>
+                            <constraint firstItem="jx1-bw-bWJ" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="mlJ-UK-CYc"/>
                             <constraint firstItem="t2S-zr-Wr2" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leadingMargin" constant="-20" id="noW-4s-YA6"/>
                             <constraint firstItem="Z6V-t9-x4U" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leadingMargin" constant="-20" id="pjK-z4-64T"/>
                             <constraint firstItem="KDF-TV-R3G" firstAttribute="trailing" secondItem="IYi-mS-pgs" secondAttribute="trailing" id="scn-1y-gUF"/>

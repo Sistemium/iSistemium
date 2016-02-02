@@ -49,11 +49,11 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         let nav = UINavigationController(rootViewController: popoverContent)
         nav.modalPresentationStyle = .Popover
         let popover = nav.popoverPresentationController
-        popoverContent.preferredContentSize = CGSizeMake(388,256)
+        popoverContent.preferredContentSize = CGSizeMake(388,205)
         popover?.delegate = self
         popover?.sourceView = self.view
         var frame = (self.addDebtButton.valueForKey("view") as! UIView).frame
-        frame.origin.y -= 44
+        frame.origin.y -= 60
         popover?.sourceRect = frame
         self.presentViewController(nav, animated: true, completion: nil)
     }
