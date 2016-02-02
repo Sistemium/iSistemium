@@ -14,15 +14,21 @@
 
 @protocol STMBarCodeScannerDelegate <NSObject>
 
-@optional
+@required
 
 - (UIView *)viewForScanner:(STMBarCodeScanner *)scanner;
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type;
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error;
 
+
+@optional
+
 - (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner;
 - (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner;
+
+- (void)receiveScannerBeepStatus:(BOOL)isBeepEnabled;
+- (void)receiveScannerRumbleStatus:(BOOL)isRumbleEnabled;
 
 
 @end

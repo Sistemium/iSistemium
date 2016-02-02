@@ -16,6 +16,12 @@
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
+@property (nonatomic, strong) UISwitch *beepSwitch;
+@property (nonatomic, strong) UISwitch *rumbleSwitch;
+
+@property (nonatomic, strong) NSIndexPath *beepStatusCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *rumbleStatusCellIndexPath;
+
 
 @end
 
@@ -24,6 +30,61 @@
 
 - (BOOL)isInActiveTab {
     return [self.tabBarController.selectedViewController isEqual:self.navigationController];
+}
+
++ (UISwitch *)cellSwitchWithTarget:(STMScannerInfoTVC *)target {
+    
+    UISwitch *cellSwitch = [[UISwitch alloc] init];
+    cellSwitch.enabled = NO;
+    cellSwitch.on = NO;
+    
+    [cellSwitch addTarget:target action:@selector(cellSwitchDidSwitched:) forControlEvents:UIControlEventValueChanged];
+    
+    return cellSwitch;
+    
+}
+
+- (UISwitch *)beepSwitch {
+    
+    if (!_beepSwitch) {
+        _beepSwitch = [[self class] cellSwitchWithTarget:self];
+    }
+    return _beepSwitch;
+    
+}
+
+- (UISwitch *)rumbleSwitch {
+    
+    if (!_rumbleSwitch) {
+        _rumbleSwitch = [[self class] cellSwitchWithTarget:self];
+    }
+    return _rumbleSwitch;
+    
+}
+
+- (void)cellSwitchDidSwitched:(id)sender {
+    
+    [self.iOSModeBarCodeScanner setBeepStatus:self.beepSwitch.on
+                              andRumbleStatus:self.rumbleSwitch.on];
+    
+}
+
+- (NSIndexPath *)beepStatusCellIndexPath {
+    
+    if (!_beepStatusCellIndexPath) {
+        _beepStatusCellIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    }
+    return _beepStatusCellIndexPath;
+    
+}
+
+- (NSIndexPath *)rumbleStatusCellIndexPath {
+    
+    if (!_rumbleStatusCellIndexPath) {
+        _rumbleStatusCellIndexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+    }
+    return _rumbleStatusCellIndexPath;
+    
 }
 
 
@@ -45,27 +106,62 @@
     
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    cell.textLabel.text = @(indexPath.row).stringValue;
+    if ([indexPath compare:self.beepStatusCellIndexPath] == NSOrderedSame) {
+        
+        [self fillBeepStatusCell:cell];
+        
+    } else if ([indexPath compare:self.rumbleStatusCellIndexPath] == NSOrderedSame) {
+        
+        [self fillRumbleStatusCell:cell];
+        
+    } else {
+        
+        cell.textLabel.text = @(indexPath.row).stringValue;
+        
+    }
     
     return cell;
     
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)fillBeepStatusCell:(UITableViewCell *)cell {
     
-    switch (indexPath.row) {
-        case 0:
-            [self.iOSModeBarCodeScanner getBeepStatus];
-            break;
-
-        case 1:
-            [self.iOSModeBarCodeScanner getRumbleStatus];
-            break;
-
-        default:
-            break;
+    cell.textLabel.text = NSLocalizedString(@"SCANNER BEEP", nil);
+    
+    if (self.beepSwitch.enabled) {
+        
+        cell.accessoryView = self.beepSwitch;
+        
+    } else {
+        
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [spinner startAnimating];
+        cell.accessoryView = spinner;
+        
     }
     
+}
+
+- (void)fillRumbleStatusCell:(UITableViewCell *)cell {
+    
+    cell.textLabel.text = NSLocalizedString(@"SCANNER RUMBLE", nil);
+    
+    if (self.rumbleSwitch.enabled) {
+        
+        cell.accessoryView = self.rumbleSwitch;
+        
+    } else {
+        
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [spinner startAnimating];
+        cell.accessoryView = spinner;
+        
+    }
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
 }
 
 
@@ -82,10 +178,7 @@
     [self.iOSModeBarCodeScanner startScan];
     
     if ([self.iOSModeBarCodeScanner isDeviceConnected]) {
-        
-        [self addBarcodeImage];
-        [self.tableView reloadData];
-        
+        [self scannerIsConnected];
     }
     
 }
@@ -98,6 +191,27 @@
     
     [self.iOSModeBarCodeScanner stopScan];
     self.iOSModeBarCodeScanner = nil;
+    
+    [self scannerIsDisconnected];
+
+}
+
+- (void)scannerIsConnected {
+    
+    [self addBarcodeImage];
+    
+    [self.iOSModeBarCodeScanner getBeepStatus];
+    [self.iOSModeBarCodeScanner getRumbleStatus];
+    
+    [self.tableView reloadData];
+
+}
+
+- (void)scannerIsDisconnected {
+
+    self.beepSwitch.enabled = NO;
+    self.rumbleSwitch.enabled = NO;
+
     [self removeBarcodeImage];
     [self.tableView reloadData];
 
@@ -106,13 +220,25 @@
 
 #pragma mark - STMBarCodeScannerDelegate
 
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
+    
+}
+
 - (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
     
     if (scanner == self.iOSModeBarCodeScanner) {
         
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
-        [self addBarcodeImage];
-        [self.tableView reloadData];
+
+        [self scannerIsConnected];
         
     }
     
@@ -123,12 +249,33 @@
     if (scanner == self.iOSModeBarCodeScanner) {
         
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
-        [self removeBarcodeImage];
-        [self.tableView reloadData];
 
+        [self scannerIsDisconnected];
+        
     }
     
 }
+
+- (void)receiveScannerBeepStatus:(BOOL)isBeepEnable {
+    
+    self.beepSwitch.enabled = YES;
+    [self.beepSwitch setOn:isBeepEnable animated:YES];
+    
+    [self.tableView reloadRowsAtIndexPaths:@[self.beepStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+    
+}
+
+- (void)receiveScannerRumbleStatus:(BOOL)isRumbleEnable {
+    
+    self.rumbleSwitch.enabled = YES;
+    [self.rumbleSwitch setOn:isRumbleEnable animated:YES];
+
+    [self.tableView reloadRowsAtIndexPaths:@[self.rumbleStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+
+}
+
+
+#pragma mark - barcode image
 
 - (void)addBarcodeImage {
     

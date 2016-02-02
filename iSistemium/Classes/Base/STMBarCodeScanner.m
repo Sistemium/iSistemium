@@ -381,40 +381,62 @@
 }
 
 - (void)getBeepStatus {
-    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo Target:self Response:@selector(onGetBeepStatus:)];
+    
+    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo
+                                     Target:self
+                                   Response:@selector(onGetBeepStatus:)];
+    
 }
 
 - (void)getRumbleStatus {
-    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo Target:self Response:@selector(onGetRumbleStatus:)];
+    
+    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo
+                                     Target:self
+                                   Response:@selector(onGetRumbleStatus:)];
+    
 }
+
+- (void)setBeepStatus:(BOOL)beepStatus andRumbleStatus:(BOOL)rumbleStatus {
+    
+    int beepDecodeAction = (beepStatus) ? kSktScanLocalDecodeActionBeep : kSktScanLocalDecodeActionNone;
+    int rumbleDecodeAction = (rumbleStatus) ? kSktScanLocalDecodeActionRumble : kSktScanLocalDecodeActionNone;
+    int flashDecodeAction = kSktScanLocalDecodeActionFlash;
+    
+    int combineDecodeAction = (beepDecodeAction|rumbleDecodeAction|flashDecodeAction);
+    
+    [self.iOSScanHelper postSetDecodeAction:self.deviceInfo
+                               DecodeAction:combineDecodeAction
+                                     Target:self
+                                   Response:@selector(onSetDecodeAction:)];
+    
+}
+
 
 #pragma mark - Scan API callbacks
 
 - (void)onGetBeepStatus:(ISktScanObject *)scanObj {
-    
-    if ([[scanObj Property] getByte] & kSktScanLocalDecodeActionBeep) {
-        
-        NSLog(@"Beep enabled");
-        
-    } else {
-        
-        NSLog(@"Beep disabled");
-        
-    }
-    
+    [self getBeepStatusFrom:scanObj];
 }
 
 - (void)onGetRumbleStatus:(ISktScanObject *)scanObj {
+    [self getRumbleStatusFrom:scanObj];
+}
+
+- (void)onSetDecodeAction:(ISktScanObject *)scanObj {
+
+}
+
+- (void)getBeepStatusFrom:(ISktScanObject *)scanObj {
     
-    if ([[scanObj Property] getByte] & kSktScanLocalDecodeActionRumble) {
-        
-        NSLog(@"Rumble enabled");
-        
-    } else {
-        
-        NSLog(@"Rumble disabled");
-        
-    }
+    BOOL isBeepEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionBeep);
+    [self.delegate receiveScannerBeepStatus:isBeepEnabled];
+
+}
+
+- (void)getRumbleStatusFrom:(ISktScanObject *)scanObj {
+    
+    BOOL isRumbleEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionRumble);
+    [self.delegate receiveScannerRumbleStatus:isRumbleEnabled];
 
 }
 
