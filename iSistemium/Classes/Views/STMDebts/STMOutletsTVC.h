@@ -11,6 +11,8 @@
 
 @interface STMOutletsTVC : STMSearchableTVC
 
+- (void)cashingProcessStart;
+
 - (void)dissmissPopover;
 
 @end

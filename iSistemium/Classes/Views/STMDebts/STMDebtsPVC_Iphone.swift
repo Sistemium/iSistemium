@@ -11,6 +11,10 @@ import UIKit
 @available(iOS 8.0, *)
 class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDelegate{
     
+    var doneButton:STMBarButtonItem?
+    
+    var cancelButton:STMBarButtonItem?
+    
     private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
     
     override func buttonsForVC(vc:UIViewController){
@@ -25,10 +29,17 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         }
     }
     
+    override func cashingButtonPressed() {
+        super.cashingButtonPressed()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSegmentedControl()
         removeSwipeGesture()
+        doneButton = STMBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: self, action: "cashingButtonPressed")
+        cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .Plain, target:STMCashingProcessController.sharedInstance(), action:"cancelCashingProcess")
+        cancelButton!.tintColor = .redColor()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -61,5 +72,25 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
         return .None
     }
+    
+    override func cashingProcessStart() {
+        self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
+        self.navigationItem.titleView?.hidden = true
+        self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
+        self.setToolbarItems([],animated: false)
+        super.cashingProcessStart()
+    }
+    
+    override func cashingProcessDone() {
+        super.cashingProcessDone()
+        self.navigationItem.titleView?.hidden = false
+        self.navigationItem.setLeftBarButtonItem(self.navigationItem.backBarButtonItem, animated: false)
+        self.buttonsForVC(self)
+    }
+    
+//    override func cashingProcessCancel() {
+//        super.cashingProcessCancel()
+//        STMCashingProcessController.sharedInstance().state = .
+//    }
     
 }

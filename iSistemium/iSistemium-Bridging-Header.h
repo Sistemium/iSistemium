@@ -20,3 +20,4 @@
 #import "STMDebtsController.h"
 #import "STMUncashingMasterTVC.h"
 #import "STMUncashingDetailsTVC.h"
+#import "STMCashingProcessController.h"

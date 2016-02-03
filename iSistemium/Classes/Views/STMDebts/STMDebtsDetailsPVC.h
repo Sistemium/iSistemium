@@ -20,7 +20,11 @@
 @property (nonatomic, strong) UIBarButtonItem *editDebtsButton;
 @property (nonatomic, strong) STMBarButtonItemDone *cashingButton;
 
+- (void)cashingProcessDone;
+
 - (void)cashingButtonPressed;
+
+- (void)cashingProcessStart;
 
 - (void)dismissAddDebt;
 
@@ -29,5 +33,7 @@
 - (void)buttonsForVC:(UIViewController *)vc;
 
 - (void)addDebtButtonPressed:(id)sender;
+
+- (void)cashingProcessCancel;
 
 @end
