@@ -454,3 +454,7 @@
 "1BATCHES" = "batch";
 "2BATCHES" = "batches";
 "5BATCHES" = "batches";
+"SCANNER BEEP" = "Scanner beep";
+"SCANNER RUMBLE" = "Scanner rumble";
+"SCANNER BATTERY" = "Scanner battery";
+

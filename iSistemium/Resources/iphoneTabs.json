@@ -16,4 +16,5 @@
     "STMUncashing"          : null,
     "STMWebView"            : "STMWebView",
     "STMShippingLocations"  : "STMShippingLocations",
+    "STMScannerInfo"        : "STMScannerInfo"
 }

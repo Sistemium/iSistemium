@@ -30,6 +30,7 @@
 
 @property (nonatomic, strong) ScanApiHelper *iOSScanHelper;
 @property (nonatomic, strong) NSTimer* scanApiConsumer;
+@property (nonatomic, strong) DeviceInfo *deviceInfo;
 
 @property (nonatomic, strong) NSFetchedResultsController *barCodeTypesRC;
 
@@ -51,6 +52,25 @@
     }
     return self;
 
+}
+
+- (NSString *)scannerName {
+    
+    switch (self.mode) {
+        case STMBarCodeScannerCameraMode: {
+            return @"Camera scanner";
+            break;
+        }
+        case STMBarCodeScannerHIDKeyboardMode: {
+            return @"HID scanner";
+            break;
+        }
+        case STMBarCodeScannerIOSMode: {
+            return ([self.iOSScanHelper isDeviceConnected]) ? [self.deviceInfo getName] : nil;
+            break;
+        }
+    }
+    
 }
 
 - (BOOL)isDeviceConnected {
@@ -360,13 +380,88 @@
 
 }
 
+- (void)getBeepStatus {
+    
+    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo
+                                     Target:self
+                                   Response:@selector(onGetBeepStatus:)];
+    
+}
+
+- (void)getRumbleStatus {
+    
+    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo
+                                     Target:self
+                                   Response:@selector(onGetRumbleStatus:)];
+    
+}
+
+- (void)setBeepStatus:(BOOL)beepStatus andRumbleStatus:(BOOL)rumbleStatus {
+    
+    int beepDecodeAction = (beepStatus) ? kSktScanLocalDecodeActionBeep : kSktScanLocalDecodeActionNone;
+    int rumbleDecodeAction = (rumbleStatus) ? kSktScanLocalDecodeActionRumble : kSktScanLocalDecodeActionNone;
+    int flashDecodeAction = kSktScanLocalDecodeActionFlash;
+    
+    int combineDecodeAction = (beepDecodeAction|rumbleDecodeAction|flashDecodeAction);
+    
+    [self.iOSScanHelper postSetDecodeAction:self.deviceInfo
+                               DecodeAction:combineDecodeAction
+                                     Target:self
+                                   Response:@selector(onSetDecodeAction:)];
+    
+}
+
+- (void)getBatteryStatus {
+
+    [self.iOSScanHelper postGetBattery:self.deviceInfo
+                                Target:self
+                              Response:@selector(onGetBatteryStatus:)];
+    
+}
+
 
 #pragma mark - Scan API callbacks
 
+- (void)onGetBeepStatus:(ISktScanObject *)scanObj {
+    [self getBeepStatusFrom:scanObj];
+}
+
+- (void)onGetRumbleStatus:(ISktScanObject *)scanObj {
+    [self getRumbleStatusFrom:scanObj];
+}
+
+- (void)onSetDecodeAction:(ISktScanObject *)scanObj {
+
+}
+
+- (void)onGetBatteryStatus:(ISktScanObject *)scanObj {
+    
+    unsigned long batteryStatus = [[scanObj Property] getUlong];
+    
+    unsigned char currentLevel = SKTBATTERY_GETCURLEVEL(batteryStatus);
+    
+    NSNumber *batteryLevel = [NSNumber numberWithUnsignedChar:currentLevel];
+
+    [self.delegate receiveBatteryLevel:batteryLevel];
+    
+}
+
+- (void)getBeepStatusFrom:(ISktScanObject *)scanObj {
+    
+    BOOL isBeepEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionBeep);
+    [self.delegate receiveScannerBeepStatus:isBeepEnabled];
+
+}
+
+- (void)getRumbleStatusFrom:(ISktScanObject *)scanObj {
+    
+    BOOL isRumbleEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionRumble);
+    [self.delegate receiveScannerRumbleStatus:isRumbleEnabled];
+
+}
+
 - (void)postGetPostamble:(id)sender {
-    
     NSLog(@"%@", sender);
-    
 }
 
 - (void)postGetSymbology:(id)sender {
@@ -379,7 +474,7 @@
         
         if (SKTSUCCESS(result)) {
             
-            DeviceInfo* deviceInfo=[self.iOSScanHelper getDeviceInfoFromScanObject:scanObj];
+            DeviceInfo *deviceInfo=[self.iOSScanHelper getDeviceInfoFromScanObject:scanObj];
             
             if (deviceInfo){
                 
@@ -436,26 +531,16 @@
     
 }
 
-- (void)getBatteryCallback:(id)sender {
-    
-    if ([sender isKindOfClass:[ISktScanObject class]]) {
-        
-        ISktScanObject *scanObj = (ISktScanObject *)sender;
-
-        NSLog(@"%@", scanObj);
-    }
-}
-
 
 #pragma mark ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
     
+    self.deviceInfo = deviceInfo;
+    
     NSString *logMessage = [NSString stringWithFormat:@"Connect scanner: %@", [deviceInfo getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-    
-//    [self.iOSScanHelper postGetBattery:deviceInfo Target:self Response:@selector(getBatteryCallback:)];
-    
+
     [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
 
     [self checkSymbologiesOnDevice:deviceInfo];
@@ -465,10 +550,12 @@
 }
 
 - (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
-    
+
+    self.deviceInfo = nil;
+
     NSString *logMessage = [NSString stringWithFormat:@"Disconnect scanner: %@", [deviceRemoved getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-
+    
     [self.delegate deviceRemovalForBarCodeScanner:self];
     
 }
