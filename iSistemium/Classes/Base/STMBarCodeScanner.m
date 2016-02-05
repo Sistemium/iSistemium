@@ -442,6 +442,8 @@
     
     NSNumber *batteryLevel = [NSNumber numberWithUnsignedChar:currentLevel];
 
+//    [SktClassFactory releaseScanObject:scanObj];
+    
     [self.delegate receiveBatteryLevel:batteryLevel];
     
 }
@@ -449,6 +451,9 @@
 - (void)getBeepStatusFrom:(ISktScanObject *)scanObj {
     
     BOOL isBeepEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionBeep);
+
+//    [SktClassFactory releaseScanObject:scanObj];
+
     [self.delegate receiveScannerBeepStatus:isBeepEnabled];
 
 }
@@ -456,6 +461,9 @@
 - (void)getRumbleStatusFrom:(ISktScanObject *)scanObj {
     
     BOOL isRumbleEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionRumble);
+    
+//    [SktClassFactory releaseScanObject:scanObj];
+
     [self.delegate receiveScannerRumbleStatus:isRumbleEnabled];
 
 }

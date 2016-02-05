@@ -457,4 +457,5 @@
 "SCANNER BEEP" = "Звуковой сигнал";
 "SCANNER RUMBLE" = "Вибратор";
 "SCANNER BATTERY" = "Заряд батареи";
+"NO SCANNER AVAILABLE" = "Штрих-код сканер не подключен";
 

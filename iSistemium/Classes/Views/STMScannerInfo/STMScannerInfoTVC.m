@@ -24,6 +24,9 @@
 @property (nonatomic, strong) NSIndexPath *rumbleStatusCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *batteryStatusCellIndexPath;
 
+@property (nonatomic) BOOL isRequestingScannerData;
+@property (nonatomic) NSUInteger scannerDataCountdown;
+
 
 @end
 
@@ -110,16 +113,18 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.iOSModeBarCodeScanner isDeviceConnected] ? 3 : 0;
+    return [self.iOSModeBarCodeScanner isDeviceConnected] ? 3 : 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
+    cell.accessoryView = nil;
+    
     if ([indexPath compare:self.beepStatusCellIndexPath] == NSOrderedSame) {
         
-        [self fillBeepStatusCell:cell];
+        [self.iOSModeBarCodeScanner isDeviceConnected] ? [self fillBeepStatusCell:cell] : [self fillNoScannerCell:cell];
         
     } else if ([indexPath compare:self.rumbleStatusCellIndexPath] == NSOrderedSame) {
         
@@ -137,6 +142,10 @@
     
     return cell;
     
+}
+
+- (void)fillNoScannerCell:(UITableViewCell *)cell {
+    cell.textLabel.text = NSLocalizedString(@"NO SCANNER AVAILABLE", nil);
 }
 
 - (void)fillBeepStatusCell:(UITableViewCell *)cell {
@@ -195,6 +204,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+//    if (indexPath.row == 2 && [self.iOSModeBarCodeScanner isDeviceConnected] && !self.isRequestingScannerData) {
+//        
+//        self.scannerDataCountdown = 1;
+//        [self.iOSModeBarCodeScanner getBatteryStatus];
+//        
+//    }
+    
 }
 
 
@@ -232,12 +248,20 @@
 - (void)scannerIsConnected {
     
     [self addBarcodeImage];
+    [self requestScannerData];
+    
+    [self.tableView reloadData];
+
+}
+
+- (void)requestScannerData {
+    
+    self.isRequestingScannerData = YES;
+    self.scannerDataCountdown = 3;
     
     [self.iOSModeBarCodeScanner getBeepStatus];
     [self.iOSModeBarCodeScanner getRumbleStatus];
     [self.iOSModeBarCodeScanner getBatteryStatus];
-    
-    [self.tableView reloadData];
 
 }
 
@@ -298,6 +322,8 @@
     
     [self.tableView reloadRowsAtIndexPaths:@[self.beepStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
     
+    [self countdownScannerData];
+    
 }
 
 - (void)receiveScannerRumbleStatus:(BOOL)isRumbleEnable {
@@ -306,6 +332,8 @@
     [self.rumbleSwitch setOn:isRumbleEnable animated:YES];
 
     [self.tableView reloadRowsAtIndexPaths:@[self.rumbleStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+
+    [self countdownScannerData];
 
 }
 
@@ -323,6 +351,16 @@
     self.batteryLabel.textColor = (batteryLevel.intValue <= 20) ? [UIColor redColor] : [UIColor blackColor];
 
     [self.tableView reloadRowsAtIndexPaths:@[self.batteryStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+    
+    [self countdownScannerData];
+
+}
+
+- (void)countdownScannerData {
+    
+    self.scannerDataCountdown--;
+    
+    self.isRequestingScannerData = (self.scannerDataCountdown > 0);
     
 }
 
@@ -347,8 +385,8 @@
     
     [super customInit];
     
-    self.title = @"";
-    
+    self.navigationItem.title = self.title;
+        
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     
     [self startBarcodeScanning];
@@ -364,8 +402,13 @@
     
     [super viewWillAppear:animated];
     
-    if ([self.iOSModeBarCodeScanner isDeviceConnected]) {
-        [self.iOSModeBarCodeScanner getBatteryStatus];
+    if ([self.iOSModeBarCodeScanner isDeviceConnected] && !self.isRequestingScannerData) {
+        
+//        self.scannerDataCountdown = 1;
+//        [self.iOSModeBarCodeScanner getBatteryStatus];
+        
+//        [self requestScannerData];
+        
     }
 
 }
