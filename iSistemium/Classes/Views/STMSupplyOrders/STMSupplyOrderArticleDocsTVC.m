@@ -258,8 +258,11 @@
 - (void)fillArticleDocCell:(STMCustom9TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
+    
+    UIColor *textColor = ([articleDoc volumeRemainingToSupply] > 0) ? [UIColor blackColor] : [UIColor lightGrayColor];
 
     [self fillTextLabelForCell:cell withSupplyOrderArticleDoc:articleDoc];
+    cell.titleLabel.textColor = textColor;
     
     if (articleDoc.articleDoc.dateImport) {
         
@@ -282,10 +285,13 @@
 
     }
     
+    cell.detailLabel.textColor = textColor;
+    
     STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 46, 21)];
     volumeLabel.text = [articleDoc volumeText];
     volumeLabel.textAlignment = NSTextAlignmentRight;
     volumeLabel.adjustsFontSizeToFitWidth = YES;
+    volumeLabel.textColor = textColor;
     
     cell.accessoryView = volumeLabel;
     
@@ -300,6 +306,7 @@
 //    cell.imageView.image = ordImage;
 
     cell.infoLabel.text = articleDoc.ord.stringValue;
+    cell.infoLabel.textColor = textColor;
     
 }
 
