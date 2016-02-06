@@ -163,10 +163,10 @@
             </objects>
             <point key="canvasLocation" x="5928" y="534"/>
         </scene>
-        <!--Outlet CashingVC iphone-->
+        <!--Outlet CashingVC-->
         <scene sceneID="06x-zj-3VD">
             <objects>
-                <viewController storyboardIdentifier="outletCashingVC" extendedLayoutIncludesOpaqueBars="YES" id="AQ8-zd-d2l" customClass="STMOutletCashingVC_iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="outletCashingVC" extendedLayoutIncludesOpaqueBars="YES" id="AQ8-zd-d2l" customClass="STMOutletCashingVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="VjZ-DO-A0O"/>
                         <viewControllerLayoutGuide type="bottom" id="A6s-QP-EH1"/>

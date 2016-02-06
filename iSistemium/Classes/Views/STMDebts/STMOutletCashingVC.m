@@ -377,11 +377,12 @@
     
     [self.tableView deleteSections:self.deletedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView insertSections:self.insertedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView reloadSections:self.updatedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadSections:self.updatedSectionIndexes withRowAnimation:UITableViewRowAnimationNone];
     
     [self.tableView deleteRowsAtIndexPaths:self.deletedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView insertRowsAtIndexPaths:self.insertedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView reloadRowsAtIndexPaths:self.updatedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+
     
     [self.tableView endUpdates];
     
@@ -406,6 +407,7 @@
             
         case NSFetchedResultsChangeDelete:
             [self.deletedSectionIndexes addIndex:sectionIndex];
+            [self.updatedSectionIndexes removeIndex:sectionIndex];
             break;
             
 //        case NSFetchedResultsChangeUpdate:
@@ -440,9 +442,7 @@
         
         [self.deletedRowIndexPaths addObject:indexPath];
         
-        if (newIndexPath) {
-            [self.updatedSectionIndexes addIndex:newIndexPath.section];
-        }
+        [self.updatedSectionIndexes addIndex:indexPath.section];
         
         self.wasChanged = YES;
         
@@ -489,7 +489,7 @@
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-//    [self.tableView setEditing:YES animated:YES];
+   [self.tableView setEditing:YES animated:YES];
 
 }
 
@@ -512,6 +512,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
     
 }
 

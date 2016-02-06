@@ -15,6 +15,8 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     var cancelButton:STMBarButtonItem?
     
+    let summLabel = UIBarButtonItem(customView: UILabel())
+    
     private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
     
     override func buttonsForVC(vc:UIViewController){
@@ -77,8 +79,9 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
         self.navigationItem.titleView?.hidden = true
         self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
-        self.setToolbarItems([],animated: false)
+        self.setToolbarItems([summLabel],animated: false)
         super.cashingProcessStart()
+        STMCashingProcessController.sharedInstance().selectedDate = NSDate() //Delete after date is added
     }
     
     override func cashingProcessDone() {
@@ -87,6 +90,14 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         self.navigationItem.setLeftBarButtonItem(self.navigationItem.backBarButtonItem, animated: false)
         self.buttonsForVC(self)
     }
+    
+    func showCashingSumLabel() {
+    let summ = STMCashingProcessController.sharedInstance().debtsSumm
+    let numberFormatter = STMFunctions.currencyFormatter
+    let sumString = numberFormatter().stringFromNumber(summ())
+        self.summLabel.title = NSString(format: "%@: %@", NSLocalizedString("PICKED",comment: ""), sumString!) as String
+    }
+    
     
 //    override func cashingProcessCancel() {
 //        super.cashingProcessCancel()

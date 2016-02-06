@@ -604,7 +604,7 @@
 
     [self performFetch];
 
-    self.title = NSLocalizedString(@"OUTLETS", nil);
+    self.navigationItem.title = NSLocalizedString(@"OUTLETS", nil);
         
     [self addObservers];
     
