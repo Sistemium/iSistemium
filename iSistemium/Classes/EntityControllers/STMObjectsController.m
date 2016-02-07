@@ -759,18 +759,19 @@
 
 }
 
-+ (NSArray *)objectsWithXids:(NSArray *)xids {
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"xid IN %@", xids];
-    
-    NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
-    return fetchResult;
-
-}
+#warning - method below is not used?
+//+ (NSArray *)objectsWithXids:(NSArray *)xids {
+//    
+//    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+//    request.predicate = [NSPredicate predicateWithFormat:@"xid IN %@", xids];
+//    
+//    NSError *error;
+//    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+//    
+//    return fetchResult;
+//
+//}
 
 + (NSArray *)allObjectsFromContext:(NSManagedObjectContext *)context {
     
@@ -786,33 +787,34 @@
 
 }
 
-+ (NSArray *)allObjectIDsFromContext:(NSManagedObjectContext *)context {
-    
-    if (!context) context = [self document].managedObjectContext;
-
-    NSString *entityName = NSStringFromClass([STMDatum class]);
-    
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-    request.resultType = NSDictionaryResultType;
-    
-    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
-    NSPropertyDescription *xidProperty = entity.propertiesByName[@"xid"];
-
-    NSExpressionDescription* objectIDDescription = [NSExpressionDescription new];
-    objectIDDescription.name = @"objectID";
-    objectIDDescription.expression = [NSExpression expressionForEvaluatedObject];
-    objectIDDescription.expressionResultType = NSObjectIDAttributeType;
-
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    
-    request.propertiesToFetch = @[xidProperty, objectIDDescription];
-    
-    NSError *error;
-    NSArray *fetchResult = [context executeFetchRequest:request error:&error];
-    
-    return fetchResult;
-
-}
+#warning - method below is not used?
+//+ (NSArray *)allObjectIDsFromContext:(NSManagedObjectContext *)context {
+//    
+//    if (!context) context = [self document].managedObjectContext;
+//
+//    NSString *entityName = NSStringFromClass([STMDatum class]);
+//    
+//    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
+//    request.resultType = NSDictionaryResultType;
+//    
+//    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
+//    NSPropertyDescription *xidProperty = entity.propertiesByName[@"xid"];
+//
+//    NSExpressionDescription* objectIDDescription = [NSExpressionDescription new];
+//    objectIDDescription.name = @"objectID";
+//    objectIDDescription.expression = [NSExpression expressionForEvaluatedObject];
+//    objectIDDescription.expressionResultType = NSObjectIDAttributeType;
+//
+//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+//    
+//    request.propertiesToFetch = @[xidProperty, objectIDDescription];
+//    
+//    NSError *error;
+//    NSArray *fetchResult = [context executeFetchRequest:request error:&error];
+//    
+//    return fetchResult;
+//
+//}
 
 + (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler {
     
@@ -914,10 +916,13 @@
     
     if (!objectKeys) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+
+        NSEntityDescription *coreEntity = [self coreEntityForEntity:objectEntity];
+        
+//        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
         NSSet *coreKeys = [NSSet setWithArray:coreEntity.attributesByName.allKeys];
 
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
         objectKeys = [NSMutableSet setWithArray:objectEntity.attributesByName.allKeys];
         [objectKeys minusSet:coreKeys];
         
@@ -929,6 +934,10 @@
     
 }
 
++ (NSEntityDescription *)coreEntityForEntity:(NSEntityDescription *)entity {
+    return (entity.superentity) ? [self coreEntityForEntity:entity.superentity] : entity;
+}
+
 + (NSDictionary *)ownObjectRelationshipsForEntityName:(NSString *)entityName {
     
     NSMutableDictionary *entitiesOwnRelationships = [self sharedController].entitiesOwnRelationships;
@@ -936,10 +945,13 @@
     
     if (!objectRelationships) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+
+        NSEntityDescription *coreEntity = [self coreEntityForEntity:objectEntity];
+
+//        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
         NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
         
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
         NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
         
         [objectRelationshipNames minusSet:coreRelationshipNames];
@@ -970,10 +982,13 @@
     
     if (!objectRelationships) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+
+        NSEntityDescription *coreEntity = [self coreEntityForEntity:objectEntity];
+
+//        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
         NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
         
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
         NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
         
         [objectRelationshipNames minusSet:coreRelationshipNames];
@@ -1317,8 +1332,9 @@
     }
     
     NSLog(@"unknow count %d", counter);
-    NSLog(@"fantoms count %d", [self numberOfFantoms]);
-    NSLog(@"total count %d", totalCount);
+//    NSLog(@"fantoms count %d", [self numberOfFantoms]);
+    NSLog(@"fantoms count");
+  NSLog(@"total count %d", totalCount);
 
 }
 
