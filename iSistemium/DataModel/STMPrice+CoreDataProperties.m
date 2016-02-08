@@ -13,7 +13,19 @@
 
 @implementation STMPrice (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
 @dynamic price;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic article;
 @dynamic priceType;
 

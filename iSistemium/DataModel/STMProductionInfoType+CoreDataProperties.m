@@ -13,10 +13,22 @@
 
 @implementation STMProductionInfoType (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
 @dynamic datatype;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic mask;
 @dynamic name;
+@dynamic ownerXid;
 @dynamic separator;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic articleProductionInfo;
 @dynamic articles;
 

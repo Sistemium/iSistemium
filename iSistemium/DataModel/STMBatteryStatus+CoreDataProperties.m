@@ -15,5 +15,17 @@
 
 @dynamic batteryLevel;
 @dynamic batteryState;
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 
 @end

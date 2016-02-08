@@ -13,10 +13,22 @@
 
 @implementation STMShipment (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
 @dynamic date;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
 @dynamic isShipped;
+@dynamic lts;
 @dynamic ndoc;
 @dynamic needCashing;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic driver;
 @dynamic outlet;
 @dynamic saleOrder;

@@ -13,10 +13,22 @@
 
 @implementation STMCashing (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
 @dynamic date;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
 @dynamic isProcessed;
+@dynamic lts;
 @dynamic ndoc;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic summ;
+@dynamic xid;
 @dynamic debt;
 @dynamic outlet;
 @dynamic uncashing;

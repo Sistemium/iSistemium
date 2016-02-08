@@ -14,12 +14,24 @@
 @implementation STMShipmentRoutePoint (CoreDataProperties)
 
 @dynamic address;
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
 @dynamic isReached;
+@dynamic lts;
 @dynamic name;
 @dynamic ord;
+@dynamic ownerXid;
 @dynamic processing;
 @dynamic processingMessage;
 @dynamic shortName;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic reachedAtLocation;
 @dynamic shipmentRoute;
 @dynamic shipments;

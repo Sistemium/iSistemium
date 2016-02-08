@@ -15,15 +15,27 @@
 
 @dynamic badVolume;
 @dynamic brokenVolume;
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic doneVolume;
 @dynamic excessVolume;
+@dynamic id;
+@dynamic isFantom;
 @dynamic isProcessed;
+@dynamic lts;
 @dynamic ord;
+@dynamic ownerXid;
 @dynamic price;
 @dynamic priceDoc;
 @dynamic regradeVolume;
 @dynamic shortageVolume;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic volume;
+@dynamic xid;
 @dynamic article;
 @dynamic articleFact;
 @dynamic shipment;

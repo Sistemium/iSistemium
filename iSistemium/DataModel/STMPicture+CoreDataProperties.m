@@ -13,12 +13,24 @@
 
 @implementation STMPicture (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic href;
+@dynamic id;
 @dynamic imageFormat;
 @dynamic imagePath;
 @dynamic imageThumbnail;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic name;
+@dynamic ownerXid;
 @dynamic picturesInfo;
 @dynamic resizedImagePath;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 
 @end

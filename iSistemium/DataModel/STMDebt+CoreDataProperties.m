@@ -14,12 +14,24 @@
 @implementation STMDebt (CoreDataProperties)
 
 @dynamic calculatedSum;
+@dynamic checksum;
+@dynamic commentText;
 @dynamic date;
 @dynamic dateE;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic ndoc;
+@dynamic ownerXid;
 @dynamic responsibility;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic summ;
 @dynamic summOrigin;
+@dynamic xid;
 @dynamic cashings;
 @dynamic outlet;
 

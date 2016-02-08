@@ -13,9 +13,21 @@
 
 @implementation STMCampaign (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic gain;
 @dynamic goal;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic name;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic articles;
 @dynamic campaignGroup;
 @dynamic outlets;

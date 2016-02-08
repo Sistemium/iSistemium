@@ -13,9 +13,21 @@
 
 @implementation STMBarCodeType (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic mask;
 @dynamic name;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic symbology;
 @dynamic type;
+@dynamic xid;
 
 @end

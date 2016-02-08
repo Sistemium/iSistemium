@@ -14,8 +14,20 @@
 @implementation STMShippingLocation (CoreDataProperties)
 
 @dynamic address;
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
 @dynamic isLocationConfirmed;
+@dynamic lts;
 @dynamic name;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic location;
 @dynamic shipmentRoutePoints;
 @dynamic shippingLocationPictures;

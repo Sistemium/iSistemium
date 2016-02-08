@@ -13,8 +13,20 @@
 
 @implementation STMBasketPosition (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic volumeOne;
 @dynamic volumeTwo;
+@dynamic xid;
 @dynamic article;
 @dynamic outlet;
 

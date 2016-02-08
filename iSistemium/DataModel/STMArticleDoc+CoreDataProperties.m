@@ -13,9 +13,21 @@
 
 @implementation STMArticleDoc (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
 @dynamic dateImport;
 @dynamic dateProduction;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic volume;
+@dynamic xid;
 @dynamic article;
 @dynamic supplyOrderArticleDocs;
 

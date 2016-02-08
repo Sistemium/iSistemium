@@ -13,10 +13,22 @@
 
 @implementation STMSaleOrder (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
 @dynamic date;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
 @dynamic processing;
 @dynamic processingMessage;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic totalCost;
+@dynamic xid;
 @dynamic outlet;
 @dynamic saleOrderPositions;
 @dynamic salesman;

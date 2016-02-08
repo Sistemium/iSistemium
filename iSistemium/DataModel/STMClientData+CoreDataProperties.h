@@ -18,17 +18,29 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *appVersion;
 @property (nullable, nonatomic, retain) NSString *buildType;
 @property (nullable, nonatomic, retain) NSString *bundleVersion;
+@property (nullable, nonatomic, retain) NSString *checksum;
+@property (nullable, nonatomic, retain) NSString *commentText;
+@property (nullable, nonatomic, retain) NSDate *deviceCts;
 @property (nullable, nonatomic, retain) NSString *deviceName;
 @property (nullable, nonatomic, retain) NSString *devicePlatform;
 @property (nullable, nonatomic, retain) NSData *deviceToken;
 @property (nullable, nonatomic, retain) NSString *deviceTokenError;
+@property (nullable, nonatomic, retain) NSDate *deviceTs;
 @property (nullable, nonatomic, retain) NSData *deviceUUID;
 @property (nullable, nonatomic, retain) NSNumber *freeDiskSpace;
+@property (nullable, nonatomic, retain) NSNumber *id;
+@property (nullable, nonatomic, retain) NSNumber *isFantom;
 @property (nullable, nonatomic, retain) NSDate *lastAuth;
 @property (nullable, nonatomic, retain) NSString *locationServiceStatus;
+@property (nullable, nonatomic, retain) NSDate *lts;
 @property (nullable, nonatomic, retain) NSString *notificationTypes;
+@property (nullable, nonatomic, retain) NSData *ownerXid;
+@property (nullable, nonatomic, retain) NSString *source;
+@property (nullable, nonatomic, retain) NSDate *sqts;
+@property (nullable, nonatomic, retain) NSDate *sts;
 @property (nullable, nonatomic, retain) NSString *systemVersion;
 @property (nullable, nonatomic, retain) NSString *tokenHash;
+@property (nullable, nonatomic, retain) NSData *xid;
 
 @end
 

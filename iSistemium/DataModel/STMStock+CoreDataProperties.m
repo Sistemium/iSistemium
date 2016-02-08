@@ -13,8 +13,20 @@
 
 @implementation STMStock (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic displayVolume;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic volume;
+@dynamic xid;
 @dynamic article;
 
 @end

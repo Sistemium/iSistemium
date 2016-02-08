@@ -13,8 +13,20 @@
 
 @implementation STMSetting (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic group;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic name;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic value;
+@dynamic xid;
 
 @end

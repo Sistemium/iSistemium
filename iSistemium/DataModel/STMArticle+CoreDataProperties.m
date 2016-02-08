@@ -14,14 +14,26 @@
 @implementation STMArticle (CoreDataProperties)
 
 @dynamic barcode;
+@dynamic checksum;
 @dynamic code;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic extraLabel;
 @dynamic factor;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic name;
+@dynamic ownerXid;
 @dynamic packageRel;
 @dynamic pieceVolume;
 @dynamic pieceWeight;
 @dynamic price;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic articleDocs;
 @dynamic articleGroup;
 @dynamic articleProductionInfo;

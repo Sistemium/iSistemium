@@ -13,8 +13,20 @@
 
 @implementation STMPickingOrderPosition (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic ord;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic volume;
+@dynamic xid;
 @dynamic article;
 @dynamic pickingOrder;
 @dynamic pickingOrderPositionsPicked;

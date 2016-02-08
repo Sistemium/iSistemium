@@ -13,8 +13,20 @@
 
 @implementation STMTrack (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic finishTime;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
 @dynamic startTime;
+@dynamic sts;
+@dynamic xid;
 @dynamic locations;
 
 @end

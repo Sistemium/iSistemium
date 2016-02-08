@@ -14,9 +14,21 @@
 @implementation STMOutlet (CoreDataProperties)
 
 @dynamic address;
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
 @dynamic isActive;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic name;
+@dynamic ownerXid;
 @dynamic shortName;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic basketPositions;
 @dynamic campaigns;
 @dynamic cashings;

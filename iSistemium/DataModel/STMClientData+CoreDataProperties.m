@@ -16,16 +16,28 @@
 @dynamic appVersion;
 @dynamic buildType;
 @dynamic bundleVersion;
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
 @dynamic deviceName;
 @dynamic devicePlatform;
 @dynamic deviceToken;
 @dynamic deviceTokenError;
+@dynamic deviceTs;
 @dynamic deviceUUID;
 @dynamic freeDiskSpace;
+@dynamic id;
+@dynamic isFantom;
 @dynamic lastAuth;
 @dynamic locationServiceStatus;
+@dynamic lts;
 @dynamic notificationTypes;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic systemVersion;
 @dynamic tokenHash;
+@dynamic xid;
 
 @end

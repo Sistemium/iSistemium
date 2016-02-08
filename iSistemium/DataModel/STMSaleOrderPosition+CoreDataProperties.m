@@ -13,10 +13,22 @@
 
 @implementation STMSaleOrderPosition (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
 @dynamic price;
 @dynamic priceDoc;
 @dynamic priceOrigin;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic volume;
+@dynamic xid;
 @dynamic article;
 @dynamic saleOrder;
 

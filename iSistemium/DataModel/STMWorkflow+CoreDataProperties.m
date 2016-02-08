@@ -13,8 +13,20 @@
 
 @implementation STMWorkflow (CoreDataProperties)
 
+@dynamic checksum;
 @dynamic code;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic workflow;
+@dynamic xid;
 @dynamic entities;
 @dynamic messages;
 

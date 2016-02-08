@@ -13,9 +13,21 @@
 
 @implementation STMRecordStatus (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
 @dynamic isRead;
 @dynamic isRemoved;
 @dynamic isTemporary;
+@dynamic lts;
 @dynamic objectXid;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 
 @end

@@ -13,15 +13,27 @@
 
 @implementation STMEntity (CoreDataProperties)
 
+@dynamic checksum;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic eTag;
+@dynamic id;
+@dynamic isFantom;
 @dynamic isUploadable;
 @dynamic lifeTime;
 @dynamic lifeTimeDateField;
+@dynamic lts;
 @dynamic name;
+@dynamic ownerXid;
 @dynamic roleName;
 @dynamic roleOwner;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
 @dynamic url;
 @dynamic workflow;
+@dynamic xid;
 @dynamic wf;
 
 @end

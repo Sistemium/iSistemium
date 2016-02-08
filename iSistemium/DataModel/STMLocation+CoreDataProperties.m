@@ -14,14 +14,26 @@
 @implementation STMLocation (CoreDataProperties)
 
 @dynamic altitude;
+@dynamic checksum;
+@dynamic commentText;
 @dynamic course;
+@dynamic deviceCts;
+@dynamic deviceTs;
 @dynamic horizontalAccuracy;
+@dynamic id;
+@dynamic isFantom;
 @dynamic lastSeenAt;
 @dynamic latitude;
 @dynamic longitude;
+@dynamic lts;
+@dynamic ownerXid;
+@dynamic source;
 @dynamic speed;
+@dynamic sqts;
+@dynamic sts;
 @dynamic timestamp;
 @dynamic verticalAccuracy;
+@dynamic xid;
 @dynamic photos;
 @dynamic shipmentRoutePoint;
 @dynamic shippings;

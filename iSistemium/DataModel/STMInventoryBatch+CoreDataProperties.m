@@ -13,10 +13,22 @@
 
 @implementation STMInventoryBatch (CoreDataProperties)
 
+@dynamic checksum;
 @dynamic code;
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
 @dynamic isDone;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic ownerXid;
 @dynamic productionInfo;
+@dynamic source;
+@dynamic sqts;
 @dynamic stockBatchCode;
+@dynamic sts;
+@dynamic xid;
 @dynamic article;
 @dynamic inventoryBatchItems;
 @dynamic stockBatch;
