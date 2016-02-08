@@ -800,68 +800,12 @@
     
 }
 
-//
-//#pragma mark - NSFetchedResultsController
-//
-//- (NSFetchedResultsController *)resultsController {
-//    
-//    if (!_resultsController) {
-//        
-//        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-//        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sqts" ascending:YES selector:@selector(compare:)]];
-//        request.includesSubentities = YES;
-//        
-//        request.predicate = [NSPredicate predicateWithFormat:@"(lts == %@ || deviceTs > lts)", nil];
-//        
-//        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-//        _resultsController.delegate = self;
-//        
-//    }
-//    
-//    return _resultsController;
-//    
-//}
-//
-//- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-//    
-////    [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerDidChangeContent" object:self];
-//    
-////    if ([STMSocketController currentSocketStatus] == SocketIOClientStatusConnected) {
-////        self.syncerState = STMSyncerSendDataOnce;
-////    }
-//    
-//}
-//
-//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-//    
-//    
-//}
-
 #pragma mark - syncing
 #pragma mark - send
 
 - (void)sendData {
         
     if (self.syncerState == STMSyncerSendData || self.syncerState == STMSyncerSendDataOnce) {
-        
-//        if (self.resultsController.fetchedObjects.count > 0) {
-//            
-//            self.sendedEntities = nil;
-//            
-//            NSData *sendData = [self JSONFrom:self.resultsController.fetchedObjects];
-//
-//            if (sendData) {
-//                
-//                self.checkSending = (self.syncerState == STMSyncerSendData);
-//                [self startConnectionForSendData:sendData];
-//                
-//            } else {
-//                [self nothingToSend];
-//            }
-//
-//        } else {
-//            [self nothingToSend];
-//        }
         
     }
     
@@ -884,29 +828,7 @@
 
     }
     
-//    [self afterSendFurcation];
-
 }
-
-//- (void)afterSendFurcation {
-//    
-//    if (!self.syncing) {
-//
-//        if (self.checkSending || self.syncerState == STMSyncerSendDataOnce) {
-//            
-//            self.checkSending = NO;
-//            self.syncerState = STMSyncerIdle;
-//            
-//        } else {
-//            
-//            self.checkSending = YES;
-//            self.syncerState = STMSyncerReceiveData;
-//            
-//        }
-//
-//    }
-//    
-//}
 
 - (NSData *)JSONFrom:(NSArray *)dataForSyncing {
     
