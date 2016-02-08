@@ -1,0 +1,23 @@
+//
+//  STMShippingLocation+CoreDataProperties.m
+//  iSistemium
+//
+//  Created by Maxim Grigoriev on 08/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
+//
+//  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
+//  to delete and recreate this implementation file for your updated model.
+//
+
+#import "STMShippingLocation+CoreDataProperties.h"
+
+@implementation STMShippingLocation (CoreDataProperties)
+
+@dynamic address;
+@dynamic isLocationConfirmed;
+@dynamic name;
+@dynamic location;
+@dynamic shipmentRoutePoints;
+@dynamic shippingLocationPictures;
+
+@end

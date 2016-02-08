@@ -12,7 +12,7 @@
 #import "STMArticle.h"
 #import "STMArticleBarCode.h"
 #import "STMArticleDoc.h"
-#import "STMArticleGroup+custom.h"
+#import "STMArticleGroup.h"
 #import "STMArticlePicture.h"
 #import "STMArticleProductionInfo.h"
 
@@ -24,13 +24,13 @@
 #import "STMCampaign.h"
 #import "STMCampaignGroup.h"
 #import "STMCampaignPicture.h"
-#import "STMCashing+dayAsString.h"
+#import "STMCashing.h"
 #import "STMClientData.h"
 #import "STMClientEntity.h"
 #import "STMComment.h"
 
 #import "STMDatum.h"
-#import "STMDebt+Cashing.h"
+#import "STMDebt.h"
 #import "STMDriver.h"
 
 #import "STMEntity.h"
@@ -39,7 +39,7 @@
 #import "STMInventoryBatchItem.h"
 
 #import "STMLocation.h"
-#import "STMLogMessage+dayAsString.h"
+#import "STMLogMessage.h"
 
 #import "STMMessage.h"
 #import "STMMessagePicture.h"
@@ -66,10 +66,10 @@
 #import "STMSaleOrderPosition.h"
 #import "STMSalesman.h"
 #import "STMSetting.h"
-#import "STMShipment+custom.h"
-#import "STMShipmentPosition+custom.h"
+#import "STMShipment.h"
+#import "STMShipmentPosition.h"
 #import "STMShipmentRoute.h"
-#import "STMShipmentRoutePoint+custom.h"
+#import "STMShipmentRoutePoint.h"
 #import "STMShippingLocation.h"
 #import "STMShippingLocationPicture.h"
 #import "STMStock.h"
@@ -80,7 +80,7 @@
 #import "STMSupplyOrder.h"
 #import "STMSupplyOrderArticleDoc.h"
 
-#import "STMTrack+dayAsString.h"
+#import "STMTrack.h"
 
 #import "STMUncashing.h"
 #import "STMUncashingPicture.h"

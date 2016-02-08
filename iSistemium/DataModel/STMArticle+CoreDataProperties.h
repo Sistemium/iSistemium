@@ -2,8 +2,8 @@
 //  STMArticle+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 03/12/15.
-//  Copyright © 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 08/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
 //  to delete and recreate this implementation file for your updated model.
@@ -31,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSSet<STMBasketPosition *> *basketPositions;
 @property (nullable, nonatomic, retain) NSSet<STMCampaign *> *campaigns;
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *factShipmentPositions;
+@property (nullable, nonatomic, retain) NSSet<STMInventoryBatch *> *inventoryBatches;
 @property (nullable, nonatomic, retain) NSSet<STMPickingOrderPosition *> *pickingOrderPositions;
 @property (nullable, nonatomic, retain) NSSet<STMPickingOrderPositionPicked *> *pickingOrderPositionsPicked;
 @property (nullable, nonatomic, retain) NSSet<STMArticlePicture *> *pictures;
@@ -41,7 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) STMStock *stock;
 @property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
 @property (nullable, nonatomic, retain) NSSet<STMSupplyOrderArticleDoc *> *supplyOrderArticleDocs;
-@property (nullable, nonatomic, retain) NSSet<STMInventoryBatch *> *inventoryBatches;
 
 @end
 
@@ -76,6 +76,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeFactShipmentPositionsObject:(STMShipmentPosition *)value;
 - (void)addFactShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
 - (void)removeFactShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
+
+- (void)addInventoryBatchesObject:(STMInventoryBatch *)value;
+- (void)removeInventoryBatchesObject:(STMInventoryBatch *)value;
+- (void)addInventoryBatches:(NSSet<STMInventoryBatch *> *)values;
+- (void)removeInventoryBatches:(NSSet<STMInventoryBatch *> *)values;
 
 - (void)addPickingOrderPositionsObject:(STMPickingOrderPosition *)value;
 - (void)removePickingOrderPositionsObject:(STMPickingOrderPosition *)value;
@@ -116,11 +121,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeSupplyOrderArticleDocsObject:(STMSupplyOrderArticleDoc *)value;
 - (void)addSupplyOrderArticleDocs:(NSSet<STMSupplyOrderArticleDoc *> *)values;
 - (void)removeSupplyOrderArticleDocs:(NSSet<STMSupplyOrderArticleDoc *> *)values;
-
-- (void)addInventoryBatchesObject:(STMInventoryBatch *)value;
-- (void)removeInventoryBatchesObject:(STMInventoryBatch *)value;
-- (void)addInventoryBatches:(NSSet<STMInventoryBatch *> *)values;
-- (void)removeInventoryBatches:(NSSet<STMInventoryBatch *> *)values;
 
 @end
 

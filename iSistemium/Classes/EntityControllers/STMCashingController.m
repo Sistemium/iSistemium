@@ -7,7 +7,7 @@
 //
 
 #import "STMCashingController.h"
-#import "STMDebt+Cashing.h"
+#import "STMDebt.h"
 #import "STMObjectsController.h"
 
 @implementation STMCashingController

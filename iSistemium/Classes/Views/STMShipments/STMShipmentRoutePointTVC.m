@@ -827,7 +827,7 @@
         buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         if (self.point.reachedAtLocation) {
-            buttonCell.detailLabel.text = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:self.point.reachedAtLocation.timestamp];
+            buttonCell.detailLabel.text = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:(NSDate *)self.point.reachedAtLocation.timestamp];
         } else {
             buttonCell.detailLabel.text = @"";
         }
@@ -1605,13 +1605,13 @@
     
     if (!self.point.shippingLocation.location && self.point.address) {
         
-        [[[CLGeocoder alloc] init] geocodeAddressString:self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
+        [[[CLGeocoder alloc] init] geocodeAddressString:(NSString *)self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
             
             if (!error) {
                 
                 CLPlacemark *placemark = placemarks.firstObject;
                 
-                [self.point updateShippingLocationWithGeocodedLocation:placemark.location];
+                [self.point updateShippingLocationWithGeocodedLocation:(CLLocation *)placemark.location];
                 
                 [self.tableView reloadData];
                 [self setupNavBar];

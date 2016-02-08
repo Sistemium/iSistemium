@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "STMSessionManagement.h"
-#import "STMLogMessage+dayAsString.h"
+#import "STMLogMessage.h"
 
 @interface STMLogger : NSObject <STMLogger, UITableViewDelegate, UITableViewDataSource>
 

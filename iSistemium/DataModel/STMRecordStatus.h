@@ -2,20 +2,21 @@
 //  STMRecordStatus.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 04/04/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
 @interface STMRecordStatus : STMComment
 
-@property (nonatomic, retain) NSNumber * isRead;
-@property (nonatomic, retain) NSNumber * isRemoved;
-@property (nonatomic, retain) NSData * objectXid;
-@property (nonatomic, retain) NSNumber * isTemporary;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMRecordStatus+CoreDataProperties.h"

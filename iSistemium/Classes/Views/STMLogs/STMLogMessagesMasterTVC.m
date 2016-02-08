@@ -8,7 +8,7 @@
 
 #import "STMLogMessagesMasterTVC.h"
 #import <CoreData/CoreData.h>
-#import "STMLogMessage+dayAsString.h"
+#import "STMLogMessage.h"
 #import "STMLogMessagesSVC.h"
 #import "STMFunctions.h"
 

@@ -497,7 +497,7 @@
     NSDecimalNumber *debtSum = [NSDecimalNumber zero];
     
     for (STMDebt *debt in outlet.debts) {
-        if (debt.summ) debtSum = [debtSum decimalNumberByAdding:debt.summ];
+        if (debt.summ) debtSum = [debtSum decimalNumberByAdding:(NSDecimalNumber *)debt.summ];
     }
     
     NSDecimalNumber *cashingSum = [NSDecimalNumber zero];
@@ -505,7 +505,7 @@
     NSPredicate *cashingPredicate = [NSPredicate predicateWithFormat:@"isProcessed != %@", @YES];
     NSSet *cashings = [outlet.cashings filteredSetUsingPredicate:cashingPredicate];
     
-    for (STMCashing *cashing in cashings) cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+    for (STMCashing *cashing in cashings) cashingSum = (cashing.summ) ? [cashingSum decimalNumberByAdding:(NSDecimalNumber *)cashing.summ] : cashingSum;
     
     debtSum = [debtSum decimalNumberBySubtracting:cashingSum];
     

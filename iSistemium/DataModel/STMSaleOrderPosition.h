@@ -2,23 +2,23 @@
 //  STMSaleOrderPosition.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/03/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
 
 @class STMArticle, STMSaleOrder;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface STMSaleOrderPosition : STMComment
 
-@property (nonatomic, retain) NSDecimalNumber * price;
-@property (nonatomic, retain) NSDecimalNumber * priceDoc;
-@property (nonatomic, retain) NSDecimalNumber * priceOrigin;
-@property (nonatomic, retain) NSNumber * volume;
-@property (nonatomic, retain) STMArticle *article;
-@property (nonatomic, retain) STMSaleOrder *saleOrder;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMSaleOrderPosition+CoreDataProperties.h"

@@ -2,8 +2,8 @@
 //  STMClientData+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 30/11/15.
-//  Copyright © 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 08/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
 //  to delete and recreate this implementation file for your updated model.
@@ -23,12 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSData *deviceToken;
 @property (nullable, nonatomic, retain) NSString *deviceTokenError;
 @property (nullable, nonatomic, retain) NSData *deviceUUID;
+@property (nullable, nonatomic, retain) NSNumber *freeDiskSpace;
 @property (nullable, nonatomic, retain) NSDate *lastAuth;
 @property (nullable, nonatomic, retain) NSString *locationServiceStatus;
 @property (nullable, nonatomic, retain) NSString *notificationTypes;
 @property (nullable, nonatomic, retain) NSString *systemVersion;
 @property (nullable, nonatomic, retain) NSString *tokenHash;
-@property (nullable, nonatomic, retain) NSNumber *freeDiskSpace;
 
 @end
 

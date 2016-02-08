@@ -680,7 +680,7 @@
     
     for (STMCashing *cashing in [[STMUncashingProcessController sharedInstance].cashingDictionary allValues]) {
         
-        uncashingSum = [uncashingSum decimalNumberByAdding:cashing.summ];
+        uncashingSum = (cashing.summ) ? [uncashingSum decimalNumberByAdding:(NSDecimalNumber *)cashing.summ] : uncashingSum;
         
     }
     

@@ -554,7 +554,7 @@
 
         case 2:
             cell.titleLabel.text = NSLocalizedString(@"COST", nil);
-            cell.detailLabel.text = [[STMFunctions currencyFormatter] stringFromNumber:self.saleOrder.totalCost];
+            cell.detailLabel.text = [[STMFunctions currencyFormatter] stringFromNumber:(NSDecimalNumber *)self.saleOrder.totalCost];
             break;
 
         case 3:

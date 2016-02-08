@@ -2,27 +2,23 @@
 //  STMUncashingPlace.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 16/11/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
 
 @class STMUncashing;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface STMUncashingPlace : STMComment
 
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSSet *uncashings;
-@end
-
-@interface STMUncashingPlace (CoreDataGeneratedAccessors)
-
-- (void)addUncashingsObject:(STMUncashing *)value;
-- (void)removeUncashingsObject:(STMUncashing *)value;
-- (void)addUncashings:(NSSet *)values;
-- (void)removeUncashings:(NSSet *)values;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMUncashingPlace+CoreDataProperties.h"

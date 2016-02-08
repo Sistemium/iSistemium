@@ -1076,8 +1076,7 @@
         <element name="STMCashing" positionX="171" positionY="225" width="128" height="328"/>
         <element name="STMClientData" positionX="-855" positionY="-957" width="128" height="433"/>
         <element name="STMClientEntity" positionX="700" positionY="710" width="128" height="253"/>
-        <element name="STMComment" positionX="-1026" positionY="-1143" width="128" height="90"/>
-        <element name="STMDatum" positionX="-810" positionY="-1278" width="128" height="193"/>
+        <element name="STMDatum" positionX="-794" positionY="-1368" width="128" height="193"/>
         <element name="STMDebt" positionX="-38" positionY="36" width="128" height="358"/>
         <element name="STMDriver" positionX="-387" positionY="-1746" width="128" height="268"/>
         <element name="STMEntity" positionX="844" positionY="711" width="128" height="373"/>
@@ -1123,5 +1122,6 @@
         <element name="STMUncashingPicture" positionX="963" positionY="185" width="128" height="58"/>
         <element name="STMUncashingPlace" positionX="432" positionY="773" width="128" height="253"/>
         <element name="STMWorkflow" positionX="1078" positionY="761" width="128" height="283"/>
+        <element name="STMComment" positionX="-1001" positionY="-1233" width="128" height="90"/>
     </elements>
 </model>

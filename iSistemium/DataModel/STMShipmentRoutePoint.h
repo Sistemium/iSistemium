@@ -2,36 +2,30 @@
 //  STMShipmentRoutePoint.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 23/09/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
+
+#import <MapKit/MapKit.h>
+
 
 @class STMLocation, STMShipment, STMShipmentRoute, STMShippingLocation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface STMShipmentRoutePoint : STMComment
 
-@property (nonatomic, retain) NSString * address;
-@property (nonatomic, retain) NSNumber * isReached;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSNumber * ord;
-@property (nonatomic, retain) NSString * shortName;
-@property (nonatomic, retain) NSString * processingMessage;
-@property (nonatomic, retain) NSString * processing;
-@property (nonatomic, retain) STMLocation *reachedAtLocation;
-@property (nonatomic, retain) STMShipmentRoute *shipmentRoute;
-@property (nonatomic, retain) NSSet *shipments;
-@property (nonatomic, retain) STMShippingLocation *shippingLocation;
-@end
+- (NSString *)shortInfo;
+- (void)updateShippingLocationWithGeocodedLocation:(CLLocation *)location;
+- (void)updateShippingLocationWithConfirmedLocation:(CLLocation *)location;
+- (void)updateShippingLocationWithUserLocation:(CLLocation *)location;
 
-@interface STMShipmentRoutePoint (CoreDataGeneratedAccessors)
-
-- (void)addShipmentsObject:(STMShipment *)value;
-- (void)removeShipmentsObject:(STMShipment *)value;
-- (void)addShipments:(NSSet *)values;
-- (void)removeShipments:(NSSet *)values;
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMShipmentRoutePoint+CoreDataProperties.h"

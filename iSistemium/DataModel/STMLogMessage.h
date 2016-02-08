@@ -2,18 +2,22 @@
 //  STMLogMessage.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 08/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
 @interface STMLogMessage : STMComment
 
-@property (nonatomic, retain) NSString * text;
-@property (nonatomic, retain) NSString * type;
+- (NSString *)dayAsString;
+
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMLogMessage+CoreDataProperties.h"

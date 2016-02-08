@@ -248,7 +248,7 @@
         
         keyString = NSLocalizedString(@"PRICE", nil);
         NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
-        NSString *priceValue = [numberFormatter stringFromNumber:price.price];
+        NSString *priceValue = [numberFormatter stringFromNumber:(NSDecimalNumber *)price.price];
         valueString = [NSString stringWithFormat:@"%@: %@", keyString, priceValue];
         [self.articleInfo addObject:@{
                                       @"key": price.priceType.name,

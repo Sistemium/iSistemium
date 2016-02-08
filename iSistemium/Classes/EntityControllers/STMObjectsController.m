@@ -693,6 +693,15 @@
     
     return (NSManagedObject *)cachedObject;
     
+//    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
+//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+//    request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xidData];
+//    
+//    NSError *error;
+//    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+//
+//    return fetchResult.lastObject;
+    
 }
 
 + (NSManagedObject *)objectForEntityName:(NSString *)entityName andXid:(NSString *)xid {

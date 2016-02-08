@@ -2,7 +2,7 @@
 //  STMSupplyOrder+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 14/01/16.
+//  Created by Maxim Grigoriev on 08/02/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -18,8 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDate *date;
 @property (nullable, nonatomic, retain) NSString *ndoc;
 @property (nullable, nonatomic, retain) NSString *processing;
-@property (nullable, nonatomic, retain) NSSet<STMSupplyOrderArticleDoc *> *supplyOrderArticleDocs;
 @property (nullable, nonatomic, retain) STMPartner *partner;
+@property (nullable, nonatomic, retain) NSSet<STMSupplyOrderArticleDoc *> *supplyOrderArticleDocs;
 
 @end
 

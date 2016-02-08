@@ -68,7 +68,7 @@
     NSMutableArray *ordersDates = [NSMutableArray array];
     
     for (STMSaleOrder *saleOrder in self.resultsController.fetchedObjects) {
-        [ordersDates addObject:saleOrder.date];
+        if (saleOrder.date) [ordersDates addObject:(NSDate *)saleOrder.date];
     }
     
     NSSet *ordersDatesSet = [NSSet setWithArray:ordersDates];

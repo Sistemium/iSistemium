@@ -2,31 +2,25 @@
 //  STMShipmentPosition.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 04/10/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMComment.h"
 
 @class STMArticle, STMShipment;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface STMShipmentPosition : STMComment
 
-@property (nonatomic, retain) NSNumber * badVolume;
-@property (nonatomic, retain) NSNumber * doneVolume;
-@property (nonatomic, retain) NSNumber * excessVolume;
-@property (nonatomic, retain) NSNumber * isProcessed;
-@property (nonatomic, retain) NSNumber * ord;
-@property (nonatomic, retain) NSDecimalNumber * price;
-@property (nonatomic, retain) NSDecimalNumber * priceDoc;
-@property (nonatomic, retain) NSNumber * regradeVolume;
-@property (nonatomic, retain) NSNumber * shortageVolume;
-@property (nonatomic, retain) NSNumber * volume;
-@property (nonatomic, retain) NSNumber * brokenVolume;
-@property (nonatomic, retain) STMArticle *article;
-@property (nonatomic, retain) STMArticle *articleFact;
-@property (nonatomic, retain) STMShipment *shipment;
+- (BOOL)wasProcessed;
+- (NSString *)volumeText;
+
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMShipmentPosition+CoreDataProperties.h"

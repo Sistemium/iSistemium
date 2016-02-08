@@ -706,7 +706,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
     
     STMPrice *price = [article.prices filteredSetUsingPredicate:predicate].allObjects.lastObject;
     
-    NSString *priceDetailedText = [numberFormatter stringFromNumber:price.price];
+    NSString *priceDetailedText = [numberFormatter stringFromNumber:(NSDecimalNumber *)price.price];
 
     return priceDetailedText;
     
