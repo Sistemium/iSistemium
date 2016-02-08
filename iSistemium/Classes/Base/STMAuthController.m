@@ -405,13 +405,16 @@
     
     NSDictionary *startSettings = nil;
     
+//    NSString *dataModelName = @"STMDataModel";
+    NSString *dataModelName = @"STMDataModel_2";
+    
 #ifdef DEBUG
     
     if (GRIMAX) {
         
         startSettings = @{
                           @"restServerURI"                  : self.serviceUri,
-                          @"dataModelName"                  : @"STMDataModel",
+                          @"dataModelName"                  : dataModelName,
                           //                      @"fetchLimit"               : @"50",
                           //                      @"syncInterval"             : @"600",
                           //                      @"uploadLog.type"           : @"",
@@ -441,7 +444,7 @@
     
         startSettings = @{
                           @"restServerURI"            : self.serviceUri,
-                          @"dataModelName"            : @"STMDataModel",
+                          @"dataModelName"            : dataModelName,
                           };
 
     }
@@ -450,7 +453,7 @@
 
     startSettings = @{
                       @"restServerURI"            : self.serviceUri,
-                      @"dataModelName"            : @"STMDataModel",
+                      @"dataModelName"            : dataModelName,
                       };
 
 #endif

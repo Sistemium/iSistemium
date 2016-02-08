@@ -44,6 +44,7 @@
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName isFantom:(BOOL)isFantom;
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
++ (NSManagedObject *)objectForXid:(NSData *)xidData entityName:(NSString *)entityName;
 
 + (NSArray *)localDataModelEntityNames;
 

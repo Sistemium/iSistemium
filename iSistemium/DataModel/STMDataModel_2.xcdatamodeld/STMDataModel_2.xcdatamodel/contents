@@ -104,7 +104,7 @@
         <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="articleProductionInfo" inverseEntity="STMArticle" syncable="YES"/>
         <relationship name="productionInfoType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMProductionInfoType" inverseName="articleProductionInfo" inverseEntity="STMProductionInfoType" syncable="YES"/>
     </entity>
-    <entity name="STMBarCode" representedClassName="STMBarCode" syncable="YES">
+    <entity name="STMBarCode" representedClassName="STMBarCode" isAbstract="YES" syncable="YES">
         <attribute name="checksum" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="code" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
@@ -278,7 +278,7 @@
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
     </entity>
-    <entity name="STMDatum" representedClassName="STMDatum" isAbstract="YES" syncable="YES">
+    <entity name="STMDatum" representedClassName="STMDatum" syncable="YES">
         <attribute name="checksum" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="deviceCts" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
@@ -506,7 +506,7 @@
         <relationship name="outlets" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMOutlet" inverseName="partner" inverseEntity="STMOutlet" syncable="YES"/>
         <relationship name="supplyOrders" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMSupplyOrder" inverseName="partner" inverseEntity="STMSupplyOrder" syncable="YES"/>
     </entity>
-    <entity name="STMPhoto" representedClassName="STMPhoto" parentEntity="STMPicture" syncable="YES">
+    <entity name="STMPhoto" representedClassName="STMPhoto" isAbstract="YES" parentEntity="STMPicture" syncable="YES">
         <relationship name="location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMLocation" inverseName="photos" inverseEntity="STMLocation" syncable="YES"/>
     </entity>
     <entity name="STMPhotoReport" representedClassName="STMPhotoReport" parentEntity="STMPhoto" syncable="YES">
@@ -577,7 +577,7 @@
         <relationship name="pickingOrderPosition" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPickingOrderPosition" inverseName="pickingOrderPositionsPicked" inverseEntity="STMPickingOrderPosition" syncable="YES"/>
         <relationship name="stockBatch" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStockBatch" inverseName="pickingOrderPositionsPicked" inverseEntity="STMStockBatch" syncable="YES"/>
     </entity>
-    <entity name="STMPicture" representedClassName="STMPicture" syncable="YES">
+    <entity name="STMPicture" representedClassName="STMPicture" isAbstract="YES" syncable="YES">
         <attribute name="checksum" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="deviceCts" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
@@ -937,7 +937,7 @@
         <relationship name="destinationAgent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStockBatchOperationAgent" inverseName="destinationOperations" inverseEntity="STMStockBatchOperationAgent" syncable="YES"/>
         <relationship name="sourceAgent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStockBatchOperationAgent" inverseName="sourceOperations" inverseEntity="STMStockBatchOperationAgent" syncable="YES"/>
     </entity>
-    <entity name="STMStockBatchOperationAgent" representedClassName="STMStockBatchOperationAgent" syncable="YES">
+    <entity name="STMStockBatchOperationAgent" representedClassName="STMStockBatchOperationAgent" isAbstract="YES" syncable="YES">
         <attribute name="checksum" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="deviceCts" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
