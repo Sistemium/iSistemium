@@ -27,7 +27,6 @@
 #import "STMCashing.h"
 #import "STMClientData.h"
 #import "STMClientEntity.h"
-#import "STMComment.h"
 
 #import "STMDatum.h"
 #import "STMDebt.h"

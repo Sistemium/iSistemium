@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMEntity, STMMessage;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMWorkflow : STMComment
+@interface STMWorkflow : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

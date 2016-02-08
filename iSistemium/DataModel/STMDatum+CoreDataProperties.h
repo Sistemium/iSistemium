@@ -24,16 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDate *sqts;
 @property (nullable, nonatomic, retain) NSDate *sts;
 @property (nullable, nonatomic, retain) NSData *xid;
-@property (nullable, nonatomic, retain) NSSet<STMComment *> *comments;
-
-@end
-
-@interface STMDatum (CoreDataGeneratedAccessors)
-
-- (void)addCommentsObject:(STMComment *)value;
-- (void)removeCommentsObject:(STMComment *)value;
-- (void)addComments:(NSSet<STMComment *> *)values;
-- (void)removeComments:(NSSet<STMComment *> *)values;
+@property (nullable, nonatomic, retain) NSString *commentText;
+@property (nullable, nonatomic, retain) NSString *source;
 
 @end
 

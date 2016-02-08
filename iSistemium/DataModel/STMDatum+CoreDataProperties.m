@@ -22,6 +22,7 @@
 @dynamic sqts;
 @dynamic sts;
 @dynamic xid;
-@dynamic comments;
+@dynamic commentText;
+@dynamic source;
 
 @end

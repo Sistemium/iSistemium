@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMDebt, STMOutlet, STMUncashing;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMCashing : STMComment
+@interface STMCashing : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

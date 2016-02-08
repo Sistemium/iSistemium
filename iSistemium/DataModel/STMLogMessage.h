@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMLogMessage : STMComment
+@interface STMLogMessage : STMDatum
 
 - (NSString *)dayAsString;
 

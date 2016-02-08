@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMLocation, STMShipmentRoutePoint, STMShippingLocationPicture;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMShippingLocation : STMComment
+@interface STMShippingLocation : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

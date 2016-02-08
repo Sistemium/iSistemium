@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMArticle, STMPriceType;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMPrice : STMComment
+@interface STMPrice : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMCashing, STMUncashingPicture, STMUncashingPlace;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMUncashing : STMComment
+@interface STMUncashing : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

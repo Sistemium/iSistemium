@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMArticle, STMShipment;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMShipmentPosition : STMComment
+@interface STMShipmentPosition : STMDatum
 
 - (BOOL)wasProcessed;
 - (NSString *)volumeText;

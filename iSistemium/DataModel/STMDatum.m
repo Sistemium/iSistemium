@@ -7,7 +7,6 @@
 //
 
 #import "STMDatum.h"
-#import "STMComment.h"
 
 #import "STMDataModel.h"
 #import "STMFunctions.h"

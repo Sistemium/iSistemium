@@ -278,22 +278,18 @@
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
     </entity>
-    <entity name="STMComment" representedClassName="STMComment" parentEntity="STMDatum" syncable="YES">
-        <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="owner" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STMDatum" inverseName="comments" inverseEntity="STMDatum" syncable="YES"/>
-    </entity>
     <entity name="STMDatum" representedClassName="STMDatum" isAbstract="YES" syncable="YES">
         <attribute name="checksum" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="deviceCts" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="deviceTs" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="isFantom" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
-        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMComment" inverseName="owner" inverseEntity="STMComment" syncable="YES"/>
     </entity>
     <entity name="STMDebt" representedClassName="STMDebt" syncable="YES">
         <attribute name="calculatedSum" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
@@ -1076,7 +1072,7 @@
         <element name="STMCashing" positionX="171" positionY="225" width="128" height="328"/>
         <element name="STMClientData" positionX="-855" positionY="-957" width="128" height="433"/>
         <element name="STMClientEntity" positionX="700" positionY="710" width="128" height="253"/>
-        <element name="STMDatum" positionX="-794" positionY="-1368" width="128" height="193"/>
+        <element name="STMDatum" positionX="-794" positionY="-1368" width="128" height="208"/>
         <element name="STMDebt" positionX="-38" positionY="36" width="128" height="358"/>
         <element name="STMDriver" positionX="-387" positionY="-1746" width="128" height="268"/>
         <element name="STMEntity" positionX="844" positionY="711" width="128" height="373"/>
@@ -1122,6 +1118,5 @@
         <element name="STMUncashingPicture" positionX="963" positionY="185" width="128" height="58"/>
         <element name="STMUncashingPlace" positionX="432" positionY="773" width="128" height="253"/>
         <element name="STMWorkflow" positionX="1078" positionY="761" width="128" height="283"/>
-        <element name="STMComment" positionX="-1001" positionY="-1233" width="128" height="90"/>
     </elements>
 </model>

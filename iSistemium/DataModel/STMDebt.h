@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMCashing, STMOutlet;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMDebt : STMComment
+@interface STMDebt : STMDatum
 
 - (NSDecimalNumber *)cashingCalculatedSum;
 

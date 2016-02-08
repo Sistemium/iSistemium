@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class STMComment;
 
 NS_ASSUME_NONNULL_BEGIN
 

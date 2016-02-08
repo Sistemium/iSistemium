@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMDriver, STMShipmentRoutePoint;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMShipmentRoute : STMComment
+@interface STMShipmentRoute : STMDatum
 
 - (NSString *)planSummary;
 - (NSString *)doneSummary;

@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMArticle;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMArticleGroup : STMComment
+@interface STMArticleGroup : STMDatum
 
 @property (nonatomic) NSInteger articlesStockVolume;
 @property (nonatomic) NSInteger articlesPicturesCount;

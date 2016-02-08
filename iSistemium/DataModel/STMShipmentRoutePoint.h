@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 #import <MapKit/MapKit.h>
 
@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMShipmentRoutePoint : STMComment
+@interface STMShipmentRoutePoint : STMDatum
 
 - (NSString *)shortInfo;
 - (void)updateShippingLocationWithGeocodedLocation:(CLLocation *)location;

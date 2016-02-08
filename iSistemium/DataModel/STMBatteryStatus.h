@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMBatteryStatus : STMComment
+@interface STMBatteryStatus : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

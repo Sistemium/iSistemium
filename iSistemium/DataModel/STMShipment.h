@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMDriver, STMOutlet, STMSaleOrder, STMSalesman, STMShipmentPosition, STMShipmentRoutePoint;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMShipment : STMComment
+@interface STMShipment : STMDatum
 
 - (NSUInteger)approximateBoxCount;
 - (NSUInteger)bottleCount;
