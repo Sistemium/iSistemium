@@ -15,7 +15,7 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     var cancelButton:STMBarButtonItem?
     
-    let summLabel = UIBarButtonItem(customView: UILabel())
+    let summLabel = UILabel()
     
     private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
     
@@ -79,9 +79,12 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
         self.navigationItem.titleView?.hidden = true
         self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
-        self.setToolbarItems([summLabel],animated: false)
         super.cashingProcessStart()
         STMCashingProcessController.sharedInstance().selectedDate = NSDate() //Delete after date is added
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        let b = UIBarButtonItem(customView: summLabel)
+        self.setToolbarItems([flexibleSpace,b,flexibleSpace],animated: false)
+        showCashingSumLabel()
     }
     
     override func cashingProcessDone() {
@@ -95,13 +98,22 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     let summ = STMCashingProcessController.sharedInstance().debtsSumm
     let numberFormatter = STMFunctions.currencyFormatter
     let sumString = numberFormatter().stringFromNumber(summ())
-        self.summLabel.title = NSString(format: "%@: %@", NSLocalizedString("PICKED",comment: ""), sumString!) as String
+    self.summLabel.text = NSLocalizedString("PICKED",comment: "") + " " + sumString!
+    self.summLabel.sizeToFit()
     }
     
-    
-//    override func cashingProcessCancel() {
-//        super.cashingProcessCancel()
-//        STMCashingProcessController.sharedInstance().state = .
-//    }
+    override func addObservers(){
+        super.addObservers()
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: "showCashingSumLabel",
+            name: "debtAdded",
+            object: STMCashingProcessController.sharedInstance())
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: "showCashingSumLabel",
+            name: "debtRemoved",
+            object: STMCashingProcessController.sharedInstance())
+    }
     
 }

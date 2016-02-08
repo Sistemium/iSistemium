@@ -36,4 +36,6 @@
 
 - (void)cashingProcessCancel;
 
+- (void)addObservers;
+
 @end
