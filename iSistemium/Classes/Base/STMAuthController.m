@@ -47,6 +47,8 @@
 @synthesize accessToken = _accessToken;
 @synthesize serviceUri = _serviceUri;
 @synthesize stcTabs = _stcTabs;
+@synthesize iSisDB = _iSisDB;
+
 
 #pragma mark - singletone init
 
@@ -351,6 +353,38 @@
     
 }
 
+- (NSString *)iSisDB {
+    
+    if (!_iSisDB) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        id iSisDB = [defaults objectForKey:@"iSisDB"];
+        
+        if ([iSisDB isKindOfClass:[NSString class]]) {
+            _iSisDB = iSisDB;
+            NSLog(@"iSisDB %@", iSisDB);
+        }
+        
+    }
+    
+    return _iSisDB;
+    
+}
+
+- (void)setISisDB:(NSString *)iSisDB {
+    
+    if (iSisDB != _iSisDB) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:iSisDB forKey:@"iSisDB"];
+        [defaults synchronize];
+        
+        _iSisDB = iSisDB;
+        
+    }
+    
+}
+
 
 #pragma mark - instance methods
 
@@ -392,6 +426,7 @@
     self.userID = nil;
     self.accessToken = nil;
     self.stcTabs = nil;
+    self.iSisDB = nil;
     [self.keychainItem resetKeychainItem];
 
 }
@@ -466,11 +501,20 @@
         startSettings = tempDictionary;
         
     }
-    
-    [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionNotAuthorized) name:@"notAuthorized" object:[STMSessionManager sharedManager].currentSession.syncer];
-    
+    [[STMSessionManager sharedManager] startSessionForUID:self.userID
+                                                   iSisDB:self.iSisDB
+                                             authDelegate:self
+                                                 trackers:trackers
+                                            startSettings:startSettings
+                                  defaultSettingsFileName:@"settings"
+                                           documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(sessionNotAuthorized)
+                                                 name:@"notAuthorized"
+                                               object:[STMSessionManager sharedManager].currentSession.syncer];
+
 }
 
 - (void)sessionNotAuthorized {
@@ -808,6 +852,7 @@
             
         case STMAuthRequestRoles: {
             
+            self.iSisDB = responseJSON[@"roles"][@"iSisDB"];
             self.stcTabs = responseJSON[@"roles"][@"stcTabs"];
             self.controllerState = STMAuthSuccess;
             
