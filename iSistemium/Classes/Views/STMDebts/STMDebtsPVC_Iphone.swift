@@ -9,15 +9,26 @@
 import UIKit
 
 @available(iOS 8.0, *)
-class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDelegate{
+class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDelegate, STMDatePickerParent{
     
-    var doneButton:STMBarButtonItem?
+    var selectedDate: NSDate?{
+        didSet{
+            STMCashingProcessController.sharedInstance().selectedDate = selectedDate
+            let dateFormatter = STMFunctions.dateLongNoTimeFormatter
+            self.dateButton.setTitle(dateFormatter().stringFromDate(selectedDate!),forState:.Normal)
+            dateButton.sizeToFit()
+        }
+    }
     
-    var cancelButton:STMBarButtonItem?
+    private var doneButton:STMBarButtonItem?
     
-    let summLabel = UILabel()
+    private var cancelButton:STMBarButtonItem?
+    
+    private let summLabel = UILabel()
     
     private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
+    
+    let dateButton = UIButton(type: .System)
     
     override func buttonsForVC(vc:UIViewController){
         self.navigationController?.setToolbarHidden(false, animated: true)
@@ -42,6 +53,8 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         doneButton = STMBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: self, action: "cashingButtonPressed")
         cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .Plain, target:STMCashingProcessController.sharedInstance(), action:"cancelCashingProcess")
         cancelButton!.tintColor = .redColor()
+        dateButton.addTarget(self, action: "changeDate", forControlEvents: .TouchUpInside)
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -76,20 +89,35 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     }
     
     override func cashingProcessStart() {
-        self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
-        self.navigationItem.titleView?.hidden = true
-        self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
         super.cashingProcessStart()
-        STMCashingProcessController.sharedInstance().selectedDate = NSDate() //Delete after date is added
+        self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
+        self.navigationItem.titleView = dateButton
+        self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
+        selectedDate = NSDate()
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let b = UIBarButtonItem(customView: summLabel)
-        self.setToolbarItems([flexibleSpace,b,flexibleSpace],animated: false)
+        self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
         showCashingSumLabel()
+    }
+    
+    func changeDate(){
+        let popoverContent = self.storyboard!.instantiateViewControllerWithIdentifier("datePickerVC") as! STMDatePickerVC
+        popoverContent.parentVC = self
+        popoverContent.selectedDate = STMCashingProcessController.sharedInstance().selectedDate
+        let nav = UINavigationController(rootViewController: popoverContent)
+        nav.modalPresentationStyle = .Popover
+        let popover = nav.popoverPresentationController
+        popoverContent.preferredContentSize = CGSizeMake(388,205)
+        popover?.delegate = self
+        popover?.sourceView = self.view
+        var frame = dateButton.frame
+        frame.origin.y -= 60
+        popover?.sourceRect = frame
+        self.presentViewController(nav, animated: true, completion: nil)
     }
     
     override func cashingProcessDone() {
         super.cashingProcessDone()
-        self.navigationItem.titleView?.hidden = false
+        self.navigationItem.titleView? = self.segmentedControl!
         self.navigationItem.setLeftBarButtonItem(self.navigationItem.backBarButtonItem, animated: false)
         self.buttonsForVC(self)
     }

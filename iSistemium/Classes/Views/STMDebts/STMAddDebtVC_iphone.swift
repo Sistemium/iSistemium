@@ -25,4 +25,9 @@ class STMAddDebtVC_iphone: STMAddDebtVC {
     override func textFieldShouldBeginEditing(textField: UITextField!) -> Bool {
         return true
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.title = NSLocalizedString("ADD DEBT", comment: "")
+    }
 }

@@ -21,7 +21,7 @@
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIPopoverControllerDelegate>
 
-@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+
 //@property (nonatomic, strong) UIPopoverController *popover;
 
 @property (nonatomic, strong) STMDocument *document;

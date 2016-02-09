@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UIBarButtonItem *addDebtButton;
 @property (nonatomic, strong) UIBarButtonItem *editDebtsButton;
 @property (nonatomic, strong) STMBarButtonItemDone *cashingButton;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 
 - (void)cashingProcessDone;
 
