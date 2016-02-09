@@ -227,10 +227,19 @@
 }
 
 + (STMDocument *)documentWithUID:(NSString *)uid dataModelName:(NSString *)dataModelName prefix:(NSString *)prefix {
+
+    NSURL *documentDirectoryUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+
+//    from now we delete old document with STMDataModel data model and use new STMDataModel_2
+    NSURL *url = [documentDirectoryUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@.%@", prefix, uid, @"sqlite"]];
     
-    NSURL *url = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    url = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@.%@", prefix, uid, @"sqlite"]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:(NSString *)url.path]) {
+        [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+    }
+//    ———————————————————————
     
+    url = [documentDirectoryUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@ %@ %@.%@", prefix, uid, dataModelName, @"sqlite"]];
+
     STMDocument *document = [STMDocument initWithFileURL:url andDataModelName:dataModelName];
     
     document.persistentStoreOptions = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
