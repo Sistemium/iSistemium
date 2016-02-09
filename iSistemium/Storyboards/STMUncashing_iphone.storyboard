@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <scenes>
-        <!--Uncashing DetailsTVC-->
+        <!--Uncashing DetailsTVC i Phone-->
         <scene sceneID="P8O-ga-uCy">
             <objects>
-                <tableViewController id="bzD-Jk-pzY" customClass="STMUncashingDetailsTVC" sceneMemberID="viewController">
+                <tableViewController id="bzD-Jk-pzY" customClass="STMUncashingDetailsTVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="xCm-QN-iyF">
                         <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -57,7 +57,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sMo-Js-ZYR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1876" y="439"/>
+            <point key="canvasLocation" x="1886" y="439"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="26M-9h-zpk">
