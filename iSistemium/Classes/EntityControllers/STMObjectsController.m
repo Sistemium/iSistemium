@@ -765,19 +765,27 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData isFantom:(BOOL)isFantom {
     
-    NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-    [object setValue:@(isFantom) forKey:@"isFantom"];
+    if ([self document].managedObjectContext) {
     
-    if (xidData) {
-        [object setValue:xidData forKey:@"xid"];
+        NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+        [object setValue:@(isFantom) forKey:@"isFantom"];
+        
+        if (xidData) {
+            [object setValue:xidData forKey:@"xid"];
+        } else {
+            xidData = [object valueForKey:@"xid"];
+        }
+        
+        [self sharedController].objectsCache[xidData] = object;
+        
+        return object;
+
     } else {
-        xidData = [object valueForKey:@"xid"];
+        
+        return nil;
+        
     }
     
-    [self sharedController].objectsCache[xidData] = object;
-
-    return object;
-
 }
 
 + (NSArray *)allObjectsFromContext:(NSManagedObjectContext *)context {

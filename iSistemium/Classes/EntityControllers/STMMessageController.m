@@ -130,20 +130,26 @@
     
     if (!_readMessagesResultsController) {
         
-        NSString *entityName = NSStringFromClass([STMRecordStatus class]);
+        NSManagedObjectContext *context = [STMMessageController document].managedObjectContext;
         
-        STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:entityName];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-        request.predicate = [NSPredicate predicateWithFormat:@"(objectXid IN %@) && (isRead == YES)", [self.messagesResultsController.fetchedObjects valueForKeyPath:@"xid"]];
-        
-        NSFetchedResultsController *resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                                            managedObjectContext:[STMMessageController document].managedObjectContext
-                                                                                              sectionNameKeyPath:nil
-                                                                                                       cacheName:nil];
-        resultsController.delegate = self;
-        [resultsController performFetch:nil];
-        
-        _readMessagesResultsController = resultsController;
+        if (context) {
+            
+            NSString *entityName = NSStringFromClass([STMRecordStatus class]);
+            
+            STMFetchRequest *request = [[STMFetchRequest alloc] initWithEntityName:entityName];
+            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+            request.predicate = [NSPredicate predicateWithFormat:@"(objectXid IN %@) && (isRead == YES)", [self.messagesResultsController.fetchedObjects valueForKeyPath:@"xid"]];
+            
+            NSFetchedResultsController *resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                                managedObjectContext:context
+                                                                                                  sectionNameKeyPath:nil
+                                                                                                           cacheName:nil];
+            resultsController.delegate = self;
+            [resultsController performFetch:nil];
+            
+            _readMessagesResultsController = resultsController;
+
+        }
         
     }
     return _readMessagesResultsController;
