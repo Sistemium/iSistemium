@@ -619,7 +619,7 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             imageThumbnail = [object valueForKey:@"imageThumbnail"];
         });
-
+        
         if (imageThumbnail) {
             
             [self.hrefDictionary removeObjectForKey:href];
@@ -652,7 +652,7 @@
                         
                         [self.secondAttempt addObject:href];
                         
-#warning Is it really need to dispath_async & addOperationForObject here? secondAttempt?
+#warning Is it really need to secondAttempt?
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
                         });
@@ -662,7 +662,7 @@
                 } else {
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-
+                        
                         NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
                         [self.hrefDictionary removeObjectForKey:href];
                         
@@ -672,14 +672,14 @@
                 
             } else {
                 
-//                NSLog(@"%@ load successefully", href);
+                //                NSLog(@"%@ load successefully", href);
                 
                 [self.hrefDictionary removeObjectForKey:href];
                 
                 __block NSData *dataCopy = [data copy];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-
+                    
                     if ([object isKindOfClass:[STMPicture class]]) {
                         [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
                     }
