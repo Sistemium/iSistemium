@@ -226,31 +226,24 @@
     
 }
 
-<<<<<<< HEAD
-+ (STMDocument *)documentWithUID:(NSString *)uid dataModelName:(NSString *)dataModelName prefix:(NSString *)prefix {
++ (STMDocument *)documentWithUID:(NSString *)uid iSisDB:(NSString *)iSisDB dataModelName:(NSString *)dataModelName prefix:(NSString *)prefix {
 
     NSURL *documentDirectoryUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSString *documentID = (iSisDB) ? iSisDB : uid;
 
-//    from now we delete old document with STMDataModel data model and use new STMDataModel_2
-    NSURL *url = [documentDirectoryUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@.%@", prefix, uid, @"sqlite"]];
+//    from now we delete old document with STMDataModel data model and use new STMDataModel2
+    NSURL *url = [documentDirectoryUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@.%@", prefix, documentID, @"sqlite"]];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:(NSString *)url.path]) {
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
     }
 //    ———————————————————————
     
-    url = [documentDirectoryUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@ %@ %@.%@", prefix, uid, dataModelName, @"sqlite"]];
-=======
-+ (STMDocument *)documentWithUID:(NSString *)uid iSisDB:(NSString *)iSisDB dataModelName:(NSString *)dataModelName prefix:(NSString *)prefix {
-    
-    NSString *documentID = (iSisDB) ? iSisDB : uid;
+    NSString *filename = [@[prefix, documentID, dataModelName] componentsJoinedByString:@"_"];
+    url = [documentDirectoryUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", filename, @"sqlite"]];
 
-    NSURL *url = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    url = [url URLByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@.%@", prefix, documentID, @"sqlite"]];
-    
     NSString *logMessage = [NSString stringWithFormat:@"prepare document with filename: %@ for uid: %@", url.lastPathComponent, uid];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
->>>>>>> iSisDB
 
     STMDocument *document = [STMDocument initWithFileURL:url andDataModelName:dataModelName];
     

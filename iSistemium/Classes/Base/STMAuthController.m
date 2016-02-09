@@ -441,7 +441,7 @@
     NSDictionary *startSettings = nil;
     
 //    NSString *dataModelName = @"STMDataModel";
-    NSString *dataModelName = @"STMDataModel_2";
+    NSString *dataModelName = @"STMDataModel2";
     
 #ifdef DEBUG
     
