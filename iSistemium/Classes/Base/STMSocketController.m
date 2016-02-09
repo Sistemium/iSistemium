@@ -216,6 +216,9 @@
     [self socket:[self sharedInstance].socket sendEvent:event withValue:value];
 }
 
+
+#pragma mark - sync
+
 + (NSArray *)unsyncedObjects {
     return [[self sharedInstance] unsyncedObjectsArray];
 }
@@ -713,6 +716,7 @@
     }
 
 }
+
 
 #pragma mark - instance methods
 

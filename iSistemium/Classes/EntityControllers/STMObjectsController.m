@@ -728,12 +728,12 @@
         
         if (object) {
             
-            if (![object.entity.name isEqualToString:entityName]) {
-                
-                NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
-                object = nil;
-                
-            }
+//            if (![object.entity.name isEqualToString:entityName]) {
+//                
+//                NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
+//                object = nil;
+//                
+//            }
             
         } else {
             
