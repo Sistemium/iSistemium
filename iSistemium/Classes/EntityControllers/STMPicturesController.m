@@ -601,11 +601,21 @@
 
 - (void)downloadConnectionForObject:(NSManagedObject *)object {
     
-    NSString *href = [object valueForKey:@"href"];
-
+    __block NSString *href = nil;
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        href = [object valueForKey:@"href"];
+    });
+    
     if (href) {
         
-        if ([object valueForKey:@"imageThumbnail"]) {
+        __block id imageThumbnail = nil;
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            imageThumbnail = [object valueForKey:@"imageThumbnail"];
+        });
+
+        if (imageThumbnail) {
             
             [self.hrefDictionary removeObjectForKey:href];
             
@@ -614,7 +624,7 @@
             NSURL *url = [NSURL URLWithString:href];
             NSURLRequest *request = [NSURLRequest requestWithURL:url];
             NSURLResponse *response = nil;
-            NSError *error = nil;
+            __block NSError *error = nil;
             
             //        NSLog(@"start loading %@", url.lastPathComponent);
             
@@ -646,8 +656,12 @@
                     
                 } else {
                     
-                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                    [self.hrefDictionary removeObjectForKey:href];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                        [self.hrefDictionary removeObjectForKey:href];
+                        
+                    });
                     
                 }
                 
@@ -657,11 +671,15 @@
                 
                 [self.hrefDictionary removeObjectForKey:href];
                 
-                NSData *dataCopy = [data copy];
+                __block NSData *dataCopy = [data copy];
                 
-                if ([object isKindOfClass:[STMPicture class]]) {
-                    [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
-                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+
+                    if ([object isKindOfClass:[STMPicture class]]) {
+                        [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
+                    }
+                    
+                });
                 
             }
             
