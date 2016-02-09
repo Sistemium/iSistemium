@@ -581,7 +581,12 @@
     
     if ([[self instantLoadPicturesEntityNames] containsObject:NSStringFromClass([object class])]) {
         
-        [self downloadConnectionForObject:object];
+//        object is sended to background thread
+//        you should dispatch_get_main_queue in downloadConnectionForObject: for object manipulation
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            [self downloadConnectionForObject:object];
+        });
         
     } else {
     
