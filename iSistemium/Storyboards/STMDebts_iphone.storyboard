@@ -424,5 +424,265 @@
             </objects>
             <point key="canvasLocation" x="6708" y="1026"/>
         </scene>
+        <!--Uncashing InfoVC-->
+        <scene sceneID="XYg-ws-kr0">
+            <objects>
+                <viewController storyboardIdentifier="uncashingInfoPopover" id="zl0-Lt-znD" customClass="STMUncashingInfoVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="sgp-Bn-cxW"/>
+                        <viewControllerLayoutGuide type="bottom" id="w46-HM-KYP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="2uO-ri-WNf">
+                        <rect key="frame" x="0.0" y="0.0" width="512" height="256"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lVI-uP-T9r">
+                                <rect key="frame" x="0.0" y="212" width="512" height="44"/>
+                                <items>
+                                    <barButtonItem systemItem="cancel" id="Vw4-X7-IXe" customClass="STMBarButtonItemCancel">
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="zl0-Lt-znD" id="tyD-CF-beP"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="I9O-5w-jNc"/>
+                                    <barButtonItem title="Item" id="WZX-a6-7Ng" customClass="STMBarButtonItemDone">
+                                        <connections>
+                                            <action selector="confirmButtonPressed:" destination="zl0-Lt-znD" id="T93-WF-t4A"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J4A-QR-9t9">
+                                <rect key="frame" x="20" y="20" width="192" height="192"/>
+                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Main" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IDO-dF-coC">
+                                <rect key="frame" x="220" y="20" width="272" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sum" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BwS-Nu-spK">
+                                <rect key="frame" x="220" y="49" width="272" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Type" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p7j-iq-8ej">
+                                <rect key="frame" x="220" y="78" width="272" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" editable="NO" text="Comment" translatesAutoresizingMaskIntoConstraints="NO" id="lBg-Zy-g31">
+                                <rect key="frame" x="220" y="107" width="272" height="100"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="512" height="256"/>
+                    <connections>
+                        <outlet property="cancelButton" destination="Vw4-X7-IXe" id="luC-lD-EzH"/>
+                        <outlet property="commentTextView" destination="lBg-Zy-g31" id="PJ2-Yi-Bwt"/>
+                        <outlet property="confirmButton" destination="WZX-a6-7Ng" id="kig-UI-vF0"/>
+                        <outlet property="imageView" destination="J4A-QR-9t9" id="uk0-1Z-gdK"/>
+                        <outlet property="mainLabel" destination="IDO-dF-coC" id="0AX-xB-HOM"/>
+                        <outlet property="sumLabel" destination="BwS-Nu-spK" id="DJs-Y0-Hbz"/>
+                        <outlet property="toolbar" destination="lVI-uP-T9r" id="2dn-lu-sX8"/>
+                        <outlet property="typeLabel" destination="p7j-iq-8ej" id="egh-jg-7lH"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="148-dg-Wl3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5034" y="-328"/>
+        </scene>
+        <!--Uncashing PhotoVC-->
+        <scene sceneID="XQ8-3C-JDU">
+            <objects>
+                <viewController storyboardIdentifier="uncashingPhotoVC" modalPresentationStyle="pageSheet" id="Rub-qS-ms7" customClass="STMUncashingPhotoVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="N4c-EN-24G"/>
+                        <viewControllerLayoutGuide type="bottom" id="syw-n3-zje"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="mdj-Nh-hdW">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SE7-Ux-hu7">
+                                <rect key="frame" x="20" y="20" width="560" height="560"/>
+                            </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="2XZ-Uc-Hk3">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="l3U-8w-MDl"/>
+                                    <barButtonItem systemItem="trash" id="dyK-S8-AGL">
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="deleteButtonPressed:" destination="Rub-qS-ms7" id="f6t-ii-ez7"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="SE7-Ux-hu7" firstAttribute="leading" secondItem="mdj-Nh-hdW" secondAttribute="leading" constant="20" symbolic="YES" id="CqJ-25-KV1"/>
+                            <constraint firstItem="2XZ-Uc-Hk3" firstAttribute="leading" secondItem="mdj-Nh-hdW" secondAttribute="leading" id="DSH-aF-NPm"/>
+                            <constraint firstAttribute="trailing" secondItem="2XZ-Uc-Hk3" secondAttribute="trailing" id="Xpv-ys-e5D"/>
+                            <constraint firstItem="SE7-Ux-hu7" firstAttribute="top" secondItem="2XZ-Uc-Hk3" secondAttribute="bottom" constant="-44" id="eBV-pa-KAh"/>
+                            <constraint firstAttribute="bottom" secondItem="SE7-Ux-hu7" secondAttribute="bottom" constant="20" symbolic="YES" id="g6F-Id-OgN"/>
+                            <constraint firstItem="SE7-Ux-hu7" firstAttribute="top" secondItem="N4c-EN-24G" secondAttribute="bottom" id="kZI-gp-hqf"/>
+                            <constraint firstAttribute="trailing" secondItem="SE7-Ux-hu7" secondAttribute="trailing" constant="20" symbolic="YES" id="p8D-FA-kXl"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="deletePhotoButton" destination="dyK-S8-AGL" id="Zkn-20-3B6"/>
+                        <outlet property="photoView" destination="SE7-Ux-hu7" id="ymz-cG-yhC"/>
+                        <outlet property="toolbar" destination="2XZ-Uc-Hk3" id="LzY-w0-vL0"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BK0-iS-Pfx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5702" y="-1143"/>
+        </scene>
+        <!--Add EtceteraVC-->
+        <scene sceneID="WiV-mD-jdu">
+            <objects>
+                <viewController storyboardIdentifier="addEtceteraVC" id="oMh-xE-GI8" customClass="STMAddEtceteraVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6XG-D4-eUJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="tf0-t3-yk6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="y19-q4-N59">
+                        <rect key="frame" x="0.0" y="0.0" width="512" height="256"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YAZ-JM-gdh">
+                                <rect key="frame" x="0.0" y="212" width="512" height="44"/>
+                                <items>
+                                    <barButtonItem systemItem="cancel" id="etU-Bq-lwh">
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="oMh-xE-GI8" id="4Tw-oU-4hA"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="8oI-IH-rn1"/>
+                                    <barButtonItem systemItem="done" id="A55-nS-2GY">
+                                        <connections>
+                                            <action selector="doneButtonPressed:" destination="oMh-xE-GI8" id="gKM-kC-1MA"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Number label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oSO-cl-Wiv">
+                                <rect key="frame" x="20" y="62" width="164" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BwJ-uV-YI0">
+                                <rect key="frame" x="192" y="58" width="300" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sum label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tgl-ZG-Ygi">
+                                <rect key="frame" x="20" y="100" width="164" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="JIc-UR-Obi">
+                                <rect key="frame" x="192" y="96" width="300" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tp9-5G-x6V">
+                                <rect key="frame" x="192" y="20" width="300" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Date">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="Gme-g5-VSh" kind="popover" identifier="showDatePicker" popoverAnchorView="tp9-5G-x6V" id="jaq-Bv-8HK">
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                    </segue>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Date label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3qH-pb-fNV">
+                                <rect key="frame" x="20" y="24" width="164" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Comment label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ie-N0-nNH">
+                                <rect key="frame" x="20" y="138" width="164" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gMi-MS-plG">
+                                <rect key="frame" x="192" y="134" width="300" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="512" height="256"/>
+                    <connections>
+                        <outlet property="cancelButton" destination="YAZ-JM-gdh" id="zjA-Gt-jOu"/>
+                        <outlet property="commentLabel" destination="7Ie-N0-nNH" id="txt-UI-KEH"/>
+                        <outlet property="commentTextField" destination="gMi-MS-plG" id="IE6-Qr-D2O"/>
+                        <outlet property="dateButton" destination="tp9-5G-x6V" id="xlI-ul-EvL"/>
+                        <outlet property="dateLabel" destination="3qH-pb-fNV" id="Hcr-Ei-WYG"/>
+                        <outlet property="doneButton" destination="YAZ-JM-gdh" id="HPd-QR-Wf3"/>
+                        <outlet property="numberLabel" destination="oSO-cl-Wiv" id="dKq-3i-Shj"/>
+                        <outlet property="numberTextField" destination="BwJ-uV-YI0" id="zBm-Qf-zGj"/>
+                        <outlet property="sumLabel" destination="Tgl-ZG-Ygi" id="cPF-C9-vE4"/>
+                        <outlet property="sumTextField" destination="JIc-UR-Obi" id="Hyg-wy-RrE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eYG-iO-q3o" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5034" y="53"/>
+        </scene>
+        <!--Date PickerVC-->
+        <scene sceneID="j4v-YC-pQg">
+            <objects>
+                <viewController id="Gme-g5-VSh" customClass="STMDatePickerVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fy9-NY-g8A"/>
+                        <viewControllerLayoutGuide type="bottom" id="i5b-hq-byi"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="YUy-e9-OoZ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="GtB-fZ-avh">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+                                <date key="date" timeIntervalSinceReferenceDate="430049474.30765301">
+                                    <!--2014-08-18 10:11:14 +0000-->
+                                </date>
+                                <connections>
+                                    <action selector="dateValueChanged:" destination="Gme-g5-VSh" eventType="valueChanged" id="WGj-s6-Kxd"/>
+                                </connections>
+                            </datePicker>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="216"/>
+                    <connections>
+                        <outlet property="datePicker" destination="GtB-fZ-avh" id="W5M-hD-we6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="e3Y-NN-tJW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5613" y="53"/>
+        </scene>
     </scenes>
 </document>

@@ -22,7 +22,6 @@
 @interface STMUncashingDetailsTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, weak) STMUncashingSVC *splitVC;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
 @property (nonatomic, strong) UIPopoverController *addCashingPopover;
 @property (nonatomic, strong) UIBarButtonItem *addButton;

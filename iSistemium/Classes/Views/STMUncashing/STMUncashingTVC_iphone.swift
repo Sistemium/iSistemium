@@ -10,6 +10,8 @@ import UIKit
 
 class STMUncashingTVC_iphone: STMUncashingMasterTVC {
     
+    private var cancelButton:STMBarButtonItem?
+    
     override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         if (indexPath.section == 0) {
             performSegueWithIdentifier("showUncashing", sender: nil)
@@ -32,9 +34,25 @@ class STMUncashingTVC_iphone: STMUncashingMasterTVC {
         }
     }
     
+    override func uncashingProcessStart(){
+//        self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
+//        self.navigationItem.titleView = dateButton
+        self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
+//        selectedDate = NSDate()
+//        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+//        self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
+//        showCashingSumLabel()
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController!.toolbarHidden = true
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .Plain, target:STMCashingProcessController.sharedInstance(), action:"cancelCashingProcess")
+        cancelButton!.tintColor = .redColor()
     }
     
 }

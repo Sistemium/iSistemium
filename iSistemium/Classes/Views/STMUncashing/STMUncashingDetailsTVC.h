@@ -15,8 +15,10 @@
 
 @property (nonatomic, strong) STMUncashing *uncashing;
 @property (nonatomic, strong) STMBarButtonItem *uncashingProcessButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 
 
 - (void)dismissAddCashingPopover;
+- (void)showUncashingInfoPopover;
 
 @end
