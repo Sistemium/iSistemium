@@ -416,18 +416,18 @@
      
         if (indexPath.section == 0) {
             
-            if (self.supplyOrderArticleDoc.article) {
-                
-                if (self.supplyOrderArticleDoc.sourceOperations.count > 0) {
-
-                    NSLog(@"should delete all operations before changing article");
-                    [self showIllegalArticleChangeAlert];
-                    
-                } else {
-                    [self showArticleSelectionWithArticles:nil];
-                }
-
-            }
+//            if (self.supplyOrderArticleDoc.article) {
+//                
+//                if (self.supplyOrderArticleDoc.sourceOperations.count > 0) {
+//
+//                    NSLog(@"should delete all operations before changing article");
+//                    [self showIllegalArticleChangeAlert];
+//                    
+//                } else {
+//                    [self showArticleSelectionWithArticles:nil];
+//                }
+//
+//            }
             
         } else if (indexPath.section == 1) {
             
@@ -539,7 +539,44 @@
         [self showIllegalArticleChangeAlert];
         
     } else {
+  
+        STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
+
+        NSSet *barcodes = [article.barCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
         
+        if (barcodes.count > 0) {
+            
+            if ([barcodes containsObject:barcode]) {
+                
+                self.articleBarCode = barcode;
+                [self confirmArticle:article];
+                
+            } else {
+                
+                [STMSoundController playAlert];
+
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                   
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                                    message:NSLocalizedString(@"THIS ARTICLE HAVE ANOTHER BARCODES", nil)
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                          otherButtonTitles:nil];
+                    [alert show];
+                    
+                }];
+                
+            }
+            
+        } else {
+            
+            self.articleBarCode = barcode;
+            [self showAddBarcodeAlertForBarcode:self.articleBarCode andArticle:article];
+            
+        }
+        
+/*
+ 
         NSArray *articles = [STMBarCodeController articlesForBarcode:barcode];
         
         if (articles.count > 0) {
@@ -578,6 +615,8 @@
             
         }
 
+*/
+        
     }
     
 }
@@ -748,7 +787,7 @@
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         
-        NSString *alertMessage = NSLocalizedString(@"ILLEGAL ARTICLE CHANGE ATTEMPT", nil);
+        NSString *alertMessage = NSLocalizedString(@"ILLEGAL BARCODE CHANGE ATTEMPT", nil);
         
         if (!self.illegalArticleChangeAlert.isVisible) {
             
@@ -966,9 +1005,6 @@
 }
 
 
-
-#pragma mark - UIAlertViewDelegate
-
 #pragma mark - UIAlertViewDelegate
 
 - (void)showAddBarcodeAlertForBarcode:(NSString *)barcode andArticle:(STMArticle *)article {
@@ -1059,6 +1095,8 @@
     
     [self performFetch];
     
+//    [self receiveArticleBarcode:@"4600587015631"];
+
 }
 
 - (void)viewDidLoad {

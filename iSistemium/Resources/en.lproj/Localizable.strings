@@ -441,6 +441,7 @@
 "BARCODES REMAIN TO SCAN" = "Barcodes remain to scan";
 "SUPPLY POSITION COMPLETE" = "Supply position complete";
 "ILLEGAL ARTICLE CHANGE ATTEMPT" = "Delete all operations before change article";
+"ILLEGAL BARCODE CHANGE ATTEMPT" = "Delete all operations before change barcode";
 "DOC ARTICLE" = "Doc article";
 "ADD BARCODE TO ARTICLE?" = "Add barcode\n\n%@\n\nto article\n\n%@\n\n?";
 "REMOVE BARCODE FROM ARTICLE?" = "Remove barcode\n\n%@\n\nfrom article\n\n%@\n\n?";
@@ -458,4 +459,5 @@
 "SCANNER RUMBLE" = "Scanner rumble";
 "SCANNER BATTERY" = "Scanner battery";
 "NO SCANNER AVAILABLE" = "No scanner available";
+"THIS ARTICLE HAVE ANOTHER BARCODES" = "This article have another barcodes";
 
