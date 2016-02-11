@@ -303,26 +303,25 @@
         cell.textLabel.text = [articleProperties componentsJoinedByString:@"\n"];
         
         
-        NSMutableArray *detailTexts = @[].mutableCopy;
-        
-        if (self.supplyOrderArticleDoc.articleDoc.dateProduction) {
-            
-            NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateProduction];
-            dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
-            
-            [detailTexts addObject:dateProduction];
-            
-        }
-        
         if (self.supplyOrderArticleDoc.articleDoc.dateImport) {
             
             NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateImport];
             dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
-            [detailTexts addObject:dateImport];
             
+            cell.detailTextLabel.text = dateImport;
+            
+        } else if (self.supplyOrderArticleDoc.articleDoc.dateProduction) {
+            
+            NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateProduction];
+            dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
+            
+            cell.detailTextLabel.text = dateProduction;
+
+        } else {
+
+            cell.detailTextLabel.text = @"";
+
         }
-        
-        cell.detailTextLabel.text  = [detailTexts componentsJoinedByString:@" / "];
         
     } else {
         
