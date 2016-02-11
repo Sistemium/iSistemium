@@ -14,6 +14,8 @@
 #import "STMWorkflowEditablesVC.h"
 #import "STMSupplyOrderOperationsTVC.h"
 
+#import "STMSoundController.h"
+
 
 @interface STMSupplyOrderArticleDocsTVC () <UIActionSheetDelegate, STMWorkflowable>
 
@@ -439,7 +441,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
+
     [super viewWillAppear:animated];
     
     if (![self isMovingToParentViewController]) {
@@ -448,7 +450,10 @@
         NSNumber *remainingVolumes = [self.supplyOrder.supplyOrderArticleDocs valueForKeyPath:@"@sum.volumeRemainingToSupply"];
         
         if (orderIsProcessed && remainingVolumes.integerValue == 0) {
+            
+            [STMSoundController okSay:NSLocalizedString(@"ALL POSITIONS ARE SUPPLIED", nil)];
             [self processingButtonPressed];
+            
         }
 
         if (self.isDetailNC) {
