@@ -199,6 +199,11 @@
 
     }
     
+    UIColor *processingColor = [STMWorkflowController colorForProcessing:supplyOrder.processing inWorkflow:self.supplyOrderWorkflow];
+
+    cell.textLabel.highlightedTextColor = processingColor;
+    cell.detailTextLabel.highlightedTextColor = processingColor;
+
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
