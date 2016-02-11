@@ -442,8 +442,19 @@
     
     [super viewWillAppear:animated];
     
-    if (self.isDetailNC && ![self isMovingToParentViewController]) {
-        self.operationsTVC = nil;
+    if (![self isMovingToParentViewController]) {
+        
+        BOOL orderIsProcessed = [self orderIsProcessed];
+        NSNumber *remainingVolumes = [self.supplyOrder.supplyOrderArticleDocs valueForKeyPath:@"@sum.volumeRemainingToSupply"];
+        
+        if (orderIsProcessed && remainingVolumes.integerValue == 0) {
+            [self processingButtonPressed];
+        }
+
+        if (self.isDetailNC) {
+            self.operationsTVC = nil;
+        }
+
     }
     
     if (IPHONE) [self updateToolbars];
@@ -454,10 +465,12 @@
     
     [super viewWillDisappear:animated];
     
-    if (self.isMasterNC && [self isMovingFromParentViewController]) {
-        
-        [self.splitVC masterBackButtonPressed];
-        
+    if ([self isMovingFromParentViewController]) {
+
+        if (self.isMasterNC) {
+            [self.splitVC masterBackButtonPressed];
+        }
+
     }
     
 }
