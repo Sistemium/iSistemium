@@ -289,11 +289,19 @@
      
         cell.textLabel.textColor = [UIColor blackColor];
         
-        if (self.supplyOrderArticleDoc.code) {
-            cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", self.supplyOrderArticleDoc.code, self.supplyOrderArticleDoc.article.name];
-        } else {
-            cell.textLabel.text = [NSString stringWithFormat:@"%@", self.supplyOrderArticleDoc.article.name];
-        }
+        
+        NSMutableArray *articleProperties = @[].mutableCopy;
+        
+        if (self.supplyOrderArticleDoc.code) [articleProperties addObject:(NSString *)self.supplyOrderArticleDoc.code];
+        
+        if (self.supplyOrderArticleDoc.article.name) [articleProperties addObject:(NSString *)self.supplyOrderArticleDoc.article.name];
+        
+        NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), self.supplyOrderArticleDoc.article.packageRel];
+        
+        [articleProperties addObject:packageRelString];
+
+        cell.textLabel.text = [articleProperties componentsJoinedByString:@"\n"];
+        
         
         NSMutableArray *detailTexts = @[].mutableCopy;
         
@@ -329,7 +337,9 @@
     
     NSString *articleDocName = (self.supplyOrderArticleDoc.articleDoc.article.name) ? self.supplyOrderArticleDoc.articleDoc.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
 
-    cell.textLabel.text = articleDocName;
+    NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [self.supplyOrderArticleDoc operatingArticle].packageRel];
+
+    cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", articleDocName, packageRelString];
     cell.textLabel.numberOfLines = 0;
 
 }
@@ -400,6 +410,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+//    [self performSegueWithIdentifier:@"showSupplyOperation" sender:nil];
+
     if ([self orderIsProcessed]) {
      
         if (indexPath.section == 0) {

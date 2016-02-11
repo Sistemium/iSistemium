@@ -195,6 +195,19 @@
     
 }
 
+- (NSString *)articleLabelForArticleDoc:(STMSupplyOrderArticleDoc *)articleDoc {
+    
+    NSString *articleLabel = [articleDoc operatingArticle].name;
+    articleLabel = [articleLabel stringByAppendingString:@"\n"];
+    
+    NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [articleDoc operatingArticle].packageRel];
+    articleLabel = [articleLabel stringByAppendingString:packageRelString];
+
+    return articleLabel;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -210,9 +223,9 @@
 
         self.supplyOrderArticleDoc = (STMSupplyOrderArticleDoc *)self.supplyOperation.sourceAgent;
         
-        self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
+        self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
         
-        self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
+        self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue;
 
         self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
         
@@ -220,9 +233,9 @@
 
     } else if (self.supplyOrderArticleDoc) {
         
-        self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
+        self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
         
-        self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
+        self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue;
 
         self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
         

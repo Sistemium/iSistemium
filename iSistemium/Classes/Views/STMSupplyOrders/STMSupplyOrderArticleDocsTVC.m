@@ -325,9 +325,12 @@
         NSString *articleName = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
         
         NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:articleName attributes:attributes];
-        
         [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
 
+        NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), supplyOrderArticleDoc.article.packageRel];
+        [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:packageRelString attributes:attributes]];
+        [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+        
         font = [UIFont systemFontOfSize:font.pointSize - 4];
         
         attributes = @{NSForegroundColorAttributeName     : [UIColor grayColor],
@@ -341,8 +344,15 @@
         cell.titleLabel.attributedText = labelTitle;
 
     } else {
+        
+        NSString *titleText = [supplyOrderArticleDoc operatingArticle].name;
+        
+        NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [supplyOrderArticleDoc operatingArticle].packageRel];
 
-        cell.titleLabel.text = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : supplyOrderArticleDoc.articleDoc.article.name;
+        titleText = [titleText stringByAppendingString:@"\n"];
+        titleText = [titleText stringByAppendingString:packageRelString];
+
+        cell.titleLabel.text = titleText;
 
     }
     
