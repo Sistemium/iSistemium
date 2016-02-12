@@ -24,6 +24,7 @@
 #import "STMAuthNC.h"
 
 #import "STMSocketController.h"
+#import "STMSoundController.h"
 
 
 @implementation STMAppDelegate
@@ -94,7 +95,16 @@
 
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
     NSLog(@"didReceiveLocalNotification: %@", notification);
+    
+//    if ([notification.userInfo.allKeys containsObject:RINGING_LOCAL_NOTIFICATION]) {
+//        
+//        NSString *soundName = notification.userInfo[RINGING_LOCAL_NOTIFICATION];
+//        [STMSoundController ringingLocalNotificationWithMessage:nil andSoundName:soundName];
+//        
+//    }
+    
 }
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {

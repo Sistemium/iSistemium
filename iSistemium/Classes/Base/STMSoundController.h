@@ -19,5 +19,8 @@
 + (void)alertSay:(NSString *)string;
 + (void)okSay:(NSString *)string;
 
++ (void)ringWithProperties:(NSDictionary *)ringProperties;
++ (void)stopRinging;
+
 
 @end
