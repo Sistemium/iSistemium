@@ -19,5 +19,8 @@
 
 - (void)updateRowWithDebt:(STMDebt *)debt;
 - (void)showLongPressActionSheetFromView:(UIView *)view;
+- (NSMutableAttributedString *)textLabelForDebt:(STMDebt *)debt withFont:(UIFont *)font;
+- (NSMutableAttributedString *)detailTextLabelForDebt:(STMDebt *)debt withFont:(UIFont *)font;
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

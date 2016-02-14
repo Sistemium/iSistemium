@@ -8,6 +8,7 @@
 
 import UIKit
 import MessageUI
+//import Foundation
 
 class STMOutletDebtsTVC_iphone: STMOutletDebtsTVC {
     override func showLongPressActionSheetFromView(view:UIView) {
@@ -28,5 +29,106 @@ class STMOutletDebtsTVC_iphone: STMOutletDebtsTVC {
             actionSheet.showFromRect(cell.frame, inView: self.tableView, animated: true)
         }
     }
-
+    
+    override func textLabelForDebt(debt: STMDebt!, withFont font: UIFont!) -> NSMutableAttributedString! {
+        let numberFormatter = STMFunctions.currencyFormatter
+        let debtSumString = numberFormatter().stringFromNumber(debt.calculatedSum)
+        if debtSumString != nil {
+            var backgroundColor :UIColor
+            var textColor :UIColor
+            var attributes: NSDictionary
+            let text = NSMutableAttributedString()
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            text.appendAttributedString(NSAttributedString(string: debt.ndoc + " " + NSLocalizedString("BY SUMM", comment: "") + " " + debtSumString!,attributes:attributes as? [String : AnyObject]))
+            return text
+        }else{
+            return nil
+        }
+    }
+    
+    override func detailTextLabelForDebt(debt: STMDebt!, var withFont font: UIFont!) -> NSMutableAttributedString! {
+        var backgroundColor :UIColor
+        var textColor :UIColor
+        var attributes: NSDictionary
+        let text = NSMutableAttributedString()
+        if debt.responsibility != nil {
+            backgroundColor = UIColor.grayColor()
+            textColor = UIColor.whiteColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            let responsibilityString = NSString(format: "%@", debt.responsibility)
+            text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
+            text.appendAttributedString(NSAttributedString(string: " "))
+        }
+        if debt.dateE != nil {
+            let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
+            let debtDate = dateFormatter().stringFromDate(debt.date)
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
+            let dueDateHeader = NSString(format: " / %@: ", NSLocalizedString("DUE DATE", comment:""))
+            text.appendAttributedString(NSAttributedString(string: dueDateHeader as String,attributes:attributes as? [String : AnyObject]))
+            var numberOfDays = STMFunctions.daysFromTodayToDate(debt.dateE)
+            var dueDate : NSString
+            switch numberOfDays.intValue{
+            case 0:
+                textColor = UIColor.purpleColor()
+                dueDate = NSLocalizedString("TODAY", comment: "")
+            case 1:
+                dueDate = NSLocalizedString("TOMORROW", comment:"")
+            case -1:
+                textColor = UIColor.redColor()
+                dueDate = NSLocalizedString("YESTERDAY", comment: "")
+            default:
+                let pluralType = STMFunctions.pluralTypeForCount(UInt(abs(numberOfDays.intValue)))
+                let dateIsInPast = numberOfDays.intValue < 0
+                if dateIsInPast {
+                    let positiveNumberOfDays = -1 * numberOfDays.intValue
+                    numberOfDays = NSNumber(int: positiveNumberOfDays)
+                }
+                dueDate = NSString(format: "%@ %@", numberOfDays, NSLocalizedString(pluralType.stringByAppendingString("DAYS"), comment: ""))
+                if (dateIsInPast) {
+                    textColor = UIColor.redColor()
+                    dueDate = NSString(format: "%@ %@", NSLocalizedString("AGO", comment: ""), dueDate)
+                }
+            }
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            text.appendAttributedString(NSAttributedString(string: dueDate as String, attributes:attributes as? [String : AnyObject]))
+        }
+        if debt.commentText != nil {
+            font = UIFont.systemFontOfSize(14)
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            let commentString = NSString(format:" (%@)", debt.commentText)
+            text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
+        }
+        return text
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+    }
 }

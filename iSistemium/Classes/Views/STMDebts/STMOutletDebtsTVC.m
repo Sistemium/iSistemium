@@ -273,6 +273,15 @@
     
 }
 
+- (NSMutableAttributedString *)detailTextLabelForDebt:(STMDebt *)debt withFont:(UIFont *)font {
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
+    NSString *debtDate = [dateFormatter stringFromDate:debt.date];
+    NSString *debtSumOriginString = [numberFormatter stringFromNumber:debt.summOrigin];
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString: [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString]];
+    return text;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -296,14 +305,11 @@
 
     cell.textLabel.attributedText = [self textLabelForDebt:debt withFont:cell.textLabel.font];
     
-    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
     
-    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
+    cell.detailTextLabel.attributedText = [self detailTextLabelForDebt:debt withFont:cell.detailTextLabel.font];
     
-    NSString *debtDate = [dateFormatter stringFromDate:debt.date];
-    NSString *debtSumOriginString = [numberFormatter stringFromNumber:debt.summOrigin];
-    
-    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
+    cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
