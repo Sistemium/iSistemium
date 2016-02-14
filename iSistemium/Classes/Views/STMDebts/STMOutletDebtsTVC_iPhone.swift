@@ -10,7 +10,7 @@ import UIKit
 import MessageUI
 //import Foundation
 
-class STMOutletDebtsTVC_iphone: STMOutletDebtsTVC {
+class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     override func showLongPressActionSheetFromView(view:UIView) {
     
         if view.isKindOfClass(UITableViewCell) {

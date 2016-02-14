@@ -24,11 +24,11 @@
             </objects>
             <point key="canvasLocation" x="4206" y="534"/>
         </scene>
-        <!--OutletsTVC Iphone-->
+        <!--OutletsTVC i Phone-->
         <scene sceneID="jT6-9S-auj">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qql-qy-dhx" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="9Bf-bw-F2M" customClass="STMOutletsTVC_Iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="9Bf-bw-F2M" customClass="STMOutletsTVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="AU2-IT-O5Z">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -90,10 +90,10 @@
             </objects>
             <point key="canvasLocation" x="4206" y="1300"/>
         </scene>
-        <!--Outlet DebtsTVC iphone-->
+        <!--Outlet DebtsTVC i Phone-->
         <scene sceneID="UeB-HC-0g8">
             <objects>
-                <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="x8m-zt-HXJ" customClass="STMOutletDebtsTVC_iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="x8m-zt-HXJ" customClass="STMOutletDebtsTVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="xur-9J-vDW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -138,11 +138,11 @@
             </objects>
             <point key="canvasLocation" x="5056" y="1300"/>
         </scene>
-        <!--DebtsPVC Iphone-->
+        <!--DebtsPVC i Phone-->
         <scene sceneID="QUf-as-hpe">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X4m-EA-IzH" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" extendedLayoutIncludesOpaqueBars="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="X1d-yq-5Mi" customClass="STMDebtsPVC_Iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                <pageViewController autoresizesArchivedViewToFullSize="NO" extendedLayoutIncludesOpaqueBars="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="X1d-yq-5Mi" customClass="STMDebtsPVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="R3B-Id-Kkp">
@@ -226,10 +226,10 @@
             </objects>
             <point key="canvasLocation" x="5914" y="1300"/>
         </scene>
-        <!--Add DebtVC iphone-->
+        <!--Add DebtVC i Phone-->
         <scene sceneID="aGp-4Z-kA0">
             <objects>
-                <viewController storyboardIdentifier="addDebtVC" id="nfA-u5-XWd" customClass="STMAddDebtVC_iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="addDebtVC" id="nfA-u5-XWd" customClass="STMAddDebtVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Kb1-5I-3xy"/>
                         <viewControllerLayoutGuide type="bottom" id="l1c-QD-xmT"/>

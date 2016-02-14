@@ -9,7 +9,7 @@
 import UIKit
 
 @available(iOS 8.0, *)
-class STMOutletsTVC_Iphone: STMOutletsTVC {
+class STMOutletsTVC_iPhone: STMOutletsTVC {
     override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         let outlet = self.resultsController.objectAtIndexPath(indexPath)
         performSegueWithIdentifier("showDebts", sender: outlet)
@@ -19,7 +19,7 @@ class STMOutletsTVC_Iphone: STMOutletsTVC {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier!{
         case "showDebts":
-            (segue.destinationViewController as! STMDebtsPVC_Iphone).outlet = sender as? STMOutlet
+            (segue.destinationViewController as! STMDebtsPVC_iPhone).outlet = sender as? STMOutlet
         default:
         break
         }

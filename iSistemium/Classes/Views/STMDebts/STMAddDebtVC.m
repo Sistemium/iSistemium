@@ -152,7 +152,7 @@
 - (IBAction)cancelButtonPressed:(id)sender {
     
     [self.view endEditing:YES];
-    if (![self.parentVC isKindOfClass: STMDebtsPVC_Iphone.class]){
+    if (![self.parentVC isKindOfClass: STMDebtsPVC_iPhone.class]){
         [self.parentVC dismissAddDebt];
     }
     
@@ -187,7 +187,7 @@
 //        NSLog(@"self.debtSum %@", self.debtSum);
 
         [STMDebtsController addNewDebtWithSum:self.debtSum ndoc:self.debtNdoc date:self.selectedDate outlet:self.parentVC.outlet comment:self.commentText];
-        if (![self.parentVC isKindOfClass: STMDebtsPVC_Iphone.class]){
+        if (![self.parentVC isKindOfClass: STMDebtsPVC_iPhone.class]){
             [self.parentVC dismissAddDebt];
         }
 

@@ -9,7 +9,7 @@
 import UIKit
 
 @available(iOS 8.0, *)
-class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDelegate, STMDatePickerParent{
+class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDelegate, STMDatePickerParent{
     
     var selectedDate: NSDate?{
         didSet{
@@ -70,7 +70,7 @@ class STMDebtsPVC_Iphone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     }
     
     override func addDebtButtonPressed(sender:AnyObject){
-        let popoverContent = self.storyboard!.instantiateViewControllerWithIdentifier("addDebtVC") as! STMAddDebtVC_iphone
+        let popoverContent = self.storyboard!.instantiateViewControllerWithIdentifier("addDebtVC") as! STMAddDebtVC_iPhone
         popoverContent.parentVC = self
         let nav = UINavigationController(rootViewController: popoverContent)
         nav.modalPresentationStyle = .Popover

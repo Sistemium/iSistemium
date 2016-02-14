@@ -8,7 +8,7 @@
 
 import UIKit
 
-class STMUncashingTVC_iphone: STMUncashingMasterTVC {
+class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
     
     private var cancelButton:STMBarButtonItem?
     

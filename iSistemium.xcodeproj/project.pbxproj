@@ -495,13 +495,13 @@
 		6D720E681C5235AB008BC9F7 /* STMUncashing_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */; };
 		6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* SwiftConstants.swift */; };
 		6D814AA01C4938E5001B56A3 /* STMSplitViewController_Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */; };
-		6DC103DD1C5EB15400D399B2 /* STMOutletDebtsTVC_iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iphone.swift */; };
-		6DC103E11C5F997500D399B2 /* STMAddDebtVC_iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC103E01C5F997500D399B2 /* STMAddDebtVC_iphone.swift */; };
-		6DC103E41C60E56200D399B2 /* STMUncashingTVC_iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC103E31C60E56200D399B2 /* STMUncashingTVC_iphone.swift */; };
+		6DC103DD1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift */; };
+		6DC103E11C5F997500D399B2 /* STMAddDebtVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC103E01C5F997500D399B2 /* STMAddDebtVC_iPhone.swift */; };
+		6DC103E41C60E56200D399B2 /* STMUncashingTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC103E31C60E56200D399B2 /* STMUncashingTVC_iPhone.swift */; };
 		6DC6CB361C69FFB700732F04 /* STMUncashingDetailsTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC6CB351C69FFB700732F04 /* STMUncashingDetailsTVC_iPhone.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
-		6DEB6C811C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift */; };
-		6DEB6C831C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift */; };
+		6DEB6C811C5792D6009BBE91 /* STMOutletsTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_iPhone.swift */; };
+		6DEB6C831C57A8C9009BBE91 /* STMDebtsPVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_iPhone.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
 		6DFDA3901C3AB15B00409C4A /* STMShippingLocations.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */; };
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
@@ -1444,13 +1444,13 @@
 		6D814A9D1C490362001B56A3 /* SwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftConstants.swift; sourceTree = "<group>"; };
 		6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = STMSplitViewController_Swift.swift; path = ../Views/STMSplitViewController_Swift.swift; sourceTree = "<group>"; };
 		6D814AA11C494F00001B56A3 /* STMDataModel 91.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 91.xcdatamodel"; sourceTree = "<group>"; };
-		6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMOutletDebtsTVC_iphone.swift; sourceTree = "<group>"; };
-		6DC103E01C5F997500D399B2 /* STMAddDebtVC_iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMAddDebtVC_iphone.swift; sourceTree = "<group>"; };
-		6DC103E31C60E56200D399B2 /* STMUncashingTVC_iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingTVC_iphone.swift; sourceTree = "<group>"; };
+		6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMOutletDebtsTVC_iPhone.swift; sourceTree = "<group>"; };
+		6DC103E01C5F997500D399B2 /* STMAddDebtVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMAddDebtVC_iPhone.swift; sourceTree = "<group>"; };
+		6DC103E31C60E56200D399B2 /* STMUncashingTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingTVC_iPhone.swift; sourceTree = "<group>"; };
 		6DC6CB351C69FFB700732F04 /* STMUncashingDetailsTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingDetailsTVC_iPhone.swift; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
-		6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMOutletsTVC_Iphone.swift; sourceTree = "<group>"; };
-		6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMDebtsPVC_Iphone.swift; sourceTree = "<group>"; };
+		6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMOutletsTVC_iPhone.swift; sourceTree = "<group>"; };
+		6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMDebtsPVC_iPhone.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
 		6DFDA38F1C3AB15B00409C4A /* STMShippingLocations.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMShippingLocations.storyboard; sourceTree = "<group>"; };
 		85E24A798D258E2910066983 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2686,7 +2686,7 @@
 		6DC103E21C60E45500D399B2 /* Iphone */ = {
 			isa = PBXGroup;
 			children = (
-				6DC103E31C60E56200D399B2 /* STMUncashingTVC_iphone.swift */,
+				6DC103E31C60E56200D399B2 /* STMUncashingTVC_iPhone.swift */,
 				6DC6CB351C69FFB700732F04 /* STMUncashingDetailsTVC_iPhone.swift */,
 			);
 			name = Iphone;
@@ -2695,10 +2695,10 @@
 		6DEB6C7D1C578FC2009BBE91 /* Iphone */ = {
 			isa = PBXGroup;
 			children = (
-				6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift */,
-				6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift */,
-				6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iphone.swift */,
-				6DC103E01C5F997500D399B2 /* STMAddDebtVC_iphone.swift */,
+				6DEB6C801C5792D6009BBE91 /* STMOutletsTVC_iPhone.swift */,
+				6DEB6C821C57A8C9009BBE91 /* STMDebtsPVC_iPhone.swift */,
+				6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift */,
+				6DC103E01C5F997500D399B2 /* STMAddDebtVC_iPhone.swift */,
 			);
 			name = Iphone;
 			sourceTree = "<group>";
@@ -3036,7 +3036,7 @@
 				2CE3F5021C0F2AC400D8B4F3 /* STMSupplyOrder.m in Sources */,
 				2C42ECB11B0B641E00B5C91A /* STMActionPopoverNC.m in Sources */,
 				6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */,
-				6DC103DD1C5EB15400D399B2 /* STMOutletDebtsTVC_iphone.swift in Sources */,
+				6DC103DD1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift in Sources */,
 				2C57641C1AA5E1E500B9FD2C /* STMCashingControlsVC.m in Sources */,
 				2CEE30271BEBAD10009B229F /* STMMessagePicture.m in Sources */,
 				2C57648E1AB1B1EE00B9FD2C /* STMEntityDescription.m in Sources */,
@@ -3230,7 +3230,7 @@
 				2C14D4411A3B73A000747844 /* STMLogMessagesMasterTVC.m in Sources */,
 				2C1F75121BFA1B6E003699C8 /* STMStockBatch.m in Sources */,
 				2CE3F51E1C1073D000D8B4F3 /* STMInventoryBatchItem+CoreDataProperties.m in Sources */,
-				6DEB6C831C57A8C9009BBE91 /* STMDebtsPVC_Iphone.swift in Sources */,
+				6DEB6C831C57A8C9009BBE91 /* STMDebtsPVC_iPhone.swift in Sources */,
 				2C8ECD361C47AB2D002BB614 /* STMPartner.m in Sources */,
 				2C646F5E1BCE69C00099F034 /* SocketAckEmitter.swift in Sources */,
 				2CB3FD491C244024004090CE /* STMInventoryInfoTVC.m in Sources */,
@@ -3240,7 +3240,7 @@
 				2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */,
 				2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */,
 				2CEE30161BEBAD10009B229F /* STMCashing.m in Sources */,
-				6DEB6C811C5792D6009BBE91 /* STMOutletsTVC_Iphone.swift in Sources */,
+				6DEB6C811C5792D6009BBE91 /* STMOutletsTVC_iPhone.swift in Sources */,
 				2CC194601BE2731F001F8E48 /* STMCustom10TVCell.m in Sources */,
 				2CEE300F1BEBAD10009B229F /* STMBasketPosition+CoreDataProperties.m in Sources */,
 				2CEE30311BEBAD10009B229F /* STMPriceType.m in Sources */,
@@ -3253,7 +3253,7 @@
 				2CAFB2731C36A9C700BBEDC1 /* STMDatum.m in Sources */,
 				2CEE30211BEBAD10009B229F /* STMEntity.m in Sources */,
 				6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */,
-				6DC103E41C60E56200D399B2 /* STMUncashingTVC_iphone.swift in Sources */,
+				6DC103E41C60E56200D399B2 /* STMUncashingTVC_iPhone.swift in Sources */,
 				2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */,
 				2C1F75061BFA1B6E003699C8 /* STMArticleProductionInfo.m in Sources */,
 				2C5764171AA5E1E500B9FD2C /* STMAddDebtVC.m in Sources */,
@@ -3297,7 +3297,7 @@
 				2C5764351AA88A0400B9FD2C /* STMArticleInfoVC.m in Sources */,
 				2C1F750C1BFA1B6E003699C8 /* STMQualityClass.m in Sources */,
 				2CFF9A901A67F2ED002B6392 /* STMObjectsController.m in Sources */,
-				6DC103E11C5F997500D399B2 /* STMAddDebtVC_iphone.swift in Sources */,
+				6DC103E11C5F997500D399B2 /* STMAddDebtVC_iPhone.swift in Sources */,
 				2CF858EF1C1AE11F004D7BD1 /* STMSupplyOrderArticleDocsTVC.m in Sources */,
 				2C5763EF1AA5E13600B9FD2C /* STMCampaignDescriptionVC.m in Sources */,
 				2C5FD59F1BFC7A5900BB3023 /* STMArticleBarCode.m in Sources */,

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class STMAddDebtVC_iphone: STMAddDebtVC {
+class STMAddDebtVC_iPhone: STMAddDebtVC {
     
     @IBAction override func cancelButtonPressed(sender:AnyObject){
         super.cancelButtonPressed(sender)
