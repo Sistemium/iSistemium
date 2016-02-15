@@ -12,6 +12,10 @@
 
 + (void)checkClientData;
 + (void)checkAppVersion;
+
 + (STMClientData *)clientData;
+
++ (NSData *)deviceUUID;
+
 
 @end

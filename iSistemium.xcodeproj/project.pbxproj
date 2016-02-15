@@ -284,6 +284,7 @@
 		2C81AD561AD113EE00246666 /* STMMessageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C81AD551AD113EE00246666 /* STMMessageVC.m */; };
 		2C81AD591AD1154C00246666 /* STMMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C81AD581AD1154C00246666 /* STMMessageController.m */; };
 		2C81AD5B1AD1180F00246666 /* close-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C81AD5A1AD1180F00246666 /* close-128.png */; };
+		2C8226481C6E127E00D11D94 /* bell-phone-ring.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2C8226471C6E127E00D11D94 /* bell-phone-ring.mp3 */; };
 		2C8369571986714300DA4316 /* STMDebts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C8369561986714300DA4316 /* STMDebts.storyboard */; };
 		2C8379C81C1713FE00621419 /* STMCashingProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8379BF1C1713FE00621419 /* STMCashingProcessController.m */; };
 		2C8379C91C1713FE00621419 /* STMInventoryProcessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8379C11C1713FE00621419 /* STMInventoryProcessController.m */; };
@@ -980,6 +981,7 @@
 		2C81AD571AD1154C00246666 /* STMMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMessageController.h; sourceTree = "<group>"; };
 		2C81AD581AD1154C00246666 /* STMMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessageController.m; sourceTree = "<group>"; };
 		2C81AD5A1AD1180F00246666 /* close-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close-128.png"; sourceTree = "<group>"; };
+		2C8226471C6E127E00D11D94 /* bell-phone-ring.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "bell-phone-ring.mp3"; sourceTree = "<group>"; };
 		2C8369561986714300DA4316 /* STMDebts.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts.storyboard; sourceTree = "<group>"; };
 		2C8379BC1C16C6F200621419 /* STMDataModel 83.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 83.xcdatamodel"; sourceTree = "<group>"; };
 		2C8379BE1C1713FE00621419 /* STMCashingProcessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCashingProcessController.h; sourceTree = "<group>"; };
@@ -2436,6 +2438,7 @@
 			children = (
 				2CA9AFE51C43A8E40071D429 /* ok.mp3 */,
 				2CA9AFE21C439B930071D429 /* error.mp3 */,
+				2C8226471C6E127E00D11D94 /* bell-phone-ring.mp3 */,
 			);
 			path = Sounds;
 			sourceTree = "<group>";
@@ -2935,6 +2938,7 @@
 				2CC194471BDFAD35001F8E48 /* STMCustom1CVHeader.xib in Resources */,
 				2C761BC71B01F2D0001DA33E /* Up4-25.png in Resources */,
 				2C1AB2FF1B70AE4400BF5C50 /* 4_circle_filled.png in Resources */,
+				2C8226481C6E127E00D11D94 /* bell-phone-ring.mp3 in Resources */,
 				2C02F2AE1A8A307A00E0E890 /* STMAuth.storyboard in Resources */,
 				2C1AB3131B70B22800BF5C50 /* 4_circle_colored_blue.png in Resources */,
 				2CF1265B1B78DD330059701F /* numerical_sorting_12.png in Resources */,
