@@ -90,6 +90,8 @@
         
         if (changedKeysArray.count > 0) {
             
+            if (self.isFantom.boolValue) [self setPrimitiveValue:@(NO) forKey:@"isFantom"];
+            
             NSDate *currentDate = [NSDate date];
             
 //            self.deviceTs = currentDate;
@@ -228,7 +230,8 @@
              @"imagePath",
              @"resizedImagePath",
              @"calculatedSum",
-             @"imageThumbnail"];
+             @"imageThumbnail",
+             @"isFantom"];
 
 }
 
