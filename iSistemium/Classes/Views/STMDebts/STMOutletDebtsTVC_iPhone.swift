@@ -131,7 +131,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         let debt = self.resultsController.objectAtIndexPath(indexPath)
         cell.contentView.viewWithTag(1)?.removeFromSuperview()
-        cell.tintColor = Constants.ACTIVE_BLUE_COLOR
+        cell.tintColor = STMConstants.ACTIVE_BLUE_COLOR
         cell.accessoryType = .None
         cell.textLabel!.backgroundColor = UIColor.clearColor()
         cell.detailTextLabel!.backgroundColor = UIColor.clearColor()
@@ -151,7 +151,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 }
                 let rect = CGRectMake(0, 1, fillWidth, cell.frame.size.height-2)
                 let view = UIView(frame:rect)
-                view.backgroundColor = Constants.STM_SUPERLIGHT_BLUE_COLOR
+                view.backgroundColor = STMConstants.STM_SUPERLIGHT_BLUE_COLOR
                 view.tag = 1
                 cell.contentView.addSubview(view)
                 cell.contentView.sendSubviewToBack(view)

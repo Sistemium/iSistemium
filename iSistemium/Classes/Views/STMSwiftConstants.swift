@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Constants {
+struct STMConstants {
     static let SYSTEM_VERSION = NSString(string: UIDevice.currentDevice().systemVersion).floatValue
     static let LIMIT_COUNT = 4
     static let IMAGE_PADDING : CGFloat = 6

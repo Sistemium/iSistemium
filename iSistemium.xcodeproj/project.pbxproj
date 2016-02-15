@@ -493,7 +493,7 @@
 		2CFF9A901A67F2ED002B6392 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */; };
 		6D720E641C5134CA008BC9F7 /* STMDebts_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */; };
 		6D720E681C5235AB008BC9F7 /* STMUncashing_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */; };
-		6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* SwiftConstants.swift */; };
+		6D814A9E1C490362001B56A3 /* STMSwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* STMSwiftConstants.swift */; };
 		6D814AA01C4938E5001B56A3 /* STMSplitViewController_Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */; };
 		6DC103DD1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift */; };
 		6DC103E11C5F997500D399B2 /* STMAddDebtVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC103E01C5F997500D399B2 /* STMAddDebtVC_iPhone.swift */; };
@@ -1441,7 +1441,7 @@
 		6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts_iphone.storyboard; sourceTree = "<group>"; };
 		6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMUncashing_iphone.storyboard; sourceTree = "<group>"; };
 		6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesViewerDelegate.h; sourceTree = "<group>"; };
-		6D814A9D1C490362001B56A3 /* SwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftConstants.swift; sourceTree = "<group>"; };
+		6D814A9D1C490362001B56A3 /* STMSwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = STMSwiftConstants.swift; path = ../Views/STMSwiftConstants.swift; sourceTree = "<group>"; };
 		6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = STMSplitViewController_Swift.swift; path = ../Views/STMSplitViewController_Swift.swift; sourceTree = "<group>"; };
 		6D814AA11C494F00001B56A3 /* STMDataModel 91.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 91.xcdatamodel"; sourceTree = "<group>"; };
 		6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMOutletDebtsTVC_iPhone.swift; sourceTree = "<group>"; };
@@ -1535,6 +1535,7 @@
 				2CEE305A1BF0CC43009B229F /* STMBarCodeScanner.m */,
 				2C1C548D1C031D7C0095F1DD /* STMSoundController.h */,
 				2C1C548E1C031D7C0095F1DD /* STMSoundController.m */,
+				6D814A9D1C490362001B56A3 /* STMSwiftConstants.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -2708,7 +2709,6 @@
 			children = (
 				6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */,
 				6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */,
-				6D814A9D1C490362001B56A3 /* SwiftConstants.swift */,
 			);
 			name = STMShippingLocations;
 			sourceTree = "<group>";
@@ -3252,7 +3252,7 @@
 				2C5797F51A436A4300EEFBA7 /* STMEntityController.m in Sources */,
 				2CAFB2731C36A9C700BBEDC1 /* STMDatum.m in Sources */,
 				2CEE30211BEBAD10009B229F /* STMEntity.m in Sources */,
-				6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */,
+				6D814A9E1C490362001B56A3 /* STMSwiftConstants.swift in Sources */,
 				6DC103E41C60E56200D399B2 /* STMUncashingTVC_iPhone.swift in Sources */,
 				2CFF9A8D1A67DF2C002B6392 /* STMController.m in Sources */,
 				2C1F75061BFA1B6E003699C8 /* STMArticleProductionInfo.m in Sources */,
