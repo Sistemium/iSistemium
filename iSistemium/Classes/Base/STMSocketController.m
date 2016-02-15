@@ -352,8 +352,12 @@
     [socket onAny:^(SocketAnyEvent *event) {
         
         NSLog(@"%@ ___ event %@", socket, event.event);
-        NSLog(@"%@ ___ items %@", socket, event.items);
-        
+        NSLog(@"%@ ___ items (", socket);
+
+        for (id item in event.items) NSLog(@"    %@", item);
+
+        NSLog(@"%@           )", socket);
+
     }];
 
 }

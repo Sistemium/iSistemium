@@ -461,4 +461,5 @@
 "NO SCANNER AVAILABLE" = "Штрих-код сканер не подключён";
 "THIS ARTICLE HAVE ANOTHER BARCODES" = "Товару по справке не соответствует этот штрихкод";
 "ALL POSITIONS ARE SUPPLIED" = "Подтвердите завершение приёмки";
+"WRONG VOLUME TO REPEAT" = "Неверное количество для повтора";
 

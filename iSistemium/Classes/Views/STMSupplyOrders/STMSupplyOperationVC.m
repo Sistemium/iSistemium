@@ -10,6 +10,7 @@
 
 #import "STMStockBatchCodesTVC.h"
 #import "STMObjectsController.h"
+#import "STMSoundController.h"
 
 #import "STMSupplyOrdersProcessController.h"
 
@@ -42,6 +43,14 @@
     
     [self saveData];
     self.parentTVC.repeatLastOperation = YES;
+    
+    if ([sender isKindOfClass:[NSString class]]) {
+        
+        NSString *code = (NSString *)sender;
+        [self.parentTVC processStockBatchBarcode:code];
+        
+    }
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
@@ -56,9 +65,25 @@
 
 - (void)addStockBatchCode:(NSString *)code {
     
-    [self.codesTVC addStockBatchCode:code];
-    [self updateRepeatButtonTitle];
+    if (self.codesTVC.stockBatchCodes.count == MAX_CODES_PER_BATCH) {
+        
+        if (self.repeatButton.enabled) {
+            
+            [self repeatButtonPressed:code];
+            
+        } else {
+            
+            [STMSoundController alertSay:NSLocalizedString(@"WRONG VOLUME TO REPEAT", nil)];
+            
+        }
+        
+    } else {
+    
+        [self.codesTVC addStockBatchCode:code];
+        [self updateRepeatButtonTitle];
 
+    }
+    
 }
 
 - (void)saveData {

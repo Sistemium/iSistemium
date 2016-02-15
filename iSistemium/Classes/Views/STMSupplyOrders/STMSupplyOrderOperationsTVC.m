@@ -574,7 +574,7 @@
             
         }
         
-/*
+/* article bar codes with article selection
  
         NSArray *articles = [STMBarCodeController articlesForBarcode:barcode];
         

@@ -50,5 +50,7 @@
 #define FREE_SPACE_PRECISION_MiB 200
 #define FREE_SPACE_THRESHOLD 500
 
+#define MAX_CODES_PER_BATCH 1
+
 
 #endif
