@@ -13,4 +13,6 @@ struct Constants {
     static let LIMIT_COUNT = 4
     static let IMAGE_PADDING : CGFloat = 6
     static let CELL_IMAGES_SIZE:CGFloat = 54.0
+    static let ACTIVE_BLUE_COLOR = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
+    static let STM_SUPERLIGHT_BLUE_COLOR = UIColor(red:0.92, green:0.96, blue:1, alpha:1)
 }
