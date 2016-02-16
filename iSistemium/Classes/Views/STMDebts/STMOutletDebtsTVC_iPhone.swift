@@ -8,7 +8,6 @@
 
 import UIKit
 import MessageUI
-//import Foundation
 
 class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     override func showLongPressActionSheetFromView(view:UIView) {
@@ -140,7 +139,14 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             if debt.xid != nil && STMCashingProcessController.sharedInstance().debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
                 let cashingSum = STMCashingProcessController.sharedInstance().debtsDictionary[debt.xid!!]![1]
                 fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum).doubleValue)
-                cell.accessoryType = .Checkmark
+                cell.accessoryType = .DetailButton
+                cell.imageView?.image = UIImage(named: "checkmark_filled")
+                let itemSize:CGSize = CGSizeMake(20, 20)
+                UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.mainScreen().scale)
+                let imageRect : CGRect = CGRectMake(0, 0, itemSize.width, itemSize.height)
+                cell.imageView!.image?.drawInRect(imageRect)
+                cell.imageView!.image = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
             } else {
                 cell.accessoryType = .None
             }
