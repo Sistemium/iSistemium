@@ -65,22 +65,30 @@
 
 - (void)addStockBatchCode:(NSString *)code {
     
-    if (self.codesTVC.stockBatchCodes.count == MAX_CODES_PER_BATCH) {
+    if ([[self.codesTVC.stockBatchCodes valueForKeyPath:@"code"] containsObject:code]) {
         
-        if (self.repeatButton.enabled) {
-            
-            [self repeatButtonPressed:code];
-            
-        } else {
-            
-            [STMSoundController alertSay:NSLocalizedString(@"WRONG VOLUME TO REPEAT", nil)];
-            
-        }
+        [STMSoundController alertSay:NSLocalizedString(@"THIS STOCK BATCH ALREADY EXIST", nil)];
         
     } else {
     
-        [self.codesTVC addStockBatchCode:code];
-        [self updateRepeatButtonTitle];
+        if (self.codesTVC.stockBatchCodes.count == MAX_CODES_PER_BATCH) {
+            
+            if (self.repeatButton.enabled) {
+                
+                [self repeatButtonPressed:code];
+                
+            } else {
+                
+                [STMSoundController alertSay:NSLocalizedString(@"WRONG VOLUME TO REPEAT", nil)];
+                
+            }
+            
+        } else {
+            
+            [self.codesTVC addStockBatchCode:code];
+            [self updateRepeatButtonTitle];
+            
+        }
 
     }
     
@@ -155,7 +163,7 @@
     }
     
     [self updateRepeatButtonTitle];
-    
+
 }
 
 
@@ -271,7 +279,7 @@
     }
 
     [self volumeSelected];
-    
+
 }
 
 - (void)viewDidLoad {
