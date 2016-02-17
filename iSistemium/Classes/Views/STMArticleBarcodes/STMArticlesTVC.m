@@ -110,18 +110,11 @@
 
 - (NSPredicate *)predicate {
     
-    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+    NSPredicate *predicate = [super textSearchPredicate];
+    
+    if (predicate) {
         
-        NSString *trimmedSearchString = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        NSArray *searchStringComponents = [trimmedSearchString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        
-        NSMutableArray *subpredicates = @[].mutableCopy;
-        
-        for (NSString *searchString in searchStringComponents) {
-            [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchString]];
-        }
-        
-        return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+        return predicate;
         
     } else if (self.scannedBarcode) {
         

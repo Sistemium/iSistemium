@@ -26,7 +26,7 @@
     
         if ([self.searchBar isFirstResponder] && ![self.searchBar.text isEqualToString:@""]) {
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text];
+            NSPredicate *predicate = [super textSearchPredicate];
             
             _tableData = [self.articles filteredArrayUsingPredicate:predicate];
             

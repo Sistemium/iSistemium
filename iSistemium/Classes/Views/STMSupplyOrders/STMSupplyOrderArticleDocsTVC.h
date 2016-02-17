@@ -6,9 +6,9 @@
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMVariableCellsHeightTVC.h"
+#import "STMSearchableTVC.h"
 
-@interface STMSupplyOrderArticleDocsTVC : STMVariableCellsHeightTVC
+@interface STMSupplyOrderArticleDocsTVC : STMSearchableTVC
 
 @property (nonatomic, strong) STMSupplyOrder *supplyOrder;
 

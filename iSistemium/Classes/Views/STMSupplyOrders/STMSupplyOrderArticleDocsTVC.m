@@ -125,6 +125,9 @@
         
     }
     
+    predicate = [super textSearchPredicateForField:@"articleDoc.article.name"];
+    if (predicate) [subpredicates addObject:predicate];
+    
     return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
     
 }
@@ -227,6 +230,17 @@
 
 - (void)clearFilter {
     self.scannedBarcode = nil;
+}
+
+
+#pragma mark - search button
+
+- (void)showSearchButton {
+
+}
+
+- (void)hideSearchButton {
+
 }
 
 

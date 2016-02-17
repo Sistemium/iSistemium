@@ -27,16 +27,7 @@
         
         if ([self.searchBar isFirstResponder] && ![self.searchBar.text isEqualToString:@""]) {
             
-            NSString *trimmedSearchString = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-            NSArray *searchStringComponents = [trimmedSearchString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-            
-            NSMutableArray *subpredicates = @[].mutableCopy;
-            
-            for (NSString *searchString in searchStringComponents) {
-                [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchString]];
-            }
-            
-            NSPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+            NSPredicate *predicate = [super textSearchPredicate];
             
             _tableData = [self.articles filteredArrayUsingPredicate:predicate];
             
