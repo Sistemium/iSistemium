@@ -120,7 +120,7 @@
 
     if (self.scannedBarcode) {
     
-        predicate = [NSPredicate predicateWithFormat:@"ANY articleDoc.article.barCodes == %@", self.scannedBarcode];
+        predicate = [NSPredicate predicateWithFormat:@"ANY articleDoc.article.barCodes.code == %@", self.scannedBarcode];
         [subpredicates addObject:predicate];
         
     }
@@ -139,7 +139,6 @@
                 
                 [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
                 self.scannedBarcode = nil;
-                [self performFetch];
                 
             }
             break;
@@ -179,6 +178,19 @@
     
 }
 
+- (void)setScannedBarcode:(NSString *)scannedBarcode {
+    
+    if (![_scannedBarcode isEqualToString:scannedBarcode]) {
+        
+        _scannedBarcode = scannedBarcode;
+        
+        [self performFetch];
+        [self updateBarcodeToolbar];
+        
+    }
+    
+}
+
 - (void)updateToolbars {
     
     [[self.navigationController.toolbar viewWithTag:1] removeFromSuperview];
@@ -186,6 +198,37 @@
     [self addProcessingButton];
     
 }
+
+- (void)updateBarcodeToolbar {
+    
+    if (self.scannedBarcode) {
+        
+        STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+        
+        STMBarButtonItemLabel *barcodeLabel = [[STMBarButtonItemLabel alloc] initWithTitle:self.scannedBarcode
+                                                                                     style:UIBarButtonItemStylePlain
+                                                                                    target:nil
+                                                                                    action:nil];
+        
+        STMBarButtonItem *clearFilterButton = [[STMBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Clear Filters-25"]
+                                                                                style:UIBarButtonItemStylePlain
+                                                                               target:self
+                                                                               action:@selector(clearFilter)];
+        
+        [self setToolbarItems:@[flexibleSpace, barcodeLabel, flexibleSpace, clearFilterButton]];
+        
+    } else {
+        
+        [self setToolbarItems:nil];
+        
+    }
+    
+}
+
+- (void)clearFilter {
+    self.scannedBarcode = nil;
+}
+
 
 #pragma mark - processing button
 
@@ -485,11 +528,7 @@
 }
 
 - (void)receiveArticleBarcode:(NSString *)barcode {
-    
     self.scannedBarcode = barcode;
-    
-    [self performFetch];
-
 }
 
 
