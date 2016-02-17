@@ -399,6 +399,7 @@
 		2CEAC16C1B3C313000AD068E /* STMShipmentRoutePointTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16B1B3C313000AD068E /* STMShipmentRoutePointTVC.m */; };
 		2CEAC16F1B3C3E4200AD068E /* STMShipmentTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */; };
 		2CEAC1751B3ECC3A00AD068E /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEAC1741B3ECC3A00AD068E /* MapKit.framework */; };
+		2CEB3F001C745D2800ABA24D /* UIViewController+custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEB3EFF1C745D2800ABA24D /* UIViewController+custom.m */; };
 		2CEE30091BEBAD10009B229F /* STMArticle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE2F451BEBAD10009B229F /* STMArticle.m */; };
 		2CEE300A1BEBAD10009B229F /* STMArticle+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE2F471BEBAD10009B229F /* STMArticle+CoreDataProperties.m */; };
 		2CEE300B1BEBAD10009B229F /* STMArticleGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE2F491BEBAD10009B229F /* STMArticleGroup.m */; };
@@ -1190,6 +1191,8 @@
 		2CEAC16D1B3C3E4100AD068E /* STMShipmentTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentTVC.h; sourceTree = "<group>"; };
 		2CEAC16E1B3C3E4100AD068E /* STMShipmentTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentTVC.m; sourceTree = "<group>"; };
 		2CEAC1741B3ECC3A00AD068E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		2CEB3EFE1C745D2800ABA24D /* UIViewController+custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+custom.h"; sourceTree = "<group>"; };
+		2CEB3EFF1C745D2800ABA24D /* UIViewController+custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+custom.m"; sourceTree = "<group>"; };
 		2CEE2F441BEBAD10009B229F /* STMArticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticle.h; sourceTree = "<group>"; };
 		2CEE2F451BEBAD10009B229F /* STMArticle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMArticle.m; sourceTree = "<group>"; };
 		2CEE2F461BEBAD10009B229F /* STMArticle+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMArticle+CoreDataProperties.h"; sourceTree = "<group>"; };
@@ -1575,6 +1578,8 @@
 				2CF858C81C1854A0004D7BD1 /* STMDatePicker.swift */,
 				2C774C631C1DB0A70091222C /* STMVolumePicker.h */,
 				2C774C641C1DB0A70091222C /* STMVolumePicker.m */,
+				2CEB3EFE1C745D2800ABA24D /* UIViewController+custom.h */,
+				2CEB3EFF1C745D2800ABA24D /* UIViewController+custom.m */,
 			);
 			path = STMUI;
 			sourceTree = "<group>";
@@ -3308,6 +3313,7 @@
 				2CEE302D1BEBAD10009B229F /* STMPhotoReport.m in Sources */,
 				2CEE30091BEBAD10009B229F /* STMArticle.m in Sources */,
 				2C587AA81BB2DAFD00546A62 /* STMWorkflowAS.m in Sources */,
+				2CEB3F001C745D2800ABA24D /* UIViewController+custom.m in Sources */,
 				2CEE30261BEBAD10009B229F /* STMMessage.m in Sources */,
 				2C4BA3C91A41AE8B007F1D0A /* STMOutletController.m in Sources */,
 				2C5764321AA5F86500B9FD2C /* STMArticleGroupController.m in Sources */,

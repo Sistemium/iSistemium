@@ -15,9 +15,10 @@
 #import "STMSupplyOrderOperationsTVC.h"
 
 #import "STMSoundController.h"
+#import "STMBarCodeScanner.h"
 
 
-@interface STMSupplyOrderArticleDocsTVC () <UIActionSheetDelegate, STMWorkflowable>
+@interface STMSupplyOrderArticleDocsTVC () <UIActionSheetDelegate, STMWorkflowable, STMBarCodeScannerDelegate>
 
 @property (nonatomic, weak) STMSupplyOrdersSVC *splitVC;
 @property (nonatomic, weak) STMSupplyOrdersNC *rootNC;
@@ -29,6 +30,10 @@
 
 @property (nonatomic) BOOL isMasterNC;
 @property (nonatomic) BOOL isDetailNC;
+
+@property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
+
+@property (nonatomic, strong) NSString *scannedBarcode;
 
 
 @end
@@ -93,7 +98,7 @@
         
         request.sortDescriptors = @[ordDescriptor, articleNameDescriptor];
         
-        request.predicate = [NSPredicate predicateWithFormat:@"supplyOrder == %@", self.supplyOrder];
+        request.predicate = [self predicate];
         
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
@@ -103,6 +108,57 @@
         
     }
     return _resultsController;
+    
+}
+
+- (NSPredicate *)predicate {
+    
+    NSMutableArray *subpredicates = @[].mutableCopy;
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"supplyOrder == %@", self.supplyOrder];
+    [subpredicates addObject:predicate];
+
+    if (self.scannedBarcode) {
+    
+        predicate = [NSPredicate predicateWithFormat:@"ANY articleDoc.article.barCodes == %@", self.scannedBarcode];
+        [subpredicates addObject:predicate];
+        
+    }
+    
+    return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+}
+
+- (void)successfulFetchCallback {
+    
+    NSUInteger articlesCount = self.resultsController.fetchedObjects.count;
+    
+    switch (articlesCount) {
+        case 0:
+            if (self.scannedBarcode) {
+                
+                [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
+                self.scannedBarcode = nil;
+                [self performFetch];
+                
+            }
+            break;
+            
+        case 1:
+            if (self.scannedBarcode) {
+                
+                [self.tableView reloadData];
+                
+                STMSupplyOrderArticleDoc *articleDoc = self.resultsController.fetchedObjects.firstObject;
+                [self didSelectArticleDoc:articleDoc];
+                
+            }
+            break;
+            
+        default:
+            [self.tableView reloadData];
+            break;
+    }
     
 }
 
@@ -363,16 +419,21 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
+    [self didSelectArticleDoc:articleDoc];
+    
+}
 
+- (void)didSelectArticleDoc:(STMSupplyOrderArticleDoc *)articleDoc {
+    
     self.splitVC.selectedSupplyOrderArticleDoc = articleDoc;
     
     if (self.isDetailNC || IPHONE) {
         [self performSegueWithIdentifier:@"showOperations" sender:articleDoc];
     }
-    
+
 }
 
-- (void)selectSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)articleDoc {
+- (void)highlightSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)articleDoc {
     
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:articleDoc];
     
@@ -381,6 +442,127 @@
         [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
         
         self.operationsTVC.supplyOrderArticleDoc = articleDoc;
+        
+    }
+    
+}
+
+
+#pragma mark - barcode scanning
+
+- (void)checkIfBarcodeScanerIsNeeded {
+    ([self orderIsProcessed]) ? [self startBarcodeScanning] : [self stopBarcodeScanning];
+}
+
+- (void)startBarcodeScanning {
+    [self startIOSModeScanner];
+}
+
+- (void)startIOSModeScanner {
+    
+    self.iOSModeBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerIOSMode];
+    self.iOSModeBarCodeScanner.delegate = self;
+    [self.iOSModeBarCodeScanner startScan];
+    
+    if ([self.iOSModeBarCodeScanner isDeviceConnected]) {
+        [self addBarcodeImage];
+    }
+    
+}
+
+- (void)stopBarcodeScanning {
+    
+    [self stopIOSModeScanner];
+    [self removeBarcodeImage];
+    
+}
+
+- (void)stopIOSModeScanner {
+    
+    [self.iOSModeBarCodeScanner stopScan];
+    self.iOSModeBarCodeScanner = nil;
+    
+}
+
+- (void)receiveArticleBarcode:(NSString *)barcode {
+    
+    self.scannedBarcode = barcode;
+    
+    [self performFetch];
+
+}
+
+
+#pragma mark - barcode image
+
+- (void)addBarcodeImage {
+    
+    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"barcode.png"] toSize:CGSizeMake(25, 25)];
+    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:image];
+    
+}
+
+- (void)removeBarcodeImage {
+    self.navigationItem.titleView = nil;
+}
+
+
+#pragma mark - STMBarCodeScannerDelegate
+
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+    
+    if (self.isInActiveTab) {
+        
+        NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
+        
+        switch (type) {
+            case STMBarCodeTypeUnknown: {
+                
+                break;
+            }
+            case STMBarCodeTypeArticle: {
+                [self receiveArticleBarcode:barcode];
+                break;
+            }
+            case STMBarCodeTypeExciseStamp: {
+                
+                break;
+            }
+            case STMBarCodeTypeStockBatch: {
+
+                break;
+            }
+        }
+        
+    }
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
+    NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
+}
+
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
+        [self addBarcodeImage];
+        
+    }
+    
+}
+
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
+        [self removeBarcodeImage];
         
     }
     
@@ -459,10 +641,22 @@
         if (self.isDetailNC) {
             self.operationsTVC = nil;
         }
+        
+        self.iOSModeBarCodeScanner.delegate = self;
 
     }
     
     if (IPHONE) [self updateToolbars];
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if ([self isMovingToParentViewController]) {
+        [self checkIfBarcodeScanerIsNeeded];
+    }
     
 }
 
@@ -472,10 +666,16 @@
     
     if ([self isMovingFromParentViewController]) {
 
+        [self stopBarcodeScanning];
+
         if (self.isMasterNC) {
             [self.splitVC masterBackButtonPressed];
         }
 
+    } else {
+        
+        self.iOSModeBarCodeScanner.delegate = nil;
+        
     }
     
 }

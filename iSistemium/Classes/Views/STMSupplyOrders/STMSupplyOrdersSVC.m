@@ -104,7 +104,7 @@
     _selectedSupplyOrderArticleDoc = selectedSupplyOrderArticleDoc;
     
     [self.masterTVC segueToArticleDocs];
-    [self.detailTVC selectSupplyOrderArticleDoc:_selectedSupplyOrderArticleDoc];
+    [self.detailTVC highlightSupplyOrderArticleDoc:_selectedSupplyOrderArticleDoc];
     
 }
 

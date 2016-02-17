@@ -92,6 +92,10 @@
     
 }
 
+- (void)successfulFetchCallback {
+    [self selectingCells];
+}
+
 
 #pragma mark - Table view data source
 
@@ -259,13 +263,7 @@
             break;
         }
     }
-    
-    [self performFetchWithCompletionHandler:^(BOOL success) {
-        if (success) {
-            [self selectingCells];
-        }
-    }];
-    
+
 }
 
 - (void)viewDidLoad {

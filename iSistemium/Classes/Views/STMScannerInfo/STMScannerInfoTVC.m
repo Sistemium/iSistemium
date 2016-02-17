@@ -33,9 +33,13 @@
 
 @implementation STMScannerInfoTVC
 
-- (BOOL)isInActiveTab {
-    return [self.tabBarController.selectedViewController isEqual:self.navigationController];
-}
+
+#warning - method not used
+// ?
+//- (BOOL)isInActiveTab {
+//    return [self.tabBarController.selectedViewController isEqual:self.navigationController];
+//}
+// ?
 
 + (UISwitch *)cellSwitchWithTarget:(STMScannerInfoTVC *)target {
     

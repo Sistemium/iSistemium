@@ -181,20 +181,6 @@
     
 }
 
-- (BOOL)isInActiveTab {
-    
-    if (IPHONE) {
-        return [self.tabBarController.selectedViewController isEqual:self.navigationController];
-    }
-    
-    if (IPAD) {
-        return [self.tabBarController.selectedViewController isEqual:self.splitViewController];
-    }
-    
-    return NO;
-    
-}
-
 
 #pragma mark - table view data
 
@@ -735,6 +721,82 @@
 }
 
 
+#pragma mark - barcode image
+
+- (void)addBarcodeImage {
+    
+    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"barcode.png"] toSize:CGSizeMake(25, 25)];
+    self.navigationItem.rightBarButtonItem = [[STMBarButtonItem alloc] initWithCustomView:[[UIImageView alloc] initWithImage:image]];
+    
+}
+
+- (void)removeBarcodeImage {
+    self.navigationItem.rightBarButtonItem = nil;
+}
+
+
+#pragma mark - STMBarCodeScannerDelegate
+
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+    
+    if (self.isInActiveTab) {
+        
+        NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
+        
+        switch (type) {
+            case STMBarCodeTypeUnknown: {
+                
+                break;
+            }
+            case STMBarCodeTypeArticle: {
+                [self receiveArticleBarcode:barcode];
+                break;
+            }
+            case STMBarCodeTypeExciseStamp: {
+                
+                break;
+            }
+            case STMBarCodeTypeStockBatch: {
+                [self receiveStockBatchBarcode:barcode];
+                break;
+            }
+        }
+        
+    }
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
+    NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
+}
+
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
+        [self addBarcodeImage];
+        
+    }
+    
+}
+
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
+        [self removeBarcodeImage];
+        
+    }
+    
+}
+
+
 #pragma mark - article selection
 
 - (void)showArticleSelectionWithArticles:(NSArray *)articles {
@@ -816,68 +878,6 @@
     
     if (self.articleSelectionPopover.popoverVisible) {
         [self dismissArticleSelectionPopover];
-    }
-    
-}
-
-
-#pragma mark - STMBarCodeScannerDelegate
-
-- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
-    return self.view;
-}
-
-- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
-    
-    if ([self isInActiveTab]) {
-        
-        NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
-        
-        switch (type) {
-            case STMBarCodeTypeUnknown: {
-                
-                break;
-            }
-            case STMBarCodeTypeArticle: {
-                [self receiveArticleBarcode:barcode];
-                break;
-            }
-            case STMBarCodeTypeExciseStamp: {
-                
-                break;
-            }
-            case STMBarCodeTypeStockBatch: {
-                [self receiveStockBatchBarcode:barcode];
-                break;
-            }
-        }
-        
-    }
-
-}
-
-- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
-    NSLog(@"barCodeScanner receiveError: %@", error.localizedDescription);
-}
-
-- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
-    
-    if (scanner == self.iOSModeBarCodeScanner) {
-        
-        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
-        [self addBarcodeImage];
-        
-    }
-    
-}
-
-- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
-    
-    if (scanner == self.iOSModeBarCodeScanner) {
-        
-        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
-        [self removeBarcodeImage];
-        
     }
     
 }
@@ -990,17 +990,6 @@
         
     }];
     
-}
-
-- (void)addBarcodeImage {
-    
-    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"barcode.png"] toSize:CGSizeMake(25, 25)];
-    self.navigationItem.rightBarButtonItem = [[STMBarButtonItem alloc] initWithCustomView:[[UIImageView alloc] initWithImage:image]];
-    
-}
-
-- (void)removeBarcodeImage {
-    self.navigationItem.rightBarButtonItem = nil;
 }
 
 
