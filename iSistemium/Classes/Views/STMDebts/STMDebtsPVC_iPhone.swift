@@ -33,6 +33,15 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                     summLabel.text = NSLocalizedString("NO", comment: "")
                 }
                 summLabel.sizeToFit()
+                if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - (self.setCahshingSumButton.valueForKey("view") as! UIView).frame.width - 15{
+                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - (self.setCahshingSumButton.valueForKey("view") as! UIView).frame.width - 15
+//                    summLabel.adjustsFontSizeToFitWidth = true
+//                    summLabel.minimumScaleFactor = 0.8
+                    summLabel.numberOfLines = 2
+                    summLabel.lineBreakMode = .ByWordWrapping
+                    summLabel.textAlignment = .Center
+                    summLabel.sizeToFit()
+                }
             case .CashingSum:
                 self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
                 let summ = STMCashingProcessController.sharedInstance().debtsSumm()
@@ -40,7 +49,15 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                 let sumString = numberFormatter().stringFromNumber(summ)
                 summLabel.text = NSLocalizedString("PICKED",comment: "") + " " + sumString!
                 summLabel.sizeToFit()
-//                summLabel.frame.size.width = 88
+                if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - 15{
+                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - 15
+//                    summLabel.adjustsFontSizeToFitWidth = true
+//                    summLabel.minimumScaleFactor = 0.8
+                    summLabel.numberOfLines = 2
+                    summLabel.lineBreakMode = .ByWordWrapping
+                    summLabel.textAlignment = .Center
+                    summLabel.sizeToFit()
+                }
             case .Default:
                 self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: false)
             }
@@ -185,8 +202,11 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         let done = UIAlertAction(title: NSLocalizedString("DONE", comment: ""), style: .Default, handler: { (action) -> Void in
             let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
             let number = numberFormatter().numberFromString(alertController.textFields![0].text!)
-            if number != nil && number!.doubleValue>0{
+            if number != nil{
                 STMCashingProcessController.sharedInstance().cashingSummLimit = NSDecimalNumber(decimal: number!.decimalValue)
+            }
+            if number == 0 {
+                STMCashingProcessController.sharedInstance().cashingSummLimit = nil
             }
             self.showCashingLabel()
         })
@@ -194,9 +214,13 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         alertController.addAction(done)
         alertController.addAction(cancel)
         alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+            let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
+            let number = numberFormatter().stringFromNumber(STMCashingProcessController.sharedInstance().cashingSummLimit ?? 0)
             cashingSum = textField
             cashingSum?.placeholder = NSLocalizedString("CASHING SUMM PLACEHOLDER", comment: "")
             cashingSum?.delegate = self
+            cashingSum?.text = number
+            cashingSum?.clearButtonMode = .Always
         }
         presentViewController(alertController, animated: true, completion: nil)
     }
@@ -225,7 +249,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             }
         } else {
             if number!.doubleValue == 0 {
-                textField.text = text;
+                textField.text = text
             } else {
                 var finalString = numberFormatter.stringFromNumber(number!)
                 var appendingString:String? = nil
