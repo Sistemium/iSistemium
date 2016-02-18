@@ -164,4 +164,9 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             }
         }
     }
+    
+    override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("showDebtDetails", sender: nil)
+    }
+    
 }

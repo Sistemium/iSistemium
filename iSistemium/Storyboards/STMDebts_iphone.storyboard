@@ -9,7 +9,6 @@
         <!--Action PopoverNC-->
         <scene sceneID="YXP-Wm-zvz">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eg7-rg-ZiF" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="6q1-P6-ZCC" customClass="STMActionPopoverNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ONn-OT-i5d">
@@ -21,13 +20,13 @@
                         <segue destination="9Bf-bw-F2M" kind="relationship" relationship="rootViewController" id="mX9-j8-nKk"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eg7-rg-ZiF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4206" y="534"/>
         </scene>
         <!--OutletsTVC i Phone-->
         <scene sceneID="jT6-9S-auj">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="qql-qy-dhx" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="9Bf-bw-F2M" customClass="STMOutletsTVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="AU2-IT-O5Z">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
@@ -53,6 +52,7 @@
                         <segue destination="X1d-yq-5Mi" kind="show" identifier="showDebts" id="SyD-DE-0dZ"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qql-qy-dhx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5095" y="534"/>
         </scene>
@@ -133,15 +133,35 @@
                     <keyCommands/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="600"/>
+                    <connections>
+                        <segue destination="gjJ-xG-hz2" kind="presentation" identifier="showDebtDetails" modalPresentationStyle="formSheet" id="C7C-fM-HFK"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xo-pW-fP6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5056" y="1300"/>
+            <point key="canvasLocation" x="5095" y="1300"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="8UH-Z9-ByH">
+            <objects>
+                <viewController id="gjJ-xG-hz2" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="sxr-TI-Pm0"/>
+                        <viewControllerLayoutGuide type="bottom" id="MdF-9g-SI3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9g8-89-ZH6">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PnI-6n-QW2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5095" y="2129"/>
         </scene>
         <!--DebtsPVC i Phone-->
         <scene sceneID="QUf-as-hpe">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="X4m-EA-IzH" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <pageViewController autoresizesArchivedViewToFullSize="NO" extendedLayoutIncludesOpaqueBars="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="X1d-yq-5Mi" customClass="STMDebtsPVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <toolbarItems/>
@@ -160,6 +180,7 @@
                         <outlet property="segmentedControl" destination="LRH-SV-wnM" id="puk-ZQ-xfV"/>
                     </connections>
                 </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X4m-EA-IzH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5928" y="534"/>
         </scene>
@@ -224,7 +245,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pvc-Be-bcq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5914" y="1300"/>
+            <point key="canvasLocation" x="5928" y="1300"/>
         </scene>
         <!--Add DebtVC i Phone-->
         <scene sceneID="aGp-4Z-kA0">

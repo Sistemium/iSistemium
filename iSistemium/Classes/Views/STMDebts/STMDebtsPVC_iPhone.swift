@@ -9,7 +9,43 @@
 import UIKit
 
 @available(iOS 8.0, *)
-class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDelegate, STMDatePickerParent{
+class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDelegate, STMDatePickerParent, UITextFieldDelegate{
+    
+    enum Toolbar{
+        case Default
+        case SetCashing
+        case CashingSum
+    }
+    
+    var toolbar:Toolbar = .Default{
+        didSet{
+            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+            let summLabel = UILabel()
+            switch toolbar{
+            case .SetCashing:
+                self.setToolbarItems([flexibleSpace,self.setCahshingSumButton, UIBarButtonItem(customView: summLabel),flexibleSpace], animated: false)
+                if let limit = STMCashingProcessController.sharedInstance().cashingSummLimit{
+                    let numberFormatter = STMFunctions.currencyFormatter
+                    setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "") + ":"
+                    summLabel.text = numberFormatter().stringFromNumber(limit)!
+                }else{
+                    setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "") + ":"
+                    summLabel.text = NSLocalizedString("NO", comment: "")
+                }
+                summLabel.sizeToFit()
+            case .CashingSum:
+                self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
+                let summ = STMCashingProcessController.sharedInstance().debtsSumm()
+                let numberFormatter = STMFunctions.currencyFormatter
+                let sumString = numberFormatter().stringFromNumber(summ)
+                summLabel.text = NSLocalizedString("PICKED",comment: "") + " " + sumString!
+                summLabel.sizeToFit()
+//                summLabel.frame.size.width = 88
+            case .Default:
+                self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: false)
+            }
+        }
+    }
     
     var selectedDate: NSDate?{
         didSet{
@@ -24,7 +60,9 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     private var cancelButton:STMBarButtonItem?
     
-    private let summLabel = UILabel()
+    private let setCahshingSumLabel = UILabel()
+    
+    private lazy var setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CASHING SUMM", comment: "") + ": " + NSLocalizedString("NO", comment: ""), style: .Plain, target: self, action: "setCashingSum")
     
     private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
     
@@ -32,14 +70,13 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     override func buttonsForVC(vc:UIViewController){
         self.navigationController?.setToolbarHidden(false, animated: true)
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: false)
         self.addDebtButton = addDebt
         self.navigationItem.rightBarButtonItem = self.addDebtButton
         if vc.isKindOfClass(STMOutletCashingVC){
             self.navigationItem.rightBarButtonItem = nil
             self.navigationController?.setToolbarHidden(true, animated: true)
         }
+        self.toolbar = .Default
     }
     
     override func cashingButtonPressed() {
@@ -94,9 +131,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         self.navigationItem.titleView = dateButton
         self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
         selectedDate = NSDate()
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
-        showCashingSumLabel()
+        showCashingLabel()
     }
     
     func changeDate(){
@@ -122,26 +157,100 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         self.buttonsForVC(self)
     }
     
-    func showCashingSumLabel() {
-    let summ = STMCashingProcessController.sharedInstance().debtsSumm
-    let numberFormatter = STMFunctions.currencyFormatter
-    let sumString = numberFormatter().stringFromNumber(summ())
-    self.summLabel.text = NSLocalizedString("PICKED",comment: "") + " " + sumString!
-    self.summLabel.sizeToFit()
+    func showCashingLabel() {
+        if STMCashingProcessController.sharedInstance().debtsArray.count == 0{
+            toolbar = .SetCashing
+        }else{
+            toolbar = .CashingSum
+        }
     }
     
     override func addObservers(){
         super.addObservers()
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "showCashingSumLabel",
+            selector: "showCashingLabel",
             name: "debtAdded",
             object: STMCashingProcessController.sharedInstance())
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "showCashingSumLabel",
+            selector: "showCashingLabel",
             name: "debtRemoved",
             object: STMCashingProcessController.sharedInstance())
     }
     
+    func setCashingSum(){
+        var cashingSum: UITextField?
+        let alertController = UIAlertController(title: NSLocalizedString("CASHING SUMM", comment: ""), message: nil, preferredStyle: .Alert)
+        let done = UIAlertAction(title: NSLocalizedString("DONE", comment: ""), style: .Default, handler: { (action) -> Void in
+            let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
+            let number = numberFormatter().numberFromString(alertController.textFields![0].text!)
+            if number != nil && number!.doubleValue>0{
+                STMCashingProcessController.sharedInstance().cashingSummLimit = NSDecimalNumber(decimal: number!.decimalValue)
+            }
+            self.showCashingLabel()
+        })
+        let cancel = UIAlertAction(title: NSLocalizedString("CANCEL", comment: ""), style: .Cancel, handler: nil)
+        alertController.addAction(done)
+        alertController.addAction(cancel)
+        alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+            cashingSum = textField
+            cashingSum?.placeholder = NSLocalizedString("CASHING SUMM PLACEHOLDER", comment: "")
+            cashingSum?.delegate = self
+        }
+        presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        let numberFormatter = STMFunctions.decimalMaxTwoDigitFormatter()
+        let text = textField.text!.mutableCopy()
+        text.replaceCharactersInRange(range, withString:string)
+        let textParts = text.componentsSeparatedByString(numberFormatter.decimalSeparator)
+        let decimalPart:String? = textParts.count == 2 ? textParts[1] : nil
+        if decimalPart?.characters.count == 3 && string != "" {
+            return false
+        } else {
+            text.replaceOccurrencesOfString(numberFormatter.groupingSeparator, withString:"", options: .CaseInsensitiveSearch, range:NSMakeRange(0, text.length))
+            self.fillTextField(textField, withText: text as! String)
+            return false
+        }
+    }
+    
+    func fillTextField(textField:UITextField, withText text:String) {
+        let numberFormatter = STMFunctions.decimalMaxTwoDigitFormatter()
+        let number = numberFormatter.numberFromString(text)
+        if number == nil {
+            if text == "" {
+                textField.text = text
+            }
+        } else {
+            if number!.doubleValue == 0 {
+                textField.text = text;
+            } else {
+                var finalString = numberFormatter.stringFromNumber(number!)
+                var appendingString:String? = nil
+                var suffix:String? = nil
+                for (var i = 0; i <= 2; i++) {
+                    suffix = numberFormatter.decimalSeparator
+                    for (var j = 0; j < i; j++) {
+                        suffix = suffix!.stringByAppendingString("0")
+                    }
+                    appendingString = text.hasSuffix(suffix!) ? suffix : appendingString
+                }
+                finalString = appendingString != nil ? finalString!.stringByAppendingString(appendingString!) : finalString
+                textField.text = finalString
+            }
+        }
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
+        let number = numberFormatter().numberFromString(textField.text!)
+        textField.text = numberFormatter().stringFromNumber(number!)
+        if number != nil && number!.doubleValue>0{
+            STMCashingProcessController.sharedInstance().cashingSummLimit = NSDecimalNumber(decimal: number!.decimalValue)
+        }
+        showCashingLabel()
+        return true
+    }
 }
