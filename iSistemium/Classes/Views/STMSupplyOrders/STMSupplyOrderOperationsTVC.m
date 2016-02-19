@@ -274,19 +274,33 @@
     if (self.supplyOrderArticleDoc.article) {
      
         cell.textLabel.textColor = [UIColor blackColor];
-        
-        
-        NSMutableArray *articleProperties = @[].mutableCopy;
-        
-        if (self.supplyOrderArticleDoc.code) [articleProperties addObject:(NSString *)self.supplyOrderArticleDoc.code];
-        
-        if (self.supplyOrderArticleDoc.article.name) [articleProperties addObject:(NSString *)self.supplyOrderArticleDoc.article.name];
-        
-        NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), self.supplyOrderArticleDoc.article.packageRel];
-        
-        [articleProperties addObject:packageRelString];
+        CGFloat fontSize = cell.textLabel.font.pointSize;
 
-        cell.textLabel.text = [articleProperties componentsJoinedByString:@"\n"];
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize],
+                                     NSForegroundColorAttributeName:[UIColor blackColor]};
+        
+        
+        NSMutableAttributedString *articleProperties = [[NSMutableAttributedString alloc] initWithString:@"" attributes:attributes];
+        
+        if (self.supplyOrderArticleDoc.code) {
+
+            NSString *appendedString = [NSString stringWithFormat:@"%@\n", self.supplyOrderArticleDoc.code];
+            [articleProperties appendAttributedString:[[NSAttributedString alloc] initWithString:appendedString
+                                                                                      attributes:attributes]];
+
+        }
+        
+        if (self.supplyOrderArticleDoc.article.name) {
+            
+            NSString *appendedString = [NSString stringWithFormat:@"%@\n", self.supplyOrderArticleDoc.article.name];
+            [articleProperties appendAttributedString:[[NSAttributedString alloc] initWithString:appendedString
+                                                                                      attributes:attributes]];
+
+        }
+        
+        [articleProperties appendAttributedString:[self.supplyOrderArticleDoc operatingPackageRelStringWithFontSize:fontSize]];
+        
+        cell.textLabel.attributedText = articleProperties;
         
         
         if (self.supplyOrderArticleDoc.articleDoc.dateImport) {
@@ -320,11 +334,21 @@
 
 - (void)fillArticleDocNameCell:(STMTableViewSubtitleStyleCell *)cell {
     
+    cell.textLabel.textColor = [UIColor blackColor];
+    CGFloat fontSize = cell.textLabel.font.pointSize;
+    
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize],
+                                 NSForegroundColorAttributeName:[UIColor blackColor]};
+    
     NSString *articleDocName = (self.supplyOrderArticleDoc.articleDoc.article.name) ? self.supplyOrderArticleDoc.articleDoc.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
+    
+    articleDocName = [articleDocName stringByAppendingString:@"\n"];
+    
+    NSMutableAttributedString *articleDocString = [[NSMutableAttributedString alloc] initWithString:articleDocName attributes:attributes];
 
-    NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [self.supplyOrderArticleDoc operatingArticle].packageRel];
+    [articleDocString appendAttributedString:[self.supplyOrderArticleDoc operatingPackageRelStringWithFontSize:fontSize]];
 
-    cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", articleDocName, packageRelString];
+    cell.textLabel.attributedText = articleDocString;
     cell.textLabel.numberOfLines = 0;
 
 }
@@ -333,7 +357,7 @@
     
     self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
     
-    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
+    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue]];
 
     cell.textLabel.textColor = [UIColor blackColor];
     cell.textLabel.text = title;
@@ -375,7 +399,7 @@
         }
         
         NSString *volumeString = [STMFunctions volumeStringWithVolume:operation.volume.integerValue
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                        andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
         
         STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 46, 21)];
         volumeLabel.text = volumeString;
@@ -395,11 +419,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self performSegueWithIdentifier:@"showSupplyOperation" sender:nil];
-
     if ([self orderIsProcessed]) {
      
         if (indexPath.section == 0) {
+    
+
+            [self performSegueWithIdentifier:@"showSupplyOperation" sender:nil];
+            
             
 //            if (self.supplyOrderArticleDoc.article) {
 //                
@@ -918,18 +944,6 @@
     
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
     
-//    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
-//    
-//    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
-//    
-//    STMBarButtonItem *infoLabel = [[STMBarButtonItem alloc] initWithTitle:title
-//                                                                    style:UIBarButtonItemStylePlain
-//                                                                   target:nil
-//                                                                   action:nil];
-//    
-//    infoLabel.enabled = NO;
-//    infoLabel.tintColor = [UIColor blackColor];
-    
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
     if (self.repeatLastOperation) {
@@ -955,7 +969,7 @@
 - (NSString *)repeatParameters {
     
     NSString *volumeString = [STMFunctions volumeStringWithVolume:self.lastSourceOperationVolume
-                                                    andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                    andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
     
     NSString *pluralType = [STMFunctions pluralTypeForCount:self.lastSourceOperationNumberOfBarcodes];
     NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];

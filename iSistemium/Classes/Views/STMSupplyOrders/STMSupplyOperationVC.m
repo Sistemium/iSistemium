@@ -103,6 +103,8 @@
         
     } else if (self.supplyOrderArticleDoc) {
     
+        self.supplyOrderArticleDoc.packageRel = @(self.volumePicker.packageRel);
+        
         [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
                                                                         withCodes:[self.codesTVC.stockBatchCodes valueForKeyPath:@"code"]
                                                                         andVolume:self.volumePicker.selectedVolume];
@@ -145,7 +147,7 @@
             expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:@" + "];
             
             NSString *remainderString = [STMFunctions volumeStringWithVolume:remainder
-                                                               andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
+                                                               andPackageRel:self.volumePicker.packageRel];
 
             expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:remainderString];
             
@@ -156,7 +158,7 @@
     } else {
         
         NSString *remainingVolumeString = [STMFunctions volumeStringWithVolume:remainingVolume
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
+                                                        andPackageRel:self.volumePicker.packageRel];
 
         self.expectedNumberOfBatchesLabel.text = remainingVolumeString;
         
@@ -167,8 +169,6 @@
 }
 
 - (void)packageRelSelected {
-    
-    self.supplyOrderArticleDoc.packageRel = @(self.volumePicker.packageRel);
     [self volumeSelected];
 
 }
@@ -208,7 +208,7 @@
         NSInteger barcodesCount = self.codesTVC.stockBatchCodes.count;
         
         NSString *volumeString = [STMFunctions volumeStringWithVolume:self.volumePicker.selectedVolume
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
+                                                        andPackageRel:self.volumePicker.packageRel];
         
         NSString *pluralType = [STMFunctions pluralTypeForCount:barcodesCount];
         NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
@@ -270,7 +270,7 @@
         self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
         
         self.volumePicker.selectedVolume = self.supplyOperation.volume.integerValue;
-
+        
     } else if (self.supplyOrderArticleDoc) {
         
         self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];

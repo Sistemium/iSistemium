@@ -61,8 +61,8 @@
     if ([[self packageRels] containsObject:@(packageRel)]) {
         
         _packageRel = packageRel;
-        
-        [self selectRow:[[self packageRels] indexOfObject:@(packageRel)]  inComponent:4 animated:NO];
+
+        [self selectRow:[[self packageRels] indexOfObject:@(packageRel)] inComponent:4 animated:NO];
         
     }
     
@@ -76,17 +76,11 @@
     
     _selectedVolume = selectedVolume;
     
-    [self updatePickerState];
-    
-}
-
-- (void)updatePickerState {
- 
     self.selectedBoxCount = (self.packageRel > 0) ? self.selectedVolume / self.packageRel : 0;
     
     [self selectRow:self.selectedBoxCount inComponent:0 animated:YES];
     [self selectRow:self.selectedVolume inComponent:2 animated:YES];
-
+    
 }
 
 

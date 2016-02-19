@@ -375,9 +375,9 @@
     STMSupplyOrderArticleDoc *articleDoc = [self.resultsController objectAtIndexPath:indexPath];
     
     UIColor *textColor = ([articleDoc volumeRemainingToSupply] > 0) ? [UIColor blackColor] : [UIColor lightGrayColor];
+    cell.titleLabel.textColor = textColor;
 
     [self fillTextLabelForCell:cell withSupplyOrderArticleDoc:articleDoc];
-    cell.titleLabel.textColor = textColor;
     
     if (articleDoc.articleDoc.dateImport) {
         
@@ -427,23 +427,21 @@
 
 - (void)fillTextLabelForCell:(STMCustom9TVCell *)cell withSupplyOrderArticleDoc:(STMSupplyOrderArticleDoc *)supplyOrderArticleDoc {
     
-//    cell.textLabel.numberOfLines = 0;
-    cell.titleLabel.textColor = (supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
+//    cell.titleLabel.textColor = (supplyOrderArticleDoc.article) ? [UIColor blackColor] : [UIColor redColor];
     
+    UIFont *font = cell.textLabel.font;
+    
+    NSDictionary *attributes = @{NSForegroundColorAttributeName     : [UIColor blackColor],
+                                 NSFontAttributeName                : font};
+
     if (supplyOrderArticleDoc.article && ![supplyOrderArticleDoc.article isEqual:supplyOrderArticleDoc.articleDoc.article]) {
         
-        UIFont *font = cell.textLabel.font;
-        
-        NSDictionary *attributes = @{NSForegroundColorAttributeName     : [UIColor blackColor],
-                                     NSFontAttributeName                : font};
-
         NSString *articleName = (supplyOrderArticleDoc.article.name) ? supplyOrderArticleDoc.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
         
         NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:articleName attributes:attributes];
         [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
 
-        NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), supplyOrderArticleDoc.article.packageRel];
-        [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:packageRelString attributes:attributes]];
+        [labelTitle appendAttributedString:[supplyOrderArticleDoc operatingPackageRelStringWithFontSize:font.pointSize]];
         [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
         
         font = [UIFont systemFontOfSize:font.pointSize - 4];
@@ -462,12 +460,12 @@
         
         NSString *titleText = [supplyOrderArticleDoc operatingArticle].name;
         
-        NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [supplyOrderArticleDoc operatingArticle].packageRel];
+        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:titleText attributes:attributes];
+        [labelTitle appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
 
-        titleText = [titleText stringByAppendingString:@"\n"];
-        titleText = [titleText stringByAppendingString:packageRelString];
+        [labelTitle appendAttributedString:[supplyOrderArticleDoc operatingPackageRelStringWithFontSize:font.pointSize]];
 
-        cell.titleLabel.text = titleText;
+        cell.titleLabel.attributedText = labelTitle;
 
     }
     
