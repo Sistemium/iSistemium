@@ -52,6 +52,22 @@
 
 }
 
+- (NSArray *)packageRels {
+    return @[@6, @8, @10, @12, @16, @20, @24, @30];
+}
+
+- (void)setPackageRel:(NSInteger)packageRel {
+    
+    if ([[self packageRels] containsObject:@(packageRel)]) {
+        
+        _packageRel = packageRel;
+        
+        [self selectRow:[[self packageRels] indexOfObject:@(packageRel)]  inComponent:4 animated:NO];
+        
+    }
+    
+}
+
 - (void)setSelectedVolume:(NSInteger)selectedVolume {
     
     if (selectedVolume > self.volume) {
@@ -121,7 +137,7 @@
             break;
             
         case 4:
-            return [@[@6, @8, @10, @12, @16, @20, @24, @30][row] stringValue];
+            return [[self packageRels][row] stringValue];
             break;
 
         default:
@@ -229,6 +245,10 @@
             
         case 2:
             self.selectedVolume = row;
+            break;
+            
+        case 4:
+            self.packageRel = [[[self packageRels] objectAtIndex:row] integerValue];
             break;
             
         default:
