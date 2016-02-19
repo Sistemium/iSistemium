@@ -395,7 +395,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    [self performSegueWithIdentifier:@"showSupplyOperation" sender:nil];
+    [self performSegueWithIdentifier:@"showSupplyOperation" sender:nil];
 
     if ([self orderIsProcessed]) {
      
