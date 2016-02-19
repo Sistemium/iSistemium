@@ -30,6 +30,10 @@
     return (self.article) ? (STMArticle * _Nonnull)self.article : self.articleDoc.article;
 }
 
+- (NSNumber *)operatingPackageRel {
+    return (self.packageRel) ? (NSNumber * _Nonnull)self.packageRel : self.articleDoc.article.packageRel;
+}
+
 - (NSInteger)volumeRemainingToSupply {
 
     NSInteger minusVolume = [[self.sourceOperations valueForKeyPath:@"@sum.volume"] integerValue];

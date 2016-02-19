@@ -145,7 +145,7 @@
             expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:@" + "];
             
             NSString *remainderString = [STMFunctions volumeStringWithVolume:remainder
-                                                               andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                               andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
 
             expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:remainderString];
             
@@ -156,13 +156,20 @@
     } else {
         
         NSString *remainingVolumeString = [STMFunctions volumeStringWithVolume:remainingVolume
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                        andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
 
         self.expectedNumberOfBatchesLabel.text = remainingVolumeString;
         
     }
     
     [self updateRepeatButtonTitle];
+
+}
+
+- (void)packageRelSelected {
+    
+    self.supplyOrderArticleDoc.packageRel = @(self.volumePicker.packageRel);
+    [self volumeSelected];
 
 }
 
@@ -201,7 +208,7 @@
         NSInteger barcodesCount = self.codesTVC.stockBatchCodes.count;
         
         NSString *volumeString = [STMFunctions volumeStringWithVolume:self.volumePicker.selectedVolume
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                        andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
         
         NSString *pluralType = [STMFunctions pluralTypeForCount:barcodesCount];
         NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
@@ -233,7 +240,7 @@
     NSString *articleLabel = [articleDoc operatingArticle].name;
     articleLabel = [articleLabel stringByAppendingString:@"\n"];
     
-    NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [articleDoc operatingArticle].packageRel];
+    NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [articleDoc operatingPackageRel]];
     articleLabel = [articleLabel stringByAppendingString:packageRelString];
 
     return articleLabel;
@@ -258,7 +265,7 @@
         
         self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
         
-        self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue;
+        self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingPackageRel].integerValue;
 
         self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
         
@@ -268,7 +275,7 @@
         
         self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
         
-        self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue;
+        self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingPackageRel].integerValue;
 
         self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
         

@@ -76,11 +76,17 @@
     
     _selectedVolume = selectedVolume;
     
+    [self updatePickerState];
+    
+}
+
+- (void)updatePickerState {
+ 
     self.selectedBoxCount = (self.packageRel > 0) ? self.selectedVolume / self.packageRel : 0;
     
     [self selectRow:self.selectedBoxCount inComponent:0 animated:YES];
     [self selectRow:self.selectedVolume inComponent:2 animated:YES];
-    
+
 }
 
 
@@ -241,21 +247,34 @@
     switch (component) {
         case 0:
             self.selectedVolume = self.selectedVolume + (row - self.selectedBoxCount) * self.packageRel;
-            break;
+            [self.owner volumeSelected];
+        break;
             
         case 2:
             self.selectedVolume = row;
+            [self.owner volumeSelected];
             break;
             
-        case 4:
-            self.packageRel = [[[self packageRels] objectAtIndex:row] integerValue];
+        case 4: {
+            
+            NSInteger selectedPackageRel = [[[self packageRels] objectAtIndex:row] integerValue];
+            NSInteger volumeAfterUpdate = self.selectedVolume - (self.selectedBoxCount * (self.packageRel - selectedPackageRel));
+            
+            self.packageRel = selectedPackageRel;
+            
+            [self reloadComponent:0];
+            [self reloadComponent:2];
+
+            self.selectedVolume = volumeAfterUpdate;
+            
+            [self.owner packageRelSelected];
+            
+        }
             break;
             
         default:
             break;
     }
-    
-    [self.owner volumeSelected];
     
 }
 

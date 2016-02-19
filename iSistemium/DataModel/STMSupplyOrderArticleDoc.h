@@ -16,7 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface STMSupplyOrderArticleDoc : STMStockBatchOperationAgent
 
 - (NSString *)volumeText;
+
 - (STMArticle *)operatingArticle;
+- (NSNumber *)operatingPackageRel;
 
 - (NSInteger)volumeRemainingToSupply;
 
