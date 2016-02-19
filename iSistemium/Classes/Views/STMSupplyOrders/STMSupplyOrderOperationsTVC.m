@@ -424,7 +424,7 @@
         if (indexPath.section == 0) {
     
 
-            [self performSegueWithIdentifier:@"showSupplyOperation" sender:nil];
+//            [self performSegueWithIdentifier:@"showSupplyOperation" sender:nil];
             
             
 //            if (self.supplyOrderArticleDoc.article) {

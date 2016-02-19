@@ -65,11 +65,14 @@
 
 - (void)setPackageRel:(NSInteger)packageRel {
     
-    if ([[self packageRels] containsObject:@(packageRel)]) {
+    if ([self.packageRels containsObject:@(packageRel)]) {
         
         _packageRel = packageRel;
 
-        [self selectRow:[[self packageRels] indexOfObject:@(packageRel)] inComponent:4 animated:NO];
+        [self reloadComponent:0];
+        [self reloadComponent:2];
+
+        [self selectRow:[self.packageRels indexOfObject:@(packageRel)] inComponent:4 animated:NO];
         
     }
     
@@ -263,9 +266,6 @@
             
             self.packageRel = selectedPackageRel;
             
-            [self reloadComponent:0];
-            [self reloadComponent:2];
-
             self.selectedVolume = volumeAfterUpdate;
             
             [self.owner packageRelSelected];
