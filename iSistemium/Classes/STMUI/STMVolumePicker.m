@@ -10,11 +10,13 @@
 
 #import "STMSessionManager.h"
 #import "STMConstants.h"
+#import "STMArticleController.h"
 
 
 @interface STMVolumePicker() <UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (nonatomic) NSInteger selectedBoxCount;
+@property (nonatomic) NSArray *packageRels;
 
 
 @end
@@ -53,7 +55,12 @@
 }
 
 - (NSArray *)packageRels {
-    return @[@6, @8, @10, @12, @16, @20, @24, @30];
+    
+    if (!_packageRels) {
+        _packageRels = [STMArticleController packageRels];
+    }
+    return _packageRels;
+    
 }
 
 - (void)setPackageRel:(NSInteger)packageRel {
@@ -102,7 +109,7 @@
             break;
             
         case 4:
-            return 8;
+            return self.packageRels.count;
             break;
 
         default:
