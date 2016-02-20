@@ -112,7 +112,7 @@
             break;
             
         case 4:
-            return self.packageRels.count;
+            return (self.packageRelIsLoked) ? 1 : self.packageRels.count;
             break;
 
         default:
@@ -147,7 +147,7 @@
             break;
             
         case 4:
-            return [[self packageRels][row] stringValue];
+            return (self.packageRelIsLoked) ? @(self.packageRel).stringValue : [self.packageRels[row] stringValue];
             break;
 
         default:
@@ -261,7 +261,7 @@
             
         case 4: {
             
-            NSInteger selectedPackageRel = [[[self packageRels] objectAtIndex:row] integerValue];
+            NSInteger selectedPackageRel = (self.packageRelIsLoked) ? self.packageRel : [self.packageRels[row] integerValue];
             NSInteger volumeAfterUpdate = self.selectedVolume - (self.selectedBoxCount * (self.packageRel - selectedPackageRel));
             
             self.packageRel = selectedPackageRel;

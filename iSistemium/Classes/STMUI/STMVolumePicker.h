@@ -20,5 +20,7 @@
 
 @property (nonatomic, strong) id <STMVolumePickerOwner> owner;
 
+@property (nonatomic) BOOL packageRelIsLoked;
+
 
 @end

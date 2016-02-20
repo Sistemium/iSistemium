@@ -284,6 +284,8 @@
         [self updateRepeatButtonTitle];
 
     }
+    
+    self.volumePicker.packageRelIsLoked = (self.supplyOrderArticleDoc.sourceOperations.count > 0);
 
     [self volumeSelected];
 
