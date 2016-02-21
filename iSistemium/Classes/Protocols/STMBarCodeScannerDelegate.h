@@ -24,6 +24,8 @@
 
 @optional
 
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCodeScan:(STMBarCodeScan *)barCodeScan withType:(STMBarCodeScannedType)type;
+
 - (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner;
 - (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner;
 

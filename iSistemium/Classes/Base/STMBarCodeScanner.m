@@ -16,6 +16,7 @@
 #import "STMDataModel.h"
 #import "STMSessionManager.h"
 #import "STMLogger.h"
+#import "STMObjectsController.h"
 
 
 @interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, ScanApiHelperDelegate>
@@ -176,8 +177,13 @@
     
     STMBarCodeScannedType type = [STMBarCodeController barcodeTypeFromTypes:self.barCodeTypesRC.fetchedObjects forBarcode:barcode];
     
+    STMBarCodeScan *barCodeScan = (STMBarCodeScan *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBarCodeScan class])
+                                                                                        isFantom:NO];
+    barCodeScan.code = barcode;
+    
     [self.delegate barCodeScanner:self receiveBarCode:barcode withType:type];
-
+    [self.delegate barCodeScanner:self receiveBarCodeScan:barCodeScan withType:type];
+    
 }
 
 
