@@ -42,6 +42,9 @@
 @property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
+@property (nonatomic, strong) STMBarCodeScan *currentBarCodeScan;
+@property (nonatomic, strong) NSString *currentStockToken;
+
 //@property (nonatomic, strong) NSString *scannedBarCode;
 //@property (nonatomic, strong) NSMutableArray *scannedStockBatches;
 //@property (nonatomic, strong) NSMutableArray *scannedArticles;
@@ -102,6 +105,8 @@
     return [self.pickingOrder.pickingOrderPositions valueForKeyPath:@"@distinctUnionOfSets.pickingOrderPositionsPicked"];
 }
 
+
+// ---- ?
 - (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info {
 
 //    [STMPickingOrdersProcessController position:position wasPickedWithVolume:volume andProductionInfo:info andBarCode:self.scannedBarCode];
@@ -109,6 +114,7 @@
 //    [self.navigationController popToViewController:self animated:YES];
 
 }
+// ----
 
 - (void)positionWasUpdated:(STMPickingOrderPosition *)position {
     
@@ -594,6 +600,63 @@
 #pragma mark - barcodes
 
 - (void)receiveStockBatchBarCodeScan:(STMBarCodeScan *)barcodeScan {
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchBarCode class])];
+    request.predicate = [NSPredicate predicateWithFormat:@"stockToken != nil AND code == %@", barcodeScan.code];
+    
+    NSArray *stockBatchBarcodes = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+    
+    if (stockBatchBarcodes.count > 0) {
+        
+        self.currentBarCodeScan = barcodeScan;
+        
+        STMStockBatch *stockBatch = [(STMStockBatchBarCode *)stockBatchBarcodes.firstObject stockBatch];
+        
+        [self receiveBarCodeScanOfStockBatch:stockBatch];
+        
+    } else {
+        
+        [STMSoundController playAlert];
+        
+    }
+    
+}
+
+- (void)receiveBarCodeScanOfStockBatch:(STMStockBatch *)stockBatch {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article == %@", stockBatch.article];
+
+    NSSet *filteredPositions = [self.pickingOrder.pickingOrderPositions filteredSetUsingPredicate:predicate];
+    
+    STMPickingOrderPosition *position = filteredPositions.anyObject;
+    
+    if (position) {
+     
+        if (position.pickingOrderPositionsPicked.count > 0) {
+            
+            
+        } else {
+        
+            
+            
+            // create positionPicked
+            
+            NSString *stockToken = stockBatch.stockToken;
+
+            self.currentStockToken = stockToken;
+
+            
+        }
+        
+    } else {
+        
+        [STMSoundController playAlert];
+        
+    }
+    
+}
+
+- (void)createPositionPicked {
     
 }
 
