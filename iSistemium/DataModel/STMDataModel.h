@@ -18,6 +18,7 @@
 
 #import "STMBarCode.h"
 #import "STMBarCodeType.h"
+#import "STMBarCodeScan.h"
 #import "STMBasketPosition.h"
 #import "STMBatteryStatus.h"
 

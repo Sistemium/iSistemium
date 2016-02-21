@@ -1250,6 +1250,7 @@
                              NSStringFromClass([STMArticlePicture class]),
                              NSStringFromClass([STMArticleProductionInfo class]),
                              NSStringFromClass([STMBarCodeType class]),
+                             NSStringFromClass([STMBarCodeScan class]),
                              NSStringFromClass([STMBasketPosition class]),
                              NSStringFromClass([STMBatteryStatus class]),
                              NSStringFromClass([STMCampaign class]),
