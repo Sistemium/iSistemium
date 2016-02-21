@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15C50" minimumToolsVersion="Xcode 4.1">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15D21" minimumToolsVersion="Xcode 4.1">
     <entity name="STMArticle" representedClassName="STMArticle" syncable="YES">
         <attribute name="barcode" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="checksum" optional="YES" attributeType="String" syncable="YES"/>
@@ -975,6 +975,7 @@
     <entity name="STMSupplyOrderArticleDoc" representedClassName="STMSupplyOrderArticleDoc" parentEntity="STMStockBatchOperationAgent" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ord" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="packageRel" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="volume" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="supplyOrderArticleDocs" inverseEntity="STMArticle" syncable="YES"/>
         <relationship name="articleDoc" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleDoc" inverseName="supplyOrderArticleDocs" inverseEntity="STMArticleDoc" syncable="YES"/>
@@ -1112,7 +1113,7 @@
         <element name="STMStockBatchOperation" positionX="1654" positionY="-1702" width="128" height="343"/>
         <element name="STMStockBatchOperationAgent" positionX="1393" positionY="-1674" width="128" height="253"/>
         <element name="STMSupplyOrder" positionX="232" positionY="-2007" width="128" height="298"/>
-        <element name="STMSupplyOrderArticleDoc" positionX="999" positionY="-1708" width="128" height="133"/>
+        <element name="STMSupplyOrderArticleDoc" positionX="999" positionY="-1708" width="128" height="148"/>
         <element name="STMTrack" positionX="-279" positionY="488" width="128" height="268"/>
         <element name="STMUncashing" positionX="421" positionY="347" width="128" height="328"/>
         <element name="STMUncashingPicture" positionX="963" positionY="185" width="128" height="58"/>
