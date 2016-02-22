@@ -119,6 +119,22 @@
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
     </entity>
+    <entity name="STMBarCodeScan" representedClassName="STMBarCodeScan" syncable="YES">
+        <attribute name="checksum" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="destinationEntity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="destinationXid" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="deviceCts" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="deviceTs" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="isFantom" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+    </entity>
     <entity name="STMBarCodeType" representedClassName="STMBarCodeType" syncable="YES">
         <attribute name="checksum" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
@@ -1066,7 +1082,8 @@
         <element name="STMArticlePicture" positionX="1197" positionY="-351" width="128" height="58"/>
         <element name="STMArticleProductionInfo" positionX="511" positionY="-979" width="128" height="268"/>
         <element name="STMBarCode" positionX="1573" positionY="-976" width="128" height="238"/>
-        <element name="STMBarCodeType" positionX="1744" positionY="-976" width="128" height="283"/>
+        <element name="STMBarCodeScan" positionX="1717" positionY="-976" width="128" height="253"/>
+        <element name="STMBarCodeType" positionX="1861" positionY="-976" width="128" height="283"/>
         <element name="STMBasketPosition" positionX="511" positionY="-1363" width="128" height="283"/>
         <element name="STMBatteryStatus" positionX="-1008" positionY="-957" width="128" height="253"/>
         <element name="STMCampaign" positionX="612" positionY="-568" width="128" height="343"/>
