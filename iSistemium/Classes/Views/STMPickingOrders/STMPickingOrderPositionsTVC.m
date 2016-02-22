@@ -43,7 +43,7 @@
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 @property (nonatomic, strong) STMBarCodeScan *currentBarCodeScan;
-@property (nonatomic, strong) NSString *currentStockToken;
+//@property (nonatomic, strong) NSString *currentStockToken;
 
 //@property (nonatomic, strong) NSString *scannedBarCode;
 //@property (nonatomic, strong) NSMutableArray *scannedStockBatches;
@@ -624,28 +624,41 @@
 
 - (void)receiveBarCodeScanOfStockBatch:(STMStockBatch *)stockBatch {
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"article == %@", stockBatch.article];
+    if (!stockBatch.stockToken) return;
 
-    NSSet *filteredPositions = [self.pickingOrder.pickingOrderPositions filteredSetUsingPredicate:predicate];
+    NSString *stockToken = stockBatch.stockToken;
+    
+    NSPredicate *articlePredicate = [NSPredicate predicateWithFormat:@"article == %@", stockBatch.article];
+
+    NSSet *filteredPositions = [self.pickingOrder.pickingOrderPositions filteredSetUsingPredicate:articlePredicate];
     
     STMPickingOrderPosition *position = filteredPositions.anyObject;
     
     if (position) {
-     
+        
         if (position.pickingOrderPositionsPicked.count > 0) {
+
+            NSPredicate *stockTokenPredicate = [NSPredicate predicateWithFormat:@"stockToken == %@", stockToken];
             
+            STMPickingOrderPositionPicked *positionPicked = [position.pickingOrderPositionsPicked filteredSetUsingPredicate:stockTokenPredicate].anyObject;
+            
+            if (positionPicked) {
+                
+                [self updateVolumeForPositionPicked:positionPicked withPosition:position];
+                [self linkCurrentBarCodeScanWithPositionPicked:positionPicked];
+
+            } else {
+                
+                STMPickingOrderPositionPicked *positionPicked = [self createPositionPickedForStockBatch:stockBatch andPosition:position];
+                [self updateVolumeForPositionPicked:positionPicked withPosition:position];
+                
+            }
+
             
         } else {
-        
             
-            
-            // create positionPicked
-            
-            NSString *stockToken = stockBatch.stockToken;
+            [self createPositionPickedForStockBatch:stockBatch andPosition:position];
 
-            self.currentStockToken = stockToken;
-
-            
         }
         
     } else {
@@ -656,8 +669,55 @@
     
 }
 
-- (void)createPositionPicked {
+- (STMPickingOrderPositionPicked *)createPositionPickedForStockBatch:(STMStockBatch *)stockBatch andPosition:(STMPickingOrderPosition *)position {
     
+    STMPickingOrderPositionPicked *positionPicked = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPickingOrderPositionPicked class]) isFantom:NO];
+    
+    positionPicked.volume = position.volume;
+    positionPicked.stockToken = stockBatch.stockToken;
+    
+    if (stockBatch.article.productionInfoType) {
+        positionPicked.productionInfo = stockBatch.productionInfo;
+    }
+    
+    [self linkCurrentBarCodeScanWithPositionPicked:positionPicked];
+
+    [self.document saveDocument:^(BOOL success) {
+        
+    }];
+    
+    return positionPicked;
+    
+}
+
+- (void)linkCurrentBarCodeScanWithPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
+
+    self.currentBarCodeScan.destinationEntity = NSStringFromClass([positionPicked class]);
+    self.currentBarCodeScan.destinationXid = positionPicked.xid;
+
+}
+
+- (void)updateVolumeForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked withPosition:(STMPickingOrderPosition *)position {
+    
+    NSSortDescriptor *ctsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"cts"
+                                                                    ascending:YES
+                                                                     selector:@selector(compare:)];
+    
+    NSArray *sortedPositionsPicked = [position.pickingOrderPositionsPicked sortedArrayUsingDescriptors:@[ctsDescriptor]];
+    
+    STMPickingOrderPositionPicked *firstPositionPicked = sortedPositionsPicked.firstObject;
+    
+    if (![positionPicked isEqual:firstPositionPicked]) {
+        
+        NSInteger packageRel = position.article.packageRel.integerValue;
+        
+        NSUInteger volumeStep = (position.volume.integerValue > 2 * packageRel) ? packageRel : 1;
+        
+        positionPicked.volume = @(positionPicked.volume.integerValue + volumeStep);
+        firstPositionPicked.volume = @(firstPositionPicked.volume.integerValue - volumeStep);
+        
+    }
+
 }
 
 
