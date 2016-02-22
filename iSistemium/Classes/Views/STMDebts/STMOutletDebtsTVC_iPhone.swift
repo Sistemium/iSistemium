@@ -23,6 +23,12 @@ extension String {
 
 class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 100
+    }
+    
     override func showLongPressActionSheetFromView(view:UIView) {
     
         if view.isKindOfClass(UITableViewCell) {
@@ -188,8 +194,6 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 cell.contentView.sendSubviewToBack(view)
             }
         }
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
         
     }
     
@@ -202,6 +206,8 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         cell.selectionStyle = .None
         self.addLongPressToCell(cell)
         cell.textLabel?.numberOfLines = 2
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
+        cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
 //        cell.textLabel?.lineBreakMode = .ByWordWrapping
 //        cell.detailTextLabel?.numberOfLines = 2
 //        cell.detailTextLabel?.lineBreakMode = .ByWordWrapping
@@ -215,14 +221,6 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         
         cell.accessoryView = UIView(frame: CGRectMake(0, 0, 35, 35))
         return cell
-    }
-    
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
-    }
-    
-    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 1000
     }
     
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {

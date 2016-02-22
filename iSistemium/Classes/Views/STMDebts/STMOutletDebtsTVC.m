@@ -120,7 +120,7 @@
         
         NSArray *selectedIndexPaths = self.tableView.indexPathsForSelectedRows;
         
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 
         if ([selectedIndexPaths containsObject:indexPath]) {
             
@@ -417,7 +417,7 @@
         
         STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
         [[STMCashingProcessController sharedInstance] addDebt:debt];
-        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 
         return indexPath;
 
@@ -441,7 +441,7 @@
 
         STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
         [[STMCashingProcessController sharedInstance] removeDebt:debt];
-        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 
         return indexPath;
 
