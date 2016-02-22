@@ -21,6 +21,35 @@
 
 @implementation STMPickedPositionsListTVC
 
+@synthesize resultsController = _resultsController;
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPickingOrderPosition class])];
+        
+        NSSortDescriptor *ordDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ord"
+                                                                        ascending:YES
+                                                                         selector:@selector(compare:)];
+        
+        NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"article.name"
+                                                                         ascending:YES
+                                                                          selector:@selector(caseInsensitiveCompare:)];
+
+        request.sortDescriptors = @[ordDescriptor, nameDescriptor];
+        
+        request.predicate = [NSPredicate predicateWithFormat:@"pickingOrder == %@ AND pickingOrderPositionsPicked.@count > 0", self.pickingOrder];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:nil
+                                                                            cacheName:nil];
+    }
+    return _resultsController;
+    
+}
+
 - (NSArray <STMPickingOrderPosition *> *)tableData {
     
     if (!_tableData) {
@@ -62,7 +91,10 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.tableData.count;
+
+//    return self.tableData.count;
+    return self.resultsController.fetchedObjects.count;
+    
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -102,7 +134,8 @@
 
 - (void)fillPickingOrderArticleCell:(STMCustom5TVCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    STMPickingOrderPosition *pickingPosition = self.tableData[indexPath.row];
+//    STMPickingOrderPosition *pickingPosition = self.tableData[indexPath.row];
+    STMPickingOrderPosition *pickingPosition = [self.resultsController objectAtIndexPath:indexPath];
     
     cell.titleLabel.text = pickingPosition.article.name;
     cell.detailLabel.text = pickingPosition.ord.stringValue;
@@ -123,9 +156,10 @@
     
     if ([self.pickingOrder orderIsProcessed]) {
         
-        STMPickingOrderPosition *position = self.tableData[indexPath.row];
+//        STMPickingOrderPosition *pickingPosition = self.tableData[indexPath.row];
+        STMPickingOrderPosition *pickingPosition = [self.resultsController objectAtIndexPath:indexPath];
 
-        [self performSegueWithIdentifier:@"showPickedPositionInfo" sender:position];
+        [self performSegueWithIdentifier:@"showPickedPositionInfo" sender:pickingPosition];
         
     }
     
