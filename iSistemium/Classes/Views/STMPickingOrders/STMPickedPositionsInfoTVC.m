@@ -37,6 +37,14 @@
     
 }
 
+- (void)setPosition:(STMPickingOrderPosition *)position {
+    
+    _position = position;
+    
+    [self performFetch];
+    
+}
+
 
 #pragma mark - table data
 
