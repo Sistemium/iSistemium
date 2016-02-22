@@ -8,9 +8,13 @@
 
 #import "STMVariableCellsHeightTVC.h"
 
+#import "STMPickingOrderPositionsTVC.h"
+
+
 @interface STMPickedPositionsListTVC : STMVariableCellsHeightTVC
 
 @property (nonatomic, weak) STMPickingOrder *pickingOrder;
+@property (nonatomic, weak) STMPickingOrderPositionsTVC *parentVC;
 
 
 @end

@@ -22,7 +22,6 @@
 //#import "STMPickingOrderPositionsPickedTVC.h"
 
 #import "STMPickedPositionsListTVC.h"
-#import "STMPickedPositionsInfoTVC.h"
 
 
 #define SLIDE_THRESHOLD 20
@@ -53,8 +52,6 @@
 //@property (nonatomic, strong) NSString *scannedBarCode;
 //@property (nonatomic, strong) NSMutableArray *scannedStockBatches;
 //@property (nonatomic, strong) NSMutableArray *scannedArticles;
-
-@property (nonatomic, strong) STMPickedPositionsInfoTVC *pickedPositionsInfoTVC;
 
 
 @end
@@ -290,6 +287,8 @@
             STMPickedPositionsListTVC *pickedPositionsListTVC = (STMPickedPositionsListTVC *)segue.destinationViewController;
             pickedPositionsListTVC.pickingOrder = self.pickingOrder;
             
+            pickedPositionsListTVC.parentVC = self;
+            
         }
         
     } else if ([segue.identifier isEqualToString:@"showPickedPositionInfo"]) {
@@ -331,7 +330,10 @@
 
 - (void)updatePickedPositionsButton {
     
-    NSSet *pickedPositions = [self.pickingOrder.pickingOrderPositions valueForKeyPath:@"@distinctUnionOfSets.pickingOrderPositionsPicked"];
+    //    NSSet *pickedPositions = [self.pickingOrder.pickingOrderPositions valueForKeyPath:@"@distinctUnionOfSets.pickingOrderPositionsPicked"];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"pickingOrderPositionsPicked.@count > 0"];
+    NSSet *pickedPositions = [self.pickingOrder.pickingOrderPositions filteredSetUsingPredicate:predicate];
     
     self.pickedPositionsButton.enabled = (pickedPositions.count > 0);
     self.pickedPositionsButton.title = [NSString stringWithFormat:@"%@ (%@)", NSLocalizedString(@"PICKED POSITIONS", nil), @(pickedPositions.count).stringValue];
@@ -700,9 +702,17 @@
         [self positionWasUpdated:position];
         
         if ([self.navigationController.topViewController isEqual:self.pickedPositionsInfoTVC]) {
+            
             self.pickedPositionsInfoTVC.position = position;
+            
         } else {
-            [self performSegueWithIdentifier:@"showPickedPositionInfo" sender:position];    
+            
+            if (![self.navigationController.topViewController isEqual:self]) {
+                [self.navigationController popToViewController:self animated:YES];
+            }
+            
+            [self performSegueWithIdentifier:@"showPickedPositionInfo" sender:position];
+            
         }
         
     } else {
@@ -1182,6 +1192,8 @@
     if ([self isMovingToParentViewController]) {
         [self checkIfBarcodeScanerIsNeeded];
     }
+    
+    [self updatePickedPositionsButton];
     
 }
 
